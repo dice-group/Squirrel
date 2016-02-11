@@ -1,0 +1,24 @@
+frontier:
+  build: .
+  hostname: frontier
+  volumes:
+    - ./data/frontier:/shared
+  command: start-frontier.sh tcp://frontier:60000
+
+worker1:
+  build: .
+  hostname: worker1
+  volumes:
+      - ./data/worker:/shared
+  links:
+      - frontier
+  command: start-worker.sh 1 tcp://frontier:60000 tcp://sink:60001
+
+seedgenerator:
+  build: .
+  hostname: seedgenerator
+  volumes:
+      - ./data/seedgenerator:/shared
+  links:
+      - frontier
+  command: start-seed-generator.sh tcp://frontier:60000

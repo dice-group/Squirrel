@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>crawler-commons</groupId>
+  <artifactId>crawler-commons</artifactId>
+  <versioning>
+    <versions>
+      <version>0.7-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150904124257</lastUpdated>
+  </versioning>
+</metadata>

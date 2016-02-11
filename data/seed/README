@@ -1,0 +1,2 @@
+# To get the list of seed entries from lodstats database use the following command
+COPY (SELECT DISTINCT (uri) FROM (SELECT DISTINCT rdfdoc_id FROM stat_result where has_errors=false) AS rdfdoc_id, rdfdoc WHERE rdfdoc.id=rdfdoc_id) To '/tmp/lodstats.seed' With csv;
