@@ -7,6 +7,8 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
+import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +26,13 @@ public class WorkerImpl implements Worker {
     private static final long DEFAULT_WAITING_TIME = 10000;
 
     protected Frontier frontier;
-    protected Sink sink;
+    protected UriCollector sink;
     protected RobotsManager manager;
     protected long waitingTime = DEFAULT_WAITING_TIME;
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
         this.frontier = frontier;
-        this.sink = sink;
+        this.sink = new SimpleUriCollector(sink);
         this.manager = manager;
         this.waitingTime = waitingTime;
     }
@@ -75,14 +77,16 @@ public class WorkerImpl implements Worker {
             // TODO
             // Create fetchers for different type of URIs
             // Dereferenceable --> Jena
-            // Sparql --> SPARQL client which crawl with queries --> Claus library: https://github.com/AKSW/jena-sparql-api
+            // Sparql --> SPARQL client which crawl with queries --> Claus
+            // library: https://github.com/AKSW/jena-sparql-api
             // No dumps downloading
             //// create a stream from the file
             //// if archived --> unarchive on fly
             //// if archive got several files --> throw away
             //// Convert to Jena RDF stream --> write to the sink
 
-            // Create Analyzer which looks at RDF streams and push it to the frontier
+            // Create Analyzer which looks at RDF streams and push it to the
+            // frontier
             // Output data to FileBasedSink
         } else {
             LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
