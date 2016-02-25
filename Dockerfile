@@ -14,20 +14,20 @@ RUN apt-get install -y oracle-java8-installer
 RUN apt-get install -y oracle-java8-set-default
 RUN apt-get install -y maven
 
-COPY ./src /data/ldspider/src
-COPY ./repository /data/ldspider/repository
-COPY ./pom.xml /data/ldspider/pom.xml
-WORKDIR /data/ldspider
+COPY ./src /data/squirrel/src
+COPY ./repository /data/squirrel/repository
+COPY ./pom.xml /data/squirrel/pom.xml
+WORKDIR /data/squirrel
 RUN mvn clean compile assembly:single
 
-COPY ./data /data/ldspider/data
-COPY ./scripts /data/ldspider/scripts
+COPY ./data /data/squirrel/data
+COPY ./scripts /data/squirrel/scripts
 
-ENV PATH $PATH:/data/ldspider/scripts
+ENV PATH $PATH:/data/squirrel/scripts
 
 # Frontier tcp port
 EXPOSE 60000
 # Sink tcp port
 EXPOSE 60001
 
-VOLUME ["/var/ldspider/data"]
+VOLUME ["/var/squirrel/data"]

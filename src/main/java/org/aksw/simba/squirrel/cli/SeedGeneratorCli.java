@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.cli;
 
-import org.aksw.simba.ldspider.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
-import org.aksw.simba.ldspider.seed.generator.impl.SeedGeneratorZeroMQImpl;
+import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
+import org.aksw.simba.squirrel.seed.generator.impl.SeedGeneratorZeroMQImpl;
 
 /**
  * Created by ivan on 11.02.16.
