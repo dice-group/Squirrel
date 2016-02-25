@@ -1,4 +1,4 @@
-package org.aksw.simba.ldspider.cli;
+package org.aksw.simba.squirrel.cli;
 
 import org.aksw.simba.ldspider.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
 import org.aksw.simba.ldspider.seed.generator.impl.SeedGeneratorZeroMQImpl;
@@ -9,7 +9,7 @@ import org.aksw.simba.ldspider.seed.generator.impl.SeedGeneratorZeroMQImpl;
 public class SeedGeneratorCli {
     public static void main(String[] args) {
         if(args.length == 0) {
-            System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.SeedGeneratorCli ldspider.jar frontierSocketUri");
+            System.out.println("Usage: java -cp org.aksw.simba.squirrel.cli.SeedGeneratorCli ldspider.jar frontierSocketUri");
             System.exit(1);
         }
 
