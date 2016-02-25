@@ -10,7 +10,7 @@ import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 public class ZeroMQBasedFrontierCli {
     public static void main(String[] args) {
         if(args.length == 0) {
-            System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli ldspider.jar frontierSocketUri");
+            System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli squirrel.jar frontierSocketUri");
             System.exit(1);
         }
 

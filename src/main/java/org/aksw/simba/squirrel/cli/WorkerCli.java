@@ -11,7 +11,7 @@ import crawlercommons.fetcher.http.UserAgent;
 public class WorkerCli {
     public static void main(String[] args) {
         if(args.length == 0) {
-            System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.WorkerCli ldspider.jar workerId frontierSocketUri sinkSocketUri");
+            System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.WorkerCli squirrel.jar workerId frontierSocketUri sinkSocketUri");
             System.exit(1);
         }
 
