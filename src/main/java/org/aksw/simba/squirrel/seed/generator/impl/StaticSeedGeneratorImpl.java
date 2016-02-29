@@ -21,7 +21,7 @@ public class StaticSeedGeneratorImpl extends AbstractSeedGenerator {
 		String[] seedUris = {
 				         "http://danbri.org/foaf.rdf", //RDF Dump
 				         "http://rv1460.1blu.de/datasets/global-airports/global-airports.ttl", //RDF Dump
-						 "http://rv2622.1blu.de:8890/sparql/", //SPARQL Endpoint
+						 //"http://rv2622.1blu.de:8890/sparql/", //SPARQL Endpoint
 				 		 "https://ckannet-storage.commondatastorage.googleapis.com/2015-06-10T11:58:16.954Z/zipped-dump.zip" //Zipped dump - folder with 4 files
 		};
 		return this.createCrawleableUriList(seedUris);

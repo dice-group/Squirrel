@@ -7,6 +7,7 @@ import java.util.List;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
@@ -80,7 +81,8 @@ public class WorkerImpl implements Worker {
             // download/analyze URI (based on the URI type)
             LOGGER.debug("I start crawling {} now...", uri);
             if(uri.getType() == UriType.DUMP) {
-                LOGGER.error("Uri {} has DUMP Type. Not implemented. Skipping", uri);
+                DumpFetcher dumpFetcher = new DumpFetcher();
+                dumpFetcher.fetch(uri, this.sink);
             } else if (uri.getType() == UriType.SPARQL) {
                 SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
                 sparqlBasedFetcher.fetch(uri, this.sink);

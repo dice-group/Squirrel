@@ -32,4 +32,20 @@ public class UriUtils {
         java.util.List<CrawleableUri> seed;
         return new ArrayList<CrawleableUri>();
     }
+
+    public static String generateFileName(String uri, boolean useCompression) {
+        StringBuilder builder = new StringBuilder(uri.length() + 10);
+        char chars[] = uri.toCharArray();
+        for (int i = 0; i < chars.length; ++i) {
+            if (Character.isLetterOrDigit(chars[i])) {
+                builder.append(chars[i]);
+            } else {
+                builder.append('_');
+            }
+        }
+        if (useCompression) {
+            builder.append(".gz");
+        }
+        return builder.toString();
+    }
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
@@ -83,18 +84,6 @@ public class FileBasedSink implements Sink {
     }
 
     public static String generateFileName(String uri, boolean useCompression) {
-        StringBuilder builder = new StringBuilder(uri.length() + 10);
-        char chars[] = uri.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            if (Character.isLetterOrDigit(chars[i])) {
-                builder.append(chars[i]);
-            } else {
-                builder.append('_');
-            }
-        }
-        if (useCompression) {
-            builder.append(".gz");
-        }
-        return builder.toString();
+        return UriUtils.generateFileName(uri, useCompression);
     }
 }
