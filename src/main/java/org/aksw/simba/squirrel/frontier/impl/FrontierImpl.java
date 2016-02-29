@@ -12,6 +12,7 @@ import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
+import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -34,6 +35,12 @@ public class FrontierImpl implements Frontier {
     protected UriQueue queue;
 
     /**
+     * {@link UriProcessor} used to identify the type of incoming URIs: DUMP,
+     * SPARQL, DEREFERENCEABLE or UNKNOWN
+     */
+    protected UriProcessor uriProcessor;
+
+    /**
      * Constructor.
      * 
      * @param knownUriFilter
@@ -46,6 +53,7 @@ public class FrontierImpl implements Frontier {
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
         this.knownUriFilter = knownUriFilter;
         this.queue = queue;
+        this.uriProcessor = new UriProcessor();
     }
 
     @Override
@@ -64,7 +72,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         //After knownUriFilter uri should be classified according to UriProcessor
         if (knownUriFilter.isUriGood(uri)) {
-            queue.addUri(uri);
+            queue.addUri(this.uriProcessor.recognizeUriType(uri));
         }
     }
 
