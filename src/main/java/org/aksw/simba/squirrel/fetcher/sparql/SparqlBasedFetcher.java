@@ -26,7 +26,7 @@ public class SparqlBasedFetcher implements Fetcher {
      */
     private static final int DELAY = 5000;
 
-    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o";
+    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o {?s ?p ?o}";
 
     @Override
     public int fetch(CrawleableUri uri, Sink sink) {

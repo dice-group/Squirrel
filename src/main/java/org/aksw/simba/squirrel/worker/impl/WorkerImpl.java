@@ -1,14 +1,19 @@
 package org.aksw.simba.squirrel.worker.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +79,19 @@ public class WorkerImpl implements Worker {
         if (manager.isUriCrawlable(uri.getUri())) {
             // download/analyze URI (based on the URI type)
             LOGGER.debug("I start crawling {} now...", uri);
+            if(uri.getType() == UriType.DUMP) {
+                LOGGER.error("Uri {} has DUMP Type. Not implemented. Skipping", uri);
+            } else if (uri.getType() == UriType.SPARQL) {
+                SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
+                sparqlBasedFetcher.fetch(uri, this.sink);
+                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+            } else if (uri.getType() == UriType.DEREFERENCEABLE) {
+                LOGGER.error("Uri {} has DEREFERENCEABLE Type. Not implemented. Skipping", uri);
+            } else if (uri.getType() == UriType.UNKNOWN) {
+                LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
+            } else {
+                LOGGER.error("Uri {} has no type. Skipping", uri);
+            }
             // TODO
             // Create fetchers for different type of URIs
             // Dereferenceable --> Jena

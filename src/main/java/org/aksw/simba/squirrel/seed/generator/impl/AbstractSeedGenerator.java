@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.seed.generator.impl;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.seed.generator.SeedGenerator;
 import org.slf4j.Logger;
@@ -26,13 +27,6 @@ public abstract class AbstractSeedGenerator implements SeedGenerator {
     }
 
     public List<CrawleableUri> createCrawleableUriList(String[] seedUris) {
-        CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
-        java.util.List<CrawleableUri> seed;
-        seed = new ArrayList<CrawleableUri>();
-        for(int i=0; i<seedUris.length; i++) {
-            seed.add(crawleableUriFactoryImpl.create(seedUris[i]));
-        }
-
-        return seed;
+        return UriUtils.createCrawleableUriList(seedUris);
     }
 }
