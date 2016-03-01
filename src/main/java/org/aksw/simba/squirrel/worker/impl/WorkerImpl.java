@@ -81,14 +81,17 @@ public class WorkerImpl implements Worker {
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
             if(uri.getType() == UriType.DUMP) {
+                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
                 DumpFetcher dumpFetcher = new DumpFetcher();
                 dumpFetcher.fetch(uri, this.sink);
                 newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.SPARQL) {
+                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
                 SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
                 sparqlBasedFetcher.fetch(uri, this.sink);
                 newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.DEREFERENCEABLE) {
+                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
                 DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
                 dereferencingFetcher.fetch(uri, this.sink);
                 newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
