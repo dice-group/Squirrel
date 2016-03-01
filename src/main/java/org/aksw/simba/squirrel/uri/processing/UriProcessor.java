@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 
 /**
  * Uri Processor implementation.
@@ -44,13 +45,8 @@ public class UriProcessor implements UriProcessorInterface {
     }
     
     private boolean isStringMatchRegexs(String string, String[] regexs) {
-    	for(String regex : regexs) {
-    		if(string.matches(regex)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
+		return UriUtils.isStringMatchRegexs(string, regexs);
+	}
 
     public CrawleableUri recognizeInetAddress(CrawleableUri uri) throws UnknownHostException {
     	String host = uri.getUri().getHost();

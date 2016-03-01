@@ -83,6 +83,7 @@ public class WorkerImpl implements Worker {
             if(uri.getType() == UriType.DUMP) {
                 DumpFetcher dumpFetcher = new DumpFetcher();
                 dumpFetcher.fetch(uri, this.sink);
+                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.SPARQL) {
                 SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
                 sparqlBasedFetcher.fetch(uri, this.sink);
