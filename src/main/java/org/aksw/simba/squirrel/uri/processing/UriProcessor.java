@@ -38,7 +38,8 @@ public class UriProcessor implements UriProcessorInterface {
     	} else if(this.isStringMatchRegexs(uriPath, dereferenceableRegexs)) {
     		uri.setType(UriType.DEREFERENCEABLE);
     	} else {
-    		uri.setType(UriType.UNKNOWN);
+    		uri.setType(UriType.DEREFERENCEABLE);
+			//uri.setType(UriType.UNKNOWN);
     	}
     	
     	return uri;
