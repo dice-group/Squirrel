@@ -9,10 +9,46 @@ worker1:
   build: .
   hostname: worker1
   volumes:
-      - ./data/worker:/shared
+      - ./data/worker1:/shared
   links:
       - frontier
-  command: start-worker.sh 1 tcp://frontier:60000 tcp://sink:60001
+  command: start-worker.sh 1 tcp://frontier:60000 /shared
+
+worker2:
+  build: .
+  hostname: worker2
+  volumes:
+      - ./data/worker2:/shared
+  links:
+      - frontier
+  command: start-worker.sh 2 tcp://frontier:60000 /shared
+
+worker3:
+  build: .
+  hostname: worker3
+  volumes:
+      - ./data/worker3:/shared
+  links:
+      - frontier
+  command: start-worker.sh 3 tcp://frontier:60000 /shared
+
+worker4:
+  build: .
+  hostname: worker4
+  volumes:
+      - ./data/worker4:/shared
+  links:
+      - frontier
+  command: start-worker.sh 4 tcp://frontier:60000 /shared
+
+worker5:
+  build: .
+  hostname: worker5
+  volumes:
+      - ./data/worker5:/shared
+  links:
+      - frontier
+  command: start-worker.sh 5 tcp://frontier:60000 /shared
 
 seedgenerator:
   build: .

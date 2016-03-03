@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 
 /**
  * Uri Processor implementation.
@@ -18,8 +19,6 @@ public class UriProcessor implements UriProcessorInterface {
     public CrawleableUri recognizeUriType(CrawleableUri uri) {
     	URI uriString = uri.getUri();
     	String uriPath = uriString.getPath();
-    	String[] uriParts = uriPath.split("/");
-    	String uriFilePart = uriParts[uriParts.length - 1];
     	
     	String[] rdfDumpRegexs = {".*\\.rdf.*", 
     			                  ".*\\.ttl.*", 
@@ -37,20 +36,16 @@ public class UriProcessor implements UriProcessorInterface {
     	} else if(this.isStringMatchRegexs(uriPath, dereferenceableRegexs)) {
     		uri.setType(UriType.DEREFERENCEABLE);
     	} else {
-    		uri.setType(UriType.UNKNOWN);
+    		uri.setType(UriType.DEREFERENCEABLE);
+			//uri.setType(UriType.UNKNOWN);
     	}
     	
     	return uri;
     }
     
     private boolean isStringMatchRegexs(String string, String[] regexs) {
-    	for(String regex : regexs) {
-    		if(string.matches(regex)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
+		return UriUtils.isStringMatchRegexs(string, regexs);
+	}
 
     public CrawleableUri recognizeInetAddress(CrawleableUri uri) throws UnknownHostException {
     	String host = uri.getUri().getHost();

@@ -7,6 +7,7 @@ import java.util.List;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -78,36 +79,27 @@ public class WorkerImpl implements Worker {
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
-            // download/analyze URI (based on the URI type)
             LOGGER.debug("I start crawling {} now...", uri);
             if(uri.getType() == UriType.DUMP) {
+                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
                 DumpFetcher dumpFetcher = new DumpFetcher();
                 dumpFetcher.fetch(uri, this.sink);
+                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.SPARQL) {
+                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
                 SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
                 sparqlBasedFetcher.fetch(uri, this.sink);
                 newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.DEREFERENCEABLE) {
-                LOGGER.error("Uri {} has DEREFERENCEABLE Type. Not implemented. Skipping", uri);
+                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
+                DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
+                dereferencingFetcher.fetch(uri, this.sink);
+                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
             } else if (uri.getType() == UriType.UNKNOWN) {
                 LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
             } else {
                 LOGGER.error("Uri {} has no type. Skipping", uri);
             }
-            // TODO
-            // Create fetchers for different type of URIs
-            // Dereferenceable --> Jena
-            // Sparql --> SPARQL client which crawl with queries --> Claus
-            // library: https://github.com/AKSW/jena-sparql-api
-            // No dumps downloading
-            //// create a stream from the file
-            //// if archived --> unarchive on fly
-            //// if archive got several files --> throw away
-            //// Convert to Jena RDF stream --> write to the sink
-
-            // Create Analyzer which looks at RDF streams and push it to the
-            // frontier
-            // Output data to FileBasedSink
         } else {
             LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
         }
