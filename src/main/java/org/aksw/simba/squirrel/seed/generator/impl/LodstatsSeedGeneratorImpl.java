@@ -211,7 +211,6 @@ public class LodstatsSeedGeneratorImpl extends AbstractSeedGenerator {
                 "https://data.illinois.gov/api/views/bqxt-e8u4/rows.rdf?accessType=DOWNLOAD",
                 "https://data.lacity.org/api/views/msv5-mj8x/rows.rdf?accessType=DOWNLOAD",
                 "https://data.oregon.gov/api/views/9gti-xe25/rows.rdf?accessType=DOWNLOAD",
-                "http://ja.dbpedia.org/data/東京都.rdf",
                 "http://dati.opendataground.it:80/comunealbanolaziale/1388.rdf",
                 "https://data.cityofchicago.org/api/views/un3c-ixb7/rows.rdf?accessType=DOWNLOAD",
                 "http://pharmgkb.bio2rdf.org/sparql",
