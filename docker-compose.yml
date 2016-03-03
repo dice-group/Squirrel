@@ -32,6 +32,24 @@ worker3:
       - frontier
   command: start-worker.sh 3 tcp://frontier:60000 /shared
 
+worker4:
+  build: .
+  hostname: worker4
+  volumes:
+      - ./data/worker4:/shared
+  links:
+      - frontier
+  command: start-worker.sh 4 tcp://frontier:60000 /shared
+
+worker5:
+  build: .
+  hostname: worker5
+  volumes:
+      - ./data/worker5:/shared
+  links:
+      - frontier
+  command: start-worker.sh 5 tcp://frontier:60000 /shared
+
 seedgenerator:
   build: .
   hostname: seedgenerator
