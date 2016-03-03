@@ -19,8 +19,6 @@ public class UriProcessor implements UriProcessorInterface {
     public CrawleableUri recognizeUriType(CrawleableUri uri) {
     	URI uriString = uri.getUri();
     	String uriPath = uriString.getPath();
-    	String[] uriParts = uriPath.split("/");
-    	String uriFilePart = uriParts[uriParts.length - 1];
     	
     	String[] rdfDumpRegexs = {".*\\.rdf.*", 
     			                  ".*\\.ttl.*", 
