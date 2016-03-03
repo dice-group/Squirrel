@@ -10,6 +10,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -41,6 +42,11 @@ public class FrontierImpl implements Frontier {
     protected UriProcessor uriProcessor;
 
     /**
+     * {@link GraphLogger} that can be added to log the crawled graph.
+     */
+    protected GraphLogger graphLogger;
+
+    /**
      * Constructor.
      * 
      * @param knownUriFilter
@@ -51,9 +57,24 @@ public class FrontierImpl implements Frontier {
      *            crawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
+        this(knownUriFilter, queue, null);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param knownUriFilter
+     *            {@link UriFilter} used to identify URIs that already have been
+     *            crawled.
+     * @param queue
+     *            {@link UriQueue} used to manage the URIs that should be
+     *            crawled.
+     */
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger) {
         this.knownUriFilter = knownUriFilter;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
+        this.graphLogger = graphLogger;
     }
 
     @Override
@@ -70,7 +91,8 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void addNewUri(CrawleableUri uri) {
-        //After knownUriFilter uri should be classified according to UriProcessor
+        // After knownUriFilter uri should be classified according to
+        // UriProcessor
         if (knownUriFilter.isUriGood(uri)) {
             queue.addUri(this.uriProcessor.recognizeUriType(uri));
         }
@@ -78,6 +100,10 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+        // If there is a graph logger, log the data
+        if (graphLogger != null) {
+            graphLogger.log(crawledUris, newUris);
+        }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<InetAddress>();
