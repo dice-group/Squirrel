@@ -132,6 +132,15 @@
 		</dependency>
 		<!-- End JSON processing -->
 
+		<!-- Start Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- End Testing -->
+
 	</dependencies>
 
 	<build>

@@ -27,6 +27,8 @@ public class CkanSeedGeneratorImpl extends AbstractSeedGenerator {
 
     static final String CkanApiEndpoint = "http://datahub.io/api/3";
     static final String RdfSearchAction = "/action/package_search?q=rdf";
+    static final String RdfSearchQuery = CkanApiEndpoint + RdfSearchAction;
+    static final String RdfCountQuery = RdfSearchQuery + "&rows=1";
 
     public CkanSeedGeneratorImpl(Frontier frontier) {
         super(frontier);
@@ -34,45 +36,69 @@ public class CkanSeedGeneratorImpl extends AbstractSeedGenerator {
 
     @Override
     public List<CrawleableUri> getSeed() {
-        String[] seedUris = this.getDumpsFromCkan();
+        String[] seedUris = this.getRDFResources();
         return this.createCrawleableUriList(seedUris);
     }
 
-    private String[] getDumpsFromCkan() {
-        return this.extractUrisFromDatasetList(this.getRDFDatasetList());
-    }
-
-    private String[] extractUrisFromDatasetList(String datasetList) {
+    private String[] getRDFResources() {
+        Integer queryCount = this.getQueryCount(RdfCountQuery);
+        Integer pageSize = 50;
+        Integer offset;
+        String JSONString;
         ArrayList<String> output = new ArrayList<String>();;
-        JSONObject datasetsJson = new JSONObject(datasetList);
-        if (datasetsJson.has("result")) {
-            JSONObject result = datasetsJson.getJSONObject("result");
 
-            Integer count = result.getInt("count");
-            LOGGER.debug("Found "+count+" RDF datasets. Parsing...");
-
-            JSONArray results = result.getJSONArray("results");
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject dataset = results.getJSONObject(i);
-                JSONArray resources = dataset.getJSONArray("resources");
-                for (int j = 0; j < resources.length(); j++) {
-                    JSONObject resource = resources.getJSONObject(j);
-                    String url = resource.getString("url");
-                    output.add(url);
+        for(int i = 0; i < queryCount; i+=pageSize) {
+            offset = pageSize + i;
+            LOGGER.debug("Fetching {} resources with offset of {}", pageSize, offset);
+            JSONString = this.getRDFDatasetListPage(pageSize, offset);
+            JSONObject datasetsJson = new JSONObject(JSONString);
+            if (datasetsJson.has("result")) {
+                JSONObject result = datasetsJson.getJSONObject("result");
+                JSONArray results = result.getJSONArray("results");
+                for (int j = 0; j < results.length(); j++) {
+                    JSONObject dataset = results.getJSONObject(j);
+                    JSONArray resources = dataset.getJSONArray("resources");
+                    for (int k = 0; k < resources.length(); k++) {
+                        JSONObject resource = resources.getJSONObject(k);
+                        String url = resource.getString("url");
+                        output.add(url);
+                    }
                 }
             }
+
         }
+
         String[] outArray = new String[output.size()];
         outArray = output.toArray(outArray);
         return outArray;
     }
 
-    private String getRDFDatasetList() {
+    private Integer extractCountFromQuery(String JSONString) {
+        JSONObject datasetsJson = new JSONObject(JSONString);
+        Integer count = 0;
+        if (datasetsJson.has("result")) {
+            JSONObject result = datasetsJson.getJSONObject("result");
+
+            count = result.getInt("count");
+        }
+        return count;
+    }
+
+    private Integer getQueryCount(String Query) {
+        String countResponse = this.HTTPGet(RdfCountQuery);
+        return this.extractCountFromQuery(countResponse);
+    }
+
+    private String getRDFDatasetListPage(Integer pageSize, Integer offset) {
+        return this.HTTPGet(CkanApiEndpoint + RdfSearchAction + "&rows=" + pageSize + "&start=" + offset);
+    }
+
+    private String HTTPGet(String HTTPQuery) {
         String responseBody = "";
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            HttpGet httpget = new HttpGet(CkanApiEndpoint + RdfSearchAction);
+            HttpGet httpget = new HttpGet(HTTPQuery);
             LOGGER.debug("Executing request: " + httpget.getRequestLine());
 
             // Create a custom response handler
@@ -92,7 +118,7 @@ public class CkanSeedGeneratorImpl extends AbstractSeedGenerator {
             responseBody = httpclient.execute(httpget, responseHandler);
             httpclient.close();
         } catch (ClientProtocolException ServerFail){
-            LOGGER.error("Datahub.io failed to prcess request: " + ServerFail.getMessage());
+            LOGGER.error("Datahub.io failed to process request: " + ServerFail.getMessage());
         } catch (IOException ClientProtocolException) {
             LOGGER.error("Client could not process request: " + ClientProtocolException.getMessage());
         }
