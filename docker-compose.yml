@@ -3,7 +3,7 @@ frontier:
   hostname: frontier
   volumes:
     - ./data/frontier:/shared
-  command: start-frontier.sh tcp://frontier:60000
+  command: start-frontier.sh tcp://frontier:60000 /shared/graph.log
 
 worker1:
   build: .
