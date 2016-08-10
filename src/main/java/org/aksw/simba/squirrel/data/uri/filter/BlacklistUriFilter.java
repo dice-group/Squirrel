@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
-public class BlacklistUriFilter implements KnownUriFilter {
+public class BlacklistUriFilter implements UriFilter {
 
     protected Set<String> set;
 
@@ -22,8 +22,20 @@ public class BlacklistUriFilter implements KnownUriFilter {
         return !set.contains(uri.getUri().toString());
     }
 
-    @Override
     public void add(CrawleableUri uri) {
         set.add(uri.getUri().toString());
     }
+
+    public void add(String uri) {
+        set.add(uri);
+    }
+
+    public Set<String> getUris() {
+        return set;
+    }
+
+    public void setUris(Set<String> uris) {
+        set = uris;
+    }
+
 }
