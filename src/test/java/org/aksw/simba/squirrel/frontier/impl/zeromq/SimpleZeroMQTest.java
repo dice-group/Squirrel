@@ -7,11 +7,9 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.filter.BlacklistUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontier;
-import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.robots.RobotsManager;
@@ -42,7 +40,7 @@ public class SimpleZeroMQTest {
                 InetAddress.getByAddress(new byte[] { 127, 0, 0, 3 })));
         queue.addUri(new CrawleableUri(new URI("http://localhost/test3_X"),
                 InetAddress.getByAddress(new byte[] { 127, 0, 0, 3 })));
-        Frontier frontier = new FrontierImpl(new BlacklistUriFilter(), queue);
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), queue);
         ZeroMQBasedFrontier frontierWrapper = ZeroMQBasedFrontier.create(frontier, FRONTIER_ADDRESS);
         Worker worker = new TestWorker(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, 0), null,
                 new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 2000);

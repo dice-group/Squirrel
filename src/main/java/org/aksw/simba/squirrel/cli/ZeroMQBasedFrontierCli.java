@@ -3,7 +3,7 @@ package org.aksw.simba.squirrel.cli;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.aksw.simba.squirrel.data.uri.filter.BlacklistUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontier;
@@ -38,7 +38,7 @@ public class ZeroMQBasedFrontierCli {
         }
 
         IpAddressBasedQueue queue = new InMemoryQueue();
-        Frontier frontier = new FrontierImpl(new BlacklistUriFilter(), queue, graphLogger);
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), queue, graphLogger);
         ZeroMQBasedFrontier frontierWrapper = ZeroMQBasedFrontier.create(frontier, FRONTIER_ADDRESS);
         System.out.println("Running frontier...");
         frontierWrapper.run();
