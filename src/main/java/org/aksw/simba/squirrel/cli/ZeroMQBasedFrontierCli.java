@@ -21,15 +21,16 @@ public class ZeroMQBasedFrontierCli {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(
-                    "Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli squirrel.jar frontierSocketUri");
+                    "Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli squirrel.jar frontierSocketUri LogFilePath");
             System.exit(1);
         }
 
         String FRONTIER_ADDRESS = args[0];
+        String LOGFILEPATH = args[1];
 
         GraphLogger graphLogger = null;
         try {
-            graphLogger = TabSeparatedGraphLogger.create(new File("graph.log"));
+            graphLogger = TabSeparatedGraphLogger.create(new File(LOGFILEPATH));
         } catch (FileNotFoundException e) {
             LOGGER.error(
                     "Exception while creating output file for graph data. The crawler will be started without this output.",
