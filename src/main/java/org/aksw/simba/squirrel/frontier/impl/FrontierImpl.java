@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
@@ -31,9 +32,9 @@ public class FrontierImpl implements Frontier {
     protected KnownUriFilter knownUriFilter;
 
     /**
-     * {@link ProtocolUriFilter} used to identify URIs with known protocol.
+     * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
      */
-    protected ProtocolUriFilter protocolUriFilter;
+    protected SchemeBasedUriFilter schemeUriFilter = new SchemeBasedUriFilter();
 
     /**
      * {@link UriQueue} used to manage the URIs that should be crawled.
@@ -98,7 +99,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
-        if (knownUriFilter.isUriGood(uri) && protocolUriFilter.isUriGood(uri)) {
+        if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             queue.addUri(this.uriProcessor.recognizeUriType(uri));
         }
     }
