@@ -10,7 +10,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
 
-    protected ObjectLongOpenHashMap<CrawleableUri> uris;
+    protected ObjectLongOpenHashMap<CrawleableUri> uris = new ObjectLongOpenHashMap<>();
     protected long timeBeforeRecrawling;
 
     @Override
