@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uri Processor implementation.
@@ -15,6 +17,8 @@ import org.aksw.simba.squirrel.data.uri.UriUtils;
  *
  */
 public class UriProcessor implements UriProcessorInterface {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UriProcessor.class);
 	
     public CrawleableUri recognizeUriType(CrawleableUri uri) {
     	URI uriString = uri.getUri();
@@ -41,7 +45,7 @@ public class UriProcessor implements UriProcessorInterface {
 				uri.setType(UriType.DEREFERENCEABLE);
 			}
 		} catch(Exception e) {
-			System.out.println(uri);
+			LOGGER.debug("Uri {} could not be parsed. Skipping...", uri);
 			e.printStackTrace();
 		}
     	
