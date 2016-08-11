@@ -146,7 +146,8 @@ public class UriProcessorTest extends TestCase {
 		CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
 		try {
-			System.out.println((uriProcessor.recognizeInetAddress(crawleableUri)));
+			crawleableUri = uriProcessor.recognizeInetAddress(crawleableUri);
+			assertTrue(crawleableUri.getIpAddress().getHostAddress().toString().matches("127.0.0.1"));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

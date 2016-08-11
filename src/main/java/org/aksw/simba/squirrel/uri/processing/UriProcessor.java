@@ -30,16 +30,14 @@ public class UriProcessor implements UriProcessorInterface {
     	String[] sparqlRegexs = {".*sparql.*"};
     	String[] dereferenceableRegexs = {".*htm.*", ".*page.*", ".*resource.*"};
 
-		if(uriPath.isEmpty() || uriPath == null) {
-			uri.setType(UriType.UNKNOWN);
-		} else if(this.isStringMatchRegexs(uriPath, rdfDumpRegexs)) {
+		if(this.isStringMatchRegexs(uriPath, rdfDumpRegexs)) {
     		uri.setType(UriType.DUMP);
     	} else if(this.isStringMatchRegexs(uriPath, sparqlRegexs)) {
     		uri.setType(UriType.SPARQL);
     	} else if(this.isStringMatchRegexs(uriPath, dereferenceableRegexs)) {
     		uri.setType(UriType.DEREFERENCEABLE);
     	} else {
-    		uri.setType(UriType.UNKNOWN);
+    		uri.setType(UriType.DEREFERENCEABLE);
     	}
     	
     	return uri;
