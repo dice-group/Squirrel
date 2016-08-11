@@ -31,6 +31,11 @@ public class FrontierImpl implements Frontier {
     protected KnownUriFilter knownUriFilter;
 
     /**
+     * {@link ProtocolUriFilter} used to identify URIs with known protocol.
+     */
+    protected ProtocolUriFilter protocolUriFilter;
+
+    /**
      * {@link UriQueue} used to manage the URIs that should be crawled.
      */
     protected UriQueue queue;
@@ -93,7 +98,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
-        if (knownUriFilter.isUriGood(uri)) {
+        if (knownUriFilter.isUriGood(uri) && protocolUriFilter.isUriGood(uri)) {
             queue.addUri(this.uriProcessor.recognizeUriType(uri));
         }
     }
