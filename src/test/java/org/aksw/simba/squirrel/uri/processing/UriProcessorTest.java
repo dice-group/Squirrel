@@ -136,7 +136,20 @@ public class UriProcessorTest extends TestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-	
+
+	/**
+	 * Should be able to handle a bunch of random data input
+	 */
+	public void testNull() throws URISyntaxException {
+		URI uriToCrawl = null;
+		CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
+
+		try {
+			System.out.println((uriProcessor.recognizeInetAddress(crawleableUri)));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

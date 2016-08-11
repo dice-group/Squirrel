@@ -29,15 +29,17 @@ public class UriProcessor implements UriProcessorInterface {
     			                 };
     	String[] sparqlRegexs = {".*sparql.*"};
     	String[] dereferenceableRegexs = {".*htm.*", ".*page.*", ".*resource.*"};
-    	if(this.isStringMatchRegexs(uriPath, rdfDumpRegexs)) {
+
+		if(uriPath.isEmpty() || uriPath == null) {
+			uri.setType(UriType.UNKNOWN);
+		} else if(this.isStringMatchRegexs(uriPath, rdfDumpRegexs)) {
     		uri.setType(UriType.DUMP);
     	} else if(this.isStringMatchRegexs(uriPath, sparqlRegexs)) {
     		uri.setType(UriType.SPARQL);
     	} else if(this.isStringMatchRegexs(uriPath, dereferenceableRegexs)) {
     		uri.setType(UriType.DEREFERENCEABLE);
     	} else {
-    		uri.setType(UriType.DEREFERENCEABLE);
-			//uri.setType(UriType.UNKNOWN);
+    		uri.setType(UriType.UNKNOWN);
     	}
     	
     	return uri;
@@ -48,10 +50,20 @@ public class UriProcessor implements UriProcessorInterface {
 	}
 
     public CrawleableUri recognizeInetAddress(CrawleableUri uri) throws UnknownHostException {
-    	String host = uri.getUri().getHost();
-    	InetAddress ipAddress = InetAddress.getByName(host);
-    	uri.setIpAddress(ipAddress);
-    	return uri;
+    	String host;
+		InetAddress ipAddress;
+		if(! (uri.getUri() == null)) {
+			host = uri.getUri().getHost();
+			ipAddress = InetAddress.getByName(host);
+			uri.setIpAddress(ipAddress);
+			return uri;
+		} else {
+			URI newUri;
+			newUri = URI.create("");
+			ipAddress = InetAddress.getLocalHost();
+			return new CrawleableUri(newUri, ipAddress, UriType.UNKNOWN);
+		}
+
     }
 
 }
