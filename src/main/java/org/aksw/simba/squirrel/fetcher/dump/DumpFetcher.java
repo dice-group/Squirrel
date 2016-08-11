@@ -4,6 +4,7 @@ import com.hp.hpl.jena.graph.Triple;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.utils.ZipArchiver;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -25,6 +26,8 @@ import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DumpFetcher implements Fetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpFetcher.class);
@@ -38,8 +41,10 @@ public class DumpFetcher implements Fetcher {
         LOGGER.debug("Detected file type: {}", fileType);
 
         if(fileType.contains("application/zip")) {
-            LOGGER.debug("Archive extraction not implemented, skipping.");
-            return tripleCount;
+            String unzipPath = filePath + "__extracted";
+            File[] files = ZipArchiver.unzip(filePath, unzipPath, "emptypassword");
+            File firstFile = files[0];
+            filePath = firstFile.getPath().toString();
         }
 
         Lang hint;
@@ -59,10 +64,22 @@ public class DumpFetcher implements Fetcher {
             LOGGER.error("Could not detect serialization for {}. Skipping.", uri.toString());
             return tripleCount;
         }
-
-        PipedRDFIterator<Triple> iterator = new PipedRDFIterator<Triple>();
+        PipedRDFIterator<Triple> iterator = new PipedRDFIterator<>();
         final PipedRDFStream<Triple> inStream = new PipedTriplesStream(iterator);
-        RDFDataMgr.parse(inStream, filePath, hint, null);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        final String finalFilePath = filePath;
+        Runnable parser = new Runnable() {
+            @Override
+            public void run() {
+                LOGGER.debug("Parsing {}", finalFilePath);
+                RDFDataMgr.parse(inStream, finalFilePath, hint, null);
+            }
+        };
+
+        executor.submit(parser);
+
+        LOGGER.debug("Opening sink for {}", filePath);
         sink.openSinkForUri(uri);
         while (iterator.hasNext()) {
             Triple next = iterator.next();

@@ -75,6 +75,14 @@
 		</dependency>
 		<!-- End HTTP Requests -->
 
+		<!-- Zip archives -->
+		<dependency>
+			<groupId>net.lingala.zip4j</groupId>
+			<artifactId>zip4j</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<!-- End Zip archives -->
+
 		<!-- HPPC Maps -->
 		<dependency>
 			<groupId>com.carrotsearch</groupId>
