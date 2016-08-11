@@ -16,7 +16,7 @@ public class LodstatsSeedGeneratorImpl extends AbstractSeedGenerator {
 		super(frontier);
 	}
 
-    @Override
+	@Override
 	public List<CrawleableUri> getSeed() {
         String[] seedUris = {
                 "https://data.ok.gov/api/views/2qwh-j34a/rows.rdf?accessType=DOWNLOAD",

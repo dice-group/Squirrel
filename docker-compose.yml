@@ -58,3 +58,10 @@ seedgenerator:
   links:
       - frontier
   command: start-seed-generator.sh tcp://frontier:60000
+
+seedgeneratorlodstats:
+  build: .
+  hostname: seedgeneratorlodstats
+  links:
+      - frontier
+  command: start-seed-generator-lodstats.sh tcp://frontier:60000
