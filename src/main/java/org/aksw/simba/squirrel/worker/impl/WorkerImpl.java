@@ -1,6 +1,5 @@
 package org.aksw.simba.squirrel.worker.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
-import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
