@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryKnownUriFilter.class);
-
     protected ObjectLongOpenHashMap<CrawleableUri> uris = new ObjectLongOpenHashMap<>();
     protected long timeBeforeRecrawling;
 
@@ -29,7 +27,6 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
-        LOGGER.debug("Adding {} to the queue", uri);
         if (uris.containsKey(uri)) {
             long nextCrawlingAt = uris.get(uri) + timeBeforeRecrawling;
             return nextCrawlingAt < System.currentTimeMillis();

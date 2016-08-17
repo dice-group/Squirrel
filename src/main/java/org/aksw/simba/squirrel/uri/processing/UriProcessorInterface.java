@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.uri.processing;
 
 import java.net.UnknownHostException;
-import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 

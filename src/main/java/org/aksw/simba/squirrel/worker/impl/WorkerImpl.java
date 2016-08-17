@@ -1,5 +1,7 @@
 package org.aksw.simba.squirrel.worker.impl;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,10 @@ import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
+import org.aksw.simba.squirrel.uri.processing.UriProcessor;
+import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,83 +29,99 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public class WorkerImpl implements Worker {
+public class WorkerImpl implements Worker, Closeable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
-    private static final long DEFAULT_WAITING_TIME = 10000;
+	private static final long DEFAULT_WAITING_TIME = 10000;
 
-    protected Frontier frontier;
-    protected UriCollector sink;
-    protected RobotsManager manager;
-    protected long waitingTime = DEFAULT_WAITING_TIME;
+	protected Frontier frontier;
+	protected UriCollector sink;
+	protected RobotsManager manager;
+	protected DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
+	protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
+	protected DumpFetcher dumpFetcher = new DumpFetcher();
+	protected UriProcessorInterface uriProcessor = new UriProcessor();
+	protected long waitingTime = DEFAULT_WAITING_TIME;
 
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
-        this.frontier = frontier;
-        this.sink = new SimpleUriCollector(sink);
-        this.manager = manager;
-        this.waitingTime = waitingTime;
-    }
+	public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
+		this.frontier = frontier;
+		this.sink = new SimpleUriCollector(sink);
+		this.manager = manager;
+		this.waitingTime = waitingTime;
+	}
 
-    @Override
-    public void run() {
-        List<CrawleableUri> urisToCrawl;
-        while (true) {
-            // ask the Frontier for work
-            urisToCrawl = frontier.getNextUris();
-            if ((urisToCrawl == null) || (urisToCrawl.isEmpty())) {
-                // if there is no work, sleep for some time and ask again
-                try {
-                    Thread.sleep(waitingTime);
-                } catch (InterruptedException e) {
-                    LOGGER.debug("Interrupted while sleeping.", e);
-                }
-            } else {
-                // perform work
-                crawl(urisToCrawl);
-            }
-        }
-    }
+	@Override
+	public void run() {
+		List<CrawleableUri> urisToCrawl;
+		try {
+			while (true) {
+				// ask the Frontier for work
+				urisToCrawl = frontier.getNextUris();
+				if ((urisToCrawl == null) || (urisToCrawl.isEmpty())) {
+					// if there is no work, sleep for some time and ask again
+					try {
+						Thread.sleep(waitingTime);
+					} catch (InterruptedException e) {
+						LOGGER.debug("Interrupted while sleeping.", e);
+					}
+				} else {
+					// perform work
+					crawl(urisToCrawl);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Got a severe exception. Aborting.");
+		} finally {
+			IOUtils.closeQuietly(this);
+		}
+	}
 
-    @Override
-    public void crawl(List<CrawleableUri> uris) {
-        // perform work
-        List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
-        for (CrawleableUri uri : uris) {
-            performCrawling(uri, newUris);
-        }
-        // send results to the Frontier
-        frontier.crawlingDone(uris, newUris);
-    }
+	@Override
+	public void crawl(List<CrawleableUri> uris) {
+		// perform work
+		List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
+		for (CrawleableUri uri : uris) {
+			performCrawling(uri, newUris);
+		}
+		// classify URIs
+		for (CrawleableUri uri : newUris) {
+			uriProcessor.recognizeUriType(uri);
+		}
+		// send results to the Frontier
+		frontier.crawlingDone(uris, newUris);
+	}
 
-    @Override
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
-        // check robots.txt
-        if (manager.isUriCrawlable(uri.getUri())) {
-            LOGGER.debug("I start crawling {} now...", uri);
-            if(uri.getType() == UriType.DUMP) {
-                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
-                DumpFetcher dumpFetcher = new DumpFetcher();
-                dumpFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.SPARQL) {
-                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
-                SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
-                sparqlBasedFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.DEREFERENCEABLE) {
-                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
-                DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
-                dereferencingFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.UNKNOWN) {
-                LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
-            } else {
-                LOGGER.error("Uri {} has no type. Skipping", uri);
-            }
-        } else {
-            LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
-        }
-    }
+	@Override
+	public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+		// check robots.txt
+		if (manager.isUriCrawlable(uri.getUri())) {
+			LOGGER.debug("I start crawling {} now...", uri);
+			if (uri.getType() == UriType.DUMP) {
+				LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
+				dumpFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.SPARQL) {
+				LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
+				sparqlBasedFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.DEREFERENCEABLE) {
+				LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
+				dereferencingFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.UNKNOWN) {
+				LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
+			} else {
+				LOGGER.error("Uri {} has no type. Skipping", uri);
+			}
+		} else {
+			LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
+		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		IOUtils.closeQuietly(dereferencingFetcher);
+	}
 
 }
