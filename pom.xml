@@ -98,6 +98,14 @@
 		</dependency>
 		<!-- End JSON processing -->
 
+		<!-- Redis client -->
+		<dependency>
+			<groupId>biz.paluch.redis</groupId>
+			<artifactId>lettuce</artifactId>
+			<version>4.2.1.Final</version>
+		</dependency>
+		<!-- End Redis client -->
+
 		<!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- JUnit -->
 		<dependency>

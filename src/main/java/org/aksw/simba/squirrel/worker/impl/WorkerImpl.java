@@ -97,6 +97,7 @@ public class WorkerImpl implements Worker, Closeable {
 		// check robots.txt
 		Integer count = 0;
 		if (manager.isUriCrawlable(uri.getUri())) {
+			sink.openSinkForUri(uri);
 			LOGGER.debug("I start crawling {} now...", uri);
 			if (uri.getType() == UriType.DUMP) {
 				LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
@@ -115,6 +116,7 @@ public class WorkerImpl implements Worker, Closeable {
 			} else {
 				LOGGER.error("Uri {} has no type. Skipping", uri);
 			}
+			sink.closeSinkForUri(uri);
 		} else {
 			LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
 		}
