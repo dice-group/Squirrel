@@ -26,10 +26,10 @@ public class WorkerCli {
         String FRONTIER_ADDRESS = args[1];
         String SINK_FOLDER = args[2];
 
-        File tempFile = File.createTempFile("FileBasedSinkTest", ".tmp");
-        tempDirectory = tempFile.getAbsoluteFile().getParentFile();
+        //File tempFile = File.createTempFile("FileBasedSinkTest", ".tmp");
+        //tempDirectory = tempFile.getAbsoluteFile().getParentFile();
 
-        Sink sink = createSink(false);
+        Sink sink = new FileBasedSink(new File(SINK_FOLDER), true);
 
         Worker worker = new WorkerImpl(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, WORKER_ID), sink,
                 new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 2000);
