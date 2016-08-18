@@ -10,9 +10,10 @@ import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 
 import java.io.File;
+import java.io.IOException;
 
 public class WorkerCli {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if(args.length == 0) {
             System.out.println("Usage: java -cp org.aksw.simba.ldspider.cli.WorkerCli squirrel.jar workerId frontierSocketUri sinkSocketUri");
             System.exit(1);
@@ -22,7 +23,10 @@ public class WorkerCli {
         String FRONTIER_ADDRESS = args[1];
         String SINK_FOLDER = args[2];
 
-        FileBasedSink sink = new FileBasedSink(new File(SINK_FOLDER), false);
+        File tempFile = File.createTempFile("FileBasedSinkTest", ".tmp");
+        File tempDirectory = tempFile.getAbsoluteFile().getParentFile();
+
+        FileBasedSink sink = new FileBasedSink(tempDirectory, false);
 
         Worker worker = new WorkerImpl(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, WORKER_ID), sink,
                 new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 2000);
