@@ -106,6 +106,15 @@
 		</dependency>
 		<!-- End Redis client -->
 
+		<!-- RethinkDB client -->
+		<!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
+		<dependency>
+			<groupId>com.rethinkdb</groupId>
+			<artifactId>rethinkdb-driver</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<!-- End RethinkDB client -->
+
 		<!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- JUnit -->
 		<dependency>

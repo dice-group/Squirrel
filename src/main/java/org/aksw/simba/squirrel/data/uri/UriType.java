@@ -16,5 +16,5 @@ public enum UriType {
     /**
      * This URI points to a dump file.
      */
-    DUMP;
+    DUMP, uriType;
 }
