@@ -3,7 +3,11 @@ frontier:
   hostname: frontier
   volumes:
     - ./data/frontier:/shared
-  command: start-frontier.sh tcp://frontier:60000 /shared/graph.log
+  command: start-frontier.sh tcp://frontier:60000 /shared/graph.log rethinkdb 28015
+
+rethinkdb:
+  image: rethinkdb
+  hostname: rethinkdb
 
 worker1:
   build: .
