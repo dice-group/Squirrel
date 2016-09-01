@@ -33,11 +33,11 @@ public class RDBKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long timestamp) {
-        Object result = r.db("squirrel")
+        r.db("squirrel")
                 .table("knownurifilter")
                 .insert(convertURITimestampToRDB(uri, timestamp))
                 .run(connector.connection);
-        System.out.println(result);
+        LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {
@@ -64,19 +64,25 @@ public class RDBKnownUriFilter implements KnownUriFilter {
                 .g("timestamp")
                 .run(connector.connection);
         if(cursor.hasNext()) {
+            LOGGER.debug("URI {} is not good", uri.toString());
             Object timestampRetrieved = cursor.next();
             cursor.close();
-            return (System.currentTimeMillis() - (long) timestampRetrieved) < recrawlEveryWeek;
+            if((System.currentTimeMillis() - (long) timestampRetrieved) < recrawlEveryWeek) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
+            LOGGER.debug("URI {} is good", uri.toString());
             cursor.close();
-            return false;
+            return true;
         }
     }
 
     public void open() {
         this.connector.open();
         try {
-            r.dbCreate("squirrel");
+            r.dbCreate("squirrel").run(this.connector.connection);
         } catch (Exception e) {
             LOGGER.debug(e.toString());
         }

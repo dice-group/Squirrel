@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.*;
 
 public class RDBQueue extends AbstractIpAddressBasedQueue {
@@ -23,7 +24,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     public void open() {
         this.connector.open();
         try {
-            r.dbCreate("squirrel");
+            r.dbCreate("squirrel").run(this.connector.connection);
         } catch (Exception e) {
             LOGGER.debug(e.toString());
         }
@@ -48,8 +49,10 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         Boolean queueContainsKey = containsKey(ipAddressTypeKey);
         // if URI exists update the uris list
         if(queueContainsKey) {
+            LOGGER.debug("TypeKey is in the queue already");
             insertExistingUriTypePair(ipAddressTypeKey, uri);
         } else {
+            LOGGER.debug("TypeKey is not in the queue, creating a new one");
             insertNewUriTypePair(uri);
         }
     }
@@ -61,6 +64,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 .optArg("index", "ipAddressType")
                 .update(queueItem -> r.hashMap("uris", queueItem.g("uris").append(uri.getUri().toString())))
                 .run(connector.connection);
+        LOGGER.debug("Inserted existing UriTypePair");
     }
 
     private void insertNewUriTypePair(CrawleableUri uri) {
@@ -68,6 +72,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 .table("queue")
                 .insert(convertURItoRDBQueue(uri))
                 .run(connector.connection);
+        LOGGER.debug("Inserted new UriTypePair");
     }
 
     private MapObject convertURItoRDBQueue(CrawleableUri uri) {
@@ -86,7 +91,28 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 .orderBy()
                 .optArg("index", "ipAddressType")
                 .run(connector.connection);
-        return cursor;
+        Iterator<IpUriTypePair> ipUriTypePairIterator = new Iterator<IpUriTypePair>() {
+            @Override
+            public boolean hasNext() {
+                return cursor.hasNext();
+            }
+
+            @Override
+            public IpUriTypePair next() {
+                HashMap map = (HashMap) cursor.next();
+                try {
+                    LOGGER.debug(map.get("ipAddress").toString());
+                    InetAddress ipAddress = InetAddress.getByName(map.get("ipAddress").toString().substring(1));
+                    UriType uriType = UriType.valueOf(map.get("type").toString());
+                    IpUriTypePair pair = new IpUriTypePair(ipAddress, uriType);
+                    return pair;
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        return ipUriTypePairIterator;
     }
 
     @Override
