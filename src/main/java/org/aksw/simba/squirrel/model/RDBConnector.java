@@ -7,7 +7,7 @@ import com.rethinkdb.net.Connection;
  * Created by ivan on 8/30/16.
  */
 public class RDBConnector {
-    Connection connection = null;
+    public Connection connection = null;
     RethinkDB r = RethinkDB.r;
     String hostname;
     Integer port;

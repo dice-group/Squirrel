@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RedisKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
@@ -22,13 +23,14 @@ public class ZeroMQBasedFrontierCli {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(
-                    "Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli squirrel.jar frontierSocketUri LogFilePath RedisURI");
+                    "Usage: java -cp org.aksw.simba.ldspider.cli.ZeroMQBasedFrontierCli squirrel.jar frontierSocketUri LogFilePath RethinkDB_Hostname RethinkDB_Port");
             System.exit(1);
         }
 
         String FRONTIER_ADDRESS = args[0];
         String LOGFILEPATH = args[1];
-        String REDISURI = args[2];
+        String RDBHOSTNAME = args[2];
+        String RDBPORT = args[3];
 
         GraphLogger graphLogger = null;
         try {
@@ -40,7 +42,7 @@ public class ZeroMQBasedFrontierCli {
         }
 
         IpAddressBasedQueue queue = new InMemoryQueue();
-        RedisKnownUriFilter knownUriFilter = new RedisKnownUriFilter(REDISURI);
+        RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(RDBHOSTNAME, Integer.parseInt(RDBPORT));
         knownUriFilter.open();
         Frontier frontier = new FrontierImpl(knownUriFilter, queue, graphLogger);
         ZeroMQBasedFrontier frontierWrapper = ZeroMQBasedFrontier.create(frontier, FRONTIER_ADDRESS);
