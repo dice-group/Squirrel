@@ -7,6 +7,7 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class RDBConnectorTest {
                 .table("knownurifilter")
                 .getAll(uri.getUri().toString())
                 .optArg("index", "uri")
-                .g("timestamp")
+                //.g("timestamp")
                 .run(rdbConnector.connection);
         assert(cursor.hasNext());
         Object timestampRetrieved = cursor.next();
@@ -128,6 +130,28 @@ public class RDBConnectorTest {
         for (Object doc : cursor) {
             System.out.println(doc);
         }
+    }
+
+    @Test
+    public void testConvertGetUrisFromQueue() throws UnknownHostException {
+        CrawleableUri uri_1 = factory.create(URI.create("http://example.org/uri_1"), InetAddress.getByName("127.0.0.1"),
+                UriType.UNKNOWN);
+        CrawleableUri uri_2 = factory.create(URI.create("http://example.org/uri_2"), InetAddress.getByName("127.0.0.1"),
+                UriType.UNKNOWN);
+
+        addToQueue(uri_1);
+        addToQueue(uri_2);
+
+        Cursor cursor = r.db("squirrel")
+                .table("queue")
+                .getAll(r.array(uri_1.getIpAddress().toString(), uri_1.getType().toString()))
+                .optArg("index", "ipAddressType")
+                .run(rdbConnector.connection);
+
+        HashMap uriType = (HashMap) cursor.next();
+        ArrayList uris = (ArrayList) uriType.get("uris");
+        List<CrawleableUri> crawleableUris = UriUtils.createCrawleableUriList(uris);
+        System.out.println(crawleableUris);
     }
 
     private void addToQueue(CrawleableUri uri) {

@@ -3,16 +3,14 @@ package org.aksw.simba.squirrel.cli;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RedisKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.graph.impl.TabSeparatedGraphLogger;
-import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
+import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +29,7 @@ public class ZeroMQBasedFrontierCli {
         String LOGFILEPATH = args[1];
         String RDBHOSTNAME = args[2];
         String RDBPORT = args[3];
+        Integer RDBPORTINT = Integer.parseInt(RDBPORT);
 
         GraphLogger graphLogger = null;
         try {
@@ -41,8 +40,9 @@ public class ZeroMQBasedFrontierCli {
                     e);
         }
 
-        IpAddressBasedQueue queue = new InMemoryQueue();
-        RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(RDBHOSTNAME, Integer.parseInt(RDBPORT));
+        IpAddressBasedQueue queue = new RDBQueue(RDBHOSTNAME, RDBPORTINT);
+        queue.open();
+        RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(RDBHOSTNAME, RDBPORTINT);
         knownUriFilter.open();
         Frontier frontier = new FrontierImpl(knownUriFilter, queue, graphLogger);
         ZeroMQBasedFrontier frontierWrapper = ZeroMQBasedFrontier.create(frontier, FRONTIER_ADDRESS);
@@ -52,6 +52,7 @@ public class ZeroMQBasedFrontierCli {
             public void run() {
                 System.out.println("Inside Add Shutdown Hook");
                 knownUriFilter.close();
+                queue.close();
             }
         });
         frontierWrapper.run();

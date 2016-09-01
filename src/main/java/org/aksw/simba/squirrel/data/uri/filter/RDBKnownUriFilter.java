@@ -6,8 +6,6 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.model.RDBConnector;
-import org.aksw.simba.squirrel.model.RedisModel;
-import org.apache.commons.beanutils.converters.IntegerArrayConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,9 +75,18 @@ public class RDBKnownUriFilter implements KnownUriFilter {
 
     public void open() {
         this.connector.open();
+        try {
+            r.dbCreate("squirrel");
+        } catch (Exception e) {
+            LOGGER.debug(e.toString());
+        }
+        r.db("squirrel").tableCreate("knownurifilter").run(this.connector.connection);
+        r.db("squirrel").table("knownurifilter").indexCreate("uri").run(this.connector.connection);
+        r.db("squirrel").table("knownurifilter").indexWait("uri").run(this.connector.connection);
     }
 
     public void close() {
+        r.db("squirrel").tableDrop("knownurifilter").run(this.connector.connection);
         this.connector.close();
     }
 }

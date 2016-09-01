@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public class UriUtils {
     public static List<CrawleableUri> createCrawleableUriList(String[] seedUris) {
-        java.util.List<CrawleableUri> seed = getSeedList();
+        java.util.List<CrawleableUri> seed = getCrawleableUriList();
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         for(int i=0; i<seedUris.length; i++) {
             seed.add(crawleableUriFactoryImpl.create(seedUris[i]));
@@ -18,8 +18,19 @@ public class UriUtils {
         return seed;
     }
 
+    public static List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
+        CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
+        List<CrawleableUri> resultUris = getCrawleableUriList();
+
+        for(Object uri : uris) {
+            resultUris.add(crawleableUriFactoryImpl.create((String) uri));
+        }
+
+        return resultUris;
+    }
+
     public static List<CrawleableUri> createCrawleableUriList(Set<String> seedUris) {
-        java.util.List<CrawleableUri> seed = getSeedList();
+        java.util.List<CrawleableUri> seed = getCrawleableUriList();
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         for(String seedUri : seedUris) {
             seed.add(crawleableUriFactoryImpl.create(seedUri));
@@ -28,8 +39,7 @@ public class UriUtils {
         return seed;
     }
 
-    public static List<CrawleableUri> getSeedList() {
-        java.util.List<CrawleableUri> seed;
+    public static List<CrawleableUri> getCrawleableUriList() {
         return new ArrayList<CrawleableUri>();
     }
 
