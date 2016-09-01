@@ -1,71 +1,96 @@
-frontier:
-  build: .
-  hostname: frontier
-  volumes:
-    - ./data/frontier:/shared
-  command: start-frontier.sh tcp://frontier:60000 /shared/graph.log rethinkdb 28015
+version: '2'
 
-rethinkdb:
-  image: rethinkdb
-  hostname: rethinkdb
+services:
+  frontier:
+    build: .
+    hostname: frontier
+    networks:
+      - squirrel
+    volumes:
+      - ./data/frontier:/shared
+    command: start-frontier.sh tcp://frontier:60000 /shared/graph.log rethinkdb 28015
 
-worker1:
-  build: .
-  hostname: worker1
-  volumes:
-      - ./data/worker1:/shared
-  links:
-      - frontier
-  command: start-worker.sh 1 tcp://frontier:60000 /shared
+  rethinkdb:
+    image: rethinkdb
+    networks:
+      - squirrel
+    hostname: rethinkdb
 
-worker2:
-  build: .
-  hostname: worker2
-  volumes:
-      - ./data/worker2:/shared
-  links:
-      - frontier
-  command: start-worker.sh 2 tcp://frontier:60000 /shared
+  worker1:
+    build: .
+    hostname: worker1
+    networks:
+      - squirrel
+    volumes:
+        - ./data/worker1:/shared
+    links:
+        - frontier
+    command: start-worker.sh 1 tcp://frontier:60000 /shared
 
-worker3:
-  build: .
-  hostname: worker3
-  volumes:
-      - ./data/worker3:/shared
-  links:
-      - frontier
-  command: start-worker.sh 3 tcp://frontier:60000 /shared
+  worker2:
+    build: .
+    hostname: worker2
+    networks:
+      - squirrel
+    volumes:
+        - ./data/worker2:/shared
+    links:
+        - frontier
+    command: start-worker.sh 2 tcp://frontier:60000 /shared
 
-worker4:
-  build: .
-  hostname: worker4
-  volumes:
-      - ./data/worker4:/shared
-  links:
-      - frontier
-  command: start-worker.sh 4 tcp://frontier:60000 /shared
+  worker3:
+    build: .
+    hostname: worker3
+    networks:
+      - squirrel
+    volumes:
+        - ./data/worker3:/shared
+    links:
+        - frontier
+    command: start-worker.sh 3 tcp://frontier:60000 /shared
 
-worker5:
-  build: .
-  hostname: worker5
-  volumes:
-      - ./data/worker5:/shared
-  links:
-      - frontier
-  command: start-worker.sh 5 tcp://frontier:60000 /shared
+  worker4:
+    build: .
+    hostname: worker4
+    networks:
+      - squirrel
+    volumes:
+        - ./data/worker4:/shared
+    links:
+        - frontier
+    command: start-worker.sh 4 tcp://frontier:60000 /shared
 
-seedgenerator:
-  build: .
-  hostname: seedgenerator
-  volumes:
-      - ./data/seedgenerator:/shared
-  links:
-      - frontier
-  command: start-seed-generator.sh tcp://frontier:60000
+  worker5:
+    build: .
+    hostname: worker5
+    networks:
+      - squirrel
+    volumes:
+        - ./data/worker5:/shared
+    links:
+        - frontier
+    command: start-worker.sh 5 tcp://frontier:60000 /shared
 
-seedgeneratorlodstats:
-  build: .
-  hostname: seedgeneratorlodstats
-  links:
-      - frontier
-  command: start-seed-generator-lodstats.sh tcp://frontier:60000
+  seedgenerator:
+    build: .
+    hostname: seedgenerator
+    networks:
+      - squirrel
+    volumes:
+        - ./data/seedgenerator:/shared
+    links:
+        - frontier
+    command: start-seed-generator.sh tcp://frontier:60000
+
+  seedgeneratorlodstats:
+    build: .
+    hostname: seedgeneratorlodstats
+    networks:
+      - squirrel
+    links:
+        - frontier
+    command: start-seed-generator-lodstats.sh tcp://frontier:60000
+
+networks:
+  squirrel:
+
