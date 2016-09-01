@@ -21,8 +21,10 @@ public class UriProcessor implements UriProcessorInterface {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UriProcessor.class);
 	
     public CrawleableUri recognizeUriType(CrawleableUri uri) {
+		LOGGER.debug("Recognizing type of {}", uri.toString());
     	URI uriString = uri.getUri();
-    	String uriPath = uriString.getPath();
+    	String uriPath = uriString.getPath().toString();
+		LOGGER.debug("uriPath is {}", uriPath);
     	
     	String[] rdfDumpRegexs = {".*\\.rdf.*", 
     			                  ".*\\.ttl.*", 
@@ -36,19 +38,23 @@ public class UriProcessor implements UriProcessorInterface {
 
 		try {
 			if (this.isStringMatchRegexs(uriPath, rdfDumpRegexs)) {
+				LOGGER.debug("uriPath is DUMP");
 				uri.setType(UriType.DUMP);
 			} else if (this.isStringMatchRegexs(uriPath, sparqlRegexs)) {
+				LOGGER.debug("uriPath is SPARQL");
 				uri.setType(UriType.SPARQL);
 			} else if (this.isStringMatchRegexs(uriPath, dereferenceableRegexs)) {
+				LOGGER.debug("uriPath is DEREFERENCEABLE");
 				uri.setType(UriType.DEREFERENCEABLE);
 			} else {
+				LOGGER.debug("uriPath is DEREFERENCEABLE");
 				uri.setType(UriType.DEREFERENCEABLE);
 			}
 		} catch(Exception e) {
 			LOGGER.debug("Uri {} could not be parsed. Skipping...", uri);
 			e.printStackTrace();
 		}
-    	
+		LOGGER.debug("uri now is {}", uri.toString());
     	return uri;
     }
     

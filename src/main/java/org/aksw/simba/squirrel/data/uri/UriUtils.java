@@ -1,5 +1,7 @@
 package org.aksw.simba.squirrel.data.uri;
 
+import java.net.InetAddress;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,13 +20,15 @@ public class UriUtils {
         return seed;
     }
 
-    public static List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
+    public static List<CrawleableUri> createCrawleableUriList(ArrayList uris, UriType type) {
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         List<CrawleableUri> resultUris = getCrawleableUriList();
 
-        for(Object uri : uris) {
-            resultUris.add(crawleableUriFactoryImpl.create((String) uri));
+        for(Object uriString : uris) {
+            URI uri = URI.create(uriString.toString());
+            resultUris.add(crawleableUriFactoryImpl.create(uri, type));
         }
+        System.out.println(resultUris);
 
         return resultUris;
     }

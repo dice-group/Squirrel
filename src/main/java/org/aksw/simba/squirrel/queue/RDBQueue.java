@@ -101,7 +101,6 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
             public IpUriTypePair next() {
                 HashMap map = (HashMap) cursor.next();
                 try {
-                    LOGGER.debug(map.get("ipAddress").toString());
                     InetAddress ipAddress = InetAddress.getByName(map.get("ipAddress").toString().substring(1));
                     UriType uriType = UriType.valueOf(map.get("type").toString());
                     IpUriTypePair pair = new IpUriTypePair(ipAddress, uriType);
@@ -130,7 +129,9 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
             //remove all URIs for the pair
             HashMap result = (HashMap) cursor.next();
             ArrayList uriStringList = (ArrayList) result.get("uris");
-            uris = UriUtils.createCrawleableUriList(uriStringList);
+            LOGGER.debug("query result {}",result.toString());
+            UriType type = UriType.valueOf(result.get("type").toString());
+            uris = UriUtils.createCrawleableUriList(uriStringList, type);
             //remove from the queue
             r.db("squirrel")
                     .table("queue")

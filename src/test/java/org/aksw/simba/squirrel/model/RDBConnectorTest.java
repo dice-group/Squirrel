@@ -135,9 +135,9 @@ public class RDBConnectorTest {
     @Test
     public void testConvertGetUrisFromQueue() throws UnknownHostException {
         CrawleableUri uri_1 = factory.create(URI.create("http://example.org/uri_1"), InetAddress.getByName("127.0.0.1"),
-                UriType.UNKNOWN);
+                UriType.DUMP);
         CrawleableUri uri_2 = factory.create(URI.create("http://example.org/uri_2"), InetAddress.getByName("127.0.0.1"),
-                UriType.UNKNOWN);
+                UriType.DEREFERENCEABLE);
 
         addToQueue(uri_1);
         addToQueue(uri_2);
@@ -148,9 +148,10 @@ public class RDBConnectorTest {
                 .optArg("index", "ipAddressType")
                 .run(rdbConnector.connection);
 
-        HashMap uriType = (HashMap) cursor.next();
-        ArrayList uris = (ArrayList) uriType.get("uris");
-        List<CrawleableUri> crawleableUris = UriUtils.createCrawleableUriList(uris);
+        HashMap result = (HashMap) cursor.next();
+        ArrayList uris = (ArrayList) result.get("uris");
+        UriType type = UriType.valueOf(result.get("type").toString());
+        List<CrawleableUri> crawleableUris = UriUtils.createCrawleableUriList(uris, type);
         System.out.println(crawleableUris);
     }
 
