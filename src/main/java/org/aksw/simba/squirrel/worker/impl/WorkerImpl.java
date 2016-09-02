@@ -94,34 +94,36 @@ public class WorkerImpl implements Worker, Closeable {
         frontier.crawlingDone(uris, newUris);
     }
 
-    @Override
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
-        // check robots.txt
-        Integer count = 0;
-        if (manager.isUriCrawlable(uri.getUri())) {
-            LOGGER.debug("I start crawling {} now...", uri);
-            if (uri.getType() == UriType.DUMP) {
-                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
-                count = dumpFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.SPARQL) {
-                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
-                count = sparqlBasedFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.DEREFERENCEABLE) {
-                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
-                count = dereferencingFetcher.fetch(uri, this.sink);
-                newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-            } else if (uri.getType() == UriType.UNKNOWN) {
-                LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
-            } else {
-                LOGGER.error("Uri {} has no type. Skipping", uri);
-            }
-        } else {
-            LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
-        }
-        LOGGER.debug("Fetched {} triples", count);
-    }
+	@Override
+	public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+		// check robots.txt
+		Integer count = 0;
+		if (manager.isUriCrawlable(uri.getUri())) {
+			sink.openSinkForUri(uri);
+			LOGGER.debug("I start crawling {} now...", uri);
+			if (uri.getType() == UriType.DUMP) {
+				LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
+				count = dumpFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.SPARQL) {
+				LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
+				count = sparqlBasedFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.DEREFERENCEABLE) {
+				LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
+				count = dereferencingFetcher.fetch(uri, this.sink);
+				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
+			} else if (uri.getType() == UriType.UNKNOWN) {
+				LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
+			} else {
+				LOGGER.error("Uri {} has no type. Skipping", uri);
+			}
+			sink.closeSinkForUri(uri);
+		} else {
+			LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
+		}
+		LOGGER.debug("Fetched {} triples", count);
+	}
 
     @Override
     public void close() throws IOException {

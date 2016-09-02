@@ -29,4 +29,14 @@ public interface UriQueue {
      *         are available
      */
     public List<CrawleableUri> getNextUris();
+
+    /**
+     * Close RDB connection, destroy the database.
+     */
+    public void close();
+
+    /**
+     * Open RDB connection, init the database.
+     */
+    public void open();
 }

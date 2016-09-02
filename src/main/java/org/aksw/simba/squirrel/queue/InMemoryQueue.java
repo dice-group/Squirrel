@@ -47,4 +47,12 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
         return uris;
     }
 
+    @Override
+    public void open() {
+    }
+
+    @Override
+    public void close() {
+    }
+
 }
