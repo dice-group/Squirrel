@@ -15,13 +15,28 @@ import org.simpleframework.http.core.Container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple {@link Container} implementation that can be used to host
+ * {@link CrawleableResource} instances.
+ * 
+ * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
+ *
+ */
 @Ignore
 public class CrawleableResourceContainer implements Container {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawleableResourceContainer.class);
 
+    /**
+     * Resources hosted by this container.
+     */
     private Map<String, CrawleableResource> resources = new HashMap<String, CrawleableResource>();
 
+    /**
+     * Constructor.
+     * 
+     * @param resources resources that should be hosted by this container.
+     */
     public CrawleableResourceContainer(CrawleableResource... resources) {
         URI uri;
         String temp;

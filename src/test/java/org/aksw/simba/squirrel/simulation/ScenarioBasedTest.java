@@ -16,7 +16,7 @@ import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.InMemorySink;
+import org.aksw.simba.squirrel.sink.impl.InMemorySink;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.jena.riot.Lang;
 import org.junit.Assert;

@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink;
+package org.aksw.simba.squirrel.sink.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.junit.Ignore;
+import org.aksw.simba.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +16,34 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-@Ignore
+/**
+ * This is a simple in-memory implementation of a sink that can be used for
+ * testing purposes. The data that is written to this sink can be accessed using
+ * the {@link #getCrawledResources()} method. If the sink encounters a problem
+ * during its usage, e.g., data is written using a URI for which the stream
+ * already has been closed before, the sink becomes unhealthy. Note that this
+ * status does not influence the functionality of the sink. The status of the
+ * sink, i.e., whether it is healthy or not, can be accessed using the
+ * {@link #isSinkHealthy()} method.
+ * 
+ * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
+ *
+ */
 public class InMemorySink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InMemorySink.class);
 
+    /**
+     * In-memory map used to store the data that is written to the sink.
+     */
     private Map<String, Model> resources = new HashMap<String, Model>();
+    /**
+     * Set of URIs for which the sink has already been closed.
+     */
     private Set<String> closedSinks = new HashSet<String>();
+    /**
+     * The healthyness of the sink that is set to false if an error is encountered.
+     */
     private boolean healthyness = true;
 
     @Override
@@ -67,10 +88,20 @@ public class InMemorySink implements Sink {
         }
     }
 
+    /**
+     * Returns the data written to the sink as a map with the crawled URI as key and the RDF data as value.
+     * 
+     * @return the data written to the sink.
+     */
     public Map<String, Model> getCrawledResources() {
         return resources;
     }
 
+    /**
+     * Returns the status of the sink.
+     * 
+     * @return the status of the sink.
+     */
     public boolean isSinkHealthy() {
         SetView<String> unclosedSinks = Sets.difference(resources.keySet(), closedSinks);
         if (unclosedSinks.size() > 0) {
