@@ -12,9 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * This is a simple in-memory implementation of a sink that can be used for
@@ -42,7 +45,8 @@ public class InMemorySink implements Sink {
      */
     private Set<String> closedSinks = new HashSet<String>();
     /**
-     * The healthyness of the sink that is set to false if an error is encountered.
+     * The healthyness of the sink that is set to false if an error is
+     * encountered.
      */
     private boolean healthyness = true;
 
@@ -51,17 +55,20 @@ public class InMemorySink implements Sink {
         String uriString = uri.getUri().toString();
         if (resources.containsKey(uriString)) {
             Model model = resources.get(uriString);
-            if (triple.getObject().isURI()) {
-                model.add(model.createResource(triple.getSubject().getURI()),
-                        model.createProperty(triple.getPredicate().getURI()),
-                        model.createResource(triple.getObject().getURI()));
-            } else if (triple.getObject().isBlank()) {
-                model.add(model.createResource(triple.getSubject().getURI()),
-                        model.createProperty(triple.getPredicate().getURI()),
-                        model.createResource(triple.getObject().getBlankNodeId()));
+            Resource s;
+            Node n = triple.getSubject();
+            if (n.isBlank()) {
+                s = model.createResource(triple.getSubject().getBlankNodeId());
             } else {
-                model.add(model.createResource(triple.getSubject().getURI()),
-                        model.createProperty(triple.getPredicate().getURI()), triple.getObject().toString());
+                s = model.createResource(triple.getSubject().getURI());
+            }
+            Property p = model.createProperty(triple.getPredicate().getURI());
+            if (triple.getObject().isURI()) {
+                model.add(s, p, model.createResource(triple.getObject().getURI()));
+            } else if (triple.getObject().isBlank()) {
+                model.add(s, p, model.createResource(triple.getObject().getBlankNodeId()));
+            } else {
+                model.add(s, p, triple.getObject().toString());
             }
         } else {
             LOGGER.error("Called to add a triple to the URI \"" + uriString + "\" which has never been opened.");
@@ -89,7 +96,8 @@ public class InMemorySink implements Sink {
     }
 
     /**
-     * Returns the data written to the sink as a map with the crawled URI as key and the RDF data as value.
+     * Returns the data written to the sink as a map with the crawled URI as key
+     * and the RDF data as value.
      * 
      * @return the data written to the sink.
      */

@@ -31,7 +31,7 @@ public class StringResource extends AbstractCrawleableResource {
      *            the serialization used to write the RDF data
      */
     public StringResource(Model model, String resourceName, Lang serializationLang) {
-        super(model, resourceName, serializationLang.getContentType().toString());
+        super(model, resourceName, serializationLang.getContentType().getContentType());
         this.serializationLang = serializationLang;
     }
 

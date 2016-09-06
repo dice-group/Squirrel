@@ -55,56 +55,56 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
          * resource2 which points to resource3.
          */
         model1 = ModelFactory.createDefaultModel();
-        model1.add(model1.createResource(server1Url + "/1"), model1.createProperty(server2Url + "/2"),
+        model1.add(model1.createResource(server1Url + "/entity_1"), model1.createProperty(server2Url + "/property_1"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/2"),
-                model2.createResource(server3Url + "/3>"));
+        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1"),
+                model2.createResource(server3Url + "/entity_2"));
         model3 = ModelFactory.createDefaultModel();
-        model3.add(model3.createResource(server1Url + "/3"), model3.createProperty(server2Url + "/2"),
+        model3.add(model3.createResource(server1Url + "/entity_2"), model3.createProperty(server2Url + "/property_1"),
                 model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
-                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/1"), UriType.DEREFERENCEABLE) },
-                new CrawleableResource[] { new StringResource(model1, server1Url + "/1", Lang.N3),
-                        new StringResource(model2, server2Url + "/2", Lang.N3),
-                        new StringResource(model3, server3Url + "/3", Lang.N3) } });
+                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/entity_1"), UriType.DEREFERENCEABLE) },
+                new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1", Lang.N3),
+                        new StringResource(model2, server2Url + "/property_1", Lang.N3),
+                        new StringResource(model3, server3Url + "/entity_2", Lang.N3) } });
 
         /*
          * The same scenario with different serializations.
          */
         model1 = ModelFactory.createDefaultModel();
-        model1.add(model1.createResource(server1Url + "/1"), model1.createProperty(server2Url + "/2"),
+        model1.add(model1.createResource(server1Url + "/entity_1"), model1.createProperty(server2Url + "/property_1"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/2"),
-                model2.createResource(server3Url + "/3>"));
+        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1"),
+                model2.createResource(server3Url + "/entity_2"));
         model3 = ModelFactory.createDefaultModel();
-        model3.add(model3.createResource(server1Url + "/3"), model3.createProperty(server2Url + "/2"),
+        model3.add(model3.createResource(server1Url + "/entity_2"), model3.createProperty(server2Url + "/property_1"),
                 model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
-                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/1"), UriType.DEREFERENCEABLE) },
-                new CrawleableResource[] { new StringResource(model1, server1Url + "/1", Lang.RDFXML),
-                        new StringResource(model2, server2Url + "/2", Lang.TURTLE),
-                        new StringResource(model3, server3Url + "/3", Lang.RDFJSON) } });
+                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/entity_1"), UriType.DEREFERENCEABLE) },
+                new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1", Lang.RDFXML),
+                        new StringResource(model2, server2Url + "/property_1", Lang.TURTLE),
+                        new StringResource(model3, server3Url + "/entity_2", Lang.RDFJSON) } });
 
         /*
          * Example in which the dump fetcher needs to be able to read the data
          * like a normal fetcher.
          */
         model1 = ModelFactory.createDefaultModel();
-        model1.add(model1.createResource(server1Url + "/1.rdf"), model1.createProperty(server2Url + "/2.rdf"),
+        model1.add(model1.createResource(server1Url + "/entity_1.rdf"), model1.createProperty(server2Url + "/property_1.rdf"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/2.rdf"),
-                model2.createResource(server3Url + "/3.rdf>"));
+        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1.rdf"),
+                model2.createResource(server3Url + "/entity_2.rdf"));
         model3 = ModelFactory.createDefaultModel();
-        model3.add(model3.createResource(server1Url + "/3.rdf"), model3.createProperty(server2Url + "/2.rdf"),
+        model3.add(model3.createResource(server1Url + "/entity_2.rdf"), model3.createProperty(server2Url + "/property_1.rdf"),
                 model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
-                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/1.rdf"), UriType.DEREFERENCEABLE) },
-                new CrawleableResource[] { new StringResource(model1, server1Url + "/1.rdf", Lang.N3),
-                        new StringResource(model2, server2Url + "/2.rdf", Lang.N3),
-                        new StringResource(model3, server3Url + "/3.rdf", Lang.N3) } });
+                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/entity_1.rdf"), UriType.DEREFERENCEABLE) },
+                new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1.rdf", Lang.N3),
+                        new StringResource(model2, server2Url + "/property_1.rdf", Lang.N3),
+                        new StringResource(model3, server3Url + "/entity_2.rdf", Lang.N3) } });
         return scenarios;
     }
 
@@ -119,7 +119,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     @Test
     public void test() {
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), new InMemoryQueue());
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
         WorkerImpl worker = new WorkerImpl(frontier, sink,
                 new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 100);

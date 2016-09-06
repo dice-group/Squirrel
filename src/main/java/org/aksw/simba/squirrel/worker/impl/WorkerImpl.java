@@ -73,7 +73,7 @@ public class WorkerImpl implements Worker, Closeable {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Got a severe exception. Aborting.");
+            LOGGER.error("Got a severe exception. Aborting.", e);
         } finally {
             IOUtils.closeQuietly(this);
         }
