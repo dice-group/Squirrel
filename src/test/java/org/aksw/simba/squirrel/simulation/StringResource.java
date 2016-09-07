@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.simulation;
 
 import java.io.OutputStream;
+import java.io.StringWriter;
 
 import org.apache.jena.riot.Lang;
 

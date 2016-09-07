@@ -68,7 +68,7 @@ public class InMemorySink implements Sink {
             } else if (triple.getObject().isBlank()) {
                 model.add(s, p, model.createResource(triple.getObject().getBlankNodeId()));
             } else {
-                model.add(s, p, triple.getObject().toString());
+                model.add(s, p, triple.getObject().getLiteralValue().toString());
             }
         } else {
             LOGGER.error("Called to add a triple to the URI \"" + uriString + "\" which has never been opened.");

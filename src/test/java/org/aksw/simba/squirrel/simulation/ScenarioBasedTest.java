@@ -27,7 +27,6 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -58,7 +57,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         model1.add(model1.createResource(server1Url + "/entity_1"), model1.createProperty(server2Url + "/property_1"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1"),
+        model2.add(model2.createResource(server1Url + "/entity_1"), model2.createProperty(server2Url + "/property_1"),
                 model2.createResource(server3Url + "/entity_2"));
         model3 = ModelFactory.createDefaultModel();
         model3.add(model3.createResource(server1Url + "/entity_2"), model3.createProperty(server2Url + "/property_1"),
@@ -76,7 +75,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         model1.add(model1.createResource(server1Url + "/entity_1"), model1.createProperty(server2Url + "/property_1"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1"),
+        model2.add(model2.createResource(server1Url + "/entity_1"), model2.createProperty(server2Url + "/property_1"),
                 model2.createResource(server3Url + "/entity_2"));
         model3 = ModelFactory.createDefaultModel();
         model3.add(model3.createResource(server1Url + "/entity_2"), model3.createProperty(server2Url + "/property_1"),
@@ -95,7 +94,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         model1.add(model1.createResource(server1Url + "/entity_1.rdf"), model1.createProperty(server2Url + "/property_1.rdf"),
                 model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(new AnonId("1")), model2.createProperty(server2Url + "/property_1.rdf"),
+        model2.add(model2.createResource(server1Url + "/entity_1.rdf"), model2.createProperty(server2Url + "/property_1.rdf"),
                 model2.createResource(server3Url + "/entity_2.rdf"));
         model3 = ModelFactory.createDefaultModel();
         model3.add(model3.createResource(server1Url + "/entity_2.rdf"), model3.createProperty(server2Url + "/property_1.rdf"),
