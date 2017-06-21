@@ -39,11 +39,14 @@ public class DumpFetcher implements Fetcher {
     public int fetch(CrawleableUri uri, Sink sink) {
         int tripleCount = 0;
         String filePath = this.downloadFile(uri, "/tmp/");
+        if (filePath == null) {
+            return 0;
+        }
         LOGGER.debug("{} is saved to {}", uri.toString(), filePath);
         String fileType = this.detectFileType(uri, filePath);
         LOGGER.debug("Detected file type: {}", fileType);
 
-        if(fileType.contains("application/zip")) {
+        if (fileType.contains("application/zip")) {
             String unzipPath = filePath + "__extracted";
             File[] files = ZipArchiver.unzip(filePath, unzipPath, "emptypassword");
             File firstFile = files[0];
@@ -51,7 +54,7 @@ public class DumpFetcher implements Fetcher {
         }
 
         Lang hint;
-        if(this.detectSerialization(uri.toString(), "rdf").equals("rdf")) {
+        if (this.detectSerialization(uri.toString(), "rdf").equals("rdf")) {
             LOGGER.debug("Detected rdf/xml serialization.");
             hint = Lang.RDFXML;
         } else if (this.detectSerialization(uri.toString(), "ttl").equals("ttl")) {
@@ -94,7 +97,7 @@ public class DumpFetcher implements Fetcher {
     }
 
     private String downloadFile(CrawleableUri uri, String tempfolder) {
-        //Download files to temp folder
+        // Download files to temp folder
         String tempfile = UriUtils.generateFileName(uri.toString(), false);
         File outputFile = new File(tempfolder, tempfile);
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -116,10 +119,15 @@ public class DumpFetcher implements Fetcher {
             }
             response.close();
             httpclient.close();
-        } catch (ClientProtocolException ServerFail){
-            LOGGER.error("Worker failed to prcess request: " + ServerFail.getMessage());
+        } catch (ClientProtocolException ServerFail) {
+            LOGGER.error("Worker failed to prcess request. Returning null.", ServerFail);
+            return null;
         } catch (IOException ClientProtocolException) {
-            LOGGER.error("Worker could not process request: " + ClientProtocolException.getMessage());
+            LOGGER.error("Worker could not process request. Returning null.", ClientProtocolException);
+            return null;
+        } catch (Exception e) {
+            LOGGER.error("Worker could not download \"" + uri.getUri().toString() + "\". Returning null.", e);
+            return null;
         }
         return outputFile.getPath();
     }
@@ -136,8 +144,8 @@ public class DumpFetcher implements Fetcher {
     }
 
     private String detectSerialization(String uriString, String serialization) {
-        String[] regexs = {".*\\."+serialization+".*"};
-        if(UriUtils.isStringMatchRegexs(uriString, regexs)) {
+        String[] regexs = { ".*\\." + serialization + ".*" };
+        if (UriUtils.isStringMatchRegexs(uriString, regexs)) {
             return serialization;
         } else {
             return "";
