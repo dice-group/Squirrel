@@ -6,6 +6,7 @@ import org.aksw.simba.squirrel.seed.generator.impl.LodstatsSeedGeneratorImpl;
 /**
  * Created by ivan on 03.03.16.
  */
+@Deprecated
 public class LodstatsSeedGeneratorCli {
     public static void main(String[] args) {
         if(args.length == 0) {

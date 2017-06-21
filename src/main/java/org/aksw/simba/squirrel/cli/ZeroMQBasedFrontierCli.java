@@ -14,6 +14,7 @@ import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class ZeroMQBasedFrontierCli {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZeroMQBasedFrontierCli.class);

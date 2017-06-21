@@ -1,12 +1,12 @@
 package org.aksw.simba.squirrel.cli;
 
 import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
-import org.aksw.simba.squirrel.seed.generator.impl.LodstatsSeedGeneratorImpl;
 import org.aksw.simba.squirrel.seed.generator.impl.SimpleSeedGeneratorImpl;
 
 /**
  * Created by ivan on 8/18/16.
  */
+@Deprecated
 public class SimpleSeedGeneratorCli {
     public static void main(String[] args) {
         if(args.length == 0) {

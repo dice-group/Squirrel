@@ -6,6 +6,7 @@ import org.aksw.simba.squirrel.seed.generator.impl.StaticSeedGeneratorImpl;
 /**
  * Created by ivan on 11.02.16.
  */
+@Deprecated
 public class StaticSeedGeneratorCli {
     public static void main(String[] args) {
         if(args.length == 0) {
