@@ -2,7 +2,7 @@ package org.aksw.simba.squirrel.simulation;
 
 import java.io.OutputStream;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 /**
  * This interface defines the methods of a resource that is hosted in a

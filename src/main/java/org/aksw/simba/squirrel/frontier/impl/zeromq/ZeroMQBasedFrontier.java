@@ -17,6 +17,7 @@ import org.zeromq.ZMQ.PollItem;
 import org.zeromq.ZMQ.Poller;
 import org.zeromq.ZMQ.Socket;
 
+@Deprecated
 public class ZeroMQBasedFrontier implements Closeable, Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZeroMQBasedFrontier.class);

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+@Deprecated
 public class ZeroMQUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZeroMQUtils.class);

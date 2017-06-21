@@ -14,6 +14,7 @@ import org.aksw.simba.squirrel.zeromq.utils.ZeroMQUtils;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
 
+@Deprecated
 public class ZeroMQBasedFrontierClient implements Frontier, Closeable {
 
     private static final String WORKER_IDENTITY_STRING = "Worker#";

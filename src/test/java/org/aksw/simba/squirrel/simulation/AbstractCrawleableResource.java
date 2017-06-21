@@ -2,7 +2,7 @@ package org.aksw.simba.squirrel.simulation;
 
 import java.io.OutputStream;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 /**
  * This abstract class contains methods for a {@link CrawleableResource} that is

@@ -12,11 +12,10 @@ import java.util.zip.GZIPOutputStream;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.jena.graph.Triple;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Triple;
 
 public class FileBasedSink implements Sink {
 

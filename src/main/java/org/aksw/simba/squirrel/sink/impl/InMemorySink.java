@@ -7,17 +7,18 @@ import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * This is a simple in-memory implementation of a sink that can be used for
@@ -58,7 +59,7 @@ public class InMemorySink implements Sink {
             Resource s;
             Node n = triple.getSubject();
             if (n.isBlank()) {
-                s = model.createResource(triple.getSubject().getBlankNodeId());
+                s = model.createResource(new AnonId(triple.getSubject().getBlankNodeId()));
             } else {
                 s = model.createResource(triple.getSubject().getURI());
             }
@@ -66,7 +67,7 @@ public class InMemorySink implements Sink {
             if (triple.getObject().isURI()) {
                 model.add(s, p, model.createResource(triple.getObject().getURI()));
             } else if (triple.getObject().isBlank()) {
-                model.add(s, p, model.createResource(triple.getObject().getBlankNodeId()));
+                model.add(s, p, model.createResource(new AnonId(triple.getObject().getBlankNodeId())));
             } else {
                 model.add(s, p, triple.getObject().getLiteralValue().toString());
             }

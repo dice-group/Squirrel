@@ -19,16 +19,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class DereferencingFetcher implements Fetcher, Closeable {
 
@@ -121,7 +120,7 @@ public class DereferencingFetcher implements Fetcher, Closeable {
                 LOGGER.error("The response did not contain a content type header. Returning null.");
                 return null;
             }
-            ContentType contentType = ContentType.parse(contentTypeHeader.getValue());
+            ContentType contentType = ContentType.create(contentTypeHeader.getValue());
             Lang language = RDFLanguages.contentTypeToLang(contentType);
             if (language == null) {
                 LOGGER.error("Couldn't find an RDF language for the content type header value \"{}\". Returning null.",

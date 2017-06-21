@@ -18,6 +18,10 @@ import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.impl.InMemorySink;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,11 +30,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
@@ -91,16 +90,18 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
          * like a normal fetcher.
          */
         model1 = ModelFactory.createDefaultModel();
-        model1.add(model1.createResource(server1Url + "/entity_1.rdf"), model1.createProperty(server2Url + "/property_1.rdf"),
-                model1.createLiteral("literal"));
+        model1.add(model1.createResource(server1Url + "/entity_1.rdf"),
+                model1.createProperty(server2Url + "/property_1.rdf"), model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(server1Url + "/entity_1.rdf"), model2.createProperty(server2Url + "/property_1.rdf"),
+        model2.add(model2.createResource(server1Url + "/entity_1.rdf"),
+                model2.createProperty(server2Url + "/property_1.rdf"),
                 model2.createResource(server3Url + "/entity_2.rdf"));
         model3 = ModelFactory.createDefaultModel();
-        model3.add(model3.createResource(server1Url + "/entity_2.rdf"), model3.createProperty(server2Url + "/property_1.rdf"),
-                model3.createLiteral("literal2"));
+        model3.add(model3.createResource(server1Url + "/entity_2.rdf"),
+                model3.createProperty(server2Url + "/property_1.rdf"), model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
-                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/entity_1.rdf"), UriType.DEREFERENCEABLE) },
+                new CrawleableUri[] {
+                        uriFactory.create(new URI(server1Url + "/entity_1.rdf"), UriType.DEREFERENCEABLE) },
                 new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1.rdf", Lang.N3),
                         new StringResource(model2, server2Url + "/property_1.rdf", Lang.N3),
                         new StringResource(model3, server3Url + "/entity_2.rdf", Lang.N3) } });

@@ -13,6 +13,13 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     protected ObjectLongOpenHashMap<CrawleableUri> uris = new ObjectLongOpenHashMap<>();
     protected long timeBeforeRecrawling;
 
+    /**
+     * Constructor.
+     * 
+     * @param timeBeforeRecrawling
+     *            time in milliseconds before a URI is crawled again. A negative
+     *            values turns disables recrawling.
+     */
     public InMemoryKnownUriFilter(long timeBeforeRecrawling) {
         this.timeBeforeRecrawling = timeBeforeRecrawling;
     }
@@ -35,6 +42,10 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         if (uris.containsKey(uri)) {
+            // if recrawling is disabled
+            if (timeBeforeRecrawling < 0) {
+                return false;
+            }
             long nextCrawlingAt = uris.get(uri) + timeBeforeRecrawling;
             return nextCrawlingAt < System.currentTimeMillis();
         } else {

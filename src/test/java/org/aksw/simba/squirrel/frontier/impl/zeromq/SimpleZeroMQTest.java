@@ -40,7 +40,7 @@ public class SimpleZeroMQTest {
                 InetAddress.getByAddress(new byte[] { 127, 0, 0, 3 })));
         queue.addUri(new CrawleableUri(new URI("http://localhost/test3_X"),
                 InetAddress.getByAddress(new byte[] { 127, 0, 0, 3 })));
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), queue);
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(-1), queue);
         ZeroMQBasedFrontier frontierWrapper = ZeroMQBasedFrontier.create(frontier, FRONTIER_ADDRESS);
         Worker worker = new TestWorker(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, 0), null,
                 new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 2000);

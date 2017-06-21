@@ -6,9 +6,8 @@ import java.util.Set;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.AbstractSinkDecorator;
 import org.aksw.simba.squirrel.sink.Sink;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
 public class SimpleUriCollector extends AbstractSinkDecorator implements UriCollector {
 

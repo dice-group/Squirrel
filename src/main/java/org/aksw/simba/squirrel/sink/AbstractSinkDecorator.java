@@ -1,8 +1,7 @@
 package org.aksw.simba.squirrel.sink;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.graph.Triple;
 
 public abstract class AbstractSinkDecorator implements SinkDecorator {
 

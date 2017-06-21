@@ -46,7 +46,6 @@ public class FrontierImpl implements Frontier {
      * SPARQL, DEREFERENCEABLE or UNKNOWN
      */
     protected UriProcessor uriProcessor;
-
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */

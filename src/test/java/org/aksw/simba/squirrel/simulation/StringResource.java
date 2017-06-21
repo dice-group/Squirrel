@@ -1,11 +1,9 @@
 package org.aksw.simba.squirrel.simulation;
 
 import java.io.OutputStream;
-import java.io.StringWriter;
 
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-
-import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * Simple string-based resource that offers the given RDF model as String with
