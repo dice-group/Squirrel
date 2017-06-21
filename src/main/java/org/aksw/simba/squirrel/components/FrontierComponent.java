@@ -1,9 +1,13 @@
 package org.aksw.simba.squirrel.components;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
@@ -16,6 +20,7 @@ import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
+import org.apache.commons.io.FileUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
@@ -28,6 +33,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
+    private static final String SEED_FILE_KEY = "SEED_FILE";
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     private static final String RDB_PORT_KEY = "RDB_PORT";
 
@@ -69,6 +75,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
                 .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+        if (env.containsKey(SEED_FILE_KEY)) {
+            processSeedFile(env.get(SEED_FILE_KEY));
+        }
         LOGGER.info("Frontier initialized.");
     }
 
@@ -109,6 +118,21 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }
+        }
+    }
+
+    protected void processSeedFile(String seedFile) {
+        try {
+            List<String> lines = FileUtils.readLines(new File(seedFile));
+            for (String line : lines) {
+                try {
+                    frontier.addNewUri(new CrawleableUri(new URI(line)));
+                } catch (Exception e) {
+                    LOGGER.error("Couldn't add \"" + line + "\" as URI. It will be ignored.", e);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }
     }
 }

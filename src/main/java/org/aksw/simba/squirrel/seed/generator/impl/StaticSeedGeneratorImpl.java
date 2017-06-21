@@ -1,10 +1,8 @@
 package org.aksw.simba.squirrel.seed.generator.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
