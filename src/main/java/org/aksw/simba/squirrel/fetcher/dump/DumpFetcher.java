@@ -96,7 +96,7 @@ public class DumpFetcher implements Fetcher {
         return tripleCount;
     }
 
-    private String downloadFile(CrawleableUri uri, String tempfolder) {
+    protected String downloadFile(CrawleableUri uri, String tempfolder) {
         // Download files to temp folder
         String tempfile = UriUtils.generateFileName(uri.toString(), false);
         File outputFile = new File(tempfolder, tempfile);
