@@ -1,16 +1,19 @@
 package org.aksw.simba.squirrel.components;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
@@ -38,7 +41,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private static final String RDB_PORT_KEY = "RDB_PORT";
 
     private IpAddressBasedQueue queue;
-    private RDBKnownUriFilter knownUriFilter;
+    private KnownUriFilter knownUriFilter;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
@@ -50,26 +53,31 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         super.init();
         rabbitHelper = new RabbitMQHelper();
         Map<String, String> env = System.getenv();
+
         String rdbHostName = null;
+        int rdbPort = -1;
         if (env.containsKey(RDB_HOST_NAME_KEY)) {
             rdbHostName = env.get(RDB_HOST_NAME_KEY);
+            if (env.containsKey(RDB_PORT_KEY)) {
+                rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
+            } else {
+                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_PORT_KEY);
+            }
         } else {
-            String msg = "Couldn't get " + RDB_HOST_NAME_KEY + " from the environment.";
-            throw new Exception(msg);
+            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
         }
-        int rdbPort;
-        if (env.containsKey(RDB_PORT_KEY)) {
-            rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
+
+        if ((rdbHostName != null) && (rdbPort > 0)) {
+            queue = new RDBQueue(rdbHostName, rdbPort);
+            ((RDBQueue) queue).open();
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+            ((RDBKnownUriFilter)knownUriFilter).open();
         } else {
-            String msg = "Couldn't get " + RDB_PORT_KEY + " from the environment.";
-            throw new Exception(msg);
+            queue = new InMemoryQueue();
+            knownUriFilter = new InMemoryKnownUriFilter(-1);
         }
 
         // Build frontier
-        RDBQueue queue = new RDBQueue(rdbHostName, rdbPort);
-        queue.open();
-        RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-        knownUriFilter.open();
         frontier = new FrontierImpl(knownUriFilter, queue);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
@@ -92,7 +100,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void close() throws IOException {
         receiver.closeWhenFinished();
         queue.close();
-        knownUriFilter.close();
+        if (knownUriFilter instanceof Closeable) {
+            ((Closeable) knownUriFilter).close();
+        }
         super.close();
     }
 
@@ -124,13 +134,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected void processSeedFile(String seedFile) {
         try {
             List<String> lines = FileUtils.readLines(new File(seedFile));
-            for (String line : lines) {
-                try {
-                    frontier.addNewUri(new CrawleableUri(new URI(line)));
-                } catch (Exception e) {
-                    LOGGER.error("Couldn't add \"" + line + "\" as URI. It will be ignored.", e);
-                }
-            }
+            frontier.addNewUris(UriUtils.createCrawleableUriList(lines.toArray(new String[lines.size()])));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }

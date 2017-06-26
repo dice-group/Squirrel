@@ -15,6 +15,10 @@ import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
+import org.apache.http.HttpHost;
+import org.apache.http.client.utils.URIUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -24,6 +28,8 @@ import org.aksw.simba.squirrel.uri.processing.UriProcessor;
  *
  */
 public class FrontierImpl implements Frontier {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FrontierImpl.class);
 
     /**
      * {@link KnownUriFilter} used to identify URIs that already have been
@@ -99,7 +105,18 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
-            queue.addUri(this.uriProcessor.recognizeUriType(uri));
+            // Make sure that the IP is known
+            if (uri.getIpAddress() == null) {
+                HttpHost host = URIUtils.extractHost(uri.getUri());
+                if (host != null) {
+                    uri.setIpAddress(host.getAddress());
+                }
+            }
+            if (uri.getIpAddress() != null) {
+                queue.addUri(this.uriProcessor.recognizeUriType(uri));
+            } else {
+                LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
+            }
         }
     }
 

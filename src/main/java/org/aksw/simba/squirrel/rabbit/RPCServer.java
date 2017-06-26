@@ -23,6 +23,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
     protected RPCServer(RabbitQueue queue, RespondingDataHandler handler, int maxParallelProcessedMsgs,
             Channel responseChannel) throws IOException {
         super(queue, handler, maxParallelProcessedMsgs);
+        this.responseChannel = responseChannel;
     }
 
     /**

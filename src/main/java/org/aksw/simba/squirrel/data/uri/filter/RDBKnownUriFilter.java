@@ -9,13 +9,14 @@ import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.net.InetAddress;
 import java.net.URI;
 
 /**
  * Created by ivan on 8/18/16.
  */
-public class RDBKnownUriFilter implements KnownUriFilter {
+public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
     private RDBConnector connector = null;
