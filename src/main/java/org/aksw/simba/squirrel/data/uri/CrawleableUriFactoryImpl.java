@@ -62,7 +62,11 @@ public class CrawleableUriFactoryImpl implements CrawleableUriFactory {
             InetAddress ip = InetAddress.getByName(uri.getHost());
             return filter(new CrawleableUri(uri, ip, type));
         } catch (UnknownHostException e) {
-            LOGGER.info("Couldn't get the IP address for \"" + uri + "\". Returning null.", e);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.info("Couldn't get the IP address for \"" + uri + "\". Returning null.", e);
+            } else {
+                LOGGER.info("Couldn't get the IP address for \"" + uri + "\". Returning null.");
+            }
         }
         return null;
     }

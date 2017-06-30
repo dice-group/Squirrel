@@ -35,6 +35,12 @@ public class SimpleUriCollector extends AbstractSinkDecorator implements UriColl
         super.addTriple(uri, triple);
     }
 
+    @Override
+    public void closeSinkForUri(CrawleableUri uri) {
+        reset();
+        super.closeSinkForUri(uri);
+    }
+
     protected void addUri(Node node) {
         if (node.isURI()) {
             uris.add(node.getURI());

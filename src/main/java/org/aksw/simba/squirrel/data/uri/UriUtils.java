@@ -1,6 +1,5 @@
 package org.aksw.simba.squirrel.data.uri;
 
-import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ public class UriUtils {
     public static List<CrawleableUri> createCrawleableUriList(String[] seedUris) {
         java.util.List<CrawleableUri> seed = getCrawleableUriList();
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
-        for(int i=0; i<seedUris.length; i++) {
+        for (int i = 0; i < seedUris.length; i++) {
             seed.add(crawleableUriFactoryImpl.create(seedUris[i]));
         }
 
@@ -24,7 +23,7 @@ public class UriUtils {
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         List<CrawleableUri> resultUris = getCrawleableUriList();
 
-        for(Object uriString : uris) {
+        for (Object uriString : uris) {
             URI uri = URI.create(uriString.toString());
             resultUris.add(crawleableUriFactoryImpl.create(uri, type));
         }
@@ -36,8 +35,12 @@ public class UriUtils {
     public static List<CrawleableUri> createCrawleableUriList(Set<String> seedUris) {
         java.util.List<CrawleableUri> seed = getCrawleableUriList();
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
-        for(String seedUri : seedUris) {
-            seed.add(crawleableUriFactoryImpl.create(seedUri));
+        CrawleableUri uri;
+        for (String seedUri : seedUris) {
+            uri = crawleableUriFactoryImpl.create(seedUri);
+            if (uri != null) {
+                seed.add(uri);
+            }
         }
 
         return seed;
@@ -64,8 +67,8 @@ public class UriUtils {
     }
 
     public static boolean isStringMatchRegexs(String string, String[] regexs) {
-        for(String regex : regexs) {
-            if(string.matches(regex)) {
+        for (String regex : regexs) {
+            if (string.matches(regex)) {
                 return true;
             }
         }
