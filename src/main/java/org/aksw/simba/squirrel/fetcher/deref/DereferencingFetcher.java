@@ -73,7 +73,6 @@ public class DereferencingFetcher implements Fetcher, Closeable {
         int count = 0;
         while (iterator.hasNext()) {
             statement = iterator.next();
-            System.out.println(statement.toString());
             sink.addTriple(uri, statement.asTriple());
             ++count;
         }

@@ -27,7 +27,6 @@ public class UriUtils {
             URI uri = URI.create(uriString.toString());
             resultUris.add(crawleableUriFactoryImpl.create(uri, type));
         }
-        System.out.println(resultUris);
 
         return resultUris;
     }
