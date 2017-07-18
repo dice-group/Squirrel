@@ -116,14 +116,6 @@
         </dependency>
         <!-- End JSON processing -->
 
-        <!-- Redis client -->
-        <dependency>
-            <groupId>biz.paluch.redis</groupId>
-            <artifactId>lettuce</artifactId>
-            <version>4.2.1.Final</version>
-        </dependency>
-        <!-- End Redis client -->
-
         <!-- RethinkDB client -->
         <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
         <dependency>
@@ -132,6 +124,13 @@
             <version>2.3.3</version>
         </dependency>
         <!-- End RethinkDB client -->
+        
+        <!-- HSQLDB (used inside of workers to store URIs)-->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
+        </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- JUnit -->
@@ -143,11 +142,6 @@
         </dependency>
         <!-- We use the simpleframework to use local HTTP servers for our 
             JUnit tests -->
-        <!-- <dependency> <groupId>org.simpleframework</groupId> <artifactId>simple-http</artifactId> 
-            <version>6.0.1</version> <scope>test</scope> </dependency> <dependency> <groupId>org.simpleframework</groupId> 
-            <artifactId>simple-transport</artifactId> <version>6.0.1</version> <scope>test</scope> 
-            </dependency> <dependency> <groupId>org.simpleframework</groupId> <artifactId>simple-common</artifactId> 
-            <version>6.0.1</version> <scope>test</scope> </dependency> -->
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>

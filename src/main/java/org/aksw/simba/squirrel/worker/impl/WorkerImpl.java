@@ -2,12 +2,14 @@ package org.aksw.simba.squirrel.worker.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
@@ -15,6 +17,7 @@ import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
+import org.aksw.simba.squirrel.sink.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
@@ -34,6 +37,7 @@ public class WorkerImpl implements Worker, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
     private static final long DEFAULT_WAITING_TIME = 10000;
+    private static final int MAX_URIS_PER_MESSAGE = 20;
 
     protected Frontier frontier;
     protected UriCollector sink;
@@ -47,7 +51,11 @@ public class WorkerImpl implements Worker, Closeable {
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
         this.frontier = frontier;
-        this.sink = new SimpleUriCollector(sink);
+        // this.sink = new SimpleUriCollector(sink);
+        this.sink = SqlBasedUriCollector.create(sink);
+        if (this.sink == null) {
+            throw new IllegalStateException("Couldn't create database for storing identified URIs.");
+        }
         this.manager = manager;
         this.waitingTime = waitingTime;
     }
@@ -94,36 +102,55 @@ public class WorkerImpl implements Worker, Closeable {
         frontier.crawlingDone(uris, newUris);
     }
 
-	@Override
-	public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
-		// check robots.txt
-		Integer count = 0;
-		if (manager.isUriCrawlable(uri.getUri())) {
-			sink.openSinkForUri(uri);
-			LOGGER.debug("I start crawling {} now...", uri);
-			if (uri.getType() == UriType.DUMP) {
-				LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
-				count = dumpFetcher.fetch(uri, this.sink);
-				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-			} else if (uri.getType() == UriType.SPARQL) {
-				LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
-				count = sparqlBasedFetcher.fetch(uri, this.sink);
-				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-			} else if (uri.getType() == UriType.DEREFERENCEABLE) {
-				LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
-				count = dereferencingFetcher.fetch(uri, this.sink);
-				newUris.addAll(UriUtils.createCrawleableUriList(this.sink.getUris()));
-			} else if (uri.getType() == UriType.UNKNOWN) {
-				LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
-			} else {
-				LOGGER.error("Uri {} has no type. Skipping", uri);
-			}
-			sink.closeSinkForUri(uri);
-		} else {
-			LOGGER.debug("Crawling {} is not allowed by the RobotsManager.", uri);
-		}
-		LOGGER.debug("Fetched {} triples", count);
-	}
+    @Override
+    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+        // check robots.txt
+        Integer count = 0;
+        if (manager.isUriCrawlable(uri.getUri())) {
+            sink.openSinkForUri(uri);
+            LOGGER.debug("I start crawling {} now...", uri);
+            if (uri.getType() == UriType.DUMP) {
+                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
+                count = dumpFetcher.fetch(uri, this.sink);
+                sendNewUris(this.sink.getUris());
+            } else if (uri.getType() == UriType.SPARQL) {
+                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
+                count = sparqlBasedFetcher.fetch(uri, this.sink);
+                sendNewUris(this.sink.getUris());
+            } else if (uri.getType() == UriType.DEREFERENCEABLE) {
+                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
+                count = dereferencingFetcher.fetch(uri, this.sink);
+                sendNewUris(this.sink.getUris());
+            } else if (uri.getType() == UriType.UNKNOWN) {
+                LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
+            } else {
+                LOGGER.error("Uri {} has no type. Skipping", uri);
+            }
+            sink.closeSinkForUri(uri);
+        } else {
+            LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
+        }
+        LOGGER.debug("Fetched {} triples", count);
+    }
+
+    public void sendNewUris(Iterator<String> uriIterator) {
+        List<CrawleableUri> uris = new ArrayList<CrawleableUri>(20);
+        CrawleableUri uri;
+        while (uriIterator.hasNext()) {
+            try {
+                uri = new CrawleableUri(new URI(uriIterator.next()));
+                uriProcessor.recognizeUriType(uri);
+                uris.add(uri);
+                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    frontier.addNewUris(uris);
+                    uris.clear();
+                }
+            } catch (URISyntaxException e) {
+                LOGGER.warn("Got a malformed URI. It will be ignored.", e);
+            }
+        }
+        frontier.addNewUris(uris);
+    }
 
     @Override
     public void close() throws IOException {

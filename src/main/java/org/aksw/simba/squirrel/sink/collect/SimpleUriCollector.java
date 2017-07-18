@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.sink.collect;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -18,8 +19,8 @@ public class SimpleUriCollector extends AbstractSinkDecorator implements UriColl
     }
 
     @Override
-    public Set<String> getUris() {
-        return uris;
+    public Iterator<String> getUris() {
+        return uris.iterator();
     }
 
     @Override
