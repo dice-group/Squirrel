@@ -21,17 +21,21 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     protected RDBConnector connector;
     private RethinkDB r = RethinkDB.r;
 
+    public RDBQueue(String hostname, Integer port) {
+        connector = new RDBConnector(hostname, port);
+    }
+
     public void open() {
         this.connector.open();
-        try {
+        if(!squirrelDatabaseExists()) {
             r.dbCreate("squirrel").run(this.connector.connection);
-        } catch (Exception e) {
-            LOGGER.debug(e.toString());
         }
-        r.db("squirrel").tableCreate("queue").run(this.connector.connection);
-        r.db("squirrel").table("queue").indexCreate("ipAddressType",
+        if(!queueTableExists()) {
+            r.db("squirrel").tableCreate("queue").run(this.connector.connection);
+            r.db("squirrel").table("queue").indexCreate("ipAddressType",
                 row -> r.array(row.g("ipAddress"), row.g("type"))).run(this.connector.connection);
-        r.db("squirrel").table("queue").indexWait("ipAddressType").run(this.connector.connection);
+            r.db("squirrel").table("queue").indexWait("ipAddressType").run(this.connector.connection);
+        }
     }
 
     public void close() {
@@ -39,25 +43,75 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         this.connector.close();
     }
 
-    public RDBQueue(String hostname, Integer port) {
-        connector = new RDBConnector(hostname, port);
+    public boolean squirrelDatabaseExists() {
+        return getDatabaseList().contains("squirrel");
+    }
+
+    public boolean queueTableExists() {
+        return getTableList().contains("queue");
+    }
+
+    public List<String> getTableList() {
+        return r.db("squirrel")
+            .tableList()
+            .run(connector.connection);
+    }
+
+    public List<String> getDatabaseList() {
+        return r.dbList().run(connector.connection);
+    }
+
+    public void purgeQueue() {
+        r.db("squirrel")
+            .table("queue")
+            .delete()
+            .run(connector.connection);
+    }
+
+    public long length() {
+        return r.db("squirrel")
+            .table("queue")
+            .count()
+            .run(connector.connection);
     }
 
     @Override
     protected void addToQueue(CrawleableUri uri) {
-        List ipAddressTypeKey = convertCrawleableUriToIpAddressTypeKey(uri);
-        Boolean queueContainsKey = containsKey(ipAddressTypeKey);
+        List ipAddressTypeKey = getIpAddressTypeKey(uri);
         // if URI exists update the uris list
-        if(queueContainsKey) {
+        if(queueContainsIpAddressTypeKey(ipAddressTypeKey)) {
             LOGGER.debug("TypeKey is in the queue already");
-            insertExistingUriTypePair(ipAddressTypeKey, uri);
+            addCrawleableUri(uri, ipAddressTypeKey);
         } else {
             LOGGER.debug("TypeKey is not in the queue, creating a new one");
-            insertNewUriTypePair(uri);
+            addCrawleableUri(uri);
         }
     }
 
-    private void insertExistingUriTypePair(List ipAddressTypeKey, CrawleableUri uri) {
+    public boolean queueContainsIpAddressTypeKey(List ipAddressTypeKey) {
+        Cursor cursor = r.db("squirrel")
+            .table("queue")
+            .getAll(ipAddressTypeKey)
+            .optArg("index", "ipAddressType")
+            .run(connector.connection);
+        if(cursor.hasNext()) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+    }
+
+    public List<String> getIpAddressTypeKey(CrawleableUri uri) {
+        return packTuple(uri.getIpAddress().toString(), uri.getType().toString());
+    }
+
+    public List packTuple(String str_1, String str_2) {
+        return r.array(str_1, str_2);
+    }
+
+    public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey) {
         r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
@@ -67,15 +121,15 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         LOGGER.debug("Inserted existing UriTypePair");
     }
 
-    private void insertNewUriTypePair(CrawleableUri uri) {
+    public void addCrawleableUri(CrawleableUri uri) {
         r.db("squirrel")
                 .table("queue")
-                .insert(convertURItoRDBQueue(uri))
+                .insert(crawleableUriToRDBHashMap(uri))
                 .run(connector.connection);
         LOGGER.debug("Inserted new UriTypePair");
     }
 
-    private MapObject convertURItoRDBQueue(CrawleableUri uri) {
+    public MapObject crawleableUriToRDBHashMap(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
         URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
@@ -118,7 +172,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     protected List<CrawleableUri> getUris(IpUriTypePair pair) {
         List<CrawleableUri> uris = null;
 
-        List ipAddressTypeKey = convertIpAddressTypeToList(pair.ip.toString(), pair.type.toString());
+        List ipAddressTypeKey = packTuple(pair.ip.toString(), pair.type.toString());
         Cursor cursor = r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
@@ -144,26 +198,6 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return uris;
     }
 
-    private Boolean containsKey(List ipAddressTypeKey) {
-        Cursor cursor = r.db("squirrel")
-                .table("queue")
-                .getAll(ipAddressTypeKey)
-                .optArg("index", "ipAddressType")
-                .run(connector.connection);
-        if(cursor.hasNext()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
-        }
-    }
 
-    private List convertCrawleableUriToIpAddressTypeKey(CrawleableUri uri) {
-        return convertIpAddressTypeToList(uri.getIpAddress().toString(), uri.getType().toString());
-    }
 
-    private List convertIpAddressTypeToList(String ipAddress, String uri) {
-        return r.array(ipAddress, uri);
-    }
 }

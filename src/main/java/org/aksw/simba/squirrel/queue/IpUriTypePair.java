@@ -55,4 +55,12 @@ public class IpUriTypePair implements Comparable<IpUriTypePair> {
             return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "IpUriTypePair{" +
+            "ip=" + ip +
+            ", type=" + type +
+            '}';
+    }
 }
