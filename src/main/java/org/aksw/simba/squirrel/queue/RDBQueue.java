@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.*;
 
+@SuppressWarnings("rawtypes")
 public class RDBQueue extends AbstractIpAddressBasedQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBQueue.class);
 
@@ -80,7 +81,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
         return r.hashMap("uris", r.array(uriPath.toString()))
-                .with("ipAddress", ipAddress.toString())
+                .with("ipAddress", ipAddress.getHostAddress())
                 .with("type", uriType.toString());
     }
 
@@ -118,7 +119,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     protected List<CrawleableUri> getUris(IpUriTypePair pair) {
         List<CrawleableUri> uris = null;
 
-        List ipAddressTypeKey = convertIpAddressTypeToList(pair.ip.toString(), pair.type.toString());
+        List ipAddressTypeKey = convertIpAddressTypeToList(pair.ip.getHostAddress(), pair.type.toString());
         Cursor cursor = r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
@@ -160,7 +161,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     private List convertCrawleableUriToIpAddressTypeKey(CrawleableUri uri) {
-        return convertIpAddressTypeToList(uri.getIpAddress().toString(), uri.getType().toString());
+        return convertIpAddressTypeToList(uri.getIpAddress().getHostAddress(), uri.getType().toString());
     }
 
     private List convertIpAddressTypeToList(String ipAddress, String uri) {
