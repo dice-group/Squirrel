@@ -45,22 +45,13 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     public boolean squirrelDatabaseExists() {
-        return getDatabaseList().contains("squirrel");
+        return this.connector.squirrelDatabaseExists();
     }
 
     public boolean queueTableExists() {
-        return getTableList().contains("queue");
+        return this.connector.tableExists("squirrel", "queue");
     }
 
-    public List<String> getTableList() {
-        return r.db("squirrel")
-            .tableList()
-            .run(connector.connection);
-    }
-
-    public List<String> getDatabaseList() {
-        return r.dbList().run(connector.connection);
-    }
 
     public void purgeQueue() {
         r.db("squirrel")

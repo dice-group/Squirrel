@@ -3,6 +3,8 @@ package org.aksw.simba.squirrel.model;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.net.Connection;
 
+import java.util.List;
+
 /**
  * Created by ivan on 8/30/16.
  */
@@ -23,6 +25,22 @@ public class RDBConnector {
 
     public void close() {
         connection.close();
+    }
+
+    public boolean databaseExists(String database) {
+        List<String> databaseList = r.dbList().run(connection);
+        return databaseList.contains(database);
+    }
+
+    public boolean squirrelDatabaseExists() {
+        return databaseExists("squirrel");
+    }
+
+    public boolean tableExists(String database, String table) {
+        List<String> tableList = r.db(database)
+            .tableList()
+            .run(connection);
+        return tableList.contains(table);
     }
 
 }

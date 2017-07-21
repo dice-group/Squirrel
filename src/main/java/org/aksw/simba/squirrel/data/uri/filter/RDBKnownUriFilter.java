@@ -27,6 +27,26 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         this.connector = new RDBConnector(hostname, port);
     }
 
+    public void open() {
+        this.connector.open();
+        if(!connector.squirrelDatabaseExists())
+            r.dbCreate("squirrel").run(this.connector.connection);
+        if(!knownUriFilterTableExists()) {
+            r.db("squirrel").tableCreate("knownurifilter").run(this.connector.connection);
+            r.db("squirrel").table("knownurifilter").indexCreate("uri").run(this.connector.connection);
+            r.db("squirrel").table("knownurifilter").indexWait("uri").run(this.connector.connection);
+        }
+    }
+
+    public boolean knownUriFilterTableExists() {
+        return this.connector.tableExists("squirrel", "knownurifilter");
+    }
+
+    public void close() {
+        r.db("squirrel").tableDrop("knownurifilter").run(this.connector.connection);
+        this.connector.close();
+    }
+
     @Override
     public void add(CrawleableUri uri) {
         add(uri, System.currentTimeMillis());
@@ -78,22 +98,5 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             cursor.close();
             return true;
         }
-    }
-
-    public void open() {
-        this.connector.open();
-        try {
-            r.dbCreate("squirrel").run(this.connector.connection);
-        } catch (Exception e) {
-            LOGGER.debug(e.toString());
-        }
-        r.db("squirrel").tableCreate("knownurifilter").run(this.connector.connection);
-        r.db("squirrel").table("knownurifilter").indexCreate("uri").run(this.connector.connection);
-        r.db("squirrel").table("knownurifilter").indexWait("uri").run(this.connector.connection);
-    }
-
-    public void close() {
-        r.db("squirrel").tableDrop("knownurifilter").run(this.connector.connection);
-        this.connector.close();
     }
 }

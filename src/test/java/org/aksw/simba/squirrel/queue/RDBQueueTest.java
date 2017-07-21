@@ -27,8 +27,8 @@ public class RDBQueueTest {
     public void setUp() throws Exception {
         // to start up the server run
         // docker run -p 8080:8080 -p 29015:29015 -p 28015:28015 --name rethinkdb -v "$PWD:/data" -it --rm rethinkdb:2.3.5
-        // rdbQueue = new RDBQueue("localhost", 28015);
-        rdbQueue = new RDBQueue("192.168.99.100", 28015);
+        rdbQueue = new RDBQueue("localhost", 28015);
+        //rdbQueue = new RDBQueue("192.168.99.100", 28015);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -48,6 +48,14 @@ public class RDBQueueTest {
         assertTrue("squirrel database was createad", dbList.contains("squirrel"));
         List<String> tableList = rdbQueue.getTableList();
         assertTrue("queue table was created", tableList.contains("queue"));
+        rdbQueue.close();
+    }
+
+    @Test
+    public void openOpen() throws Exception {
+        rdbQueue.open();
+        rdbQueue.open();
+        rdbQueue.open();
         rdbQueue.close();
     }
 
