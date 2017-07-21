@@ -44,16 +44,13 @@ public class RDBQueueTest {
     @Test
     public void openClose() throws Exception {
         rdbQueue.open();
-        List<String> dbList = rdbQueue.getDatabaseList();
-        assertTrue("squirrel database was createad", dbList.contains("squirrel"));
-        List<String> tableList = rdbQueue.getTableList();
-        assertTrue("queue table was created", tableList.contains("queue"));
+        assertTrue("squirrel database was created", rdbQueue.squirrelDatabaseExists());
+        assertTrue("queue table was created", rdbQueue.queueTableExists());
         rdbQueue.close();
     }
 
     @Test
     public void openOpen() throws Exception {
-        rdbQueue.open();
         rdbQueue.open();
         rdbQueue.open();
         rdbQueue.close();
