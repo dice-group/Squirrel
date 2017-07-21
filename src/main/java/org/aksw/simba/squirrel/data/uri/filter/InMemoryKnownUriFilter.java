@@ -15,7 +15,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     /**
      * Constructor.
-     * 
+     *
      * @param timeBeforeRecrawling
      *            time in milliseconds before a URI is crawled again. A negative
      *            values turns disables recrawling.
@@ -52,4 +52,10 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
             return true;
         }
     }
+
+    @Override
+    public void open() {}
+
+    @Override
+    public void close() {}
 }

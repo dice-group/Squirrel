@@ -53,7 +53,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
 
-    public void purgeQueue() {
+    public void purge() {
         r.db("squirrel")
             .table("queue")
             .delete()

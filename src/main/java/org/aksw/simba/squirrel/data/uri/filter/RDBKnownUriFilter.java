@@ -99,4 +99,8 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             return true;
         }
     }
+
+    public void purge() {
+        r.db("squirrel").table("knownurifilter").delete().run(connector.connection);
+    }
 }

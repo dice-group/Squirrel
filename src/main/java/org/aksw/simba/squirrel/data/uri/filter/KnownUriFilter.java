@@ -24,4 +24,14 @@ public interface KnownUriFilter extends UriFilter {
      * @param timestamp the time at which the given URI has eben crawled.
      */
     public void add(CrawleableUri uri, long timestamp);
+
+    /**
+     * Close RDB connection, destroy the database.
+     */
+    public void close();
+
+    /**
+     * Open RDB connection, init the database.
+     */
+    public void open();
 }

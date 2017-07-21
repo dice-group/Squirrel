@@ -10,12 +10,13 @@ import java.util.concurrent.Semaphore;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This abstract class manages two important aspects of an IpAddressBasedQueue.
  * It uses a mutex to access the queue and it manages a set containing IPs that
  * are currently blocked by one of the workers.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */

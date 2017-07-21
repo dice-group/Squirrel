@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Uri Processor implementation.
- * 
+ *
  * @author Ivan Ermilov (iermilov@informatik.uni-leipzig.de)
  *
  */
@@ -70,7 +70,6 @@ public class UriProcessor implements UriProcessorInterface {
             ipAddress = InetAddress.getLocalHost();
             return new CrawleableUri(newUri, ipAddress, UriType.UNKNOWN);
         }
-
     }
 
 }

@@ -88,13 +88,13 @@ public class RDBQueueTest {
     @Test
     public void purgeQueue() throws Exception {
         rdbQueue.open();
-        rdbQueue.purgeQueue();
+        rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
         }
         assertEquals(3, rdbQueue.length());
-        rdbQueue.purgeQueue();
+        rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
         rdbQueue.close();
     }
@@ -102,7 +102,7 @@ public class RDBQueueTest {
     @Test
     public void addCrawleableUri() throws Exception {
         rdbQueue.open();
-        rdbQueue.purgeQueue();
+        rdbQueue.purge();
         rdbQueue.addCrawleableUri(uris.get(1));
         assertEquals(1, rdbQueue.length());
         List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(2));

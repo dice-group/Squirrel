@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Standard implementation of the {@link Frontier} interface containing a
  * {@link #queue} and a {@link #knownUriFilter}.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -59,7 +60,7 @@ public class FrontierImpl implements Frontier {
 
     /**
      * Constructor.
-     * 
+     *
      * @param knownUriFilter
      *            {@link UriFilter} used to identify URIs that already have been
      *            crawled.
@@ -73,7 +74,7 @@ public class FrontierImpl implements Frontier {
 
     /**
      * Constructor.
-     * 
+     *
      * @param knownUriFilter
      *            {@link UriFilter} used to identify URIs that already have been
      *            crawled.
@@ -86,6 +87,9 @@ public class FrontierImpl implements Frontier {
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
+
+        this.queue.open();
+        this.knownUriFilter.open();
     }
 
     @Override
@@ -106,11 +110,10 @@ public class FrontierImpl implements Frontier {
         // UriProcessor
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
-            if (uri.getIpAddress() == null) {
-                HttpHost host = URIUtils.extractHost(uri.getUri());
-                if (host != null) {
-                    uri.setIpAddress(host.getAddress());
-                }
+            try {
+                uri = this.uriProcessor.recognizeInetAddress(uri);
+            } catch (UnknownHostException e) {
+                LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
             }
             if (uri.getIpAddress() != null) {
                 queue.addUri(this.uriProcessor.recognizeUriType(uri));
