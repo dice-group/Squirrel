@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  debugger:
-    image: sjourdan/toolbox
-    container_name: debugger
-    networks:
-      - squirrel
-    dns: 8.8.8.8
-    command: nc -l 50070
+  #debugger:
+  #  image: sjourdan/toolbox
+  #  container_name: debugger
+  #  networks:
+  #    - squirrel
+  #  dns: 8.8.8.8
+  #  command: nc -l 50070
 
   frontier:
     image: squirrel
