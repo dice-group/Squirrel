@@ -1,15 +1,22 @@
-version: '2'
+version: '3'
 
 services:
+  debugger:
+    image: sjourdan/toolbox
+    container_name: debugger
+    networks:
+      - squirrel
+    dns: 8.8.8.8
+    command: nc -l 50070
+
   frontier:
     image: squirrel
-#    build: .
-    hostname: frontier
+    container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - SEED_FILE=/var/squirrel/data/seeds.txt
-#      - RDB_HOST_NAME=rethinkdb
-#      - RDB_PORT=28015
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
     networks:
       - squirrel
     volumes:
@@ -20,23 +27,18 @@ services:
     image: rethinkdb
     networks:
       - squirrel
-    hostname: rethinkdb
 
   # message bus
   rabbit:
     image: rabbitmq:management
     container_name: rabbit
+    hostname: rabbit
     networks:
       - squirrel
-    ports:
-      - "8081:15672"
-      # Forwarding the port for testing
-      - "5672:5672"
 
   worker1:
     image: squirrel
-#    build: .
-    hostname: worker1
+    container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
@@ -48,8 +50,7 @@ services:
 
   worker2:
     image: squirrel
-#    build: .
-    hostname: worker2
+    container_name: worker2
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
@@ -61,8 +62,7 @@ services:
 
   worker3:
     image: squirrel
-#    build: .
-    hostname: worker3
+    container_name: worker3
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
@@ -72,44 +72,7 @@ services:
         - ./data/worker3:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
-#  worker4:
-#    build: .
-#    hostname: worker4
-#    networks:
-#      - squirrel
-#    volumes:
-#        - ./data/worker4:/shared
-#    command: start-worker.sh 4 tcp://frontier:60000 /shared
-
-#  worker5:
-#    build: .
-#    hostname: worker5
-#    networks:
-#      - squirrel
-#    volumes:
-#        - ./data/worker5:/shared
-#    command: start-worker.sh 5 tcp://frontier:60000 /shared
-
-#  seedgenerator:
-#    build: .
-#    hostname: seedgenerator
-#    networks:
-#      - squirrel
-#    volumes:
-#        - ./data/seedgenerator:/shared
-#    links:
-#        - frontier
-#    command: start-seed-generator.sh tcp://frontier:60000
-
-#  seedgeneratorlodstats:
-#    build: .
-#    hostname: seedgeneratorlodstats
-#    networks:
-#      - squirrel
-#    links:
-#        - frontier
-#    command: start-seed-generator-lodstats.sh tcp://frontier:60000
-
 networks:
   squirrel:
-
+    external:
+      name: squirrel

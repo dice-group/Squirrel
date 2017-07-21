@@ -5,3 +5,6 @@ build:
 	
 dockerize:
 	docker build -t squirrel .
+
+clean:
+	rm -rf data/worker*

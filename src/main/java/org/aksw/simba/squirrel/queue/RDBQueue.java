@@ -168,3 +168,4 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return r.array(ipAddress, uri);
     }
 }
+
