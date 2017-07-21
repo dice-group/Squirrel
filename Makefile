@@ -3,7 +3,7 @@ default: build
 build:
 	mvn clean package shade:shade -U -DskipTests -Dmaven.javadoc.skip=true
 	
-dockerize:
+dockerize: build
 	docker build -t squirrel .
 
 clean:
