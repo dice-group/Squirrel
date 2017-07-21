@@ -1,6 +1,6 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
-import java.net.InetAddress;
+import java.net.*;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Standard implementation of the {@link Frontier} interface containing a
  * {@link #queue} and a {@link #knownUriFilter}.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -59,7 +59,7 @@ public class FrontierImpl implements Frontier {
 
     /**
      * Constructor.
-     * 
+     *
      * @param knownUriFilter
      *            {@link UriFilter} used to identify URIs that already have been
      *            crawled.
@@ -73,7 +73,7 @@ public class FrontierImpl implements Frontier {
 
     /**
      * Constructor.
-     * 
+     *
      * @param knownUriFilter
      *            {@link UriFilter} used to identify URIs that already have been
      *            crawled.
@@ -107,9 +107,16 @@ public class FrontierImpl implements Frontier {
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
             if (uri.getIpAddress() == null) {
-                HttpHost host = URIUtils.extractHost(uri.getUri());
-                if (host != null) {
-                    uri.setIpAddress(host.getAddress());
+                InetAddress ipAddress;
+                try {
+                    ipAddress = InetAddress.getByName(new URL(uri.getUri().toString()).getHost());
+                    if (ipAddress != null) {
+                        uri.setIpAddress(ipAddress);
+                    }
+                } catch (MalformedURLException e) {
+                    LOGGER.error("Malformed URI {}", uri.getUri());
+                } catch (UnknownHostException e) {
+                    LOGGER.error("Unknown Host {}", uri.getUri());
                 }
             }
             if (uri.getIpAddress() != null) {

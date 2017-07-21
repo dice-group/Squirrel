@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Uri Processor implementation.
- * 
+ *
  * @author Ivan Ermilov (iermilov@informatik.uni-leipzig.de)
  *
  */
@@ -31,13 +31,13 @@ public class UriProcessor implements UriProcessorInterface {
         String[] dereferenceableRegexs = { ".*htm.*", ".*page.*", ".*resource.*" };
 
         try {
-            if ((uriPath != null) && (this.isStringMatchRegexs(uriPath, rdfDumpRegexs))) {
+            if ((uriPath != null) && (isStringMatchRegexs(uriPath, rdfDumpRegexs))) {
                 LOGGER.debug("uriPath is DUMP");
                 uri.setType(UriType.DUMP);
-            } else if ((uriPath != null) && (this.isStringMatchRegexs(uriPath, sparqlRegexs))) {
+            } else if ((uriPath != null) && (isStringMatchRegexs(uriPath, sparqlRegexs))) {
                 LOGGER.debug("uriPath is SPARQL");
                 uri.setType(UriType.SPARQL);
-            } else if ((uriPath != null) && (this.isStringMatchRegexs(uriPath, dereferenceableRegexs))) {
+            } else if ((uriPath != null) && (isStringMatchRegexs(uriPath, dereferenceableRegexs))) {
                 LOGGER.debug("uriPath is DEREFERENCEABLE");
                 uri.setType(UriType.DEREFERENCEABLE);
             } else {
@@ -45,7 +45,7 @@ public class UriProcessor implements UriProcessorInterface {
                 uri.setType(UriType.DEREFERENCEABLE);
             }
         } catch (Exception e) {
-            LOGGER.debug("Uri {} could not be parsed. Skipping...", uri);
+            LOGGER.error("Uri {} could not be parsed. Skipping...", uri);
             e.printStackTrace();
         }
         LOGGER.debug("uri now is {}", uri.toString());
