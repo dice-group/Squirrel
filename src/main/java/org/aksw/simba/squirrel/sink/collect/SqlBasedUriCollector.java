@@ -38,7 +38,11 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
         try {
             Connection dbConnection = DriverManager.getConnection("jdbc:hsqldb:foundUris", "SA", "");
             s = dbConnection.createStatement();
-            s.executeUpdate(DROP_TABLE_QUERY);
+            try {
+                s.executeUpdate(DROP_TABLE_QUERY);
+            } catch (Exception e) {
+                LOGGER.info("Couldn't drop table \"uris\". Maybe it is not existing.");
+            }
             s.executeUpdate(CREATE_TABLE_QUERY);
             PreparedStatement insertStmt = dbConnection.prepareStatement("INSERT INTO uris VALUES(?)");
             collector = new SqlBasedUriCollector(dbConnection, insertStmt, decorated);
