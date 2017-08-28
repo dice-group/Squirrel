@@ -1,0 +1,1 @@
+http://NodeA/resources/resource1

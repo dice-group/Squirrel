@@ -7,3 +7,4 @@ target
 .idea
 squirrel.iml
 data/
+scenarios/1/worker*

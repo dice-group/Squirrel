@@ -1,0 +1,20 @@
+<http://NodeA/resources/resource1> <http://NodeA/properties/property1> <http://NodeA/resources/resource2> .
+<http://NodeA/resources/resource1> <http://NodeA/properties/property1> <http://NodeA/resources/resource3> .
+<http://NodeA/resources/resource1> <http://NodeA/properties/property2> <http://NodeA/resources/resource3> .
+<http://NodeA/resources/resource1> <http://NodeA/properties/property3> <http://NodeB/resources/resource1> .
+<http://NodeA/resources/resource1> <http://NodeA/properties/property3> <http://NodeB/resources/resource2> .
+<http://NodeA/resources/resource1> <http://NodeA/properties/property3> <http://NodeB/resources/resource3> .
+
+<http://NodeA/resources/resource2> <http://NodeA/properties/property1> <http://NodeA/resources/resource1> .
+<http://NodeA/resources/resource2> <http://NodeA/properties/property1> <http://NodeA/resources/resource3> .
+<http://NodeA/resources/resource2> <http://NodeA/properties/property2> <http://NodeA/resources/resource3> .
+<http://NodeA/resources/resource2> <http://NodeA/properties/property3> <http://NodeC/resources/resource1> .
+<http://NodeA/resources/resource2> <http://NodeA/properties/property3> <http://NodeC/resources/resource2> .
+<http://NodeA/resources/resource2> <http://NodeA/properties/property3> <http://NodeC/resources/resource3> .
+
+<http://NodeA/resources/resource3> <http://NodeA/properties/property1> <http://NodeA/resources/resource1> .
+<http://NodeA/resources/resource3> <http://NodeA/properties/property1> <http://NodeA/resources/resource2> .
+
+<http://NodeA/properties/property1> <http://NodeA/properties/property4> <http://NodeA/properties/property2> .
+<http://NodeA/properties/property1> <http://NodeA/properties/property4> <http://NodeA/properties/property3> .
+<http://NodeA/properties/property2> <http://NodeA/properties/property4> <http://NodeA/properties/property3> .
