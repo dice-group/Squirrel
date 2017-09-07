@@ -62,7 +62,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                2000);
+                2000, outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 

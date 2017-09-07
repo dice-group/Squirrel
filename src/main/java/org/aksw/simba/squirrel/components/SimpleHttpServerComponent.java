@@ -19,7 +19,6 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
-import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.components.Component;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;

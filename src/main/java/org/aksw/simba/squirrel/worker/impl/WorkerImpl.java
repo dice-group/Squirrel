@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.worker.impl;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,6 +16,7 @@ import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.log.DomainLogger;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.collect.SqlBasedUriCollector;
@@ -46,10 +48,15 @@ public class WorkerImpl implements Worker, Closeable {
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
     protected DumpFetcher dumpFetcher = new DumpFetcher();
     protected UriProcessorInterface uriProcessor = new UriProcessor();
+    protected String domainLogFile = null;
     protected long waitingTime = DEFAULT_WAITING_TIME;
     protected boolean terminateFlag;
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
+        this(frontier, sink, manager, waitingTime, null);
+    }
+    
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime, String logDir) {
         this.frontier = frontier;
         // this.sink = new SimpleUriCollector(sink);
         this.sink = SqlBasedUriCollector.create(sink);
@@ -58,6 +65,9 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.manager = manager;
         this.waitingTime = waitingTime;
+        if(logDir != null) {
+            domainLogFile = logDir + File.separator + "domain.log";
+        }
     }
 
     @Override
@@ -127,7 +137,12 @@ public class WorkerImpl implements Worker, Closeable {
                 // open the sink only if a fetcher has been found
                 sink.openSinkForUri(uri);
                 count = fetcher.fetch(uri, this.sink);
-                sendNewUris(this.sink.getUris());
+                Iterator<String> iterator = this.sink.getUris();
+                iterator = DomainLogger.createIfPossible(uri, domainLogFile, iterator);
+                sendNewUris(iterator);
+                if (iterator instanceof Closeable) {
+                    IOUtils.closeQuietly((Closeable) iterator);
+                }
                 sink.closeSinkForUri(uri);
             }
         } else {
