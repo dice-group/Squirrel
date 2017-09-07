@@ -41,15 +41,17 @@ public class FileBasedSinkTest {
     private static final long WAITING_TIME_BETWEEN_TRIPLES = 100;
 
     private final ExecutorService EXECUTION_SERVICE = Executors.newCachedThreadPool();
-    
+
     protected File tempDirectory = null;
     private Model[] models;
     private URI[] modelUris;
 
     @Before
     public void findTempDir() throws IOException, URISyntaxException {
-        File tempFile = File.createTempFile("FileBasedSinkTest", ".tmp");
-        tempDirectory = tempFile.getAbsoluteFile().getParentFile();
+        tempDirectory = File.createTempFile("FileBasedSinkTest", ".tmp");
+        Assert.assertTrue(tempDirectory.delete());
+        Assert.assertTrue(tempDirectory.mkdir());
+        tempDirectory.deleteOnExit();
 
         List<Model> crawledModels = new ArrayList<Model>();
         List<URI> crawledUris = new ArrayList<URI>();
@@ -158,8 +160,14 @@ public class FileBasedSinkTest {
     private void checkModel(Model model, URI uri, boolean useCompression) {
         String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
-        Assert.assertTrue("Couldn't find the file " + file.getAbsolutePath() + " for model " + uri.toString(),
-                file.exists());
+        if (model.size() == 0) {
+            Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
+                    + " was empty (and shouldn't create a file).", file.exists());
+            return;
+        } else {
+            Assert.assertTrue("Couldn't find the file " + file.getAbsolutePath() + " for model " + uri.toString(),
+                    file.exists());
+        }
 
         Model readModel = null;
         Dataset readData = DatasetFactory.createMem();

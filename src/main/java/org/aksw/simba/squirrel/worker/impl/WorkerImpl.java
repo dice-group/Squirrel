@@ -10,13 +10,13 @@ import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.sink.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -107,26 +107,29 @@ public class WorkerImpl implements Worker, Closeable {
         // check robots.txt
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
-            sink.openSinkForUri(uri);
             LOGGER.debug("I start crawling {} now...", uri);
+            Fetcher fetcher = null;
             if (uri.getType() == UriType.DUMP) {
                 LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
-                count = dumpFetcher.fetch(uri, this.sink);
-                sendNewUris(this.sink.getUris());
+                fetcher = dumpFetcher;
             } else if (uri.getType() == UriType.SPARQL) {
                 LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
-                count = sparqlBasedFetcher.fetch(uri, this.sink);
-                sendNewUris(this.sink.getUris());
+                fetcher = sparqlBasedFetcher;
             } else if (uri.getType() == UriType.DEREFERENCEABLE) {
                 LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
-                count = dereferencingFetcher.fetch(uri, this.sink);
-                sendNewUris(this.sink.getUris());
+                fetcher = dereferencingFetcher;
             } else if (uri.getType() == UriType.UNKNOWN) {
                 LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
             } else {
                 LOGGER.error("Uri {} has no type. Skipping", uri);
             }
-            sink.closeSinkForUri(uri);
+            if (fetcher != null) {
+                // open the sink only if a fetcher has been found
+                sink.openSinkForUri(uri);
+                count = fetcher.fetch(uri, this.sink);
+                sendNewUris(this.sink.getUris());
+                sink.closeSinkForUri(uri);
+            }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
