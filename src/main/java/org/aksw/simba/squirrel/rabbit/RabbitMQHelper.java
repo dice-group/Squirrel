@@ -63,7 +63,7 @@ public class RabbitMQHelper {
      * @return the deserialized object or null if the given byte array is empty
      */
     public Object parseObject(byte[] data) {
-        if (data.length == 0) {
+        if ((data == null) || (data.length == 0)) {
             return null;
         }
         ByteBuffer buffer = ByteBuffer.wrap(data);
