@@ -144,8 +144,11 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
         public boolean hasNext() {
             try {
                 synchronized (rs) {
-                    consumed = false;
-                    return moveForward();
+                    if (consumed) {
+                        return moveForward_unsecured();
+                    } else {
+                        return true;
+                    }
                 }
             } catch (SQLException e) {
                 LOGGER.error("Exception while iterating over the results. Returning false.", e);
@@ -158,8 +161,8 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
             try {
                 synchronized (rs) {
                     if (consumed) {
-                        if (!moveForward()) {
-                            LOGGER.error("No result left. Returning null.");
+                        if (!moveForward_unsecured()) {
+                            LOGGER.warn("\"next()\" was called while no result was left. Returning null.");
                             return null;
                         }
                     }
@@ -172,9 +175,14 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
             }
         }
 
-        private boolean moveForward() throws SQLException {
+        private boolean moveForward_unsecured() throws SQLException {
+            if (rs.isClosed()) {
+                return false;
+            }
             boolean hasNext = rs.next();
-            if (!hasNext) {
+            if (hasNext) {
+                consumed = false;
+            } else {
                 // close the result set
                 rs.close();
                 s.close();
