@@ -54,16 +54,16 @@ public class DumpFetcher implements Fetcher {
         }
 
         Lang hint;
-        if (this.detectSerialization(uri.toString(), "rdf").equals("rdf")) {
+        if (matchesSerialization(uri.toString(), "rdf")) {
             LOGGER.debug("Detected rdf/xml serialization.");
             hint = Lang.RDFXML;
-        } else if (this.detectSerialization(uri.toString(), "ttl").equals("ttl")) {
+        } else if (matchesSerialization(uri.toString(), "ttl")) {
             LOGGER.debug("Detected ttl serialization.");
             hint = Lang.TURTLE;
-        } else if (this.detectSerialization(uri.toString(), "nt").equals("nt")) {
+        } else if (matchesSerialization(uri.toString(), "nt")) {
             LOGGER.debug("Detected nt serialization.");
             hint = Lang.NT;
-        } else if (this.detectSerialization(uri.toString(), "n3").equals("n3")) {
+        } else if (matchesSerialization(uri.toString(), "n3")) {
             hint = Lang.N3;
             LOGGER.debug("Detected n3 serialization.");
         } else {
@@ -143,12 +143,8 @@ public class DumpFetcher implements Fetcher {
         return fileType;
     }
 
-    private String detectSerialization(String uriString, String serialization) {
+    private boolean matchesSerialization(String uriString, String serialization) {
         String[] regexs = { ".*\\." + serialization + ".*" };
-        if (UriUtils.isStringMatchRegexs(uriString, regexs)) {
-            return serialization;
-        } else {
-            return "";
-        }
+        return UriUtils.isStringMatchRegexs(uriString, regexs);
     }
 }

@@ -90,21 +90,21 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
          * like a normal fetcher.
          */
         model1 = ModelFactory.createDefaultModel();
-        model1.add(model1.createResource(server1Url + "/entity_1.rdf"),
-                model1.createProperty(server2Url + "/property_1.rdf"), model1.createLiteral("literal"));
+        model1.add(model1.createResource(server1Url + "/entity_1.n3"),
+                model1.createProperty(server2Url + "/property_1.n3"), model1.createLiteral("literal"));
         model2 = ModelFactory.createDefaultModel();
-        model2.add(model2.createResource(server1Url + "/entity_1.rdf"),
-                model2.createProperty(server2Url + "/property_1.rdf"),
-                model2.createResource(server3Url + "/entity_2.rdf"));
+        model2.add(model2.createResource(server1Url + "/entity_1.n3"),
+                model2.createProperty(server2Url + "/property_1.n3"),
+                model2.createResource(server3Url + "/entity_2.n3"));
         model3 = ModelFactory.createDefaultModel();
-        model3.add(model3.createResource(server1Url + "/entity_2.rdf"),
-                model3.createProperty(server2Url + "/property_1.rdf"), model3.createLiteral("literal2"));
+        model3.add(model3.createResource(server1Url + "/entity_2.n3"),
+                model3.createProperty(server2Url + "/property_1.n3"), model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
                 new CrawleableUri[] {
-                        uriFactory.create(new URI(server1Url + "/entity_1.rdf"), UriType.DEREFERENCEABLE) },
-                new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1.rdf", Lang.N3),
-                        new StringResource(model2, server2Url + "/property_1.rdf", Lang.N3),
-                        new StringResource(model3, server3Url + "/entity_2.rdf", Lang.N3) } });
+                        uriFactory.create(new URI(server1Url + "/entity_1.n3"), UriType.DUMP) },
+                new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1.n3", Lang.N3),
+                        new StringResource(model2, server2Url + "/property_1.n3", Lang.N3),
+                        new StringResource(model3, server3Url + "/entity_2.n3", Lang.N3) } });
         return scenarios;
     }
 

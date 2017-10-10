@@ -99,9 +99,9 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
     }
 
     @Override
-    public void closeSinkForUri(CrawleableUri uri) {
+    public void openSinkForUri(CrawleableUri uri) {
         reset();
-        super.closeSinkForUri(uri);
+        super.openSinkForUri(uri);
     }
 
     protected void addUri(Node node) {

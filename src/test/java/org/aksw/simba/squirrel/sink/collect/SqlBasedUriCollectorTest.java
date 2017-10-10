@@ -36,11 +36,13 @@ public class SqlBasedUriCollectorTest implements Sink {
 
         SqlBasedUriCollector collector = SqlBasedUriCollector.create(this);
         Assert.assertNotNull(collector);
-
+        
+        collector.openSinkForUri(uri);
         StmtIterator iterator = model.listStatements();
         while (iterator.hasNext()) {
             collector.addTriple(uri, iterator.next().asTriple());
         }
+        collector.closeSinkForUri(uri);
 
         String uris[] = IteratorUtils.toArray(collector.getUris(), String.class);
         Arrays.sort(uris);
@@ -48,7 +50,6 @@ public class SqlBasedUriCollectorTest implements Sink {
         Arrays.sort(eUris);
         Assert.assertArrayEquals(eUris, uris);
 
-        collector.closeSinkForUri(uri);
         // Repeat the test with different URIs to make sure that the clear
         // method is working as well
         model = ModelFactory.createDefaultModel();
@@ -62,11 +63,13 @@ public class SqlBasedUriCollectorTest implements Sink {
         expectedUris.add("http://example2.org/type0");
         expectedUris.add("http://example2.org/type1");
         uri = new CrawleableUri(new URI("http://example2.org/test"));
-        
+
+        collector.openSinkForUri(uri);
         iterator = model.listStatements();
         while (iterator.hasNext()) {
             collector.addTriple(uri, iterator.next().asTriple());
         }
+        collector.closeSinkForUri(uri);
 
         uris = IteratorUtils.toArray(collector.getUris(), String.class);
         Arrays.sort(uris);
