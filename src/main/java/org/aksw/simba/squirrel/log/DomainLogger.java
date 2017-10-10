@@ -19,7 +19,10 @@ public class DomainLogger implements Iterator<String>, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainLogger.class);
 
     public static Iterator<String> createIfPossible(CrawleableUri uri, String logFile, Iterator<String> iterator) {
-        DomainLogger logger = create(uri, logFile, iterator);
+        if(logFile == null) {
+        	return null;
+        }
+    	DomainLogger logger = create(uri, logFile, iterator);
         return logger == null ? iterator : logger;
     }
 
