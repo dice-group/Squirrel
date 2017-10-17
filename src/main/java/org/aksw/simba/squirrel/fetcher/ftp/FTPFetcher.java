@@ -14,6 +14,12 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * TODO Update this class by removing its dependency regarding the deprecated {@link DumpFetcher} class.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class FTPFetcher extends DumpFetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FTPFetcher.class);

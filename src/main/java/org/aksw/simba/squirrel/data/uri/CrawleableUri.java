@@ -45,7 +45,9 @@ public class CrawleableUri {
      * 
      * @param bytes
      * @return
+     * @deprecated Use the JSON deserialization instead.
      */
+    @Deprecated
     public static CrawleableUri fromByteArray(byte bytes[]) {
         if ((bytes == null) || (bytes.length < URI_START_INDEX)) {
             return null;
@@ -54,6 +56,12 @@ public class CrawleableUri {
         return fromByteBuffer(ByteBuffer.wrap(bytes));
     }
 
+    /**
+     * 
+     * @param buffer
+     * @return
+     * @deprecated Use the JSON deserialization instead.
+     */
     public static CrawleableUri fromByteBuffer(ByteBuffer buffer) {
         if ((buffer == null) || ((buffer.limit() - buffer.position()) < URI_START_INDEX)) {
             return null;
@@ -99,15 +107,16 @@ public class CrawleableUri {
     private final URI uri;
     private InetAddress ipAddress;
     @Deprecated
-    private UriType type;
+    private UriType type = UriType.UNKNOWN;
     private Map<String,Object> data = new HashMap<>();
 
     public CrawleableUri(URI uri) {
-        this(uri, null, UriType.UNKNOWN);
+        this(uri, null);
     }
 
     public CrawleableUri(URI uri, InetAddress ipAddress) {
-        this(uri, ipAddress, UriType.UNKNOWN);
+        this.uri = uri;
+        this.ipAddress = ipAddress;
     }
 
     @Deprecated
@@ -184,6 +193,11 @@ public class CrawleableUri {
         return true;
     }
 
+    /**
+     * 
+     * @return
+     * @deprecated Use the JSON serialization instead.
+     */
     public ByteBuffer toByteBuffer() {
         byte uriBytes[] = uri.toString().getBytes(ENCODING_CHARSET);
         int bytesLength = 6 + uriBytes.length;
@@ -205,6 +219,11 @@ public class CrawleableUri {
         return buffer;
     }
 
+    /**
+     * 
+     * @return
+     * @deprecated Use the JSON serialization instead.
+     */
     public byte[] toByteArray() {
         return toByteBuffer().array();
     }

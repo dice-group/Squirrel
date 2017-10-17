@@ -51,18 +51,6 @@ public class CrawleableUriSerializationTest {
     @Test
     public void test() throws URISyntaxException, UnknownHostException {
         CrawleableUri parsedUri;
-        byte bytes[];
-
-        bytes = uri.toByteArray();
-        parsedUri = CrawleableUri.fromByteArray(bytes);
-        Assert.assertEquals(uri.getIpAddress(), parsedUri.getIpAddress());
-        Assert.assertEquals(uri.getType(), parsedUri.getType());
-        Assert.assertEquals(uri.getUri(), parsedUri.getUri());
-    }
-
-    @Test
-    public void gsonTest() throws URISyntaxException, UnknownHostException {
-        CrawleableUri parsedUri;
         Gson gson = new Gson();
         
         String json = gson.toJson(uri);
