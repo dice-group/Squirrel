@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +98,9 @@ public class CrawleableUri {
 
     private final URI uri;
     private InetAddress ipAddress;
+    @Deprecated
     private UriType type;
+    private Map<String,Object> data = new HashMap<>();
 
     public CrawleableUri(URI uri) {
         this(uri, null, UriType.UNKNOWN);
@@ -106,6 +110,7 @@ public class CrawleableUri {
         this(uri, ipAddress, UriType.UNKNOWN);
     }
 
+    @Deprecated
     public CrawleableUri(URI uri, InetAddress ipAddress, UriType type) {
         this.uri = uri;
         this.ipAddress = ipAddress;
@@ -120,16 +125,38 @@ public class CrawleableUri {
         this.ipAddress = ipAddress;
     }
 
+    @Deprecated
     public UriType getType() {
         return type;
     }
 
+    @Deprecated
     public void setType(UriType type) {
         this.type = type;
     }
 
     public URI getUri() {
         return uri;
+    }
+    
+    public void addData(String key, Object data) {
+        this.data.put(key, data);
+    }
+    
+    public Object getData(String key) {
+        if(data.containsKey(key)) {
+            return data.get(key);
+        } else {
+            return null;
+        }
+    }
+    
+    public Map<String, Object> getData() {
+        return data;
+    }
+    
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 
     @Override
