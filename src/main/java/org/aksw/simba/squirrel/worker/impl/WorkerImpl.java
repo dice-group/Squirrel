@@ -9,11 +9,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.analyzer.impl.AnalyzerImpl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
+import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.log.DomainLogger;
@@ -46,6 +49,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected RobotsManager manager;
     protected DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
+    protected HTTPFetcher httpFetcher = new HTTPFetcher();
     protected DumpFetcher dumpFetcher = new DumpFetcher();
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected String domainLogFile = null;
@@ -133,17 +137,27 @@ public class WorkerImpl implements Worker, Closeable {
             } else {
                 LOGGER.error("Uri {} has no type. Skipping", uri);
             }
-            if (fetcher != null) {
-                // open the sink only if a fetcher has been found
+            
+            fetcher = httpFetcher;
+        	File data = fetcher.fetch(uri);
+            if (data != null) {
+            	Analyzer analyzer = new AnalyzerImpl(uri, data, sink);
+            	// open the sink only if a fetcher has been found
                 sink.openSinkForUri(uri);
-                count = fetcher.fetch(uri, this.sink);
-                Iterator<String> iterator = this.sink.getUris();
-                iterator = DomainLogger.createIfPossible(uri, domainLogFile, iterator);
-                sendNewUris(iterator);
-                if (iterator instanceof Closeable) {
-                    IOUtils.closeQuietly((Closeable) iterator);
-                }
+                Iterator<String> result = analyzer.analyze();
+                
+                // TODO improve this solution
+                //call analyzer
+                 //result = analyzer.anlyze(uri, data, sink);
+//              count = fetcher.fetch(uri, this.sink);
+//                Iterator<String> iterator = this.sink.getUris();
+//                iterator = DomainLogger.createIfPossible(uri, domainLogFile, iterator);
+//                sendNewUris(iterator);
+//                if (iterator instanceof Closeable) {
+//                    IOUtils.closeQuietly((Closeable) iterator);
+//                }
                 sink.closeSinkForUri(uri);
+                sendNewUris(result);
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);

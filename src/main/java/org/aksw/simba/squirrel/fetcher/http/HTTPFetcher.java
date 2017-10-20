@@ -37,7 +37,7 @@ public class HTTPFetcher implements Fetcher {
 
     public static final String HTTP_RESPONSE_HEADER_PREFIX = "http-response-";
 
-    protected String acceptHeader;
+    protected String acceptHeader = "application/rdf+xml";
     protected String acceptCharset = Charsets.UTF_8.name();
     protected CloseableHttpClient client;
     protected File dataDirectory;
