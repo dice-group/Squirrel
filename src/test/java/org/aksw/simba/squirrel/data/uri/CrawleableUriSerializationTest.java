@@ -54,13 +54,18 @@ public class CrawleableUriSerializationTest {
         Gson gson = new Gson();
         
         String json = gson.toJson(uri);
+        
         System.out.println(json);
         parsedUri = gson.fromJson(json, CrawleableUri.class);
         Assert.assertEquals(uri.getIpAddress(), parsedUri.getIpAddress());
         Assert.assertEquals(uri.getType(), parsedUri.getType());
         Assert.assertEquals(uri.getUri(), parsedUri.getUri());
         for(String key : uri.getData().keySet()) {
+        	
+        	
+        	
             Assert.assertEquals(uri.getData(key), parsedUri.getData(key));
+            
         }
         Assert.assertEquals(uri.getData().size(), parsedUri.getData().size());
     }

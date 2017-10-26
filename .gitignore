@@ -8,3 +8,7 @@ target
 squirrel.iml
 data/
 scenarios/1/worker*
+/dependency-reduced-pom.xml
+/foundUris.lck
+/foundUris.properties
+/foundUris.script

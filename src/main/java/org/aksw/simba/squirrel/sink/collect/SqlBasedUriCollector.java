@@ -186,6 +186,7 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
                 // close the result set
                 rs.close();
                 s.close();
+                //TODO  add pagination here
             }
             return hasNext;
         }
