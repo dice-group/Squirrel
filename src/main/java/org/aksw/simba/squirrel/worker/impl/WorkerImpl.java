@@ -140,7 +140,7 @@ public class WorkerImpl implements Worker, Closeable {
             }
 
             // TODO analyzers should come from outside and shouldn't be created here.
-            Analyzer analyzer = new AnalyzerImpl();
+            Analyzer analyzer = new AnalyzerImpl(new SimpleUriCollector(sink));
             fetcher = httpFetcher;
         	File data = fetcher.fetch(uri);
             if (data != null) {
