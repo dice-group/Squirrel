@@ -22,6 +22,7 @@ import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.log.DomainLogger;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.sink.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -137,14 +138,15 @@ public class WorkerImpl implements Worker, Closeable {
             } else {
                 LOGGER.error("Uri {} has no type. Skipping", uri);
             }
-            
+
+            // TODO analyzers should come from outside and shouldn't be created here.
+            Analyzer analyzer = new AnalyzerImpl();
             fetcher = httpFetcher;
         	File data = fetcher.fetch(uri);
             if (data != null) {
-            	Analyzer analyzer = new AnalyzerImpl(uri, data, sink);
             	// open the sink only if a fetcher has been found
                 sink.openSinkForUri(uri);
-                Iterator<String> result = analyzer.analyze();
+                Iterator<String> result = analyzer.analyze(uri, data, sink);
                 
                 // TODO improve this solution
                 //call analyzer

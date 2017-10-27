@@ -77,6 +77,11 @@ public class SqlBasedUriCollectorTest implements Sink {
         Arrays.sort(eUris);
         Assert.assertArrayEquals(eUris, uris);
     }
+    
+    
+    
+    
+    
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.Iterator;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
 import org.aksw.simba.squirrel.sink.AbstractSinkDecorator;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
@@ -72,8 +73,8 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
     public Iterator<String> getUris() {
         try {
             Statement s = dbConnection.createStatement();
-            ResultSet rs = s.executeQuery("SELECT uri FROM uris");
-            return new ResultIterator(rs, s);
+//            ResultSet rs = s.executeQuery("SELECT uri FROM uris");
+            return new SqlBasedIterator(s);
         } catch (SQLException e) {
             LOGGER.error("Exception while querying URIs from database. Returning null.");
         }
@@ -129,68 +130,6 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
         }
     }
 
-    protected static class ResultIterator implements Iterator<String> {
-
-        protected Statement s;
-        protected ResultSet rs;
-        protected boolean consumed = true;
-
-        public ResultIterator(ResultSet rs, Statement s) {
-            this.s = s;
-            this.rs = rs;
-        }
-
-        @Override
-        public boolean hasNext() {
-            try {
-                synchronized (rs) {
-                    if (consumed) {
-                        return moveForward_unsecured();
-                    } else {
-                        return true;
-                    }
-                }
-            } catch (SQLException e) {
-                LOGGER.error("Exception while iterating over the results. Returning false.", e);
-                return false;
-            }
-        }
-
-        @Override
-        public String next() {
-            try {
-                synchronized (rs) {
-                    if (consumed) {
-                        if (!moveForward_unsecured()) {
-                            LOGGER.warn("\"next()\" was called while no result was left. Returning null.");
-                            return null;
-                        }
-                    }
-                    consumed = true;
-                    return rs.getString(1);
-                }
-            } catch (SQLException e) {
-                LOGGER.error("Exception while iterating over the results. Returning null.", e);
-                return null;
-            }
-        }
-
-        private boolean moveForward_unsecured() throws SQLException {
-            if (rs.isClosed()) {
-                return false;
-            }
-            boolean hasNext = rs.next();
-            if (hasNext) {
-                consumed = false;
-            } else {
-                // close the result set
-                rs.close();
-                s.close();
-                //TODO  add pagination here
-            }
-            return hasNext;
-        }
-
-    }
+  
 
 }
