@@ -27,6 +27,8 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
     protected static final String DROP_TABLE_QUERY = "DROP TABLE uris";
     protected static final String CREATE_TABLE_QUERY = "CREATE TABLE uris (uri varchar(500) primary key)";
     protected static final String CLEAR_TABLE_QUERY = "DELETE FROM uris";
+    private static final String SELECT_TABLE_QUERY = "SELECT * FROM uris OFFSET ? FETCH NEXT ? ROWS ONLY ";
+    
 
     public static SqlBasedUriCollector create(Sink decorated) {
         SqlBasedUriCollector collector = null;
@@ -72,9 +74,15 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
     @Override
     public Iterator<String> getUris() {
         try {
-            Statement s = dbConnection.createStatement();
-//            ResultSet rs = s.executeQuery("SELECT uri FROM uris");
-            return new SqlBasedIterator(s);
+        	Statement s = dbConnection.createStatement();
+        	ResultSet trs = s.executeQuery("SELECT COUNT(*) AS TOTAL FROM uris");
+        	int total = 0;
+        	//gets the total lines
+        	while(trs.next()) {
+        		total = trs.getInt("TOTAL");
+        	}
+            PreparedStatement ps = dbConnection.prepareStatement(SELECT_TABLE_QUERY);
+            return new SqlBasedIterator(ps,total);
         } catch (SQLException e) {
             LOGGER.error("Exception while querying URIs from database. Returning null.");
         }
