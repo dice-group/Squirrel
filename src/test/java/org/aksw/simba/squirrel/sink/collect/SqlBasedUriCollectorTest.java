@@ -45,6 +45,7 @@ public class SqlBasedUriCollectorTest implements Sink {
         collector.closeSinkForUri(uri);
 
         String uris[] = IteratorUtils.toArray(collector.getUris(), String.class);
+        System.out.println(uris.length);
         Arrays.sort(uris);
         String eUris[] = expectedUris.toArray(new String[expectedUris.size()]);
         Arrays.sort(eUris);
