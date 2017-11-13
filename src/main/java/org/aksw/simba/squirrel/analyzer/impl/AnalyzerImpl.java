@@ -5,9 +5,9 @@ import java.io.FileInputStream;
 import java.util.Iterator;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.apache.http.HttpHeaders;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;

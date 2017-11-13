@@ -16,7 +16,7 @@ import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.InMemorySink;
+import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -143,7 +143,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
         // compare the expected results with those found inside the sink
         boolean success = true;
-        Map<String, Model> crawledResources = sink.getCrawledResources();
+        Map<String, Model> crawledResources = sink.getCrawledRdfData();
         for (int i = 0; i < resources.length; ++i) {
             if (crawledResources.containsKey(resources[i].getResourceName())) {
                 success &= compareModels(resources[i].getResourceName(), resources[i].getModel(),

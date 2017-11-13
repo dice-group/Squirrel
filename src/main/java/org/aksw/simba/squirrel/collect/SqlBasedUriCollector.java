@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink.collect;
+package org.aksw.simba.squirrel.collect;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -66,7 +66,6 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
     protected PreparedStatement insertStmt;
 
     public SqlBasedUriCollector(Connection dbConnection, PreparedStatement insertStmt, Sink decorated) {
-        super(decorated);
         this.dbConnection = dbConnection;
         this.insertStmt = insertStmt;
     }
@@ -104,13 +103,6 @@ public class SqlBasedUriCollector extends AbstractSinkDecorator implements UriCo
         addUri(triple.getSubject());
         addUri(triple.getPredicate());
         addUri(triple.getObject());
-        super.addTriple(uri, triple);
-    }
-
-    @Override
-    public void openSinkForUri(CrawleableUri uri) {
-        reset();
-        super.openSinkForUri(uri);
     }
 
     protected void addUri(Node node) {

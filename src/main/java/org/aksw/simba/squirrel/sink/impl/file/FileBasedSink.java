@@ -3,16 +3,18 @@ package org.aksw.simba.squirrel.sink.impl.file;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
+import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,10 @@ public class FileBasedSink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedSink.class);
 
-    private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final byte PRE_URI[] = "<".getBytes(CHARSET);
-    private static final byte POST_URI[] = ">".getBytes(CHARSET);
-    private static final byte SEPERATOR[] = " ".getBytes(CHARSET);
-    private static final byte END_OF_QUAD[] = " .\n".getBytes(CHARSET);
+    private static final byte PRE_URI[] = "<".getBytes(Constants.DEFAULT_CHARSET);
+    private static final byte POST_URI[] = ">".getBytes(Constants.DEFAULT_CHARSET);
+    private static final byte SEPERATOR[] = " ".getBytes(Constants.DEFAULT_CHARSET);
+    private static final byte END_OF_QUAD[] = " .\n".getBytes(Constants.DEFAULT_CHARSET);
 
     protected File outputDirectory;
     protected boolean useCompression;
@@ -43,28 +44,40 @@ public class FileBasedSink implements Sink {
         if (outputStream != null) {
             try {
                 outputStream.write(PRE_URI);
-                outputStream.write(triple.getSubject().toString().getBytes(CHARSET));
+                outputStream.write(triple.getSubject().toString().getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
                 outputStream.write(SEPERATOR);
                 outputStream.write(PRE_URI);
-                outputStream.write(triple.getPredicate().toString().getBytes(CHARSET));
+                outputStream.write(triple.getPredicate().toString().getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
                 outputStream.write(SEPERATOR);
                 if (triple.getObject().isURI()) {
                     outputStream.write(PRE_URI);
-                    outputStream.write(triple.getObject().toString().getBytes(CHARSET));
+                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
                     outputStream.write(POST_URI);
                 } else {
-                    outputStream.write(triple.getObject().toString().getBytes(CHARSET));
+                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
                 }
                 outputStream.write(SEPERATOR);
                 outputStream.write(PRE_URI);
-                outputStream.write(uriString.getBytes(CHARSET));
+                outputStream.write(uriString.getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
                 outputStream.write(END_OF_QUAD);
             } catch (Exception e) {
                 LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
                         + uriString + "\". Ignoring it.", e);
+            }
+        }
+    }
+
+    @Override
+    public void addData(CrawleableUri uri, InputStream stream) {
+        OutputStream outputStream = getStream(uri);
+        if (outputStream != null) {
+            try {
+                StreamUtils.copy(stream, outputStream);
+            } catch (Exception e) {
+                LOGGER.error("Exception while writing unstructed data to file.", e);
             }
         }
     }
