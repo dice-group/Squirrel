@@ -54,7 +54,7 @@ public class AnalyzerImpl implements Analyzer {
             IOUtils.closeQuietly(fin);
         }
 
-        return collector.getUris();
+        return collector.getUris(curi);
     }
 
 }
