@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.data.uri;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -32,7 +33,9 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public class CrawleableUri {
+public class CrawleableUri implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawleableUri.class);
 
