@@ -48,10 +48,8 @@ public class WorkerImpl implements Worker, Closeable {
     protected Frontier frontier;
     protected UriCollector sink;
     protected RobotsManager manager;
-    protected DereferencingFetcher dereferencingFetcher = new DereferencingFetcher();
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
     protected HTTPFetcher httpFetcher = new HTTPFetcher();
-    protected DumpFetcher dumpFetcher = new DumpFetcher();
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected String domainLogFile = null;
     protected long waitingTime = DEFAULT_WAITING_TIME;
@@ -123,41 +121,22 @@ public class WorkerImpl implements Worker, Closeable {
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
-            Fetcher fetcher = null;
-            if (uri.getType() == UriType.DUMP) {
-                LOGGER.debug("Uri {} has DUMP Type. Processing", uri);
-                fetcher = dumpFetcher;
-            } else if (uri.getType() == UriType.SPARQL) {
-                LOGGER.debug("Uri {} has SPARQL Type. Processing", uri);
-                fetcher = sparqlBasedFetcher;
-            } else if (uri.getType() == UriType.DEREFERENCEABLE) {
-                LOGGER.debug("Uri {} has DEREFERENCEABLE Type. Processing", uri);
-                fetcher = dereferencingFetcher;
-            } else if (uri.getType() == UriType.UNKNOWN) {
-                LOGGER.warn("Uri {} has UNKNOWN Type. Skipping", uri);
-            } else {
-                LOGGER.error("Uri {} has no type. Skipping", uri);
-            }
 
-            // TODO analyzers should come from outside and shouldn't be created here.
+
             Analyzer analyzer = new AnalyzerImpl(new SimpleUriCollector(sink));
-            fetcher = httpFetcher;
-        	File data = fetcher.fetch(uri);
+            
+        	File data = null;
+        	
+        	try {
+        		data = httpFetcher.fetch(uri);
+        	}catch(Exception e) {
+        		LOGGER.error("Exception while Fetching Data. Skipping...");
+        	}
+        	
             if (data != null) {
             	// open the sink only if a fetcher has been found
                 sink.openSinkForUri(uri);
                 Iterator<String> result = analyzer.analyze(uri, data, sink);
-                
-                // TODO improve this solution
-                //call analyzer
-                 //result = analyzer.anlyze(uri, data, sink);
-//              count = fetcher.fetch(uri, this.sink);
-//                Iterator<String> iterator = this.sink.getUris();
-//                iterator = DomainLogger.createIfPossible(uri, domainLogFile, iterator);
-//                sendNewUris(iterator);
-//                if (iterator instanceof Closeable) {
-//                    IOUtils.closeQuietly((Closeable) iterator);
-//                }
                 sink.closeSinkForUri(uri);
                 sendNewUris(result);
             }
@@ -168,7 +147,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     public void sendNewUris(Iterator<String> uriIterator) {
-        List<CrawleableUri> uris = new ArrayList<CrawleableUri>(20);
+        List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
         CrawleableUri uri;
         while (uriIterator.hasNext()) {
             try {
@@ -188,7 +167,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(dereferencingFetcher);
+        IOUtils.closeQuietly(httpFetcher);
     }
 
     public void setTerminateFlag(boolean terminateFlag) {
