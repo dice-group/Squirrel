@@ -16,6 +16,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.gson.GsonUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,75 +63,24 @@ public class CrawleableUriSerializationTest {
 
     @Test
     public void testGSON() throws URISyntaxException, ClassNotFoundException, IOException {
-        CrawleableUri parsedUri;
-        Gson gson = new Gson();
-        String json = gson.toJson(uri);
-        parsedUri = gson.fromJson(json, CrawleableUri.class);
-        Assert.assertEquals(uri.getIpAddress(), parsedUri.getIpAddress());
-        Assert.assertEquals(uri.getType(), parsedUri.getType());
-        Assert.assertEquals(uri.getUri(), parsedUri.getUri());
-        for (String key : uri.getData().keySet()) {
-            Assert.assertEquals(uri.getData(key), parsedUri.getData(key));
-        }
-        Assert.assertEquals(uri.getData().size(), parsedUri.getData().size());
+        executeTest(new GsonUriSerializer(), "Gson");
     }
 
     @Test
     public void testJavaWithSnappy() throws URISyntaxException, ClassNotFoundException, IOException {
-        CrawleableUri parsedUri;
-        byte[] data = toString(uri);
-        System.out.println("Snappy: data.length=" + data.length);
-        parsedUri = (CrawleableUri) fromString(data);
-        Assert.assertEquals(uri.getIpAddress(), parsedUri.getIpAddress());
-        Assert.assertEquals(uri.getType(), parsedUri.getType());
-        Assert.assertEquals(uri.getUri(), parsedUri.getUri());
-        for (String key : uri.getData().keySet()) {
-            Assert.assertEquals(uri.getData(key), parsedUri.getData(key));
-        }
-        Assert.assertEquals(uri.getData().size(), parsedUri.getData().size());
-    }
-
-    private static byte[] toString(Serializable obj) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(obj);
-        oos.close();
-        String stringToSend = Base64.getEncoder().encodeToString(baos.toByteArray());
-        byte[] bytesToSend = stringToSend.getBytes();
-        return Snappy.compress(bytesToSend);
-    }
-
-    private static byte[] toGzippedString(Serializable obj) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(new GZIPOutputStream(baos));
-        os.writeObject(obj);
-        os.close();
-        return baos.toByteArray();
-    }
-
-    private static Object fromString(byte[] compressedString) throws IOException, ClassNotFoundException {
-        byte[] uncompressedString = Snappy.uncompress(compressedString);
-        String receivedString = new String(uncompressedString);
-        byte[] data = Base64.getDecoder().decode(receivedString);
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
-        Object o = ois.readObject();
-        ois.close();
-        return o;
-    }
-
-    private static Object fromGzippedString(byte[] compressedString) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(new ByteArrayInputStream(compressedString)));
-        Object o = ois.readObject();
-        ois.close();
-        return o;
+        executeTest(new SnappyJavaUriSerializer(), "Snappy");
     }
 
     @Test
     public void testJavaWithGzip() throws URISyntaxException, ClassNotFoundException, IOException {
+        executeTest(new GzipJavaUriSerializer(), "Gzip");
+    }
+
+    public void executeTest(CrawleableUriSerializer serializer, String name) throws IOException {
         CrawleableUri parsedUri;
-        byte[] data = toGzippedString(uri);
-        System.out.println("Gzip:   data.length=" + data.length);
-        parsedUri = (CrawleableUri) fromGzippedString(data);
+        byte[] data = serializer.serialize(uri);
+        System.out.println(String.format("%6s: data.length=%d", name, data.length));
+        parsedUri = serializer.deserialize(data);
         Assert.assertEquals(uri.getIpAddress(), parsedUri.getIpAddress());
         Assert.assertEquals(uri.getType(), parsedUri.getType());
         Assert.assertEquals(uri.getUri(), parsedUri.getUri());

@@ -10,7 +10,6 @@ import org.aksw.simba.squirrel.sink.Sink;
 public interface Analyzer {
 	
 	
-	public Iterator<String> analyze(CrawleableUri curi, File data, Sink sink);
+	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink);
 	
-
 }

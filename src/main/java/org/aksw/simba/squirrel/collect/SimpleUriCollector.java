@@ -1,17 +1,13 @@
 package org.aksw.simba.squirrel.collect;
 
-import java.net.URI;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +15,7 @@ public class SimpleUriCollector implements UriCollector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUriCollector.class);
 
-    protected Map<String, Map<String, String>> urisOfUris = new HashMap<String, Map<String, String>>();
+    protected Map<String, Map<String, byte[]>> urisOfUris = new HashMap<String, Map<String, byte[]>>();
     protected CrawleableUriSerializer serializer;
 
     public SimpleUriCollector(CrawleableUriSerializer serializer) {
@@ -28,13 +24,13 @@ public class SimpleUriCollector implements UriCollector {
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-        urisOfUris.put(uri.getUri().toString(), new HashMap<String, String>());
+        urisOfUris.put(uri.getUri().toString(), new HashMap<String, byte[]>());
     }
 
     @Override
-    public Iterator<String> getUris(CrawleableUri uri) {
+    public Iterator<byte[]> getUris(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
-        Map<String, String> set = null;
+        Map<String, byte[]> set = null;
         if (urisOfUris.containsKey(uriString)) {
             set = urisOfUris.get(uriString);
         }
@@ -48,8 +44,12 @@ public class SimpleUriCollector implements UriCollector {
             LOGGER.error("The URI {} is not known. The open method was not called with this URI.", uriString);
             return;
         }
-        Map<String, String> uris = urisOfUris.get(uriString);
-        uris.put(newUri.getUri().toString(), serializer.serialize(newUri));
+        Map<String, byte[]> uris = urisOfUris.get(uriString);
+        try {
+            uris.put(newUri.getUri().toString(), serializer.serialize(newUri));
+        } catch (IOException e) {
+            LOGGER.error("Error while trying to collect URI \"" + newUri + "\". It will be ignored.", e);
+        }
     }
 
     @Override

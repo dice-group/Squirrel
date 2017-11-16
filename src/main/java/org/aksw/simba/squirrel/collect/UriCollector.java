@@ -61,6 +61,6 @@ public interface UriCollector extends SinkBase {
      * @return An {@link Iterator} that iterates over the already serialized URIs
      *         that have been collected for the given URI.
      */
-    public Iterator<String> getUris(CrawleableUri uri);
+    public Iterator<byte[]> getUris(CrawleableUri uri);
 
 }

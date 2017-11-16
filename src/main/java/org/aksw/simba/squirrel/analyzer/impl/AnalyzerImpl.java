@@ -28,7 +28,7 @@ public class AnalyzerImpl implements Analyzer {
     }
 
     @Override
-    public Iterator<String> analyze(CrawleableUri curi, File data, Sink sink) {
+    public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
         FileInputStream fin = null;
         try {
             // First, try to get the language of the data
