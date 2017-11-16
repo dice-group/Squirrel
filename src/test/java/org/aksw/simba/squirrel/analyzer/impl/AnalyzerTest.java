@@ -1,77 +1,71 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.Iterator;
 
+import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
+import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.shared.JenaException;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+
+
+
+
+
+@SuppressWarnings("deprecation")
 public class AnalyzerTest {
 	
-	private URI uri;
+	private Analyzer analyzer;
+	private CrawleableUri curi;
+	private UriCollector collector;
 	private Sink sink;
-	private Model model;
+	private File data;
+	private String uriToFetch = "http://dbpedia.org/resource/New_York";
+	private HTTPFetcher fetcher = new HTTPFetcher();
+	private int expectedUris = 2829;
 	
 	
-	public AnalyzerTest(URI uri, Sink sink, Model model) {
-		this.uri = uri;
-		this.sink = sink;
-		this.model = model;
-	}
-	
-	@Parameters
-	public static Collection<Object[]> data() throws Exception {
+	@Before
+	public void prepare() throws URISyntaxException, UnknownHostException {
+		this.sink = new FileBasedSink(new File("/home/gsjunior/test_folder"),false);
+		this.collector = new SimpleUriCollector(sink);
+		
+		analyzer = new AnalyzerImpl(collector);
+		
+		curi = new CrawleableUri(new URI(uriToFetch));
+		curi.setIpAddress(InetAddress.getByName("dbpedia.org"));
+		curi.setType(UriType.DEREFERENCEABLE);
+		
+		data = fetcher.fetch(curi);
 		
 		
-		 return Arrays.asList(new Object[][] { {
-			new URI("http://pdb.de/") , new FileBasedSink(new File("/home/gsjunior/test_folder/"), false) , ModelFactory.createDefaultModel().read("http://danbri.org/foaf.rdf")
-		 } });
 	}
+	
 	
 	@Test
 	public void test() {
+		Iterator<String> uris =  analyzer.analyze(curi, data, sink);
 		
-		CrawleableUri curi = new CrawleableUri(uri);
-		sink.openSinkForUri(curi);
-		
-		try {
-			
-	        StmtIterator si;
-	        si = model.listStatements();
-
-	        while(si.hasNext()) {
-	            Statement s=si.nextStatement();
-//	            Resource r=s.getSubject();
-//	            Property p=s.getPredicate();
-	            RDFNode o=s.getObject();
-//	            sink.addTriple(curi, s.asTriple());
-	            	            
-//	            System.out.println(r.getURI());
-//	            System.out.println(p.getURI());
-	            System.out.println(o.asResource().getURI());
-	        }
-	    }
-	    catch(JenaException | NoSuchElementException c) {}
-		finally {
-//			sink.closeSinkForUri(curi);
+		int cont = 0;
+		while(uris.hasNext()) {
+			System.out.println(uris.next());
+			cont ++;
 		}
+		
+		Assert.assertEquals(expectedUris, cont);
+		
 	}
 
 }
