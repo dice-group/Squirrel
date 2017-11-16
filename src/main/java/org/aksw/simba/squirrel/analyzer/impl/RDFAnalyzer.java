@@ -18,13 +18,13 @@ import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AnalyzerImpl implements Analyzer {
+public class RDFAnalyzer implements Analyzer {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private UriCollector collector;
 
-    public AnalyzerImpl(UriCollector collector) {
+    public RDFAnalyzer(UriCollector collector) {
         this.collector = collector;
     }
 

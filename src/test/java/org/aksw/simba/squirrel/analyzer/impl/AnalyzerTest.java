@@ -42,7 +42,7 @@ public class AnalyzerTest {
 		this.sink = new FileBasedSink(new File("/home/gsjunior/test_folder"),false);
 		this.collector = new SimpleUriCollector(sink);
 		
-		analyzer = new AnalyzerImpl(collector);
+		analyzer = new RDFAnalyzer(collector);
 		
 		curi = new CrawleableUri(new URI(uriToFetch));
 		curi.setIpAddress(InetAddress.getByName("dbpedia.org"));

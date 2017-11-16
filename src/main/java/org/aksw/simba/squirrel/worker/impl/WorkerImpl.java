@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.analyzer.impl.AnalyzerImpl;
+import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -123,7 +123,7 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.debug("I start crawling {} now...", uri);
 
 
-            Analyzer analyzer = new AnalyzerImpl(new SimpleUriCollector(sink));
+            Analyzer analyzer = new RDFAnalyzer(new SimpleUriCollector(sink));
             
         	File data = null;
         	
