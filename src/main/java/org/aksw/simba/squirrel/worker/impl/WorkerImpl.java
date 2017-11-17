@@ -16,6 +16,7 @@ import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
@@ -46,29 +47,33 @@ public class WorkerImpl implements Worker, Closeable {
     private static final int MAX_URIS_PER_MESSAGE = 20;
 
     protected Frontier frontier;
-    protected UriCollector sink;
+    protected Sink sink;
+    protected UriCollector collector;
     protected RobotsManager manager;
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
     protected HTTPFetcher httpFetcher = new HTTPFetcher();
     protected UriProcessorInterface uriProcessor = new UriProcessor();
+    protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime = DEFAULT_WAITING_TIME;
     protected boolean terminateFlag;
 
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime) {
-        this(frontier, sink, manager, waitingTime, null);
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+            long waitingTime) {
+        this(frontier, sink, manager, serializer, waitingTime, null);
     }
-    
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, long waitingTime, String logDir) {
+
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+            long waitingTime, String logDir) {
         this.frontier = frontier;
-        // this.sink = new SimpleUriCollector(sink);
-        this.sink = SqlBasedUriCollector.create(sink);
+        collector = SqlBasedUriCollector.create(serializer);
         if (this.sink == null) {
             throw new IllegalStateException("Couldn't create database for storing identified URIs.");
         }
         this.manager = manager;
+        this.serializer = serializer;
         this.waitingTime = waitingTime;
-        if(logDir != null) {
+        if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
     }
@@ -122,21 +127,20 @@ public class WorkerImpl implements Worker, Closeable {
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
 
+            Analyzer analyzer = new RDFAnalyzer(collector);
 
-            Analyzer analyzer = new RDFAnalyzer(new SimpleUriCollector(sink));
-            
-        	File data = null;
-        	
-        	try {
-        		data = httpFetcher.fetch(uri);
-        	}catch(Exception e) {
-        		LOGGER.error("Exception while Fetching Data. Skipping...");
-        	}
-        	
+            File data = null;
+
+            try {
+                data = httpFetcher.fetch(uri);
+            } catch (Exception e) {
+                LOGGER.error("Exception while Fetching Data. Skipping...");
+            }
+
             if (data != null) {
-            	// open the sink only if a fetcher has been found
+                // open the sink only if a fetcher has been found
                 sink.openSinkForUri(uri);
-                Iterator<String> result = analyzer.analyze(uri, data, sink);
+                Iterator<byte[]> result = analyzer.analyze(uri, data, sink);
                 sink.closeSinkForUri(uri);
                 sendNewUris(result);
             }
@@ -146,20 +150,20 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
     }
 
-    public void sendNewUris(Iterator<String> uriIterator) {
+    public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
         CrawleableUri uri;
         while (uriIterator.hasNext()) {
             try {
-                uri = new CrawleableUri(new URI(uriIterator.next()));
+                uri = serializer.deserialize(uriIterator.next());
                 uriProcessor.recognizeUriType(uri);
                 uris.add(uri);
                 if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
                     frontier.addNewUris(uris);
                     uris.clear();
                 }
-            } catch (URISyntaxException e) {
-                LOGGER.warn("Got a malformed URI. It will be ignored.", e);
+            } catch (Exception e) {
+                LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
         frontier.addNewUris(uris);

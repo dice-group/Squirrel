@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +16,9 @@ public class SimpleUriCollector implements UriCollector {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUriCollector.class);
 
     protected Map<String, Map<String, byte[]>> urisOfUris = new HashMap<String, Map<String, byte[]>>();
-    protected CrawleableUriSerializer serializer;
+    protected Serializer serializer;
 
-    public SimpleUriCollector(CrawleableUriSerializer serializer) {
+    public SimpleUriCollector(Serializer serializer) {
         this.serializer = serializer;
     }
 

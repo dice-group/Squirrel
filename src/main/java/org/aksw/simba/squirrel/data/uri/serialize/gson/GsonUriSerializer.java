@@ -2,7 +2,7 @@ package org.aksw.simba.squirrel.data.uri.serialize.gson;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 
 import com.google.gson.Gson;
 
@@ -18,18 +18,19 @@ import com.google.gson.Gson;
  *
  */
 @Deprecated
-public class GsonUriSerializer implements CrawleableUriSerializer {
+public class GsonUriSerializer implements Serializer {
 
     private Gson gson = new Gson();
 
     @Override
-    public byte[] serialize(CrawleableUri uri) {
-        return gson.toJson(uri).getBytes(Constants.DEFAULT_CHARSET);
+    public <T> byte[] serialize(T object) {
+        return gson.toJson(object).getBytes(Constants.DEFAULT_CHARSET);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public CrawleableUri deserialize(byte[] data) {
-        return gson.fromJson(new String(data, Constants.DEFAULT_CHARSET), CrawleableUri.class);
+    public <T> T deserialize(byte[] data) {
+        return (T) gson.fromJson(new String(data, Constants.DEFAULT_CHARSET), CrawleableUri.class);
     }
 
 }

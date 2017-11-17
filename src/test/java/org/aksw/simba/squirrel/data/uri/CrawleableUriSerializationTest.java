@@ -16,7 +16,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import org.aksw.simba.squirrel.Constants;
-import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.gson.GsonUriSerializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
@@ -76,7 +76,7 @@ public class CrawleableUriSerializationTest {
         executeTest(new GzipJavaUriSerializer(), "Gzip");
     }
 
-    public void executeTest(CrawleableUriSerializer serializer, String name) throws IOException {
+    public void executeTest(Serializer serializer, String name) throws IOException {
         CrawleableUri parsedUri;
         byte[] data = serializer.serialize(uri);
         System.out.println(String.format("%6s: data.length=%d", name, data.length));

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -41,6 +42,15 @@ public class HTTPFetcher implements Fetcher {
     protected String acceptCharset = Charsets.UTF_8.name();
     protected CloseableHttpClient client;
     protected File dataDirectory;
+    
+    public static void main(String[] args) {
+        HTTPFetcher fetcher = new HTTPFetcher();
+        CrawleableUri uri = new CrawleableUri(URI.create("http://dbpedia.org/resource/Berlin"));
+        File f = fetcher.fetch(uri);
+        for(String key : uri.getData().keySet()) {
+            System.out.println(key + "=" + uri.getData(key));
+        }
+    }
 
     public HTTPFetcher() {
         this(USER_AGENT);

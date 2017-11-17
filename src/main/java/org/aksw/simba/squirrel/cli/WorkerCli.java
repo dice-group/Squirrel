@@ -3,6 +3,7 @@ package org.aksw.simba.squirrel.cli;
 import java.io.File;
 import java.io.IOException;
 
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.impl.zeromq.ZeroMQBasedFrontierClient;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -34,7 +35,7 @@ public class WorkerCli {
         Sink sink = new FileBasedSink(new File(SINK_FOLDER), true);
 
         Worker worker = new WorkerImpl(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, WORKER_ID), sink,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 2000);
+                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), new GzipJavaUriSerializer(), 2000);
         System.out.println("Running worker...");
         worker.run();
     }

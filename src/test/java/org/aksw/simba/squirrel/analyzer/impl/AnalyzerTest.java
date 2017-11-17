@@ -8,21 +8,16 @@ import java.net.UnknownHostException;
 import java.util.Iterator;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.collect.SimpleUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.collect.SimpleUriCollector;
-import org.aksw.simba.squirrel.sink.collect.UriCollector;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-
-
-
-
 
 @SuppressWarnings("deprecation")
 public class AnalyzerTest {
@@ -49,8 +44,6 @@ public class AnalyzerTest {
 		curi.setType(UriType.DEREFERENCEABLE);
 		
 		data = fetcher.fetch(curi);
-		
-		
 	}
 	
 	

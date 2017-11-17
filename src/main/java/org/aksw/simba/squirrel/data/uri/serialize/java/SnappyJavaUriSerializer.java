@@ -8,21 +8,26 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.CrawleableUriSerializer;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.xerial.snappy.Snappy;
 
-public class SnappyJavaUriSerializer implements CrawleableUriSerializer {
+public class SnappyJavaUriSerializer implements Serializer {
 
     @Override
-    public byte[] serialize(CrawleableUri uri) throws IOException {
-        return toString(uri);
+    public <T> byte[] serialize(T object) throws IOException {
+        if (object instanceof Serializable) {
+            return toString((Serializable) object);
+        } else {
+            throw new IllegalArgumentException("The given instance of " + object.getClass().getCanonicalName()
+                    + " does not implement the java.io.Serializable interface. This serializer does not support that.");
+        }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public CrawleableUri deserialize(byte[] data) throws IOException {
+    public <T> T deserialize(byte[] data) throws IOException {
         try {
-            return (CrawleableUri) fromString(data);
+            return (T) fromString(data);
         } catch (ClassNotFoundException e) {
             throw new IOException(e);
         }

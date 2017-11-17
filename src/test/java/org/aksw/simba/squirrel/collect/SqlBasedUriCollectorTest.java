@@ -1,15 +1,17 @@
-package org.aksw.simba.squirrel.sink.collect;
+package org.aksw.simba.squirrel.collect;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
-import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
-import org.apache.commons.collections15.IteratorUtils;
-import org.apache.jena.graph.Triple;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -18,10 +20,12 @@ import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SqlBasedUriCollectorTest implements Sink {
+public class SqlBasedUriCollectorTest {
 
     @Test
     public void test() throws Exception {
+        String dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
+
         Model model = ModelFactory.createDefaultModel();
         Set<String> expectedUris = new HashSet<String>();
         for (int i = 0; i < 1000; ++i) {
@@ -35,17 +39,21 @@ public class SqlBasedUriCollectorTest implements Sink {
 
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test"));
 
-        SqlBasedUriCollector collector = SqlBasedUriCollector.create(this);
+        GzipJavaUriSerializer serializer = new GzipJavaUriSerializer();
+
+        SqlBasedUriCollector collector = SqlBasedUriCollector.create(serializer, dbdir);
         Assert.assertNotNull(collector);
-        
+
         collector.openSinkForUri(uri);
         StmtIterator iterator = model.listStatements();
         while (iterator.hasNext()) {
             collector.addTriple(uri, iterator.next().asTriple());
         }
-        collector.closeSinkForUri(uri);
 
-        String uris[] = IteratorUtils.toArray(collector.getUris(), String.class);
+        String uris[] = StreamSupport
+                .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
+                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
+        collector.closeSinkForUri(uri);
         System.out.println(uris.length);
         Arrays.sort(uris);
         String eUris[] = expectedUris.toArray(new String[expectedUris.size()]);
@@ -71,32 +79,15 @@ public class SqlBasedUriCollectorTest implements Sink {
         while (iterator.hasNext()) {
             collector.addTriple(uri, iterator.next().asTriple());
         }
-        collector.closeSinkForUri(uri);
 
-        uris = IteratorUtils.toArray(collector.getUris(), String.class);
+        uris = StreamSupport
+                .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
+                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
+        collector.closeSinkForUri(uri);
         Arrays.sort(uris);
         eUris = expectedUris.toArray(new String[expectedUris.size()]);
         Arrays.sort(eUris);
         Assert.assertArrayEquals(eUris, uris);
     }
-    
-    
-    
-    
-    
 
-    @Override
-    public void addTriple(CrawleableUri uri, Triple triple) {
-        // nothing to do
-    }
-
-    @Override
-    public void openSinkForUri(CrawleableUri uri) {
-        // nothing to do
-    }
-
-    @Override
-    public void closeSinkForUri(CrawleableUri uri) {
-        // nothing to do
-    }
 }
