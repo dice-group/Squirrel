@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +21,9 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
 import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
+import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
+import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.log.DomainLogger;
@@ -51,20 +54,19 @@ public class WorkerImpl implements Worker, Closeable {
     protected UriCollector collector;
     protected RobotsManager manager;
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
-    protected HTTPFetcher httpFetcher = new HTTPFetcher();
+    protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime = DEFAULT_WAITING_TIME;
     protected boolean terminateFlag;
 
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-            long waitingTime) {
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime) {
         this(frontier, sink, manager, serializer, waitingTime, null);
     }
 
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-            long waitingTime, String logDir) {
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime,
+            String logDir) {
         this.frontier = frontier;
         collector = SqlBasedUriCollector.create(serializer);
         if (this.sink == null) {
@@ -76,6 +78,7 @@ public class WorkerImpl implements Worker, Closeable {
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
+        fetcher = new SimpleOrderedFetcherManager(new SparqlBasedFetcher(), new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override
@@ -132,7 +135,7 @@ public class WorkerImpl implements Worker, Closeable {
             File data = null;
 
             try {
-                data = httpFetcher.fetch(uri);
+                data = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...");
             }
@@ -171,7 +174,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(httpFetcher);
+        IOUtils.closeQuietly(fetcher);
     }
 
     public void setTerminateFlag(boolean terminateFlag) {

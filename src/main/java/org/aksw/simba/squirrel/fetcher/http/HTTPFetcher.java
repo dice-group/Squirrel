@@ -7,13 +7,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -38,19 +41,12 @@ public class HTTPFetcher implements Fetcher {
 
     public static final String HTTP_RESPONSE_HEADER_PREFIX = "http-response-";
 
+    protected static final Set<String> ACCEPTED_SCHEMES = new HashSet<String>(Arrays.asList("http", "https"));
+
     protected String acceptHeader = "application/rdf+xml";
     protected String acceptCharset = Charsets.UTF_8.name();
     protected CloseableHttpClient client;
-    protected File dataDirectory;
-    
-    public static void main(String[] args) {
-        HTTPFetcher fetcher = new HTTPFetcher();
-        CrawleableUri uri = new CrawleableUri(URI.create("http://dbpedia.org/resource/Berlin"));
-        File f = fetcher.fetch(uri);
-        for(String key : uri.getData().keySet()) {
-            System.out.println(key + "=" + uri.getData(key));
-        }
-    }
+    protected File dataDirectory = FileUtils.getTempDirectory();
 
     public HTTPFetcher() {
         this(USER_AGENT);
@@ -67,7 +63,8 @@ public class HTTPFetcher implements Fetcher {
 
     @Override
     public File fetch(CrawleableUri uri) {
-        if (uri == null) {
+        // Check whether this fetcher can handle the given URI
+        if ((uri == null) || (uri.getUri() == null) || (ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;
         }
         // create temporary file
