@@ -12,6 +12,7 @@ import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
@@ -35,7 +36,7 @@ public class AnalyzerTest {
 	@Before
 	public void prepare() throws URISyntaxException, UnknownHostException {
 		this.sink = new FileBasedSink(new File("/home/gsjunior/test_folder"),false);
-		this.collector = new SimpleUriCollector(sink);
+		this.collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 		
 		analyzer = new RDFAnalyzer(collector);
 		
@@ -49,7 +50,7 @@ public class AnalyzerTest {
 	
 	@Test
 	public void test() {
-		Iterator<String> uris =  analyzer.analyze(curi, data, sink);
+		Iterator<byte[]> uris =  analyzer.analyze(curi, data, sink);
 		
 		int cont = 0;
 		while(uris.hasNext()) {

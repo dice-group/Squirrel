@@ -19,7 +19,6 @@ import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
-import org.aksw.simba.squirrel.rabbit.RabbitMQHelper;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;

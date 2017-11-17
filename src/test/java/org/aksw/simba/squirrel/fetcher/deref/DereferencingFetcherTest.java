@@ -3,6 +3,7 @@ package org.aksw.simba.squirrel.fetcher.deref;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.fetcher.FetcherTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.InetAddress;
@@ -10,6 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
+@Ignore
+@Deprecated
 public class DereferencingFetcherTest extends FetcherTest {
 
     @Test
