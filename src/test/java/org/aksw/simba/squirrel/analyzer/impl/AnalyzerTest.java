@@ -16,6 +16,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,13 +30,14 @@ public class AnalyzerTest {
 	private Sink sink;
 	private File data;
 	private String uriToFetch = "http://dbpedia.org/resource/New_York";
-	private HTTPFetcher fetcher = new HTTPFetcher();
+	private String fileToTest = "new_york.rdf";
 	private int expectedUris = 2829;
 	
 	
 	@Before
 	public void prepare() throws URISyntaxException, UnknownHostException {
-		this.sink = new FileBasedSink(new File("/home/gsjunior/test_folder"),false);
+		
+		this.sink = new InMemorySink();
 		this.collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 		
 		analyzer = new RDFAnalyzer(collector);
@@ -44,7 +46,13 @@ public class AnalyzerTest {
 		curi.setIpAddress(InetAddress.getByName("dbpedia.org"));
 		curi.setType(UriType.DEREFERENCEABLE);
 		
-		data = fetcher.fetch(curi);
+		sink.openSinkForUri(curi);
+		collector.openSinkForUri(curi);
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		data = new File(classLoader.getResource(fileToTest).getFile());
+		
 	}
 	
 	
@@ -54,7 +62,6 @@ public class AnalyzerTest {
 		
 		int cont = 0;
 		while(uris.hasNext()) {
-			System.out.println(uris.next());
 			cont ++;
 		}
 		
