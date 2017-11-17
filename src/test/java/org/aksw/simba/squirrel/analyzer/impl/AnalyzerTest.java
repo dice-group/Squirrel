@@ -30,7 +30,7 @@ public class AnalyzerTest {
 	private Sink sink;
 	private File data;
 	private String uriToFetch = "http://dbpedia.org/resource/New_York";
-	private HTTPFetcher fetcher = new HTTPFetcher();
+	private String fileToTest = "new_york.rdf";
 	private int expectedUris = 2829;
 	
 	
@@ -51,7 +51,7 @@ public class AnalyzerTest {
 		
 		ClassLoader classLoader = getClass().getClassLoader();
 		
-		data = new File(classLoader.getResource("new_york.rdf").getFile());
+		data = new File(classLoader.getResource(fileToTest).getFile());
 		
 	}
 	
