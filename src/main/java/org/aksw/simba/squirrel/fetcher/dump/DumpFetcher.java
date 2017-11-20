@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.utils.ZipArchiver;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.commons.io.IOUtils;
@@ -32,15 +33,24 @@ import org.apache.jena.riot.lang.PipedTriplesStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @deprecated Use the {@link HTTPFetcher} instead.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
+@Deprecated
 public class DumpFetcher implements Fetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpFetcher.class);
 
     @Override
-    public int fetch(CrawleableUri uri, Sink sink) {
+    public File fetch(CrawleableUri uri/*, Sink sink*/) {
         int tripleCount = 0;
         String filePath = this.downloadFile(uri, "/tmp/");
         if (filePath == null) {
-            return 0;
+            return null;
+//            return 0;
         }
         LOGGER.debug("{} is saved to {}", uri.toString(), filePath);
         String fileType = this.detectFileType(uri, filePath);
@@ -68,7 +78,8 @@ public class DumpFetcher implements Fetcher {
             LOGGER.debug("Detected n3 serialization.");
         } else {
             LOGGER.error("Could not detect serialization for {}. Skipping.", uri.toString());
-            return tripleCount;
+//            return tripleCount;
+            return null;
         }
         PipedRDFIterator<Triple> iterator = new PipedRDFIterator<>();
         final PipedRDFStream<Triple> inStream = new PipedTriplesStream(iterator);
@@ -85,15 +96,17 @@ public class DumpFetcher implements Fetcher {
 
         executor.submit(parser);
 
-        LOGGER.debug("Opening sink for {}", filePath);
-        sink.openSinkForUri(uri);
+//        LOGGER.debug("Opening sink for {}", filePath);
+//        sink.openSinkForUri(uri);
         while (iterator.hasNext()) {
             Triple next = iterator.next();
-            sink.addTriple(uri, next);
+//            sink.addTriple(uri, next);
             ++tripleCount;
         }
-        sink.closeSinkForUri(uri);
-        return tripleCount;
+//        sink.closeSinkForUri(uri);
+//        return tripleCount;
+
+        return null;
     }
 
     protected String downloadFile(CrawleableUri uri, String tempfolder) {
@@ -146,5 +159,10 @@ public class DumpFetcher implements Fetcher {
     private boolean matchesSerialization(String uriString, String serialization) {
         String[] regexs = { ".*\\." + serialization + ".*" };
         return UriUtils.isStringMatchRegexs(uriString, regexs);
+    }
+    
+    @Override
+    public void close() throws IOException {
+        // nothing to do
     }
 }

@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.data.uri;
 
+@Deprecated
 public enum UriType {
     /**
      * The type of this URI is not known.

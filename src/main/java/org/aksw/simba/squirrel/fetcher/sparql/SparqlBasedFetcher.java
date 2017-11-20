@@ -1,21 +1,37 @@
 package org.aksw.simba.squirrel.fetcher.sparql;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
 import org.aksw.jena_sparql_api.pagination.core.QueryExecutionFactoryPaginated;
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple {@link Fetcher} for SPARQL that tries to get triples from a SPARQL
+ * endpoint using the query {@value #SELECT_ALL_TRIPLES_QUERY}.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class SparqlBasedFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedFetcher.class);
@@ -27,29 +43,47 @@ public class SparqlBasedFetcher implements Fetcher {
 
     private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o {?s ?p ?o}";
 
+    protected int delay = DELAY;
+    protected File dataDirectory = FileUtils.getTempDirectory();
+
     @Override
-    public int fetch(CrawleableUri uri, Sink sink) {
+    public File fetch(CrawleableUri uri) {
+        // Check whether we can be sure that it is a SPARQL endpoint
+        boolean shouldBeSparql = Constants.URI_TYPE_VALUE_SPARQL.equals(uri.getData(Constants.URI_TYPE_KEY));
         QueryExecutionFactory qef = null;
+        QueryExecution execution = null;
+        File dataFile = null;
+        OutputStream out = null;
         try {
+            // Create query execution instance
             qef = initQueryExecution(uri.getUri().toString());
+            // create temporary file
+            try {
+                dataFile = File.createTempFile("fetched_", "", dataDirectory);
+                out = new BufferedOutputStream(new FileOutputStream(dataFile));
+            } catch (IOException e) {
+                LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
+                return null;
+            }
+            execution = qef.createQueryExecution(SELECT_ALL_TRIPLES_QUERY);
+            ResultSet resultSet = execution.execSelect();
+            RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
         } catch (Exception e) {
-            LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
-            return -1;
+            // If this should have worked, print a message, otherwise silently return null
+            if (shouldBeSparql) {
+                LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
+            }
+            return null;
+        } finally {
+            IOUtils.closeQuietly(out);
+            if (execution != null) {
+                execution.close();
+            }
+            if (qef != null) {
+                qef.close();
+            }
         }
-        QueryExecution execution = qef.createQueryExecution(SELECT_ALL_TRIPLES_QUERY);
-        ResultSet resultSet = execution.execSelect();
-        QuerySolution solution;
-        int tripleCount = 0;
-        sink.openSinkForUri(uri);
-        while (resultSet.hasNext()) {
-            solution = resultSet.next();
-            sink.addTriple(uri,
-                    new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode()));
-            ++tripleCount;
-        }
-        execution.close();
-        sink.closeSinkForUri(uri);
-        return tripleCount;
+        return dataFile;
     }
 
     protected QueryExecutionFactory initQueryExecution(String uri) throws ClassNotFoundException, SQLException {
@@ -59,9 +93,34 @@ public class SparqlBasedFetcher implements Fetcher {
         try {
             return new QueryExecutionFactoryPaginated(qef, 100);
         } catch (Exception e) {
-            LOGGER.warn("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
+            LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
                     e.getLocalizedMessage());
             return qef;
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        // nothing to do
+    }
+
+    protected static class SelectedTriplesIterator implements Iterator<Triple> {
+        private ResultSet resultSet;
+
+        public SelectedTriplesIterator(ResultSet resultSet) {
+            this.resultSet = resultSet;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return resultSet.hasNext();
+        }
+
+        @Override
+        public Triple next() {
+            QuerySolution solution = resultSet.next();
+            return new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode());
+        }
+
     }
 }

@@ -11,13 +11,14 @@ import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
-import org.aksw.simba.squirrel.rabbit.RabbitMQHelper;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
@@ -45,13 +46,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
-    private RabbitMQHelper rabbitHelper;
+    private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
 
     @Override
     public void init() throws Exception {
         super.init();
-        rabbitHelper = new RabbitMQHelper();
+        serializer = new GzipJavaUriSerializer();
         Map<String, String> env = System.getenv();
 
         String rdbHostName = null;
@@ -71,7 +72,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue = new RDBQueue(rdbHostName, rdbPort);
             ((RDBQueue) queue).open();
             knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-            ((RDBKnownUriFilter)knownUriFilter).open();
+            ((RDBKnownUriFilter) knownUriFilter).open();
         } else {
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(-1);
@@ -113,13 +114,22 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-        Object object = rabbitHelper.parseObject(data);
+        Object object = null;
+        try {
+            object = serializer.deserialize(data);
+        } catch (IOException e) {
+            LOGGER.error("Error whily trying to deserialize incoming data. It will be ignored.", e);
+        }
         if (object != null) {
             if (object instanceof UriSetRequest) {
                 if (handler != null) {
                     // get next UriSet
-                    handler.sendResponse(rabbitHelper.writeObject(new UriSet(frontier.getNextUris())),
-                            responseQueueName, correlId);
+                    try {
+                        handler.sendResponse(serializer.serialize(new UriSet(frontier.getNextUris())),
+                                responseQueueName, correlId);
+                    } catch (IOException e) {
+                        LOGGER.error("Couldn't serialize new URI set.", e);
+                    }
                 }
             } else if (object instanceof UriSet) {
                 frontier.addNewUris(((UriSet) object).uris);

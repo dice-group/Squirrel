@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.rabbit.RabbitMQHelper;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -34,16 +35,15 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
 
-    private RabbitMQHelper rabbitHelper;
     private Worker worker;
     private DataSender sender;
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
+    private Serializer serializer;
 
     @Override
     public void init() throws Exception {
         super.init();
-        rabbitHelper = new RabbitMQHelper();
         Map<String, String> env = System.getenv();
         String outputFolder = null;
         if (env.containsKey(OUTPUT_FOLDER_KEY)) {
@@ -58,11 +58,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
                 FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        uriSetRequest = rabbitHelper.writeObject(new UriSetRequest());
+        uriSetRequest = serializer.serialize(new UriSetRequest());
+
+        serializer = new GzipJavaUriSerializer();
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                2000, outputFolder + File.separator + "log");
+                serializer, 2000, outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 
@@ -80,7 +82,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-        UriSet set = (UriSet) rabbitHelper.parseObject(client.request(uriSetRequest));
+        UriSet set=null;
+        try {
+            set = (UriSet) serializer.deserialize(client.request(uriSetRequest));
+        } catch (IOException e) {
+            LOGGER.error("Error while requesting the next set of URIs.", e);
+        }
         if ((set == null) || (set.uris == null) || (set.uris.size() == 0)) {
             return null;
         } else {
@@ -96,7 +103,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
         try {
-            sender.sendData(rabbitHelper.writeObject(new UriSet(uris)));
+            sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
@@ -105,7 +112,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(rabbitHelper.writeObject(new CrawlingResult(crawledUris, newUris)));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }

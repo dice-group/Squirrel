@@ -1,12 +1,14 @@
 package org.aksw.simba.squirrel.fetcher.deref;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.UnknownHostException;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -29,6 +31,13 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use the {@link HTTPFetcher} instead.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
+@Deprecated
 public class DereferencingFetcher implements Fetcher, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DereferencingFetcher.class);
@@ -44,9 +53,9 @@ public class DereferencingFetcher implements Fetcher, Closeable {
     }
 
     @Override
-    public int fetch(CrawleableUri uri, Sink sink) {
+    public File fetch(CrawleableUri uri/*, Sink sink*/) {
         if (uri == null) {
-            return 0;
+            return null;
         }
         Model model = null;
         try {
@@ -54,29 +63,31 @@ public class DereferencingFetcher implements Fetcher, Closeable {
         } catch (org.apache.jena.atlas.web.HttpException e) {
             LOGGER.debug("HTTP Exception while requesting uri \"{}\". Returning null. Exception: {}", uri,
                     e.getMessage());
-            return 0;
+            return null;
         } catch (org.apache.jena.riot.RiotException e) {
             LOGGER.debug("Riot Exception while parsing requested model of uri \"{}\". Returning null. Exception: {}",
                     uri, e.getMessage());
-            return 0;
+            return null;
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exception while requesting uri \"" + uri + "\". Returning null.", e);
             }
-            return 0;
+            return null;
         }
         if (model == null) {
-            return 0;
+            return null;
         }
         StmtIterator iterator = model.listStatements();
         Statement statement;
         int count = 0;
         while (iterator.hasNext()) {
             statement = iterator.next();
-            sink.addTriple(uri, statement.asTriple());
+//      COMMENTED OUT BECAUSE THE SINK DOES NOT EXIST
+//            sink.addTriple(uri, statement.asTriple());
             ++count;
         }
-        return count;
+//        return count;
+        return null;
     }
 
     protected Model requestModel(URI uri) {

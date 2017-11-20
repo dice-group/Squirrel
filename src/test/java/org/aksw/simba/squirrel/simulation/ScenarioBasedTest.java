@@ -12,11 +12,12 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.InMemorySink;
+import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -49,8 +50,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
         Model model1, model2, model3;
         /*
-         * Simple scenario in which resource1 is the seed and points to
-         * resource2 which points to resource3.
+         * Simple scenario in which resource1 is the seed and points to resource2 which
+         * points to resource3.
          */
         model1 = ModelFactory.createDefaultModel();
         model1.add(model1.createResource(server1Url + "/entity_1"), model1.createProperty(server2Url + "/property_1"),
@@ -86,8 +87,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
                         new StringResource(model3, server3Url + "/entity_2", Lang.RDFJSON) } });
 
         /*
-         * Example in which the dump fetcher needs to be able to read the data
-         * like a normal fetcher.
+         * Example in which the dump fetcher needs to be able to read the data like a
+         * normal fetcher.
          */
         model1 = ModelFactory.createDefaultModel();
         model1.add(model1.createResource(server1Url + "/entity_1.n3"),
@@ -100,8 +101,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         model3.add(model3.createResource(server1Url + "/entity_2.n3"),
                 model3.createProperty(server2Url + "/property_1.n3"), model3.createLiteral("literal2"));
         scenarios.add(new Object[] {
-                new CrawleableUri[] {
-                        uriFactory.create(new URI(server1Url + "/entity_1.n3"), UriType.DUMP) },
+                new CrawleableUri[] { uriFactory.create(new URI(server1Url + "/entity_1.n3"), UriType.DUMP) },
                 new CrawleableResource[] { new StringResource(model1, server1Url + "/entity_1.n3", Lang.N3),
                         new StringResource(model2, server2Url + "/property_1.n3", Lang.N3),
                         new StringResource(model3, server3Url + "/entity_2.n3", Lang.N3) } });
@@ -122,7 +122,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
         WorkerImpl worker = new WorkerImpl(frontier, sink,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), 100);
+                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
+                new GzipJavaUriSerializer(), 100);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -143,7 +144,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
         // compare the expected results with those found inside the sink
         boolean success = true;
-        Map<String, Model> crawledResources = sink.getCrawledResources();
+        Map<String, Model> crawledResources = sink.getCrawledRdfData();
         for (int i = 0; i < resources.length; ++i) {
             if (crawledResources.containsKey(resources[i].getResourceName())) {
                 success &= compareModels(resources[i].getResourceName(), resources[i].getModel(),
