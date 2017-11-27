@@ -43,7 +43,16 @@ services:
       - "8081:15672"
       # Forwarding the port for testing
       - "5672:5672"
-
+  jena:
+    image: stain/jena-fuseki
+    container_name: jena
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./scenarios/1/data/jena:/fuseki
+    environment:
+      - ADMIN_PASSWORD=pw123
+      - JVM_ARGS=-Xmx2g
   worker1:
     image: squirrel
     container_name: worker1
@@ -80,7 +89,7 @@ services:
         - ./data/worker3:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
-networks:
-  squirrel:
-    external:
-      name: squirrel
+#networks:
+#  squirrel:
+#    external:
+#      name: squirrel
