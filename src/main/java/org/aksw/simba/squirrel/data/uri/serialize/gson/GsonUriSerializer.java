@@ -26,14 +26,9 @@ import com.google.gson.stream.JsonWriter;
  * A serializer that uses {@link Gson} to serialize URIs. Kept for backwards
  * compatibility.
  * 
- * @deprecated This serialization has no typing which leads to problems when it
- *             has to serialize and deserialize the internal
- *             {@code Map<String, Object>} of the given Uris.
- * 
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@Deprecated
 public class GsonUriSerializer implements Serializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonUriSerializer.class);
@@ -74,6 +69,7 @@ public class GsonUriSerializer implements Serializer {
         private static final String DATA_VALUE_KEY = "value";
         private static final String DATA_VALUE_TYPE_KEY = "type";
 
+        @SuppressWarnings("deprecation")
         @Override
         public void write(JsonWriter out, CrawleableUri uri) throws IOException {
             out.beginObject();
@@ -124,6 +120,7 @@ public class GsonUriSerializer implements Serializer {
             out.endObject();
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public CrawleableUri read(JsonReader in) throws IOException {
             in.beginObject();

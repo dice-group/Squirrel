@@ -22,6 +22,8 @@ services:
 #      - squirrel
 #    volumes:
 #      - ./scenarios/1/rethinkdb:/data
+    ports:
+      - "28015:28015"
 
   # message bus
   rabbit:
@@ -30,6 +32,10 @@ services:
     hostname: rabbit
 #    networks:
 #      - squirrel
+    ports:
+      - "8081:15672"
+      # Forwarding the port for testing
+      - "5672:5672"
 
   worker1:
     image: squirrel
