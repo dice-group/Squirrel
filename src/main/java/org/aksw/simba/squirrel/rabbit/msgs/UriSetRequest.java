@@ -1,10 +1,14 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
-public class UriSetRequest {
+import java.io.Serializable;
+
+public class UriSetRequest implements Serializable {
 
     // No content until now. The request could contain some additional values,
     // e.g., types of URIs that can be crawled.
     
+    private static final long serialVersionUID = 1L;
+
     @Override
     public int hashCode() {
         return 31;

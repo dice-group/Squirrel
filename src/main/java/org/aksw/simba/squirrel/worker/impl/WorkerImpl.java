@@ -68,15 +68,16 @@ public class WorkerImpl implements Worker, Closeable {
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime,
             String logDir) {
         this.frontier = frontier;
-        collector = SqlBasedUriCollector.create(serializer);
-        if (this.sink == null) {
-            throw new IllegalStateException("Couldn't create database for storing identified URIs.");
-        }
+        this.sink = sink;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
+        }
+        collector = SqlBasedUriCollector.create(serializer);
+        if (collector == null) {
+            throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
         }
         fetcher = new SimpleOrderedFetcherManager(new SparqlBasedFetcher(), new HTTPFetcher(), new FTPFetcher());
     }
