@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.apache.commons.io.IOUtils;
 
@@ -53,7 +52,7 @@ public class GzipJavaUriSerializer implements Serializer {
             ois = new ObjectInputStream(new GZIPInputStream(new ByteArrayInputStream(compressedString)));
             Object o = ois.readObject();
             ois.close();
-            return (CrawleableUri) o;
+            return o;
         } finally {
             IOUtils.closeQuietly(ois);
         }

@@ -58,9 +58,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
                 FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        uriSetRequest = serializer.serialize(new UriSetRequest());
-
         serializer = new GzipJavaUriSerializer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
@@ -82,9 +81,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-        UriSet set=null;
+        UriSet set = null;
         try {
-            set = (UriSet) serializer.deserialize(client.request(uriSetRequest));
+            byte[] response = client.request(uriSetRequest);
+            if (response != null) {
+                set = (UriSet) serializer.deserialize(response);
+            }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
         }
