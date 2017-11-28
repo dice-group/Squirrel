@@ -58,9 +58,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
                 FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        uriSetRequest = serializer.serialize(new UriSetRequest());
-
         serializer = new GzipJavaUriSerializer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
