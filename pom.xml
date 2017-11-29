@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.8-SNAPSHOT</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq) -->
         <dependency>

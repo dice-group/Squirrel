@@ -3,22 +3,30 @@ package org.aksw.simba.squirrel.worker.impl;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
+import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.deref.DereferencingFetcher;
+import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.log.DomainLogger;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -60,20 +68,17 @@ public class WorkerImpl implements Worker, Closeable {
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime,
             String logDir) {
         this.frontier = frontier;
-        this.sink = sink;
+        collector = SqlBasedUriCollector.create(serializer);
+        if (this.sink == null) {
+            throw new IllegalStateException("Couldn't create database for storing identified URIs.");
+        }
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
-        collector = SqlBasedUriCollector.create(serializer);
-        if (collector == null) {
-            throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
-        }
-        fetcher = new SimpleOrderedFetcherManager(
-//                new SparqlBasedFetcher(), 
-                new HTTPFetcher(), new FTPFetcher());
+        fetcher = new SimpleOrderedFetcherManager(new SparqlBasedFetcher(), new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override

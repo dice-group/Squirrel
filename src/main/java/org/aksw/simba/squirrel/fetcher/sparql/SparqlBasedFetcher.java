@@ -68,7 +68,7 @@ public class SparqlBasedFetcher implements Fetcher {
             execution = qef.createQueryExecution(SELECT_ALL_TRIPLES_QUERY);
             ResultSet resultSet = execution.execSelect();
             RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // If this should have worked, print a message, otherwise silently return null
             if (shouldBeSparql) {
                 LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
