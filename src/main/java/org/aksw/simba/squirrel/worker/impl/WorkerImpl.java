@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.worker.impl;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
@@ -28,13 +21,20 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Standard implementation of the {@link Worker} interface.
- * 
- * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
+ * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
-public class WorkerImpl implements Worker, Closeable {
+public class WorkerImpl implements Worker, Closeable, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
@@ -53,12 +53,15 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime = DEFAULT_WAITING_TIME;
     protected boolean terminateFlag;
 
+    private static int idCounter = 0;
+    private final int id = idCounter++;
+
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime) {
         this(frontier, sink, manager, serializer, waitingTime, null);
     }
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime,
-            String logDir) {
+                      String logDir) {
         this.frontier = frontier;
         this.sink = sink;
         this.manager = manager;
@@ -72,8 +75,8 @@ public class WorkerImpl implements Worker, Closeable {
             throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
         }
         fetcher = new SimpleOrderedFetcherManager(
-//                new SparqlBasedFetcher(), 
-                new HTTPFetcher(), new FTPFetcher());
+//                new SparqlBasedFetcher(),
+            new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override
@@ -146,6 +149,11 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {

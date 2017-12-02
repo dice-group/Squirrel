@@ -1,11 +1,7 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -17,6 +13,7 @@ import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
+import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
@@ -26,10 +23,13 @@ import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-public class WorkerComponent extends AbstractComponent implements Frontier {
+public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
@@ -54,16 +54,29 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         }
 
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-                .build();
+            .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-                FrontierComponent.FRONTIER_QUEUE_NAME);
+            FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                serializer, 2000, outputFolder + File.separator + "log");
+            serializer, 2000, outputFolder + File.separator + "log");
+
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                } catch (IOException e) {
+                    LOGGER.warn(e.toString());
+                }
+            }
+        }, 0, TimeUnit.SECONDS.toMillis(FrontierComponent.TIME_WORKER_DEAD) / 2);
+
         LOGGER.info("Worker initialized.");
     }
 

@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
@@ -25,12 +18,20 @@ import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
+import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.apache.commons.io.FileUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
@@ -49,6 +50,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private DataReceiver receiver;
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
+
+    private final Map<Integer, Date> mapWorkerTimestamps = new HashMap<>();
+
+    /**
+     * After this period of time (in seconds), a worker is considered to be dead if he has not sent an {@link AliveMessage} since.
+     */
+    public final static long TIME_WORKER_DEAD = 10;
 
     @Override
     public void init() throws Exception {
@@ -84,10 +92,24 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
-                .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+            .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
         if (env.containsKey(SEED_FILE_KEY)) {
             processSeedFile(env.get(SEED_FILE_KEY));
         }
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for (int id : mapWorkerTimestamps.keySet()) {
+                    long duration = new Date().getTime() - mapWorkerTimestamps.get(id).getTime();
+                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD) {
+                        // worker is dead
+
+                    }
+                }
+            }
+        }, 0, 1000);
+
         LOGGER.info("Frontier initialized.");
     }
 
@@ -129,7 +151,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     try {
                         List<CrawleableUri> uris = frontier.getNextUris();
                         LOGGER.trace("Responding with a list of {} uris.",
-                                uris == null ? "null" : Integer.toString(uris.size()));
+                            uris == null ? "null" : Integer.toString(uris.size()));
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
@@ -142,8 +164,27 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 frontier.addNewUris(((UriSet) object).uris);
             } else if (object instanceof CrawlingResult) {
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                        ((CrawlingResult) object).crawledUris);
+                    ((CrawlingResult) object).crawledUris);
                 frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
+            } else if (object instanceof AliveMessage) {
+                AliveMessage message = (AliveMessage) object;
+                int idReceived = message.getIdOfWorker();
+
+                LOGGER.info("Received alive message from worker with id " + idReceived);
+
+                if (!mapWorkerTimestamps.containsKey(idReceived)) {
+                    // new worker
+                    mapWorkerTimestamps.put(idReceived, new Date());
+                    LOGGER.info("new worker recognized");
+                    return;
+                }
+
+                for (int id : mapWorkerTimestamps.keySet()) {
+                    if (idReceived == id) {
+                        mapWorkerTimestamps.put(id, new Date());
+                        LOGGER.info("map aktualisiert");
+                    }
+                }
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }
