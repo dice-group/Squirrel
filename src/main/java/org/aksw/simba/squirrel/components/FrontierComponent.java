@@ -117,7 +117,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         continue;
                     }
                     long duration = new Date().getTime() - mapWorkerTimestamps.get(id).getTime();
-                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD) {
+                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 10) {
                         // worker is dead
                         mapWorkerTimestamps.remove(id);
 
@@ -141,7 +141,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     }
                 }
             }
-        }, 0, TIME_WORKER_DEAD / 2);
+        }, 0, TimeUnit.SECONDS.toMillis(TIME_WORKER_DEAD) / 2);
 
         LOGGER.info("Frontier initialized.");
     }

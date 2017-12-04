@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
 
@@ -39,7 +40,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
-
 
 
     @Override
@@ -78,10 +78,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
                     LOGGER.warn(e.toString());
                 }
             }
-        }, 0, FrontierComponent.TIME_WORKER_DEAD);
+        }, 0, TimeUnit.SECONDS.toMillis(FrontierComponent.TIME_WORKER_DEAD) / 2);
 
         LOGGER.info("Worker initialized.");
     }
+
 
     @Override
     public void run() throws Exception {
