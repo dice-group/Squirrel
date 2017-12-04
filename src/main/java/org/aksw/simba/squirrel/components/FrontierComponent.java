@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -51,12 +52,23 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
 
+    /**
+     * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a timestamp that
+     * indicates when the {@link org.aksw.simba.squirrel.worker.Worker} has sent his last {@AliveMessage}.
+     */
     private final Map<Integer, Date> mapWorkerTimestamps = new HashMap<>();
+
+    /**
+     * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a list of {@link CrawleableUri} which contains all URIs
+     * that the worker has claimed to crawl, but has not yet sent a {@link CrawlingResult} for.
+     */
+    private final Map<Integer, List<CrawleableUri>> mapWorkerUris = new HashMap<>();
 
     /**
      * After this period of time (in seconds), a worker is considered to be dead if he has not sent an {@link AliveMessage} since.
      */
     public final static long TIME_WORKER_DEAD = 10;
+
 
     @Override
     public void init() throws Exception {
@@ -101,14 +113,35 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             @Override
             public void run() {
                 for (int id : mapWorkerTimestamps.keySet()) {
+                    if (mapWorkerTimestamps.get(id) == null) {
+                        continue;
+                    }
                     long duration = new Date().getTime() - mapWorkerTimestamps.get(id).getTime();
                     if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD) {
                         // worker is dead
+                        mapWorkerTimestamps.remove(id);
 
+                        if (((FrontierImpl) frontier).getQueue() instanceof IpAddressBasedQueue) {
+
+                            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) ((FrontierImpl) frontier).getQueue();
+
+                            List<InetAddress> lstIPs = new ArrayList<>();
+                            for (CrawleableUri uri : mapWorkerUris.get(id)) {
+                                InetAddress ip = uri.getIpAddress();
+                                if (!lstIPs.contains(ip)) {
+                                    lstIPs.add(ip);
+                                }
+                            }
+
+                            for (InetAddress ip : lstIPs) {
+                                ipQueue.markIpAddressAsAccessible(ip);
+                            }
+                        }
+                        mapWorkerUris.remove(id);
                     }
                 }
             }
-        }, 0, 1000);
+        }, 0, TIME_WORKER_DEAD / 2);
 
         LOGGER.info("Frontier initialized.");
     }
@@ -150,9 +183,18 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     // get next UriSet
                     try {
                         List<CrawleableUri> uris = frontier.getNextUris();
-                        LOGGER.trace("Responding with a list of {} uris.",
+                        LOGGER.info("Responding with a list of {} uris.",
                             uris == null ? "null" : Integer.toString(uris.size()));
+
+                        if (uris == null || uris.size() == 0) {
+                            return;
+                        }
+
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+                        UriSetRequest uriSetRequest = (UriSetRequest) object;
+                        mapWorkerUris.put(uriSetRequest.getIdOfWorker(), uris);
+                        LOGGER.info("Got Uriset request from worker " + uriSetRequest.getIdOfWorker() +
+                            " and sent him " + uris.size() + " uris.");
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
                     }
@@ -163,28 +205,19 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
                 frontier.addNewUris(((UriSet) object).uris);
             } else if (object instanceof CrawlingResult) {
+                CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                    ((CrawlingResult) object).crawledUris);
-                frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
+                    crawlingResult.crawledUris);
+                frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
+                if (mapWorkerUris.get(crawlingResult.idOfWorker) != null) {
+                    mapWorkerUris.get(crawlingResult.idOfWorker).removeAll(crawlingResult.crawledUris);
+                }
             } else if (object instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) object;
                 int idReceived = message.getIdOfWorker();
+                LOGGER.trace("Received alive message from worker with id " + idReceived);
+                mapWorkerTimestamps.put(idReceived, new Date());
 
-                LOGGER.info("Received alive message from worker with id " + idReceived);
-
-                if (!mapWorkerTimestamps.containsKey(idReceived)) {
-                    // new worker
-                    mapWorkerTimestamps.put(idReceived, new Date());
-                    LOGGER.info("new worker recognized");
-                    return;
-                }
-
-                for (int id : mapWorkerTimestamps.keySet()) {
-                    if (idReceived == id) {
-                        mapWorkerTimestamps.put(id, new Date());
-                        LOGGER.info("map aktualisiert");
-                    }
-                }
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

@@ -1,10 +1,10 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 public class CrawlingResult implements Serializable {
 
@@ -12,14 +12,16 @@ public class CrawlingResult implements Serializable {
 
     public List<CrawleableUri> crawledUris;
     public List<CrawleableUri> newUris;
+    public int idOfWorker;
 
-    public CrawlingResult(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public CrawlingResult(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris, int idOfWorker) {
         this.newUris = (newUris == null) ? this.newUris = Collections.emptyList() : newUris;
         this.crawledUris = crawledUris;
+        this.idOfWorker = idOfWorker;
     }
 
     public CrawlingResult(List<CrawleableUri> crawledUris) {
-        this(crawledUris, Collections.emptyList());
+        this(crawledUris, Collections.emptyList(), -1);
     }
 
     @Override

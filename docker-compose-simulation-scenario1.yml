@@ -49,6 +49,18 @@ services:
         - ./scenarios/1/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
+  worker2:
+      image: squirrel
+      container_name: worker2
+      environment:
+        - HOBBIT_RABBIT_HOST=rabbit
+        - OUTPUT_FOLDER=/var/squirrel/data
+  #    networks:
+  #      - squirrel
+      volumes:
+          - ./scenarios/1/worker2:/var/squirrel/data
+      command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+
   SimulationNodeA:
     image: squirrel
     container_name: NodeA

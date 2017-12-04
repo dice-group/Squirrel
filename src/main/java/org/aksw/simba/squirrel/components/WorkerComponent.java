@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
 
@@ -40,6 +39,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
+
+
 
     @Override
     public void init() throws Exception {
@@ -58,12 +59,14 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest());
-
         Sink sink = new FileBasedSink(new File(outputFolder), true);
+
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, 2000, outputFolder + File.separator + "log");
+
+        serializer = new GzipJavaUriSerializer();
+
+        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
 
 
         new Timer().schedule(new TimerTask() {
@@ -75,7 +78,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
                     LOGGER.warn(e.toString());
                 }
             }
-        }, 0, TimeUnit.SECONDS.toMillis(FrontierComponent.TIME_WORKER_DEAD) / 2);
+        }, 0, FrontierComponent.TIME_WORKER_DEAD);
 
         LOGGER.info("Worker initialized.");
     }
@@ -127,7 +130,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris)));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }

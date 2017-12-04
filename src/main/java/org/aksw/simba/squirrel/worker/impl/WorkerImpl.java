@@ -53,8 +53,7 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
     protected long waitingTime = DEFAULT_WAITING_TIME;
     protected boolean terminateFlag;
 
-    private static int idCounter = 0;
-    private final int id = idCounter++;
+    private final int id = (int)Math.floor(Math.random()*100000);
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime) {
         this(frontier, sink, manager, serializer, waitingTime, null);
@@ -155,6 +154,7 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
     public int getId() {
         return id;
     }
+
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
