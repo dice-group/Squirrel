@@ -15,11 +15,11 @@ import static org.junit.Assert.*;
 
 public class FTPFetcherTest {
     @Test
-    public void fetch() throws Exception {
+    public void shouldNotFetchHTTPLinks() throws Exception {
         CrawleableUri danbriUri = new CrawleableUri(new URI("http://danbri.org/foaf.rdf"));
         FTPFetcher fetcher = new FTPFetcher();
         File data = fetcher.fetch(danbriUri);
-        assertNotNull(data);
+        assertNull(data);
     }
 
 }
