@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
@@ -29,10 +30,9 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
@@ -51,23 +51,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private DataReceiver receiver;
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
+    private final WorkerGuard workerMonitor = new WorkerGuard(this);
 
-    /**
-     * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a timestamp that
-     * indicates when the {@link org.aksw.simba.squirrel.worker.Worker} has sent his last {@AliveMessage}.
-     */
-    private final Map<Integer, Date> mapWorkerTimestamps = new HashMap<>();
-
-    /**
-     * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a list of {@link CrawleableUri} which contains all URIs
-     * that the worker has claimed to crawl, but has not yet sent a {@link CrawlingResult} for.
-     */
-    private final Map<Integer, List<CrawleableUri>> mapWorkerUris = new HashMap<>();
-
-    /**
-     * After this period of time (in seconds), a worker is considered to be dead if he has not sent an {@link AliveMessage} since.
-     */
-    public final static long TIME_WORKER_DEAD = 10;
 
 
     @Override
@@ -109,39 +94,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             processSeedFile(env.get(SEED_FILE_KEY));
         }
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                for (int id : mapWorkerTimestamps.keySet()) {
-                    if (mapWorkerTimestamps.get(id) == null) {
-                        continue;
-                    }
-                    long duration = new Date().getTime() - mapWorkerTimestamps.get(id).getTime();
-                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 10) {
-                        // worker is dead
-                        mapWorkerTimestamps.remove(id);
 
-                        if (((FrontierImpl) frontier).getQueue() instanceof IpAddressBasedQueue) {
-
-                            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) ((FrontierImpl) frontier).getQueue();
-
-                            List<InetAddress> lstIPs = new ArrayList<>();
-                            for (CrawleableUri uri : mapWorkerUris.get(id)) {
-                                InetAddress ip = uri.getIpAddress();
-                                if (!lstIPs.contains(ip)) {
-                                    lstIPs.add(ip);
-                                }
-                            }
-
-                            for (InetAddress ip : lstIPs) {
-                                ipQueue.markIpAddressAsAccessible(ip);
-                            }
-                        }
-                        mapWorkerUris.remove(id);
-                    }
-                }
-            }
-        }, 0, TimeUnit.SECONDS.toMillis(TIME_WORKER_DEAD) / 2);
 
         LOGGER.info("Frontier initialized.");
     }
@@ -192,7 +145,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
-                        mapWorkerUris.put(uriSetRequest.getIdOfWorker(), uris);
+                        workerMonitor.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
                         LOGGER.info("Got Uriset request from worker " + uriSetRequest.getIdOfWorker() +
                             " and sent him " + uris.size() + " uris.");
                     } catch (IOException e) {
@@ -209,14 +162,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
                     crawlingResult.crawledUris);
                 frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
-                if (mapWorkerUris.get(crawlingResult.idOfWorker) != null) {
-                    mapWorkerUris.get(crawlingResult.idOfWorker).removeAll(crawlingResult.crawledUris);
-                }
+                workerMonitor.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
+
             } else if (object instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) object;
                 int idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
-                mapWorkerTimestamps.put(idReceived, new Date());
+                workerMonitor.putIntoTimestamps(idReceived);
 
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
@@ -231,5 +183,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }
+    }
+
+    public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+        frontier.informAboutDeadWorker(idOfWorker, lstUrisToReassign);
     }
 }

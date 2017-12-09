@@ -163,4 +163,19 @@ public class FrontierImpl implements Frontier {
             return 0;
         }
     }
+
+    @Override
+    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+        if (queue instanceof IpAddressBasedQueue) {
+            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
+
+            Set<InetAddress> setIps = new HashSet<>();
+            for (CrawleableUri uri : lstUrisToReassign) {
+                InetAddress ip = uri.getIpAddress();
+                setIps.add(ip);
+            }
+            setIps.forEach(ip -> ipQueue.markIpAddressAsAccessible(ip));
+        }
+    }
 }
+

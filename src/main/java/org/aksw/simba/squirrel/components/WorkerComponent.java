@@ -6,6 +6,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -68,7 +69,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
 
-
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -78,7 +78,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
                     LOGGER.warn(e.toString());
                 }
             }
-        }, 0, TimeUnit.SECONDS.toMillis(FrontierComponent.TIME_WORKER_DEAD) / 2);
+        }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
 
         LOGGER.info("Worker initialized.");
     }
@@ -140,6 +140,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
+    }
+
+    /*
+    The WorkerComponent does not have to implement this method.
+     */
+    @Override
+    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
     }
 
 }
