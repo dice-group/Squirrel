@@ -80,4 +80,8 @@ public class WorkerGuard {
         lstAllUris.removeAll(lstUrisToRemove);
         mapWorkerUris.remove(idOfWorker, lstAllUris);
     }
+
+    public Map<Integer, Date> getMapTimestamps() {
+        return mapWorkerTimestamps;
+    }
 }

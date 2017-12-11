@@ -51,7 +51,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private DataReceiver receiver;
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
-    private final WorkerGuard workerMonitor = new WorkerGuard(this);
+    private final WorkerGuard workerGuard = new WorkerGuard(this);
 
 
 
@@ -143,7 +143,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
-                        workerMonitor.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
+                        workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
                         LOGGER.info("Got Uriset request from worker " + uriSetRequest.getIdOfWorker() +
                             " and sent him " + uris.size() + " uris.");
                     } catch (IOException e) {
@@ -160,13 +160,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
                     crawlingResult.crawledUris);
                 frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
-                workerMonitor.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
 
             } else if (object instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) object;
                 int idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
-                workerMonitor.putIntoTimestamps(idReceived);
+                workerGuard.putIntoTimestamps(idReceived);
 
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
@@ -185,5 +185,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
         frontier.informAboutDeadWorker(idOfWorker, lstUrisToReassign);
+    }
+
+    public void setFrontier(FrontierImpl frontier) {
+        this.frontier = frontier;
+    }
+
+    public WorkerGuard getWorkerGuard() {
+        return workerGuard;
     }
 }

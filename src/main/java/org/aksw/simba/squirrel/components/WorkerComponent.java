@@ -83,7 +83,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         LOGGER.info("Worker initialized.");
     }
 
-
     @Override
     public void run() throws Exception {
         worker.run();
@@ -115,6 +114,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             return set.uris;
         }
     }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+
 
     @Override
     public void addNewUri(CrawleableUri uri) {

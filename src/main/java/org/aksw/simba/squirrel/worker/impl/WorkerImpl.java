@@ -80,6 +80,7 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
 
     @Override
     public void run() {
+        LOGGER.info("run method");
         terminateFlag = false;
         List<CrawleableUri> urisToCrawl;
         try {
