@@ -94,8 +94,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             processSeedFile(env.get(SEED_FILE_KEY));
         }
 
-
-
         LOGGER.info("Frontier initialized.");
     }
 

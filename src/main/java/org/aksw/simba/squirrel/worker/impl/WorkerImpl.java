@@ -85,6 +85,7 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
         try {
             while (!terminateFlag) {
                 // ask the Frontier for work
+                LOGGER.info("worker " + id + " asks worker component");
                 urisToCrawl = frontier.getNextUris();
                 if ((urisToCrawl == null) || (urisToCrawl.isEmpty())) {
                     // if there is no work, sleep for some time and ask again

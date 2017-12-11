@@ -1,16 +1,15 @@
 package org.aksw.simba.squirrel.queue;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This abstract class manages two important aspects of an IpAddressBasedQueue.
@@ -62,6 +61,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                 pair = iterator.next();
             } while (blockedIps.contains(pair.ip));
             blockedIps.add(pair.ip);
+            LOGGER.info("ip: " + pair.ip);
             return getUris(pair);
         } finally {
             queueMutex.release();

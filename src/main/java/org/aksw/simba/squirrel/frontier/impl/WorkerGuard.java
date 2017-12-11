@@ -4,6 +4,8 @@ import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +15,8 @@ import java.util.concurrent.TimeUnit;
  * information to the {@link FrontierComponent}.
  */
 public class WorkerGuard {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerGuard.class);
 
     /**
      * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a timestamp that
@@ -46,16 +50,24 @@ public class WorkerGuard {
                     if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 100) {
                         // worker is dead
                         lstIdsToBeRemoved.add(id);
-                        frontierComponent.informFrontierAboutDeadWorker(id, mapWorkerUris.get(id));
-                        mapWorkerUris.remove(id);
                     }
                 }
-                lstIdsToBeRemoved.forEach(id -> mapWorkerTimestamps.remove(id));
+
+                //LOGGER.info("map: " +mapWorkerUris.toString());
+                synchronized (this) {
+                    lstIdsToBeRemoved.forEach(id -> {
+                        mapWorkerTimestamps.remove(id);
+                        frontierComponent.informFrontierAboutDeadWorker(id, mapWorkerUris.get(id));
+                        mapWorkerUris.remove(id);
+                    });
+
+                }
             }
         }, 0, TimeUnit.SECONDS.toMillis(TIME_WORKER_DEAD) / 2);
     }
 
     public void putIntoTimestamps(int idOfWorker) {
+        //LOGGER.info("received alive from " +idOfWorker);
         mapWorkerTimestamps.put(idOfWorker, new Date());
     }
 

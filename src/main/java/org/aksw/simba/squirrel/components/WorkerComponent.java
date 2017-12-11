@@ -100,7 +100,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public List<CrawleableUri> getNextUris() {
         UriSet set = null;
         try {
+            System.out.println("sending uri set request from worker " + worker.getId());
             byte[] response = client.request(uriSetRequest);
+
             if (response != null) {
                 set = (UriSet) serializer.deserialize(response);
             }
