@@ -62,13 +62,17 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
 
         @Override
         public void run() {
-            String replyTo = delivery.getProperties().getReplyTo();
-            String correlationId = delivery.getProperties().getCorrelationId();
-            if ((replyTo != null) && (correlationId != null)) {
-                ((RespondingDataHandler) getDataHandler()).handleData(delivery.getBody(), responseHandler, replyTo,
-                        correlationId);
-            } else {
-                getDataHandler().handleData(delivery.getBody());
+            try {
+                String replyTo = delivery.getProperties().getReplyTo();
+                String correlationId = delivery.getProperties().getCorrelationId();
+                if ((replyTo != null) && (correlationId != null)) {
+                    ((RespondingDataHandler) getDataHandler()).handleData(delivery.getBody(), responseHandler, replyTo,
+                            correlationId);
+                } else {
+                    getDataHandler().handleData(delivery.getBody());
+                }
+            } catch (Throwable e) {
+                LOGGER.error("Uncatched throwable when processing an incoming message in the RPCServer.", e);
             }
         }
 
@@ -82,12 +86,12 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         };
 
         /**
-         * Sets the handler that is called if data is incoming. <b>Note</b> that
-         * a {@link RespondingDataHandler} is expected.
+         * Sets the handler that is called if data is incoming. <b>Note</b> that a
+         * {@link RespondingDataHandler} is expected.
          * 
          * @param dataHandler
-         *            the RespondingDataHandler instance that is called if data
-         *            is incoming
+         *            the RespondingDataHandler instance that is called if data is
+         *            incoming
          * @return this builder instance
          */
         public Builder dataHandler(DataHandler dataHandler) {
@@ -101,10 +105,10 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         }
 
         /**
-         * Method for providing the necessary information to connect to the
-         * queue to which responses should be sent. Note that if this
-         * information is not provided, the {@link RPCServer} instance is still
-         * working but might have performance problems or might get stuck.
+         * Method for providing the necessary information to connect to the queue to
+         * which responses should be sent. Note that if this information is not
+         * provided, the {@link RPCServer} instance is still working but might have
+         * performance problems or might get stuck.
          * 
          * @param factory
          *            the queue factory used to connect to
@@ -116,12 +120,12 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         }
 
         /**
-         * Sets the maximum number of incoming messages that are processed in
-         * parallel. Additional messages have to wait in the queue.
+         * Sets the maximum number of incoming messages that are processed in parallel.
+         * Additional messages have to wait in the queue.
          * 
          * @param maxParallelProcessedMsgs
-         *            the maximum number of incoming messages that are processed
-         *            in parallel
+         *            the maximum number of incoming messages that are processed in
+         *            parallel
          * @return this builder instance
          */
         public Builder maxParallelProcessedMsgs(int maxParallelProcessedMsgs) {
@@ -130,19 +134,18 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         }
 
         /**
-         * Builds the {@link DataReceiverImpl} instance with the previously
-         * given information.
+         * Builds the {@link DataReceiverImpl} instance with the previously given
+         * information.
          * 
          * @return The newly created DataReceiver instance
          * @throws IllegalStateException
-         *             if the dataHandler is missing or if neither a queue nor
-         *             the information needed to create a queue have been
-         *             provided.
+         *             if the dataHandler is missing or if neither a queue nor the
+         *             information needed to create a queue have been provided.
          * @throws IOException
-         *             if an exception is thrown while creating a new queue or
-         *             if the given queue can not be configured by the newly
-         *             created DataReceiver. <b>Note</b> that in the latter case
-         *             the queue will be closed.
+         *             if an exception is thrown while creating a new queue or if the
+         *             given queue can not be configured by the newly created
+         *             DataReceiver. <b>Note</b> that in the latter case the queue will
+         *             be closed.
          */
         public DataReceiverImpl build() throws IllegalStateException, IOException {
             if (dataHandler == null) {
