@@ -80,13 +80,12 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
 
     @Override
     public void run() {
-        LOGGER.info("run method");
         terminateFlag = false;
         List<CrawleableUri> urisToCrawl;
         try {
             while (!terminateFlag) {
                 // ask the Frontier for work
-                LOGGER.info("worker " + id + " asks worker component");
+                System.out.println("worker " + id + " asks worker component");
                 urisToCrawl = frontier.getNextUris();
                 if ((urisToCrawl == null) || (urisToCrawl.isEmpty())) {
                     // if there is no work, sleep for some time and ask again

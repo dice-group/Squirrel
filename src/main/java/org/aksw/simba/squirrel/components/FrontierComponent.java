@@ -134,18 +134,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     // get next UriSet
                     try {
                         List<CrawleableUri> uris = frontier.getNextUris();
-                        LOGGER.info("Responding with a list of {} uris.",
-                            uris == null ? "null" : Integer.toString(uris.size()));
-
-                        if (uris == null || uris.size() == 0) {
-                            return;
-                        }
-
+                        String size = uris == null ? "null" : Integer.toString(uris.size());
+                        LOGGER.info("Responding with a list of {} uris.", size);
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
                         workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
-                        LOGGER.info("Got Uriset request from worker " + uriSetRequest.getIdOfWorker() +
-                            " and sent him " + uris.size() + " uris.");
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
                     }
