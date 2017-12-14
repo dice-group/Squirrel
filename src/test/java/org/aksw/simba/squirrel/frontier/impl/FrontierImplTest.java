@@ -1,13 +1,19 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.exc.ReqlDriverError;
+import com.rethinkdb.net.Connection;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,6 +23,8 @@ import static org.junit.Assert.*;
 
 public class FrontierImplTest {
 
+    RethinkDB r;
+    Connection connection;
     FrontierImpl frontier;
     RDBQueue queue;
     RDBKnownUriFilter filter;
@@ -25,10 +33,41 @@ public class FrontierImplTest {
 
     @Before
     public void setUp() throws Exception {
-        filter = new RDBKnownUriFilter("localhost", 28015);
-        queue = new RDBQueue("localhost", 28015);
-        filter.purge();
-        queue.purge();
+        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
+            "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
+        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
+        BufferedReader stdInput = new BufferedReader(new
+            InputStreamReader(p.getInputStream()));
+        String s = null;
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+        // read any errors from the attempted command
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        System.out.println("Here is the standard error of the command (if any):\n");
+        while ((s = stdError.readLine()) != null)
+        {
+            System.out.println(s);
+        }
+
+        r = RethinkDB.r;
+        int retryCount = 0;
+        while(true) {
+            try {
+                connection = r.connection().hostname("localhost").port(58015).connect();
+                break;
+            } catch(ReqlDriverError error) {
+                System.out.println("Could not connect, retrying");
+                retryCount++;
+                if(retryCount > 10) break;
+                Thread.sleep(5000);
+            }
+        }
+
+        filter = new RDBKnownUriFilter("localhost", 58015);
+        queue = new RDBQueue("localhost", 58015);
+        //filter.purge();
+        //queue.purge();
         frontier = new FrontierImpl(filter, queue);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
@@ -99,4 +138,13 @@ public class FrontierImplTest {
         assertEquals("Number of pending URIs should be 1", 1, numberOfPendingUris);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
+        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
+        p.waitFor();
+        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
+        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
+        p.waitFor();
+    }
 }
