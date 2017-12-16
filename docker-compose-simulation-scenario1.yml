@@ -28,8 +28,19 @@ services:
     image: rabbitmq:management
     container_name: rabbit
     hostname: rabbit
+    ports:
+      - "15672:15672"
 #    networks:
 #      - squirrel
+
+  web:
+    image: java:latest
+    container_name: web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./web/Squirrel-Webservice/target:/etc/store
+    command: java -jar /etc/store/SPRINGtest-1.0-SNAPSHOT.jar
 
   worker1:
     image: squirrel

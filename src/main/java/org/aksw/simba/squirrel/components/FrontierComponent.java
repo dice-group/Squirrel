@@ -92,6 +92,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
+        rabbitQueue.getName();
         // The main thread has nothing to do except waiting for its
         // termination...
         terminationMutex.acquire();
