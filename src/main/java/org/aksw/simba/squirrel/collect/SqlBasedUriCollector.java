@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
  * SQL database.
- * 
+ *
  * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
@@ -42,11 +43,11 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
-    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) FROM uris";
-    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri BLOB primary key)";
+    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) FROM ?";
+    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(255), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ?";
-    protected static final String INSERT_URI_QUERY_PART_1 = "INSERT INTO ";
-    protected static final String INSERT_URI_QUERY_PART_2 = "VALUES(?)";
+    protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
+    protected static final String INSERT_URI_QUERY_PART_2 = "(uri,serial,data) VALUES(?,?,?)";
     // protected static final String CLEAR_TABLE_QUERY = "DELETE FROM uris";
     private static final String SELECT_TABLE_QUERY = "SELECT * FROM ? OFFSET ? FETCH NEXT ? ROWS ONLY ";
     private static final String TABLE_NAME_KEY = "URI_COLLECTOR_TABLE_NAME";
@@ -96,15 +97,17 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) {
         this.dbConnection = dbConnection;
+        this.serializer = serializer;
     }
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
         String tableName = getTableName(uri);
         try {
-            UriTableStatus table = UriTableStatus.create(tableName, dbConnection, bufferSize);
             dbConnection.createStatement().executeUpdate(CREATE_TABLE_QUERY.replace("?", tableName));
             dbConnection.commit();
+            UriTableStatus table = UriTableStatus.create(tableName, dbConnection, bufferSize);
+//            PreparedStatement ps = dbConnection.prepareStatement(CREATE_TABLE_QUERY);
             knownUris.put(uri.getUri().toString(), table);
         } catch (Exception e) {
             LOGGER.info("Couldn't create table for URI \"" + uri.getUri() + "\". ", e);
@@ -114,15 +117,19 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     @Override
     public Iterator<byte[]> getUris(CrawleableUri uri) {
         try {
+
+            String tableName = getTableName(uri);
             Statement s = dbConnection.createStatement();
-            ResultSet trs = s.executeQuery(COUNT_URIS_QUERY);
+            ResultSet trs = s.executeQuery(COUNT_URIS_QUERY.replaceAll("\\?", tableName));
             int total = 0;
             // gets the total lines
             while (trs.next()) {
                 total = trs.getInt(1);
             }
-            PreparedStatement ps = dbConnection.prepareStatement(SELECT_TABLE_QUERY);
-            return new SqlBasedIterator(ps, total);
+            if (total != 0) {
+                PreparedStatement ps = dbConnection.prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
+                return new SqlBasedIterator(ps, total, SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
+            }
         } catch (SQLException e) {
             LOGGER.error("Exception while querying URIs from database. Returning null.");
         }
@@ -148,14 +155,16 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     @Override
     public void addNewUri(CrawleableUri uri, CrawleableUri newUri) {
-        String tableName = getTableName(uri);
-        if (knownUris.containsKey(tableName)) {
-            UriTableStatus table = knownUris.get(tableName);
+        String uriString = uri.getUri().toString();
+        if (knownUris.containsKey(uriString)) {
+            UriTableStatus table = knownUris.get(uriString);
             synchronized (table) {
                 try {
-                    table.addUri(serializer.serialize(newUri));
+                    table.addUri(uriString, serializer.serialize(newUri));
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
+                } catch (Exception e) {
+                    LOGGER.error("Couldn't add URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 }
             }
         } else {
@@ -165,12 +174,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-        String tableName = getTableName(uri);
-        if (knownUris.containsKey(tableName)) {
-            UriTableStatus table = knownUris.remove(tableName);
+        String uriString = uri.getUri().toString();
+        if (knownUris.containsKey(uriString)) {
+            UriTableStatus table = knownUris.remove(uriString);
             synchronized (table) {
                 try {
-                    dbConnection.createStatement().executeUpdate(DROP_TABLE_QUERY.replace("?", tableName));
+                    dbConnection.createStatement().executeUpdate(DROP_TABLE_QUERY.replace("?", getTableName(uri)));
                     dbConnection.commit();
                 } catch (SQLException e) {
                     LOGGER.warn("Couldn't drop table of URI \"" + uri + "\". It will be ignored.", e);
@@ -194,7 +203,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     /**
      * Retrieves the URIs table name from its properties or generates a new table
      * name and adds it to the URI (using the {@value #TABLE_NAME_KEY} property).
-     * 
+     *
      * @param uri
      *            the URI for which a table name is needed.
      * @return the table name of the URI
@@ -215,7 +224,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
      * {@link #MAX_ALPHANUM_PART_OF_TABLE_NAME}={@value #MAX_ALPHANUM_PART_OF_TABLE_NAME}
      * the exceeding part is cut off. After that the hash value of the original URI
      * is appended.
-     * 
+     *
      * @param uri
      *            the URI for which a table name has to be generated
      * @return the table name of the URI
@@ -268,35 +277,42 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             this.insertStmt = insertStmt;
             buffer = new ArrayList<byte[]>(bufferSize);
             this.bufferSize = bufferSize;
+
         }
 
-        public void addUri(byte[] uri) {
+        public void addUri(String newUri, byte[] uri) {
+
             synchronized (buffer) {
                 buffer.add(uri);
                 if (buffer.size() >= bufferSize) {
-                    execute_unsecured();
+                    execute_unsecured(newUri);
                 }
             }
         }
 
         public void clearBuffer() {
             synchronized (buffer) {
-                execute_unsecured();
+                buffer.clear();
             }
         }
 
-        private void execute_unsecured() {
-            for (byte[] data : buffer) {
-                try {
-                    insertStmt.setBytes(1, data);
+        private void execute_unsecured(String newUri) {
+            try {
+                insertStmt.setString(1, newUri);
+                for (byte[] data : buffer) {
+                    insertStmt.setInt(2, data.hashCode());
+                    insertStmt.setBytes(3, data);
                     insertStmt.addBatch();
-                } catch (Exception e) {
-                    LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
                 }
+            } catch (Exception e) {
+                LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
             }
             try {
                 insertStmt.executeBatch();
                 insertStmt.getConnection().commit();
+                clearBuffer();
+            } catch (BatchUpdateException e) {
+                LOGGER.error("URI already exists in the table. It will be ignored.", e);
             } catch (Exception e) {
                 LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }

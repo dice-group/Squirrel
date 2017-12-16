@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Standard implementation of the {@link Worker} interface.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -72,8 +72,8 @@ public class WorkerImpl implements Worker, Closeable {
             throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
         }
         fetcher = new SimpleOrderedFetcherManager(
-//                new SparqlBasedFetcher(), 
-                new HTTPFetcher(), new FTPFetcher());
+//                new SparqlBasedFetcher(),
+            new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override
