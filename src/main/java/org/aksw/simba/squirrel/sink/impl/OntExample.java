@@ -14,7 +14,23 @@ import java.io.IOException;
 import java.util.UUID;
 
 
-public class FusekiExample {
+public class OntExample {
+
+    /*public static void uploadRDF(File rdf, String serviceURI)
+        throws IOException {
+
+
+        Model m = ModelFactory.createDefaultModel();
+
+        try (FileInputStream in = new FileInputStream(rdf)) {
+            m.read(in, null, "RDF/XML");
+        }
+
+        // upload the resulting model
+        DatasetAccessor accessor = DatasetAccessorFactory
+            .createHTTP(serviceURI);
+        accessor.putModel(m);
+    }*/
 
     public static void execSelectAndPrint(String serviceURI, String query) {
         QueryExecution q = QueryExecutionFactory.sparqlService(serviceURI,
@@ -45,10 +61,10 @@ public class FusekiExample {
 
     public static void uploadSampleQuery() {
         String update_sample =
-            "PREFIX dc: <http://purl.org/dc/elements/1.1/>"
+            "PREFIX prov: <http://www.w3.org/ns/prov#>"
                 + "INSERT DATA"
-                + "{ <http://example/%s>    dc:title    \"test book\" ;"
-                + "                         dc:creator  \"N.Other\" ." + "}   ";
+                + "{ <http://example/%s>    prov:title    \"test book\" ;"
+                + "                         prov:creator  \"N.Other\" ." + "}   ";
 
         String id = UUID.randomUUID().toString();
         System.out.println(String.format("Adding %s", id));
