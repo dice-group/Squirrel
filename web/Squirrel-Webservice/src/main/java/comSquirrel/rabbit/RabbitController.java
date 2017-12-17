@@ -17,10 +17,13 @@ public class RabbitController {
 
     private List<SquirrelWebObject> dataQueue = new ArrayList<>();
 
-    @RabbitListener(queues = "WebRabbit")
+    @RabbitListener(queues="squirrel.web")
     public void receivedMessage(SquirrelWebObject data) {
         dataQueue.add(data);
     }
+
+//    @RabbitListener(queues="squirrel.web")
+//    public void receivedStrings(String message) { System.out.println(message); }
 
     @RequestMapping(method = RequestMethod.GET, path = "/observer", produces = MediaType.APPLICATION_JSON_VALUE)
     public SquirrelWebObject observeFrontier() {

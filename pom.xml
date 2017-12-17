@@ -16,7 +16,7 @@
     </properties>
 
     <repositories>
-        <!-- Let's use a local repository for the local libraries of this 
+        <!-- Let's use a local repository for the local libraries of this
             project -->
         <repository>
             <id>local repository</id>
@@ -124,27 +124,44 @@
             <version>2.3.3</version>
         </dependency>
         <!-- End RethinkDB client -->
-        
+
+        <!-- Rabbit MQ: client library -->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>SPRINGWebSquirrel</groupId>
+            <artifactId>SPRINGWebSquirrelJar</artifactId>
+            <version>1.0</version>
+            <systemPath>${basedir}/web/Squirrel-Webservice/target/SPRINGWebSquirrelJar-1.0.jar</systemPath>
+            <scope>system</scope>
+        </dependency> -->
+
         <!-- HSQLDB (used inside of workers to store URIs)-->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.2</version>
         </dependency>
-        
-        <!-- We use the simpleframework to use local HTTP servers for our 
+
+        <!-- We use the simpleframework to use local HTTP servers for our
             JUnit tests and test scenarios -->
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>
             <version>5.1.6</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>1.1.4</version>
         </dependency>
+
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- JUnit -->

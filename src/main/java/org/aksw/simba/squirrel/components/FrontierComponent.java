@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeoutException;
 
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
@@ -31,11 +32,18 @@ import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.Channel;
+
+
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
+//    private final static String WEB_QUEUE_NAME = "squirrel.web";
+//    private Channel webqueuechannel;
 
     private static final String SEED_FILE_KEY = "SEED_FILE";
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
@@ -78,6 +86,16 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(-1);
         }
 
+        //Build rabbit queue to the web
+//        ConnectionFactory factory = new ConnectionFactory();
+//        factory.setHost("localhost");
+//        factory.setUsername("guest");
+//        factory.setPassword("guest");
+//        factory.setPort(15672);
+//        Connection connection = factory.newConnection();
+//        webqueuechannel = connection.createChannel();
+//        webqueuechannel.queueDeclare(WEB_QUEUE_NAME, false, false, false, null);
+
         // Build frontier
         frontier = new FrontierImpl(knownUriFilter, queue);
 
@@ -92,7 +110,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        rabbitQueue.getName();
+//        boolean informWebService= true;
+//        while (informWebService) {
+//            String message = "Hello World!";
+//            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, message.getBytes());
+//        }
         // The main thread has nothing to do except waiting for its
         // termination...
         terminationMutex.acquire();
@@ -102,6 +124,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void close() throws IOException {
         receiver.closeWhenFinished();
         queue.close();
+//        try {
+//            webqueuechannel.close();
+//            connection.close();
+//        } catch (TimeoutException e) {
+//            e.printStackTrace();
+//        }
         if (knownUriFilter instanceof Closeable) {
             ((Closeable) knownUriFilter).close();
         }
@@ -119,7 +147,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         try {
             object = serializer.deserialize(data);
         } catch (IOException e) {
-            LOGGER.error("Error whily trying to deserialize incoming data. It will be ignored.", e);
+            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
         if (object != null) {
             if (object instanceof UriSetRequest) {
