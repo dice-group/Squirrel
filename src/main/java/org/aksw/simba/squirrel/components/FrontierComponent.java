@@ -1,13 +1,12 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeoutException;
 
+import com.SquirrelWebObject;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
@@ -36,14 +35,13 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 
-
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
-//    private final static String WEB_QUEUE_NAME = "squirrel.web";
-//    private Channel webqueuechannel;
+    private final static String WEB_QUEUE_NAME = "squirrel.web";
+    private Channel webqueuechannel;
 
     private static final String SEED_FILE_KEY = "SEED_FILE";
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
@@ -87,14 +85,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         //Build rabbit queue to the web
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost("localhost");
-//        factory.setUsername("guest");
-//        factory.setPassword("guest");
-//        factory.setPort(15672);
-//        Connection connection = factory.newConnection();
-//        webqueuechannel = connection.createChannel();
-//        webqueuechannel.queueDeclare(WEB_QUEUE_NAME, false, false, false, null);
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("rabbit");
+        factory.setUsername("guest");
+        factory.setPassword("guest");
+        Connection connection = factory.newConnection();
+        webqueuechannel = connection.createChannel();
+        webqueuechannel.queueDeclare(WEB_QUEUE_NAME, false, false, false, null);
 
         // Build frontier
         frontier = new FrontierImpl(knownUriFilter, queue);
@@ -110,11 +107,28 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-//        boolean informWebService= true;
-//        while (informWebService) {
-//            String message = "Hello World!";
-//            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, message.getBytes());
-//        }
+        boolean informWebService= true;
+        while (informWebService) {
+            byte[] bytes = null;
+            ByteArrayOutputStream bos = null;
+            ObjectOutputStream oos = null;
+            try {
+                bos = new ByteArrayOutputStream();
+                oos = new ObjectOutputStream(bos);
+                oos.writeObject(new SquirrelWebObject());
+                oos.flush();
+                bytes = bos.toByteArray();
+            } finally {
+                if (oos != null) {
+                    oos.close();
+                }
+                if (bos != null) {
+                    bos.close();
+                }
+            }
+            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, bytes);
+            LOGGER.info("Putted a SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
+        }
         // The main thread has nothing to do except waiting for its
         // termination...
         terminationMutex.acquire();

@@ -132,14 +132,13 @@
             <version>4.3.0</version>
         </dependency>
 
-        <!--
         <dependency>
             <groupId>SPRINGWebSquirrel</groupId>
             <artifactId>SPRINGWebSquirrelJar</artifactId>
             <version>1.0</version>
-            <systemPath>${basedir}/web/Squirrel-Webservice/target/SPRINGWebSquirrelJar-1.0.jar</systemPath>
+            <systemPath>${env.HOMEDRIVE}/${env.HOMEPATH}/Documents/Java/SquirrelWebObjectJar/target/SquirrelWebObjectJar-1.0.jar</systemPath>
             <scope>system</scope>
-        </dependency> -->
+        </dependency>
 
         <!-- HSQLDB (used inside of workers to store URIs)-->
         <dependency>
