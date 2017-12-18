@@ -1,5 +1,7 @@
 package org.aksw.simba.squirrel.simulation;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,17 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
+import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -118,12 +124,17 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws IOException {
+        File tempDir = TempFileHelper.getTempDir("uris", ".db");
+        tempDir.deleteOnExit();
+
         Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
+        Serializer serializer = new GzipJavaUriSerializer();
+        UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
         WorkerImpl worker = new WorkerImpl(frontier, sink,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                new GzipJavaUriSerializer(), 100);
+                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
+                null);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -139,7 +150,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
                 Assert.fail(e.getLocalizedMessage());
             }
             Assert.assertTrue("The worker crashed", t.isAlive());
-        } while ((frontier.getNumberOfPendingUris() > 0));
+        } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
+                                                           // save.
         worker.setTerminateFlag(true);
 
         // compare the expected results with those found inside the sink
