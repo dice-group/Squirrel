@@ -35,7 +35,7 @@ public class FTPFetcher implements Fetcher {
     @Override
     public File fetch(CrawleableUri uri) {
         // Check whether this fetcher can handle the given URI
-        if ((uri == null) || (uri.getUri() == null) || (ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
+        if ((uri == null) || (uri.getUri() == null) || (!ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;
         }
         // create temporary file

@@ -64,7 +64,7 @@ public class HTTPFetcher implements Fetcher {
     @Override
     public File fetch(CrawleableUri uri) {
         // Check whether this fetcher can handle the given URI
-        if ((uri == null) || (uri.getUri() == null) || (ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
+        if ((uri == null) || (uri.getUri() == null) || (!ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;
         }
         // create temporary file
@@ -121,7 +121,7 @@ public class HTTPFetcher implements Fetcher {
                 String typeValues[] = contentTypeHeader.getValue().split(";");
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, typeValues[0]);
                 // If the content type contains a charset
-                if (typeValues.length > 0) {
+                if (typeValues.length > 1) {
                     uri.addData(Constants.URI_HTTP_CHARSET_KEY, typeValues[1]);
                 }
             } else {
