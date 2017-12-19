@@ -4,6 +4,7 @@ import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.net.Connection;
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class RethinkDBMockTest extends TestCase {
         }
     }
 
+    @Ignore
     public void test() {
         r.dbCreate("testDb").run(connection);
         List<String> dbList = r.dbList().run(connection);
@@ -54,10 +56,12 @@ public class RethinkDBMockTest extends TestCase {
         r.dbDrop("testDb");
     }
 
-    public void tearDown() throws IOException {
+    public void tearDown() throws IOException, InterruptedException {
         String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
+        p.waitFor();
         String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
+        p.waitFor();
     }
 }
