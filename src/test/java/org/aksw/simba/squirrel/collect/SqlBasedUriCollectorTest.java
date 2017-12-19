@@ -18,10 +18,12 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SqlBasedUriCollectorTest {
 
+    @Ignore
     @Test
     public void test() throws Exception {
         String dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
