@@ -12,7 +12,6 @@ public class SqlBasedIterator implements Iterator<byte[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedIterator.class);
 
-    private static String SELECT_TABLE_QUERY = "";
 
     protected PreparedStatement ps;
     protected ResultSet rs;
@@ -20,11 +19,8 @@ public class SqlBasedIterator implements Iterator<byte[]> {
     private int start = 0;
     private int next = 5;
     private int page = 5;
-    private int countTotal = 0;
 
-    public SqlBasedIterator(PreparedStatement ps, int count, String query) {
-    	SELECT_TABLE_QUERY = query;
-        countTotal = count;
+    public SqlBasedIterator(PreparedStatement ps) {
         this.ps = ps;
         try {
             ps.setInt(1, start);
@@ -44,7 +40,6 @@ public class SqlBasedIterator implements Iterator<byte[]> {
 
         		if(start == next) {
         			next = next + page;
-        			ps = ps.getConnection().prepareStatement(SELECT_TABLE_QUERY);
                     ps.setInt(1, start);
                     ps.setInt(2, next);
                     rs = ps.executeQuery();

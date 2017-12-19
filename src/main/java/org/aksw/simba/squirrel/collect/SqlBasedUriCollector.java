@@ -122,18 +122,11 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     String tableName = table.getTableName();
                     // Make sure everything has been committed
                     table.commitPendingChanges();
-                    Statement s = dbConnection.createStatement();
-                    ResultSet trs = s.executeQuery(COUNT_URIS_QUERY + tableName);
-                    int total = 0;
-                    // gets the total lines
-                    while (trs.next()) {
-                        total = trs.getInt(1);
-                    }
-                    if (total != 0) {
+           
                         PreparedStatement ps = dbConnection
                                 .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
-                        return new SqlBasedIterator(ps, total, SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
-                    }
+                        return new SqlBasedIterator(ps);
+                    
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
                             e.getMessage());
