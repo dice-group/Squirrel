@@ -109,24 +109,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void run() throws Exception {
         boolean informWebService= true;
         while (informWebService) {
-            byte[] bytes = null;
-            ByteArrayOutputStream bos = null;
-            ObjectOutputStream oos = null;
-            try {
-                bos = new ByteArrayOutputStream();
-                oos = new ObjectOutputStream(bos);
-                oos.writeObject(new SquirrelWebObject());
-                oos.flush();
-                bytes = bos.toByteArray();
-            } finally {
-                if (oos != null) {
-                    oos.close();
-                }
-                if (bos != null) {
-                    bos.close();
-                }
-            }
-            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, bytes);
+            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, new SquirrelWebObject().convertToByteStream());
             LOGGER.info("Putted a SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
         }
         // The main thread has nothing to do except waiting for its
