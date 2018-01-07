@@ -67,7 +67,6 @@ public class WorkerGuard {
     }
 
     public void putIntoTimestamps(int idOfWorker) {
-        //LOGGER.info("received alive from " +idOfWorker);
         mapWorkerTimestamps.put(idOfWorker, new Date());
     }
 

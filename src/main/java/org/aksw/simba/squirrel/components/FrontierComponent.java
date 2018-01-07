@@ -138,7 +138,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         LOGGER.info("Responding with a list of {} uris.", size);
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
-                        workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
+                        if (uris != null && uris.size() > 0) {
+                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
                     }
