@@ -1,5 +1,12 @@
 package org.aksw.simba.squirrel.worker.impl;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
@@ -33,6 +40,7 @@ import java.util.List;
  * Standard implementation of the {@link Worker} interface.
  *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
+ *
  */
 public class WorkerImpl implements Worker, Closeable, Serializable {
 
@@ -50,17 +58,119 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
     protected String domainLogFile = null;
-    protected long waitingTime = DEFAULT_WAITING_TIME;
+    protected long waitingTime;
     protected boolean terminateFlag;
 
     private final int id = (int)Math.floor(Math.random()*100000);
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime) {
         this(frontier, sink, manager, serializer, waitingTime, null);
+    /**
+     * Constructor.
+     *
+     * @param frontier
+     *            Frontier implementation used by this worker to get URI sets and
+     *            send new URIs to.
+     * @param sink
+     *            Sink used by this worker to store crawled data.
+     * @param manager
+     *            RobotsManager for handling robots.txt files.
+     * @param serializer
+     *            Serializer for serializing and deserializing URIs.
+     * @param waitingTime
+     *            The time the worker waits if it did not got any
+     * @deprecated Because a default configuration of the UriCollector is created.
+     *             Please use
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
+     *             or
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
+     *             instead.
+     */
+    @Deprecated
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer) {
+        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, null);
     }
 
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, long waitingTime,
                       String logDir) {
+    /**
+     * Constructor.
+     *
+     * @param frontier
+     *            Frontier implementation used by this worker to get URI sets and
+     *            send new URIs to.
+     * @param sink
+     *            Sink used by this worker to store crawled data.
+     * @param manager
+     *            RobotsManager for handling robots.txt files.
+     * @param serializer
+     *            Serializer for serializing and deserializing URIs.
+     * @param collector
+     *            The UriCollector implementation used by this worker.
+     * @param waitingTime
+     *            Time (in ms) the worker waits when the given frontier couldn't
+     *            provide any URIs before requesting new URIs again.
+     * @param logDir
+     *            The directory to which a domain log will be written (or
+     *            {@code null} if no log should be written).
+     */
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, String logDir) {
+        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, logDir);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param frontier
+     *            Frontier implementation used by this worker to get URI sets and
+     *            send new URIs to.
+     * @param sink
+     *            Sink used by this worker to store crawled data.
+     * @param manager
+     *            RobotsManager for handling robots.txt files.
+     * @param serializer
+     *            Serializer for serializing and deserializing URIs.
+     * @param collector
+     *            The UriCollector implementation used by this worker.
+     * @param waitingTime
+     *            Time (in ms) the worker waits when the given frontier couldn't
+     *            provide any URIs before requesting new URIs again.
+     * @deprecated Because a default configuration of the UriCollector is created.
+     *             Please use
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
+     *             or
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
+     *             instead.
+     */
+    @Deprecated
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+            UriCollector collector) {
+        this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param frontier
+     *            Frontier implementation used by this worker to get URI sets and
+     *            send new URIs to.
+     * @param sink
+     *            Sink used by this worker to store crawled data.
+     * @param manager
+     *            RobotsManager for handling robots.txt files.
+     * @param serializer
+     *            Serializer for serializing and deserializing URIs.
+     * @param collector
+     *            The UriCollector implementation used by this worker.
+     * @param waitingTime
+     *            Time (in ms) the worker waits when the given frontier couldn't
+     *            provide any URIs before requesting new URIs again.
+     * @param logDir
+     *            The directory to which a domain log will be written (or
+     *            {@code null} if no log should be written).
+     */
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+            UriCollector collector, long waitingTime, String logDir) {
         this.frontier = frontier;
         this.sink = sink;
         this.manager = manager;
@@ -69,13 +179,18 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
-        collector = SqlBasedUriCollector.create(serializer);
+        // Make sure that there is a collector. Otherwise, create one.
         if (collector == null) {
-            throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
+            LOGGER.warn("Will use a default configuration of the URI collector.");
+            collector = SqlBasedUriCollector.create(serializer);
+            if (collector == null) {
+                throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
+            }
         }
+        this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-//                new SparqlBasedFetcher(),
-            new HTTPFetcher(), new FTPFetcher());
+                // new SparqlBasedFetcher(),
+                new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override
@@ -150,12 +265,6 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
         }
         LOGGER.debug("Fetched {} triples", count);
     }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);

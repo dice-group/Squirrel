@@ -1,12 +1,19 @@
 package org.aksw.simba.squirrel.components;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -14,7 +21,6 @@ import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
@@ -42,7 +48,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private byte[] uriSetRequest;
     private Serializer serializer;
 
-
     @Override
     public void init() throws Exception {
         super.init();
@@ -56,9 +61,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         }
 
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-            .build();
+                .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
+                FrontierComponent.FRONTIER_QUEUE_NAME);
+
+        serializer = new GzipJavaUriSerializer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
+        UriCollector collector = SqlBasedUriCollector.create(serializer);
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
 
@@ -80,6 +89,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             }
         }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
 
+                serializer, collector, 2000, outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 
@@ -140,7 +150,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
