@@ -47,13 +47,12 @@ public class WorkerGuard {
                         continue;
                     }
                     long duration = new Date().getTime() - mapWorkerTimestamps.get(id).getTime();
-                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 100) {
+                    if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 10) {
                         // worker is dead
                         lstIdsToBeRemoved.add(id);
                     }
                 }
 
-                //LOGGER.info("map: " +mapWorkerUris.toString());
                 synchronized (this) {
                     lstIdsToBeRemoved.forEach(id -> {
                         mapWorkerTimestamps.remove(id);

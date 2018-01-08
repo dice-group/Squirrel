@@ -1,13 +1,7 @@
 package org.aksw.simba.squirrel.simulation;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -38,8 +32,13 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
@@ -133,8 +132,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
         WorkerImpl worker = new WorkerImpl(frontier, sink,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-                null);
+            new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
+            null);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -151,7 +150,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
             }
             Assert.assertTrue("The worker crashed", t.isAlive());
         } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
-                                                           // save.
+        // save.
         worker.setTerminateFlag(true);
 
         // compare the expected results with those found inside the sink

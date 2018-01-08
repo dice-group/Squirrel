@@ -1,13 +1,9 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.components.WorkerComponent;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.queue.RDBQueue;
-import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -38,9 +34,8 @@ public class WorkerGuardTest {
         frontierComponent = new FrontierComponent();
         frontierComponent.setFrontier(frontier);
 
-        worker = new WorkerImpl(frontier, sink,
-            new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            new GzipJavaUriSerializer(), 100);
+        //worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
+        //  serializer, collector, 2000, outputFolder + File.separator + "log");
         workerComponent.setWorker(worker);
     }
 
