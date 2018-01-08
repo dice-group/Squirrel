@@ -1,12 +1,14 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeoutException;
 
 import com.SquirrelWebObject;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
@@ -151,15 +153,22 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 if (handler != null) {
                     // get next UriSet
                     try {
-                        handler.sendResponse(serializer.serialize(new UriSet(frontier.getNextUris())),
-                                responseQueueName, correlId);
+                        List<CrawleableUri> uris = frontier.getNextUris();
+                        LOGGER.trace("Responding with a list of {} uris.",
+                                uris == null ? "null" : Integer.toString(uris.size()));
+                        handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
                     }
+                } else {
+                    LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
                 }
             } else if (object instanceof UriSet) {
+                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
                 frontier.addNewUris(((UriSet) object).uris);
             } else if (object instanceof CrawlingResult) {
+                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
+                        ((CrawlingResult) object).crawledUris);
                 frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());

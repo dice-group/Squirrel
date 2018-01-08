@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -58,13 +60,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
                 FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        uriSetRequest = serializer.serialize(new UriSetRequest());
-
         serializer = new GzipJavaUriSerializer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
+        UriCollector collector = SqlBasedUriCollector.create(serializer);
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                serializer, 2000, outputFolder + File.separator + "log");
+                serializer, collector, 2000, outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 
@@ -82,9 +84,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-        UriSet set=null;
+        UriSet set = null;
         try {
-            set = (UriSet) serializer.deserialize(client.request(uriSetRequest));
+            byte[] response = client.request(uriSetRequest);
+            if (response != null) {
+                set = (UriSet) serializer.deserialize(response);
+            }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
         }

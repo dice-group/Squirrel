@@ -63,6 +63,7 @@ public class AnalyzerTest {
 		int cont = 0;
 		while(uris.hasNext()) {
 			cont ++;
+			uris.next();
 		}
 		
 		Assert.assertEquals(expectedUris, cont);

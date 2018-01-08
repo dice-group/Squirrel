@@ -78,7 +78,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
-        Cursor cursor = r.db("squirrel")
+        Cursor<Long> cursor = r.db("squirrel")
                 .table("knownurifilter")
                 .getAll(uri.getUri().toString())
                 .optArg("index", "uri")
@@ -86,9 +86,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
                 .run(connector.connection);
         if(cursor.hasNext()) {
             LOGGER.debug("URI {} is not good", uri.toString());
-            Object timestampRetrieved = cursor.next();
+            Long timestampRetrieved = cursor.next();
             cursor.close();
-            if((System.currentTimeMillis() - (long) timestampRetrieved) < recrawlEveryWeek) {
+            if((System.currentTimeMillis() - timestampRetrieved) < recrawlEveryWeek) {
                 return false;
             } else {
                 return true;

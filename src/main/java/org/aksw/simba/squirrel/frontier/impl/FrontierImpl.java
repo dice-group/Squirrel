@@ -16,8 +16,6 @@ import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
-import org.apache.http.HttpHost;
-import org.apache.http.client.utils.URIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
