@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Standard implementation of the {@link Worker} interface.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -55,7 +55,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -65,8 +65,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            RobotsManager for handling robots.txt files.
      * @param serializer
      *            Serializer for serializing and deserializing URIs.
-     * @param waitingTime
-     *            The time the worker waits if it did not got any
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
      *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
@@ -81,7 +79,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -91,11 +89,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            RobotsManager for handling robots.txt files.
      * @param serializer
      *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
      * @param logDir
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
@@ -106,7 +99,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -118,9 +111,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            Serializer for serializing and deserializing URIs.
      * @param collector
      *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
      *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
@@ -136,7 +126,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.

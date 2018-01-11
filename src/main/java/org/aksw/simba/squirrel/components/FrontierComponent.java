@@ -109,10 +109,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        boolean informWebService= true;
+        boolean informWebService = true;
+        SquirrelWebObject lastSentObject = null;
         while (informWebService) {
-            webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, new SquirrelWebObject().convertToByteStream());
-            LOGGER.info("Putted a SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
+            SquirrelWebObject newObjet = new SquirrelWebObject();
+            //TODO (Waleed): fill here the SquirrelWebObject
+            if (lastSentObject == null || !newObjet.equals(lastSentObject)) {
+                webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObjet.convertToByteStream());
+                LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
+                lastSentObject = newObjet;
+            }
+            Thread.sleep(50);
         }
         // The main thread has nothing to do except waiting for its
         // termination...

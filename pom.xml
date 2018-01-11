@@ -135,7 +135,7 @@
         <dependency>
             <groupId>SquirrelWebObject</groupId>
             <artifactId>SquirrelWebObjectJar</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
 
         <!-- HSQLDB (used inside of workers to store URIs)-->
