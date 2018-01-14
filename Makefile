@@ -9,7 +9,7 @@ build: down
 dockerize: build
 	docker build -t squirrel .
 
-start: dockerize
+all: dockerize
 	docker-compose -f deployment/docker-compose-simulation-scenario1.yml up
 
 clean:
