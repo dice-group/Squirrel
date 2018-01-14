@@ -212,6 +212,7 @@ public class WorkerImpl implements Worker, Closeable, Serializable {
             File data = null;
 
             try {
+                LOGGER.info("worker will fetch now");
                 data = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...");

@@ -96,7 +96,6 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-        LOGGER.info("Klasse: " + queue.getClass());
         return queue.getNextUris();
     }
 
