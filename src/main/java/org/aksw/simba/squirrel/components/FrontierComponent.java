@@ -112,12 +112,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         boolean informWebService = true;
         SquirrelWebObject lastSentObject = null;
         while (informWebService) {
-            SquirrelWebObject newObjet = new SquirrelWebObject();
+            SquirrelWebObject newObject = new SquirrelWebObject();
+            newObject.setRuntimeInSeconds(System.currentTimeMillis());
             //TODO (Waleed): fill here the SquirrelWebObject
-            if (lastSentObject == null || !newObjet.equals(lastSentObject)) {
-                webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObjet.convertToByteStream());
+            if (lastSentObject == null || !newObject.equals(lastSentObject)) {
+                webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
                 LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
-                lastSentObject = newObjet;
+                lastSentObject = newObject;
             }
             Thread.sleep(50);
         }
