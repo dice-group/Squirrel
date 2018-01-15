@@ -2,6 +2,9 @@ package org.aksw.simba.squirrel.model;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.net.Connection;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -9,6 +12,9 @@ import java.util.List;
  * Created by ivan on 8/30/16.
  */
 public class RDBConnector {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
+
     public Connection connection = null;
     RethinkDB r = RethinkDB.r;
     String hostname;

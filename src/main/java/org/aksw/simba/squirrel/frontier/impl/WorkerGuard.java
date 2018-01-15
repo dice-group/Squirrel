@@ -37,6 +37,9 @@ public class WorkerGuard {
     public final static long TIME_WORKER_DEAD = 10;
 
 
+    private int numberOfDeadWorkers = 0;
+
+
     public WorkerGuard(FrontierComponent frontierComponent) {
         new Timer().schedule(new TimerTask() {
             @Override
@@ -58,6 +61,7 @@ public class WorkerGuard {
                         mapWorkerTimestamps.remove(id);
                         frontierComponent.informFrontierAboutDeadWorker(id, mapWorkerUris.get(id));
                         mapWorkerUris.remove(id);
+                        numberOfDeadWorkers++;
                     });
 
                 }
@@ -79,7 +83,15 @@ public class WorkerGuard {
         mapWorkerUris.remove(idOfWorker, lstAllUris);
     }
 
+    public int getNumberOfLiveWorkers() {
+        return mapWorkerTimestamps.size();
+    }
+
     public Map<Integer, Date> getMapTimestamps() {
         return mapWorkerTimestamps;
+    }
+
+    public int getNumberOfDeadWorker() {
+        return numberOfDeadWorkers;
     }
 }

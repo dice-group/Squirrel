@@ -36,7 +36,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
-    private static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
+    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
 
     private Worker worker;
     private DataSender sender;
