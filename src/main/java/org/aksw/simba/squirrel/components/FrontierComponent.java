@@ -127,6 +127,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         while (informWebService) {
             SquirrelWebObject newObject = new SquirrelWebObject();
             newObject.setRuntimeInSeconds(Math.round(System.currentTimeMillis()/1000));
+            newObject.setCountOfWorker(workerGuard.getNumberOfLiveWorkers());
+            newObject.setCountofDeadWorker(workerGuard.getNumberOfDeadWorker());
             //TODO (Philipp): fill here the SquirrelWebObject
             if (lastSentObject == null || !newObject.equals(lastSentObject)) {
                 webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
