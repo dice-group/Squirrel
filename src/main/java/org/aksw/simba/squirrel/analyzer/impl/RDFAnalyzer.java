@@ -1,9 +1,5 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Iterator;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -17,6 +13,10 @@ import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Iterator;
 
 public class RDFAnalyzer implements Analyzer {
 
@@ -55,7 +55,7 @@ public class RDFAnalyzer implements Analyzer {
         private CrawleableUri curi;
         private Sink sink;
         private UriCollector collector;
-        
+
         public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector) {
             this.curi = curi;
             this.sink = sink;

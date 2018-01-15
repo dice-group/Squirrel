@@ -1,22 +1,5 @@
 package org.aksw.simba.squirrel.collect;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.BatchUpdateException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -26,10 +9,21 @@ import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
  * SQL database.
- * 
+ *
  * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
@@ -115,6 +109,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     @Override
     public Iterator<byte[]> getUris(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
+        LOGGER.info("knownUris: " + knownUris);
         if (knownUris.containsKey(uriString)) {
             UriTableStatus table = knownUris.get(uriString);
             synchronized (table) {
@@ -131,12 +126,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     }
                     if (total != 0) {
                         PreparedStatement ps = dbConnection
-                                .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
+                            .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
                         return new SqlBasedIterator(ps, total, SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
                     }
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                            e.getMessage());
+                        e.getMessage());
                 }
             }
         } else {
@@ -212,7 +207,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     /**
      * Retrieves the URIs table name from its properties or generates a new table
      * name and adds it to the URI (using the {@value #TABLE_NAME_KEY} property).
-     * 
+     *
      * @param uri
      *            the URI for which a table name is needed.
      * @return the table name of the URI
@@ -233,7 +228,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
      * {@link #MAX_ALPHANUM_PART_OF_TABLE_NAME}={@value #MAX_ALPHANUM_PART_OF_TABLE_NAME}
      * the exceeding part is cut off. After that the hash value of the original URI
      * is appended.
-     * 
+     *
      * @param uri
      *            the URI for which a table name has to be generated
      * @return the table name of the URI
