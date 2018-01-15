@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.worker.impl;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
@@ -27,6 +20,13 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -52,6 +52,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected String domainLogFile = null;
     protected long waitingTime;
     protected boolean terminateFlag;
+    private final int id = (int)Math.floor(Math.random()*100000);
 
     /**
      * Constructor.
@@ -65,6 +66,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            RobotsManager for handling robots.txt files.
      * @param serializer
      *            Serializer for serializing and deserializing URIs.
+     *
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
      *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
@@ -89,6 +91,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            RobotsManager for handling robots.txt files.
      * @param serializer
      *            Serializer for serializing and deserializing URIs.
+     *
      * @param logDir
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
@@ -111,6 +114,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            Serializer for serializing and deserializing URIs.
      * @param collector
      *            The UriCollector implementation used by this worker.
+     *
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
      *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
@@ -120,7 +124,7 @@ public class WorkerImpl implements Worker, Closeable {
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-            UriCollector collector) {
+                      UriCollector collector) {
         this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null);
     }
 
@@ -146,7 +150,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            {@code null} if no log should be written).
      */
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-            UriCollector collector, long waitingTime, String logDir) {
+                      UriCollector collector, long waitingTime, String logDir) {
         this.frontier = frontier;
         this.sink = sink;
         this.manager = manager;
@@ -165,8 +169,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new FTPFetcher());
+            // new SparqlBasedFetcher(),
+            new HTTPFetcher(), new FTPFetcher());
     }
 
     @Override
@@ -210,7 +214,7 @@ public class WorkerImpl implements Worker, Closeable {
                     performCrawling(uri, newUris);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
-                            + "\". It will be ignored.", e);
+                        + "\". It will be ignored.", e);
                 }
             }
         }
@@ -262,6 +266,11 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
         CrawleableUri uri;
@@ -288,10 +297,6 @@ public class WorkerImpl implements Worker, Closeable {
 
     public void setTerminateFlag(boolean terminateFlag) {
         this.terminateFlag = terminateFlag;
-    }
-
-    public static void main(String[] args) {
-
     }
 
 }

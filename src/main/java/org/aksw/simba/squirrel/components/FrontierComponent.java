@@ -17,6 +17,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
@@ -26,12 +27,20 @@ import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
+import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.apache.commons.io.FileUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
@@ -56,6 +65,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private DataReceiver receiver;
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
+    private final WorkerGuard workerGuard = new WorkerGuard(this);
+
+
 
     @Override
     public void init() throws Exception {
@@ -100,10 +112,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
-                .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+            .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
         if (env.containsKey(SEED_FILE_KEY)) {
             processSeedFile(env.get(SEED_FILE_KEY));
         }
+
         LOGGER.info("Frontier initialized.");
     }
 
@@ -156,15 +169,20 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         } catch (IOException e) {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
+        LOGGER.trace("Got a message (\"{}\").", object.toString());
         if (object != null) {
             if (object instanceof UriSetRequest) {
                 if (handler != null) {
                     // get next UriSet
                     try {
                         List<CrawleableUri> uris = frontier.getNextUris();
-                        LOGGER.trace("Responding with a list of {} uris.",
-                                uris == null ? "null" : Integer.toString(uris.size()));
+                        String size = uris == null ? "null" : Integer.toString(uris.size());
+                        LOGGER.info("Responding with a list of {} uris.", size);
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+                        UriSetRequest uriSetRequest = (UriSetRequest) object;
+                        if (uris != null && uris.size() > 0) {
+                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
                     }
@@ -175,9 +193,18 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
                 frontier.addNewUris(((UriSet) object).uris);
             } else if (object instanceof CrawlingResult) {
+                CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                        ((CrawlingResult) object).crawledUris);
-                frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
+                    crawlingResult.crawledUris);
+                frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
+
+            } else if (object instanceof AliveMessage) {
+                AliveMessage message = (AliveMessage) object;
+                int idReceived = message.getIdOfWorker();
+                LOGGER.trace("Received alive message from worker with id " + idReceived);
+                workerGuard.putIntoTimestamps(idReceived);
+
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }
@@ -187,9 +214,21 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected void processSeedFile(String seedFile) {
         try {
             List<String> lines = FileUtils.readLines(new File(seedFile));
-            frontier.addNewUris(UriUtils.createCrawleableUriList(lines.toArray(new String[lines.size()])));
+            frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }
+    }
+
+    public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+        frontier.informAboutDeadWorker(idOfWorker, lstUrisToReassign);
+    }
+
+    public void setFrontier(FrontierImpl frontier) {
+        this.frontier = frontier;
+    }
+
+    public WorkerGuard getWorkerGuard() {
+        return workerGuard;
     }
 }
