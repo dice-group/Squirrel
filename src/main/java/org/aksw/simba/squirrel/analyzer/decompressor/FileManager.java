@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.decompressor.enums.MimeTypeEnum;
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
@@ -21,7 +20,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -218,18 +216,5 @@ public class FileManager{
 		return listFiles;
 	}
 	
-	
-	public static void main(String[] args) throws CompressorException, IOException, ArchiveException {
-		
-		FileManager fm = new FileManager(new File("/home/gsjunior/Documents/test_decompress/test_file.tar.bz2"));
-		List<File> files = fm.decompressFile();
-		
-		for(File file : files) {
-			System.out.println(file.getAbsolutePath());
-		}
-//		
-		
-	}
-
 
 }
