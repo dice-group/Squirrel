@@ -201,7 +201,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
             HashMap row = (HashMap) cursor.next();
             LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
             try {
-                map.put(InetAddress.getByName(row.get("ipAddress").toString()), (ArrayList) row.get("uris"));
+                map.put(InetAddress.getByName(row.get("ipAddress").toString()), UriUtils.createCrawleableUriList((ArrayList) row.get("uris")));
             } catch (Exception e) {
                 LOGGER.error("Error while parsing the data from the RDBQueue into an HashMap", e);
             }
