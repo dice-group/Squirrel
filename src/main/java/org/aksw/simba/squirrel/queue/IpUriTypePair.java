@@ -4,6 +4,7 @@ import java.net.InetAddress;
 
 import org.aksw.simba.squirrel.data.uri.UriType;
 
+@Deprecated
 public class IpUriTypePair implements Comparable<IpUriTypePair> {
     public InetAddress ip;
     public UriType type;

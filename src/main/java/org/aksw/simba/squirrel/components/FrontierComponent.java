@@ -3,8 +3,8 @@ package org.aksw.simba.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.net.InetAddress;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import com.SquirrelWebObject;
@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
@@ -67,7 +68,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
 
-
+    private long startRunTime = System.currentTimeMillis();
 
     @Override
     public void init() throws Exception {
@@ -126,16 +127,34 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         SquirrelWebObject lastSentObject = null;
         while (informWebService) {
             SquirrelWebObject newObject = new SquirrelWebObject();
-            newObject.setRuntimeInSeconds(Math.round(System.currentTimeMillis()/1000));
+
+            newObject.setRuntimeInSeconds(Math.round((System.currentTimeMillis()-startRunTime)/1000));
             newObject.setCountOfWorker(workerGuard.getNumberOfLiveWorkers());
             newObject.setCountofDeadWorker(workerGuard.getNumberOfDeadWorker());
-            //TODO (Philipp): fill here the SquirrelWebObject
+
+            LinkedHashMap<InetAddress, List<CrawleableUri>> treeQueue = queue.getContent();
+            if (treeQueue == null || treeQueue.isEmpty()) {
+                //newObject.setIPMapPendingURis(Collections.EMPTY_MAP);
+                newObject.setPendingURIs(Collections.EMPTY_LIST);
+                newObject.setNextCrawledURIs(Collections.EMPTY_LIST);
+            } else {
+                //newObject.setIPMapPendingURis(treeQueue.entrySet().stream()
+                //    .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
+                //    .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
+                List<String> pendingURIs = new ArrayList<>(treeQueue.size());
+                treeQueue.entrySet().forEach(e -> e.getValue().forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
+                newObject.setPendingURIs(pendingURIs);
+                newObject.setNextCrawledURIs(treeQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().getRawPath()).collect(Collectors.toList()));
+            }
+
+            //Michael reminds, that's not a good idea to pass all crawled URIs, because that takes to much time...
+            newObject.setCrawledURIs(Collections.EMPTY_LIST);
             if (lastSentObject == null || !newObject.equals(lastSentObject)) {
                 webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
                 LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
                 lastSentObject = newObject;
             }
-            Thread.sleep(50);
+            Thread.sleep(100);
         }
         // The main thread has nothing to do except waiting for its
         // termination...
