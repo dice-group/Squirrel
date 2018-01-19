@@ -58,6 +58,21 @@
             <artifactId>jzmq</artifactId>
             <version>3.0.1</version>
         </dependency>
+        
+        <!--compress commons-->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-compress</artifactId>
+		    <version>1.7</version>
+		</dependency>
+		
+		
+		<!-- Content detect utility tool -->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>1.17</version>
+		</dependency>        
 
         <!-- crawler commons -->
         <dependency>
