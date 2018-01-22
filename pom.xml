@@ -16,7 +16,7 @@
     </properties>
 
     <repositories>
-        <!-- Let's use a local repository for the local libraries of this 
+        <!-- Let's use a local repository for the local libraries of this
             project -->
         <repository>
             <id>local repository</id>
@@ -73,6 +73,14 @@
             <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-rdfconnection -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-rdfconnection</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+
+
         <!-- HTTP Requests -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -124,22 +132,22 @@
             <version>2.3.3</version>
         </dependency>
         <!-- End RethinkDB client -->
-        
+
         <!-- HSQLDB (used inside of workers to store URIs)-->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.2</version>
         </dependency>
-        
-        <!-- We use the simpleframework to use local HTTP servers for our 
+
+        <!-- We use the simpleframework to use local HTTP servers for our
             JUnit tests and test scenarios -->
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>
             <version>5.1.6</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
