@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer.decompressor.enums;
+package org.aksw.simba.squirrel.analyzer.compress.enums;
 
 public enum MimeTypeEnum {
 	
