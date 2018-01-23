@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -240,6 +241,7 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.debug("I start crawling {} now...", uri);
 
             Analyzer analyzer = new RDFAnalyzer(collector);
+            FileManager fm = new FileManager();
 
             File data = null;
 
@@ -248,13 +250,20 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
-
+            List<File> fileList = null;
+            
             if (data != null) {
+            	fileList = fm.decompressFile(data);
+            }
+            
+            for(File file: fileList) {
+
+            
                 try {
                     // open the sink only if a fetcher has been found
                     sink.openSinkForUri(uri);
                     collector.openSinkForUri(uri);
-                    Iterator<byte[]> result = analyzer.analyze(uri, data, sink);
+                    Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
                     sink.closeSinkForUri(uri);
                     sendNewUris(result);
                     collector.closeSinkForUri(uri);
@@ -265,7 +274,8 @@ public class WorkerImpl implements Worker, Closeable {
                     collector.closeSinkForUri(uri);
                     throw e;
                 }
-            }
+        }
+            
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
