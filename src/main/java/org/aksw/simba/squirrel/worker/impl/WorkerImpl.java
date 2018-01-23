@@ -52,6 +52,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime;
+    protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
 
     /**
@@ -220,7 +221,7 @@ public class WorkerImpl implements Worker, Closeable {
                 try {
                     performCrawling(uri, newUris);
                 } catch (Exception e) {
-                    LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
+                    LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);
                 }
             }
@@ -238,6 +239,15 @@ public class WorkerImpl implements Worker, Closeable {
         // check robots.txt
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
+            try {
+                long delay = timeStampLastUriFetched
+                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                if (delay > 0) {
+                    Thread.sleep(delay);
+                }
+            } catch (InterruptedException e) {
+                LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
+            }
             LOGGER.debug("I start crawling {} now...", uri);
 
             Analyzer analyzer = new RDFAnalyzer(collector);
@@ -250,32 +260,30 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
+            timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList = null;
-            
-            if (data != null) {
-            	fileList = fm.decompressFile(data);
-            }
-            
-            for(File file: fileList) {
 
-            
-                try {
-                    // open the sink only if a fetcher has been found
-                    sink.openSinkForUri(uri);
-                    collector.openSinkForUri(uri);
-                    Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
-                    sink.closeSinkForUri(uri);
-                    sendNewUris(result);
-                    collector.closeSinkForUri(uri);
-                } catch (Exception e) {
-                    // We don't want to handle the exception. Just make sure that sink and collector
-                    // do not handle this uri anymore.
-                    sink.closeSinkForUri(uri);
-                    collector.closeSinkForUri(uri);
-                    throw e;
+            if (data != null) {
+                fileList = fm.decompressFile(data);
+                for (File file : fileList) {
+                    try {
+                        // open the sink only if a fetcher has been found
+                        sink.openSinkForUri(uri);
+                        collector.openSinkForUri(uri);
+                        Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
+                        sink.closeSinkForUri(uri);
+                        sendNewUris(result);
+                        collector.closeSinkForUri(uri);
+                    } catch (Exception e) {
+                        // We don't want to handle the exception. Just make sure that sink and collector
+                        // do not handle this uri anymore.
+                        sink.closeSinkForUri(uri);
+                        collector.closeSinkForUri(uri);
+                        throw e;
+                    }
                 }
-        }
-            
+            }
+
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
