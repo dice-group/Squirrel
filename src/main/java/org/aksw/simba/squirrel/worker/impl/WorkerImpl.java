@@ -283,7 +283,6 @@ public class WorkerImpl implements Worker, Closeable {
                     }
                 }
             }
-
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }

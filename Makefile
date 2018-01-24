@@ -7,4 +7,4 @@ dockerize: build
 	docker build -t squirrel .
 
 clean:
-	rm -rf data/worker*
+	rm -rf data/worker* && rm -rf deployment/scenarios/1/worker*
