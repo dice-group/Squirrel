@@ -130,17 +130,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
             newObject.setRuntimeInSeconds(Math.round((System.currentTimeMillis()-startRunTime)/1000));
             newObject.setCountOfWorker(workerGuard.getNumberOfLiveWorkers());
-            newObject.setCountofDeadWorker(workerGuard.getNumberOfDeadWorker());
+            newObject.setCountOfDeadWorker(workerGuard.getNumberOfDeadWorker());
 
             LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = queue.getContent();
             if (currentQueue == null || currentQueue.isEmpty()) {
-                //newObject.setIPMapPendingURis(Collections.EMPTY_MAP);
+                newObject.setIPMapPendingURis(Collections.EMPTY_MAP);
                 newObject.setPendingURIs(Collections.EMPTY_LIST);
                 newObject.setNextCrawledURIs(Collections.EMPTY_LIST);
             } else {
-                //newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
-                //    .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
-                //    .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
+                newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
+                    .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
+                    .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
                 List<String> pendingURIs = new ArrayList<>(currentQueue.size());
                 currentQueue.entrySet().forEach(e -> e.getValue().forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
                 newObject.setPendingURIs(pendingURIs);
@@ -148,7 +148,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             }
 
             //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
-            newObject.setCrawledURIs(Collections.EMPTY_LIST);
+            //newObject.setCrawledURIs(Collections.EMPTY_LIST);
+            newObject.setCountOfCrawledURIs((int) knownUriFilter.count());
             if (lastSentObject == null || !newObject.equals(lastSentObject)) {
                 webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
                 LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);

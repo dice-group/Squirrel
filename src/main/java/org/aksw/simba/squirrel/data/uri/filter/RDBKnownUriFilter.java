@@ -103,4 +103,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public void purge() {
         r.db("squirrel").table("knownurifilter").delete().run(connector.connection);
     }
+
+    @Override
+    public long count() {
+        return r.db("squirrel").table("knownurifilter").count().run(connector.connection);
+    }
 }

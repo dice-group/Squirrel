@@ -34,4 +34,10 @@ public interface KnownUriFilter extends UriFilter {
      * Open RDB connection, init the database.
      */
     public void open();
+
+    /**
+     * count the numbers of known URIs
+     * @return the number of lines in that database
+     */
+    public long count();
 }
