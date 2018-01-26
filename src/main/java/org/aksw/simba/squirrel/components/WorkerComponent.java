@@ -35,6 +35,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
+    private static final String MIN_DELAY_KEY = "MIN_DELAY";
     private static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
 
     private Worker worker;
@@ -54,6 +55,14 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
             throw new Exception(msg);
         }
+        RobotsManagerImpl robotsmanager = new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", "")));
+        if (env.containsKey(MIN_DELAY_KEY)) {
+            try {
+                robotsmanager.setDefaultMinWaitingTime(Long.parseLong(env.get(MIN_DELAY_KEY)));
+            } catch (Exception e) {
+                LOGGER.error("Couldn't parse the value of the " + MIN_DELAY_KEY + " environmental variable.", e);
+            }
+        }
 
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
                 .build();
@@ -65,8 +74,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         UriCollector collector = SqlBasedUriCollector.create(serializer);
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                serializer, collector, 2000, outputFolder + File.separator + "log");
+        worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
+                outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 
