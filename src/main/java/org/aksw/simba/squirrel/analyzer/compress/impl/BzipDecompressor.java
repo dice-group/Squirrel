@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 public class BzipDecompressor extends TarDecompressor implements Decompressor{
@@ -41,7 +42,7 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor{
 			return new TarDecompressor().decompress(tempoutputFile);
 		}
 		
-		return searchPath4Files(outputFile);
+		return TempPathUtils.searchPath4Files(outputFile);
 	}
 
 }

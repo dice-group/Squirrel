@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -39,7 +40,7 @@ public class ZipDecompressor extends AbstractDecompressor implements Decompresso
 	    }
 	    
 	    	
-	 return searchPath4Files(outputFile);
+	 return TempPathUtils.searchPath4Files(outputFile);
 	}
 
 }

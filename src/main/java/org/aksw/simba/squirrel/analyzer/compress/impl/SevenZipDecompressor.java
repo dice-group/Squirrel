@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
@@ -39,7 +40,7 @@ public class SevenZipDecompressor extends AbstractDecompressor implements Decomp
         }
         sevenZFile.close();
 	
-	return searchPath4Files(outputFile);
+	return TempPathUtils.searchPath4Files(outputFile);
 	}
 
 }
