@@ -49,7 +49,11 @@ public class FileBasedSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-        String uriString = uri.getUri().toString();
+    	String uriString = uri.getUri().toString();
+    	if(uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
+    		uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
+    	}
+        
         OutputStream outputStream = getStream(uri);
         if (outputStream != null) {
             try {
