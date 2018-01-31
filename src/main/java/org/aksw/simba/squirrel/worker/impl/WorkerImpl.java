@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
@@ -238,6 +239,9 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
+    	
+    	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
+    	
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
