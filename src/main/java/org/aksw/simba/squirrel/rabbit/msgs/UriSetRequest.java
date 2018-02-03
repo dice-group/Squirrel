@@ -9,6 +9,16 @@ public class UriSetRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public int getIdOfWorker() {
+        return idOfWorker;
+    }
+
+    private int idOfWorker;
+
+    public UriSetRequest(int idOfWorker){
+        this.idOfWorker = idOfWorker;
+    }
+
     @Override
     public int hashCode() {
         return 31;

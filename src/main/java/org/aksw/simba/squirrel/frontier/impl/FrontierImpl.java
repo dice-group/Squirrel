@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
@@ -16,10 +9,15 @@ import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
-import org.apache.http.HttpHost;
-import org.apache.http.client.utils.URIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -42,6 +40,10 @@ public class FrontierImpl implements Frontier {
      * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
      */
     protected SchemeBasedUriFilter schemeUriFilter = new SchemeBasedUriFilter();
+
+    public UriQueue getQueue() {
+        return queue;
+    }
 
     /**
      * {@link UriQueue} used to manage the URIs that should be crawled.
@@ -161,4 +163,19 @@ public class FrontierImpl implements Frontier {
             return 0;
         }
     }
+
+    @Override
+    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+        if (queue instanceof IpAddressBasedQueue) {
+            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
+
+            Set<InetAddress> setIps = new HashSet<>();
+            for (CrawleableUri uri : lstUrisToReassign) {
+                InetAddress ip = uri.getIpAddress();
+                setIps.add(ip);
+            }
+            setIps.forEach(ip -> ipQueue.markIpAddressAsAccessible(ip));
+        }
+    }
 }
+
