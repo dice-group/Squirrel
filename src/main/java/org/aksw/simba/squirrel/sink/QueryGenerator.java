@@ -4,10 +4,14 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueryGenerator {
 
     private static QueryGenerator instance = new QueryGenerator();
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
+
 
     private QueryGenerator() {
     }
@@ -18,10 +22,10 @@ public class QueryGenerator {
 
     public String getAddQuery(CrawleableUri uri, Triple triple) {
         String strQuery = "INSERT DATA { GRAPH <" + uri.getUri().toString() + "> { ";
-        //strQuery += "\""+triple.getSubject().getName() + "\" \"" + triple.getPredicate().getName() + "\" \"" + triple.getObject().getName() + "\" ; ";
-        strQuery += "<" + triple.getSubject().getName() + "> <" + triple.getPredicate().getName() + "> <" + triple.getObject().getName() + "> ; ";
+
+
+        strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
         strQuery += "} }";
-        System.out.println(strQuery);
         return strQuery;
 
     }
