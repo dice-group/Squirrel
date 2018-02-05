@@ -13,8 +13,8 @@ import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
+import org.aksw.simba.squirrel.sink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -62,7 +62,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
-        Sink sink = new FileBasedSink(new File(outputFolder), true);
+        Sink sink = new RDFSink();
         UriCollector collector = SqlBasedUriCollector.create(serializer);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, collector, 2000, outputFolder + File.separator + "log");

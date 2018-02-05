@@ -10,7 +10,9 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 
-public class RDFSink implements TripleBasedSink {
+import java.io.InputStream;
+
+public class RDFSink implements Sink {
 
     private static final String strContentDatasetUriUpdate = "http://localhost:3030/ContentSet/update";
 
@@ -49,6 +51,11 @@ public class RDFSink implements TripleBasedSink {
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
+
+    }
+
+    @Override
+    public void addData(CrawleableUri uri, InputStream stream) {
 
     }
 }
