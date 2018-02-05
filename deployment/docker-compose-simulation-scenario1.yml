@@ -38,7 +38,7 @@ services:
       - "8080:8080"
     volumes:
       - ../web/Squirrel-Webservice/target:/etc/store
-    command: java -jar /etc/store/SPRINGWebSquirrelJar-1.1.jar
+    command: java -jar /etc/store/SPRINGWebSquirrelJar-1.2.jar
 
   worker1:
     image: squirrel
