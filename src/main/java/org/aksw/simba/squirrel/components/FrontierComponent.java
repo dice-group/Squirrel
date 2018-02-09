@@ -38,17 +38,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
-    private static final String SEED_FILE_KEY = "SEED_FILE";
-    private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
-    private static final String RDB_PORT_KEY = "RDB_PORT";
+    protected static final String SEED_FILE_KEY = "SEED_FILE";
+    protected static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
+    protected static final String RDB_PORT_KEY = "RDB_PORT";
 
-    private IpAddressBasedQueue queue;
+    protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
-    private Frontier frontier;
-    private RabbitQueue rabbitQueue;
-    private DataReceiver receiver;
-    private Serializer serializer;
-    private final Semaphore terminationMutex = new Semaphore(0);
+    protected Frontier frontier;
+    protected RabbitQueue rabbitQueue;
+    protected DataReceiver receiver;
+    protected Serializer serializer;
+    protected final Semaphore terminationMutex = new Semaphore(0);
 
     @Override
     public void init() throws Exception {
