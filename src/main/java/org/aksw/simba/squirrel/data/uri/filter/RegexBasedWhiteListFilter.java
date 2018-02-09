@@ -39,7 +39,7 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter{
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
-		if(whiteList != null && whiteList.size() > 0) {
+		if(super.isUriGood(uri) && whiteList != null && whiteList.size() > 0) {
 			
 			for (String s : whiteList) {
 				
