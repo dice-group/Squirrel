@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.sink;
 
+import com.rabbitmq.client.ConnectionFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.apache.jena.graph.Node;
@@ -25,12 +26,26 @@ public class RDFSink implements Sink {
         String strIP = null;
         try {
             strIP = InetAddress.getLocalHost().getHostAddress().toString();
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost("jena");
+            factory.setUsername("admin");
+            factory.setPassword("pw123");
+            LOGGER.info("ip of jena :" + factory.getVirtualHost());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        strContentDatasetUriUpdate = "http://" + "131.234.247.254" + ":3030/ContentSet/update";
+
+
+        // TODO: find out ip address of triple store container at runtime
+        strIP = "192.168.0.122";
+        strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
     }
 
+    public void addTripleForMetadata(CrawlingActivity crawlingActivity, Triple triple) {
+
+    }
+
+    // this is only for testing
     public static void main(String[] argv) {
         try {
             InetAddress.getLocalHost();
@@ -52,6 +67,9 @@ public class RDFSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
+
+        //todo: here you can recoginze that another triple has been stored for this given uri
+
         //Get the graphID for the uri - may change to Hashvalue
         //String graphUri = uri.toString();
 

@@ -202,6 +202,9 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void crawl(List<CrawleableUri> uris) {
+
+        //todo: here the worker gets new uri, and here a timestamp can be created indicatin when the crwaling of these uris has started
+
         // perform work
         List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
         for (CrawleableUri uri : uris) {
@@ -215,6 +218,8 @@ public class WorkerImpl implements Worker, Closeable {
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
+
+                    //todo: crawling was not successful for this uri
                 }
             }
         }
@@ -223,6 +228,7 @@ public class WorkerImpl implements Worker, Closeable {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
+        //todo: here the crawling is done, so create new timestamp
         frontier.crawlingDone(uris, newUris);
     }
 
