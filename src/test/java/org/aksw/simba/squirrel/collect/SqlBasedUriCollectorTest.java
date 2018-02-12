@@ -23,7 +23,6 @@ import org.junit.Test;
 
 public class SqlBasedUriCollectorTest {
 
-    @Ignore
     @Test
     public void test() throws Exception {
         String dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
@@ -54,7 +53,7 @@ public class SqlBasedUriCollectorTest {
 
         String uris[] = StreamSupport
                 .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
-                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
+                .map((bytes) -> (CrawleableUri) serializer.deserializeSafely(bytes)).map(c -> c.getUri().toString()).toArray(String[]::new);
         collector.closeSinkForUri(uri);
         System.out.println(uris.length);
         Arrays.sort(uris);
@@ -84,7 +83,7 @@ public class SqlBasedUriCollectorTest {
 
         uris = StreamSupport
                 .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
-                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
+                .map((bytes) -> (CrawleableUri) serializer.deserializeSafely(bytes)).map(c -> c.getUri().toString()).toArray(String[]::new);
         collector.closeSinkForUri(uri);
         Arrays.sort(uris);
         eUris = expectedUris.toArray(new String[expectedUris.size()]);
