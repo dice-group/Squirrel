@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
@@ -24,6 +25,7 @@ import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -237,6 +239,9 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
+    	
+    	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
+    	
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
@@ -253,35 +258,46 @@ public class WorkerImpl implements Worker, Closeable {
             Analyzer analyzer = new RDFAnalyzer(collector);
             FileManager fm = new FileManager();
 
-            File data = null;
+            File fetched = null;
 
             try {
-                data = fetcher.fetch(uri);
+            	fetched = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
+            
+            List<File> fetchedFiles = new ArrayList<File>();
+            if(fetched.isDirectory()) {
+            	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+            }else {
+            	fetchedFiles.add(fetched);
+            }
+            
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList = null;
-
-            if (data != null) {
-                fileList = fm.decompressFile(data);
-                for (File file : fileList) {
-                    try {
-                        // open the sink only if a fetcher has been found
-                        sink.openSinkForUri(uri);
-                        collector.openSinkForUri(uri);
-                        Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
-                        sink.closeSinkForUri(uri);
-                        sendNewUris(result);
-                        collector.closeSinkForUri(uri);
-                    } catch (Exception e) {
-                        // We don't want to handle the exception. Just make sure that sink and collector
-                        // do not handle this uri anymore.
-                        sink.closeSinkForUri(uri);
-                        collector.closeSinkForUri(uri);
-                        throw e;
-                    }
-                }
+            
+          
+            for(File data: fetchedFiles){
+	            if (data != null) {
+	                fileList = fm.decompressFile(data);
+	                for (File file : fileList) {
+	                    try {
+	                        // open the sink only if a fetcher has been found
+	                        sink.openSinkForUri(uri);
+	                        collector.openSinkForUri(uri);
+	                        Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
+	                        sink.closeSinkForUri(uri);
+	                        sendNewUris(result);
+	                        collector.closeSinkForUri(uri);
+	                    } catch (Exception e) {
+	                        // We don't want to handle the exception. Just make sure that sink and collector
+	                        // do not handle this uri anymore.
+	                        sink.closeSinkForUri(uri);
+	                        collector.closeSinkForUri(uri);
+	                        throw e;
+	                    }
+	                }
+	            }
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);

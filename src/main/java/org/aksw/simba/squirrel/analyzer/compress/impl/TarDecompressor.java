@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -43,7 +44,7 @@ public class TarDecompressor extends AbstractDecompressor implements Decompresso
             }
             
             	
-         return searchPath4Files(outputFile);
+         return TempPathUtils.searchPath4Files(outputFile);
        
 	}
 	
