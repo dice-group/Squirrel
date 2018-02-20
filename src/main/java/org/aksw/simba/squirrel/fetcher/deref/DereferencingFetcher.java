@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
-import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -165,5 +164,6 @@ public class DereferencingFetcher implements Fetcher, Closeable {
     public void close() throws IOException {
         client.close();
     }
+
 
 }

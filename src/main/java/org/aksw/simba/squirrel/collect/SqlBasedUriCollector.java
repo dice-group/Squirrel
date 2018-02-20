@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -122,11 +123,11 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     String tableName = table.getTableName();
                     // Make sure everything has been committed
                     table.commitPendingChanges();
-           
-                        PreparedStatement ps = dbConnection
-                                .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
-                        return new SqlBasedIterator(ps);
-                    
+
+                    PreparedStatement ps = dbConnection
+                            .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
+                    return new SqlBasedIterator(ps);
+
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
                             e.getMessage());
@@ -274,7 +275,9 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             builder.append(INSERT_URI_QUERY_PART_1);
             builder.append(tableName);
             builder.append(INSERT_URI_QUERY_PART_2);
-            return new UriTableStatus(tableName, dbConnection.prepareStatement(builder.toString()), bufferSize);
+            PreparedStatement insertStmt = dbConnection.prepareStatement(builder.toString());
+            // insertStmt.batch
+            return new UriTableStatus(tableName, insertStmt, bufferSize);
         }
 
         public UriTableStatus(String tableName, PreparedStatement insertStmt, int bufferSize) {
@@ -302,6 +305,31 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         private void execute_unsecured() {
             try {
+            } catch (Exception e) {
+                LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
+            }
+            try {
+                for (String uri : buffer.keySet()) {
+                    insertStmt.setString(1, uri);
+                    insertStmt.setInt(2, uri.hashCode());
+                    insertStmt.setBytes(3, buffer.get(uri));
+                    try {
+                        insertStmt.execute();
+                    } catch (Exception e) {
+                    }
+                }
+                insertStmt.getConnection().commit();
+            } catch (BatchUpdateException e) {
+                // LOGGER.error("URI already exists in the table. It will be ignored.", e);
+            } catch (Exception e) {
+                LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
+            }
+            buffer.clear();
+        }
+
+        @Deprecated
+        private void executeAsBatch_unsecured() {
+            try {
                 for (String uri : buffer.keySet()) {
                     insertStmt.setString(1, uri);
                     insertStmt.setInt(2, uri.hashCode());
@@ -312,10 +340,13 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                 LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
             }
             try {
-                insertStmt.executeBatch();
+                int[] insertResult = insertStmt.executeBatch();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Insert result was {}", Arrays.toString(insertResult));
+                }
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
-                LOGGER.error("URI already exists in the table. It will be ignored.", e);
+                // LOGGER.error("URI already exists in the table. It will be ignored.", e);
             } catch (Exception e) {
                 LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }

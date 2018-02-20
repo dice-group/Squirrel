@@ -52,7 +52,7 @@ public class WhiteListFrontierComponent extends FrontierComponent{
 		            ((RDBKnownUriFilter) filter).open(); 
 	            	
 	            }else {
-	            	LOGGER.warn("Couldn't get {} from the environment.", URI_WHITELIST_FILE);
+	            	LOGGER.warn("Couldn't get {} from the environment. Ignoring...", URI_WHITELIST_FILE);
 	            	filter = new RDBKnownUriFilter(rdbHostName, rdbPort);
 	            	((RDBKnownUriFilter) filter).open();
 	            }

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -165,4 +166,5 @@ public class DumpFetcher implements Fetcher {
     public void close() throws IOException {
         // nothing to do
     }
+
 }

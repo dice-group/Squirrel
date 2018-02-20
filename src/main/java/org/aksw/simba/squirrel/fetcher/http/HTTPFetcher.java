@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.aksw.simba.squirrel.Constants;
@@ -156,5 +157,7 @@ public class HTTPFetcher implements Fetcher {
     public void close() throws IOException {
         client.close();
     }
+
+
 
 }

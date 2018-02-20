@@ -122,6 +122,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
     }
+    
 
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {

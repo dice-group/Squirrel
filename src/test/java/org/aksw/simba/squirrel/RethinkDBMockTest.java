@@ -48,7 +48,7 @@ public class RethinkDBMockTest extends TestCase {
         }
     }
 
-    @Ignore
+    
     public void test() {
         r.dbCreate("testDb").run(connection);
         List<String> dbList = r.dbList().run(connection);

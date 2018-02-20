@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
@@ -142,9 +143,18 @@ public class FrontierImpl implements Frontier {
                 ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
             }
         }
-        // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : crawledUris) {
-            knownUriFilter.add(uri);
+            Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
+            // If a recrawling is defined, check whether we can directly add it back to the queue
+            if((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
+                // Create a new uri object reusing only meta data that is useful
+                CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
+                recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
+                addNewUri(recrawlUri);
+            } else {
+                // send list of crawled URIs to the knownUriFilter
+                knownUriFilter.add(uri);
+            }
         }
 
         // Add the new URIs to the Frontier

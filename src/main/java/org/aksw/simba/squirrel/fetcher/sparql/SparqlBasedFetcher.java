@@ -123,4 +123,6 @@ public class SparqlBasedFetcher implements Fetcher {
         }
 
     }
+
+
 }
