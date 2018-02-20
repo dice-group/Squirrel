@@ -162,7 +162,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             UriTableStatus table = knownUris.get(uriString);
             synchronized (table) {
                 try {
-                    table.addUri(uriString, serializer.serialize(newUri));
+                    table.addUri(newUri.getUri().toString(), serializer.serialize(newUri));
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 } catch (Exception e) {
@@ -287,6 +287,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         public void addUri(String uri, byte[] serializedUri) {
             synchronized (buffer) {
+            	System.out.println(buffer.size());
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {
                     execute_unsecured();
