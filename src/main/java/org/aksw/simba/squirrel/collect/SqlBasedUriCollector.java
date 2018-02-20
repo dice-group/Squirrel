@@ -287,7 +287,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         public void addUri(String uri, byte[] serializedUri) {
             synchronized (buffer) {
-            	System.out.println(buffer.size());
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {
                     execute_unsecured();
