@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.aksw.simba.squirrel.configurator.RDBConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
@@ -58,23 +59,16 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         String rdbHostName = null;
         int rdbPort = -1;
-        if (env.containsKey(RDB_HOST_NAME_KEY)) {
-            rdbHostName = env.get(RDB_HOST_NAME_KEY);
-            if (env.containsKey(RDB_PORT_KEY)) {
-                rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
-            } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_PORT_KEY);
-            }
-        } else {
-            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
-        }
-
-        if ((rdbHostName != null) && (rdbPort > 0)) {
+        RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
+        if(rdbConfiguration != null) {
+            rdbHostName = rdbConfiguration.getRDBHostName();
+            rdbPort = rdbConfiguration.getRDBPort();
             queue = new RDBQueue(rdbHostName, rdbPort);
             ((RDBQueue) queue).open();
             knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
             ((RDBKnownUriFilter) knownUriFilter).open();
         } else {
+            LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(-1);
         }
@@ -115,38 +109,42 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-        Object object = null;
+        Object deserializedData = null;
         try {
-            object = serializer.deserialize(data);
-        } catch (Exception e) {
-            LOGGER.error("Error whily trying to deserialize incoming data. It will be ignored.", e);
+            deserializedData = serializer.deserialize(data);
+        } catch (IOException e) {
+            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
-        LOGGER.trace("Got a message (\"{}\").", object.toString());
-        if (object != null) {
-            if (object instanceof UriSetRequest) {
-                if (handler != null) {
-                    // get next UriSet
-                    try {
-                        List<CrawleableUri> uris = frontier.getNextUris();
-                        LOGGER.trace("Responding with a list of {} uris.",
-                                uris == null ? "null" : Integer.toString(uris.size()));
-                        handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't serialize new URI set.", e);
-                    }
-                } else {
-                    LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
-                }
-            } else if (object instanceof UriSet) {
-                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
-                frontier.addNewUris(((UriSet) object).uris);
-            } else if (object instanceof CrawlingResult) {
+        LOGGER.trace("Got a message (\"{}\").", deserializedData.toString());
+
+        if (deserializedData != null) {
+            if (deserializedData instanceof UriSetRequest) {
+                responseToUriSetRequest(handler, responseQueueName, correlId);
+            } else if (deserializedData instanceof UriSet) {
+                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+                frontier.addNewUris(((UriSet) deserializedData).uris);
+            } else if (deserializedData instanceof CrawlingResult) {
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                        ((CrawlingResult) object).crawledUris);
-                frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
+                        ((CrawlingResult) deserializedData).crawledUris);
+                frontier.crawlingDone(((CrawlingResult) deserializedData).crawledUris, ((CrawlingResult) deserializedData).newUris);
             } else {
-                LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
+                LOGGER.warn("Received an unknown object {}. It will be ignored.", deserializedData.toString());
             }
+        }
+    }
+
+    private void responseToUriSetRequest(ResponseHandler handler, String responseQueueName, String correlId) {
+        if (handler != null) {
+            try {
+                List<CrawleableUri> uris = frontier.getNextUris();
+                LOGGER.trace("Responding with a list of {} uris.",
+                    uris == null ? "null" : Integer.toString(uris.size()));
+                handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+            } catch (IOException e) {
+                LOGGER.error("Couldn't serialize new URI set.", e);
+            }
+        } else {
+            LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
 
