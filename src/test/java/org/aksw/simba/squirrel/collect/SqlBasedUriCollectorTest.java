@@ -2,9 +2,9 @@ package org.aksw.simba.squirrel.collect;
 
 import java.io.File;
 import java.net.URI;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -13,6 +13,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class SqlBasedUriCollectorTest {
@@ -30,7 +31,7 @@ public class SqlBasedUriCollectorTest {
 
 
         Model model = ModelFactory.createDefaultModel();
-        Set<String> expectedUris = new HashSet<String>();
+        Set<String> expectedUris = new TreeSet<String>();
         for (int i = 0; i < 100; ++i) {
             Resource r = model.getResource("http://example.org/entity" + i);
             model.add(r, RDF.type, model.getResource("http://example.org/type" + (i & 1)));
@@ -39,16 +40,15 @@ public class SqlBasedUriCollectorTest {
         }
 
         Iterator<byte[]> iterator = collector.getUris(uri);
-        int cont =0;
         
-        CrawleableUri curi = null;
+        Set<String> listCuris = new TreeSet<String>();
         
         while(iterator.hasNext()) {
-        	curi = serializer.deserialize(iterator.next());
-        	cont++;
+        	listCuris.add( ((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString() );
+
         }
         
-        System.out.println(cont);
+        Assert.assertEquals(expectedUris, listCuris);
 
 
     }
