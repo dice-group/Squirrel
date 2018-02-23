@@ -5,13 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public class RDBConfiguration {
+public class RDBConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBConfiguration.class);
 
     private String RDBHostName = null;
     private Integer RDBPort = null;
-
-    private static Map<String, String> env = System.getenv();
 
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     private static final String RDB_PORT_KEY = "RDB_PORT";
@@ -31,20 +29,12 @@ public class RDBConfiguration {
         }
     }
 
-    public static String getEnvRDBHostName() {
-        if (env.containsKey(RDB_HOST_NAME_KEY)) {
-            return env.get(RDB_HOST_NAME_KEY);
-        }
-        LOGGER.warn("Couldn't get {} from the environment.", RDB_HOST_NAME_KEY);
-        return null;
+    private static String getEnvRDBHostName() {
+        return getEnv(RDB_HOST_NAME_KEY, LOGGER);
     }
 
-    public static Integer getEnvRDBPort() {
-        if(env.containsKey(RDB_PORT_KEY)) {
-            return Integer.parseInt(env.get(RDB_PORT_KEY));
-        }
-        LOGGER.warn("Couldn't get {} from the environment.", RDB_PORT_KEY);
-        return null;
+    private static Integer getEnvRDBPort() {
+        return getEnvInteger(RDB_PORT_KEY, LOGGER);
     }
 
     public String getRDBHostName() {
