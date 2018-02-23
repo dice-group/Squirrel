@@ -1,0 +1,7 @@
+search:
+ check:
+  url: http://test.askw.org
+  xpath: blablabla
+ search-result:
+  xpath: blablabla
+  action: scrape
