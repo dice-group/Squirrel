@@ -30,6 +30,7 @@ public class Configuration {
             return Boolean.parseBoolean(toBool);
         }
         throwParseException(toBool, "boolean");
+        return false;
     }
 
     public static Long getEnvLong(String envVariableName, Logger logger) {
