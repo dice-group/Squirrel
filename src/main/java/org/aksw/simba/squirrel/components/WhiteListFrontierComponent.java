@@ -3,6 +3,9 @@ package org.aksw.simba.squirrel.components;
 import java.io.File;
 import java.util.Map;
 
+import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.SeedConfiguration;
+import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
@@ -16,49 +19,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WhiteListFrontierComponent extends FrontierComponent{
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListFrontierComponent.class);
-	private static final String URI_WHITELIST_FILE = "URI_WHITELIST_FILE";
-	
+
 	private KnownUriFilter filter;
-	
+
 	 @Override
 	    public void init() throws Exception {
 	        super.init();
 	        serializer = new GzipJavaUriSerializer();
-	        Map<String, String> env = System.getenv();
 
-	        String rdbHostName = null;
-	        int rdbPort = -1;
-	        if (env.containsKey(RDB_HOST_NAME_KEY)) {
-	            rdbHostName = env.get(RDB_HOST_NAME_KEY);
-	            if (env.containsKey(RDB_PORT_KEY)) {
-	                rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
-	            } else {
-	                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_PORT_KEY);
-	            }
-	        } else {
-	            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
-	        }
+            RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
+            if(rdbConfiguration != null) {
+                queue = new RDBQueue(rdbConfiguration.getRDBHostName(),
+                    rdbConfiguration.getRDBPort());
+                queue.open();
 
-	        if ((rdbHostName != null) && (rdbPort > 0)) {
-	            queue = new RDBQueue(rdbHostName, rdbPort);
-	            ((RDBQueue) queue).open();
-	            
-	            if(System.getenv(URI_WHITELIST_FILE) != null) {
-	            	LOGGER.warn("{} found, loading it...", URI_WHITELIST_FILE);
-	            	File whitelistFile = new File(System.getenv(URI_WHITELIST_FILE));
-	            	filter = new RegexBasedWhiteListFilter(rdbHostName, rdbPort, whitelistFile);
-		            ((RDBKnownUriFilter) filter).open(); 
-	            	
-	            }else {
-	            	LOGGER.warn("Couldn't get {} from the environment. Ignoring...", URI_WHITELIST_FILE);
-	            	filter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-	            	((RDBKnownUriFilter) filter).open();
-	            }
-	            
-	            
-	        } else {
+                WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
+                if(whiteListConfiguration != null) {
+                    File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
+                    filter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
+                        rdbConfiguration.getRDBPort(), whitelistFile);
+                    filter.open();
+                } else {
+
+                    filter = new RDBKnownUriFilter(rdbConfiguration.getRDBHostName(),
+                        rdbConfiguration.getRDBPort());
+                    filter.open();
+                }
+            } else {
 	            queue = new InMemoryQueue();
 	            filter = new InMemoryKnownUriFilter(-1);
 	        }
@@ -69,12 +58,12 @@ public class WhiteListFrontierComponent extends FrontierComponent{
 	        rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
 	        receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
 	                .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-	        if (env.containsKey(SEED_FILE_KEY)) {
-	            processSeedFile(env.get(SEED_FILE_KEY));
+
+            SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
+	        if (seedConfiguration != null) {
+	            processSeedFile(seedConfiguration.getSeedFile());
 	        }
+
 	        LOGGER.info("Frontier initialized.");
 	    }
-	
-	
-
 }

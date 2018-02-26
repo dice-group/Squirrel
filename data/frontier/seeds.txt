@@ -1,2 +1,0 @@
-http://danbri.org/foaf.rdf
-http://dbpedia.org/resource/New_York
