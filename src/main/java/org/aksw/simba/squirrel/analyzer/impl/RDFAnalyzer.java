@@ -50,7 +50,7 @@ public class RDFAnalyzer implements Analyzer {
         return collector.getUris(curi);
     }
 
-    protected static class FilterSinkRDF extends StreamRDFBase {
+    protected class FilterSinkRDF extends StreamRDFBase {
 
         private CrawleableUri curi;
         private Sink sink;
