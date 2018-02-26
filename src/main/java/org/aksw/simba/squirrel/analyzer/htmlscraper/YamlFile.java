@@ -4,14 +4,17 @@ import java.util.Map;
 
 public class YamlFile {
 	
+	protected YamlFile() {
+		
+	}
 	
-	private Map<String,Map<String,String>> search;
+	private Map<String,Map<String,Object>> search;
 
-	public Map<String, Map<String, String>> getSearch() {
+	public Map<String, Map<String, Object>> getSearch() {
 		return search;
 	}
 
-	public void setSearch(Map<String, Map<String, String>> search) {
+	public void setSearch(Map<String, Map<String, Object>> search) {
 		this.search = search;
 	}
 	
