@@ -1,7 +1,10 @@
 search:
  check:
-  url: http://test.askw.org
-  xpath: blablabla
+  url: https://www.mcloud.de/web/guest/suche/-/results/searchAction?_mysearchportlet_query=
+  terms:
+   - autobahn
+   - bahn
+  
  search-result:
   xpath: blablabla
   action: scrape
