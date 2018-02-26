@@ -43,7 +43,7 @@ public class RDFAnalyzer implements Analyzer {
             FilterSinkRDF filtered = new FilterSinkRDF(curi, sink, collector);
             RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
         } catch (Exception e) {
-            LOGGER.error("Exception while analyzing. Aborting.");
+            LOGGER.error("Exception while analyzing. Aborting. ", e);
         } finally {
             IOUtils.closeQuietly(fin);
         }
@@ -55,7 +55,7 @@ public class RDFAnalyzer implements Analyzer {
         private CrawleableUri curi;
         private Sink sink;
         private UriCollector collector;
-        
+
         public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector) {
             this.curi = curi;
             this.sink = sink;

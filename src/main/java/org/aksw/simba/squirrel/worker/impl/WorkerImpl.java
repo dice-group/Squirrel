@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Standard implementation of the {@link Worker} interface.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -59,7 +59,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -85,7 +85,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -110,7 +110,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -140,7 +140,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param frontier
      *            Frontier implementation used by this worker to get URI sets and
      *            send new URIs to.
@@ -239,9 +239,9 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
-    	
+
     	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
-    	
+
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
@@ -265,18 +265,18 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
-            
+
             List<File> fetchedFiles = new ArrayList<File>();
-            if(fetched.isDirectory()) {
+            if(fetched != null && fetched.isDirectory()) {
             	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
-            }else {
+            } else {
             	fetchedFiles.add(fetched);
             }
-            
+
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList = null;
-            
-          
+
+
             for(File data: fetchedFiles){
 	            if (data != null) {
 	                fileList = fm.decompressFile(data);
