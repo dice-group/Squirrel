@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Map;
 
 import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.SeedConfiguration;
+import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
@@ -19,7 +21,6 @@ import org.slf4j.LoggerFactory;
 public class WhiteListFrontierComponent extends FrontierComponent{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListFrontierComponent.class);
-	private static final String URI_WHITELIST_FILE = "URI_WHITELIST_FILE";
 
 	private KnownUriFilter filter;
 
@@ -27,25 +28,24 @@ public class WhiteListFrontierComponent extends FrontierComponent{
 	    public void init() throws Exception {
 	        super.init();
 	        serializer = new GzipJavaUriSerializer();
-	        Map<String, String> env = System.getenv();
 
-	        String rdbHostName = null;
-	        int rdbPort = -1;
             RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
             if(rdbConfiguration != null) {
                 queue = new RDBQueue(rdbConfiguration.getRDBHostName(),
                     rdbConfiguration.getRDBPort());
                 queue.open();
 
-                if(System.getenv(URI_WHITELIST_FILE) != null) {
-                    LOGGER.warn("{} found, loading it...", URI_WHITELIST_FILE);
-                    File whitelistFile = new File(System.getenv(URI_WHITELIST_FILE));
-                    filter = new RegexBasedWhiteListFilter(rdbHostName, rdbPort, whitelistFile);
-                    ((RDBKnownUriFilter) filter).open();
+                WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
+                if(whiteListConfiguration != null) {
+                    File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
+                    filter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
+                        rdbConfiguration.getRDBPort(), whitelistFile);
+                    filter.open();
                 } else {
-                    LOGGER.warn("Couldn't get {} from the environment. Ignoring...", URI_WHITELIST_FILE);
-                    filter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-                    ((RDBKnownUriFilter) filter).open();
+
+                    filter = new RDBKnownUriFilter(rdbConfiguration.getRDBHostName(),
+                        rdbConfiguration.getRDBPort());
+                    filter.open();
                 }
             } else {
 	            queue = new InMemoryQueue();
@@ -58,9 +58,12 @@ public class WhiteListFrontierComponent extends FrontierComponent{
 	        rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
 	        receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
 	                .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-	        if (env.containsKey(SEED_FILE_KEY)) {
-	            processSeedFile(env.get(SEED_FILE_KEY));
+
+            SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
+	        if (seedConfiguration != null) {
+	            processSeedFile(seedConfiguration.getSeedFile());
 	        }
+
 	        LOGGER.info("Frontier initialized.");
 	    }
 }

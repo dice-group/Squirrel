@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
@@ -39,10 +40,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
-    protected static final String SEED_FILE_KEY = "SEED_FILE";
-    protected static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
-    protected static final String RDB_PORT_KEY = "RDB_PORT";
-
     protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
     protected Frontier frontier;
@@ -55,14 +52,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void init() throws Exception {
         super.init();
         serializer = new GzipJavaUriSerializer();
-        Map<String, String> env = System.getenv();
 
-        String rdbHostName = null;
-        int rdbPort = -1;
         RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
         if(rdbConfiguration != null) {
-            rdbHostName = rdbConfiguration.getRDBHostName();
-            rdbPort = rdbConfiguration.getRDBPort();
+            String rdbHostName = rdbConfiguration.getRDBHostName();
+            Integer rdbPort = rdbConfiguration.getRDBPort();
             queue = new RDBQueue(rdbHostName, rdbPort);
             ((RDBQueue) queue).open();
             knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
@@ -79,8 +73,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
                 .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-        if (env.containsKey(SEED_FILE_KEY)) {
-            processSeedFile(env.get(SEED_FILE_KEY));
+
+        SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
+        if (seedConfiguration != null) {
+            processSeedFile(seedConfiguration.getSeedFile());
         }
         LOGGER.info("Frontier initialized.");
     }

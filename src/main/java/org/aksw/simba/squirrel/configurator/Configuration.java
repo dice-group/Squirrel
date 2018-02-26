@@ -29,7 +29,19 @@ public class Configuration {
         if(toBool != null) {
             return Boolean.parseBoolean(toBool);
         }
-        String exceptionText = String.format("Could not parse boolean value: %s", toBool);
+        throwParseException(toBool, "boolean");
+    }
+
+    public static Long getEnvLong(String envVariableName, Logger logger) {
+        String toLong = getEnv(envVariableName, logger);
+        if(toLong != null) {
+            return Long.parseLong(toLong);
+        }
+        return null;
+    }
+
+    private static void throwParseException(String value, String type) throws ParseException {
+        String exceptionText = String.format("Could not parse %s value: %s", type, value);
         Integer errorOffset = 0;
         throw new ParseException(exceptionText, errorOffset);
     }
