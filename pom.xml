@@ -90,7 +90,15 @@
 		    <groupId>org.apache.tika</groupId>
 		    <artifactId>tika-core</artifactId>
 		    <version>1.17</version>
-		</dependency>        
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <version>1.11.2</version>
+		</dependency>
+		        
 
         <!-- crawler commons -->
         <dependency>
