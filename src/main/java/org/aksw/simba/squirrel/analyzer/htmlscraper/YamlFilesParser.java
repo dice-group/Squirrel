@@ -1,48 +1,68 @@
 package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.aksw.simba.squirrel.configurator.HtmlScraperConfiguration;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+/**
+ * 
+ * @author gsjunior
+ *
+ */
 public class YamlFilesParser {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(YamlFilesParser.class);
 	
-	private HtmlScraper htmlScraper = new HtmlScraper();
+	private List<YamlFile> yfs = null;
+	private final String fileExtension = "yaml";
 	
 	
-	public YamlFilesParser() {
-		
+	protected YamlFilesParser() throws JsonParseException, JsonMappingException, IOException {
+		yfs = loadFiles();
 	}
 	
-	
-	public YamlFile loadParameters(){
-		YamlFile yf = null;
+	private List<YamlFile> loadFiles() {
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		
-		try {
-			ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-			yf = mapper.readValue(new File("src/main/resources/yaml/sample.yaml"), YamlFile.class);
-			htmlScraper.scrape(yf);
-			System.out.println(ReflectionToStringBuilder.toString(yf,ToStringStyle.MULTI_LINE_STYLE));
-		
-		}catch(Exception e) {
-			e.printStackTrace();
+		File folder = new File(HtmlScraperConfiguration.getHtmlScraperConfiguration().getPath());
+		List<File> listYamlFiles = filterYamlFiles(TempPathUtils.searchPath4Files(folder));
+		List<YamlFile> yamls = new ArrayList<YamlFile>();
+		for(int i=0; i<listYamlFiles.size(); i++) {
+			try {
+				yamls.add(mapper.readValue(listYamlFiles.get(i), YamlFile.class));
+			} catch (Exception e) {
+				LOGGER.warn("",e);
+			}
 		}
 		
-		
-		return yf;
+
+		return yamls;
+	}
+	
+	private List<File> filterYamlFiles(List<File> yamlList) {
+		return yamlList.stream().filter(p -> FilenameUtils.getExtension(p.getAbsolutePath()).equals(fileExtension))
+				.collect(Collectors.toList());
 		
 	}
 	
-	public static void main(String[] args) {
-		new YamlFilesParser().loadParameters();
+	public List<YamlFile> getYamlFiles(){
+		
+		return yfs;
+		
 	}
-	
+
 
 }

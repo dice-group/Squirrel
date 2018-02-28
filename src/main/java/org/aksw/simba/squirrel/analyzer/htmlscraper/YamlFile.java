@@ -2,6 +2,11 @@ package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.util.Map;
 
+/**
+ * 
+ * @author gsjunior
+ *
+ */
 public class YamlFile {
 	
 	protected YamlFile() {
