@@ -18,21 +18,19 @@ import com.rethinkdb.net.Connection;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import com.rethinkdb.model.MapObject;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueueTest {
-    Connection connection;
-    RDBQueue rdbQueue;
-    RethinkDB r = RethinkDB.r;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private static Connection connection;
+    private static RDBQueue rdbQueue;
+    private static RethinkDB r = RethinkDB.r;
+    private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
             "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
@@ -201,8 +199,8 @@ public class RDBQueueTest {
         rdbQueue.close();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
