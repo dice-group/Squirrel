@@ -57,7 +57,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if(rdbConfiguration != null) {
             String rdbHostName = rdbConfiguration.getRDBHostName();
             Integer rdbPort = rdbConfiguration.getRDBPort();
-            queue = new RDBQueue(rdbHostName, rdbPort);
+            queue = new RDBQueue(rdbHostName, rdbPort,serializer);
             ((RDBQueue) queue).open();
             knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
             ((RDBKnownUriFilter) knownUriFilter).open();
