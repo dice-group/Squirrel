@@ -32,7 +32,7 @@ public class WhiteListFrontierComponent extends FrontierComponent{
             RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
             if(rdbConfiguration != null) {
                 queue = new RDBQueue(rdbConfiguration.getRDBHostName(),
-                    rdbConfiguration.getRDBPort());
+                    rdbConfiguration.getRDBPort(),serializer);
                 queue.open();
 
                 WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
