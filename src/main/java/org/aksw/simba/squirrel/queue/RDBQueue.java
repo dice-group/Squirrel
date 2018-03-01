@@ -4,12 +4,15 @@ import com.rethinkdb.RethinkDB;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -21,8 +24,10 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
 
     protected RDBConnector connector;
     private RethinkDB r = RethinkDB.r;
+    private Serializer serializer;
 
-    public RDBQueue(String hostname, Integer port) {
+    public RDBQueue(String hostname, Integer port, Serializer serializer) {
+    	this.serializer = serializer;
         connector = new RDBConnector(hostname, port);
     }
 
@@ -103,15 +108,58 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     public List packTuple(String str_1, String str_2) {
         return r.array(str_1, str_2);
     }
+    
+    private String parseBytesToString(CrawleableUri uri) {
+    	byte[] suri = null;
+    	try {
+			suri = serializer.serialize(uri);
+			StringBuilder s = new StringBuilder();
+			
+			for (int i = 0; i < suri.length; i++) {
+				s.append(suri[i]);
+				if(i != suri.length-1);
+					s.append(",");
+			}
+			return s.toString();			
+		} catch (IOException e) {
+			LOGGER.error("Error while adding uri to RDBQueue",e);
+			return null;
+		}
+    }
+    
+    private CrawleableUri parseStringToCuri(String uri) {
+    	String[] suri = uri.split(",");
+    	byte[] buri = new byte[suri.length];
+    	
+    	for (int i = 0; i < buri.length; i++) {
+    		buri[i] = Byte.parseByte(suri[i]);
+		}
+    	
+    	try {
+			return serializer.deserialize(buri);
+		} catch (IOException e) {
+			return null;
+		}
+    }
 
     public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey) {
+
+    	try {
+
         r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
                 .optArg("index", "ipAddressType")
-                .update(queueItem -> r.hashMap("uris", queueItem.g("uris").append(uri.getUri().toString())))
+                .update(queueItem -> {
+						return r.hashMap("uris", queueItem.g("uris").append(parseBytesToString(uri)));
+					
+				})
                 .run(connector.connection);
         LOGGER.debug("Inserted existing UriTypePair");
+        
+    	} catch (Exception e) {
+			LOGGER.error("Error while adding uri to RDBQueue",e);
+		}
     }
 
     public void addCrawleableUri(CrawleableUri uri) {
@@ -124,9 +172,8 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
 
     public MapObject crawleableUriToRDBHashMap(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
-        URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
-        return r.hashMap("uris", r.array(uriPath.toString()))
+        return r.hashMap("uris",r.array(parseBytesToString(uri)))
                 .with("ipAddress", ipAddress.getHostAddress())
                 .with("type", uriType.toString());
     }
@@ -177,8 +224,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
             HashMap result = (HashMap) cursor.next();
             ArrayList uriStringList = (ArrayList) result.get("uris");
             LOGGER.debug("query result {}",result.toString());
-            UriType type = UriType.valueOf(result.get("type").toString());
-            uris = UriUtils.createCrawleableUriList(uriStringList, type);
+            uris = createCrawleableUriList(uriStringList);
             //remove from the queue
             r.db("squirrel")
                     .table("queue")
@@ -189,6 +235,16 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         }
         // return the URIs
         return uris;
+    }
+    
+    private List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
+        List<CrawleableUri> resultUris = new ArrayList<CrawleableUri>();
+
+        for (Object uriString : uris) {
+            resultUris.add(parseStringToCuri((String)uriString));
+        }
+
+        return resultUris;
     }
 
 }
