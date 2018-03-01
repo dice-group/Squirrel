@@ -12,62 +12,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.net.Connection;
 
-public class FrontierImplTest {
+public class FrontierImplTest extends RethinkDBBasedTest {
 
-    RethinkDB r;
-    Connection connection;
-    FrontierImpl frontier;
-    RDBQueue queue;
-    RDBKnownUriFilter filter;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+    private FrontierImpl frontier;
+    private RDBQueue queue;
+    private RDBKnownUriFilter filter;
+    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-                + "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
-
-        r = RethinkDB.r;
-        int retryCount = 0;
-        while (true) {
-            try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
-                break;
-            } catch (ReqlDriverError error) {
-                System.out.println("Could not connect, retrying");
-                retryCount++;
-                if (retryCount > 10)
-                    break;
-                Thread.sleep(5000);
-            }
-        }
-
         filter = new RDBKnownUriFilter("localhost", 58015);
         queue = new RDBQueue("localhost", 58015);
         // filter.purge();
@@ -149,7 +115,7 @@ public class FrontierImplTest {
      * see https://github.com/dice-group/Squirrel/issues/47
      */
     @Test
-    public void simlpeRecrawling() throws Exception {
+    public void simpleRecrawling() throws Exception {
         // Add the URIs to the frontier
         List<CrawleableUri> uris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"),
@@ -183,15 +149,5 @@ public class FrontierImplTest {
         assertTrue("uri_1 has been expected but couldn't be found", nextUris.contains(uri_1));
         Assert.assertEquals(1, nextUris.size());
         assertFalse("uri_2 has been found but was not expected", nextUris.contains(uri_2));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        p.waitFor();
     }
 }
