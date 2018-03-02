@@ -20,6 +20,7 @@ import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.queue.RDBQueue;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -192,7 +193,7 @@ public class FrontierImplTest extends RethinkDBBasedTest {
     }
 
 
-    @Test
+    @After
     public void tearDown() throws Exception {
         String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
