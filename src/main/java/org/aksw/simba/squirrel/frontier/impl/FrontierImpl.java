@@ -107,6 +107,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+    	
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
             try {
