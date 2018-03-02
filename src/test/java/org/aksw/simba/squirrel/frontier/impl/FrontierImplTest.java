@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -25,17 +26,14 @@ import org.junit.Test;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
 
-public class FrontierImplTest {
+public class FrontierImplTest extends RethinkDBBasedTest {
 
-    RethinkDB r;
-    Connection connection;
-    FrontierImpl frontier;
-    RDBQueue queue;
-    RDBKnownUriFilter filter;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+    private FrontierImpl frontier;
+    private RDBQueue queue;
+    private RDBKnownUriFilter filter;
+    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
@@ -157,7 +155,7 @@ public class FrontierImplTest {
      * see https://github.com/dice-group/Squirrel/issues/47
      */
     @Test
-    public void simlpeRecrawling() throws Exception {
+    public void simpleRecrawling() throws Exception {
         // Add the URIs to the frontier
         List<CrawleableUri> uris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"),
@@ -193,6 +191,7 @@ public class FrontierImplTest {
         assertFalse("uri_2 has been found but was not expected", nextUris.contains(uri_2));
     }
 
+
     @Test
     public void tearDown() throws Exception {
         String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
@@ -202,4 +201,5 @@ public class FrontierImplTest {
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
         p.waitFor();
     }
+
 }

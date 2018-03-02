@@ -67,7 +67,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         }
         Statement s = null;
         try {
-            Connection dbConnection = DriverManager.getConnection("jdbc:hsqldb:" + dbPath, "SA", "");
+            Connection dbConnection = DriverManager.getConnection("jdbc:hsqldb:mem:" + dbPath, "SA", "");
             // PreparedStatement createTableStmt =
             // dbConnection.prepareStatement(CREATE_TABLE_QUERY);
             // PreparedStatement dropTableStmt =
