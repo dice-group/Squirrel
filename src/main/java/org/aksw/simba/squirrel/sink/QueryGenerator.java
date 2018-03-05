@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class QueryGenerator {
 
-    private static QueryGenerator instance = new QueryGenerator();
+    private static final QueryGenerator instance = new QueryGenerator();
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
 
@@ -20,14 +20,15 @@ public class QueryGenerator {
         return instance;
     }
 
-    public String getAddQuery(CrawleableUri uri, Triple triple) {
-        String strQuery = "INSERT DATA { GRAPH <" + uri.getUri().toString() + "> { ";
-
-
+    public String getAddQuery(String graphIdentifier, Triple triple) {
+        String strQuery = "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
         strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
         strQuery += "} }";
         return strQuery;
+    }
 
+    public String getAddQuery(CrawleableUri uri, Triple triple) {
+        return getAddQuery(uri.getUri().toString(), triple);
     }
 
     public Query getSelectAllQuery(CrawleableUri uri) {
