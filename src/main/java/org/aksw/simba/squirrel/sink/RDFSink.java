@@ -30,15 +30,16 @@ public class RDFSink implements Sink {
             factory.setHost("jena");
             factory.setUsername("admin");
             factory.setPassword("pw123");
-            LOGGER.info("ip of jena :" + factory.getVirtualHost());
+            factory.setPort(3030);
+            LOGGER.info("ip of jena :" + factory.getSocketFactory());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
 
-        // TODO: find out ip address of triple store container at runtime
-        strIP = "192.168.0.122";
-        strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
+        // TODO: find out ip address of triple store(jena) container at runtime
+        //strIP = "192.168.0.122";
+        //strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
     }
 
     public void addTripleForMetadata(CrawlingActivity crawlingActivity, Triple triple) {
@@ -53,7 +54,7 @@ public class RDFSink implements Sink {
             e.printStackTrace();
         }
         RDFSink sink = new RDFSink();
-        System.out.println(strContentDatasetUriUpdate);
+        //System.out.println(strContentDatasetUriUpdate);
         //CrawleableUri uri=  new CrawleableUriFactoryImpl().create("http://www.testPage.de");
         CrawleableUri uri = new CrawleableUriFactoryImpl().create("http://www.google.de");
         Node node = new Node_Variable("subj1");
