@@ -327,6 +327,7 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void close() throws IOException {
         IOUtils.closeQuietly(fetcher);
+        IOUtils.closeQuietly(sink);
     }
 
     public void setTerminateFlag(boolean terminateFlag) {

@@ -45,6 +45,7 @@ public class FileBasedSink implements Sink {
     public FileBasedSink(File outputDirectory, boolean useCompression) {
         this.outputDirectory = outputDirectory;
         this.useCompression = useCompression;
+        openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
     @Override
