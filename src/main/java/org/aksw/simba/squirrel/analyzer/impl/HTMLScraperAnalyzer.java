@@ -21,6 +21,7 @@ public class HTMLScraperAnalyzer implements Analyzer{
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		try {
+//			String uri = curi.getUri().toString();
 			htmlScraper.scrape(null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
