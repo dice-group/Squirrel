@@ -15,6 +15,11 @@ import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.commons.collections15.MapUtils;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.StreamOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
@@ -41,10 +46,21 @@ public class FileBasedSink implements Sink {
      * Synchronized mapping of crawled URIs to their output stream.
      */
     protected Map<String, OutputStream> streamMapping = MapUtils.synchronizedMap(new HashMap<String, OutputStream>());
+    
+    /**
+     * Jena Language to use to write a model to file via the jena API
+     */
+    protected Lang lang;
+    protected String fileExtension;
+    
 
-    public FileBasedSink(File outputDirectory, boolean useCompression) {
+    public FileBasedSink(File outputDirectory, boolean useCompression, Lang lang) {
         this.outputDirectory = outputDirectory;
         this.useCompression = useCompression;
+        this.lang = lang;
+        if(lang != null){
+            fileExtension = lang.getFileExtensions().get(0);
+        }
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
@@ -84,6 +100,19 @@ public class FileBasedSink implements Sink {
             }
         }
     }
+    
+    @Override
+    public void addModel(CrawleableUri uri, Model model)
+    {
+        OutputStream os = getStream(uri);
+        if (os != null)
+        { 
+            StreamRDF rdfWriter = StreamRDFWriter.getWriterStream(os, lang);
+            StreamOps.graphToStream(model.getGraph(), rdfWriter);
+        }else{
+            LOGGER.error("Error opening OutputStream for URI {}. Could not write model to file.", uri.getUri().toString());
+        }
+    }
 
     @Override
     public void addData(CrawleableUri uri, InputStream stream) {
@@ -104,14 +133,20 @@ public class FileBasedSink implements Sink {
     }
 
     private OutputStream getStream(CrawleableUri uri) {
-        String uriString = uri.getUri().toString();
+                
+        String uriString = uri.getUri().toString();      
+        
+        //if the given uriString ends with the metadata suffix we want to use the Jena API to store the model to file and not use compression
+        boolean isMcloudMetadata = uriString.endsWith(Constants.MCLOUD_METADATA_URI_SUFFIX);
+        boolean compress = useCompression && !isMcloudMetadata;
+        
         if (streamMapping.containsKey(uriString)) {
             OutputStream outputStream = streamMapping.get(uriString);
             if (outputStream == null) {
                 try {
                     outputStream = new FileOutputStream(outputDirectory.getAbsolutePath() + File.separator
-                            + generateFileName(uriString, useCompression));
-                    if (useCompression) {
+                            + generateFileName(uriString, compress, isMcloudMetadata, fileExtension));
+                    if (compress) {
                         outputStream = new GZIPOutputStream(outputStream);
                     }
                     streamMapping.put(uriString, outputStream);
@@ -127,7 +162,7 @@ public class FileBasedSink implements Sink {
             return null;
         }
     }
-
+    
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
@@ -138,8 +173,19 @@ public class FileBasedSink implements Sink {
             LOGGER.error("Should close the sink for the URI \"" + uriString + "\" but couldn't find it.");
         }
     }
-
-    public static String generateFileName(String uri, boolean useCompression) {
-        return UriUtils.generateFileName(uri, useCompression);
+    
+    /**
+     * @param uri to generate the filename for
+     * @param useCompression whether to compress the file into a gzip archive
+     * @param isMetadataFile true if given file stores a metadata dataset of a mCloud resource. In this case compression should not be used.
+     * @param fileExtension
+     * @return the filename as String
+     */
+    public static String generateFileName(String uri, boolean useCompression, boolean isMetadataFile, String fileExtension) {
+        
+        String filename = UriUtils.generateFileName(uri, useCompression);
+        return isMetadataFile ? "METADATA_" + filename + "." + fileExtension : filename;
+        
     }
+
 }

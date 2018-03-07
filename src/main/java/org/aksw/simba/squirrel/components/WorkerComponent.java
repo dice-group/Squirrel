@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.aksw.simba.squirrel.analyzer.impl.McloudAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.configurator.RobotsManagerConfiguration;
@@ -70,7 +70,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         uriSetRequest = serializer.serialize(new UriSetRequest());
         UriCollector collector = SqlBasedUriCollector.create(serializer);
 
-        Sink sink = new FileBasedSink(new File(outputFolder), true);
+        Sink sink = new FileBasedSink(new File(outputFolder), true, McloudAnalyzer.lang);
         worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
                 outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
@@ -113,10 +113,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
-    	
-    	for(CrawleableUri uri : uris) {
-    		uri.addData("TEST","123UPB");
-    	}
     	
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));

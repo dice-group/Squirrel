@@ -146,11 +146,12 @@ public class FileBasedSinkTest {
     }
 
     protected Sink createSink(boolean useCompression) {
-        return new FileBasedSink(tempDirectory, useCompression);
+        return new FileBasedSink(tempDirectory, useCompression, null);
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) {
-        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression);
+        
+        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression, false, null);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
@@ -232,11 +233,13 @@ public class FileBasedSinkTest {
 
     public static Resource[] createResources(int numberOfResources, Model currentModel) {
         Resource resources[] = new Resource[numberOfResources];
-        int startChar = (int) 'A';
+        int startChar = 'A';
         for (int i = 0; i < resources.length; ++i) {
             resources[i] = currentModel.createResource("http://example.org/class" + ((char) (startChar + i)));
             currentModel.add(resources[i], RDF.type, RDFS.Class);
         }
         return resources;
     }
+    
+    //TODO: extend test 
 }
