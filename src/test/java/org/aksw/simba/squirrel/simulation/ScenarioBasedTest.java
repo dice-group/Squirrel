@@ -153,6 +153,12 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
                                                            // save.
         worker.setTerminateFlag(true);
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+        worker.close();
 
         // compare the expected results with those found inside the sink
         boolean success = true;
