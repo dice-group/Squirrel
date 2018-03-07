@@ -34,7 +34,8 @@ public class RDFSink implements Sink {
             factory.setHost("jena");
             factory.setUsername("admin");
             factory.setPassword("pw123");
-            LOGGER.info("ip of jena :" + factory.getVirtualHost());
+            factory.setPort(3030);
+            LOGGER.info("ip of jena :" + factory.getSocketFactory());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -70,7 +71,7 @@ public class RDFSink implements Sink {
             e.printStackTrace();
         }
         RDFSink sink = new RDFSink();
-        System.out.println(strContentDatasetUriUpdate);
+        //System.out.println(strContentDatasetUriUpdate);
         //CrawleableUri uri=  new CrawleableUriFactoryImpl().create("http://www.testPage.de");
         CrawleableUri uri = new CrawleableUriFactoryImpl().create("http://www.google.de");
         Node node = new Node_Variable("subj1");
