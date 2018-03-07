@@ -41,7 +41,7 @@ public class RDFSink implements Sink {
 
 
         // TODO: find out ip address of triple store container at runtime
-        strIP = "192.168.0.122";
+        strIP = "192.168.0.136";
         strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
         strMetaDatasetUriUpdate = "http://" + strIP + ":3030/MetaData/update";
     }
@@ -84,7 +84,7 @@ public class RDFSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-
+        LOGGER.error("addTripple");
         //todo: here you can recoginze that another triple has been stored for this given uri
 
         //Get the graphID for the uri - may change to Hashvalue

@@ -1,15 +1,11 @@
 package org.aksw.simba.squirrel.sink.impl;
 
-    import com.sun.xml.internal.fastinfoset.util.StringArray;
-    import org.apache.jena.graph.Node;
-    import org.apache.jena.graph.Triple;
-    import org.apache.jena.query.*;
-    import org.apache.jena.rdf.model.RDFNode;
-    import org.apache.jena.shared.JenaException;
-    import org.apache.xerces.xs.StringList;
 
-    import java.util.ArrayList;
-    import java.util.List;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GraphQuery extends Query {

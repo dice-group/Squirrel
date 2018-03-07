@@ -204,7 +204,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void crawl(List<CrawleableUri> uris) {
-
+        LOGGER.error("crawlingActivity with numURis: " + uris.size());
         CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
