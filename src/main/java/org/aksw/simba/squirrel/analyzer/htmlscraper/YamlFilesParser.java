@@ -29,15 +29,25 @@ public class YamlFilesParser {
 	private List<YamlFile> yfs = null;
 	private final String fileExtension = "yaml";
 	
-	
-	protected YamlFilesParser() throws JsonParseException, JsonMappingException, IOException {
-		yfs = loadFiles();
+	protected YamlFilesParser(File file)
+			throws JsonParseException, JsonMappingException, IOException {
+		yfs = loadFiles(file);
 	}
 	
-	private List<YamlFile> loadFiles() {
+	protected YamlFilesParser()
+			throws JsonParseException, JsonMappingException, IOException {
+		yfs = loadFiles(null);
+	}
+	
+	private List<YamlFile> loadFiles(File file) {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		File folder = null;
+		if(file != null) {
+			 folder = file;
+		}else {
+			folder = new File(HtmlScraperConfiguration.getHtmlScraperConfiguration().getPath());
+		}
 		
-		File folder = new File(HtmlScraperConfiguration.getHtmlScraperConfiguration().getPath());
 		List<File> listYamlFiles = filterYamlFiles(TempPathUtils.searchPath4Files(folder));
 		List<YamlFile> yamls = new ArrayList<YamlFile>();
 		for(int i=0; i<listYamlFiles.size(); i++) {
