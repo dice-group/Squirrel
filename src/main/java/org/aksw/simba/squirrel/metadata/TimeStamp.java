@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink.impl;
+package org.aksw.simba.squirrel.metadata;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
