@@ -24,6 +24,9 @@ services:
       environment:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
+      networks:
+            vpcbr:
+              ipv4_address: 10.5.0.6
 
   frontier:
     image: squirrel
@@ -77,6 +80,9 @@ services:
       - squirrel
 
 networks:
-  squirrel:
-    external:
-      name: squirrel
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1

@@ -13,23 +13,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
+ * and some meta data, like timestamps for the start and end of the crawling activity.
+ */
 public class CrawlingActivity {
-    private UUID id;
-    private Date dateStarted;
-    private Date dateEnded;
-    private Map<CrawleableUri, CrawlingURIState> mapUri;
-    private CrawlingActivityState status;
-    private Worker worker;
-    private int numTriples;
 
-    private Sink sink;
-
+    /**
+     * The logger.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawlingActivity.class);
+    /**
+     * A unique id.
+     */
+    private UUID id;
+    /**
+     * When the activity has started.
+     */
+    private Date dateStarted;
+    /**
+     * When the activity has ended.
+     */
+    private Date dateEnded;
+    /**
+     * A mapping from uris to states indicating whether they have been crawled successfully.
+     */
+    private Map<CrawleableUri, CrawlingURIState> mapUri;
+    /**
+     * A state of the activity.
+     */
+    private CrawlingActivityState status;
+    /**
+     * The worker that has been assigned the activity.
+     */
+    private Worker worker;
+    /**
+     * Number of triples crawled by this activity.
+     */
+    private int numTriples;
+    /**
+     * The sink used for the activity.
+     */
+    private Sink sink;
 
     public int getNumTriples() {
         return numTriples;
     }
 
+    /**
+     * Constructor
+     *
+     * @param listUri
+     * @param worker
+     * @param sink
+     */
     public CrawlingActivity(List<CrawleableUri> listUri, Worker worker, Sink sink) {
         this.worker = worker;
         this.dateStarted = new Date();
@@ -50,9 +87,11 @@ public class CrawlingActivity {
         countTriples();
         dateEnded = new Date();
         status = CrawlingActivityState.ENDED;
-
     }
 
+    /**
+     * count the triples of the activity.
+     */
     private void countTriples() {
         int sum = 0;
         if (sink instanceof RDFSink) {
