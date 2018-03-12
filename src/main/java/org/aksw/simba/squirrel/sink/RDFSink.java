@@ -1,10 +1,11 @@
 package org.aksw.simba.squirrel.sink;
 
-import com.rabbitmq.client.ConnectionFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Variable;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -30,22 +31,7 @@ public class RDFSink implements Sink {
     private static String strMetaDatasetUriUpdate;
 
     public RDFSink() {
-        String strIP = null;
-        try {
-            strIP = InetAddress.getLocalHost().getHostAddress().toString();
-            LOGGER.info("get localhost: " + strIP);
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("jena");
-            factory.setUsername("admin");
-            factory.setPassword("pw123");
-            factory.setPort(3030);
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        // TODO: find out ip address of triple store container at runtime
-        strIP = "131.234.244.76";
+        String strIP = "jena";
         strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
         strMetaDatasetUriUpdate = "http://" + strIP + ":3030/MetaData/update";
         strContentDatasetUriQuery = "http://" + strIP + ":3030/ContentSet/query";
@@ -60,6 +46,7 @@ public class RDFSink implements Sink {
         lstTriples.add(new Triple(nodeSubject, new Node_Variable("date_ended"), new Node_Variable(crawlingActivity.getDateEnded())));
         lstTriples.add(new Triple(nodeSubject, new Node_Variable("state"), new Node_Variable(crawlingActivity.getStatus().toString())));
         lstTriples.add(new Triple(nodeSubject, new Node_Variable("id_of_worker"), new Node_Variable(String.valueOf(crawlingActivity.getWorker().getId()))));
+        lstTriples.add(new Triple(nodeSubject, new Node_Variable("num_of_all_triples"), new Node_Variable(String.valueOf(crawlingActivity.getNumTriples()))));
 
         //new Node_Literal();
 

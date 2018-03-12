@@ -26,6 +26,10 @@ public class CrawlingActivity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawlingActivity.class);
 
+    public int getNumTriples() {
+        return numTriples;
+    }
+
     public CrawlingActivity(List<CrawleableUri> listUri, Worker worker, Sink sink) {
         this.worker = worker;
         this.dateStarted = new Date();
