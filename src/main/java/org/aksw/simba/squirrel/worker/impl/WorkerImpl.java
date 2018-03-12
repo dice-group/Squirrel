@@ -204,17 +204,14 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void crawl(List<CrawleableUri> uris) {
-        LOGGER.error("crawlingActivity with numURis: " + uris.size());
-        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this);
+        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
-                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
             } else if (uri.getUri() == null) {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
-                LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
             } else {
                 try {
                     performCrawling(uri, newUris);

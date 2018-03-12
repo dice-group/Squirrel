@@ -22,7 +22,7 @@ public class QueryGenerator {
 
     public String getAddQuery(String graphIdentifier, Triple triple) {
         String strQuery = "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
-        strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
+        strQuery += "<" + triple.getSubject().getName() + "> <" + triple.getPredicate().getName() + "> <" + triple.getObject().getName() + "> ; ";
         strQuery += "} }";
         return strQuery;
     }
@@ -47,9 +47,7 @@ public class QueryGenerator {
             strQuery += triple.getSubject().getName() + " " + triple.getPredicate().getName() + " " + triple.getObject().getName() + " ; ";
         }
         strQuery += "} }";
-        System.out.println(strQuery);
         Query query = QueryFactory.create(strQuery);
-        System.out.println("Generated Query: " + query.toString());
         return query;
     }
 
