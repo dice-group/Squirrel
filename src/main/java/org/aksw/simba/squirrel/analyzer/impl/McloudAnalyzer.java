@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,7 @@ import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.utils.vocabularies.CreativeCommons;
 import org.aksw.simba.squirrel.utils.vocabularies.MCSE;
 import org.apache.commons.net.ntp.TimeStamp;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -41,11 +44,20 @@ import org.slf4j.LoggerFactory;
 
 public class McloudAnalyzer implements Analyzer
 {
+    /**
+     * If scraping is done locally i would advice to disable the actual download of mCloud resources
+     * and limit the scraper to extract only the metadata from the platform.
+     * Downloading the sources should only be done on a server with loads of disk space, 
+     * if you want to test downloading be aware that you should terminate Squirrel at some point
+     * as your disk will quickly be filled up
+     */
+    private static final boolean downloadDataSets = false;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(McloudAnalyzer.class);
 
     // mCloud URI related Strings and Patterns
     private static final Pattern NUMBERS_REGEX = Pattern.compile("[0-9]+");
-    
+
     /**
      * Defines the language to use when storing data sets depicting mCloud meta data to file with the Jena Stream API.
      * Be careful, not all Languages are support the stream serialization, {@link https://jena.apache.org/documentation/io/streaming-io.html}
@@ -191,8 +203,9 @@ public class McloudAnalyzer implements Analyzer
             //because for now we are only able to process FTP and HTTP downloads, we will store meta data for all download sources
             //but only add the ones for crawling which can be processed by fetchers
             //this can be extended e.g. if API implementations are available
+            //if you actually want to trigger the download set downloadDataSets to true
             String accessType = (String) curi.getData(Constants.URI_DATASET_ACCESS_TYPE);
-            if (accessType != null && (ftpConstant.equals(accessType.toUpperCase()) || downloadConstant.equals(accessType.toUpperCase())))
+            if (downloadDataSets && accessType != null && (ftpConstant.equals(accessType.toUpperCase()) || downloadConstant.equals(accessType.toUpperCase())))
             {
                 curi.addData(Constants.MCLOUD_FETCHABLE, true);
                 collector.addNewUri(baseUri, curi);
@@ -294,28 +307,56 @@ public class McloudAnalyzer implements Analyzer
             String type = download.getElementsByTag(tagSmall).first().text();
             try
             {
-                CrawleableUri uri = new CrawleableUri(new URI(url));
+                if (url == null || url.isEmpty())
+                {
+                    throw new URISyntaxException(url, "The given URL String may not be empty.");
+                }
 
-                //add metadata to URI
-                uri.addData(Constants.URI_DATASET_TITLE, title);
-                uri.addData(Constants.URI_DATASET_DESCRIPTION, description);
-                uri.addData(Constants.URI_DATASET_READ_TIME, new TimeStamp(System.currentTimeMillis()));
-                uri.addData(Constants.MCLOUD_RESOURCE, true);
+                if (pageIsAvailable(url))
+                {
+                    CrawleableUri uri = new CrawleableUri(new URI(url));
 
-                uri.addData(Constants.URI_DATASET_ACCESS_TYPE, type);
-                uri.addData(Constants.URI_DATASET_CATEGORIES, categories);
-                uri.addData(Constants.URI_DATASET_PROVIDER_NAME, providerName);
-                uri.addData(Constants.URI_DATASET_PROVIDER_URI, providerURI);
-                uri.addData(Constants.URI_DATASET_LICENSE, license);
+                    //add metadata to URI
+                    uri.addData(Constants.URI_DATASET_TITLE, title);
+                    uri.addData(Constants.URI_DATASET_DESCRIPTION, description);
+                    uri.addData(Constants.URI_DATASET_READ_TIME, new TimeStamp(System.currentTimeMillis()));
+                    uri.addData(Constants.MCLOUD_RESOURCE, true);
 
-                downloadSources.add(uri);
+                    uri.addData(Constants.URI_DATASET_ACCESS_TYPE, type);
+                    uri.addData(Constants.URI_DATASET_CATEGORIES, categories);
+                    uri.addData(Constants.URI_DATASET_PROVIDER_NAME, providerName);
+                    uri.addData(Constants.URI_DATASET_PROVIDER_URI, providerURI);
+                    uri.addData(Constants.URI_DATASET_LICENSE, license);
+
+                    downloadSources.add(uri);
+                }
             }
             catch (URISyntaxException e2)
             {
                 LOGGER.error("Error parsing URI " + url + ". It will be ignored.", e2);
+
+                //unfortunately broken URLs like '376.538' slip through here because no URISyntaxException is thrown
+                //(probably excpected to be a local hash), even though it doesn't exist
+                //this does occur quite often for DWD resources as they uploaded nonsense URIs and mCloud does not make any validation.
+                //Because mCloud redirects to it's own search page when it doesn't find the local hash instead of propagating an error
+                //the above filter does not work for all bad URIs 
             }
         }
         return downloadSources.iterator();
+    }
+
+    private boolean pageIsAvailable(String uri)
+    {
+        try
+        {
+            Jsoup.connect(uri).ignoreContentType(true).get();
+            return true;
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("The given URI does not point to an existing web page or the page is not reachable at the moment. It will be ignored", e);
+            return false;
+        }
     }
 
     //----------------------- OUTPUT  ----------------------
@@ -324,10 +365,12 @@ public class McloudAnalyzer implements Analyzer
         private static final String URI_SUFFIX = "#URI";
 
         private Sink sink;
+        private Set<String> dynamicUris;
 
         public MCloudDataSink(Sink sink)
         {
             this.sink = sink;
+            this.dynamicUris = new HashSet<>();
         }
 
         public void sinkMetaData(CrawleableUri curi)
@@ -383,13 +426,13 @@ public class McloudAnalyzer implements Analyzer
             resource.addProperty(DCTerms.description, description);
 
             String accessType = (String) curi.getData(Constants.URI_DATASET_ACCESS_TYPE);
-            resource.addProperty(MCSE.accessType, accessType);
+            Resource accessResource = createOrGetDynamicResource(model, MCSE.getURI(), accessType);
+            resource.addProperty(MCSE.accessType, accessResource);
 
             TimeStamp timeStamp = (TimeStamp) curi.getData(Constants.URI_DATASET_READ_TIME);
             String time = timeStamp.toDateString();
-            Resource crawlTimestamp = model.createResource(XSD.dateTime);
-            crawlTimestamp.addProperty(RDF.value, time);
-            resource.addProperty(DCTerms.created, crawlTimestamp);
+            Literal timeLiteral = model.createTypedLiteral(time, XSD.dateTime.getURI());
+            resource.addProperty(DCTerms.created, timeLiteral);
 
             List<String> categories = (List<String>) curi.getData(Constants.URI_DATASET_CATEGORIES);
             if (categories.isEmpty())
@@ -401,7 +444,8 @@ public class McloudAnalyzer implements Analyzer
             {
                 for (String category : categories)
                 {
-                    resource.addProperty(DCTerms.subject, category);
+                    Resource categoryResource = createOrGetDynamicResource(model, MCSE.getURI(), category);
+                    resource.addProperty(DCTerms.subject, categoryResource);
                 }
             }
 
@@ -436,9 +480,32 @@ public class McloudAnalyzer implements Analyzer
                 resource.addProperty(CreativeCommons.license, nullLicense);
             }
 
-            resource.addProperty(MCSE.fileBasedLink, FileBasedSink.generateFileName(uri, false, true, fileExt));
+            resource.addProperty(MCSE.fileBasedLink, FileBasedSink.generateFileName(uri, false, false, fileExt));
 
             return model;
+        }
+
+        private Resource createOrGetDynamicResource(Model model, String nameSpace, String propertyName)
+        {
+            String uri = nameSpace + propertyName;
+            boolean isUriKnown = dynamicUris.stream().anyMatch(u -> u.equals(uri));
+
+            Resource existingResource = model.getResource(uri);
+            if (existingResource != null)
+            {
+                if (!isUriKnown)
+                {
+                    dynamicUris.add(uri);
+                }
+                return existingResource;
+            }
+            else
+            {
+                Resource newResource = model.createResource(uri);
+                newResource.addProperty(RDFS.label, propertyName);
+                dynamicUris.add(uri);
+                return newResource;
+            }
         }
 
     }

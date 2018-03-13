@@ -36,7 +36,8 @@ public class MCSE
     public static final Property accessType = M_MODEL.createProperty("http://mCloudStatisticsEngine-datacube.org/ns#accessType");
 
     /** <p>As long as triple stores are not available in Squirrel we store the data as files. 
-     *     To link the metadata dataset to the actual dataset we reference the filename that is constructed from the datasets URI</p> */
+     *     To link the metadata dataset to the actual dataset we reference the filename that is constructed from the datasets URI.
+     *     Does not represent wheter compression is used or not</p> */
     public static final Property fileBasedLink = M_MODEL.createProperty("http://mCloudStatisticsEngine-datacube.org/ns#fileBasedLink");
 
     /** <p>Placeholder to collect all Datasets that have no category attached</p> */
@@ -52,4 +53,7 @@ public class MCSE
      */
     public static final Resource NullPublisher = M_MODEL.createResource("http://mCloudStatisticsEngine-datacube.org/ns#NullPublisher");
 
+    /**
+     * for each category and accessType found in the mCloud the McloudAnalyzer will generate new Resource in this namespace
+     */
 }
