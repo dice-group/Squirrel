@@ -31,6 +31,10 @@ public class HtmlScraper {
 	
 	private List<YamlFile> yamlFiles;
 	
+	private Map<String, YamlFile> files = new HashMap<String, YamlFile>();
+	
+	
+	
 	public HtmlScraper(File file) {
 		try {
 			yamlFiles = new YamlFilesParser(file).getYamlFiles();
@@ -49,7 +53,7 @@ public class HtmlScraper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Triple> scrape(String uri) throws Exception {
+	public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
 		
 		List<Triple> listTriples = new ArrayList<Triple>();
 				

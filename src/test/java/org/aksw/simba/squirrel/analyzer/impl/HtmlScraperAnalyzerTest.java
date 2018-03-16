@@ -31,6 +31,7 @@ import org.junit.Test;
 public class HtmlScraperAnalyzerTest {
 	
 	private File configurationFile;
+	File fetchedFile;
 	private Analyzer analyzer;
 	private CrawleableUri curi;
 	private UriCollector collector;
@@ -89,10 +90,13 @@ public class HtmlScraperAnalyzerTest {
 	}
 	
 	@Test
-	public void scrap() throws Exception {
-			List<Triple> listTriples = scraper.scrape(curi.toString());
-			
-			Assert.assertEquals(listTriples,expectedTriples);
+	public void scrapMcloud() throws Exception {
+		fetchedFile = new File("src/test/resources/html_scraper_analyzer/mcloudexample.html");
+//			List<Triple> listTriples = scraper.scrape(curi.toString());
+//			
+//			Assert.assertEquals(listTriples,expectedTriples);
+		
+		
 		
 	}
 	
