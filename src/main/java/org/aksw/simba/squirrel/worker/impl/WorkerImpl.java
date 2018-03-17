@@ -209,8 +209,10 @@ public class WorkerImpl implements Worker, Closeable {
         List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
+                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else if (uri.getUri() == null) {
+                LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
