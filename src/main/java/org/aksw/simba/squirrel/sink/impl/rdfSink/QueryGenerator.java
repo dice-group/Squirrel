@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink;
+package org.aksw.simba.squirrel.sink.impl.rdfSink;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.apache.jena.graph.Triple;

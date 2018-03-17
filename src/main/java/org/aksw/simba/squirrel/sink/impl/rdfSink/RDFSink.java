@@ -1,7 +1,8 @@
-package org.aksw.simba.squirrel.sink;
+package org.aksw.simba.squirrel.sink.impl.rdfSink;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Variable;
 import org.apache.jena.graph.Triple;
