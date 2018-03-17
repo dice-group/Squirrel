@@ -110,14 +110,16 @@ public class CrawlingActivity {
 
     public String getDateStarted() {
         String dateString = dateStarted.toString();
-        dateString = dateString.replace(" ", ";");
+        dateString = dateString.replace(" ", "_");
+        dateString = dateString.replace(":", "_");
         return dateString;
     }
 
     public String getDateEnded() {
 
         String dateString = dateEnded.toString();
-        dateString = dateString.replace(" ", ";");
+        dateString = dateString.replace(" ", "_");
+        dateString = dateString.replace(":", "_");
         return dateString;
     }
 

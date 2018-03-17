@@ -30,10 +30,15 @@ public class QueryGenerator {
      * @param triple          The given triple.
      * @return The generated query.
      */
-    public String getAddQuery(String graphIdentifier, Triple triple) {
+    public String getAddQuery(String graphIdentifier, Triple triple, boolean isMetaData) {
         String strQuery = "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
-        strQuery += "<" + triple.getSubject().getName() + "> <" + triple.getPredicate().getName() + "> <" + triple.getObject().getName() + "> ; ";
+        if (!isMetaData) {
+            strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
+        } else {
+            strQuery += "<" + triple.getSubject().getName() + "> <" + triple.getPredicate().getName() + "> <" + triple.getObject().getName() + "> ; ";
+        }
         strQuery += "} }";
+
         return strQuery;
     }
 
@@ -43,8 +48,8 @@ public class QueryGenerator {
      * @param triple The given triple.
      * @return The generated query.
      */
-    public String getAddQuery(CrawleableUri uri, Triple triple) {
-        return getAddQuery(uri.getUri().toString(), triple);
+    public String getAddQuery(CrawleableUri uri, Triple triple, boolean isMetaData) {
+        return getAddQuery(uri.getUri().toString(), triple, isMetaData);
     }
 
     /**
@@ -62,6 +67,7 @@ public class QueryGenerator {
      * @param triple The given triple.
      * @return The generated query.
      */
+    @SuppressWarnings("unused")
     public Query getSelectQuery(CrawleableUri uri, Triple triple) {
         return getSelectQuery(uri, triple, false);
     }

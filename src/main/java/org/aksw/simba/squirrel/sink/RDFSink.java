@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.sink;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Variable;
@@ -17,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +23,13 @@ public class RDFSink implements Sink {
 
     private static String strContentDatasetUriUpdate;
     private static String strContentDatasetUriQuery;
-    private static String strMetaDatasetUriQuery;
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFSink.class);
+    @SuppressWarnings("unused")
+    private static String strMetaDatasetUriQuery;
+    @SuppressWarnings("unused")
     private static String strMetaDatasetUriUpdate;
+
 
     public RDFSink() {
         String strIP = "jena";
@@ -48,36 +49,12 @@ public class RDFSink implements Sink {
         lstTriples.add(new Triple(nodeSubject, new Node_Variable("id_of_worker"), new Node_Variable(String.valueOf(crawlingActivity.getWorker().getId()))));
         lstTriples.add(new Triple(nodeSubject, new Node_Variable("num_of_all_triples"), new Node_Variable(String.valueOf(crawlingActivity.getNumTriples()))));
 
-        //new Node_Literal();
-
         lstTriples.forEach(triple -> {
 
-            System.out.println("query matze: " + QueryGenerator.getInstance().getAddQuery(String.valueOf(crawlingActivity.getId()), triple));
-
-            UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(String.valueOf(crawlingActivity.getId()), triple));
+            UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(String.valueOf(crawlingActivity.getId()), triple, true));
             UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strMetaDatasetUriUpdate);
             proc.execute();
         });
-
-    }
-
-    // this is only for testing
-    public static void main(String[] argv) {
-        try {
-            InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        RDFSink sink = new RDFSink();
-        //System.out.println(strContentDatasetUriUpdate);
-        //CrawleableUri uri=  new CrawleableUriFactoryImpl().create("http://www.testPage.de");
-        CrawleableUri uri = new CrawleableUriFactoryImpl().create("http://www.upb.de");
-        Node node = new Node_Variable("subj1");
-        Node node2 = new Node_Variable("pred1");
-        Node node3 = new Node_Variable("obj1");
-        Triple triple1 = new Triple(node, node2, node3);
-
-        sink.addTriple(uri, triple1);
 
     }
 
@@ -95,30 +72,20 @@ public class RDFSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, triple));
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, triple, false));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strContentDatasetUriUpdate);
         proc.execute();
     }
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-//        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-//        Credentials credentials = new UsernamePasswordCredentials("admin", "pw123");
-//        credsProvider.setCredentials(AuthScope.ANY, credentials);
-//        HttpClient httpclient = HttpClients.custom()
-//            .setDefaultCredentialsProvider(credsProvider)
-//            .build();
-//        HttpOp.setDefaultHttpClient(httpclient);
-
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-
     }
 
     @Override
     public void addData(CrawleableUri uri, InputStream stream) {
-
     }
 }
