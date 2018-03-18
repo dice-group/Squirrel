@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -347,16 +349,35 @@ public class McloudAnalyzer implements Analyzer
 
     private boolean pageIsAvailable(String uri)
     {
-        try
+        if (uri.startsWith("ftp")) //JSoup only supports http and https protocol
         {
-            Jsoup.connect(uri).ignoreContentType(true).get();
-            return true;
+            try
+            {
+                URL ftpUrl = new URL(uri);
+                URLConnection ftpConnection = ftpUrl.openConnection();
+                ftpConnection.connect();
+                return true;
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Can not establish a connection to the given ftp URI. It will be ignored.", e);
+                return false;
+            }
         }
-        catch (IOException e)
+        else
         {
-            LOGGER.error("The given URI does not point to an existing web page or the page is not reachable at the moment. It will be ignored", e);
-            return false;
+            try
+            {
+                Jsoup.connect(uri).ignoreContentType(true).timeout(10*1000).get();
+                return true;
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("The given URI does not point to an existing web page or the page is not reachable at the moment. It will be ignored", e);
+                return false;
+            }
         }
+
     }
 
     //----------------------- OUTPUT  ----------------------
@@ -413,6 +434,7 @@ public class McloudAnalyzer implements Analyzer
             model.setNsPrefix("mcse", MCSE.getURI());
             model.setNsPrefix("rdf", RDF.getURI());
             model.setNsPrefix("rdfs", RDFS.getURI());
+            model.setNsPrefix("vcard", VCARD.getURI());
 
             String uri = curi.getUri().toString();
             Resource resource = model.createResource(uri + Constants.MCLOUD_METADATA_URI_SUFFIX);
@@ -471,7 +493,6 @@ public class McloudAnalyzer implements Analyzer
             {
                 Resource license = model.createResource(licenseURI.toString());
                 license.addProperty(RDF.type, DCTerms.LicenseDocument);
-
                 resource.addProperty(CreativeCommons.license, license);
             }
             else
@@ -487,7 +508,8 @@ public class McloudAnalyzer implements Analyzer
 
         private Resource createOrGetDynamicResource(Model model, String nameSpace, String propertyName)
         {
-            String uri = nameSpace + propertyName;
+            String truncName = propertyName.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-");
+            String uri = nameSpace + truncName;
             boolean isUriKnown = dynamicUris.stream().anyMatch(u -> u.equals(uri));
 
             Resource existingResource = model.getResource(uri);
