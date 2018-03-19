@@ -23,7 +23,7 @@ public class SqlBasedIterator implements Iterator<byte[]> {
     private int countTotal = 0;
 
     public SqlBasedIterator(PreparedStatement ps, int count, String query) {
-    	SELECT_TABLE_QUERY = query;
+        SELECT_TABLE_QUERY = query;
         countTotal = count;
         this.ps = ps;
         try {
@@ -40,26 +40,26 @@ public class SqlBasedIterator implements Iterator<byte[]> {
     public boolean hasNext() {
 
         synchronized (rs) {
-        	try {
+            try {
 
-        		if(start == next) {
-        			next = next + page;
-        			ps = ps.getConnection().prepareStatement(SELECT_TABLE_QUERY);
+                if (start == next) {
+                    next = next + page;
+                    ps = ps.getConnection().prepareStatement(SELECT_TABLE_QUERY);
                     ps.setInt(1, start);
                     ps.setInt(2, next);
                     rs = ps.executeQuery();
                     hasNext = rs.next();
-        		}else {
-        			hasNext = rs.next();
-        		}
-        		
-        		return hasNext;
-        	}catch(SQLException e) {
-        		LOGGER.error("Exception while iterating over the results. Returning null.", e);
-        		return false;
-        	}
-        	
-            
+                } else {
+                    hasNext = rs.next();
+                }
+
+                return hasNext;
+            } catch (SQLException e) {
+                LOGGER.error("Exception while iterating over the results. Returning null.", e);
+                return false;
+            }
+
+
         }
 
     }
@@ -68,28 +68,28 @@ public class SqlBasedIterator implements Iterator<byte[]> {
 
     @Override
     public byte[] next() {
-        
-            synchronized (rs) {
+
+        synchronized (rs) {
                 // System.out.println(rs.getRow());
-	            	try {
-	            		if(hasNext) {
-	            			 start = start + 1;
-	            			 return rs.getBytes(3);
-	            		}else {
-	            			LOGGER.error("Exception while iterating over the results. Returning null.");
-	            			return null;
-	            		}
-		               
-	            	}catch (SQLException e) {
-	            				LOGGER.error("Exception while iterating over the results. Returning null.", e);
-	            				return null;
-					}
-                    	
+            try {
+                if (hasNext) {
+                    start = start + 1;
+                    return rs.getBytes(3);
+                } else {
+                    LOGGER.error("Exception while iterating over the results. Returning null.");
+                    return null;
                 }
 
-                
+            } catch (SQLException e) {
+                LOGGER.error("Exception while iterating over the results. Returning null.", e);
+                return null;
             }
-        
- 
+
+        }
+
+
+    }
+
+
 
 }

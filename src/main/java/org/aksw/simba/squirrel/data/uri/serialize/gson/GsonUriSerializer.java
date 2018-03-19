@@ -25,7 +25,7 @@ import com.google.gson.stream.JsonWriter;
 /**
  * A serializer that uses {@link Gson} to serialize URIs. Kept for backwards
  * compatibility.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -132,31 +132,31 @@ public class GsonUriSerializer implements Serializer {
             while (in.peek() != JsonToken.END_OBJECT) {
                 key = in.nextName();
                 switch (key) {
-                case URI_KEY: {
-                    uri = in.nextString();
-                    break;
-                }
-                case URI_TYPE_KEY: {
-                    type = UriType.valueOf(in.nextString());
-                    break;
-                }
-                case ADDRESS_KEY: {
-                    inetAddress = readInetAddress(in);
-                    break;
-                }
-                case DATA_KEY: {
-                    in.beginArray();
-                    while (in.hasNext()) {
-                        readDataObject(in, data);
+                    case URI_KEY: {
+                        uri = in.nextString();
+                        break;
                     }
-                    in.endArray();
-                    break;
-                }
-                default: {
-                    LOGGER.error(
+                    case URI_TYPE_KEY: {
+                        type = UriType.valueOf(in.nextString());
+                        break;
+                    }
+                    case ADDRESS_KEY: {
+                        inetAddress = readInetAddress(in);
+                        break;
+                    }
+                    case DATA_KEY: {
+                        in.beginArray();
+                        while (in.hasNext()) {
+                            readDataObject(in, data);
+                        }
+                        in.endArray();
+                        break;
+                    }
+                    default: {
+                        LOGGER.error(
                             "Got an unknown attribute name \"{}\" while parsing an CrawleableUri object. It will be ignored.",
                             key);
-                }
+                    }
                 }
             }
             in.endObject();
