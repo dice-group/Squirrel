@@ -26,7 +26,6 @@ services:
       volumes:
         - ./scenarios/1/data/jena:/fuseki
       environment:
-        PORT: 3030
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
 

@@ -13,7 +13,6 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
-import org.omg.CORBA.portable.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +38,7 @@ public class RDFSink implements Sink {
         String strIP = "jena";
         String portVar = "PORT";
         Map<String, String> env = System.getenv();
-        String port = null;
-        if (env.containsKey(portVar)) {
-            port = env.get(portVar);
-        } else {
-            String msg = "Couldn't get " + portVar + " from the environment.";
-            throw new RuntimeException(msg);
-        }
+        String port = "3030";
         datasetPrefix = "http://" + strIP + ":" + port + "/";
         strContentDatasetUriUpdate = datasetPrefix + "ContentSet/update";
         strMetaDatasetUriUpdate = datasetPrefix + "MetaData/update";
@@ -63,10 +56,10 @@ public class RDFSink implements Sink {
         lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("prov:wasAssociatedWith"), new Node_Variable(String.valueOf(crawlingActivity.getWorker().getId()))));
         lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("sq:numberOfTriples"), new Node_Variable(String.valueOf(crawlingActivity.getNumTriples()))));
         lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("sq:hostedOn"), new Node_Variable(datasetPrefix)));
-        for (CrawleableUri uri : crawlingActivity.getMapUri().keySet()) {
-            lstTriples.add(new Triple(new Node_Variable(uri.toString()), new Node_Variable("prov:wasGeneratedBy"), nodeCrawlingActivity));
-
-        }
+//        for (CrawleableUri uri : crawlingActivity.getMapUri().keySet()) {
+//            lstTriples.add(new Triple(new Node_Variable(uri.toString()), new Node_Variable("prov:wasGeneratedBy"), nodeCrawlingActivity));
+//
+//        }
 
         lstTriples.forEach(triple -> {
 

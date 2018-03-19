@@ -33,17 +33,16 @@ public class QueryGenerator {
     public String getAddQuery(String graphIdentifier, Triple triple, boolean isMetaData) {
         String strQuery = "";
         if (isMetaData) {
-            strQuery += "PREFIX prov: <http://www.w3.org/ns/prov-o/> ";
-            strQuery += "sq: <https://w3id.org/squirrel/> ";
+            strQuery += "prefix prov: <http://www.w3.org/ns/prov-o/> ";
+            strQuery += "prefix sq: <https://w3id.org/squirrel/> ";
         }
         strQuery += "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
         if (!isMetaData) {
             strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
         } else {
-            strQuery += "<" + triple.getSubject().getName() + "> <" + triple.getPredicate().getName() + "> <" + triple.getObject().getName() + "> ; ";
+            strQuery += "<" + triple.getSubject().getName() + "> " + triple.getPredicate().getName() + " <" + triple.getObject().getName() + "> ; ";
         }
         strQuery += "} }";
-
         return strQuery;
     }
 
