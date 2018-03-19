@@ -1,0 +1,16 @@
+search:
+ check:
+  domain: mcloud.de
+ search-result-page:
+  regex: results/searchAction
+  resources:
+  
+ download_page:
+  regex: results/detail
+  resources:
+   schema:downloadUrl: .download-list li a
+   rdfs:label: [class="mary-2"]
+   rdfs:comment: .block--padded p
+   schema:provider: .table--lined tr:eq(0) td a
+   schema:license: .table--lined tr:eq(1) td a
+
