@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions.ElementNotFoundException;
 import org.aksw.simba.squirrel.configurator.HtmlScraperConfiguration;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -29,9 +30,9 @@ import org.jsoup.select.Elements;
  */
 public class HtmlScraper {
 	
-	private List<YamlFile> yamlFiles;
+
 	
-	private Map<String, YamlFile> files = new HashMap<String, YamlFile>();
+	private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
 	
 	
 	
@@ -52,54 +53,42 @@ public class HtmlScraper {
 
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
 		
 		List<Triple> listTriples = new ArrayList<Triple>();
-				
-		for(YamlFile yamlFile : yamlFiles) {
+		
+		YamlFile yamlFile = yamlFiles.get(UriUtils.getDomainName(uri));
+		if(yamlFile != null) {
+			yamlFile.getSearch().remove(YamlFileAtributes.SEARCH_CHECK);
 			
-			String url = yamlFile.getSearch().get(YamlFileAtributes.SEARCH_CHECK)
-					.get(YamlFileAtributes.SEARCH_CHECK_URL).toString();
-			
-			List<String> terms = (ArrayList<String>) yamlFile.getSearch().get(YamlFileAtributes.SEARCH_CHECK)
-					.get(YamlFileAtributes.SEARCH_CHECK_TERMS);
-			
-			for(String term : terms) {
-				Document doc = Jsoup.connect(url+term).get();
-				
-				
-				Elements elements = doc.select(yamlFile.getSearch().get(
-						YamlFileAtributes.SEARCH_RESULT).get(YamlFileAtributes.SEARCH_RESULT_SELECTOR).toString());
-				
-				for (int i = 0; i < elements.size(); i++) {
-					Element element = elements.get(i);
-					String downloadLink = yamlFile.getDataset_page()
-							.get(YamlFileAtributes.DATASET_RULES).get(YamlFileAtributes.DATASET_RULES_DOWNLOADLINK).toString();
-					String href = element.select(downloadLink).attr("abs:href");
-					listTriples.addAll(scrapeDownloadLink(yamlFile, href));
+			for(Entry<String,Map<String, Object>> entry : yamlFile.getSearch().entrySet()) {
+				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
+					System.out.println(entry.getKey() + ": " + cfg.getKey() + " - " + cfg.getValue());
+					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
+						Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
+						listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
+					}
 				}
-
 			}
+			
 		}
+
 		return listTriples;
 	}
 	
-	private Set<Triple> scrapeDownloadLink(YamlFile yamlFile, String href) throws Exception {
-		Document doc = Jsoup.connect(href).get();
-		String pageUrl = href.substring(0, href.indexOf("?"));
+	private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile,String uri) throws Exception {
+		Document doc = Jsoup.parse(htmlFile,"UTF-8");
 		
-		Node s = NodeFactory.createBlankNode(pageUrl);
+		Node s = NodeFactory.createBlankNode(uri);
 		
 		Set<Triple> listTriples = new LinkedHashSet<Triple>();
 		
-		Map<String,Object> download_resources = new
-				HashMap<String,Object>(yamlFile.getDownload_page().get(YamlFileAtributes.DOWNLOAD_PAGE_RESOURCES));
+
 
 		List<String> resourcesList = new ArrayList<String>();
 		Node objectNode;
 		for(Entry<String, Object> entry: 
-			download_resources.entrySet()) {
+			resources.entrySet()) {
 			resourcesList.clear();
 			
 			Node p = NodeFactory.createBlankNode(entry.getKey());
@@ -124,8 +113,6 @@ public class HtmlScraper {
 					throw new Exception(e);
 				}
 				
-				
-				
 				for(int i=0; i<elements.size();i++) {
 					if(elements.get(i).hasAttr("href")) {
 						objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
@@ -140,7 +127,7 @@ public class HtmlScraper {
 			}
 		}
 		
-
+		listTriples.size();
 		return listTriples;
 	}
 

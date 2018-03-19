@@ -16,6 +16,7 @@ import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -33,70 +34,34 @@ public class HtmlScraperAnalyzerTest {
 	private File configurationFile;
 	File fetchedFile;
 	private Analyzer analyzer;
-	private CrawleableUri curi;
+	
 	private UriCollector collector;
 	private Sink sink;
 	private HtmlScraper scraper;
-	private List<Triple> expectedTriples;
 	private Serializer serializer;
 
 	
 	@Before
-	public void prepare() throws URISyntaxException, IOException {
+	public void prepareGeneral() throws URISyntaxException, IOException {
 		String dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
 		serializer = new GzipJavaUriSerializer();
 		this.sink = new InMemorySink();
 		this.collector = SqlBasedUriCollector.create(serializer, dbdir);
-		curi = new CrawleableUri(new URI("http://aksw.org/test"));
-		configurationFile = new File("src/test/resources/yaml");
+
+		configurationFile = new File("src/test/resources/html_scraper_analyzer/yaml");
 		scraper = new HtmlScraper(configurationFile);
 		analyzer = new HTMLScraperAnalyzer(collector,scraper);
-		
-		expectedTriples = new ArrayList<Triple>();
-		
-		Node s = NodeFactory.createBlankNode
-				("https://www.mcloud.de/web/guest/suche/-/results/detail/luftverkehrsnetznachinspire");
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("rdfs:comment"),
-				NodeFactory.createLiteral("INSPIRE WMS Luftverkehrsnetz (INSPIRE TN-A) mit Daten der Deutschen Flugsicherung GmbH (DFS)")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("schema:downloadUrl"),
-				NodeFactory.createURI("http://atlas.dlz-it.de/dfs/tn-a/wms?service=wms&request=getcapabilities")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("schema:downloadUrl"),
-				NodeFactory.createURI("http://atlas.dlz-it.de/dfs/tn-a/wfs?service=wfs&request=getcapabilities")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("schema:license"),
-				NodeFactory.createURI("http://www.gesetze-im-internet.de/geonutzv/index.html")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("rdfs:label"),
-				NodeFactory.createLiteral("Luftverkehrsnetz nach INSPIRE")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("schema:provider"),
-				NodeFactory.createURI("http://www.dfs.de")));
-		
-		expectedTriples.add(new Triple(s,
-				NodeFactory.createBlankNode("schema:provider"),
-				NodeFactory.createURI("https://www.itzbund.de")));
-		
-		for(Triple triple: expectedTriples) {
-			collector.addTriple(curi, triple);
-		}
+
 	}
+	
 	
 	@Test
 	public void scrapMcloud() throws Exception {
+		CrawleableUri curi = new CrawleableUri(new URI("https://www.mcloud.de/web/guest/suche/-/results/detail/verkehrslageaufautobahnenschleifenhamburg"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/mcloudexample.html");
-//			List<Triple> listTriples = scraper.scrape(curi.toString());
-//			
-//			Assert.assertEquals(listTriples,expectedTriples);
+		 Iterator<byte[]> iterator = analyzer.analyze(curi, fetchedFile, sink);
 		
-		
+		 System.out.println(UriUtils.getDomainName(curi.getUri().toString()));
 		
 	}
 	

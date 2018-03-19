@@ -1,19 +1,19 @@
 package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions.ElementNotFoundException;
 import org.aksw.simba.squirrel.configurator.HtmlScraperConfiguration;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -26,20 +26,20 @@ public class YamlFilesParser {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(YamlFilesParser.class);
 	
-	private List<YamlFile> yfs = null;
+	private  Map<String, YamlFile> yfs = null;
 	private final String fileExtension = "yaml";
 	
 	protected YamlFilesParser(File file)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws Exception {
 		yfs = loadFiles(file);
 	}
 	
 	protected YamlFilesParser()
-			throws JsonParseException, JsonMappingException, IOException {
+			throws Exception {
 		yfs = loadFiles(null);
 	}
 	
-	private List<YamlFile> loadFiles(File file) {
+	private Map<String, YamlFile> loadFiles(File file) throws Exception {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		File folder = null;
 		if(file != null) {
@@ -49,12 +49,28 @@ public class YamlFilesParser {
 		}
 		
 		List<File> listYamlFiles = filterYamlFiles(TempPathUtils.searchPath4Files(folder));
-		List<YamlFile> yamls = new ArrayList<YamlFile>();
+		Map<String, YamlFile> yamls = new HashMap<String, YamlFile>();
 		for(int i=0; i<listYamlFiles.size(); i++) {
 			try {
-				yamls.add(mapper.readValue(listYamlFiles.get(i), YamlFile.class));
+				
+				YamlFile yamlFile = mapper.readValue(listYamlFiles.get(i), YamlFile.class);
+				
+				for(Entry<String, Map<String,Object>> entry : yamlFile.getSearch().entrySet()) {
+					
+					if(entry.getKey().equals(YamlFileAtributes.SEARCH_CHECK))
+						continue;
+					
+					if( !(entry.getValue().containsKey(YamlFileAtributes.REGEX) &&
+							entry.getValue().containsKey(YamlFileAtributes.RESOURCES)) ) {
+						throw new ElementNotFoundException("Regex or Resources not found. Please check the Yaml Files");
+					}
+				}
+				
+				yamls.put(yamlFile.getSearch().get(YamlFileAtributes.SEARCH_CHECK).get(YamlFileAtributes.SEARCH_DOMAIN).toString(),
+						yamlFile);
 			} catch (Exception e) {
-				LOGGER.warn("",e);
+				LOGGER.error("An error occurred while parsing the file",e);
+				throw new Exception(e);
 			}
 		}
 		
@@ -68,7 +84,7 @@ public class YamlFilesParser {
 		
 	}
 	
-	public List<YamlFile> getYamlFiles(){
+	public  Map<String, YamlFile> getYamlFiles(){
 		
 		return yfs;
 		

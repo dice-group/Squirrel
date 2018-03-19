@@ -50,9 +50,6 @@ public class HTMLScraperAnalyzer implements Analyzer{
 		return null;
 	}
 	
-	
-	public static void main(String[] args) {
-		new HTMLScraperAnalyzer(null).analyze(null, null, null);
-	}
+
 
 }
