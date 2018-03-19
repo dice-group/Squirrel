@@ -55,11 +55,6 @@ public class CrawlingActivity {
      * The sink used for the activity.
      */
     private Sink sink;
-
-    public int getNumTriples() {
-        return numTriples;
-    }
-
     /**
      * Constructor
      *
@@ -77,6 +72,14 @@ public class CrawlingActivity {
         }
         id = UUID.randomUUID();
         this.sink = sink;
+    }
+
+    public Map<CrawleableUri, CrawlingURIState> getMapUri() {
+        return mapUri;
+    }
+
+    public int getNumTriples() {
+        return numTriples;
     }
 
     public void setState(CrawleableUri uri, CrawlingURIState state) {

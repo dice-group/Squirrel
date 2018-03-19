@@ -13,12 +13,14 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
+import org.omg.CORBA.portable.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RDFSink implements Sink {
 
@@ -30,25 +32,41 @@ public class RDFSink implements Sink {
     private static String strMetaDatasetUriQuery;
     @SuppressWarnings("unused")
     private static String strMetaDatasetUriUpdate;
+    private static String datasetPrefix;
 
 
     public RDFSink() {
         String strIP = "jena";
-        strContentDatasetUriUpdate = "http://" + strIP + ":3030/ContentSet/update";
-        strMetaDatasetUriUpdate = "http://" + strIP + ":3030/MetaData/update";
-        strContentDatasetUriQuery = "http://" + strIP + ":3030/ContentSet/query";
-        strMetaDatasetUriQuery = "http://" + strIP + ":3030/MetaData/query";
+        String portVar = "PORT";
+        Map<String, String> env = System.getenv();
+        String port = null;
+        if (env.containsKey(portVar)) {
+            port = env.get(portVar);
+        } else {
+            String msg = "Couldn't get " + portVar + " from the environment.";
+            throw new RuntimeException(msg);
+        }
+        datasetPrefix = "http://" + strIP + ":" + port + "/";
+        strContentDatasetUriUpdate = datasetPrefix + "ContentSet/update";
+        strMetaDatasetUriUpdate = datasetPrefix + "MetaData/update";
+        strContentDatasetUriQuery = datasetPrefix + "ContentSet/query";
+        strMetaDatasetUriQuery = datasetPrefix + "MetaData/query";
 
     }
 
     public void addMetadata(final CrawlingActivity crawlingActivity) {
         List<Triple> lstTriples = new ArrayList<>();
-        Node nodeSubject = new Node_Variable("crawlingActivity" + crawlingActivity.getId());
-        lstTriples.add(new Triple(nodeSubject, new Node_Variable("date_started"), new Node_Variable(crawlingActivity.getDateStarted())));
-        lstTriples.add(new Triple(nodeSubject, new Node_Variable("date_ended"), new Node_Variable(crawlingActivity.getDateEnded())));
-        lstTriples.add(new Triple(nodeSubject, new Node_Variable("state"), new Node_Variable(crawlingActivity.getStatus().toString())));
-        lstTriples.add(new Triple(nodeSubject, new Node_Variable("id_of_worker"), new Node_Variable(String.valueOf(crawlingActivity.getWorker().getId()))));
-        lstTriples.add(new Triple(nodeSubject, new Node_Variable("num_of_all_triples"), new Node_Variable(String.valueOf(crawlingActivity.getNumTriples()))));
+        Node nodeCrawlingActivity = new Node_Variable("crawlingActivity" + crawlingActivity.getId());
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("prov:startedAtTime"), new Node_Variable(crawlingActivity.getDateStarted())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("prov:endedAtTime"), new Node_Variable(crawlingActivity.getDateEnded())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("sq:Status"), new Node_Variable(crawlingActivity.getStatus().toString())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("prov:wasAssociatedWith"), new Node_Variable(String.valueOf(crawlingActivity.getWorker().getId()))));
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("sq:numberOfTriples"), new Node_Variable(String.valueOf(crawlingActivity.getNumTriples()))));
+        lstTriples.add(new Triple(nodeCrawlingActivity, new Node_Variable("sq:hostedOn"), new Node_Variable(datasetPrefix)));
+        for (CrawleableUri uri : crawlingActivity.getMapUri().keySet()) {
+            lstTriples.add(new Triple(new Node_Variable(uri.toString()), new Node_Variable("prov:wasGeneratedBy"), nodeCrawlingActivity));
+
+        }
 
         lstTriples.forEach(triple -> {
 

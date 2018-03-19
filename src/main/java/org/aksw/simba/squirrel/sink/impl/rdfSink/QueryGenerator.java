@@ -31,7 +31,12 @@ public class QueryGenerator {
      * @return The generated query.
      */
     public String getAddQuery(String graphIdentifier, Triple triple, boolean isMetaData) {
-        String strQuery = "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
+        String strQuery = "";
+        if (isMetaData) {
+            strQuery += "PREFIX prov: <http://www.w3.org/ns/prov-o/> ";
+            strQuery += "sq: <https://w3id.org/squirrel/> ";
+        }
+        strQuery += "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
         if (!isMetaData) {
             strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
         } else {
