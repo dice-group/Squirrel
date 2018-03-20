@@ -1,0 +1,14 @@
+search:
+ check:
+  domain: govdata.de
+ search-result-page:
+  regex: aaa
+  resources:
+ 
+ download_page:
+  regex: details
+  resources:
+   schema:downloadUrl:
+    - .resource-list li dd a[id^=resource]
+    - ul li:contains(RDF) a
+   schema:license: .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])

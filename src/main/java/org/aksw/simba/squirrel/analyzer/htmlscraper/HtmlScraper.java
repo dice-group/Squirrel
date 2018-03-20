@@ -61,6 +61,7 @@ public class HtmlScraper {
 			for(Entry<String,Map<String, Object>> entry : yamlFile.getSearch().entrySet()) {
 				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
 					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
+						@SuppressWarnings("unchecked")
 						Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
 						listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
 					}

@@ -70,10 +70,21 @@ public class HtmlScraperAnalyzerTest {
 		 List<Triple> listTriples = new ArrayList<Triple>();
 		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		
-		Assert.assertEquals(expectedTriplesMcloudDetail, listTriples);
+		Assert.assertEquals(expectedTriplesMcloudDetail, listTriples);	
+		
+	}
+	
+	@Test
+	public void scrapDetailGovData() throws Exception {
+		CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten/-/details/jahresbericht-der-bundespolizei-2014"));
+		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");
+		
+		 List<Triple> listTriples = new ArrayList<Triple>();
+		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		 
-		
-		
+		 for(Triple triple : listTriples) {
+			 System.out.println(triple);
+		 }
 	}
 	
 	
