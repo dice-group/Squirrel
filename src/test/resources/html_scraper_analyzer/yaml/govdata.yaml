@@ -2,13 +2,13 @@ search:
  check:
   domain: govdata.de
  search-result-page:
-  regex: aaa
+  regex: searchresult
   resources:
  
  download_page:
   regex: details
   resources:
-   schema:downloadUrl:
+   "http://schema.org/downloadUrl":
     - .resource-list li dd a[id^=resource]
     - ul li:contains(RDF) a
-   schema:license: .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
+   "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])

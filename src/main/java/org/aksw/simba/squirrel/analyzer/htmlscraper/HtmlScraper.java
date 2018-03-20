@@ -88,7 +88,7 @@ public class HtmlScraper {
 			resources.entrySet()) {
 			resourcesList.clear();
 			
-			Node p = NodeFactory.createBlankNode(entry.getKey());
+			Node p = NodeFactory.createURI(entry.getKey());
 			
 			if(entry.getValue() instanceof List<?> && ((ArrayList<String>) entry.getValue()).size() > 1) {
 				resourcesList = (ArrayList<String>) entry.getValue();

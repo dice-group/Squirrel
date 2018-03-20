@@ -36,7 +36,7 @@ public class HtmlScraperAnalyzerTest {
 	public void prepareDetailMcloud() {
 		expectedTriplesMcloudDetail = new ArrayList<Triple>();
 		Node s = NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/verkehrslageaufautobahnenschleifenhamburg");
-		Node downloadUrl = NodeFactory.createBlankNode("schema:downloadUrl");
+		Node downloadUrl = NodeFactory.createURI("http://schema.org/downloadUrl");
 		expectedTriplesMcloudDetail.add(new Triple(s, downloadUrl
 				, NodeFactory.createURI("http://geodienste.hamburg.de/HH_WFS_Verkehr_opendata?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=bab_vkl")));
 		
@@ -49,15 +49,16 @@ public class HtmlScraperAnalyzerTest {
 		expectedTriplesMcloudDetail.add(new Triple(s, downloadUrl
 				, NodeFactory.createURI("http://geodienste.hamburg.de/HH_WFS_Verkehr_opendata?REQUEST=GetCapabilities&SERVICE=WFS")));
 		
-		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createBlankNode("rdfs:label")
+		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createURI("http://www.w3.org/2000/01/rdf-schema#label")
 				, NodeFactory.createLiteral("Verkehrslage auf Autobahnen (Schleifen) Hamburg")));
 		
-		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createBlankNode("rdfs:comment")
+		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createURI("http://www.w3.org/2000/01/rdf-schema#comment")
 				, NodeFactory.createLiteral("Darstellung der Verkehrslage auf Autobahnen, die auf Grundlage von Schleifendaten ermittelt und erzeugt wird.")));
-		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createBlankNode("schema:provider")
+		
+		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createURI("http://schema.org/provider")
 				, NodeFactory.createURI("http://www.hamburg.de/bwvi/verkehr-strassenwesen/")));
 		
-		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createBlankNode("schema:license")
+		expectedTriplesMcloudDetail.add(new Triple(s, NodeFactory.createURI("http://schema.org/license")
 				, NodeFactory.createURI("https://www.govdata.de/dl-de/by-2-0")));
 		
 	}
@@ -75,6 +76,19 @@ public class HtmlScraperAnalyzerTest {
 	}
 	
 	@Test
+	public void scrapResultPagelMcloud() throws Exception {
+		CrawleableUri curi = new CrawleableUri(new URI("https://www.mcloud.de/web/guest/suche/-/results/searchAction?_mysearchportlet_aggsChoice=extras.subgroups%3A%22roads%22"));
+		fetchedFile = new File("src/test/resources/html_scraper_analyzer/mcloud/mcloud_resultpage.html");
+		
+		 List<Triple> listTriples = new ArrayList<Triple>();
+		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
+		
+		 for(Triple triple : listTriples) {
+			 System.out.println(triple);
+		 }
+	}
+	
+	@Test
 	public void scrapDetailGovData() throws Exception {
 		CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten/-/details/jahresbericht-der-bundespolizei-2014"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");
@@ -82,9 +96,7 @@ public class HtmlScraperAnalyzerTest {
 		 List<Triple> listTriples = new ArrayList<Triple>();
 		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		 
-		 for(Triple triple : listTriples) {
-			 System.out.println(triple);
-		 }
+		 
 	}
 	
 	
