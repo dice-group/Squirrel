@@ -10,6 +10,7 @@ import java.util.List;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
+import org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -255,7 +256,8 @@ public class WorkerImpl implements Worker, Closeable {
             }
             LOGGER.debug("I start crawling {} now...", uri);
 
-            Analyzer analyzer = new RDFAnalyzer(collector);
+            Analyzer rdfAnalyzer = new RDFAnalyzer(collector);
+            Analyzer htmlScraperAnalyzer = new HTMLScraperAnalyzer(collector);
             FileManager fm = new FileManager();
 
             File fetched = null;
@@ -285,9 +287,11 @@ public class WorkerImpl implements Worker, Closeable {
 	                        // open the sink only if a fetcher has been found
 	                        sink.openSinkForUri(uri);
 	                        collector.openSinkForUri(uri);
-	                        Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
+	                        Iterator<byte[]> resultRdf = rdfAnalyzer.analyze(uri, file, sink);
+	                        Iterator<byte[]> resultHtmlScraper =  htmlScraperAnalyzer.analyze(uri, data, sink);
 	                        sink.closeSinkForUri(uri);
-	                        sendNewUris(result);
+	                        sendNewUris(resultRdf);
+	                        sendNewUris(resultHtmlScraper);
 	                        collector.closeSinkForUri(uri);
 	                    } catch (Exception e) {
 	                        // We don't want to handle the exception. Just make sure that sink and collector

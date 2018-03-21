@@ -21,6 +21,7 @@ public class HtmlScraperAnalyzerTest {
 	private File configurationFile;
 	private File fetchedFile;
 	private List<Triple> expectedTriplesMcloudDetail;
+	private List<Triple> expectedTriplesMcloudResultPage;
 
 	private HtmlScraper scraper;
 
@@ -63,6 +64,45 @@ public class HtmlScraperAnalyzerTest {
 		
 	}
 	
+	@Before
+	public void prepareResultPageMCloud() {
+		Node s = NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/searchAction?_mysearchportlet_aggsChoice=extras.subgroups%3A%22roads%22");
+		Node p = NodeFactory.createURI("http://sindice.com/vocab/search#link");
+		
+		expectedTriplesMcloudResultPage = new ArrayList<Triple>();
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/stadtbonnfahrraddialog2017?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/stadtbonnverwarn-undbugelderruhenderverkehr?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/vbb-fahrplandatenapi?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/stadtbonnverkehrsdatenpkwlkwbussdrmessergebnisse?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/vrs-fahrplandatenapi?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/berlinelektro-ladestationeninberlin?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/berlinverkehrlichevorkommnisseincidents?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/mautdatenbund?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/mdmarbeitsstellenlngererdaueraufbabinsachsen-anhalt?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+		expectedTriplesMcloudResultPage.add(new Triple(s,p,
+				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/mdmarbeitsstellenlngererdaueraufbabinthringen?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
+		
+	}
+	
 	@Test
 	public void scrapDetailMcloud() throws Exception {
 		CrawleableUri curi = new CrawleableUri(new URI("https://www.mcloud.de/web/guest/suche/-/results/detail/verkehrslageaufautobahnenschleifenhamburg"));
@@ -71,7 +111,7 @@ public class HtmlScraperAnalyzerTest {
 		 List<Triple> listTriples = new ArrayList<Triple>();
 		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		
-		Assert.assertEquals(expectedTriplesMcloudDetail, listTriples);	
+		 Assert.assertEquals(expectedTriplesMcloudDetail, listTriples);	
 		
 	}
 	
@@ -83,9 +123,7 @@ public class HtmlScraperAnalyzerTest {
 		 List<Triple> listTriples = new ArrayList<Triple>();
 		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		
-		 for(Triple triple : listTriples) {
-			 System.out.println(triple);
-		 }
+		 Assert.assertEquals(expectedTriplesMcloudResultPage, listTriples);	
 	}
 	
 	@Test
