@@ -16,34 +16,36 @@ public class Configuration {
         return null;
     }
 
-    public static Integer getEnvInteger(String envVariableName, Logger logger) {
+    public static int getEnvInteger(String envVariableName, Logger logger) {
         String toInt = getEnv(envVariableName, logger);
-        if(toInt != null) {
+        
+        try {
             return Integer.parseInt(toInt);
-        }
-        return null;
+            } catch(Exception e) {
+            	logger.error(envVariableName + " not found.",e);
+            	return 0;
+            }
     }
 
     public static boolean getEnvBoolean(String envVariableName, Logger logger) throws ParseException {
         String toBool = getEnv(envVariableName, logger);
-        if(toBool != null) {
-            return Boolean.parseBoolean(toBool);
-        }
-        throwParseException(toBool, "boolean");
-        return false;
+        try {
+            return Boolean.getBoolean(toBool);
+            } catch(Exception e) {
+            	logger.error(envVariableName + " not found.",e);
+            	return false;
+            }
     }
 
-    public static Long getEnvLong(String envVariableName, Logger logger) {
+    public static long getEnvLong(String envVariableName, Logger logger) {
         String toLong = getEnv(envVariableName, logger);
-        if(toLong != null) {
-            return Long.parseLong(toLong);
-        }
-        return null;
+        try {
+            return Integer.parseInt(toLong);
+            } catch(Exception e) {
+            	logger.error(envVariableName + " not found.",e);
+            	return 0L;
+            }
     }
 
-    private static void throwParseException(String value, String type) throws ParseException {
-        String exceptionText = String.format("Could not parse %s value: %s", type, value);
-        Integer errorOffset = 0;
-        throw new ParseException(exceptionText, errorOffset);
-    }
+    
 }
