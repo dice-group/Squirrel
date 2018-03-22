@@ -7,8 +7,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.htmlscraper.HtmlScraper;
+import org.aksw.simba.squirrel.collect.SimpleUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -22,6 +28,8 @@ public class HtmlScraperAnalyzerTest {
 	private File fetchedFile;
 	private List<Triple> expectedTriplesMcloudDetail;
 	private List<Triple> expectedTriplesMcloudResultPage;
+	private UriCollector collector = new SimpleUriCollector(new GzipJavaUriSerializer());
+	private Sink sink = new InMemorySink();
 
 	private HtmlScraper scraper;
 
@@ -135,6 +143,20 @@ public class HtmlScraperAnalyzerTest {
 		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
 		 
 		 
+	}
+	@Test
+	public void testAnalyzer() throws URISyntaxException {
+		CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten/-/details/jahresbericht-der-bundespolizei-2014"));
+		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");
+	
+		sink.openSinkForUri(curi);
+		collector.openSinkForUri(curi);
+		Analyzer analyzer = new HTMLScraperAnalyzer(collector);
+		
+	
+		
+		analyzer.analyze(curi, fetchedFile, sink);
+		
 	}
 	
 	

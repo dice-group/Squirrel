@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
