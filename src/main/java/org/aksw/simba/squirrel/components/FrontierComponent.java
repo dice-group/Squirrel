@@ -7,10 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.SeedConfiguration;
+import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -37,43 +42,38 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
-    private static final String SEED_FILE_KEY = "SEED_FILE";
-    private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
-    private static final String RDB_PORT_KEY = "RDB_PORT";
-
-    private IpAddressBasedQueue queue;
+    protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
-    private Frontier frontier;
-    private RabbitQueue rabbitQueue;
-    private DataReceiver receiver;
-    private Serializer serializer;
-    private final Semaphore terminationMutex = new Semaphore(0);
+    protected Frontier frontier;
+    protected RabbitQueue rabbitQueue;
+    protected DataReceiver receiver;
+    protected Serializer serializer;
+    protected final Semaphore terminationMutex = new Semaphore(0);
 
     @Override
     public void init() throws Exception {
         super.init();
         serializer = new GzipJavaUriSerializer();
-        Map<String, String> env = System.getenv();
 
-        String rdbHostName = null;
-        int rdbPort = -1;
-        if (env.containsKey(RDB_HOST_NAME_KEY)) {
-            rdbHostName = env.get(RDB_HOST_NAME_KEY);
-            if (env.containsKey(RDB_PORT_KEY)) {
-                rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
-            } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_PORT_KEY);
+        RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
+        if(rdbConfiguration != null) {
+            String rdbHostName = rdbConfiguration.getRDBHostName();
+            Integer rdbPort = rdbConfiguration.getRDBPort();
+            queue = new RDBQueue(rdbHostName, rdbPort,serializer);
+            ((RDBQueue) queue).open();
+            
+            WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
+            if(whiteListConfiguration != null) {
+                File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
+                knownUriFilter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
+                    rdbConfiguration.getRDBPort(), whitelistFile);
+                knownUriFilter.open();
+            }else {
+            	knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+                ((RDBKnownUriFilter) knownUriFilter).open();	
             }
         } else {
-            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
-        }
-
-        if ((rdbHostName != null) && (rdbPort > 0)) {
-            queue = new RDBQueue(rdbHostName, rdbPort);
-            ((RDBQueue) queue).open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-            ((RDBKnownUriFilter) knownUriFilter).open();
-        } else {
+            LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(-1);
         }
@@ -84,8 +84,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
                 .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-        if (env.containsKey(SEED_FILE_KEY)) {
-            processSeedFile(env.get(SEED_FILE_KEY));
+
+        SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
+        if (seedConfiguration != null) {
+            processSeedFile(seedConfiguration.getSeedFile());
         }
         LOGGER.info("Frontier initialized.");
     }
@@ -114,37 +116,49 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-        Object object = null;
+        Object deserializedData = null;
         try {
-            object = serializer.deserialize(data);
+            deserializedData = serializer.deserialize(data);
         } catch (IOException e) {
-            LOGGER.error("Error whily trying to deserialize incoming data. It will be ignored.", e);
+            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
-        if (object != null) {
-            if (object instanceof UriSetRequest) {
-                if (handler != null) {
-                    // get next UriSet
-                    try {
-                        handler.sendResponse(serializer.serialize(new UriSet(frontier.getNextUris())),
-                                responseQueueName, correlId);
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't serialize new URI set.", e);
-                    }
-                }
-            } else if (object instanceof UriSet) {
-                frontier.addNewUris(((UriSet) object).uris);
-            } else if (object instanceof CrawlingResult) {
-                frontier.crawlingDone(((CrawlingResult) object).crawledUris, ((CrawlingResult) object).newUris);
+        LOGGER.trace("Got a message (\"{}\").", deserializedData.toString());
+
+        if (deserializedData != null) {
+            if (deserializedData instanceof UriSetRequest) {
+                responseToUriSetRequest(handler, responseQueueName, correlId);
+            } else if (deserializedData instanceof UriSet) {
+                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+                frontier.addNewUris(((UriSet) deserializedData).uris);
+            } else if (deserializedData instanceof CrawlingResult) {
+                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
+                        ((CrawlingResult) deserializedData).crawledUris);
+                frontier.crawlingDone(((CrawlingResult) deserializedData).crawledUris, ((CrawlingResult) deserializedData).newUris);
             } else {
-                LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
+                LOGGER.warn("Received an unknown object {}. It will be ignored.", deserializedData.toString());
             }
+        }
+    }
+
+    private void responseToUriSetRequest(ResponseHandler handler, String responseQueueName, String correlId) {
+        if (handler != null) {
+            try {
+                List<CrawleableUri> uris = frontier.getNextUris();
+                LOGGER.trace("Responding with a list of {} uris.",
+                    uris == null ? "null" : Integer.toString(uris.size()));
+                handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+            } catch (IOException e) {
+                LOGGER.error("Couldn't serialize new URI set.", e);
+            }
+        } else {
+            LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
 
     protected void processSeedFile(String seedFile) {
         try {
             List<String> lines = FileUtils.readLines(new File(seedFile));
-            frontier.addNewUris(UriUtils.createCrawleableUriList(lines.toArray(new String[lines.size()])));
+            frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }

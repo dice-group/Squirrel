@@ -6,9 +6,11 @@ target
 .settings
 .idea
 squirrel.iml
-/data
+/deployment/data
+/deployment/scenarios/1/worker1
 scenarios/1/worker*
 /dependency-reduced-pom.xml
 /foundUris.lck
 /foundUris.properties
 /foundUris.script
+/bin/

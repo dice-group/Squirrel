@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.RobotsManagerConfiguration;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -33,8 +36,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
-    private static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
-
     private Worker worker;
     private DataSender sender;
     private RabbitRpcClient client;
@@ -44,27 +45,33 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Override
     public void init() throws Exception {
         super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder = null;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+        String outputFolder = workerConfiguration.getOutputFolder();
+
+        RobotsManagerImpl robotsmanager = new RobotsManagerImpl(
+            new SimpleHttpFetcher(
+                new UserAgent("Test", "", "")
+            )
+        );
+        RobotsManagerConfiguration robotsManagerConfiguration = RobotsManagerConfiguration.getRobotsManagerConfiguration();
+        if(robotsManagerConfiguration != null) {
+            robotsmanager.setDefaultMinWaitingTime(robotsManagerConfiguration.getMinDelay());
         }
 
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-                .build();
+        sender = DataSenderImpl.builder()
+            .queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+            .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-                FrontierComponent.FRONTIER_QUEUE_NAME);
-
-        uriSetRequest = serializer.serialize(new UriSetRequest());
+                                        FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
+        UriCollector collector = SqlBasedUriCollector.create(serializer);
 
         Sink sink = new FileBasedSink(new File(outputFolder), true);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-                serializer, 2000, outputFolder + File.separator + "log");
+        worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
+                outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");
     }
 
@@ -82,9 +89,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-        UriSet set=null;
+        UriSet set = null;
         try {
-            set = (UriSet) serializer.deserialize(client.request(uriSetRequest));
+            byte[] response = client.request(uriSetRequest);
+            if (response != null) {
+                set = (UriSet) serializer.deserialize(response);
+            }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
         }
@@ -102,12 +112,14 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+    	
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
     }
+
 
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
@@ -122,5 +134,4 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     public int getNumberOfPendingUris() {
         return 0;
     }
-
 }

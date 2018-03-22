@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.apache.http.HttpHeaders;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -34,16 +34,16 @@ public class RDFAnalyzer implements Analyzer {
         try {
             // First, try to get the language of the data
             Lang lang = null;
-            String contentType = (String) curi.getData(HttpHeaders.CONTENT_TYPE);
+            String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
             } else {
                 lang = RDFLanguages.filenameToLang(data.getName(), null);
             }
-            FilterSinkRDF filtered = new FilterSinkRDF(curi, sink);
+            FilterSinkRDF filtered = new FilterSinkRDF(curi, sink, collector);
             RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
         } catch (Exception e) {
-            LOGGER.error("Exception while analyzing. Aborting.");
+            LOGGER.error("Exception while analyzing. Aborting. ", e);
         } finally {
             IOUtils.closeQuietly(fin);
         }
@@ -54,10 +54,12 @@ public class RDFAnalyzer implements Analyzer {
 
         private CrawleableUri curi;
         private Sink sink;
-        
-        public FilterSinkRDF(CrawleableUri curi, Sink sink) {
+        private UriCollector collector;
+
+        public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector) {
             this.curi = curi;
             this.sink = sink;
+            this.collector = collector;
         }
 
         @Override

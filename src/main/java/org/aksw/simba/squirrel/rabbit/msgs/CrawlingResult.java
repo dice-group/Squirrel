@@ -1,11 +1,14 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
-public class CrawlingResult {
+public class CrawlingResult implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public List<CrawleableUri> crawledUris;
     public List<CrawleableUri> newUris;

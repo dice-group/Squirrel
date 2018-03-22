@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -19,16 +20,14 @@ import org.junit.Test;
 import com.rethinkdb.model.MapObject;
 
 @SuppressWarnings("rawtypes")
-public class RDBQueueTest {
-    RDBQueue rdbQueue;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+public class RDBQueueTest extends RethinkDBBasedTest {
+
+    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private RDBQueue rdbQueue;
 
     @Before
     public void setUp() throws Exception {
-        // to start up the server run
-        // docker run -p 8080:8080 -p 29015:29015 -p 28015:28015 --name rethinkdb -v "$PWD:/data" -it --rm rethinkdb:2.3.5
-        rdbQueue = new RDBQueue("localhost", 28015);
-        //rdbQueue = new RDBQueue("192.168.99.100", 28015);
+        rdbQueue = new RDBQueue("localhost", 58015);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -161,5 +160,4 @@ public class RDBQueueTest {
         }
         rdbQueue.close();
     }
-
 }

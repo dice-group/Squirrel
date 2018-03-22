@@ -1,25 +1,22 @@
 package org.aksw.simba.squirrel.data.uri;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ivan on 29.02.16.
  */
 public class UriUtils {
     public static List<CrawleableUri> createCrawleableUriList(String[] seedUris) {
-        java.util.List<CrawleableUri> seed = getCrawleableUriList();
-        CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
-        for (int i = 0; i < seedUris.length; i++) {
-            seed.add(crawleableUriFactoryImpl.create(seedUris[i]));
-        }
-
-        return seed;
+        return createCrawleableUriList(Arrays.asList(seedUris));
     }
 
-    public static List<CrawleableUri> createCrawleableUriList(ArrayList uris, UriType type) {
+    @Deprecated
+    public static List<CrawleableUri> createCrawleableUriList(@SuppressWarnings("rawtypes") ArrayList uris, UriType type) {
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         List<CrawleableUri> resultUris = getCrawleableUriList();
 
@@ -31,7 +28,7 @@ public class UriUtils {
         return resultUris;
     }
 
-    public static List<CrawleableUri> createCrawleableUriList(Set<String> seedUris) {
+    public static List<CrawleableUri> createCrawleableUriList(Collection<String> seedUris) {
         java.util.List<CrawleableUri> seed = getCrawleableUriList();
         CrawleableUriFactoryImpl crawleableUriFactoryImpl = new CrawleableUriFactoryImpl();
         CrawleableUri uri;
@@ -72,5 +69,11 @@ public class UriUtils {
             }
         }
         return false;
+    }
+    
+    public static String getDomainName(String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        String domain = uri.getHost();
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
     }
 }

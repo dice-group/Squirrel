@@ -2,8 +2,11 @@ package org.aksw.simba.squirrel.model;
 
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.Map;
+import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Connection;
 import com.rethinkdb.net.Cursor;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -12,6 +15,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -22,17 +28,15 @@ import java.util.List;
 /**
  * Created by ivan on 8/18/16.
  */
-public class RDBConnectorTest {
-
+public class RDBConnectorTest extends RethinkDBBasedTest {
     RDBConnector rdbConnector = null;
-    RethinkDB r = RethinkDB.r;
 
     private CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();
 
     @Before
-    public void init() {
+    public void init() throws IOException, InterruptedException {
         String RDBHost = "localhost";
-        Integer RDBPort = 28015;
+        Integer RDBPort = 58015;
 
         rdbConnector = new RDBConnector(RDBHost, RDBPort);
         rdbConnector.open();
@@ -53,7 +57,7 @@ public class RDBConnectorTest {
     }
 
     @After
-    public void teardown() {
+    public void teardown() throws IOException, InterruptedException {
         r.dbDrop("squirrel").run(rdbConnector.connection);
         rdbConnector.close();
     }
@@ -96,8 +100,9 @@ public class RDBConnectorTest {
                 //.g("timestamp")
                 .run(rdbConnector.connection);
         assert(cursor.hasNext());
-        Object timestampRetrieved = cursor.next();
-        assert((System.currentTimeMillis() - (long) timestampRetrieved) > invalidationTime);
+        HashMap crawleableUri = (HashMap) cursor.next();
+        long retrievedTimestamp = (long) crawleableUri.get("timestamp");
+        assert((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
         cursor.close();
     }
 
@@ -201,5 +206,4 @@ public class RDBConnectorTest {
         return uriMap
                 .with("timestamp", timestamp);
     }
-
 }
