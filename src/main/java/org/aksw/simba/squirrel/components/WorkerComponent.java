@@ -113,10 +113,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
     	
-    	for(CrawleableUri uri : uris) {
-    		uri.addData("TEST","123UPB");
-    	}
-    	
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
