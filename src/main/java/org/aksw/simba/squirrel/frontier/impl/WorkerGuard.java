@@ -3,8 +3,8 @@ package org.aksw.simba.squirrel.frontier.impl;
 import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
-import org.aksw.simba.squirrel.util.Tuple;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
+import org.aksw.simba.squirrel.worker.impl.WorkerInfo;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -24,11 +24,10 @@ public class WorkerGuard {
     private final Map<Integer, Date> mapWorkerTimestamps = new HashMap<>();
 
     /**
-     * A map from {@link org.aksw.simba.squirrel.worker.Worker} id and a boolean indicating whether the
-     * worker sends alive messages to a list of {@link CrawleableUri} which contains all URIs that the
+     * A map from {@link WorkerInfo} to a list of {@link CrawleableUri} which contains all URIs that the
      * worker has claimed to crawl, but has not yet sent a {@link CrawlingResult} for.
      */
-    private final Map<Tuple<Integer, Boolean>, List<CrawleableUri>> mapWorkerUris = new HashMap<>();
+    private final Map<WorkerInfo, List<CrawleableUri>> mapWorkerUris = new HashMap<>();
 
     /**
      * After this period of time (in seconds), a worker is considered to be dead if he has not sent
@@ -65,11 +64,9 @@ public class WorkerGuard {
                     }
 
                     boolean currentWorkerSendsAliveMessages = true;
-                    for (Tuple tuple : mapWorkerUris.keySet()) {
-                        int id = (int) tuple.x;
-                        boolean workerSendsAliveMessages = (boolean) tuple.y;
+                    for (WorkerInfo workerInfo : mapWorkerUris.keySet()) {
 
-                        if (id == idWorker && !workerSendsAliveMessages) {
+                        if (workerInfo.getWorkerId() == idWorker && !workerInfo.workerSendsAliveMessages()) {
                             // this worker does not even send aliveMessages, so we do not want to delete
                             // him, because we hope that he is alive as we cannot check it anyway
                             currentWorkerSendsAliveMessages = false;
@@ -115,7 +112,7 @@ public class WorkerGuard {
      * @param lstUris    The uris to put.
      */
     public void putUrisForWorker(int idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
-        mapWorkerUris.put(new Tuple<>(idOfWorker, workerSendsAliveMessages), lstUris);
+        mapWorkerUris.put(new WorkerInfo(idOfWorker, workerSendsAliveMessages), lstUris);
     }
 
     /**
