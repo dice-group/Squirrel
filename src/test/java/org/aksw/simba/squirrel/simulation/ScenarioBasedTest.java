@@ -133,7 +133,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
         WorkerImpl worker = new WorkerImpl(frontier, sink,
             new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-            null);
+            null, false);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);

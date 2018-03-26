@@ -43,6 +43,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
+    private Timer timer;
 
     @Override
     public void init() throws Exception {
@@ -65,23 +66,27 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         Sink sink = new RDFSink();
         UriCollector collector = SqlBasedUriCollector.create(serializer);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log");
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
+            serializer, collector, 2000, outputFolder + File.separator + "log", true);
+        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 
         serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
+        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
-                } catch (IOException e) {
-                    LOGGER.warn(e.toString());
+        timer = new Timer();
+
+        if (worker.sendsAliveMessages()) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                    } catch (IOException e) {
+                        LOGGER.warn(e.toString());
+                    }
                 }
-            }
-        }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
+            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
 
+        }
         LOGGER.info("Worker initialized.");
     }
 
@@ -94,6 +99,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void close() throws IOException {
         IOUtils.closeQuietly(sender);
         IOUtils.closeQuietly(client);
+        timer.cancel();
         super.close();
     }
 
@@ -147,13 +153,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
-    }
-
-    /*
-    The WorkerComponent does not have to implement this method.
-     */
-    @Override
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
     }
 
 }
