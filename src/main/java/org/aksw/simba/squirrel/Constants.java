@@ -68,6 +68,7 @@ public class Constants
     public static final String URI_DATASET_PROVIDER_NAME = "dataset-provider-name";
     public static final String URI_DATASET_PROVIDER_URI = "dataset-provider-uri";
     public static final String URI_DATASET_LICENSE = "dataset-license";
+    public static final String URI_DATASET_LICENSE_NAME = "dataset-license-name";
     public static final String URI_DATASET_ACCESS_TYPE = "dataset-access-type";
     public static final String URI_DATASET_READ_TIME = "dataset-retrieval-time";
     public static final String MCLOUD_RESOURCE = "mCloud-resource";

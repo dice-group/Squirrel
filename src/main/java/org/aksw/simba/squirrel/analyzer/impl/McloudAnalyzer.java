@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,7 +25,6 @@ import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.utils.vocabularies.CreativeCommons;
 import org.aksw.simba.squirrel.utils.vocabularies.MCSE;
-import org.apache.commons.net.ntp.TimeStamp;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -34,7 +34,6 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.DCTypes;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.VCARD;
 import org.apache.jena.vocabulary.XSD;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -250,6 +249,7 @@ public class McloudAnalyzer implements Analyzer
         String providerName;
         URI providerURI;
         URI license;
+        String licenseName;
         List<CrawleableUri> downloadSources = new ArrayList<>();
 
         //Title
@@ -288,6 +288,7 @@ public class McloudAnalyzer implements Analyzer
 
         //second row = license 
         Element secondRow = tableElements.get(1);
+        licenseName = secondRow.text();
         String licenseUrl = secondRow.select(attrWrappedHref).first() != null ? secondRow.select(attrWrappedHref).first().attr(attrHref) : null;
         try
         {
@@ -297,6 +298,7 @@ public class McloudAnalyzer implements Analyzer
         {
             LOGGER.warn("Error parsing LICENSE URI. The License will be ignored.", e);
             license = null;
+            licenseName = null;
         }
 
         //Sources including Download Type
@@ -321,7 +323,7 @@ public class McloudAnalyzer implements Analyzer
                     //add metadata to URI
                     uri.addData(Constants.URI_DATASET_TITLE, title);
                     uri.addData(Constants.URI_DATASET_DESCRIPTION, description);
-                    uri.addData(Constants.URI_DATASET_READ_TIME, new TimeStamp(System.currentTimeMillis()));
+                    uri.addData(Constants.URI_DATASET_READ_TIME, new Timestamp(System.currentTimeMillis()));
                     uri.addData(Constants.MCLOUD_RESOURCE, true);
 
                     uri.addData(Constants.URI_DATASET_ACCESS_TYPE, type);
@@ -329,6 +331,7 @@ public class McloudAnalyzer implements Analyzer
                     uri.addData(Constants.URI_DATASET_PROVIDER_NAME, providerName);
                     uri.addData(Constants.URI_DATASET_PROVIDER_URI, providerURI);
                     uri.addData(Constants.URI_DATASET_LICENSE, license);
+                    uri.addData(Constants.URI_DATASET_LICENSE_NAME, licenseName);
 
                     downloadSources.add(uri);
                 }
@@ -434,7 +437,6 @@ public class McloudAnalyzer implements Analyzer
             model.setNsPrefix("mcse", MCSE.getURI());
             model.setNsPrefix("rdf", RDF.getURI());
             model.setNsPrefix("rdfs", RDFS.getURI());
-            model.setNsPrefix("vcard", VCARD.getURI());
 
             String uri = curi.getUri().toString();
             Resource resource = model.createResource(uri + Constants.MCLOUD_METADATA_URI_SUFFIX);
@@ -449,10 +451,11 @@ public class McloudAnalyzer implements Analyzer
 
             String accessType = (String) curi.getData(Constants.URI_DATASET_ACCESS_TYPE);
             Resource accessResource = createOrGetDynamicResource(model, MCSE.getURI(), accessType);
+            accessResource.addProperty(RDFS.label, accessType);
             resource.addProperty(MCSE.accessType, accessResource);
 
-            TimeStamp timeStamp = (TimeStamp) curi.getData(Constants.URI_DATASET_READ_TIME);
-            String time = timeStamp.toDateString();
+            Timestamp timeStamp = (Timestamp) curi.getData(Constants.URI_DATASET_READ_TIME);
+            String time = timeStamp.toString();
             Literal timeLiteral = model.createTypedLiteral(time, XSD.dateTime.getURI());
             resource.addProperty(DCTerms.created, timeLiteral);
 
@@ -467,6 +470,7 @@ public class McloudAnalyzer implements Analyzer
                 for (String category : categories)
                 {
                     Resource categoryResource = createOrGetDynamicResource(model, MCSE.getURI(), category);
+                    categoryResource.addProperty(RDFS.label, category);
                     resource.addProperty(DCTerms.subject, categoryResource);
                 }
             }
@@ -477,7 +481,7 @@ public class McloudAnalyzer implements Analyzer
             {
                 Resource publisher = model.createResource(providerURI + URI_SUFFIX);
                 publisher.addProperty(RDF.type, DCTerms.Agent);
-                publisher.addProperty(VCARD.N, providerName);
+                publisher.addProperty(RDFS.label, providerName);
                 publisher.addProperty(DCTerms.source, providerURI.toString());
 
                 resource.addProperty(DCTerms.publisher, publisher);
@@ -488,11 +492,13 @@ public class McloudAnalyzer implements Analyzer
                 resource.addProperty(DCTerms.publisher, nullPublisher);
             }
 
+            String licenseName = (String) curi.getData(Constants.URI_DATASET_LICENSE_NAME);
             URI licenseURI = (URI) curi.getData(Constants.URI_DATASET_LICENSE);
-            if (licenseURI != null)
+            if (licenseURI != null && licenseName != null)
             {
                 Resource license = model.createResource(licenseURI.toString());
                 license.addProperty(RDF.type, DCTerms.LicenseDocument);
+                license.addProperty(RDFS.label, licenseName);
                 resource.addProperty(CreativeCommons.license, license);
             }
             else
@@ -524,7 +530,6 @@ public class McloudAnalyzer implements Analyzer
             else
             {
                 Resource newResource = model.createResource(uri);
-                newResource.addProperty(RDFS.label, propertyName);
                 dynamicUris.add(uri);
                 return newResource;
             }
