@@ -10,7 +10,6 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,6 @@ public class HTMLScraperAnalyzer implements Analyzer{
 	
 	private UriCollector collector;
 	private HtmlScraper htmlScraper = new HtmlScraper();
-	private Tika tika = new Tika();
 	
 	public HTMLScraperAnalyzer(UriCollector collector, HtmlScraper htmlScraper) {
 		this.collector = collector;
@@ -34,10 +32,7 @@ public class HTMLScraperAnalyzer implements Analyzer{
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		try {
-			String type = tika.detect(data);
-//			String uri = curi.getUri().toString();
 			List<Triple> listTriples = htmlScraper.scrape(curi.getUri().toString(),data);
-			System.out.println(listTriples.size());
 			for(Triple triple: listTriples) {
 				collector.addTriple(curi, triple);
 			}

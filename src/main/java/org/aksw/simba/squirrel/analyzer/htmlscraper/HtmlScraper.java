@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -11,14 +10,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions.ElementNotFoundException;
-import org.aksw.simba.squirrel.configurator.HtmlScraperConfiguration;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
@@ -63,8 +60,8 @@ public class HtmlScraper {
 			
 			for(Entry<String,Map<String, Object>> entry : yamlFile.getSearch().entrySet()) {
 				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
-					System.out.println(entry.getKey() + ": " + cfg.getKey() + " - " + cfg.getValue());
 					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
+						@SuppressWarnings("unchecked")
 						Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
 						listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
 					}
@@ -79,7 +76,7 @@ public class HtmlScraper {
 	private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile,String uri) throws Exception {
 		Document doc = Jsoup.parse(htmlFile,"UTF-8");
 		
-		Node s = NodeFactory.createBlankNode(uri);
+		Node s = NodeFactory.createURI(uri);
 		
 		Set<Triple> listTriples = new LinkedHashSet<Triple>();
 		
@@ -91,7 +88,7 @@ public class HtmlScraper {
 			resources.entrySet()) {
 			resourcesList.clear();
 			
-			Node p = NodeFactory.createBlankNode(entry.getKey());
+			Node p = NodeFactory.createURI(entry.getKey());
 			
 			if(entry.getValue() instanceof List<?> && ((ArrayList<String>) entry.getValue()).size() > 1) {
 				resourcesList = (ArrayList<String>) entry.getValue();
@@ -127,7 +124,6 @@ public class HtmlScraper {
 			}
 		}
 		
-		listTriples.size();
 		return listTriples;
 	}
 
