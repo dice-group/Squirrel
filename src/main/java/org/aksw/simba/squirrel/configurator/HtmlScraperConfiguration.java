@@ -14,10 +14,10 @@ public class HtmlScraperConfiguration extends Configuration {
 	 
 	 private String path;
 	 
-	private static final String YAML_FILES_PATH = "YAML_FILES_PATH";
+	private static final String HTML_SCRAPER_YAML_PATH = "HTML_SCRAPER_YAML_PATH";
 	
 	public static HtmlScraperConfiguration getHtmlScraperConfiguration() {
-		String path = getEnv(YAML_FILES_PATH, LOGGER);
+		String path = getEnv(HTML_SCRAPER_YAML_PATH, LOGGER);
 		if(path != null) {
 			return new HtmlScraperConfiguration(path);
 		}else {
@@ -30,7 +30,7 @@ public class HtmlScraperConfiguration extends Configuration {
 	}
 
 	public static String getYamlFilesPath() {
-		return YAML_FILES_PATH;
+		return HTML_SCRAPER_YAML_PATH;
 	}
 
 	public String getPath() {
