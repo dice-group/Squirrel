@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Collections.*;
+
 public class FrontierSenderToWebservice implements Runnable, Closeable {
 
     private final long startRunTime = System.currentTimeMillis();
@@ -109,15 +111,15 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
                 LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = queue.getContent();
                 if (currentQueue == null || currentQueue.isEmpty()) {
-                    newObject.setIPMapPendingURis(Collections.EMPTY_MAP);
-                    newObject.setPendingURIs(Collections.EMPTY_LIST);
-                    newObject.setNextCrawledURIs(Collections.EMPTY_LIST);
+                    newObject.setIPMapPendingURis(EMPTY_MAP);
+                    newObject.setPendingURIs(EMPTY_LIST);
+                    newObject.setNextCrawledURIs(EMPTY_LIST);
                 } else {
                     newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
                         .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
                         .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
                     List<String> pendingURIs = new ArrayList<>(currentQueue.size());
-                    currentQueue.entrySet().forEach(e -> e.getValue().forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
+                    currentQueue.forEach((key, value) -> value.forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
                     newObject.setPendingURIs(pendingURIs);
                     newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().getRawPath()).collect(Collectors.toList()));
                 }
