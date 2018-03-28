@@ -56,9 +56,9 @@ public class HtmlScraper {
 		
 		YamlFile yamlFile = yamlFiles.get(UriUtils.getDomainName(uri));
 		if(yamlFile != null) {
-			yamlFile.getSearch().remove(YamlFileAtributes.SEARCH_CHECK);
+			yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
 			
-			for(Entry<String,Map<String, Object>> entry : yamlFile.getSearch().entrySet()) {
+			for(Entry<String,Map<String, Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
 				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
 					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
 						@SuppressWarnings("unchecked")

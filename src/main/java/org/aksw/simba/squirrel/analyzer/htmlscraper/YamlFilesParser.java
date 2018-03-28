@@ -55,7 +55,7 @@ public class YamlFilesParser {
 				
 				YamlFile yamlFile = mapper.readValue(listYamlFiles.get(i), YamlFile.class);
 				
-				for(Entry<String, Map<String,Object>> entry : yamlFile.getSearch().entrySet()) {
+				for(Entry<String, Map<String,Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
 					
 					if(entry.getKey().equals(YamlFileAtributes.SEARCH_CHECK))
 						continue;
@@ -66,7 +66,7 @@ public class YamlFilesParser {
 					}
 				}
 				
-				yamls.put(yamlFile.getSearch().get(YamlFileAtributes.SEARCH_CHECK).get(YamlFileAtributes.SEARCH_DOMAIN).toString(),
+				yamls.put(yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get(YamlFileAtributes.SEARCH_DOMAIN).toString(),
 						yamlFile);
 			} catch (Exception e) {
 				LOGGER.error("An error occurred while parsing the file",e);
