@@ -18,6 +18,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
+import org.aksw.simba.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
@@ -51,13 +52,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
-    public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
-    private final static String WEB_QUEUE_NAME = "squirrel.web";
-    private Channel webqueuechannel;
-
     private static final String SEED_FILE_KEY = "SEED_FILE";
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     private static final String RDB_PORT_KEY = "RDB_PORT";
+    private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
+
+    public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
+    private final static String WEB_QUEUE_NAME = "squirrel.web";
+    private Channel webqueuechannel;
 
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
@@ -65,6 +67,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
     private Serializer serializer;
+    private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
 
@@ -91,22 +94,21 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
-            ((RDBQueue) queue).open();
+            queue.open();
             knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-            ((RDBKnownUriFilter) knownUriFilter).open();
+            knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(-1);
         }
 
-        //Build rabbit queue to the web
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbit");
-        factory.setUsername("guest");
-        factory.setPassword("guest");
-        Connection connection = factory.newConnection();
-        webqueuechannel = connection.createChannel();
-        webqueuechannel.queueDeclare(WEB_QUEUE_NAME, false, false, false, null);
+        if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
+            communicationWithWebserviceEnabled = env.get(COMMUNICATION_WITH_WEBSERVICE).equalsIgnoreCase("true");
+            LOGGER.info("Set communication to the Webservice with SquirrelWebObject via the rabbitMQ to " + communicationWithWebserviceEnabled);
+        } else {
+            communicationWithWebserviceEnabled = false;
+            LOGGER.warn("Couldn't get {" + COMMUNICATION_WITH_WEBSERVICE + "} from the environment. Communication to the Webservice is disabled!");
+        }
 
         // Build frontier
         frontier = new FrontierImpl(knownUriFilter, queue);
@@ -123,39 +125,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        boolean informWebService = true;
-        SquirrelWebObject lastSentObject = null;
-        while (informWebService) {
-            SquirrelWebObject newObject = new SquirrelWebObject();
-
-            newObject.setRuntimeInSeconds(Math.round((System.currentTimeMillis()-startRunTime)/1000));
-            newObject.setCountOfWorker(workerGuard.getNumberOfLiveWorkers());
-            newObject.setCountOfDeadWorker(workerGuard.getNumberOfDeadWorker());
-
-            LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = queue.getContent();
-            if (currentQueue == null || currentQueue.isEmpty()) {
-                newObject.setIPMapPendingURis(Collections.EMPTY_MAP);
-                newObject.setPendingURIs(Collections.EMPTY_LIST);
-                newObject.setNextCrawledURIs(Collections.EMPTY_LIST);
-            } else {
-                newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
-                    .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
-                    .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
-                List<String> pendingURIs = new ArrayList<>(currentQueue.size());
-                currentQueue.entrySet().forEach(e -> e.getValue().forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
-                newObject.setPendingURIs(pendingURIs);
-                newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().getRawPath()).collect(Collectors.toList()));
-            }
-
-            //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
-            //newObject.setCrawledURIs(Collections.EMPTY_LIST);
-            newObject.setCountOfCrawledURIs((int) knownUriFilter.count());
-            if (lastSentObject == null || !newObject.equals(lastSentObject)) {
-                webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
-                LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
-                lastSentObject = newObject;
-            }
-            Thread.sleep(100);
+        if (communicationWithWebserviceEnabled) {
+            Thread sender = new Thread(new FrontierSenderToWebservice(workerGuard, queue, knownUriFilter));
+            sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
+            sender.run();
+            LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
         }
         // The main thread has nothing to do except waiting for its
         // termination...
@@ -166,14 +140,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void close() throws IOException {
         receiver.closeWhenFinished();
         queue.close();
-//        try {
-//            webqueuechannel.close();
-//            connection.close();
-//        } catch (TimeoutException e) {
-//            e.printStackTrace();
-//        }
         if (knownUriFilter instanceof Closeable) {
-            ((Closeable) knownUriFilter).close();
+            knownUriFilter.close();
         }
         super.close();
     }
