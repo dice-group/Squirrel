@@ -10,6 +10,17 @@ services:
   rabbit:
     image: rabbitmq:management
 
+  jena:
+      image: stain/jena-fuseki
+      container_name: jena
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./scenarios/1/data/jena:/fuseki
+      environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
+
   frontier:
     image: squirrel
     environment:

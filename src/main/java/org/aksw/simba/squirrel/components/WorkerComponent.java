@@ -48,7 +48,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void init() throws Exception {
         super.init();
         Map<String, String> env = System.getenv();
-        String outputFolder = null;
+        String outputFolder;
         if (env.containsKey(OUTPUT_FOLDER_KEY)) {
             outputFolder = env.get(OUTPUT_FOLDER_KEY);
         } else {
@@ -86,7 +86,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         worker.run();
     }
 
@@ -103,7 +103,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         try {
             byte[] response = client.request(uriSetRequest);
             if (response != null) {
-                set = (UriSet) serializer.deserialize(response);
+                set = serializer.deserialize(response);
             }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
@@ -123,7 +123,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void addNewUri(CrawleableUri uri) {
-        addNewUris(Arrays.asList(uri));
+        addNewUris(Collections.singletonList(uri));
     }
 
     @Override

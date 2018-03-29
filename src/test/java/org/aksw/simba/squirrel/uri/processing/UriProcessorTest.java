@@ -139,7 +139,7 @@ public class UriProcessorTest extends TestCase {
 	/**
 	 * Should be able to handle a bunch of random data input
 	 */
-	public void testNull() throws URISyntaxException {
+    public void testNull() {
 		URI uriToCrawl = null;
 		CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 

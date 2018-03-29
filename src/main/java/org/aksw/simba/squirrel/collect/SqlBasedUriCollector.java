@@ -76,7 +76,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                 if (s != null) {
                     s.close();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
         }
         return collector;
@@ -194,12 +194,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         // It might be necessary to go through the list of known URIs and close all of
         // the remaining URIs
         try {
             dbConnection.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
     }
 

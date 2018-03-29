@@ -48,7 +48,8 @@ public class QueryGenerator {
 
     /**
      * Return an Add Query for a given uri and a triple.
-     * @param uri The given Uri.
+     *
+     * @param uri    The given Uri.
      * @param triple The given triple.
      * @return The generated query.
      */
@@ -58,6 +59,7 @@ public class QueryGenerator {
 
     /**
      * Return a select all query for a given uri.
+     *
      * @param uri The given uri.
      * @return The generated query.
      */
@@ -67,7 +69,8 @@ public class QueryGenerator {
 
     /**
      * Return a select query for a given uri and triple.
-     * @param uri The given uri.
+     *
+     * @param uri    The given uri.
      * @param triple The given triple.
      * @return The generated query.
      */
@@ -92,8 +95,7 @@ public class QueryGenerator {
             strQuery += triple.getSubject().getName() + " " + triple.getPredicate().getName() + " " + triple.getObject().getName() + " ; ";
         }
         strQuery += "} }";
-        Query query = QueryFactory.create(strQuery);
-        return query;
+        return QueryFactory.create(strQuery);
     }
 
 
