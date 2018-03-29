@@ -2,16 +2,36 @@ version: "2"
 
 services:
   rethinkdb:
-    image: rethinkdb:2.3.6
-    volumes:
-      - ./data/rethinkdb:/data
+    image: rethinkdb:2.3.5
+#    volumes:
+#      - ./scenarios/1/rethinkdb:/data
+    ports:
+      - "28015:28015"
 
   # message bus
   rabbit:
     image: rabbitmq:management
+    container_name: rabbit
+    hostname: rabbit
+    ports:
+      - "8081:15672"
+      # Forwarding the port for testing
+      - "5672:5672"
+
+  jena:
+      image: stain/jena-fuseki
+      container_name: jena
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./scenarios/1/data/jena:/fuseki
+      environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
 
   frontier:
     image: squirrel
+    container_name: frontier
     environment:
       HOBBIT_RABBIT_HOST: rabbit
       SEED_FILE: /var/squirrel/data/seeds.txt
@@ -20,18 +40,18 @@ services:
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
       COMMUNICATION_WITH_WEBSERVICE: "false"
     volumes:
-      - ./data/frontier:/var/squirrel/data
-      - ./seeds.txt:/var/squirrel/data/seeds.txt:ro
+      - ./scenarios/1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
 
   worker1:
     image: squirrel
+    container_name: worker1
     environment:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
     volumes:
-        - ./data/worker1:/var/squirrel/data
+        - ./scenarios/1/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
   SimulationNodeA:

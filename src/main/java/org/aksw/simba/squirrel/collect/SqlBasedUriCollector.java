@@ -109,7 +109,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     @Override
     public Iterator<byte[]> getUris(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
-        LOGGER.info("knownUris: " + knownUris);
         if (knownUris.containsKey(uriString)) {
             UriTableStatus table = knownUris.get(uriString);
             synchronized (table) {

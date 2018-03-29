@@ -12,7 +12,9 @@ import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
+import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
@@ -202,17 +204,22 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void crawl(List<CrawleableUri> uris) {
+        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
+                crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+                crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
                     performCrawling(uri, newUris);
+                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
+                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
                 }
@@ -223,6 +230,12 @@ public class WorkerImpl implements Worker, Closeable {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
+        crawlingActivity.finishActivity();
+        if (sink instanceof RDFSink) {
+            ((RDFSink) sink).addMetadata(crawlingActivity);
+        } else {
+            //TODO ADD METADATA IF SINK IS NOT RDFSINK
+        }
         frontier.crawlingDone(uris, newUris);
     }
 

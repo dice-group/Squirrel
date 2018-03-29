@@ -48,21 +48,20 @@ public class RDBConnectorTest {
         // read any errors from the attempted command
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null)
-        {
+        while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
 
         r = RethinkDB.r;
         int retryCount = 0;
-        while(true) {
+        while (true) {
             try {
                 connection = r.connection().hostname("localhost").port(58015).connect();
                 break;
-            } catch(ReqlDriverError error) {
+            } catch (ReqlDriverError error) {
                 System.out.println("Could not connect, retrying");
                 retryCount++;
-                if(retryCount > 10) break;
+                if (retryCount > 10) break;
                 Thread.sleep(5000);
             }
         }
@@ -140,7 +139,7 @@ public class RDBConnectorTest {
         assert(cursor.hasNext());
         HashMap crawleableUri = (HashMap) cursor.next();
         long retrievedTimestamp = (long) crawleableUri.get("timestamp");
-        assert((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
+        assert ((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
         cursor.close();
     }
 
