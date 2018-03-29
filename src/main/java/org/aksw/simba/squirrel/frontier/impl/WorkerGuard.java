@@ -17,7 +17,7 @@ public class WorkerGuard {
 
     /**
      * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to a timestamp that
-     * indicates when the {@link org.aksw.simba.squirrel.worker.Worker} has sent his last {@AliveMessage}.
+     * indicates when the {@link org.aksw.simba.squirrel.worker.Worker} has sent his last {@link AliveMessage}.
      */
     private final Map<Integer, Date> mapWorkerTimestamps = new HashMap<>();
 

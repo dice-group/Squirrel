@@ -88,11 +88,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             LOGGER.debug("URI {} is not good", uri.toString());
             Long timestampRetrieved = cursor.next();
             cursor.close();
-            if ((System.currentTimeMillis() - timestampRetrieved) < recrawlEveryWeek) {
-                return false;
-            } else {
-                return true;
-            }
+            return (System.currentTimeMillis() - timestampRetrieved) >= recrawlEveryWeek;
         } else {
             LOGGER.debug("URI {} is good", uri.toString());
             cursor.close();
@@ -102,5 +98,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     public void purge() {
         r.db("squirrel").table("knownurifilter").delete().run(connector.connection);
+    }
+
+    @Override
+    public long count() {
+        return r.db("squirrel").table("knownurifilter").count().run(connector.connection);
     }
 }

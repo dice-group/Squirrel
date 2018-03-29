@@ -4,6 +4,7 @@ import java.net.InetAddress;
 
 import org.aksw.simba.squirrel.data.uri.UriType;
 
+@Deprecated
 public class IpUriTypePair implements Comparable<IpUriTypePair> {
     public InetAddress ip;
     public UriType type;
@@ -36,9 +37,7 @@ public class IpUriTypePair implements Comparable<IpUriTypePair> {
                 return false;
         } else if (!ip.equals(other.ip))
             return false;
-        if (type != other.type)
-            return false;
-        return true;
+        return type == other.type;
     }
 
     @Override
