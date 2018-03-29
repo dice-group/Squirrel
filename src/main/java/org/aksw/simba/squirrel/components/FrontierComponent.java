@@ -1,13 +1,5 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
-import java.util.concurrent.Semaphore;
-
-import com.SquirrelWebObject;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
@@ -17,8 +9,8 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.frontier.impl.FrontierSenderToWebservice;
+import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
@@ -42,11 +34,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.stream.Collectors;
-
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
 
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
@@ -58,8 +45,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
-    private final static String WEB_QUEUE_NAME = "squirrel.web";
-    private Channel webqueuechannel;
 
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
