@@ -33,13 +33,10 @@ services:
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
 
   web:
-    image: java:latest
+    image: squirrel/webimage:latest
     container_name: web
     ports:
       - "8080:8080"
-    volumes:
-      - ../web/Squirrel-Webservice/target:/etc/store
-    command: java -jar /etc/store/SPRINGWebSquirrel-0.3.0.jar
 
   worker1:
     image: squirrel

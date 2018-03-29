@@ -128,7 +128,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (communicationWithWebserviceEnabled) {
             Thread sender = new Thread(new FrontierSenderToWebservice(workerGuard, queue, knownUriFilter));
             sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
-            sender.run();
+            sender.start();
             LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
         }
         // The main thread has nothing to do except waiting for its

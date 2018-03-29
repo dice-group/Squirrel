@@ -28,7 +28,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private KnownUriFilter knownUriFilter;
     private final static String WEB_QUEUE_NAME = "squirrel.web";
     private Connection connection = null;
-    private Channel webqueuechannel;
+    private Channel webQueueChannel = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierSenderToWebservice.class);
 
@@ -77,14 +77,34 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
             }
         }
-        try {
-            webqueuechannel = connection.createChannel();
-            webqueuechannel.queueDeclare(WEB_QUEUE_NAME, false, false, true, null);
-        } catch (IOException e) {
-            LOGGER.error("Connection to rabbit is stable, but there was an error while creating a channel/ queue: " + e.getMessage());
+        if (!establishChannel(10)) {
             return false;
         }
+
+        LOGGER.debug("Connection to rabbit (Channel " + webQueueChannel + ") with the queue " + WEB_QUEUE_NAME + " is established");
         return true;
+    }
+
+    private boolean establishChannel(int triesLeft) {
+        try {
+            webQueueChannel = (webQueueChannel != null) ? webQueueChannel : connection.createChannel();
+            webQueueChannel.queueDeclare(WEB_QUEUE_NAME, false, false, false, null);
+            return true;
+        } catch (IOException e) {
+            LOGGER.warn("Connection to rabbit is stable, but there was an error while creating a channel/ queue: " + e.getMessage() + ". There are " + triesLeft + " tries left, try it again in 3s!");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e2) {
+                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_NAME + ", there were " + triesLeft + " tries left", e2);
+                return false;
+            }
+            if (triesLeft > 0) {
+                return establishChannel(triesLeft - 1);
+            } else {
+                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_NAME + ", ran out of tries", e);
+                return false;
+            }
+        }
     }
 
     /**
@@ -132,11 +152,11 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
             }
             if (lastSentObject == null || !newObject.equals(lastSentObject)) {
                 try {
-                    webqueuechannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
+                    webQueueChannel.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
                     LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
                     lastSentObject = newObject;
                 } catch (IOException e) {
-                    LOGGER.warn("Cannot push the lastest SquirrelWebObject into the queue - try it the next time again...", e);
+                    LOGGER.warn("Cannot push the latest SquirrelWebObject into the queue - try it the next time again...", e);
                 }
             }
             try {
@@ -169,7 +189,8 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     @Override
     public void close() throws IOException {
         try {
-            webqueuechannel.close();
+            webQueueChannel.queueDelete(WEB_QUEUE_NAME, true, false);
+            webQueueChannel.close();
             connection.close();
         } catch (TimeoutException e) {
             e.printStackTrace();
