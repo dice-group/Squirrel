@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AnalyzerTest {
+public class RDFAnalyzerTest {
 
 	private Analyzer analyzer;
 	private CrawleableUri curi;
@@ -27,7 +27,7 @@ public class AnalyzerTest {
 	private Sink sink;
 	private File data;
 	private String uriToFetch = "http://dbpedia.org/resource/New_York";
-	private String fileToTest = "new_york.rdf";
+	private String fileToTest = "rdf_analyzer/genders_en.ttl";
 	private int expectedUris = 2829;
 
 

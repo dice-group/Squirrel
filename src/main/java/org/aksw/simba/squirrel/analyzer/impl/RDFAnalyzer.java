@@ -14,6 +14,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDFBase;
+import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 public class RDFAnalyzer implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
+    private Tika tika = new Tika();
 
     private UriCollector collector;
 
@@ -35,6 +37,7 @@ public class RDFAnalyzer implements Analyzer {
             // First, try to get the language of the data
             Lang lang = null;
             String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+            String type = tika.detect(data);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
             } else {
