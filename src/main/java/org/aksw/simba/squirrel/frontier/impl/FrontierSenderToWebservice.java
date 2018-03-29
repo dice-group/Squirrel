@@ -11,6 +11,7 @@ import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -129,8 +130,13 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
                 newObject.setCountOfWorker(workerGuard.getNumberOfLiveWorkers());
                 newObject.setCountOfDeadWorker(workerGuard.getNumberOfDeadWorker());
 
-                LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = queue.getContent();
-                if (currentQueue == null || currentQueue.isEmpty()) {
+                LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = new LinkedHashMap<>(50);
+                Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> i;
+                for (i = queue.getIPURIIterator(); i.hasNext() && currentQueue.size() < 50; ) {
+                    AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>> entry = i.next();
+                    currentQueue.put(entry.getKey(), entry.getValue());
+                }
+                if (currentQueue.isEmpty()) {
                     newObject.setIPMapPendingURis(EMPTY_MAP);
                     newObject.setPendingURIs(EMPTY_LIST);
                     newObject.setNextCrawledURIs(EMPTY_LIST);

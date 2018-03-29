@@ -207,9 +207,33 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
             }
         }
 
-        LOGGER.debug("The gathering process is finished. Found " + map.size() + " IP-Adresses with their URIs");
+        LOGGER.debug("The gathering process is finished. Found " + map.size() + " IP-Addresses with their URIs");
 
         return map;
+    }
+
+    @Override
+    public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator() {
+        return new Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>>() {
+            private Cursor cursor = r.db("squirrel").table("queue").orderBy().optArg("index", "ipAddressType").run(connector.connection);
+
+            @Override
+            public boolean hasNext() {
+                return cursor.hasNext();
+            }
+
+            @Override
+            public AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>> next() {
+                HashMap row = (HashMap) cursor.next();
+                LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
+                try {
+                    return new AbstractMap.SimpleEntry<>(InetAddress.getByName(row.get("ipAddress").toString()), UriUtils.createCrawleableUriList((ArrayList) row.get("uris")));
+                } catch (UnknownHostException e) {
+                    LOGGER.error("Error while parsing the data from the RDBQueue into an HashMap", e);
+                    return null;
+                }
+            }
+        };
     }
 
 }

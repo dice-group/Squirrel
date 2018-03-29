@@ -8,13 +8,14 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 public class InMemoryQueue extends AbstractIpAddressBasedQueue {
 
     protected SortedMap<IpUriTypePair, List<CrawleableUri>> queue;
+    private static final int LIMITFORITERATOR = 50;
 
     public InMemoryQueue() {
-        queue = new TreeMap<IpUriTypePair, List<CrawleableUri>>();
+        queue = new TreeMap<>();
     }
 
     public InMemoryQueue(Comparator<IpUriTypePair> comparator) {
-        queue = new TreeMap<IpUriTypePair, List<CrawleableUri>>(comparator);
+        queue = new TreeMap<>(comparator);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
         if (queue.containsKey(pair)) {
             queue.get(pair).add(uri);
         } else {
-            List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+            List<CrawleableUri> uris = new ArrayList<>();
             uris.add(uri);
             queue.put(pair, uris);
         }
@@ -44,11 +45,17 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
+    @Deprecated
     public LinkedHashMap<InetAddress, List<CrawleableUri>> getContent() {
         LinkedHashMap<InetAddress, List<CrawleableUri>> ret = new LinkedHashMap<>();
         queue.entrySet().forEach(e -> ret.put(e.getKey().ip, e.getValue()));
 
         return ret;
+    }
+
+    @Override
+    public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator() {
+        return queue.entrySet().stream().limit(LIMITFORITERATOR).map(e -> new AbstractMap.SimpleEntry<>(e.getKey().ip, e.getValue())).iterator();
     }
 
     @Override

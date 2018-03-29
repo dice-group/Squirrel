@@ -81,4 +81,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
 
     @Override
     public abstract LinkedHashMap<InetAddress, List<CrawleableUri>> getContent();
+
+    @Override
+    public abstract Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
 }
