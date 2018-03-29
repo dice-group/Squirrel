@@ -68,12 +68,4 @@ public interface Frontier {
      */
     public int getNumberOfPendingUris();
 
-    /**
-     * The frontier gets the information that some worker has died and he has to react somehow.
-     *
-     * @param idOfWorker        The id of the dead {@link org.aksw.simba.squirrel.worker.Worker}.
-     * @param lstUrisToReassign A list of {@link CrawleableUri} that should have been handeled by the
-     *                          dead worker, but was not due to his sudden death.
-     */
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign);
 }

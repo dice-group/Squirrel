@@ -24,7 +24,7 @@ public interface IpAddressBasedQueue extends UriQueue {
      * @param ip
      *            the IP address that should be marked as accessible.
      */
-    void markIpAddressAsAccessible(InetAddress ip);
+    public void markIpAddressAsAccessible(InetAddress ip);
 
     /**
      * Returns the number of IP addresses that are currently blocked.

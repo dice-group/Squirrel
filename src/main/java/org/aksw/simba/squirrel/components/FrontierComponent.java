@@ -7,7 +7,9 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
@@ -96,7 +98,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new FrontierImpl(knownUriFilter, queue);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -128,6 +130,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (knownUriFilter instanceof Closeable) {
             knownUriFilter.close();
         }
+        workerGuard.shutdown();
         super.close();
     }
 
@@ -156,7 +159,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
                         if (uris != null && uris.size() > 0) {
-                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uris);
+                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uriSetRequest.workerSendsAliveMessages(), uris);
                         }
                     } catch (IOException e) {
                         LOGGER.error("Couldn't serialize new URI set.", e);
@@ -196,7 +199,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     }
 
     public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
-        frontier.informAboutDeadWorker(idOfWorker, lstUrisToReassign);
+        if (frontier instanceof ExtendedFrontier) {
+            ((ExtendedFrontier) frontier).informAboutDeadWorker(idOfWorker, lstUrisToReassign);
+        }
     }
 
     public void setFrontier(FrontierImpl frontier) {
