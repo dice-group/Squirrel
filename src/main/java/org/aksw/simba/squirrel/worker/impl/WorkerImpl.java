@@ -14,8 +14,8 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,9 +71,9 @@ public class WorkerImpl implements Worker, Closeable {
      *
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, boolean)}
      *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, boolean)}
      *             instead.
      */
     @Deprecated
@@ -120,9 +119,9 @@ public class WorkerImpl implements Worker, Closeable {
      *
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, Boolean)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, boolean)}
      *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, Boolean)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, boolean)}
      *             instead.
      */
     @Deprecated

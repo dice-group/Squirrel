@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +19,7 @@ import java.util.List;
 public class RabbitMQHelperSerializationTest {
 
     @Parameters
-    public static Collection<Object[]> data() throws IOException {
+    public static Collection<Object[]> data() {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
 
         CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();

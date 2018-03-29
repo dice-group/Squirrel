@@ -1,8 +1,8 @@
 package org.aksw.simba.squirrel.queue;
 
-import java.net.InetAddress;
-
 import org.aksw.simba.squirrel.data.uri.UriType;
+
+import java.net.InetAddress;
 
 @Deprecated
 public class IpUriTypePair implements Comparable<IpUriTypePair> {

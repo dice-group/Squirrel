@@ -3,7 +3,9 @@ package org.aksw.simba.squirrel.queue;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This extension of the {@link UriQueue} interface defines additional methods
@@ -24,7 +26,7 @@ public interface IpAddressBasedQueue extends UriQueue {
      * @param ip
      *            the IP address that should be marked as accessible.
      */
-    public void markIpAddressAsAccessible(InetAddress ip);
+    void markIpAddressAsAccessible(InetAddress ip);
 
     /**
      * Returns the number of IP addresses that are currently blocked.
@@ -32,13 +34,6 @@ public interface IpAddressBasedQueue extends UriQueue {
      * @return the number of IP addresses that are currently blocked.
      */
     int getNumberOfBlockedIps();
-
-    /**
-     * Goes through the queue und collects all IP-address with their URIs
-     * @return a hashMap of all queue entries. First entry is the next crawled URI
-     */
-    @Deprecated
-    LinkedHashMap<InetAddress, List<CrawleableUri>> getContent();
 
     /**
      * Goes through the queue und collects all IP-address with their URIs

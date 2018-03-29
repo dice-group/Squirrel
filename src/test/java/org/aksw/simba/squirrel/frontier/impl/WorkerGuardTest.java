@@ -35,7 +35,7 @@ public class WorkerGuardTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
 
         filter = new RDBKnownUriFilter("localhost", 28015);

@@ -13,7 +13,7 @@ public interface Worker extends Runnable {
      * @param uris
      *            the URIs that should be crawled
      */
-    public void crawl(List<CrawleableUri> uris);
+    void crawl(List<CrawleableUri> uris);
 
     /**
      * Crawls the given URI and adds new URIs that have been found while
@@ -25,7 +25,7 @@ public interface Worker extends Runnable {
      *            the new URIs that have been extracted will be added to this
      *            list.
      */
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
+    void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
 
     /**
      * Gives the unique id of the worker.

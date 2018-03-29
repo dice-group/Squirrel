@@ -1,9 +1,9 @@
 package org.aksw.simba.squirrel.queue;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+
 import java.net.InetAddress;
 import java.util.*;
-
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 public class InMemoryQueue extends AbstractIpAddressBasedQueue {
 
@@ -42,15 +42,6 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
             uris = queue.remove(pair);
         }
         return uris;
-    }
-
-    @Override
-    @Deprecated
-    public LinkedHashMap<InetAddress, List<CrawleableUri>> getContent() {
-        LinkedHashMap<InetAddress, List<CrawleableUri>> ret = new LinkedHashMap<>();
-        queue.entrySet().forEach(e -> ret.put(e.getKey().ip, e.getValue()));
-
-        return ret;
     }
 
     @Override
