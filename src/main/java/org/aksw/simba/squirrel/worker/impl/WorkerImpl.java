@@ -55,6 +55,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime;
     protected boolean terminateFlag;
     private final int id = (int)Math.floor(Math.random()*100000);
+    private boolean sendAliveMessages;
 
     /**
      * Constructor.
@@ -77,8 +78,8 @@ public class WorkerImpl implements Worker, Closeable {
      *             instead.
      */
     @Deprecated
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer) {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, null);
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, boolean sendAliveMessages) {
+        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, null, sendAliveMessages);
     }
 
     /**
@@ -98,8 +99,8 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, String logDir) {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, logDir);
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, String logDir, boolean sendAliveMessages) {
+        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, logDir, sendAliveMessages);
     }
 
     /**
@@ -119,15 +120,15 @@ public class WorkerImpl implements Worker, Closeable {
      *
      * @deprecated Because a default configuration of the UriCollector is created.
      *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, Boolean)}
      *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
+     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, Boolean)}
      *             instead.
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-                      UriCollector collector) {
-        this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null);
+                      UriCollector collector, boolean sendAliveMessages) {
+        this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null, sendAliveMessages);
     }
 
     /**
@@ -152,12 +153,13 @@ public class WorkerImpl implements Worker, Closeable {
      *            {@code null} if no log should be written).
      */
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-                      UriCollector collector, long waitingTime, String logDir) {
+                      UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
+        this.sendAliveMessages = sendAliveMessages;
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
@@ -282,6 +284,11 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean sendsAliveMessages() {
+        return sendAliveMessages;
     }
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {

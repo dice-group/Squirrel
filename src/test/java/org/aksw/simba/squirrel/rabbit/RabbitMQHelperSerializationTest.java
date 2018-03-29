@@ -32,7 +32,7 @@ public class RabbitMQHelperSerializationTest {
         testConfigs.add(new Object[] { new UriSet(
                 Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
 
-        testConfigs.add(new Object[] { new UriSetRequest(-1) });
+        testConfigs.add(new Object[]{new UriSetRequest()});
 
         testConfigs.add(new Object[] { new CrawlingResult(
                 Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
