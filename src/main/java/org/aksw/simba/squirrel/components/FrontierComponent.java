@@ -164,7 +164,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 AliveMessage message = (AliveMessage) object;
                 int idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
-                workerGuard.putIntoTimestamps(idReceived);
+                workerGuard.putNewTimestamp(idReceived);
 
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
