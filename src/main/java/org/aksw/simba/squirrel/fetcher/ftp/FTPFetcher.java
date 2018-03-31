@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTPClient;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TODO Update this class by removing its dependency regarding the deprecated
  * {@link DumpFetcher} class.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -81,7 +82,7 @@ public class FTPFetcher implements Fetcher {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         // nothing to do
     }
 

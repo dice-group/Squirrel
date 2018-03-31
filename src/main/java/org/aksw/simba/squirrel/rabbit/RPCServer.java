@@ -83,7 +83,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         private RabbitQueueFactory responseFactory = null;
 
         public Builder() {
-        };
+        }
 
         /**
          * Sets the handler that is called if data is incoming. <b>Note</b> that a

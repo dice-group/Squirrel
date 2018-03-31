@@ -55,6 +55,7 @@ public class CrawlingActivity {
      * The sink used for the activity.
      */
     private Sink sink;
+
     /**
      * Constructor
      *

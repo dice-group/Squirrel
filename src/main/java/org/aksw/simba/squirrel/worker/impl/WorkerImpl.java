@@ -208,7 +208,7 @@ public class WorkerImpl implements Worker, Closeable {
     public void crawl(List<CrawleableUri> uris) {
         CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
-        List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
+        List<CrawleableUri> newUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
@@ -292,7 +292,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {
-        List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
+        List<CrawleableUri> uris = new ArrayList<>(10);
         CrawleableUri uri;
         while (uriIterator.hasNext()) {
             try {
@@ -311,7 +311,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         IOUtils.closeQuietly(fetcher);
     }
 
