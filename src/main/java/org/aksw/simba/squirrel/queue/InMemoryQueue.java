@@ -1,11 +1,6 @@
 package org.aksw.simba.squirrel.queue;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
@@ -22,7 +17,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addToQueue(CrawleableUri uri) {
+    protected void addToQueue(CrawleableUri uri, Date dateToCrawl) {
         IpUriTypePair pair = new IpUriTypePair(uri.getIpAddress(), uri.getType());
         if (queue.containsKey(pair)) {
             queue.get(pair).add(uri);

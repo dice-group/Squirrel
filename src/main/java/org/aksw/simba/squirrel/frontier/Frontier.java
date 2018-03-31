@@ -68,4 +68,7 @@ public interface Frontier {
      */
     public int getNumberOfPendingUris();
 
+
+    boolean doesRecrawling();
+
 }

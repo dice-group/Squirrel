@@ -34,10 +34,11 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         if(!queueTableExists()) {
             r.db("squirrel").tableCreate("queue").run(this.connector.connection);
             r.db("squirrel").table("queue").indexCreate("ipAddressType",
-                row -> r.array(row.g("ipAddress"), row.g("type"))).run(this.connector.connection);
+                row -> r.array(row.g("ipAddress"), row.g("type"), row.g("date"))).run(this.connector.connection);
             r.db("squirrel").table("queue").indexWait("ipAddressType").run(this.connector.connection);
         }
     }
+
 
     public void close() {
         r.db("squirrel").tableDrop("queue").run(this.connector.connection);
@@ -68,15 +69,15 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addToQueue(CrawleableUri uri) {
+    protected void addToQueue(CrawleableUri uri, Date dateToCrawl) {
         List ipAddressTypeKey = getIpAddressTypeKey(uri);
         // if URI exists update the uris list
         if(queueContainsIpAddressTypeKey(ipAddressTypeKey)) {
             LOGGER.debug("TypeKey is in the queue already");
-            addCrawleableUri(uri, ipAddressTypeKey);
+            addCrawleableUri(uri, ipAddressTypeKey, dateToCrawl);
         } else {
             LOGGER.debug("TypeKey is not in the queue, creating a new one");
-            addCrawleableUri(uri);
+            addCrawleableUri(uri, dateToCrawl);
         }
     }
 
@@ -104,7 +105,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return r.array(str_1, str_2);
     }
 
-    public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey) {
+    public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey, Date dateToRecrawl) {
         r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
@@ -112,14 +113,6 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 .update(queueItem -> r.hashMap("uris", queueItem.g("uris").append(uri.getUri().toString())))
                 .run(connector.connection);
         LOGGER.debug("Inserted existing UriTypePair");
-    }
-
-    public void addCrawleableUri(CrawleableUri uri) {
-        r.db("squirrel")
-                .table("queue")
-                .insert(crawleableUriToRDBHashMap(uri))
-                .run(connector.connection);
-        LOGGER.debug("Inserted new UriTypePair");
     }
 
     public MapObject crawleableUriToRDBHashMap(CrawleableUri uri) {
@@ -190,5 +183,4 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         // return the URIs
         return uris;
     }
-
 }

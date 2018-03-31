@@ -118,7 +118,7 @@ public class RDBQueueTest {
         rdbQueue.open();
         List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(0));
         assertFalse(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
-        rdbQueue.addToQueue(uris.get(0));
+        rdbQueue.addToQueue(uris.get(0), dateToCrawl);
         assertTrue(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
         rdbQueue.close();
     }
@@ -129,7 +129,7 @@ public class RDBQueueTest {
         rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            rdbQueue.addToQueue(uri, dateToCrawl);
         }
         assertEquals(3, rdbQueue.length());
         rdbQueue.purge();
@@ -153,7 +153,7 @@ public class RDBQueueTest {
     public void addToQueue() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            rdbQueue.addToQueue(uri, dateToCrawl);
         }
         assertEquals(3, rdbQueue.length());
         rdbQueue.close();
@@ -173,7 +173,7 @@ public class RDBQueueTest {
     public void getIterator() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            rdbQueue.addToQueue(uri, dateToCrawl);
         }
         Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
         while (iter.hasNext()) {
@@ -187,7 +187,7 @@ public class RDBQueueTest {
     public void getUris() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            rdbQueue.addToQueue(uri, dateToCrawl);
         }
         Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
         while (iter.hasNext()) {

@@ -54,6 +54,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private Serializer serializer;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
+    private final boolean doRecrawling = true;
 
 
 

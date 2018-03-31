@@ -40,16 +40,10 @@ public class FrontierImpl implements Frontier {
      * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
      */
     protected SchemeBasedUriFilter schemeUriFilter = new SchemeBasedUriFilter();
-
-    public UriQueue getQueue() {
-        return queue;
-    }
-
     /**
      * {@link UriQueue} used to manage the URIs that should be crawled.
      */
     protected UriQueue queue;
-
     /**
      * {@link UriProcessor} used to identify the type of incoming URIs: DUMP,
      * SPARQL, DEREFERENCEABLE or UNKNOWN
@@ -60,6 +54,9 @@ public class FrontierImpl implements Frontier {
      */
     protected GraphLogger graphLogger;
 
+
+    private boolean doesRecrawling;
+
     /**
      * Constructor.
      *
@@ -70,8 +67,8 @@ public class FrontierImpl implements Frontier {
      *            {@link UriQueue} used to manage the URIs that should be
      *            crawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(knownUriFilter, queue, null);
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
+        this(knownUriFilter, queue, null, doesRecrawling);
     }
 
     /**
@@ -84,7 +81,7 @@ public class FrontierImpl implements Frontier {
      *            {@link UriQueue} used to manage the URIs that should be
      *            crawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling) {
         this.knownUriFilter = knownUriFilter;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
@@ -92,6 +89,11 @@ public class FrontierImpl implements Frontier {
 
         this.queue.open();
         this.knownUriFilter.open();
+        this.doesRecrawling = doesRecrawling;
+    }
+
+    public UriQueue getQueue() {
+        return queue;
     }
 
     @Override
@@ -153,6 +155,9 @@ public class FrontierImpl implements Frontier {
 
         // Add the new URIs to the Frontier
         addNewUris(newUris);
+
+        // TODO: here we could add the old uris to the queue again, after adding the new ones!
+        // TODO: add them together with a timestamp when they should be recrawled
     }
 
     @Override
@@ -162,6 +167,11 @@ public class FrontierImpl implements Frontier {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public boolean doesRecrawling() {
+        return doesRecrawling;
     }
 
 }

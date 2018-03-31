@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -26,8 +23,14 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private Semaphore queueMutex = new Semaphore(1);
     private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
 
+
     @Override
     public void addUri(CrawleableUri uri) {
+        addUri(uri, new Date());
+    }
+
+    @Override
+    public void addUri(CrawleableUri uri, Date dateToCrawl) {
         try {
             queueMutex.acquire();
         } catch (InterruptedException e) {
@@ -35,13 +38,13 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
             throw new IllegalStateException("Interrupted while waiting for mutex.", e);
         }
         try {
-            addToQueue(uri);
+            addToQueue(uri, dateToCrawl);
         } finally {
             queueMutex.release();
         }
     }
 
-    protected abstract void addToQueue(CrawleableUri uri);
+    protected abstract void addToQueue(CrawleableUri uri, Date dateToCrawl);
 
     @Override
     public List<CrawleableUri> getNextUris() {
