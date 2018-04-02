@@ -68,12 +68,12 @@ public class WorkerGuardTest {
             frontierComponent.run();
             int workerId = worker.getId();
             Thread.sleep(WorkerGuard.TIME_WORKER_DEAD / 2 + 10);
-            boolean idContained = frontierComponent.getWorkerGuard().getMapTimestamps().containsKey(workerId);
+            boolean idContained = frontierComponent.getWorkerGuard().getMapWorkerInfo().containsKey(workerId);
             ((WorkerImpl) worker).setTerminateFlag(true);
 
 
             Thread.sleep(WorkerGuard.TIME_WORKER_DEAD + 10);
-            boolean idStillContained = frontierComponent.getWorkerGuard().getMapTimestamps().containsKey(workerId);
+            boolean idStillContained = frontierComponent.getWorkerGuard().getMapWorkerInfo().containsKey(workerId);
 
             Assert.assertTrue(idContained && !idStillContained);
 
