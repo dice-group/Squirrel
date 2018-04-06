@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -133,7 +132,7 @@ public class FrontierImpl implements Frontier {
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
-            Set<InetAddress> ips = new HashSet<InetAddress>();
+            Set<InetAddress> ips = new HashSet<>();
             InetAddress ip;
             for (CrawleableUri uri : crawledUris) {
                 ip = uri.getIpAddress();
@@ -141,10 +140,7 @@ public class FrontierImpl implements Frontier {
                     ips.add(ip);
                 }
             }
-            Iterator<InetAddress> iterator = ips.iterator();
-            while (iterator.hasNext()) {
-                ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
-            }
+            ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
         }
         // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : crawledUris) {

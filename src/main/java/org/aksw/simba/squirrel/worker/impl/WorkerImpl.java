@@ -221,7 +221,7 @@ public class WorkerImpl implements Worker, Closeable {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
-                    LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
+                    LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
                 }
             }
