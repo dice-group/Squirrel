@@ -2,7 +2,10 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
-import com.carrotsearch.hppc.ObjectLongOpenHashMap;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
@@ -10,7 +13,7 @@ import com.carrotsearch.hppc.ObjectLongOpenHashMap;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
-    protected ObjectLongOpenHashMap<CrawleableUri> uris = new ObjectLongOpenHashMap<>();
+    protected Hashtable<CrawleableUri, AbstractMap.SimpleEntry<List<CrawleableUri>, Long>> uris;
     protected long timeBeforeRecrawling;
 
     /**
@@ -21,22 +24,28 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
      *            values turns disables recrawling.
      */
     public InMemoryKnownUriFilter(long timeBeforeRecrawling) {
+        this.uris = new Hashtable<>();
         this.timeBeforeRecrawling = timeBeforeRecrawling;
     }
 
-    public InMemoryKnownUriFilter(ObjectLongOpenHashMap<CrawleableUri> uris, long timeBeforeRecrawling) {
+    public InMemoryKnownUriFilter(Hashtable<CrawleableUri, AbstractMap.SimpleEntry<List<CrawleableUri>, Long>> uris, long timeBeforeRecrawling) {
         this.uris = uris;
         this.timeBeforeRecrawling = timeBeforeRecrawling;
     }
 
     @Override
     public void add(CrawleableUri uri) {
-        add(uri, System.currentTimeMillis());
+        uris.put(uri, new AbstractMap.SimpleEntry<>(Collections.EMPTY_LIST, System.currentTimeMillis()));
     }
 
     @Override
     public void add(CrawleableUri uri, long timestamp) {
-        uris.put(uri, timestamp);
+        uris.put(uri, new AbstractMap.SimpleEntry<>(Collections.EMPTY_LIST, timestamp));
+    }
+
+    @Override
+    public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long timestamp) {
+        uris.put(uri, new AbstractMap.SimpleEntry<>(urisFound, timestamp));
     }
 
     @Override
@@ -46,7 +55,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
             if (timeBeforeRecrawling < 0) {
                 return false;
             }
-            long nextCrawlingAt = uris.get(uri) + timeBeforeRecrawling;
+            long nextCrawlingAt = uris.get(uri).getValue() + timeBeforeRecrawling;
             return nextCrawlingAt < System.currentTimeMillis();
         } else {
             return true;

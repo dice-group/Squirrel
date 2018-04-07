@@ -6,7 +6,7 @@ import com.rethinkdb.net.Connection;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithoutReferences;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class FrontierImplTest {
     private Connection connection;
     private FrontierImpl frontier;
     private RDBQueue queue;
-    private RDBKnownUriFilter filter;
+    private RDBKnownUriFilterWithoutReferences filter;
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
@@ -62,7 +62,7 @@ public class FrontierImplTest {
             }
         }
 
-        filter = new RDBKnownUriFilter("localhost", 58015);
+        filter = new RDBKnownUriFilterWithoutReferences("localhost", 58015);
         queue = new RDBQueue("localhost", 58015);
         //filter.purge();
         //queue.purge();

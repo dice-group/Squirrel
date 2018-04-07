@@ -4,7 +4,8 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithReferences;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithoutReferences;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
@@ -46,6 +47,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     private static final String RDB_PORT_KEY = "RDB_PORT";
     private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
+    private static final String VISUALIZATION_OF_CRAWLED_GRAPH = "VISUALIZATION_OF_CRAWLED_GRAPH";
 
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
@@ -56,6 +58,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private DataReceiver receiver;
     private Serializer serializer;
     private boolean communicationWithWebserviceEnabled;
+    private boolean visualizationOfCrawledGraphEnabaled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
 
@@ -78,10 +81,20 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
         }
 
+        if (env.containsKey(VISUALIZATION_OF_CRAWLED_GRAPH)) {
+            visualizationOfCrawledGraphEnabaled = env.get(VISUALIZATION_OF_CRAWLED_GRAPH).equalsIgnoreCase("true");
+            LOGGER.info("Set the visualization of the crawled graph feature to " + communicationWithWebserviceEnabled);
+        } else {
+            visualizationOfCrawledGraphEnabaled = false;
+            LOGGER.warn("Couldn't get {" + VISUALIZATION_OF_CRAWLED_GRAPH + "} from the environment. Communication to the Webservice is disabled!");
+        }
+
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
             queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+            knownUriFilter = (visualizationOfCrawledGraphEnabaled) ?
+                new RDBKnownUriFilterWithReferences(rdbHostName, rdbPort) :
+                new RDBKnownUriFilterWithoutReferences(rdbHostName, rdbPort);
             knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
@@ -116,6 +129,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             sender.start();
             LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
+            if (visualizationOfCrawledGraphEnabaled) {
+                //TODO
+            }
         }
         // The main thread has nothing to do except waiting for its
         // termination...

@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
+import java.util.List;
+
 /**
  * A {@link UriFilter} that works like a blacklist filter and contains only those
  * URIs on its blacklist that the crawler already has seen before.
@@ -15,7 +17,7 @@ public interface KnownUriFilter extends UriFilter {
      *
      * @param uri the URI that should be added to the list.
      */
-    public void add(CrawleableUri uri);
+    void add(CrawleableUri uri);
 
     /**
      * Adds the given URI to the list of already known URIs together with the the time at which it has been crawled.
@@ -23,21 +25,31 @@ public interface KnownUriFilter extends UriFilter {
      * @param uri       the URI that should be added to the list.
      * @param timestamp the time at which the given URI has eben crawled.
      */
-    public void add(CrawleableUri uri, long timestamp);
+    void add(CrawleableUri uri, long timestamp);
+
+    /**
+     * Adds the given URI to the list of already known URIs together with the the time at which it has been crawled.
+     * In addition, it adds a list of uris, that were found by crawling the certain uri. ATTENTION: these uris have no to be crawled at this point of time!
+     *
+     * @param uri       the URI that should be added to the list.
+     * @param urisFound uris, that were found by crawling the uri
+     * @param timestamp the time at which the given URI has eben crawled.
+     */
+    void add(CrawleableUri uri, List<CrawleableUri> urisFound, long timestamp);
 
     /**
      * Close RDB connection, destroy the database.
      */
-    public void close();
+    void close();
 
     /**
      * Open RDB connection, init the database.
      */
-    public void open();
+    void open();
 
     /**
      * count the numbers of known URIs
      * @return the number of lines in that database
      */
-    public long count();
+    long count();
 }
