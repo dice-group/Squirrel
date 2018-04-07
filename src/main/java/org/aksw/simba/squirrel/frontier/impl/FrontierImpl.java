@@ -14,9 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -125,7 +123,14 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
+        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+        Enumeration<List<CrawleableUri>> newUrisEnumeration = uriMap.elements();
+        while (newUrisEnumeration.hasMoreElements()) {
+            newUris.addAll(newUrisEnumeration.nextElement());
+        }
+        List<CrawleableUri> crawledUris = Collections.list(uriMap.keys());
+
         // If there is a graph logger, log the data
         if (graphLogger != null) {
             graphLogger.log(crawledUris, newUris);

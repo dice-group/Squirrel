@@ -142,9 +142,20 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            Hashtable<CrawleableUri, List<CrawleableUri>> uriMapHashtable;
+            if (uriMap instanceof Hashtable) {
+                uriMapHashtable = (Hashtable<CrawleableUri, List<CrawleableUri>>) uriMap;
+            } else {
+                uriMapHashtable = new Hashtable<>(uriMap.size(), 1);
+                Enumeration<CrawleableUri> keys = uriMap.keys();
+                while (keys.hasMoreElements()) {
+                    CrawleableUri key = keys.nextElement();
+                    uriMapHashtable.put(key, uriMap.get(key));
+                }
+            }
+            sender.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }

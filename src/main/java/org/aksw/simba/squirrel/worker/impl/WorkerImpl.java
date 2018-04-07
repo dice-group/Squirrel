@@ -25,9 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -207,7 +205,7 @@ public class WorkerImpl implements Worker, Closeable {
     public void crawl(List<CrawleableUri> uris) {
         CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
-        List<CrawleableUri> newUris = new ArrayList<>();
+        Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
@@ -217,7 +215,9 @@ public class WorkerImpl implements Worker, Closeable {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
+                    List<CrawleableUri> newUris = new ArrayList<>();
                     performCrawling(uri, newUris);
+                    uriMap.put(uri, newUris);
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -227,8 +227,9 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         // classify URIs
-        for (CrawleableUri uri : newUris) {
-            uriProcessor.recognizeUriType(uri);
+        Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
+        while (uriMapEnumeration.hasMoreElements()) {
+            uriMapEnumeration.nextElement().forEach(uri -> uriProcessor.recognizeUriType(uri));
         }
         // send results to the Frontier
         crawlingActivity.finishActivity();
@@ -237,7 +238,7 @@ public class WorkerImpl implements Worker, Closeable {
         } else {
             //TODO ADD METADATA IF SINK IS NOT RDFSINK
         }
-        frontier.crawlingDone(uris, newUris);
+        frontier.crawlingDone(uriMap);
     }
 
     @Override

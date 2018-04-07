@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -57,8 +58,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
-
-    private final long startRunTime = System.currentTimeMillis();
 
     @Override
     public void init() throws Exception {
@@ -141,51 +140,50 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-        Object object = null;
+        Object object;
         try {
             object = serializer.deserialize(data);
         } catch (IOException e) {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
+            return;
         }
         LOGGER.trace("Got a message (\"{}\").", object.toString());
-        if (object != null) {
-            if (object instanceof UriSetRequest) {
-                if (handler != null) {
-                    // get next UriSet
-                    try {
-                        List<CrawleableUri> uris = frontier.getNextUris();
-                        String size = uris == null ? "null" : Integer.toString(uris.size());
-                        LOGGER.info("Responding with a list of {} uris.", size);
-                        handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
-                        UriSetRequest uriSetRequest = (UriSetRequest) object;
-                        if (uris != null && uris.size() > 0) {
-                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uriSetRequest.workerSendsAliveMessages(), uris);
-                        }
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't serialize new URI set.", e);
+        if (object instanceof UriSetRequest) {
+            if (handler != null) {
+                // get next UriSet
+                try {
+                    List<CrawleableUri> uris = frontier.getNextUris();
+                    String size = uris == null ? "null" : Integer.toString(uris.size());
+                    LOGGER.info("Responding with a list of {} uris.", size);
+                    handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+                    UriSetRequest uriSetRequest = (UriSetRequest) object;
+                    if (uris != null && uris.size() > 0) {
+                        workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uriSetRequest.workerSendsAliveMessages(), uris);
                     }
-                } else {
-                    LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
+                } catch (IOException e) {
+                    LOGGER.error("Couldn't serialize new URI set.", e);
                 }
-            } else if (object instanceof UriSet) {
-                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
-                frontier.addNewUris(((UriSet) object).uris);
-            } else if (object instanceof CrawlingResult) {
-                CrawlingResult crawlingResult = (CrawlingResult) object;
-                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                    crawlingResult.crawledUris);
-                frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
-                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
-
-            } else if (object instanceof AliveMessage) {
-                AliveMessage message = (AliveMessage) object;
-                int idReceived = message.getIdOfWorker();
-                LOGGER.trace("Received alive message from worker with id " + idReceived);
-                workerGuard.putNewTimestamp(idReceived);
-
             } else {
-                LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
+                LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
             }
+        } else if (object instanceof UriSet) {
+            LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
+            frontier.addNewUris(((UriSet) object).uris);
+        } else if (object instanceof CrawlingResult) {
+            CrawlingResult crawlingResult = (CrawlingResult) object;
+            LOGGER.trace("Received the message that the crawling for {} URIs is done.",
+                crawlingResult.uriMap.size());
+            frontier.crawlingDone(crawlingResult.uriMap);
+            workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, Collections.list(crawlingResult.uriMap.keys()));
+
+        } else if (object instanceof AliveMessage) {
+            AliveMessage message = (AliveMessage) object;
+            int idReceived = message.getIdOfWorker();
+            LOGGER.trace("Received alive message from worker with id " + idReceived);
+            workerGuard.putNewTimestamp(idReceived);
+
+        } else {
+            LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
         }
     }
 

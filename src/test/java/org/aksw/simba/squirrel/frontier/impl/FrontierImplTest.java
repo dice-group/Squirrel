@@ -16,20 +16,19 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class FrontierImplTest {
 
-    RethinkDB r;
-    Connection connection;
-    FrontierImpl frontier;
-    RDBQueue queue;
-    RDBKnownUriFilter filter;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+    private RethinkDB r;
+    private Connection connection;
+    private FrontierImpl frontier;
+    private RDBQueue queue;
+    private RDBKnownUriFilter filter;
+    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +37,7 @@ public class FrontierImplTest {
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new
             InputStreamReader(p.getInputStream()));
-        String s = null;
+        String s;
         while ((s = stdInput.readLine()) != null) {
             System.out.println(s);
         }
@@ -93,7 +92,7 @@ public class FrontierImplTest {
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
 
-        List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
+        List<CrawleableUri> assertion = new ArrayList<>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
 
@@ -112,18 +111,16 @@ public class FrontierImplTest {
 
     @Test
     public void crawlingDone() throws Exception {
-        List<CrawleableUri> crawledUris = new ArrayList<>();
+        Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
-        crawledUris.add(uri_1);
-        crawledUris.add(uri_2);
 
-        List<CrawleableUri> newUris = new ArrayList<>();
         CrawleableUri uri_3 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);
-        newUris.add(uri_3);
-        frontier.crawlingDone(crawledUris, newUris);
+        uriMap.put(uri_1, Collections.singletonList(uri_3));
+        uriMap.put(uri_2, Collections.EMPTY_LIST);
+        frontier.crawlingDone(uriMap);
         assertTrue( "uri_3 has just been added", frontier.knownUriFilter.isUriGood(uri_3));
         assertFalse("uri_1 has been already crawled", frontier.knownUriFilter.isUriGood(uri_1));
     }
