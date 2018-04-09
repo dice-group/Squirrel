@@ -8,8 +8,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +25,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.utils.vocabularies.CreativeCommons;
-import org.aksw.simba.squirrel.utils.vocabularies.MCSE;
+import org.aksw.simba.squirrel.utils.vocabularies.LMCSE;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -239,8 +240,9 @@ public class McloudAnalyzer implements Analyzer
 
     private Iterator<CrawleableUri> scrapeDetailPage(CrawleableUri baseUri, File data) throws IOException
     {
-        LOGGER.debug("Scraping data from {}", baseUri.getUri().toString());
-        Document detailPage = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), baseUri.getUri().toString());
+        String detailURI = baseUri.getUri().toString();
+        LOGGER.debug("Scraping data from {}", detailURI);
+        Document detailPage = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), detailURI);
 
         //Metadata
         String title;
@@ -321,11 +323,14 @@ public class McloudAnalyzer implements Analyzer
                     CrawleableUri uri = new CrawleableUri(new URI(url));
 
                     //add metadata to URI
+                    Date timeStampDate = new Date(System.currentTimeMillis());
+                    SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"); //correct format according to https://www.w3.org/TR/xmlschema-2/#dateTime
+                    String dateString = dt.format(timeStampDate).toString();
+                    uri.addData(Constants.URI_DATASET_READ_TIME, dateString);
+
                     uri.addData(Constants.URI_DATASET_TITLE, title);
                     uri.addData(Constants.URI_DATASET_DESCRIPTION, description);
-                    uri.addData(Constants.URI_DATASET_READ_TIME, new Timestamp(System.currentTimeMillis()));
-                    uri.addData(Constants.MCLOUD_RESOURCE, true);
-
+                    uri.addData(Constants.MCLOUD_RESOURCE, detailURI);
                     uri.addData(Constants.URI_DATASET_ACCESS_TYPE, type);
                     uri.addData(Constants.URI_DATASET_CATEGORIES, categories);
                     uri.addData(Constants.URI_DATASET_PROVIDER_NAME, providerName);
@@ -339,12 +344,6 @@ public class McloudAnalyzer implements Analyzer
             catch (URISyntaxException e2)
             {
                 LOGGER.error("Error parsing URI " + url + ". It will be ignored.", e2);
-
-                //unfortunately broken URLs like '376.538' slip through here because no URISyntaxException is thrown
-                //(probably excpected to be a local hash), even though it doesn't exist
-                //this does occur quite often for DWD resources as they uploaded nonsense URIs and mCloud does not make any validation.
-                //Because mCloud redirects to it's own search page when it doesn't find the local hash instead of propagating an error
-                //the above filter does not work for all bad URIs 
             }
         }
         return downloadSources.iterator();
@@ -352,35 +351,21 @@ public class McloudAnalyzer implements Analyzer
 
     private boolean pageIsAvailable(String uri)
     {
-        if (uri.startsWith("ftp")) //JSoup only supports http and https protocol
+        try
         {
-            try
-            {
-                URL ftpUrl = new URL(uri);
-                URLConnection ftpConnection = ftpUrl.openConnection();
-                ftpConnection.connect();
-                return true;
-            }
-            catch (IOException e)
-            {
-                LOGGER.error("Can not establish a connection to the given ftp URI. It will be ignored.", e);
-                return false;
-            }
-        }
-        else
-        {
-            try
-            {
-                Jsoup.connect(uri).ignoreContentType(true).timeout(10*1000).get();
-                return true;
-            }
-            catch (IOException e)
-            {
-                LOGGER.error("The given URI does not point to an existing web page or the page is not reachable at the moment. It will be ignored", e);
-                return false;
-            }
-        }
+            URL url = new URL(uri);
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(60 * 100);
+            connection.connect();
 
+            return connection.getContent() == null ? false : true;
+
+        }
+        catch (IOException e)
+        {
+            LOGGER.error("Can not establish a connection to the given URI. The web page does not exist or is not reachable at the moment. It will be ignored.", e);
+            return false;
+        }
     }
 
     //----------------------- OUTPUT  ----------------------
@@ -434,7 +419,7 @@ public class McloudAnalyzer implements Analyzer
             model.setNsPrefix("dctypes", DCTypes.getURI());
             model.setNsPrefix("cc", CreativeCommons.getURI());
             model.setNsPrefix("xsd", XSD.getURI());
-            model.setNsPrefix("mcse", MCSE.getURI());
+            model.setNsPrefix("lmcse", LMCSE.getURI());
             model.setNsPrefix("rdf", RDF.getURI());
             model.setNsPrefix("rdfs", RDFS.getURI());
 
@@ -446,30 +431,33 @@ public class McloudAnalyzer implements Analyzer
             String title = (String) curi.getData(Constants.URI_DATASET_TITLE);
             resource.addProperty(DCTerms.title, title);
 
+            String mCloudResourceUri = (String) curi.getData(Constants.MCLOUD_RESOURCE);
+            resource.addProperty(LMCSE.mCloudResourceUri, mCloudResourceUri);
+
             String description = (String) curi.getData(Constants.URI_DATASET_DESCRIPTION);
             resource.addProperty(DCTerms.description, description);
 
             String accessType = (String) curi.getData(Constants.URI_DATASET_ACCESS_TYPE);
-            Resource accessResource = createOrGetDynamicResource(model, MCSE.getURI(), accessType);
+            Resource accessResource = createOrGetDynamicResource(model, LMCSE.getURI(), accessType);
             accessResource.addProperty(RDFS.label, accessType);
-            resource.addProperty(MCSE.accessType, accessResource);
+            resource.addProperty(LMCSE.accessType, accessResource);
 
-            Timestamp timeStamp = (Timestamp) curi.getData(Constants.URI_DATASET_READ_TIME);
-            String time = timeStamp.toString();
-            Literal timeLiteral = model.createTypedLiteral(time, XSD.dateTime.getURI());
+            String timeStamp = (String) curi.getData(Constants.URI_DATASET_READ_TIME);
+            Literal timeLiteral = model.createTypedLiteral(timeStamp, XSD.dateTime.getURI());
             resource.addProperty(DCTerms.created, timeLiteral);
 
             List<String> categories = (List<String>) curi.getData(Constants.URI_DATASET_CATEGORIES);
             if (categories.isEmpty())
             {
-                Resource nullCategory = model.createResource(MCSE.NullCategory);
+                Resource nullCategory = model.createResource(LMCSE.NullCategory);
+                nullCategory.addProperty(RDFS.label, "No category metadata was available for this resource");
                 resource.addProperty(DCTerms.subject, nullCategory);
             }
             else
             {
                 for (String category : categories)
                 {
-                    Resource categoryResource = createOrGetDynamicResource(model, MCSE.getURI(), category);
+                    Resource categoryResource = createOrGetDynamicResource(model, LMCSE.getURI(), category);
                     categoryResource.addProperty(RDFS.label, category);
                     resource.addProperty(DCTerms.subject, categoryResource);
                 }
@@ -488,7 +476,8 @@ public class McloudAnalyzer implements Analyzer
             }
             else
             {
-                Resource nullPublisher = model.createResource(MCSE.NullPublisher);
+                Resource nullPublisher = model.createResource(LMCSE.NullPublisher);
+                nullPublisher.addProperty(RDFS.label, "No publisher metadata was available for this resource");
                 resource.addProperty(DCTerms.publisher, nullPublisher);
             }
 
@@ -503,11 +492,12 @@ public class McloudAnalyzer implements Analyzer
             }
             else
             {
-                Resource nullLicense = model.createResource(MCSE.NullLicense);
+                Resource nullLicense = model.createResource(LMCSE.NullLicense);
+                nullLicense.addProperty(RDFS.label, "No license metadata was available for this resource");
                 resource.addProperty(CreativeCommons.license, nullLicense);
             }
 
-            resource.addProperty(MCSE.fileBasedLink, FileBasedSink.generateFileName(uri, false, false, fileExt));
+            resource.addProperty(LMCSE.fileBasedLink, FileBasedSink.generateFileName(uri, false, false, fileExt));
 
             return model;
         }
