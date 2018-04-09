@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink.impl.rdfSink;
+package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RDFSink implements Sink {
+public class SparqlBasedSink implements Sink {
 
     private static String strContentDatasetUriUpdate;
     private static String strContentDatasetUriQuery;
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(RDFSink.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
     @SuppressWarnings("unused")
     private static String strMetaDatasetUriQuery;
     @SuppressWarnings("unused")
@@ -34,7 +34,7 @@ public class RDFSink implements Sink {
     private static String datasetPrefix;
 
 
-    public RDFSink() {
+    public SparqlBasedSink() {
         String strIP = "jena";
         String portVar = "PORT";
         Map<String, String> env = System.getenv();

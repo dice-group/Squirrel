@@ -14,7 +14,7 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
@@ -231,8 +231,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         // send results to the Frontier
         crawlingActivity.finishActivity();
-        if (sink instanceof RDFSink) {
-            ((RDFSink) sink).addMetadata(crawlingActivity);
+        if (sink instanceof SparqlBasedSink) {
+            ((SparqlBasedSink) sink).addMetadata(crawlingActivity);
         } else {
             //TODO ADD METADATA IF SINK IS NOT RDFSINK
         }

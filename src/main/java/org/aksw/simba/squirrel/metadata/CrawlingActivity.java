@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.metadata;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.collections.map.HashedMap;
@@ -97,9 +97,9 @@ public class CrawlingActivity {
      */
     private void countTriples() {
         int sum = 0;
-        if (sink instanceof RDFSink) {
+        if (sink instanceof SparqlBasedSink) {
             for (CrawleableUri uri : mapUri.keySet()) {
-                sum += ((RDFSink) sink).getNumberOfTriplesForGraph(uri);
+                sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
             }
             numTriples = sum;
         } else {
