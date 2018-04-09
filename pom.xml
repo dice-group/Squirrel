@@ -113,7 +113,8 @@
             <artifactId>jena-sparql-api-core</artifactId>
             <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
-       
+        
+				 
 
         <!-- HTTP Requests -->
         <dependency>
