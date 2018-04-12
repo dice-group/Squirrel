@@ -8,7 +8,6 @@ import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
@@ -53,6 +52,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int MAX_ALPHANUM_PART_OF_TABLE_NAME = 30;
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
+    private long total_uris = 0;
 
     public static SqlBasedUriCollector create(Serializer serializer) {
         return create(serializer, "foundUris");
@@ -164,6 +164,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             synchronized (table) {
                 try {
                     table.addUri(newUri.getUri().toString(), serializer.serialize(newUri));
+                    total_uris++;
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 } catch (Exception e) {
@@ -191,6 +192,10 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         } else {
             LOGGER.info("Should close \"{}\" but it is not known. It will be ignored.", uri.getUri().toString());
         }
+    }
+    
+    public long getSize() {
+    	return total_uris;
     }
 
     @Override

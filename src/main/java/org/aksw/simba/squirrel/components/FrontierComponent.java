@@ -9,11 +9,13 @@ import java.util.concurrent.Semaphore;
 
 import org.aksw.simba.squirrel.configurator.RDBConfiguration;
 import org.aksw.simba.squirrel.configurator.SeedConfiguration;
+import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -59,8 +61,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             Integer rdbPort = rdbConfiguration.getRDBPort();
             queue = new RDBQueue(rdbHostName, rdbPort,serializer);
             ((RDBQueue) queue).open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-            ((RDBKnownUriFilter) knownUriFilter).open();
+            
+            WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
+            if(whiteListConfiguration != null) {
+                File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
+                knownUriFilter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
+                    rdbConfiguration.getRDBPort(), whitelistFile);
+                knownUriFilter.open();
+            }else {
+            	knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+                ((RDBKnownUriFilter) knownUriFilter).open();	
+            }
         } else {
             LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();

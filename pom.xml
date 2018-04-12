@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.8-SNAPSHOT</version>
+            <version>1.0.10</version>
         </dependency>
         <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq) -->
         <dependency>
@@ -113,6 +113,8 @@
             <artifactId>jena-sparql-api-core</artifactId>
             <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
+        
+				 
 
         <!-- HTTP Requests -->
         <dependency>

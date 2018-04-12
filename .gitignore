@@ -13,3 +13,4 @@ scenarios/1/worker*
 /foundUris.lck
 /foundUris.properties
 /foundUris.script
+/bin/
