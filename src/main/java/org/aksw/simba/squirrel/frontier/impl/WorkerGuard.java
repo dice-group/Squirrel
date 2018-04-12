@@ -20,7 +20,7 @@ public class WorkerGuard {
      * A map from {@link org.aksw.simba.squirrel.worker.Worker} id to {@link WorkerInfo} containing information about the
      * {@link org.aksw.simba.squirrel.worker.Worker}.
      */
-    private final Map<Integer, WorkerInfo> mapWorkerInfo = new HashMap<>();
+    private Map<Integer, WorkerInfo> mapWorkerInfo = new HashMap<>();
 
     /**
      * After this period of time (in seconds), a worker is considered to be dead if he has not sent
@@ -50,16 +50,18 @@ public class WorkerGuard {
             @Override
             public void run() {
                 List<Integer> lstIdsToBeRemoved = new ArrayList<>();
-                for (int idWorker : mapWorkerInfo.keySet()) {
+                Map<Integer, WorkerInfo> synchronizedMap = Collections.synchronizedMap(mapWorkerInfo);
 
-                    if (mapWorkerInfo.get(idWorker).getDateLastAlive() == null) {
+                for (int idWorker : synchronizedMap.keySet()) {
+
+                    if (synchronizedMap.get(idWorker).getDateLastAlive() == null) {
                         continue;
                     }
 
-                    boolean currentWorkerSendsAliveMessages = mapWorkerInfo.get(idWorker).workerSendsAliveMessages();
+                    boolean currentWorkerSendsAliveMessages = synchronizedMap.get(idWorker).workerSendsAliveMessages();
                     // if a worker does not alive messages in general he will not be removed
                     if (currentWorkerSendsAliveMessages) {
-                        long duration = new Date().getTime() - mapWorkerInfo.get(idWorker).getDateLastAlive().getTime();
+                        long duration = new Date().getTime() - synchronizedMap.get(idWorker).getDateLastAlive().getTime();
                         if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 10) {
                             // worker is dead
                             lstIdsToBeRemoved.add(idWorker);
@@ -69,12 +71,13 @@ public class WorkerGuard {
 
                 synchronized (this) {
                     lstIdsToBeRemoved.forEach(id -> {
-                        frontierComponent.informFrontierAboutDeadWorker(id, mapWorkerInfo.get(id).getUrisCrawling());
-                        mapWorkerInfo.remove(id);
+                        frontierComponent.informFrontierAboutDeadWorker(id, synchronizedMap.get(id).getUrisCrawling());
+                        synchronizedMap.remove(id);
                         numberOfDeadWorkers++;
                     });
 
                 }
+                mapWorkerInfo = synchronizedMap;
             }
         }, 0, TimeUnit.SECONDS.toMillis(TIME_WORKER_DEAD) / 2);
     }
@@ -86,13 +89,15 @@ public class WorkerGuard {
      */
     public void putNewTimestamp(int idOfWorker) {
         WorkerInfo workerInfo;
-        if (mapWorkerInfo.containsKey(idOfWorker)) {
-            workerInfo = mapWorkerInfo.get(idOfWorker);
+        Map<Integer, WorkerInfo> synchronizedMap = Collections.synchronizedMap(mapWorkerInfo);
+        if (synchronizedMap.containsKey(idOfWorker)) {
+            workerInfo = synchronizedMap.get(idOfWorker);
             workerInfo.setDateLastAlive(new Date());
         } else {
             workerInfo = new WorkerInfo(true, new ArrayList<>(), new Date());
         }
-        mapWorkerInfo.put(idOfWorker, workerInfo);
+        synchronizedMap.put(idOfWorker, workerInfo);
+        mapWorkerInfo = synchronizedMap;
     }
 
     /**
@@ -103,13 +108,15 @@ public class WorkerGuard {
      */
     public void putUrisForWorker(int idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
         WorkerInfo workerInfo;
-        if (mapWorkerInfo.containsKey(idOfWorker)) {
-            workerInfo = mapWorkerInfo.get(idOfWorker);
+        Map<Integer, WorkerInfo> synchronizedMap = Collections.synchronizedMap(mapWorkerInfo);
+        if (synchronizedMap.containsKey(idOfWorker)) {
+            workerInfo = synchronizedMap.get(idOfWorker);
             workerInfo.getUrisCrawling().addAll(lstUris);
         } else {
             workerInfo = new WorkerInfo(workerSendsAliveMessages, lstUris, new Date());
         }
-        mapWorkerInfo.put(idOfWorker, workerInfo);
+        synchronizedMap.put(idOfWorker, workerInfo);
+        mapWorkerInfo = synchronizedMap;
     }
 
     /**
@@ -119,14 +126,15 @@ public class WorkerGuard {
      * @param lstUrisToRemove The uris to be removed.
      */
     public void removeUrisForWorker(int idOfWorker, List<CrawleableUri> lstUrisToRemove) {
-
-        if (!mapWorkerInfo.containsKey(idOfWorker)) {
+        Map<Integer, WorkerInfo> synchronizedMap = Collections.synchronizedMap(mapWorkerInfo);
+        if (!synchronizedMap.containsKey(idOfWorker)) {
             throw new IllegalArgumentException("Illegal call. Worker with id " + idOfWorker + " should be contained in the info map.");
         }
-        if (mapWorkerInfo.get(idOfWorker).getUrisCrawling() == null || mapWorkerInfo.get(idOfWorker).getUrisCrawling().size() == 0) {
+        if (synchronizedMap.get(idOfWorker).getUrisCrawling() == null || synchronizedMap.get(idOfWorker).getUrisCrawling().size() == 0) {
             return;
         }
-        mapWorkerInfo.get(idOfWorker).getUrisCrawling().removeAll(lstUrisToRemove);
+        synchronizedMap.get(idOfWorker).getUrisCrawling().removeAll(lstUrisToRemove);
+        mapWorkerInfo = synchronizedMap;
     }
 
     /**
@@ -146,7 +154,7 @@ public class WorkerGuard {
      * @return the number of running workers.
      */
     public int getNumberOfLiveWorkers() {
-        return mapWorkerInfo.size();
+        return Collections.synchronizedMap(mapWorkerInfo).size();
     }
 
     /**
