@@ -58,6 +58,8 @@ public class FrontierImpl implements Frontier {
      */
     private boolean doesRecrawling;
 
+    Timer timer;
+
     /**
      * Constructor.
      *
@@ -91,6 +93,17 @@ public class FrontierImpl implements Frontier {
         this.queue.open();
         this.knownUriFilter.open();
         this.doesRecrawling = doesRecrawling;
+
+        if (doesRecrawling) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
+
+                }
+            }, 0, 500);
+        }
     }
 
     public UriQueue getQueue() {
