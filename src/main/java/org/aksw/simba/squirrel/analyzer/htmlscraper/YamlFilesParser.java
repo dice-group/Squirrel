@@ -36,6 +36,7 @@ public class YamlFilesParser {
 	
 	protected YamlFilesParser()
 			throws Exception {
+		
 		yfs = loadFiles(null);
 	}
 	
