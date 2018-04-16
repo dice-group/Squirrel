@@ -4,7 +4,9 @@ file_descriptor:
  search-result-page:
   regex: results/searchAction
   resources: 
-    "http://sindice.com/vocab/search#link": .mcloud__container h4 a 
+    "http://sindice.com/vocab/search#link":
+     - .mcloud__container h4 a
+     - .mcloud__pagination li a 
  download_page:
   regex: results/detail
   resources:
