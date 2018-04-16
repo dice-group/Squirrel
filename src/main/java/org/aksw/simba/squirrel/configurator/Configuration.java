@@ -40,7 +40,7 @@ public class Configuration {
 	public static long getEnvLong(String envVariableName, Logger logger) {
 		String toLong = getEnv(envVariableName, logger);
 		try {
-			return Long.parseLong(toLong);
+			return toLong != null ? Long.parseLong(toLong) : 0L;
 		} catch (Exception e) {
 			logger.error(envVariableName + " not found.", e);
 			return 0L;
