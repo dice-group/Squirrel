@@ -1,7 +1,9 @@
 package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +28,7 @@ public interface Frontier {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    public List<CrawleableUri> getNextUris();
+    public List<UriDatePair> getNextUris();
 
     /**
      * Add this URIs to the {@link Frontier}s internal queue if the internal
@@ -35,7 +37,7 @@ public interface Frontier {
      * @param uri
      *            the URI that should be added to the {@link Frontier}
      */
-    public void addNewUri(CrawleableUri uri);
+    public void addNewUri(CrawleableUri uri, Date dateToCrawl);
 
     /**
      * Adds the given list of URIs to the {@link Frontier}. It is like calling
@@ -44,7 +46,7 @@ public interface Frontier {
      * @param uris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void addNewUris(List<CrawleableUri> uris);
+    public void addNewUris(List<UriDatePair> uris);
 
     /**
      * This method should be called after a list of URIs have been requested
@@ -57,7 +59,7 @@ public interface Frontier {
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris);
+    public void crawlingDone(List<UriDatePair> crawledUris, List<UriDatePair> newUris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
@@ -69,6 +71,12 @@ public interface Frontier {
     public int getNumberOfPendingUris();
 
 
+    /**
+     * Indicates whether this instance does recrawling, which means that it keeps already crawled uriDatePairs, and crawls
+     * them again at a specified date.
+     *
+     * @return True iff recrawling is active.
+     */
     boolean doesRecrawling();
 
 }

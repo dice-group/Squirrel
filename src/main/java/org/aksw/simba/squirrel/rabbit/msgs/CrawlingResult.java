@@ -1,6 +1,6 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -10,26 +10,26 @@ public class CrawlingResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public List<CrawleableUri> crawledUris;
-    public List<CrawleableUri> newUris;
+    public List<UriDatePair> crawledUriDatePairs;
+    public List<UriDatePair> newUriDatePairs;
     public int idOfWorker;
 
-    public CrawlingResult(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris, int idOfWorker) {
-        this.newUris = (newUris == null) ? this.newUris = Collections.emptyList() : newUris;
-        this.crawledUris = crawledUris;
+    public CrawlingResult(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs, int idOfWorker) {
+        this.newUriDatePairs = (newUriDatePairs == null) ? this.newUriDatePairs = Collections.emptyList() : newUriDatePairs;
+        this.crawledUriDatePairs = crawledUriDatePairs;
         this.idOfWorker = idOfWorker;
     }
 
-    public CrawlingResult(List<CrawleableUri> crawledUris) {
-        this(crawledUris, Collections.emptyList(), -1);
+    public CrawlingResult(List<UriDatePair> crawledUriDatePairs) {
+        this(crawledUriDatePairs, Collections.emptyList(), -1);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((crawledUris == null) ? 0 : crawledUris.hashCode());
-        result = prime * result + ((newUris == null) ? 0 : newUris.hashCode());
+        result = prime * result + ((crawledUriDatePairs == null) ? 0 : crawledUriDatePairs.hashCode());
+        result = prime * result + ((newUriDatePairs == null) ? 0 : newUriDatePairs.hashCode());
         return result;
     }
 
@@ -42,15 +42,15 @@ public class CrawlingResult implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         CrawlingResult other = (CrawlingResult) obj;
-        if (crawledUris == null) {
-            if (other.crawledUris != null)
+        if (crawledUriDatePairs == null) {
+            if (other.crawledUriDatePairs != null)
                 return false;
-        } else if (!crawledUris.equals(other.crawledUris))
+        } else if (!crawledUriDatePairs.equals(other.crawledUriDatePairs))
             return false;
-        if (newUris == null) {
-            if (other.newUris != null)
+        if (newUriDatePairs == null) {
+            if (other.newUriDatePairs != null)
                 return false;
-        } else if (!newUris.equals(other.newUris))
+        } else if (!newUriDatePairs.equals(other.newUriDatePairs))
             return false;
         return true;
     }
@@ -58,10 +58,10 @@ public class CrawlingResult implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("CrawlingResult [crawledUris=");
-        builder.append(crawledUris);
-        builder.append(", newUris=");
-        builder.append(newUris);
+        builder.append("CrawlingResult [crawledUriDatePairs=");
+        builder.append(crawledUriDatePairs);
+        builder.append(", newUriDatePairs=");
+        builder.append(newUriDatePairs);
         builder.append("]");
         return builder.toString();
     }

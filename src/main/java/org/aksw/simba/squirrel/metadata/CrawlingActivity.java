@@ -36,7 +36,7 @@ public class CrawlingActivity {
      */
     private Date dateEnded;
     /**
-     * A mapping from uris to states indicating whether they have been crawled successfully.
+     * A mapping from uriDatePairs to states indicating whether they have been crawled successfully.
      */
     private Map<CrawleableUri, CrawlingURIState> mapUri;
     /**

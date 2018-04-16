@@ -13,6 +13,7 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -27,6 +28,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -205,11 +207,11 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void crawl(List<CrawleableUri> uris) {
-        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
+    public void crawl(List<UriDatePair> uris) {
+        CrawlingActivity crawlingActivity = new CrawlingActivity(UriDatePair.extractUrisFromPairs(uris), this, sink);
         // perform work
-        List<CrawleableUri> newUris = new ArrayList<CrawleableUri>();
-        for (CrawleableUri uri : uris) {
+        List<UriDatePair> newUris = new ArrayList<>();
+        for (CrawleableUri uri : UriDatePair.extractUrisFromPairs(uris)) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -228,7 +230,7 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         // classify URIs
-        for (CrawleableUri uri : newUris) {
+        for (CrawleableUri uri : UriDatePair.extractUrisFromPairs(newUris)) {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
@@ -242,7 +244,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+    public void performCrawling(CrawleableUri uri, List<UriDatePair> newUris) {
         // check robots.txt
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
@@ -292,22 +294,26 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {
-        List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
-        CrawleableUri uri;
+        List<UriDatePair> uriDatePairs = new ArrayList<>(10);
+
         while (uriIterator.hasNext()) {
             try {
-                uri = serializer.deserialize(uriIterator.next());
+                CrawleableUri uri = serializer.deserialize(uriIterator.next());
                 uriProcessor.recognizeUriType(uri);
-                uris.add(uri);
-                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(uris);
-                    uris.clear();
+
+                // TODO: find out date when to crawl uri again in some way
+                Date dateToCrawlUri = new Date();
+
+                uriDatePairs.add(new UriDatePair(uri, dateToCrawlUri));
+                if ((uriDatePairs.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    frontier.addNewUris(uriDatePairs);
+                    uriDatePairs.clear();
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        frontier.addNewUris(uris);
+        frontier.addNewUris(uriDatePairs);
     }
 
     @Override

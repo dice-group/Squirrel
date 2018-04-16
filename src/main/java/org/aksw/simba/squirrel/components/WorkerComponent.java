@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -104,7 +105,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public List<CrawleableUri> getNextUris() {
+    public List<UriDatePair> getNextUris() {
         UriSet set = null;
         try {
             byte[] response = client.request(uriSetRequest);
@@ -114,10 +115,10 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
         }
-        if ((set == null) || (set.uris == null) || (set.uris.size() == 0)) {
+        if ((set == null) || (set.uriDatePairs == null) || (set.uriDatePairs.size() == 0)) {
             return null;
         } else {
-            return set.uris;
+            return set.uriDatePairs;
         }
     }
 
@@ -128,23 +129,25 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
 
     @Override
-    public void addNewUri(CrawleableUri uri) {
-        addNewUris(Arrays.asList(uri));
+    public void addNewUri(CrawleableUri uri, Date dateToCrawl) {
+        List<UriDatePair> pairs = new ArrayList<>();
+        pairs.add(new UriDatePair(uri, dateToCrawl));
+        addNewUris(pairs);
     }
 
     @Override
-    public void addNewUris(List<CrawleableUri> uris) {
+    public void addNewUris(List<UriDatePair> pairs) {
         try {
-            sender.sendData(serializer.serialize(new UriSet(uris)));
+            sender.sendData(serializer.serialize(new UriSet(pairs)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUriDatePairs, newUriDatePairs, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
@@ -153,6 +156,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
+    }
+
+    @Override
+    public boolean doesRecrawling() {
+        return false;
     }
 
 }

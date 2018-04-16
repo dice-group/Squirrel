@@ -31,7 +31,7 @@ public interface UriQueue {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    public List<CrawleableUri> getNextUris();
+    public List<UriDatePair> getNextUris();
 
     /**
      * Close RDB connection, destroy the database.

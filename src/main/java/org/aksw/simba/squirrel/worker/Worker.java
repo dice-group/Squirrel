@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.worker;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface Worker extends Runnable {
      * @param uris
      *            the URIs that should be crawled
      */
-    public void crawl(List<CrawleableUri> uris);
+    public void crawl(List<UriDatePair> uris);
 
     /**
      * Crawls the given URI and adds new URIs that have been found while
@@ -25,7 +26,7 @@ public interface Worker extends Runnable {
      *            the new URIs that have been extracted will be added to this
      *            list.
      */
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
+    public void performCrawling(CrawleableUri uri, List<UriDatePair> newUris);
 
     /**
      * Gives the unique id of the worker.

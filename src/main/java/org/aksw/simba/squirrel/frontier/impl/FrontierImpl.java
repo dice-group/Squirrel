@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
@@ -14,10 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -55,6 +53,9 @@ public class FrontierImpl implements Frontier {
     protected GraphLogger graphLogger;
 
 
+    /**
+     * Indicates whether recrawling is active.
+     */
     private boolean doesRecrawling;
 
     /**
@@ -102,14 +103,14 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void addNewUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : uris) {
-            addNewUri(uri);
+    public void addNewUris(List<UriDatePair> pairs) {
+        for (UriDatePair pair : pairs) {
+            addNewUri(pair.getUri(), pair.getDateToCrawl());
         }
     }
 
     @Override
-    public void addNewUri(CrawleableUri uri) {
+    public void addNewUri(CrawleableUri uri, Date dateToCrawl) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
@@ -120,7 +121,12 @@ public class FrontierImpl implements Frontier {
                 LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
             }
             if (uri.getIpAddress() != null) {
-                queue.addUri(this.uriProcessor.recognizeUriType(uri));
+                if (doesRecrawling) {
+                    queue.addUri(this.uriProcessor.recognizeUriType(uri), dateToCrawl);
+                } else {
+                    queue.addUri(this.uriProcessor.recognizeUriType(uri));
+                }
+
             } else {
                 LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
             }
@@ -128,17 +134,21 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs) {
         // If there is a graph logger, log the data
         if (graphLogger != null) {
+            List<CrawleableUri> crawledUris = new ArrayList<>();
+            List<CrawleableUri> newUris = new ArrayList<>();
+            crawledUriDatePairs.forEach(pair -> crawledUris.add(pair.getUri()));
+            newUriDatePairs.forEach(pair -> newUris.add(pair.getUri()));
             graphLogger.log(crawledUris, newUris);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<InetAddress>();
             InetAddress ip;
-            for (CrawleableUri uri : crawledUris) {
-                ip = uri.getIpAddress();
+            for (UriDatePair pair : crawledUriDatePairs) {
+                ip = pair.getUri().getIpAddress();
                 if (ip != null) {
                     ips.add(ip);
                 }
@@ -149,15 +159,16 @@ public class FrontierImpl implements Frontier {
             }
         }
         // send list of crawled URIs to the knownUriFilter
-        for (CrawleableUri uri : crawledUris) {
-            knownUriFilter.add(uri);
+        for (UriDatePair pair : crawledUriDatePairs) {
+            knownUriFilter.add(pair.getUri());
         }
 
         // Add the new URIs to the Frontier
-        addNewUris(newUris);
+        addNewUris(newUriDatePairs);
 
-        // TODO: here we could add the old uris to the queue again, after adding the new ones!
-        // TODO: add them together with a timestamp when they should be recrawled
+        if (doesRecrawling) {
+            addNewUris(crawledUriDatePairs);
+        }
     }
 
     @Override

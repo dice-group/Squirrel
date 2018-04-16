@@ -47,7 +47,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     protected abstract void addToQueue(CrawleableUri uri, Date dateToCrawl);
 
     @Override
-    public List<CrawleableUri> getNextUris() {
+    public List<UriDatePair> getNextUris() {
         try {
             queueMutex.acquire();
         } catch (InterruptedException e) {
@@ -64,7 +64,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                 pair = iterator.next();
             } while (blockedIps.contains(pair.ip));
             blockedIps.add(pair.ip);
-            LOGGER.info("ip: " + pair.ip);
+
             return getUris(pair);
         } finally {
             queueMutex.release();

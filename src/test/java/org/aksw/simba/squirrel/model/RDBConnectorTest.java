@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.model;
 
 import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.ast.Map;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Connection;
@@ -204,7 +203,7 @@ public class RDBConnectorTest {
                 .getAll(ipAddressTypeKey)
                 .optArg("index", "ipAddressType")
                 .run(rdbConnector.connection);
-        // if URI exists update the uris list
+        // if URI exists update the uriDatePairs list
         if(cursor.hasNext()) {
             r.db("squirrel")
                     .table("queue")

@@ -40,7 +40,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ";
     protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
     protected static final String INSERT_URI_QUERY_PART_2 = "(uri,serial,data) VALUES(?,?,?)";
-    // protected static final String CLEAR_TABLE_QUERY = "DELETE FROM uris";
+    // protected static final String CLEAR_TABLE_QUERY = "DELETE FROM uriDatePairs";
     private static final String SELECT_TABLE_QUERY = "SELECT * FROM ? OFFSET ? FETCH NEXT ? ROWS ONLY ";
     private static final String TABLE_NAME_KEY = "URI_COLLECTOR_TABLE_NAME";
     private static final int MAX_ALPHANUM_PART_OF_TABLE_NAME = 30;

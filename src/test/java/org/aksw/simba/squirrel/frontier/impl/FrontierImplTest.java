@@ -97,7 +97,7 @@ public class FrontierImplTest {
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
 
-        assertEquals("Should be the same as uris array", assertion, nextUris);
+        assertEquals("Should be the same as uriDatePairs array", assertion, nextUris);
     }
 
     @Test

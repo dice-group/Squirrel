@@ -106,20 +106,20 @@ public class WorkerGuard {
     }
 
     /**
-     * Put the given uris for the given worker so that he can crawl them.
+     * Put the given uriDatePairs for the given worker so that he can crawl them.
      *
-     * @param idOfWorker The id of the worker for which to put the uris.
-     * @param lstUris    The uris to put.
+     * @param idOfWorker The id of the worker for which to put the uriDatePairs.
+     * @param lstUris    The uriDatePairs to put.
      */
     public void putUrisForWorker(int idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
         mapWorkerUris.put(new WorkerInfo(idOfWorker, workerSendsAliveMessages), lstUris);
     }
 
     /**
-     * Remove the given uris for the given worker.
+     * Remove the given uriDatePairs for the given worker.
      *
      * @param idOfWorker      The id of the worker.
-     * @param lstUrisToRemove The uris to be removed.
+     * @param lstUrisToRemove The uriDatePairs to be removed.
      */
     public void removeUrisForWorker(int idOfWorker, List<CrawleableUri> lstUrisToRemove) {
         List<CrawleableUri> lstAllUris = mapWorkerUris.get(idOfWorker);
