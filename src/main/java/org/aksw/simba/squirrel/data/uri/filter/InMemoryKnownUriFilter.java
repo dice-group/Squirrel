@@ -4,6 +4,8 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import com.carrotsearch.hppc.ObjectLongOpenHashMap;
 
+import java.util.List;
+
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
  *
@@ -55,6 +57,11 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void open() {}
+
+    @Override
+    public List<CrawleableUri> getOutdatedUris() {
+        return null;
+    }
 
     @Override
     public void close() {}

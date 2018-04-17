@@ -2,7 +2,6 @@ package org.aksw.simba.squirrel.queue;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +21,6 @@ public interface UriQueue {
      */
     public void addUri(CrawleableUri uri);
 
-    void addUri(CrawleableUri uri, Date dateToCrawl);
-
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
      * this method removes the URIs from the queue.
@@ -31,7 +28,7 @@ public interface UriQueue {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    public List<UriDatePair> getNextUris();
+    public List<CrawleableUri> getNextUris();
 
     /**
      * Close RDB connection, destroy the database.

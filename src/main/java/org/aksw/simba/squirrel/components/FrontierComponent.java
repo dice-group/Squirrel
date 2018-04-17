@@ -15,6 +15,7 @@ import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
@@ -88,7 +89,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -139,7 +140,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     try {
                         List<CrawleableUri> uris = frontier.getNextUris();
                         String size = uris == null ? "null" : Integer.toString(uris.size());
-                        LOGGER.info("Responding with a list of {} uriDatePairs.", size);
+                        LOGGER.info("Responding with a list of {} uris.", size);
                         handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                         UriSetRequest uriSetRequest = (UriSetRequest) object;
                         if (uris != null && uris.size() > 0) {
@@ -152,14 +153,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
                 }
             } else if (object instanceof UriSet) {
-                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uriDatePairs.size());
-                frontier.addNewUris(((UriSet) object).uriDatePairs);
+                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
+                frontier.addNewUris(((UriSet) object).uris);
             } else if (object instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
                     crawlingResult.crawledUriDatePairs);
-                frontier.crawlingDone(crawlingResult.crawledUriDatePairs, ((CrawlingResult) object).newUriDatePairs);
-                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUriDatePairs);
+                frontier.crawlingDone(crawlingResult.crawledUriDatePairs, crawlingResult.newUris);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, UriDatePair.extractUrisFromPairs(crawlingResult.crawledUriDatePairs));
 
             } else if (object instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) object;

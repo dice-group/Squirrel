@@ -105,7 +105,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public List<UriDatePair> getNextUris() {
+    public List<CrawleableUri> getNextUris() {
         UriSet set = null;
         try {
             byte[] response = client.request(uriSetRequest);
@@ -115,10 +115,10 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
         }
-        if ((set == null) || (set.uriDatePairs == null) || (set.uriDatePairs.size() == 0)) {
+        if ((set == null) || (set.uris == null) || (set.uris.size() == 0)) {
             return null;
         } else {
-            return set.uriDatePairs;
+            return set.uris;
         }
     }
 
@@ -129,14 +129,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
 
     @Override
-    public void addNewUri(CrawleableUri uri, Date dateToCrawl) {
-        List<UriDatePair> pairs = new ArrayList<>();
-        pairs.add(new UriDatePair(uri, dateToCrawl));
-        addNewUris(pairs);
+    public void addNewUri(CrawleableUri uri) {
+        addNewUris(Collections.singletonList(uri));
     }
 
     @Override
-    public void addNewUris(List<UriDatePair> pairs) {
+    public void addNewUris(List<CrawleableUri> pairs) {
         try {
             sender.sendData(serializer.serialize(new UriSet(pairs)));
         } catch (Exception e) {
@@ -145,7 +143,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUriDatePairs) {
         try {
             sender.sendData(serializer.serialize(new CrawlingResult(crawledUriDatePairs, newUriDatePairs, worker.getId())));
         } catch (Exception e) {

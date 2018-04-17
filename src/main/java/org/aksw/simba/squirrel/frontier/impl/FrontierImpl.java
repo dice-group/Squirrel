@@ -74,6 +74,11 @@ public class FrontierImpl implements Frontier {
         this(knownUriFilter, queue, null, doesRecrawling);
     }
 
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
+        this(knownUriFilter, queue, false);
+    }
+
+
     /**
      * Constructor.
      *
@@ -100,7 +105,7 @@ public class FrontierImpl implements Frontier {
                 @Override
                 public void run() {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
-
+                    urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
             }, 0, 500);
         }
@@ -116,14 +121,14 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void addNewUris(List<UriDatePair> pairs) {
-        for (UriDatePair pair : pairs) {
-            addNewUri(pair.getUri(), pair.getDateToCrawl());
+    public void addNewUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+            addNewUri(uri);
         }
     }
 
     @Override
-    public void addNewUri(CrawleableUri uri, Date dateToCrawl) {
+    public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
@@ -134,11 +139,7 @@ public class FrontierImpl implements Frontier {
                 LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
             }
             if (uri.getIpAddress() != null) {
-                if (doesRecrawling) {
-                    queue.addUri(this.uriProcessor.recognizeUriType(uri), dateToCrawl);
-                } else {
-                    queue.addUri(this.uriProcessor.recognizeUriType(uri));
-                }
+                queue.addUri(this.uriProcessor.recognizeUriType(uri));
 
             } else {
                 LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
@@ -147,14 +148,10 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUriDatePairs) {
         // If there is a graph logger, log the data
         if (graphLogger != null) {
-            List<CrawleableUri> crawledUris = new ArrayList<>();
-            List<CrawleableUri> newUris = new ArrayList<>();
-            crawledUriDatePairs.forEach(pair -> crawledUris.add(pair.getUri()));
-            newUriDatePairs.forEach(pair -> newUris.add(pair.getUri()));
-            graphLogger.log(crawledUris, newUris);
+            graphLogger.log(UriDatePair.extractUrisFromPairs(crawledUriDatePairs), newUriDatePairs);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
@@ -173,15 +170,11 @@ public class FrontierImpl implements Frontier {
         }
         // send list of crawled URIs to the knownUriFilter
         for (UriDatePair pair : crawledUriDatePairs) {
-            knownUriFilter.add(pair.getUri());
+            knownUriFilter.add(pair.getUri(), pair.getDateToCrawl());
         }
 
         // Add the new URIs to the Frontier
         addNewUris(newUriDatePairs);
-
-        if (doesRecrawling) {
-            addNewUris(crawledUriDatePairs);
-        }
     }
 
     @Override

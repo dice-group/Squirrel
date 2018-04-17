@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ivan on 8/18/16.
@@ -23,19 +26,42 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
     private RethinkDB r = RethinkDB.r;
 
+    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
+
     public RDBKnownUriFilter(String hostname, Integer port) {
         this.connector = new RDBConnector(hostname, port);
     }
 
     public void open() {
         this.connector.open();
-        if(!connector.squirrelDatabaseExists())
+        if (!connector.squirrelDatabaseExists())
             r.dbCreate("squirrel").run(this.connector.connection);
-        if(!knownUriFilterTableExists()) {
+        if (!knownUriFilterTableExists()) {
             r.db("squirrel").tableCreate("knownurifilter").run(this.connector.connection);
             r.db("squirrel").table("knownurifilter").indexCreate("uri").run(this.connector.connection);
             r.db("squirrel").table("knownurifilter").indexWait("uri").run(this.connector.connection);
         }
+    }
+
+    @Override
+    public List<CrawleableUri> getOutdatedUris() {
+        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
+
+        Cursor<String> cursor = r.db("squirrel")
+            .table("knownurifilter")
+            .filter(r.row(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()))
+            .g("uri")
+            .run(connector.connection);
+
+        while (cursor.hasNext()) {
+            try {
+                urisToRecrawl.add(new CrawleableUri(new URI(cursor.next())));
+            } catch (URISyntaxException e) {
+                LOGGER.warn(e.toString());
+            }
+        }
+        cursor.close();
+        return urisToRecrawl;
     }
 
     public boolean knownUriFilterTableExists() {
@@ -55,9 +81,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     @Override
     public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
         r.db("squirrel")
-                .table("knownurifilter")
+            .table("knownurifilter")
             .insert(convertURITimestampToRDB(uri, timestamp, nextCrawlTimestamp))
-                .run(connector.connection);
+            .run(connector.connection);
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
 
@@ -66,25 +92,25 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
         return r.hashMap("uri", uriPath.toString())
-                .with("ipAddress", ipAddress.toString())
-                .with("type", uriType.toString());
+            .with("ipAddress", ipAddress.toString())
+            .with("type", uriType.toString());
     }
 
     private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
-                .with("timestamp", timestamp);
+            .with("timestamp", new Tuple(timestamp, nextCrawlTimestamp));
     }
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         Cursor<Long> cursor = r.db("squirrel")
-                .table("knownurifilter")
-                .getAll(uri.getUri().toString())
-                .optArg("index", "uri")
-                .g("timestamp")
-                .run(connector.connection);
-        if(cursor.hasNext()) {
+            .table("knownurifilter")
+            .getAll(uri.getUri().toString())
+            .optArg("index", "uri")
+            .g("timestamp")
+            .run(connector.connection);
+        if (cursor.hasNext()) {
             LOGGER.debug("URI {} is not good", uri.toString());
             Long timestampRetrieved = cursor.next();
             cursor.close();
@@ -102,5 +128,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     public void purge() {
         r.db("squirrel").table("knownurifilter").delete().run(connector.connection);
+    }
+
+    private class Tuple {
+        long x, y;
+
+        Tuple(long x, long y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }

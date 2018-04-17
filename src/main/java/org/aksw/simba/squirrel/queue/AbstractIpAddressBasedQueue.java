@@ -23,14 +23,8 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private Semaphore queueMutex = new Semaphore(1);
     private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
 
-
     @Override
     public void addUri(CrawleableUri uri) {
-        addUri(uri, new Date());
-    }
-
-    @Override
-    public void addUri(CrawleableUri uri, Date dateToCrawl) {
         try {
             queueMutex.acquire();
         } catch (InterruptedException e) {
@@ -38,16 +32,16 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
             throw new IllegalStateException("Interrupted while waiting for mutex.", e);
         }
         try {
-            addToQueue(uri, dateToCrawl);
+            addToQueue(uri);
         } finally {
             queueMutex.release();
         }
     }
 
-    protected abstract void addToQueue(CrawleableUri uri, Date dateToCrawl);
+    protected abstract void addToQueue(CrawleableUri uri);
 
     @Override
-    public List<UriDatePair> getNextUris() {
+    public List<CrawleableUri> getNextUris() {
         try {
             queueMutex.acquire();
         } catch (InterruptedException e) {
@@ -64,7 +58,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                 pair = iterator.next();
             } while (blockedIps.contains(pair.ip));
             blockedIps.add(pair.ip);
-
+            LOGGER.info("ip: " + pair.ip);
             return getUris(pair);
         } finally {
             queueMutex.release();
@@ -84,4 +78,6 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     public int getNumberOfBlockedIps() {
         return blockedIps.size();
     }
+
+    public abstract Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
 }

@@ -37,5 +37,10 @@ public interface KnownUriFilter extends UriFilter {
      */
     public void open();
 
+    /**
+     * Returns all {@link CrawleableUri}s which have to be recrawled. This means their time to next crawl has passed.
+     *
+     * @return The outdated {@link CrawleableUri}s.
+     */
     public List<CrawleableUri> getOutdatedUris();
 }

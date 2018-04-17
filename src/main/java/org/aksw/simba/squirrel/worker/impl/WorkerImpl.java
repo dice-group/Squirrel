@@ -15,8 +15,8 @@ import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.robots.RobotsManager;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
@@ -28,7 +28,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -73,11 +72,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            Serializer for serializing and deserializing URIs.
      *
      * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
-     *             instead.
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, boolean sendAliveMessages) {
@@ -121,11 +115,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            The UriCollector implementation used by this worker.
      *
      * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, Boolean)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, Boolean)}
-     *             instead.
+     *
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
@@ -207,11 +197,12 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void crawl(List<UriDatePair> uris) {
-        CrawlingActivity crawlingActivity = new CrawlingActivity(UriDatePair.extractUrisFromPairs(uris), this, sink);
+    public void crawl(List<CrawleableUri> uris) {
+        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
-        List<UriDatePair> newUris = new ArrayList<>();
-        for (CrawleableUri uri : UriDatePair.extractUrisFromPairs(uris)) {
+        List<CrawleableUri> newUris = new ArrayList<>();
+        List<UriDatePair> crawledPairs = new ArrayList<>();
+        for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -220,7 +211,8 @@ public class WorkerImpl implements Worker, Closeable {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    performCrawling(uri, newUris);
+                    long timeStamp = performCrawling(uri, newUris);
+                    crawledPairs.add(new UriDatePair(uri, timeStamp));
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -230,7 +222,7 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         // classify URIs
-        for (CrawleableUri uri : UriDatePair.extractUrisFromPairs(newUris)) {
+        for (CrawleableUri uri : newUris) {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
@@ -240,13 +232,14 @@ public class WorkerImpl implements Worker, Closeable {
         } else {
             //TODO ADD METADATA IF SINK IS NOT RDFSINK
         }
-        frontier.crawlingDone(uris, newUris);
+        frontier.crawlingDone(crawledPairs, newUris);
     }
 
     @Override
-    public void performCrawling(CrawleableUri uri, List<UriDatePair> newUris) {
+    public long performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         Integer count = 0;
+        long timeStampToCrawlAgain = -1;
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
 
@@ -281,6 +274,7 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
+        return timeStampToCrawlAgain;
     }
 
     @Override
@@ -294,26 +288,22 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     public void sendNewUris(Iterator<byte[]> uriIterator) {
-        List<UriDatePair> uriDatePairs = new ArrayList<>(10);
-
+        List<CrawleableUri> uris = new ArrayList<>(10);
+        CrawleableUri uri;
         while (uriIterator.hasNext()) {
             try {
-                CrawleableUri uri = serializer.deserialize(uriIterator.next());
+                uri = serializer.deserialize(uriIterator.next());
                 uriProcessor.recognizeUriType(uri);
-
-                // TODO: find out date when to crawl uri again in some way
-                Date dateToCrawlUri = new Date();
-
-                uriDatePairs.add(new UriDatePair(uri, dateToCrawlUri));
-                if ((uriDatePairs.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(uriDatePairs);
-                    uriDatePairs.clear();
+                uris.add(uri);
+                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    frontier.addNewUris(uris);
+                    uris.clear();
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        frontier.addNewUris(uriDatePairs);
+        frontier.addNewUris(uris);
     }
 
     @Override

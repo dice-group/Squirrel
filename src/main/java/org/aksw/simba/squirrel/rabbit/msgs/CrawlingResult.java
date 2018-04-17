@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.queue.UriDatePair;
 
 import java.io.Serializable;
@@ -11,11 +12,11 @@ public class CrawlingResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public List<UriDatePair> crawledUriDatePairs;
-    public List<UriDatePair> newUriDatePairs;
+    public List<CrawleableUri> newUris;
     public int idOfWorker;
 
-    public CrawlingResult(List<UriDatePair> crawledUriDatePairs, List<UriDatePair> newUriDatePairs, int idOfWorker) {
-        this.newUriDatePairs = (newUriDatePairs == null) ? this.newUriDatePairs = Collections.emptyList() : newUriDatePairs;
+    public CrawlingResult(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUris, int idOfWorker) {
+        this.newUris = (newUris == null) ? this.newUris = Collections.emptyList() : newUris;
         this.crawledUriDatePairs = crawledUriDatePairs;
         this.idOfWorker = idOfWorker;
     }
@@ -29,7 +30,7 @@ public class CrawlingResult implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((crawledUriDatePairs == null) ? 0 : crawledUriDatePairs.hashCode());
-        result = prime * result + ((newUriDatePairs == null) ? 0 : newUriDatePairs.hashCode());
+        result = prime * result + ((newUris == null) ? 0 : newUris.hashCode());
         return result;
     }
 
@@ -47,10 +48,10 @@ public class CrawlingResult implements Serializable {
                 return false;
         } else if (!crawledUriDatePairs.equals(other.crawledUriDatePairs))
             return false;
-        if (newUriDatePairs == null) {
-            if (other.newUriDatePairs != null)
+        if (newUris == null) {
+            if (other.newUris != null)
                 return false;
-        } else if (!newUriDatePairs.equals(other.newUriDatePairs))
+        } else if (!newUris.equals(other.newUris))
             return false;
         return true;
     }
@@ -60,8 +61,8 @@ public class CrawlingResult implements Serializable {
         StringBuilder builder = new StringBuilder();
         builder.append("CrawlingResult [crawledUriDatePairs=");
         builder.append(crawledUriDatePairs);
-        builder.append(", newUriDatePairs=");
-        builder.append(newUriDatePairs);
+        builder.append(", newUris=");
+        builder.append(newUris);
         builder.append("]");
         return builder.toString();
     }

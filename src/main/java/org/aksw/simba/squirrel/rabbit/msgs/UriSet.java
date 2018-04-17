@@ -1,6 +1,6 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -10,21 +10,21 @@ public class UriSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public List<UriDatePair> uriDatePairs;
+    public List<CrawleableUri> uris;
 
-    public UriSet(List<UriDatePair> uriDatePairs) {
-        this.uriDatePairs = (uriDatePairs == null) ? this.uriDatePairs = Collections.emptyList() : uriDatePairs;
+    public UriSet(List<CrawleableUri> uris) {
+        this.uris = (uris == null) ? this.uris = Collections.emptyList() : uris;
     }
 
     public UriSet() {
-        this.uriDatePairs = Collections.emptyList();
+        this.uris = Collections.emptyList();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((uriDatePairs == null) ? 0 : uriDatePairs.hashCode());
+        result = prime * result + ((uris == null) ? 0 : uris.hashCode());
         return result;
     }
 
@@ -37,10 +37,10 @@ public class UriSet implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         UriSet other = (UriSet) obj;
-        if (uriDatePairs == null) {
-            if (other.uriDatePairs != null)
+        if (uris == null) {
+            if (other.uris != null)
                 return false;
-        } else if (!uriDatePairs.equals(other.uriDatePairs))
+        } else if (!uris.equals(other.uris))
             return false;
         return true;
     }
@@ -48,8 +48,8 @@ public class UriSet implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("UriSet [uriDatePairs=");
-        builder.append(uriDatePairs);
+        builder.append("UriSet [uris=");
+        builder.append(uris);
         builder.append("]");
         return builder.toString();
     }

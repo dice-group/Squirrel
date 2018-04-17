@@ -14,8 +14,8 @@ import java.util.Set;
 public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFrontier {
 
 
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        super(knownUriFilter, queue);
+    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
+        super(knownUriFilter, queue, doesRecrawling);
     }
 
     @Override
