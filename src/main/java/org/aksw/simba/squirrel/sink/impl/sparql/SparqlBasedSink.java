@@ -16,27 +16,29 @@ import java.util.Map;
 
 public class SparqlBasedSink implements Sink {
 
+    public static final String JENA_PORTS_KEY = "JENA_PORT";
+    public static final String JENA_CONTAINER_NAME_KEY = "JENA_HOST_NAME";
     private static String strContentDatasetUriUpdate;
     private static String strContentDatasetUriQuery;
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
-    @SuppressWarnings("unused")
-    private static String strMetaDatasetUriQuery;
-    @SuppressWarnings("unused")
-    private static String strMetaDatasetUriUpdate;
-    private static String datasetPrefix;
 
 
-    public SparqlBasedSink() {
-        String strIP = "jena";
-        String portVar = "PORT";
+    public SparqlBasedSink() throws Exception {
         Map<String, String> env = System.getenv();
-        String port = "3030";
-        datasetPrefix = "http://" + strIP + ":" + port + "/";
-        strContentDatasetUriUpdate = datasetPrefix + "ContentSet/update";
-        strMetaDatasetUriUpdate = datasetPrefix + "MetaData/update";
-        strContentDatasetUriQuery = datasetPrefix + "ContentSet/query";
-        strMetaDatasetUriQuery = datasetPrefix + "MetaData/query";
+        String containerName = null;
+        String port = null;
+        if (env.containsKey(JENA_CONTAINER_NAME_KEY) || env.containsKey(JENA_PORTS_KEY)) {
+            containerName = env.get(JENA_CONTAINER_NAME_KEY);
+            port = env.get(JENA_PORTS_KEY);
+        } else {
+            String msg = "Couldn't get " + JENA_CONTAINER_NAME_KEY + " or " + JENA_PORTS_KEY + " from the environment.";
+            throw new Exception(msg);
+        }
+
+        String datasetPrefix = "http://" + containerName + ":" + port + "/ContentSet/";
+        strContentDatasetUriUpdate = datasetPrefix + "update";
+        strContentDatasetUriQuery = datasetPrefix + "query";
 
     }
 
