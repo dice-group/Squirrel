@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -44,10 +43,9 @@ public class SparqlBasedSink implements Sink {
         String datasetPrefix = "http://" + containerName + ":" + port + "/ContentSet/";
         strContentDatasetUriUpdate = datasetPrefix + "update";
         strContentDatasetUriQuery = datasetPrefix + "query";
-
     }
 
-    public void addMetadata(final CrawlingActivity crawlingActivity) {
+    public void addMetadata() {
         throw new UnsupportedOperationException();
     }
 
