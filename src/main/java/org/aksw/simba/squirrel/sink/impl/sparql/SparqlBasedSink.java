@@ -12,14 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class SparqlBasedSink implements Sink {
 
     public static final String JENA_PORTS_KEY = "JENA_PORT";
     public static final String JENA_CONTAINER_NAME_KEY = "JENA_HOST_NAME";
+    private static final int SENDING_INTERVAL_BUFFERED_LIST = 100;
     private static String strContentDatasetUriUpdate;
     private static String strContentDatasetUriQuery;
+    private List<Triple> lstBufferedTriples;
+
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
@@ -48,19 +53,31 @@ public class SparqlBasedSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, triple, false));
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strContentDatasetUriUpdate);
-        proc.execute();
+        lstBufferedTriples.add(triple);
+        if (lstBufferedTriples.size() >= SENDING_INTERVAL_BUFFERED_LIST) {
+            sendAllTriplesToDB(uri);
+        }
     }
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
+        lstBufferedTriples = new ArrayList<>(SENDING_INTERVAL_BUFFERED_LIST);
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
+        if (lstBufferedTriples.size() != 0) {
+            sendAllTriplesToDB(uri);
+        }
+        lstBufferedTriples = null;
     }
 
+    private void sendAllTriplesToDB(CrawleableUri uri) {
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, lstBufferedTriples));
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strContentDatasetUriUpdate);
+        proc.execute();
+        lstBufferedTriples.clear();
+    }
     @Override
     public void addData(CrawleableUri uri, InputStream stream) {
     }

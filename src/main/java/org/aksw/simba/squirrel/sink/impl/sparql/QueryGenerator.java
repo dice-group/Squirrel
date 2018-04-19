@@ -7,6 +7,8 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * This class is used to provides templates for basic SPARQL commands needed in this project.
  */
@@ -27,20 +29,15 @@ public class QueryGenerator {
      * Return an Add Query for the given graph id and triple.
      *
      * @param graphIdentifier the given graph id.
-     * @param triple          The given triple.
+     * @param triples         The given triple.
      * @return The generated query.
      */
-    public String getAddQuery(String graphIdentifier, Triple triple, boolean isMetaData) {
+    public String getAddQuery(String graphIdentifier, List<Triple> triples) {
         String strQuery = "";
-        if (isMetaData) {
-            strQuery += "prefix prov: <http://www.w3.org/ns/prov-o/> ";
-            strQuery += "prefix sq: <https://w3id.org/squirrel/> ";
-        }
+
         strQuery += "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
-        if (!isMetaData) {
-            strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
-        } else {
-            strQuery += "<" + triple.getSubject().getName() + "> " + triple.getPredicate().getName() + " <" + triple.getObject().getName() + "> ; ";
+        for (Triple triple : triples) {
+            strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> . ";
         }
         strQuery += "} }";
         return strQuery;
@@ -48,26 +45,30 @@ public class QueryGenerator {
 
     /**
      * Return an Add Query for a given uri and a triple.
-     * @param uri The given Uri.
-     * @param triple The given triple.
+     *
+     * @param uri     The given Uri.
+     * @param triples The given triple.
      * @return The generated query.
      */
-    public String getAddQuery(CrawleableUri uri, Triple triple, boolean isMetaData) {
-        return getAddQuery(uri.getUri().toString(), triple, isMetaData);
+    public String getAddQuery(CrawleableUri uri, List<Triple> triples) {
+        return getAddQuery(uri.getUri().toString(), triples);
     }
 
     /**
      * Return a select all query for a given uri.
+     *
      * @param uri The given uri.
      * @return The generated query.
      */
+    @SuppressWarnings("unused")
     public Query getSelectAllQuery(CrawleableUri uri) {
         return getSelectQuery(uri, null, true);
     }
 
     /**
      * Return a select query for a given uri and triple.
-     * @param uri The given uri.
+     *
+     * @param uri    The given uri.
      * @param triple The given triple.
      * @return The generated query.
      */
