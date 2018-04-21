@@ -79,10 +79,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     }
 
     @Override
-    public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
+    public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
         r.db("squirrel")
             .table("knownurifilter")
-            .insert(convertURITimestampToRDB(uri, timestamp, nextCrawlTimestamp))
+            .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp))
             .run(connector.connection);
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }

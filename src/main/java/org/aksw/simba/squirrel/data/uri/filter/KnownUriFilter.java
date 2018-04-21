@@ -23,9 +23,10 @@ public interface KnownUriFilter extends UriFilter {
      * Adds the given URI to the list of already known URIs together with the the time at which it has been crawled.
      *
      * @param uri       the URI that should be added to the list.
-     * @param timestamp the time at which the given URI has eben crawled.
+     * @param lastCrawlTimestamp the time at which the given URI has eben crawled.
+     * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
-    public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp);
+    public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
      * Close RDB connection, destroy the database.

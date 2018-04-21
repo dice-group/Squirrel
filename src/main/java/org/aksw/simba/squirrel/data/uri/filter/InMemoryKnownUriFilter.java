@@ -37,8 +37,8 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     }
 
     @Override
-    public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
-        uris.put(uri, timestamp);
+    public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
+        uris.put(uri, lastCrawlTimestamp);
     }
 
     @Override
@@ -65,13 +65,4 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void close() {}
-
-    private class Tuple {
-        long x, y;
-
-        Tuple(long x, long y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
 }
