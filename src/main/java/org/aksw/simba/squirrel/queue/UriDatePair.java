@@ -2,18 +2,19 @@ package org.aksw.simba.squirrel.queue;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UriDatePair {
+public class UriDatePair implements Serializable {
 
     private CrawleableUri uri;
 
-    private long dateToCrawl;
+    private long timestampNextCrawl;
 
-    public UriDatePair(CrawleableUri uri, long dateToCrawl) {
+    public UriDatePair(CrawleableUri uri, long timestampNextCrawl) {
         this.uri = uri;
-        this.dateToCrawl = dateToCrawl;
+        this.timestampNextCrawl = timestampNextCrawl;
     }
 
     public static List<CrawleableUri> extractUrisFromPairs(List<UriDatePair> pairs) {
@@ -26,7 +27,7 @@ public class UriDatePair {
         return uri;
     }
 
-    public long getDateToCrawl() {
-        return dateToCrawl;
+    public long getTimestampNextCrawl() {
+        return timestampNextCrawl;
     }
 }

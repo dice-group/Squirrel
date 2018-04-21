@@ -78,4 +78,6 @@ public interface Frontier {
      */
     boolean doesRecrawling();
 
+    void shutdown();
+
 }

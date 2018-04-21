@@ -6,7 +6,8 @@ services:
 #    volumes:
 #      - ./scenarios/1/rethinkdb:/data
     ports:
-      - "28015:28015"
+      - "8080:8080"
+    command: rethinkdb --bind all
 
   # message bus
   rabbit:

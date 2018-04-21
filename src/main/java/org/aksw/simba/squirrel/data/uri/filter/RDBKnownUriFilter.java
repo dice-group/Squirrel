@@ -45,14 +45,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public List<CrawleableUri> getOutdatedUris() {
-        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
-
         Cursor<String> cursor = r.db("squirrel")
             .table("knownurifilter")
+            .optArg("index", "uri")
             .filter(r.row(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()))
             .g("uri")
             .run(connector.connection);
 
+        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
         while (cursor.hasNext()) {
             try {
                 urisToRecrawl.add(new CrawleableUri(new URI(cursor.next())));
@@ -130,7 +130,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         r.db("squirrel").table("knownurifilter").delete().run(connector.connection);
     }
 
-    private class Tuple {
+    public class Tuple {
         long x, y;
 
         Tuple(long x, long y) {

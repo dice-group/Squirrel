@@ -58,7 +58,10 @@ public class FrontierImpl implements Frontier {
      */
     private boolean doesRecrawling;
 
-    Timer timer;
+    /**
+     * The timer that schedules the recrawling.
+     */
+    Timer timerRecrawling;
 
     /**
      * Constructor.
@@ -100,8 +103,8 @@ public class FrontierImpl implements Frontier {
         this.doesRecrawling = doesRecrawling;
 
         if (doesRecrawling) {
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
+            timerRecrawling = new Timer();
+            timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
@@ -148,10 +151,10 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUriDatePairs) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUris) {
         // If there is a graph logger, log the data
         if (graphLogger != null) {
-            graphLogger.log(UriDatePair.extractUrisFromPairs(crawledUriDatePairs), newUriDatePairs);
+            graphLogger.log(UriDatePair.extractUrisFromPairs(crawledUriDatePairs), newUris);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
@@ -170,11 +173,11 @@ public class FrontierImpl implements Frontier {
         }
         // send list of crawled URIs to the knownUriFilter
         for (UriDatePair pair : crawledUriDatePairs) {
-            knownUriFilter.add(pair.getUri(), pair.getDateToCrawl());
+            knownUriFilter.add(pair.getUri(), pair.getTimestampNextCrawl());
         }
 
         // Add the new URIs to the Frontier
-        addNewUris(newUriDatePairs);
+        addNewUris(newUris);
     }
 
     @Override
@@ -189,6 +192,11 @@ public class FrontierImpl implements Frontier {
     @Override
     public boolean doesRecrawling() {
         return doesRecrawling;
+    }
+
+    @Override
+    public void shutdown() {
+        timerRecrawling.cancel();
     }
 
 }

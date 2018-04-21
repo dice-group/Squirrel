@@ -116,6 +116,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             ((Closeable) knownUriFilter).close();
         }
         workerGuard.shutdown();
+        frontier.shutdown();
         super.close();
     }
 
@@ -158,7 +159,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (object instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                    crawlingResult.crawledUriDatePairs);
+                    UriDatePair.extractUrisFromPairs(crawlingResult.crawledUriDatePairs));
                 frontier.crawlingDone(crawlingResult.crawledUriDatePairs, crawlingResult.newUris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, UriDatePair.extractUrisFromPairs(crawlingResult.crawledUriDatePairs));
 
