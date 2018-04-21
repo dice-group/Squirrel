@@ -78,6 +78,9 @@ public interface Frontier {
      */
     boolean doesRecrawling();
 
+    /**
+     * Close everything connected to this frontier (e.g. timers).
+     */
     void shutdown();
 
 }

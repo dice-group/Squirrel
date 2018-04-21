@@ -240,6 +240,7 @@ public class WorkerImpl implements Worker, Closeable {
         // check robots.txt
         Integer count = 0;
         long timeStampToCrawlAgain = -1;
+        //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
 
