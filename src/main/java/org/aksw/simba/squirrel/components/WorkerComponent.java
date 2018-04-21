@@ -133,18 +133,18 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void addNewUris(List<CrawleableUri> pairs) {
+    public void addNewUris(List<CrawleableUri> uris) {
         try {
-            sender.sendData(serializer.serialize(new UriSet(pairs)));
+            sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
     }
 
     @Override
-    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUriDatePairs) {
+    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUriDatePairs, newUriDatePairs, worker.getId())));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUriDatePairs, newUris, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
