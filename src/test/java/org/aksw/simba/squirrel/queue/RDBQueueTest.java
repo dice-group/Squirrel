@@ -1,8 +1,15 @@
 package org.aksw.simba.squirrel.queue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.exc.ReqlDriverError;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Connection;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,17 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.rethinkdb.model.MapObject;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueueTest {
@@ -118,7 +115,7 @@ public class RDBQueueTest {
         rdbQueue.open();
         List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(0));
         assertFalse(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
-        rdbQueue.addToQueue(uris.get(0), dateToCrawl);
+        rdbQueue.addToQueue(uris.get(0));
         assertTrue(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
         rdbQueue.close();
     }
@@ -129,7 +126,7 @@ public class RDBQueueTest {
         rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri, dateToCrawl);
+            rdbQueue.addToQueue(uri);
         }
         assertEquals(3, rdbQueue.length());
         rdbQueue.purge();
@@ -153,7 +150,7 @@ public class RDBQueueTest {
     public void addToQueue() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri, dateToCrawl);
+            rdbQueue.addToQueue(uri);
         }
         assertEquals(3, rdbQueue.length());
         rdbQueue.close();
@@ -173,7 +170,7 @@ public class RDBQueueTest {
     public void getIterator() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri, dateToCrawl);
+            rdbQueue.addToQueue(uri);
         }
         Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
         while (iter.hasNext()) {
@@ -187,7 +184,7 @@ public class RDBQueueTest {
     public void getUris() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri, dateToCrawl);
+            rdbQueue.addToQueue(uri);
         }
         Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
         while (iter.hasNext()) {
