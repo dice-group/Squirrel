@@ -19,6 +19,7 @@ import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
@@ -66,30 +67,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                                         FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
         UriCollector collector = SqlBasedUriCollector.create(serializer);
 
-        Sink sink = new FileBasedSink(new File(outputFolder), true);
+        Sink sink = new SparqlBasedSink();
         worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
                 outputFolder + File.separator + "log");
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log");
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
-
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
-                } catch (IOException e) {
-                    LOGGER.warn(e.toString());
-                }
-            }
-        }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
-
         LOGGER.info("Worker initialized.");
     }
 
