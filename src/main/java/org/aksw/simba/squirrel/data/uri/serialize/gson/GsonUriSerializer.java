@@ -1,19 +1,5 @@
 package org.aksw.simba.squirrel.data.uri.serialize.gson;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.aksw.simba.squirrel.Constants;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.carrotsearch.hppc.ByteArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +7,19 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A serializer that uses {@link Gson} to serialize URIs. Kept for backwards

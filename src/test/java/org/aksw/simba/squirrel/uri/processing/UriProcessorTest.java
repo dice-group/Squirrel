@@ -1,13 +1,12 @@
 package org.aksw.simba.squirrel.uri.processing;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-
+import junit.framework.TestCase;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 
-import junit.framework.TestCase;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 
 /**
  * @author Ivan Ermilov (iermilov@informatik.uni-leipzig.de)

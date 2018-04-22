@@ -26,6 +26,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private Semaphore queueMutex = new Semaphore(1);
     private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
 
+
     @Override
     public void addUri(CrawleableUri uri) {
         try {
@@ -61,7 +62,6 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                 pair = iterator.next();
             } while (blockedIps.contains(pair.ip));
             blockedIps.add(pair.ip);
-            LOGGER.info("ip: " + pair.ip);
             return getUris(pair);
         } finally {
             queueMutex.release();
