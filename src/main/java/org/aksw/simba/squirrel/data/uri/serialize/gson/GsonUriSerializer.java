@@ -1,12 +1,12 @@
 package org.aksw.simba.squirrel.data.uri.serialize.gson;
 
-import com.carrotsearch.hppc.ByteArrayList;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -14,12 +14,13 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import com.carrotsearch.hppc.ByteArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
 /**
  * A serializer that uses {@link Gson} to serialize URIs. Kept for backwards
@@ -131,31 +132,31 @@ public class GsonUriSerializer implements Serializer {
             while (in.peek() != JsonToken.END_OBJECT) {
                 key = in.nextName();
                 switch (key) {
-                    case URI_KEY: {
-                        uri = in.nextString();
-                        break;
+                case URI_KEY: {
+                    uri = in.nextString();
+                    break;
+                }
+                case URI_TYPE_KEY: {
+                    type = UriType.valueOf(in.nextString());
+                    break;
+                }
+                case ADDRESS_KEY: {
+                    inetAddress = readInetAddress(in);
+                    break;
+                }
+                case DATA_KEY: {
+                    in.beginArray();
+                    while (in.hasNext()) {
+                        readDataObject(in, data);
                     }
-                    case URI_TYPE_KEY: {
-                        type = UriType.valueOf(in.nextString());
-                        break;
-                    }
-                    case ADDRESS_KEY: {
-                        inetAddress = readInetAddress(in);
-                        break;
-                    }
-                    case DATA_KEY: {
-                        in.beginArray();
-                        while (in.hasNext()) {
-                            readDataObject(in, data);
-                        }
-                        in.endArray();
-                        break;
-                    }
-                    default: {
-                        LOGGER.error(
+                    in.endArray();
+                    break;
+                }
+                default: {
+                    LOGGER.error(
                             "Got an unknown attribute name \"{}\" while parsing an CrawleableUri object. It will be ignored.",
                             key);
-                    }
+                }
                 }
             }
             in.endObject();

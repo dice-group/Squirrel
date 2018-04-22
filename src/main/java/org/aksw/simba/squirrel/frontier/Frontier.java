@@ -1,8 +1,8 @@
 package org.aksw.simba.squirrel.frontier;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 import java.util.List;
+
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 /**
  * A Frontier is a central class of the crawler managing a queue of URIs that
@@ -67,13 +67,4 @@ public interface Frontier {
      * @return the number of pending URIs.
      */
     public int getNumberOfPendingUris();
-
-    /**
-     * The frontier gets the information that some worker has died and he has to react somehow.
-     *
-     * @param idOfWorker        The id of the dead {@link org.aksw.simba.squirrel.worker.Worker}.
-     * @param lstUrisToReassign A list of {@link CrawleableUri} that should have been handeled by the
-     *                          dead worker, but was not due to his sudden death.
-     */
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign);
 }

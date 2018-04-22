@@ -1,8 +1,7 @@
 package org.aksw.simba.squirrel.rabbit;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.QueueingConsumer.Delivery;
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataHandler;
@@ -11,7 +10,9 @@ import org.hobbit.core.rabbit.RabbitQueueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.QueueingConsumer.Delivery;
 
 public class RPCServer extends DataReceiverImpl implements ResponseHandler {
 
@@ -66,7 +67,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
                 String correlationId = delivery.getProperties().getCorrelationId();
                 if ((replyTo != null) && (correlationId != null)) {
                     ((RespondingDataHandler) getDataHandler()).handleData(delivery.getBody(), responseHandler, replyTo,
-                        correlationId);
+                            correlationId);
                 } else {
                     getDataHandler().handleData(delivery.getBody());
                 }
