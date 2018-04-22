@@ -1,12 +1,13 @@
 package org.aksw.simba.squirrel.uri.processing;
 
-import junit.framework.TestCase;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.UriType;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
+
+import junit.framework.TestCase;
 
 /**
  * @author Ivan Ermilov (iermilov@informatik.uni-leipzig.de)
@@ -26,11 +27,11 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://xmlns.com/foaf/spec/index.rdf");
 		CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DUMP);
 	}
 
-    /**
+	/**
 	 * Uri with .n3 extension should be recognized as UriType.DUMP
 	 * @throws URISyntaxException
 	 */
@@ -38,7 +39,7 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://quebec.bio2rdf.org/download/data/chebi/chebi.n3.gz");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DUMP);
 	}
 
@@ -50,9 +51,9 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://spcdata.digitpa.gov.it/data/ipa.nt");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DUMP);
-    }
+	}
 
 	/**
 	 * Uri with .tar extension should be recognized as UriType.DUMP
@@ -64,7 +65,7 @@ public class UriProcessorTest extends TestCase {
 	    // http://aemet.linkeddata.es/source/rdf/data.zip
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DUMP);
 	}
 
@@ -76,7 +77,7 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://aemet.linkeddata.es/source/rdf/data.zip");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DUMP);
 	}
 
@@ -88,11 +89,11 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://gendr.bio2rdf.org/sparql");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.SPARQL);
 	}
 
-    /**
+	/**
 	 * Uri with /page/ in the path should be recognized as UriType.DEREFERENCEABLE
 	 * /page/ in URI signifies that it is hosted using pubby
 	 * @throws URISyntaxException
@@ -101,7 +102,7 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://dbpedia.org/page/Berlin");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DEREFERENCEABLE);
 	}
 
@@ -114,7 +115,7 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://dbpedia.org/resource/Berlin");
 	 	CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
+		crawleableUri = uriProcessor.recognizeUriType(crawleableUri);
 		assertTrue(crawleableUri.getType() == UriType.DEREFERENCEABLE);
 	}
 
@@ -126,7 +127,7 @@ public class UriProcessorTest extends TestCase {
 	    URI uriToCrawl = new URI("http://xmlns.com/foaf/spec/index.rdf");
 		CrawleableUri crawleableUri = new CrawleableUri(uriToCrawl);
 
-        try {
+		try {
 			crawleableUri = uriProcessor.recognizeInetAddress(crawleableUri);
 			assertTrue(crawleableUri.getIpAddress().getHostAddress().toString().matches("75.101.157.128"));
 		} catch (UnknownHostException e) {
@@ -144,8 +145,8 @@ public class UriProcessorTest extends TestCase {
 
 		try {
 			crawleableUri = uriProcessor.recognizeInetAddress(crawleableUri);
-            assertTrue(crawleableUri.getUri().toString().matches(""));
-        } catch (UnknownHostException e) {
+			assertTrue(crawleableUri.getUri().toString().matches(""));
+		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

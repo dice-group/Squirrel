@@ -1,8 +1,8 @@
 package org.aksw.simba.squirrel.worker;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 import java.util.List;
+
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 public interface Worker extends Runnable {
 
@@ -26,10 +26,4 @@ public interface Worker extends Runnable {
      *            list.
      */
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
-
-    /**
-     * Gives the unique id of the worker.
-     * @return The id of the worker.
-     */
-    int getId();
 }
