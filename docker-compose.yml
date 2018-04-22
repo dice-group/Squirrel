@@ -1,0 +1,75 @@
+version: "2"
+
+services:
+  #debugger:
+  #  image: sjourdan/toolbox
+  #  container_name: debugger
+  #  networks:
+  #    - squirrel:latest
+  #  dns: 8.8.8.8
+  #  command: nc -l 50070
+
+  frontier:
+    image: squirrel:latest
+    container_name: frontier
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - SEED_FILE=/var/squirrel/seeds.txt
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
+    volumes:
+      - ./data/frontier:/var/squirrel/data
+      - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
+
+  rethinkdb:
+    image: rethinkdb:2.3.5
+    volumes:
+      - ./data/rethinkdb:/data
+    ports:
+      - "28015:28015"
+
+  # message bus
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbit
+    hostname: rabbit
+    ports:
+      - "8081:15672"
+      # Forwarding the port for testing
+      - "5672:5672"
+
+  worker1:
+    image: squirrel:latest
+    container_name: worker1
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - OUTPUT_FOLDER=/var/squirrel/data
+    volumes:
+        - ./data/worker1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+
+  worker2:
+    image: squirrel:latest
+    container_name: worker2
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - OUTPUT_FOLDER=/var/squirrel/data
+    volumes:
+        - ./data/worker2:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+
+  worker3:
+    image: squirrel:latest
+    container_name: worker3
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - OUTPUT_FOLDER=/var/squirrel/data
+    volumes:
+        - ./data/worker3:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+
+networks:
+  default:
+    external:
+      name: squirrel

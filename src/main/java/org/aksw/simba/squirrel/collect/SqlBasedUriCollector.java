@@ -1,5 +1,22 @@
 package org.aksw.simba.squirrel.collect;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -8,14 +25,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
@@ -43,6 +52,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int MAX_ALPHANUM_PART_OF_TABLE_NAME = 30;
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
+    private long total_uris = 0;
 
     public static SqlBasedUriCollector create(Serializer serializer) {
         return create(serializer, "foundUris");
@@ -120,7 +130,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                        e.getMessage());
+                            e.getMessage());
                 }
             }
         } else {
@@ -154,6 +164,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             synchronized (table) {
                 try {
                     table.addUri(newUri.getUri().toString(), serializer.serialize(newUri));
+                    total_uris++;
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 } catch (Exception e) {
@@ -181,6 +192,10 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         } else {
             LOGGER.info("Should close \"{}\" but it is not known. It will be ignored.", uri.getUri().toString());
         }
+    }
+
+    public long getSize() {
+    	return total_uris;
     }
 
     @Override

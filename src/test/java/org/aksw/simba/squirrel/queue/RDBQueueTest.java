@@ -1,12 +1,8 @@
 package org.aksw.simba.squirrel.queue;
 
-import com.rethinkdb.model.MapObject;
-import org.aksw.simba.squirrel.RethinkDBBasedTest;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -14,7 +10,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.rethinkdb.model.MapObject;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueueTest extends RethinkDBBasedTest {
@@ -24,40 +27,7 @@ public class RDBQueueTest extends RethinkDBBasedTest {
 
     @Before
     public void setUp() throws Exception {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
-            "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
-        BufferedReader stdInput = new BufferedReader(new
-            InputStreamReader(p.getInputStream()));
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
-
-        r = RethinkDB.r;
-        int retryCount = 0;
-        while (true) {
-            try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
-                break;
-            } catch (ReqlDriverError error) {
-                System.out.println("Could not connect, retrying");
-                retryCount++;
-                if (retryCount > 10) break;
-                Thread.sleep(5000);
-            }
-        }
-
-        // to start up the server run
-        // docker run -p 8080:8080 -p 29015:29015 -p 28015:28015 --name rethinkdb -v "$PWD:/data" -it --rm rethinkdb:2.3.5
         rdbQueue = new RDBQueue("localhost", 58015);
-        //rdbQueue = new RDBQueue("192.168.99.100", 28015);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -189,15 +159,5 @@ public class RDBQueueTest extends RethinkDBBasedTest {
             }
         }
         rdbQueue.close();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        p.waitFor();
     }
 }

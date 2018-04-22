@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.File;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
 
 public interface Fetcher extends Closeable {
 
@@ -17,4 +16,5 @@ public interface Fetcher extends Closeable {
      * @return A {@link File} object pointing to the downloaded data or {@code null} if an error occurred.
      */
     public File fetch(CrawleableUri uri);
+    
 }

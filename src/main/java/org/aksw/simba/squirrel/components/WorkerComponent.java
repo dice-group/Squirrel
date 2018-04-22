@@ -1,22 +1,25 @@
 package org.aksw.simba.squirrel.components;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.RobotsManagerConfiguration;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
@@ -26,17 +29,12 @@ import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
 
-public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
+public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
-
-    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
 
     private Worker worker;
     private DataSender sender;
@@ -47,23 +45,33 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void init() throws Exception {
         super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder = null;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+        String outputFolder = workerConfiguration.getOutputFolder();
+
+        RobotsManagerImpl robotsmanager = new RobotsManagerImpl(
+            new SimpleHttpFetcher(
+                new UserAgent("Test", "", "")
+            )
+        );
+        RobotsManagerConfiguration robotsManagerConfiguration = RobotsManagerConfiguration.getRobotsManagerConfiguration();
+        if(robotsManagerConfiguration != null) {
+            robotsmanager.setDefaultMinWaitingTime(robotsManagerConfiguration.getMinDelay());
         }
 
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+        sender = DataSenderImpl.builder()
+            .queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
+                                        FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
         Sink sink = new SparqlBasedSink();
         UriCollector collector = SqlBasedUriCollector.create(serializer);
+
+        Sink sink = new FileBasedSink(new File(outputFolder), true);
+        worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
+                outputFolder + File.separator + "log");
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, collector, 2000, outputFolder + File.separator + "log");
         uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
@@ -115,12 +123,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         }
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-    }
-
-
-
     @Override
     public void addNewUri(CrawleableUri uri) {
         addNewUris(Arrays.asList(uri));
@@ -128,6 +130,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
@@ -135,10 +138,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         }
     }
 
+
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
@@ -148,12 +152,4 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public int getNumberOfPendingUris() {
         return 0;
     }
-
-    /*
-    The WorkerComponent does not have to implement this method.
-     */
-    @Override
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
-    }
-
 }

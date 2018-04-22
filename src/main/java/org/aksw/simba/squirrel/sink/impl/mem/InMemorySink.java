@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
@@ -60,6 +61,10 @@ public class InMemorySink implements Sink {
      * The healthyness of the sink that is set to false if an error is encountered.
      */
     private boolean healthyness = true;
+    
+    public InMemorySink() {
+        openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
+    }
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
@@ -161,4 +166,5 @@ public class InMemorySink implements Sink {
             LOGGER.error("Error while reading data from stream. The data won't be stored.", e);
         }
     }
+
 }

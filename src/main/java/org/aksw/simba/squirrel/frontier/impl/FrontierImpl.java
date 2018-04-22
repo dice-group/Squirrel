@@ -1,5 +1,13 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
@@ -11,13 +19,6 @@ import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -40,10 +41,6 @@ public class FrontierImpl implements Frontier {
      * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
      */
     protected SchemeBasedUriFilter schemeUriFilter = new SchemeBasedUriFilter();
-
-    public UriQueue getQueue() {
-        return queue;
-    }
 
     /**
      * {@link UriQueue} used to manage the URIs that should be crawled.
@@ -110,6 +107,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
             try {
@@ -146,9 +144,18 @@ public class FrontierImpl implements Frontier {
                 ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
             }
         }
-        // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : crawledUris) {
-            knownUriFilter.add(uri);
+            Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
+            // If a recrawling is defined, check whether we can directly add it back to the queue
+            if((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
+                // Create a new uri object reusing only meta data that is useful
+                CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
+                recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
+                addNewUri(recrawlUri);
+            } else {
+                // send list of crawled URIs to the knownUriFilter
+                knownUriFilter.add(uri);
+            }
         }
 
         // Add the new URIs to the Frontier
@@ -163,19 +170,4 @@ public class FrontierImpl implements Frontier {
             return 0;
         }
     }
-
-    @Override
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
-        if (queue instanceof IpAddressBasedQueue) {
-            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
-
-            Set<InetAddress> setIps = new HashSet<>();
-            for (CrawleableUri uri : lstUrisToReassign) {
-                InetAddress ip = uri.getIpAddress();
-                setIps.add(ip);
-            }
-            setIps.forEach(ip -> ipQueue.markIpAddressAsAccessible(ip));
-        }
-    }
 }
-

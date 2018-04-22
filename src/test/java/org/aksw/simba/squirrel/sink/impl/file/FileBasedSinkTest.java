@@ -140,14 +140,6 @@ public class FileBasedSinkTest {
             e.printStackTrace();
         }
 
-        try {
-            // break to make sure that the written files are available
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Assert.fail(e.getLocalizedMessage());
-        }
-
         for (int i = 0; i < models.length; ++i) {
             checkModel(models[i], modelUris[i], useCompression);
         }
@@ -170,7 +162,7 @@ public class FileBasedSinkTest {
         }
 
         Model readModel = null;
-        Dataset readData = DatasetFactory.createMem();
+        Dataset readData = DatasetFactory.create();
         InputStream in = null;
 
         try {
