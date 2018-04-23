@@ -44,4 +44,10 @@ public interface KnownUriFilter extends UriFilter {
      * @return The outdated {@link CrawleableUri}s.
      */
     public List<CrawleableUri> getOutdatedUris();
+
+    /**
+     * count the numbers of known URIs
+     * @return the number of lines in that database
+     */
+    public long count();
 }

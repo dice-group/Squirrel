@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -308,7 +307,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         IOUtils.closeQuietly(fetcher);
     }
 

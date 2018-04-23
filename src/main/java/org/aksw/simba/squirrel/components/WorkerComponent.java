@@ -14,8 +14,8 @@ import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -50,7 +50,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void init() throws Exception {
         super.init();
         Map<String, String> env = System.getenv();
-        String outputFolder = null;
+        String outputFolder;
         if (env.containsKey(OUTPUT_FOLDER_KEY)) {
             outputFolder = env.get(OUTPUT_FOLDER_KEY);
         } else {
@@ -91,7 +91,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         worker.run();
     }
 
@@ -109,7 +109,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         try {
             byte[] response = client.request(uriSetRequest);
             if (response != null) {
-                set = (UriSet) serializer.deserialize(response);
+                set = serializer.deserialize(response);
             }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);

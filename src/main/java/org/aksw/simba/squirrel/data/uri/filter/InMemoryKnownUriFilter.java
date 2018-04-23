@@ -66,4 +66,9 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void close() {}
+
+    @Override
+    public long count() {
+        return uris.size();
+    }
 }

@@ -27,7 +27,7 @@ public interface Frontier {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    public List<CrawleableUri> getNextUris();
+    List<CrawleableUri> getNextUris();
 
     /**
      * Add this URIs to the {@link Frontier}s internal queue if the internal
@@ -36,7 +36,7 @@ public interface Frontier {
      * @param uri
      *            the URI that should be added to the {@link Frontier}
      */
-    public void addNewUri(CrawleableUri uri);
+    void addNewUri(CrawleableUri uri);
 
     /**
      * Adds the given list of URIs to the {@link Frontier}. It is like calling
@@ -45,7 +45,7 @@ public interface Frontier {
      * @param uris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void addNewUris(List<CrawleableUri> uris);
+    void addNewUris(List<CrawleableUri> uris);
 
     /**
      * This method should be called after a list of URIs have been requested
@@ -58,7 +58,7 @@ public interface Frontier {
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void crawlingDone(List<UriTimestampPair> crawledUris, List<CrawleableUri> newUris);
+    void crawlingDone(List<UriTimestampPair> crawledUris, List<CrawleableUri> newUris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
@@ -67,7 +67,7 @@ public interface Frontier {
      *
      * @return the number of pending URIs.
      */
-    public int getNumberOfPendingUris();
+    int getNumberOfPendingUris();
 
 
     /**
