@@ -66,7 +66,7 @@ public class FrontierImpl implements Frontier {
     /**
      * Time (in milliseconds) after which uris will be recrawled.
      */
-    public static final long RECRAWL_TIME = 200000;
+    public static final long RECRAWL_TIME = 20000;
 
     /**
      * Constructor.
