@@ -34,6 +34,7 @@ public class HTMLScraperAnalyzer implements Analyzer{
 		try {
 			List<Triple> listTriples = htmlScraper.scrape(curi.getUri().toString(),data);
 			for(Triple triple: listTriples) {
+				sink.addTriple(curi, triple);
 				collector.addTriple(curi, triple);
 			}
 			return collector.getUris(curi);

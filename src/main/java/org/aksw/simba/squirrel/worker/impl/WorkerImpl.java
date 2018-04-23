@@ -278,7 +278,7 @@ public class WorkerImpl implements Worker, Closeable {
 
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList = null;
-
+            
 
             for(File data: fetchedFiles){
 	            if (data != null) {
