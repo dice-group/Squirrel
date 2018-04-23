@@ -24,6 +24,8 @@ public interface Worker extends Runnable {
      * @param newUris
      *            the new URIs that have been extracted will be added to this
      *            list.
+     *
+     * @return The timestamp at which the given uri should be recrawled.
      */
     public long performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
 

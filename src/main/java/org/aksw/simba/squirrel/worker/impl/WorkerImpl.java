@@ -12,6 +12,7 @@ import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.robots.RobotsManager;
@@ -211,8 +212,8 @@ public class WorkerImpl implements Worker, Closeable {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    long timeStamp = performCrawling(uri, newUris);
-                    crawledPairs.add(new UriDatePair(uri, timeStamp));
+                    long timeStampNextCrawl = performCrawling(uri, newUris);
+                    crawledPairs.add(new UriDatePair(uri, timeStampNextCrawl));
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -239,7 +240,6 @@ public class WorkerImpl implements Worker, Closeable {
     public long performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         Integer count = 0;
-        long timeStampToCrawlAgain = -1;
         //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
@@ -275,7 +275,7 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
-        return timeStampToCrawlAgain;
+        return System.currentTimeMillis() + FrontierImpl.RECRAWL_TIME;
     }
 
     @Override

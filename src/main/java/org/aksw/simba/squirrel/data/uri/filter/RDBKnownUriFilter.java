@@ -13,7 +13,9 @@ import java.io.Closeable;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -51,18 +53,20 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public List<CrawleableUri> getOutdatedUris() {
-        Cursor<String> cursor = r.db("squirrel")
+
+        Cursor<HashMap> cursor = r.db("squirrel")
             .table("knownurifilter")
-            .optArg("index", "uri")
-            .filter(r.row(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()))
-            .g("uri")
+            .filter(doc -> doc.getField("timestampNextCrawl").le(System.currentTimeMillis()))
             .run(connector.connection);
 
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
         while (cursor.hasNext()) {
             try {
-                urisToRecrawl.add(new CrawleableUri(new URI(cursor.next())));
-            } catch (URISyntaxException e) {
+                HashMap row = cursor.next();
+                String s = (String) row.get("ipAddress");
+                s = s.split("/")[1];
+                urisToRecrawl.add(new CrawleableUri(new URI((String) row.get("uri")), InetAddress.getByName(s)));
+            } catch (URISyntaxException | UnknownHostException e) {
                 LOGGER.warn(e.toString());
             }
         }
