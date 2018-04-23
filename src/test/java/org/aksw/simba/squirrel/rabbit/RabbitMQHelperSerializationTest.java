@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.rabbit;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -51,8 +51,8 @@ public class RabbitMQHelperSerializationTest {
         return testConfigs;
     }
 
-    private static UriDatePair createDummyPair(String uriString) {
-        return new UriDatePair(factory.create(uriString), 0);
+    private static UriTimestampPair createDummyPair(String uriString) {
+        return new UriTimestampPair(factory.create(uriString), 0);
     }
 
     private Object original;

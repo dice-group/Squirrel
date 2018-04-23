@@ -14,7 +14,7 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
@@ -202,7 +202,7 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<>();
-        List<UriDatePair> crawledPairs = new ArrayList<>();
+        List<UriTimestampPair> crawledPairs = new ArrayList<>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
@@ -213,7 +213,7 @@ public class WorkerImpl implements Worker, Closeable {
             } else {
                 try {
                     long timeStampNextCrawl = performCrawling(uri, newUris);
-                    crawledPairs.add(new UriDatePair(uri, timeStampNextCrawl));
+                    crawledPairs.add(new UriTimestampPair(uri, timeStampNextCrawl));
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);

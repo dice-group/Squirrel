@@ -7,7 +7,7 @@ import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
@@ -120,7 +120,7 @@ public class FrontierImpl implements Frontier {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
-            }, 0, 5000);
+            }, 0, TIMER_PERIOD);
         }
     }
 
@@ -161,16 +161,16 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUris) {
+    public void crawlingDone(List<UriTimestampPair> crawledUriDatePairs, List<CrawleableUri> newUris) {
         // If there is a graph logger, log the data
         if (graphLogger != null) {
-            graphLogger.log(UriDatePair.extractUrisFromPairs(crawledUriDatePairs), newUris);
+            graphLogger.log(UriTimestampPair.extractUrisFromPairs(crawledUriDatePairs), newUris);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<InetAddress>();
             InetAddress ip;
-            for (UriDatePair pair : crawledUriDatePairs) {
+            for (UriTimestampPair pair : crawledUriDatePairs) {
                 ip = pair.getUri().getIpAddress();
                 if (ip != null) {
                     ips.add(ip);
@@ -182,7 +182,7 @@ public class FrontierImpl implements Frontier {
             }
         }
         // send list of crawled URIs to the knownUriFilter
-        for (UriDatePair pair : crawledUriDatePairs) {
+        for (UriTimestampPair pair : crawledUriDatePairs) {
             knownUriFilter.add(pair.getUri(), pair.getTimestampNextCrawl());
         }
 

@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.queue.UriTimestampPair;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -11,17 +11,17 @@ public class CrawlingResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public List<UriDatePair> crawledUriDatePairs;
+    public List<UriTimestampPair> crawledUriDatePairs;
     public List<CrawleableUri> newUris;
     public int idOfWorker;
 
-    public CrawlingResult(List<UriDatePair> crawledUriDatePairs, List<CrawleableUri> newUris, int idOfWorker) {
+    public CrawlingResult(List<UriTimestampPair> crawledUriDatePairs, List<CrawleableUri> newUris, int idOfWorker) {
         this.newUris = (newUris == null) ? this.newUris = Collections.emptyList() : newUris;
         this.crawledUriDatePairs = crawledUriDatePairs;
         this.idOfWorker = idOfWorker;
     }
 
-    public CrawlingResult(List<UriDatePair> crawledUriDatePairs) {
+    public CrawlingResult(List<UriTimestampPair> crawledUriDatePairs) {
         this(crawledUriDatePairs, Collections.emptyList(), -1);
     }
 

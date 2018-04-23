@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.queue.UriDatePair;
+import org.aksw.simba.squirrel.queue.UriTimestampPair;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public interface Frontier {
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void crawlingDone(List<UriDatePair> crawledUris, List<CrawleableUri> newUris);
+    public void crawlingDone(List<UriTimestampPair> crawledUris, List<CrawleableUri> newUris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
