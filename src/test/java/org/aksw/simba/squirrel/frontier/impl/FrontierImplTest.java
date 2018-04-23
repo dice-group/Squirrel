@@ -8,6 +8,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,13 +113,13 @@ public class FrontierImplTest {
 
     @Test
     public void crawlingDone() throws Exception {
-        List<CrawleableUri> crawledUris = new ArrayList<>();
+        List<UriDatePair> crawledUris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
-        crawledUris.add(uri_1);
-        crawledUris.add(uri_2);
+        crawledUris.add(new UriDatePair(uri_1, 0));
+        crawledUris.add(new UriDatePair(uri_2, 0));
 
         List<CrawleableUri> newUris = new ArrayList<>();
         CrawleableUri uri_3 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);

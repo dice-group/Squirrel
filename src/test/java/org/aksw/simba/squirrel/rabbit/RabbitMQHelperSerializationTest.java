@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.rabbit;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.queue.UriDatePair;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -19,32 +20,39 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class RabbitMQHelperSerializationTest {
 
+    private static CrawleableUriFactory4Tests factory;
+
     @Parameters
     public static Collection<Object[]> data() throws IOException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
 
-        CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();
+        factory = new CrawleableUriFactory4Tests();
 
-        testConfigs.add(new Object[] { null });
+        testConfigs.add(new Object[]{null});
 
-        testConfigs.add(new Object[] { new UriSet() });
-        testConfigs.add(new Object[] { new UriSet(null) });
-        testConfigs.add(new Object[] { new UriSet(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
+        testConfigs.add(new Object[]{new UriSet()});
+        testConfigs.add(new Object[]{new UriSet(null)});
+        testConfigs.add(new Object[]{new UriSet(
+            Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")))});
 
         testConfigs.add(new Object[]{new UriSetRequest()});
 
-        testConfigs.add(new Object[] { new CrawlingResult(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
-        testConfigs.add(new Object[] { new CrawlingResult(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")), null,-1) });
-        testConfigs.add(new Object[] { new CrawlingResult(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")),
-                Arrays.asList(factory.create("http://example.org/99"), factory.create("http://example.org/45"),
-                        factory.create("http://example.org/12"), factory.create("http://example.org/3")),-1) });
-        testConfigs.add(new Object[] { new UriSet(null) });
+        testConfigs.add(new Object[]{new CrawlingResult(
+            Arrays.asList(createDummyPair("http://example.org/1"), createDummyPair("http://example.org/2")))});
+
+        testConfigs.add(new Object[]{new CrawlingResult(Arrays.asList(createDummyPair("http://example.org/1"), createDummyPair("http://example.org/2")))});
+
+        testConfigs.add(new Object[]{new CrawlingResult(
+            Arrays.asList(createDummyPair("http://example.org/1"), createDummyPair("http://example.org/2")),
+            Arrays.asList(factory.create("http://example.org/99"), factory.create("http://example.org/45"),
+                factory.create("http://example.org/12"), factory.create("http://example.org/3")), -1)});
+        testConfigs.add(new Object[]{new UriSet(null)});
 
         return testConfigs;
+    }
+
+    private static UriDatePair createDummyPair(String uriString) {
+        return new UriDatePair(factory.create(uriString), 0);
     }
 
     private Object original;

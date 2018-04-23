@@ -24,12 +24,18 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     private RDBConnector connector = null;
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
-    private RethinkDB r = RethinkDB.r;
+    private RethinkDB r;
 
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
 
     public RDBKnownUriFilter(String hostname, Integer port) {
         this.connector = new RDBConnector(hostname, port);
+        r = RethinkDB.r;
+    }
+
+    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r) {
+        this.connector = connector;
+        this.r = r;
     }
 
     public void open() {
@@ -85,6 +91,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp))
             .run(connector.connection);
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Cursor<String> c = r.db("squirrel")
+            .table("knownurifilter").getAll().g("uri").run(connector.connection);
+
+        while (c.hasNext()) {
+            System.out.println(c.next());
+        }
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {
@@ -99,7 +113,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
-            .with("timestamp", new Tuple(timestamp, nextCrawlTimestamp));
+            .with("timestamp", timestamp);
     }
 
     @Override
