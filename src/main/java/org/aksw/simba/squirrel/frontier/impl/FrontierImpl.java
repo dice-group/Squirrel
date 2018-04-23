@@ -61,12 +61,12 @@ public class FrontierImpl implements Frontier {
     /**
      * The timer that schedules the recrawling.
      */
-    Timer timerRecrawling;
+    private Timer timerRecrawling;
 
     /**
      * Time (in milliseconds) after which uris will be recrawled.
      */
-    public static final long RECRAWL_TIME = 20000;
+    public static final long RECRAWL_TIME = 200000;
 
     /**
      * Constructor.
@@ -115,7 +115,7 @@ public class FrontierImpl implements Frontier {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
-            }, 0, 500);
+            }, 0, 5000);
         }
     }
 
