@@ -91,14 +91,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp))
             .run(connector.connection);
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
-
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Cursor<String> c = r.db("squirrel")
-            .table("knownurifilter").getAll().g("uri").run(connector.connection);
-
-        while (c.hasNext()) {
-            System.out.println(c.next());
-        }
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {
@@ -113,7 +105,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
-            .with("timestamp", timestamp);
+            .with("timestamp", timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp);
     }
 
     @Override
