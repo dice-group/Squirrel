@@ -43,39 +43,42 @@ public class YamlFilesParser {
 	private Map<String, YamlFile> loadFiles(File file) throws Exception {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		File folder = null;
+		Map<String, YamlFile> yamls = new HashMap<String, YamlFile>();
 		if(file != null) {
 			 folder = file;
-		}else {
+		}else if (HtmlScraperConfiguration.getHtmlScraperConfiguration() != null) {
 			folder = new File(HtmlScraperConfiguration.getHtmlScraperConfiguration().getPath());
 		}
 		
-		List<File> listYamlFiles = filterYamlFiles(TempPathUtils.searchPath4Files(folder));
-		Map<String, YamlFile> yamls = new HashMap<String, YamlFile>();
-		for(int i=0; i<listYamlFiles.size(); i++) {
-			try {
-				
-				YamlFile yamlFile = mapper.readValue(listYamlFiles.get(i), YamlFile.class);
-				
-				for(Entry<String, Map<String,Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
-					
-					if(entry.getKey().equals(YamlFileAtributes.SEARCH_CHECK))
-						continue;
-					
-					if( !(entry.getValue().containsKey(YamlFileAtributes.REGEX) &&
-							entry.getValue().containsKey(YamlFileAtributes.RESOURCES)) ) {
-						throw new ElementNotFoundException("Regex or Resources not found. Please check the Yaml Files");
-					}
-				}
-				
-				yamls.put(yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get(YamlFileAtributes.SEARCH_DOMAIN).toString(),
-						yamlFile);
-			} catch (Exception e) {
-				LOGGER.error("An error occurred while parsing the file",e);
-				throw new Exception(e);
-			}
-		}
+		if(folder != null) {
 		
-
+			List<File> listYamlFiles = filterYamlFiles(TempPathUtils.searchPath4Files(folder));
+	
+			for(int i=0; i<listYamlFiles.size(); i++) {
+				try {
+					
+					YamlFile yamlFile = mapper.readValue(listYamlFiles.get(i), YamlFile.class);
+					
+					for(Entry<String, Map<String,Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
+						
+						if(entry.getKey().equals(YamlFileAtributes.SEARCH_CHECK))
+							continue;
+						
+						if( !(entry.getValue().containsKey(YamlFileAtributes.REGEX) &&
+								entry.getValue().containsKey(YamlFileAtributes.RESOURCES)) ) {
+							throw new ElementNotFoundException("Regex or Resources not found. Please check the Yaml Files");
+						}
+					}
+					
+					yamls.put(yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get(YamlFileAtributes.SEARCH_DOMAIN).toString(),
+							yamlFile);
+				} catch (Exception e) {
+					LOGGER.error("An error occurred while parsing the file",e);
+					throw new Exception(e);
+				}
+			}
+		
+		}
 		return yamls;
 	}
 	
