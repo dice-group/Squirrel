@@ -52,7 +52,7 @@ public class SimpleOrderedAnalyzerManager implements Analyzer{
 			if( (contentType != null && contentType.equals("text/html")) || mimeType.equals("text/html")) {
 				iterator =  analyzers.get(HTML).analyze(curi, data, sink);
 			}else {
-				iterator =  analyzers.get(HTML).analyze(curi, data, sink);
+				iterator =  analyzers.get(RDF).analyze(curi, data, sink);
 			}
 			
 		} catch (Exception e) {
