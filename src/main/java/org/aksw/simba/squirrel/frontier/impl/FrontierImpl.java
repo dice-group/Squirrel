@@ -74,12 +74,12 @@ public class FrontierImpl implements Frontier {
     /**
      * General time (in milliseconds) after which uris will be recrawled, if no other time is specified.
      */
-    private static long generalRecrawlTime = 1000 * 20;
+    private static long generalRecrawlTime = 1000 * 60 * 60 * 24 * 7;
 
     /**
      * Default time interval (in milliseconds) at which the check for outdated uris is performed.
      */
-    private static final int DEFAULT_TIMER_PERIOD = 1000 * 5;
+    private static final int DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
 
     /**
      * Constructor.
@@ -89,9 +89,7 @@ public class FrontierImpl implements Frontier {
      * @param queue              {@link UriQueue} used to manage the URIs that should be
      *                           crawled.
      * @param doesRecrawling     used to select if URIs should be recrawled.
-     *
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
-     *
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, Long generalRecrawlTime, Long timerPeriod) {
@@ -122,7 +120,6 @@ public class FrontierImpl implements Frontier {
      * @param queue          {@link UriQueue} used to manage the URIs that should be
      *                       crawled.
      * @param graphLogger    {@link GraphLogger} used to log graphs.
-     *
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling) {
