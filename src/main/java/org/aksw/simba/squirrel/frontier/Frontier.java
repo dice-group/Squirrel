@@ -1,8 +1,8 @@
 package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 
+import java.io.Closeable;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public interface Frontier {
+public interface Frontier extends Closeable {
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
@@ -58,7 +58,7 @@ public interface Frontier {
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    void crawlingDone(List<UriTimestampPair> crawledUris, List<CrawleableUri> newUris);
+    void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
@@ -78,9 +78,5 @@ public interface Frontier {
      */
     boolean doesRecrawling();
 
-    /**
-     * Close everything connected to this frontier (e.g. timers).
-     */
-    void shutdown();
 
 }

@@ -16,6 +16,7 @@ public interface KnownUriFilter extends UriFilter {
      * Adds the given URI to the list of already known URIs. Works like calling {@link #add(CrawleableUri, long)} with the current system time.
      *
      * @param uri the URI that should be added to the list.
+     * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
     public void add(CrawleableUri uri, long nextCrawlTimestamp);
 

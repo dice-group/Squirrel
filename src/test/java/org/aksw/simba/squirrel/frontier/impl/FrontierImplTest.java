@@ -8,7 +8,6 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,7 +97,7 @@ public class FrontierImplTest {
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
 
-        assertEquals("Should be the same as uriDatePairs array", assertion, nextUris);
+        assertEquals("Should be the same as uris array", assertion, nextUris);
     }
 
     @Test
@@ -113,13 +112,13 @@ public class FrontierImplTest {
 
     @Test
     public void crawlingDone() throws Exception {
-        List<UriTimestampPair> crawledUris = new ArrayList<>();
+        List<CrawleableUri> crawledUris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE);
-        crawledUris.add(new UriTimestampPair(uri_1, 0));
-        crawledUris.add(new UriTimestampPair(uri_2, 0));
+        crawledUris.add(uri_1);
+        crawledUris.add(uri_2);
 
         List<CrawleableUri> newUris = new ArrayList<>();
         CrawleableUri uri_3 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);

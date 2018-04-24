@@ -7,7 +7,6 @@ import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import java.util.*;
  * {@link #queue} and a {@link #knownUriFilter}.
  *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
- *
  */
 public class FrontierImpl implements Frontier {
 
@@ -66,41 +64,66 @@ public class FrontierImpl implements Frontier {
     /**
      * Time (in milliseconds) after which uris will be recrawled.
      */
-    public static final long RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
+    private Long recrawlTime;
 
     /**
-     * Time interval (in milliseconds) after which the check for outdated uris is performed.
+     * Time interval(in milliseconds) at which the check for outdated uris is performed.
      */
-    private static final int TIMER_PERIOD = 1000 * 60 * 60;
+    private Long timerPeriod;
+
+    /**
+     * General time (in milliseconds) after which uris will be recrawled, if no other time is specified.
+     */
+    private static long generalRecrawlTime = 1000 * 20;
+
+    /**
+     * Default time interval (in milliseconds) at which the check for outdated uris is performed.
+     */
+    private static final int DEFAULT_TIMER_PERIOD = 1000 * 5;
 
     /**
      * Constructor.
      *
-     * @param knownUriFilter
-     *            {@link UriFilter} used to identify URIs that already have been
-     *            crawled.
-     * @param queue
-     *            {@link UriQueue} used to manage the URIs that should be
-     *            crawled.
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that already have been
+     *                           crawled.
+     * @param queue              {@link UriQueue} used to manage the URIs that should be
+     *                           crawled.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
+     *
+     * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
+     *
+     * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, Long generalRecrawlTime, Long timerPeriod) {
         this(knownUriFilter, queue, null, doesRecrawling);
+        if (recrawlTime != null) {
+            FrontierImpl.generalRecrawlTime = generalRecrawlTime;
+        }
     }
 
+    /**
+     * Constructor.
+     *
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
+     *                       crawled.
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(knownUriFilter, queue, false);
+        this(knownUriFilter, queue, false, null, null);
     }
 
 
     /**
      * Constructor.
      *
-     * @param knownUriFilter
-     *            {@link UriFilter} used to identify URIs that already have been
-     *            crawled.
-     * @param queue
-     *            {@link UriQueue} used to manage the URIs that should be
-     *            crawled.
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
+     *                       crawled.
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param graphLogger    {@link GraphLogger} used to log graphs.
+     *
+     * @param doesRecrawling used to select if URIs should be recrawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling) {
         this.knownUriFilter = knownUriFilter;
@@ -120,10 +143,15 @@ public class FrontierImpl implements Frontier {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
-            }, 0, TIMER_PERIOD);
+            }, timerPeriod == null ? DEFAULT_TIMER_PERIOD : timerPeriod, timerPeriod == null ? DEFAULT_TIMER_PERIOD : timerPeriod);
         }
     }
 
+    /**
+     * Getter for the {@link #queue}.
+     *
+     * @return The waiting queue for the URIs.
+     */
     public UriQueue getQueue() {
         return queue;
     }
@@ -161,17 +189,17 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<UriTimestampPair> crawledUriDatePairs, List<CrawleableUri> newUris) {
+    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         // If there is a graph logger, log the data
         if (graphLogger != null) {
-            graphLogger.log(UriTimestampPair.extractUrisFromPairs(crawledUriDatePairs), newUris);
+            graphLogger.log(crawledUris, newUris);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<InetAddress>();
             InetAddress ip;
-            for (UriTimestampPair pair : crawledUriDatePairs) {
-                ip = pair.getUri().getIpAddress();
+            for (CrawleableUri uri : crawledUris) {
+                ip = uri.getIpAddress();
                 if (ip != null) {
                     ips.add(ip);
                 }
@@ -182,8 +210,8 @@ public class FrontierImpl implements Frontier {
             }
         }
         // send list of crawled URIs to the knownUriFilter
-        for (UriTimestampPair pair : crawledUriDatePairs) {
-            knownUriFilter.add(pair.getUri(), pair.getTimestampNextCrawl());
+        for (CrawleableUri uri : crawledUris) {
+            knownUriFilter.add(uri, uri.getTimestampNextCrawl());
         }
 
         // Add the new URIs to the Frontier
@@ -205,9 +233,13 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void shutdown() {
+    public void close() {
         timerRecrawling.cancel();
     }
 
+
+    public static long getGeneralRecrawlTime() {
+        return generalRecrawlTime;
+    }
 }
 

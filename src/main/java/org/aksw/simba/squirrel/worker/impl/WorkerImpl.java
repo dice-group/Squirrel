@@ -14,7 +14,6 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
@@ -201,7 +200,7 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<>();
-        List<UriTimestampPair> crawledPairs = new ArrayList<>();
+        List<CrawleableUri> crawledUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
@@ -211,8 +210,8 @@ public class WorkerImpl implements Worker, Closeable {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    long timeStampNextCrawl = performCrawling(uri, newUris);
-                    crawledPairs.add(new UriTimestampPair(uri, timeStampNextCrawl));
+                    performCrawling(uri, newUris);
+                    crawledUris.add(uri);
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -232,11 +231,11 @@ public class WorkerImpl implements Worker, Closeable {
         } else {
             //TODO ADD METADATA IF SINK IS NOT RDFSINK
         }
-        frontier.crawlingDone(crawledPairs, newUris);
+        frontier.crawlingDone(crawledUris, newUris);
     }
 
     @Override
-    public long performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         Integer count = 0;
         //TODO: find out the timestamp from the uri, not yet clear how to do that
@@ -274,7 +273,15 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
-        return System.currentTimeMillis() + FrontierImpl.RECRAWL_TIME;
+        setSpecificRecrawlTime(uri);
+
+    }
+
+    private void setSpecificRecrawlTime(CrawleableUri uri) {
+        //TODO: implement special cases
+
+        //else set everytime to default
+        uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
     }
 
     @Override

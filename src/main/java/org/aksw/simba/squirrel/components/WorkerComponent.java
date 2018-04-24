@@ -9,7 +9,6 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -142,9 +141,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void crawlingDone(List<UriTimestampPair> crawledUriDatePairs, List<CrawleableUri> newUris) {
+    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUriDatePairs, newUris, worker.getId())));
+            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
@@ -158,11 +157,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public boolean doesRecrawling() {
         return false;
-    }
-
-    @Override
-    public void shutdown() {
-        // nothing to do here
     }
 
 }

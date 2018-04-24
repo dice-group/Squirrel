@@ -28,11 +28,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
     private RethinkDB r;
 
-    private static final String DATABASE_NAME = "squirrel";
-    private static final String TABLE_NAME = "knownurifilter";
+    public static final String DATABASE_NAME = "squirrel";
+    public static final String TABLE_NAME = "knownurifilter";
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
-    private static final String COLUMN_URI = "uri";
+    public static final String COLUMN_URI = "uri";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
 

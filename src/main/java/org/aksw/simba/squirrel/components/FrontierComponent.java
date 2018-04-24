@@ -16,7 +16,6 @@ import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
-import org.aksw.simba.squirrel.queue.UriTimestampPair;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
@@ -133,7 +132,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter.close();
         }
         workerGuard.shutdown();
-        frontier.shutdown();
+        frontier.close();
         super.close();
     }
 
@@ -176,9 +175,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (object instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                    UriTimestampPair.extractUrisFromPairs(crawlingResult.crawledUriDatePairs));
-                frontier.crawlingDone(crawlingResult.crawledUriDatePairs, crawlingResult.newUris);
-                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, UriTimestampPair.extractUrisFromPairs(crawlingResult.crawledUriDatePairs));
+                    crawlingResult.crawledUris);
+                frontier.crawlingDone(crawlingResult.crawledUris, crawlingResult.newUris);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
 
             } else if (object instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) object;
