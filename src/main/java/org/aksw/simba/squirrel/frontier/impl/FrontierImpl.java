@@ -62,24 +62,24 @@ public class FrontierImpl implements Frontier {
     private Timer timerRecrawling;
 
     /**
-     * Time (in milliseconds) after which uris will be recrawled.
+     * Time (in milliseconds) after which uris will be recrawled (only used if no specific time is configured for a URI).
      */
-    private Long recrawlTime;
+    private static long generalRecrawlTime;
 
     /**
      * Time interval(in milliseconds) at which the check for outdated uris is performed.
      */
-    private Long timerPeriod;
+    private long timerPeriod;
 
     /**
-     * General time (in milliseconds) after which uris will be recrawled, if no other time is specified.
+     * Default value for {@link #generalRecrawlTime} (one week).
      */
-    private static long generalRecrawlTime = 1000 * 60 * 60 * 24 * 7;
+    private static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
 
     /**
-     * Default time interval (in milliseconds) at which the check for outdated uris is performed.
+     * Default value for {@link #timerPeriod}.
      */
-    private static final int DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
+    private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
 
     /**
      * Constructor.
@@ -92,11 +92,23 @@ public class FrontierImpl implements Frontier {
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, Long generalRecrawlTime, Long timerPeriod) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this(knownUriFilter, queue, null, doesRecrawling);
-        if (recrawlTime != null) {
-            FrontierImpl.generalRecrawlTime = generalRecrawlTime;
-        }
+        FrontierImpl.generalRecrawlTime = generalRecrawlTime;
+        this.timerPeriod = timerPeriod;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
+     *                       crawled.
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param doesRecrawling Value for {@link #doesRecrawling}.
+     */
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
+        this(knownUriFilter, queue, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
     /**
@@ -108,7 +120,7 @@ public class FrontierImpl implements Frontier {
      *                       crawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(knownUriFilter, queue, false, null, null);
+        this(knownUriFilter, queue, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
 
@@ -140,18 +152,10 @@ public class FrontierImpl implements Frontier {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
-            }, timerPeriod == null ? DEFAULT_TIMER_PERIOD : timerPeriod, timerPeriod == null ? DEFAULT_TIMER_PERIOD : timerPeriod);
+            }, timerPeriod, timerPeriod);
         }
     }
 
-    /**
-     * Getter for the {@link #queue}.
-     *
-     * @return The waiting queue for the URIs.
-     */
-    public UriQueue getQueue() {
-        return queue;
-    }
 
     @Override
     public List<CrawleableUri> getNextUris() {
@@ -237,6 +241,15 @@ public class FrontierImpl implements Frontier {
 
     public static long getGeneralRecrawlTime() {
         return generalRecrawlTime;
+    }
+
+    /**
+     * Getter for the {@link #queue}.
+     *
+     * @return The waiting queue for the URIs.
+     */
+    public UriQueue getQueue() {
+        return queue;
     }
 }
 

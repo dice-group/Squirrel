@@ -25,7 +25,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, Long generalRecrawlTime, Long timerPeriod) {
+    @SuppressWarnings("unused")
+    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         super(knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
@@ -39,7 +40,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
     public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
-        super(knownUriFilter, queue, doesRecrawling, null, null);
+        super(knownUriFilter, queue, doesRecrawling);
     }
 
     @Override
