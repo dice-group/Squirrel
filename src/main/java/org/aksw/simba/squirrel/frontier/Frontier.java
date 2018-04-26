@@ -70,13 +70,4 @@ public interface Frontier extends Closeable {
     int getNumberOfPendingUris();
 
 
-    /**
-     * Indicates whether this instance does recrawling, which means that it keeps already crawled uris, and crawls
-     * them again at a specified date.
-     *
-     * @return True iff recrawling is active.
-     */
-    boolean doesRecrawling();
-
-
 }
