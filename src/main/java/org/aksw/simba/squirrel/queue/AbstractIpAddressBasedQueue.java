@@ -78,7 +78,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     public int getNumberOfBlockedIps() {
         return blockedIps.size();
     }
-
     @Override
     public abstract Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
+
 }

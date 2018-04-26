@@ -25,7 +25,7 @@ public interface Worker extends Runnable {
      *            the new URIs that have been extracted will be added to this
      *            list.
      */
-    void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
+    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
 
     /**
      * Gives the unique id of the worker.

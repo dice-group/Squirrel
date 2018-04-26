@@ -57,6 +57,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
+    private final boolean doRecrawling = true;
 
     private final long startRunTime = System.currentTimeMillis();
 
@@ -98,7 +99,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -131,6 +132,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter.close();
         }
         workerGuard.shutdown();
+        frontier.close();
         super.close();
     }
 
@@ -174,7 +176,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
                     crawlingResult.crawledUris);
-                frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
+                frontier.crawlingDone(crawlingResult.crawledUris, crawlingResult.newUris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
 
             } else if (object instanceof AliveMessage) {
