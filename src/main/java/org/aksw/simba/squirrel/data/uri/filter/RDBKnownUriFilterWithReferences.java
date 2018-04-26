@@ -42,12 +42,12 @@ public class RDBKnownUriFilterWithReferences extends RDBKnownUriFilterWithoutRef
      * @return the iterator {@link KnownUriReferenceIterator}
      */
     public Iterator<AbstractMap.SimpleEntry<String, List<String>>> walkThroughCrawledGraph(int offset, boolean latest, boolean onlyCrawledUris) {
-        int entryCount = r.db(RDBDATABASENAME).table(RDBTABLENAME).count().run(connector.connection);
+        long entryCount = r.db(RDBDATABASENAME).table(RDBTABLENAME).count().run(connector.connection);
         if (entryCount < offset) {
             LOGGER.warn("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + ")!");
             return Collections.emptyIterator();
         }
-        int finalOffset = (offset < 0) ? -1 : ((latest) ? entryCount - offset : offset);
+        long finalOffset = (offset < 0) ? -1 : ((latest) ? entryCount - offset : offset);
 
         return new KnownUriReferenceIterator(connector, finalOffset, onlyCrawledUris);
     }
@@ -63,11 +63,11 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
 
     private Cursor cursor;
 
-    KnownUriReferenceIterator(RDBConnector connector, int offset, boolean onlyCrawledUris) {
+    KnownUriReferenceIterator(RDBConnector connector, long offset, boolean onlyCrawledUris) {
         if (offset == -1) {
-            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).optArg("index", "uri").run(connector.connection);
+            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).run(connector.connection);
         } else {
-            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).optArg("index", "uri").skip(offset).run(connector.connection);
+            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).skip(offset).run(connector.connection);
         }
         this.connector = connector;
         this.onlyCrawledUris = onlyCrawledUris;
@@ -76,9 +76,9 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
     private boolean containURI(String uri) {
         return r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME)
             .table(RDBKnownUriFilterWithReferences.RDBTABLENAME)
+            .getAll(uri)
             .optArg("index", "uri")
-            .getField("uri")
-            .contains(uri)
+            .isEmpty()
             .run(connector.connection);
     }
 

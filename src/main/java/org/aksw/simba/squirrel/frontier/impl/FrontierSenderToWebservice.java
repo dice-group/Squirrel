@@ -1,19 +1,23 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
 import com.SquirrelWebObject;
+import com.graph.VisualisationGraph;
 import com.rabbitmq.client.Channel;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithReferences;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.rabbit.RabbitQueueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -26,10 +30,13 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private WorkerGuard workerGuard;
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
-    private final static String WEB_QUEUE_NAME = "squirrel.web";
+    private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web";
+    private final static String WEB_QUEUE_GRAPH_NAME = "squirrel.web.graph";
     private RabbitQueueFactory factory;
     private Channel webQueue = null;
     private boolean run;
+
+    public boolean sendCrawledGraph = false;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierSenderToWebservice.class);
 
@@ -58,7 +65,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         if (establishChannel(5)) {
             LOGGER.debug("Created successfully " + webQueue);
         } else {
-            LOGGER.error("Finally ERROR while creating queue" + WEB_QUEUE_NAME + ". Returning false.");
+            LOGGER.error("Finally ERROR while creating queue" + WEB_QUEUE_GENERAL_NAME + ". Returning false.");
             return false;
         }
         return true;
@@ -73,13 +80,13 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e2) {
-                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_NAME + ", there were " + triesLeft + " tries left", e2);
+                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_GENERAL_NAME + ", there were " + triesLeft + " tries left", e2);
                 return false;
             }
             if (triesLeft > 0) {
                 return establishChannel(triesLeft - 1);
             } else {
-                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_NAME + ", ran out of tries", e);
+                LOGGER.error("Failed to set up the queue " + WEB_QUEUE_GENERAL_NAME + ", ran out of tries", e);
                 return false;
             }
         }
@@ -104,9 +111,15 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
             while (run) {
                 SquirrelWebObject newObject = generateSquirrelWebObject();
                 if (!newObject.equals(lastSentObject)) {
-                    webQueue.basicPublish("", WEB_QUEUE_NAME, null, newObject.convertToByteStream());
-                    LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_NAME);
+                    webQueue.basicPublish("", WEB_QUEUE_GENERAL_NAME, null, newObject.convertToByteStream());
+                    LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_GENERAL_NAME);
                     lastSentObject = newObject;
+
+                    if (sendCrawledGraph) {
+                        // if something changed in general, then probably the crawled graph, too
+                        webQueue.basicPublish("", WEB_QUEUE_GRAPH_NAME, null, generateVisualisationGraph().convertToByteStream());
+                        LOGGER.debug("Putted a new crawled graph into the queue " + WEB_QUEUE_GRAPH_NAME);
+                    }
                 }
                 Thread.sleep(100);
             }
@@ -122,6 +135,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         }
     }
 
+    /**
+     * Generates a {@link SquirrelWebObject} from the current data
+     *
+     * @return a instance of a {@link SquirrelWebObject}
+     * @throws IllegalAccessException if this is thrown, then there is programming bug!
+     */
     private SquirrelWebObject generateSquirrelWebObject() throws IllegalAccessException {
         SquirrelWebObject newObject = new SquirrelWebObject();
         newObject.setRuntimeInSeconds(Math.round((System.currentTimeMillis() - startRunTime) / 1000d));
@@ -156,6 +175,31 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     }
 
     /**
+     * Collects all crawled URIs from knownUriFilter (assumes a {@link RDBKnownUriFilterWithReferences} object) for generating zu crawled graph
+     *
+     * @return a instance (crawled graph) of {@link VisualisationGraph}
+     */
+    private VisualisationGraph generateVisualisationGraph() {
+        if (!(knownUriFilter instanceof RDBKnownUriFilterWithReferences)) {
+            throw new IllegalAccessError("This method uses the knownUriFilter attribute, requires it from type RDBKnownUriFilterWithReferences, but actually it is from type " + knownUriFilter.getClass().getTypeName());
+        }
+
+        VisualisationGraph graph = new VisualisationGraph();
+        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(0, true, true);
+
+        int counter = 0;
+        while (iterator.hasNext() && counter < 25) {
+            AbstractMap.SimpleEntry<String, List<String>> nextNode = iterator.next();
+            graph.addNode(nextNode.getKey()).setColor((counter == 0) ? Color.ORANGE : ((counter <= 20) ? Color.GRAY : Color.GREEN));
+            nextNode.getValue().forEach(v -> graph.addEdge(nextNode.getKey(), v));
+
+            counter++;
+        }
+
+        return graph;
+    }
+
+    /**
      * Stops the instance ({@link Thread}) of the {@link FrontierSenderToWebservice}.
      * ATTENTION: it's not a force stop! Maybe the {@link Thread} will run for some further milliseconds...
      */
@@ -178,7 +222,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      */
     @Override
     public void close() throws IOException {
-        webQueue.queueDelete(WEB_QUEUE_NAME);
+        webQueue.queueDelete(WEB_QUEUE_GENERAL_NAME);
         try {
             webQueue.close();
         } catch (TimeoutException e) {

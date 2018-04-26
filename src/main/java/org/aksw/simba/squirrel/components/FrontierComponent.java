@@ -125,13 +125,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Override
     public void run() throws Exception {
         if (communicationWithWebserviceEnabled) {
-            Thread sender = new Thread(new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter));
-            sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
-            sender.start();
-            LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
-            if (visualizationOfCrawledGraphEnabaled) {
-                //TODO
-            }
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter);
+            sender.sendCrawledGraph = visualizationOfCrawledGraphEnabaled;
+            Thread senderThread = new Thread(sender);
+            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
+            senderThread.start();
+            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state " + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
         }
         // The main thread has nothing to do except waiting for its
         // termination...
