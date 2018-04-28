@@ -5,6 +5,7 @@ import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public static final String COLUMN_URI = "uri";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
 
 
     public RDBKnownUriFilter(String hostname, Integer port) {
@@ -61,9 +63,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     @Override
     public List<CrawleableUri> getOutdatedUris() {
 
+        // get all uris with the following property:
+        // (nextCrawlTimestamp has passed) and (crawlingInProcess==false || lastCrawlTimestamp is 3 times older than generalRecrawlTime)
+
         Cursor<HashMap> cursor = r.db(DATABASE_NAME)
             .table(TABLE_NAME)
             .filter(doc -> doc.getField(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()))
+            .filter(doc -> doc.getField(COLUMN_CRAWLING_IN_PROCESS).eq(false).
+                or(doc.getField(COLUMN_TIMESTAMP_LAST_CRAWL).le(System.currentTimeMillis() - FrontierImpl.getGeneralRecrawlTime() * 3)))
             .run(connector.connection);
 
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
@@ -77,6 +84,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
                 LOGGER.warn(e.toString());
             }
         }
+
+        // mark that the uris are in process now
+        for (CrawleableUri uri : urisToRecrawl) {
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+                update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, true)).run(connector.connection);
+        }
+
         cursor.close();
         return urisToRecrawl;
     }
@@ -99,12 +113,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
         Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).run(connector.connection);
         if (cursor.hasNext()) {
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
         } else {
             r.db(DATABASE_NAME)
                 .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp))
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false))
                 .run(connector.connection);
         }
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
@@ -119,10 +134,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TYPE, uriType.toString());
     }
 
-    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
+    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
-            .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp);
+            .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
+            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
     }
 
     @Override

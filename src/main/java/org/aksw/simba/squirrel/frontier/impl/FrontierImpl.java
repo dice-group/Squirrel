@@ -93,9 +93,7 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
-        this(knownUriFilter, queue, null, doesRecrawling);
-        FrontierImpl.generalRecrawlTime = generalRecrawlTime;
-        this.timerPeriod = timerPeriod;
+        this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
     /**
@@ -133,8 +131,10 @@ public class FrontierImpl implements Frontier {
      *                       crawled.
      * @param graphLogger    {@link GraphLogger} used to log graphs.
      * @param doesRecrawling used to select if URIs should be recrawled.
+     * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
+     * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this.knownUriFilter = knownUriFilter;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
@@ -143,8 +143,10 @@ public class FrontierImpl implements Frontier {
         this.queue.open();
         this.knownUriFilter.open();
         this.doesRecrawling = doesRecrawling;
+        this.timerPeriod = timerPeriod;
+        FrontierImpl.generalRecrawlTime = generalRecrawlTime;
 
-        if (doesRecrawling) {
+        if (this.doesRecrawling) {
             timerRecrawling = new Timer();
             timerRecrawling.schedule(new TimerTask() {
                 @Override
@@ -152,7 +154,7 @@ public class FrontierImpl implements Frontier {
                     List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
-            }, timerPeriod, timerPeriod);
+            }, this.timerPeriod, this.timerPeriod);
         }
     }
 
