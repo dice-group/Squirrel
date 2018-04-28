@@ -66,11 +66,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         // get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
 
+        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+
         Cursor<HashMap> cursor = r.db(DATABASE_NAME)
             .table(TABLE_NAME)
             .filter(doc -> doc.getField(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()).and(
                 (doc.getField(COLUMN_CRAWLING_IN_PROCESS).eq(false))
-                    .or(doc.getField(COLUMN_TIMESTAMP_LAST_CRAWL).le(System.currentTimeMillis() - FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME * 3))))
+                    .or(doc.getField(COLUMN_TIMESTAMP_LAST_CRAWL).le(System.currentTimeMillis() - generalRecrawlTime * 3))))
             .run(connector.connection);
 
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
