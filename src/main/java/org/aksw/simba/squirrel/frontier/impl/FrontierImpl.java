@@ -74,7 +74,7 @@ public class FrontierImpl implements Frontier {
     /**
      * Default value for {@link #generalRecrawlTime} (one week).
      */
-    private static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
+    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
 
     /**
      * Default value for {@link #timerPeriod}.

@@ -32,11 +32,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public static final String DATABASE_NAME = "squirrel";
     public static final String TABLE_NAME = "knownurifilter";
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
-    private static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
+    public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
     public static final String COLUMN_URI = "uri";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
-    private static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
 
 
     public RDBKnownUriFilter(String hostname, Integer port) {
@@ -64,13 +64,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public List<CrawleableUri> getOutdatedUris() {
 
         // get all uris with the following property:
-        // (nextCrawlTimestamp has passed) and (crawlingInProcess==false || lastCrawlTimestamp is 3 times older than generalRecrawlTime)
+        // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
 
         Cursor<HashMap> cursor = r.db(DATABASE_NAME)
             .table(TABLE_NAME)
-            .filter(doc -> doc.getField(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()))
-            .filter(doc -> doc.getField(COLUMN_CRAWLING_IN_PROCESS).eq(false).
-                or(doc.getField(COLUMN_TIMESTAMP_LAST_CRAWL).le(System.currentTimeMillis() - FrontierImpl.getGeneralRecrawlTime() * 3)))
+            .filter(doc -> doc.getField(COLUMN_TIMESTAMP_NEXT_CRAWL).le(System.currentTimeMillis()).and(
+                (doc.getField(COLUMN_CRAWLING_IN_PROCESS).eq(false))
+                    .or(doc.getField(COLUMN_TIMESTAMP_LAST_CRAWL).le(System.currentTimeMillis() - FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME * 3))))
             .run(connector.connection);
 
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
