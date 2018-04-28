@@ -80,7 +80,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             try {
                 HashMap row = cursor.next();
                 String ipString = (String) row.get(COLUMN_IP);
-                ipString = ipString.split("/")[1];
+                if (ipString.contains("/")) {
+                    ipString = ipString.split("/")[1];
+                }
                 urisToRecrawl.add(new CrawleableUri(new URI((String) row.get(COLUMN_URI)), InetAddress.getByName(ipString)));
             } catch (URISyntaxException | UnknownHostException e) {
                 LOGGER.warn(e.toString());

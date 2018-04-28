@@ -1,9 +1,10 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
+import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
-import com.carrotsearch.hppc.ObjectLongOpenHashMap;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,21 +13,20 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
-    protected ObjectLongOpenHashMap<CrawleableUri> uris = new ObjectLongOpenHashMap<>();
+    protected ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris = new ObjectObjectOpenHashMap<>();
     protected long timeBeforeRecrawling;
 
     /**
      * Constructor.
      *
-     * @param timeBeforeRecrawling
-     *            time in milliseconds before a URI is crawled again. A negative
-     *            values turns disables recrawling.
+     * @param timeBeforeRecrawling time in milliseconds before a URI is crawled again. A negative
+     *                             values turns disables recrawling.
      */
     public InMemoryKnownUriFilter(long timeBeforeRecrawling) {
         this.timeBeforeRecrawling = timeBeforeRecrawling;
     }
 
-    public InMemoryKnownUriFilter(ObjectLongOpenHashMap<CrawleableUri> uris, long timeBeforeRecrawling) {
+    public InMemoryKnownUriFilter(ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris, long timeBeforeRecrawling) {
         this.uris = uris;
         this.timeBeforeRecrawling = timeBeforeRecrawling;
     }
@@ -38,7 +38,8 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        uris.put(uri, lastCrawlTimestamp);
+        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false);
+        uris.put(uri, uriInfo);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
             if (timeBeforeRecrawling < 0) {
                 return false;
             }
-            long nextCrawlingAt = uris.get(uri) + timeBeforeRecrawling;
+            long nextCrawlingAt = uris.get(uri).lastCrawlTimestamp + timeBeforeRecrawling;
             return nextCrawlingAt < System.currentTimeMillis();
         } else {
             return true;
@@ -56,19 +57,46 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     }
 
     @Override
-    public void open() {}
-
-    @Override
-    public List<CrawleableUri> getOutdatedUris() {
-        // TODO: implement!
-        return null;
+    public void open() {
     }
 
     @Override
-    public void close() {}
+    public List<CrawleableUri> getOutdatedUris() {
+        // get all uris with the following property:
+        // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
+
+        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
+        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+
+        for (CrawleableUri uri : uris.keys) {
+            if (uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis() &&
+                (!uris.get(uri).crawlingInProcess || uris.get(uri).lastCrawlTimestamp < System.currentTimeMillis() - generalRecrawlTime * 3)) {
+                urisToRecrawl.add(uri);
+                uris.get(uri).crawlingInProcess = true;
+            }
+        }
+        return urisToRecrawl;
+    }
+
+    @Override
+    public void close() {
+    }
 
     @Override
     public long count() {
         return uris.size();
+    }
+
+
+    private class UriInfo {
+        long lastCrawlTimestamp;
+        long nextCrawlTimestamp;
+        boolean crawlingInProcess;
+
+        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
+            this.lastCrawlTimestamp = lastCrawlTimestamp;
+            this.nextCrawlTimestamp = nextCrawlTimestamp;
+            this.crawlingInProcess = crawlingInProcess;
+        }
     }
 }
