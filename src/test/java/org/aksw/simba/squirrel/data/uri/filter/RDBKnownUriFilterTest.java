@@ -1,9 +1,10 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.rethinkdb.RethinkDB;
-import junit.framework.TestCase;
+import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.RethinkDBMockTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.junit.After;
 import org.junit.Assert;
@@ -53,10 +54,44 @@ public class RDBKnownUriFilterTest {
         filter.add(uri1, System.currentTimeMillis() - 10);
         filter.add(uri2, System.currentTimeMillis() + 50000);
 
+        // filter must return uri1 as it is outdated
         List<CrawleableUri> uris = filter.getOutdatedUris();
-
         Assert.assertEquals(1, uris.size());
         Assert.assertEquals(uri1, uris.get(0));
+
+        // set crawlingInProcess to true for uri1
+        Cursor<Boolean> cursor = r.db(RDBKnownUriFilter.DATABASE_NAME).table(RDBKnownUriFilter.TABLE_NAME).
+            filter(doc -> doc.getField(RDBKnownUriFilter.COLUMN_URI).eq(uri1.getUri().toString())).
+            getField(RDBKnownUriFilter.COLUMN_CRAWLING_IN_PROCESS).run(connector.connection);
+
+        // check if flag is true for uri1
+        Assert.assertTrue(cursor.next());
+
+        cursor = r.db(RDBKnownUriFilter.DATABASE_NAME).table(RDBKnownUriFilter.TABLE_NAME).
+            filter(doc -> doc.getField(RDBKnownUriFilter.COLUMN_URI).eq(uri2.getUri().toString())).
+            getField(RDBKnownUriFilter.COLUMN_CRAWLING_IN_PROCESS).run(connector.connection);
+
+        // check if flag is still false for uri2
+        Assert.assertFalse(cursor.next());
+
+
+        // filter must return nothing now
+        uris = filter.getOutdatedUris();
+        Assert.assertTrue(uris.isEmpty());
+
+        // manipulate lastCrawlTimestamp so that uri will be returned by filter
+        r.db(RDBKnownUriFilter.DATABASE_NAME).table(RDBKnownUriFilter.TABLE_NAME).
+            filter(doc -> doc.getField(RDBKnownUriFilter.COLUMN_URI).eq(uri1.getUri().toString())).
+            update(r.hashMap(RDBKnownUriFilter.COLUMN_TIMESTAMP_LAST_CRAWL,
+                System.currentTimeMillis() - 10 * FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME)).run(connector.connection);
+
+
+        // filter must return uri1 now again
+        uris = filter.getOutdatedUris();
+        Assert.assertEquals(1, uris.size());
+        Assert.assertEquals(uri1, uris.get(0));
+
+        cursor.close();
     }
 
     @After
