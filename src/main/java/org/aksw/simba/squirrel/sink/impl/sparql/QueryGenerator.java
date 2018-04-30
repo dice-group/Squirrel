@@ -7,20 +7,30 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This class is used to provides templates for basic SPARQL commands needed in this project.
  */
 public class QueryGenerator {
 
+    /**
+     * The instance of the class QueryGenerator.
+     */
     private static final QueryGenerator instance = new QueryGenerator();
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
-
 
     private QueryGenerator() {
     }
 
+    /**
+     * Getter for {@link #instance}.
+     *
+     * @return instannce of the class.
+     */
     public static QueryGenerator getInstance() {
         return instance;
     }
@@ -28,30 +38,30 @@ public class QueryGenerator {
     /**
      * Return an Add Query for the given graph id and triple.
      *
-     * @param graphIdentifier the given graph id.
-     * @param triples         The given triple.
+     * @param mapBufferedTriples the given map from uri to the List of triples.
      * @return The generated query.
      */
-    public String getAddQuery(String graphIdentifier, List<Triple> triples) {
-        String strQuery = "";
+    public String getAddQuery(ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("INSERT DATA {");
+        for (CrawleableUri uri : mapBufferedTriples.keySet()) {
+            stringBuilder.append(" Graph <");
+            stringBuilder.append(uri.getUri());
+            stringBuilder.append("> { ");
 
-        strQuery += "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
-        for (Triple triple : triples) {
-            strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> . ";
+            for (Triple triple : mapBufferedTriples.get(uri)) {
+                stringBuilder.append("<");
+                stringBuilder.append(triple.getSubject());
+                stringBuilder.append("> <");
+                stringBuilder.append(triple.getPredicate());
+                stringBuilder.append("> <");
+                stringBuilder.append(triple.getObject());
+                stringBuilder.append("> . ");
+            }
+            stringBuilder.append("} ");
         }
-        strQuery += "} }";
-        return strQuery;
-    }
-
-    /**
-     * Return an Add Query for a given uri and a triple.
-     *
-     * @param uri     The given Uri.
-     * @param triples The given triple.
-     * @return The generated query.
-     */
-    public String getAddQuery(CrawleableUri uri, List<Triple> triples) {
-        return getAddQuery(uri.getUri().toString(), triples);
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 
     /**
@@ -86,16 +96,23 @@ public class QueryGenerator {
      * @return
      */
     public Query getSelectQuery(CrawleableUri uri, Triple triple, boolean bSelectAll) {
-        String strQuery = "SELECT ?subject ?predicate ?object WHERE { GRAPH <" + uri.getUri().toString() + "> { ";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { GRAPH <");
+        stringBuilder.append(uri.getUri());
+        stringBuilder.append("> { ");
         if (bSelectAll) {
-            strQuery += "?subject ?predicate ?object ";
+            stringBuilder.append("?subject ?predicate ?object ");
         } else {
-            strQuery += triple.getSubject().getName() + " " + triple.getPredicate().getName() + " " + triple.getObject().getName() + " ; ";
+            stringBuilder.append(triple.getSubject().getName());
+            stringBuilder.append(" ");
+            stringBuilder.append(triple.getPredicate().getName());
+            stringBuilder.append(" ");
+            stringBuilder.append(triple.getObject().getName());
+            stringBuilder.append(" ; ");
         }
-        strQuery += "} }";
-        Query query = QueryFactory.create(strQuery);
+        stringBuilder.append("} } ");
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
-
 
 }
