@@ -33,15 +33,17 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      */
     private boolean frontierDoesRecrawling;
 
+    /*
+    Some constants for the rethinkdb
+     */
     public static final String DATABASE_NAME = "squirrel";
     public static final String TABLE_NAME = "knownurifilter";
-    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
     public static final String COLUMN_URI = "uri";
+    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
-    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
-
 
     /**
      * Constructor.
@@ -204,6 +206,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public long count() {
-        return r.db("squirrel").table("knownurifilter").count().run(connector.connection);
+        return r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
     }
 }
