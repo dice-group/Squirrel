@@ -37,6 +37,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
     public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
+    public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
+    public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
 
     private Worker worker;
     private DataSender sender;
@@ -56,13 +58,23 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             throw new Exception(msg);
         }
 
+        String sparqlDatasetPrefix;
+        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
+            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
+        } else {
+            String msg = "Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.";
+            throw new Exception(msg);
+        }
+        String updateDatasetURI = sparqlDatasetPrefix + "update";
+        String queryDatasetURI = sparqlDatasetPrefix + "query";
+
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink();
+        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
         UriCollector collector = SqlBasedUriCollector.create(serializer);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, collector, 2000, outputFolder + File.separator + "log");
@@ -118,7 +130,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void setWorker(Worker worker) {
         this.worker = worker;
     }
-
 
 
     @Override
