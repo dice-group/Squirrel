@@ -14,21 +14,36 @@ import java.util.List;
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
     protected ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris = new ObjectObjectOpenHashMap<>();
-    protected long timeBeforeRecrawling;
+    /**
+     * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
+     */
+    private boolean frontierDoesRecrawling;
 
     /**
      * Constructor.
      *
-     * @param timeBeforeRecrawling time in milliseconds before a URI is crawled again. A negative
-     *                             values turns disables recrawling.
+     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
      */
-    public InMemoryKnownUriFilter(long timeBeforeRecrawling) {
-        this.timeBeforeRecrawling = timeBeforeRecrawling;
+    public InMemoryKnownUriFilter(boolean frontierDoesRecrawling) {
+        this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
-    public InMemoryKnownUriFilter(ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris, long timeBeforeRecrawling) {
+    /**
+     * Constructor.
+     */
+    public InMemoryKnownUriFilter() {
+        this(false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param uris                   Value for {@link #uris}.
+     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
+     */
+    public InMemoryKnownUriFilter(ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris, boolean frontierDoesRecrawling) {
         this.uris = uris;
-        this.timeBeforeRecrawling = timeBeforeRecrawling;
+        this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
     @Override
@@ -45,12 +60,10 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         if (uris.containsKey(uri)) {
-            // if recrawling is disabled
-            if (timeBeforeRecrawling < 0) {
+            if (!frontierDoesRecrawling){
                 return false;
             }
-            long nextCrawlingAt = uris.get(uri).lastCrawlTimestamp + timeBeforeRecrawling;
-            return nextCrawlingAt < System.currentTimeMillis();
+            return uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis();
         } else {
             return true;
         }

@@ -33,7 +33,7 @@ public class RDBKnownUriFilterTest {
     public void setUp() throws IOException, InterruptedException {
         r = RethinkDB.r;
         connector = new RDBConnector(RethinkDBMockTest.DB_HOST_NAME, RethinkDBMockTest.DB_PORT);
-        filter = new RDBKnownUriFilter(connector, r);
+        filter = new RDBKnownUriFilter(connector, r, false);
 
         // to get rethinkdb container running
         rethinkDBMockTest = new RethinkDBMockTest();
