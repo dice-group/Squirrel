@@ -48,7 +48,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long nextCrawlTimestamp) {
-        add(uri, System.currentTimeMillis());
+        add(uri, System.currentTimeMillis(), nextCrawlTimestamp);
     }
 
     @Override
