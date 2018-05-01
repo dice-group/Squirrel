@@ -25,7 +25,9 @@ import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileBasedSink implements Sink {
+
+public class FileBasedSink implements Sink
+{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedSink.class);
 
@@ -50,30 +52,29 @@ public class FileBasedSink implements Sink {
     /**
      * Jena Language to use to write a model to file via the jena API
      */
-    protected Lang lang;
-    protected String fileExtension;
-    
+    protected Lang lang = Lang.TTL;
 
-    public FileBasedSink(File outputDirectory, boolean useCompression, Lang lang) {
+    public FileBasedSink(File outputDirectory, boolean useCompression)
+    {
         this.outputDirectory = outputDirectory;
         this.useCompression = useCompression;
-        this.lang = lang;
-        if(lang != null){
-            fileExtension = lang.getFileExtensions().get(0);
-        }
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
     @Override
-    public void addTriple(CrawleableUri uri, Triple triple) {
-    	String uriString = uri.getUri().toString();
-    	if(uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
-    		uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
-    	}
-        
+    public void addTriple(CrawleableUri uri, Triple triple)
+    {
+        String uriString = uri.getUri().toString();
+        if (uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI))
+        {
+            uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
+        }
+
         OutputStream outputStream = getStream(uri);
-        if (outputStream != null) {
-            try {
+        if (outputStream != null)
+        {
+            try
+            {
                 outputStream.write(PRE_URI);
                 outputStream.write(triple.getSubject().toString().getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
@@ -82,11 +83,14 @@ public class FileBasedSink implements Sink {
                 outputStream.write(triple.getPredicate().toString().getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
                 outputStream.write(SEPERATOR);
-                if (triple.getObject().isURI()) {
+                if (triple.getObject().isURI())
+                {
                     outputStream.write(PRE_URI);
                     outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
                     outputStream.write(POST_URI);
-                } else {
+                }
+                else
+                {
                     outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
                 }
                 outputStream.write(SEPERATOR);
@@ -94,98 +98,107 @@ public class FileBasedSink implements Sink {
                 outputStream.write(uriString.getBytes(Constants.DEFAULT_CHARSET));
                 outputStream.write(POST_URI);
                 outputStream.write(END_OF_QUAD);
-            } catch (Exception e) {
-                LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
-                        + uriString + "\". Ignoring it.", e);
             }
-        }
-    }
-    
-    @Override
-    public void addModel(CrawleableUri uri, Model model)
-    {
-        OutputStream os = getStream(uri);
-        if (os != null)
-        { 
-            StreamRDF rdfWriter = StreamRDFWriter.getWriterStream(os, lang);
-            StreamOps.graphToStream(model.getGraph(), rdfWriter);
-        }else{
-            LOGGER.error("Error opening OutputStream for URI {}. Could not write model to file.", uri.getUri().toString());
+            catch (Exception e)
+            {
+                LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
+                    + uriString + "\". Ignoring it.", e);
+            }
         }
     }
 
     @Override
-    public void addData(CrawleableUri uri, InputStream stream) {
+    public void addModel(CrawleableUri uri, Model model)
+    {
+        openSinkForUri(uri);
+        OutputStream os = getStream(uri);
+        if (os != null)
+        {
+            StreamRDF rdfWriter = StreamRDFWriter.getWriterStream(os, lang);
+            StreamOps.graphToStream(model.getGraph(), rdfWriter);
+        }
+        else
+        {
+            LOGGER.error("Error opening OutputStream for URI {}. Could not write model to file.", uri.getUri().toString());
+        }
+        closeSinkForUri(uri);
+    }
+
+    @Override
+    public void addData(CrawleableUri uri, InputStream stream)
+    {
         OutputStream outputStream = getStream(uri);
-        if (outputStream != null) {
-            try {
+        if (outputStream != null)
+        {
+            try
+            {
                 StreamUtils.copy(stream, outputStream);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 LOGGER.error("Exception while writing unstructed data to file.", e);
             }
         }
     }
 
     @Override
-    public void openSinkForUri(CrawleableUri uri) {
+    public void openSinkForUri(CrawleableUri uri)
+    {
         // Add the URI but do not open a stream
         streamMapping.put(uri.getUri().toString(), null);
     }
 
-    private OutputStream getStream(CrawleableUri uri) {
-                
-        String uriString = uri.getUri().toString();      
-        
-        //if the given uriString ends with the metadata suffix we want to use the Jena API to store the model to file and not use compression
-        boolean isMcloudMetadata = uriString.endsWith(Constants.MCLOUD_METADATA_URI_SUFFIX);
-        boolean compress = useCompression && !isMcloudMetadata;
-        
-        if (streamMapping.containsKey(uriString)) {
+    private OutputStream getStream(CrawleableUri uri)
+    {
+        String uriString = uri.getUri().toString();
+        if (streamMapping.containsKey(uriString))
+        {
             OutputStream outputStream = streamMapping.get(uriString);
-            if (outputStream == null) {
-                try {
+            if (outputStream == null)
+            {
+                try
+                {
                     outputStream = new FileOutputStream(outputDirectory.getAbsolutePath() + File.separator
-                            + generateFileName(uriString, compress, isMcloudMetadata, fileExtension));
-                    if (compress) {
+                        + generateFileName(uriString, useCompression));
+                    if (useCompression)
+                    {
                         outputStream = new GZIPOutputStream(outputStream);
                     }
                     streamMapping.put(uriString, outputStream);
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     LOGGER.error("Exception while trying to open file for \"" + uriString + "\" to use as sink.", e);
                 }
             }
             return outputStream;
-        } else {
+        }
+        else
+        {
             LOGGER.error(
-                    "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
-                    uri.getUri().toString());
+                "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
+                uri.getUri().toString());
             return null;
         }
     }
-    
+
     @Override
-    public void closeSinkForUri(CrawleableUri uri) {
+    public void closeSinkForUri(CrawleableUri uri)
+    {
         String uriString = uri.getUri().toString();
-        if (streamMapping.containsKey(uriString)) {
+        if (streamMapping.containsKey(uriString))
+        {
             IOUtils.closeQuietly(streamMapping.get(uriString));
             streamMapping.remove(uriString);
-        } else {
+        }
+        else
+        {
             LOGGER.error("Should close the sink for the URI \"" + uriString + "\" but couldn't find it.");
         }
     }
-    
-    /**
-     * @param uri to generate the filename for
-     * @param useCompression whether to compress the file into a gzip archive
-     * @param isMetadataFile true if given file stores a metadata dataset of a mCloud resource. In this case compression should not be used.
-     * @param fileExtension
-     * @return the filename as String
-     */
-    public static String generateFileName(String uri, boolean useCompression, boolean isMetadataFile, String fileExtension) {
-        
-        String filename = UriUtils.generateFileName(uri, useCompression);
-        return isMetadataFile ? "METADATA_" + filename + "." + fileExtension : filename;
-        
-    }
 
+    public static String generateFileName(String uri, boolean useCompression)
+    {
+        return UriUtils.generateFileName(uri, useCompression);
+    }
 }

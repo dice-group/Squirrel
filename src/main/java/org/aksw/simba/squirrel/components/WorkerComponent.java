@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.aksw.simba.squirrel.analyzer.impl.McloudAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.configurator.RobotsManagerConfiguration;
@@ -70,7 +69,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         uriSetRequest = serializer.serialize(new UriSetRequest());
         UriCollector collector = SqlBasedUriCollector.create(serializer);
 
-        Sink sink = new FileBasedSink(new File(outputFolder), true, McloudAnalyzer.lang);
+        Sink sink = new FileBasedSink(new File(outputFolder), false);
         worker = new WorkerImpl(this, sink, robotsmanager, serializer, collector, 2000,
                 outputFolder + File.separator + "log");
         LOGGER.info("Worker initialized.");

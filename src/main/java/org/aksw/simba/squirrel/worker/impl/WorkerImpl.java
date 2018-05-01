@@ -306,7 +306,6 @@ public class WorkerImpl implements Worker, Closeable
             LOGGER.debug("I start crawling {} now...", uri);
 
             Analyzer analyzer = new McloudAnalyzer(collector, sink);
-
             Analyzer rdfAnalyzer = new RDFAnalyzer(collector);
             Analyzer htmlScraperAnalyzer = new HTMLScraperAnalyzer(collector);
 

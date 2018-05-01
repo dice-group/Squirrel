@@ -146,12 +146,12 @@ public class FileBasedSinkTest {
     }
 
     protected Sink createSink(boolean useCompression) {
-        return new FileBasedSink(tempDirectory, useCompression, null);
+        return new FileBasedSink(tempDirectory, useCompression);
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) {
         
-        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression, false, null);
+        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()

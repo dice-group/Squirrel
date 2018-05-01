@@ -55,28 +55,15 @@ public class Constants
 
     public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
 
+    public static final String FETCHABLE_PROTOCOL = "resource-fetchable";
+
     //////////////////////////////////////////////////
     // mCloud related constants
     //////////////////////////////////////////////////
-    
-    public static final String MCLOUD_SEED = "https://www.mcloud.de/web/guest/suche/";
-    
-    //mCloud related URI data keys
-    public static final String URI_DATASET_TITLE = "dataset-title";
-    public static final String URI_DATASET_CATEGORIES = "dataset-categories";
-    public static final String URI_DATASET_DESCRIPTION = "dataset-description";
-    public static final String URI_DATASET_PROVIDER_NAME = "dataset-provider-name";
-    public static final String URI_DATASET_PROVIDER_URI = "dataset-provider-uri";
-    public static final String URI_DATASET_LICENSE = "dataset-license";
-    public static final String URI_DATASET_LICENSE_NAME = "dataset-license-name";
-    public static final String URI_DATASET_ACCESS_TYPE = "dataset-access-type";
-    public static final String URI_DATASET_READ_TIME = "dataset-retrieval-time";
-    public static final String MCLOUD_RESOURCE = "mCloud-resource";
-    public static final String MCLOUD_FETCHABLE = "mCloud-fetchable";
-    public static final String MCLOUD_METADATA_URI_SUFFIX = "#URI-METADATA";
-
     //do not change as long as URL doesn't change, used for URL construction
+    public static final String MCLOUD_SEED = "https://www.mcloud.de/web/guest/suche/";
     public static final String MCLOUD_SEARCH = "-/results/search/";
     public static final String MCLOUD_DETAIL = "-/results/detail/";
-    
+    public static final String MCLOUD_METADATA_URI = "metadata-uri";
+    public static final String MCLOUD_METADATA_GRAPH = "metadata-graph";
 }

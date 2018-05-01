@@ -12,7 +12,7 @@ public class LMCSE
     private static final Model M_MODEL = ModelFactory.createDefaultModel();
 
     /** <p>The namespace of the vocabulary as a string</p> */
-    public static final String NS = "http://limbo-mCloudStatisticsEngine.org/dcat#";
+    public static final String NS = "http://limbo-mCloudStatisticsEngine.org/metadata#";
 
     /** <p>The namespace of the vocabulary as a string</p>
      * @return namespace as String
@@ -28,16 +28,11 @@ public class LMCSE
     /** <p>The ontology's owl:versionInfo as a string</p> */
     public static final String VERSION_INFO = "1.0";
 
-    //Resources and Properties used by Squirrel to store metadata model
-    public static final Property mCloudResourceUri = M_MODEL.createProperty(NS + "mCloudResource");
-
-    /** <p>indicates which protocol/API can be used to download data</p> */
+    /** <p>indicates which protocol/API/Webservice can be used to download data</p> */
     public static final Property accessType = M_MODEL.createProperty(NS + "accessType");
 
-    /** <p>As long as triple stores are not available in Squirrel we store the data as files. 
-     *     To link the metadata dataset to the actual dataset we reference the filename that is constructed from the datasets URI.
-     *     Does not represent wheter compression is used or not</p> */
-    public static final Property fileBasedLink = M_MODEL.createProperty(NS + "fileBasedLink");
+    /** <p>The given resource gives a description of some sort about the object</p> */
+    public static final Property describes = M_MODEL.createProperty(NS + "describes");
 
     /** <p>Placeholder to collect all Datasets that have no category attached</p> */
     public static final String NullCategory = NS + "NullCategory";

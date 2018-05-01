@@ -20,10 +20,10 @@ public class UriUtils
 
     /**
      * Max file name length for linux OS is 256, some URIs are very long and will exceed that limit
-     * leading to the file not being created. To avoid this error the file name should have a limit of 250 characters
-     * to leave some space for the file extensions
+     * leading to the file not being created. To avoid this error the file name should have a limit of 200 characters
+     * to leave some space for the path and file extension
      */
-    public static final int MAX_FILE_NAME_LENGTH = 250;
+    public static final int MAX_FILE_NAME_LENGTH = 200;
 
     @Deprecated
     public static List<CrawleableUri> createCrawleableUriList(@SuppressWarnings("rawtypes") ArrayList uris, UriType type)
@@ -101,8 +101,9 @@ public class UriUtils
         }
         return false;
     }
-    
-    public static String getDomainName(String url) throws URISyntaxException {
+
+    public static String getDomainName(String url) throws URISyntaxException
+    {
         URI uri = new URI(url);
         String domain = uri.getHost();
         return domain.startsWith("www.") ? domain.substring(4) : domain;
