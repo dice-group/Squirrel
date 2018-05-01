@@ -48,9 +48,10 @@ public class FileBasedSink implements Sink
      * Synchronized mapping of crawled URIs to their output stream.
      */
     protected Map<String, OutputStream> streamMapping = MapUtils.synchronizedMap(new HashMap<String, OutputStream>());
-    
+
     /**
-     * Jena Language to use to write a model to file via the jena API
+     * Defines the language to use when writing graphs to file via the Jena Stream API
+     * Be careful, not all Languages support the stream serialization {@link https://jena.apache.org/documentation/io/streaming-io.html}
      */
     protected Lang lang = Lang.TTL;
 

@@ -17,6 +17,8 @@ import org.apache.jena.graph.Triple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -27,7 +29,7 @@ import org.jsoup.select.Elements;
  */
 public class HtmlScraper {
 	
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(HtmlScraper.class);
 	
 	private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
 	
@@ -37,7 +39,7 @@ public class HtmlScraper {
 		try {
 			yamlFiles = new YamlFilesParser(file).getYamlFiles();
 		} catch (Exception e) {
-			
+			LOGGER.error("An error occurred when trying to scrape HTML files", e);
 		}
 	}
 	
@@ -45,7 +47,7 @@ public class HtmlScraper {
 		try {
 			yamlFiles = new YamlFilesParser().getYamlFiles();
 		} catch (Exception e) {
-			
+			LOGGER.error("An error occurred when trying to scrape HTML files", e);
 		}
 
 	}
@@ -107,7 +109,7 @@ public class HtmlScraper {
 						
 					}
 				}catch(Exception e) {
-					throw new Exception(e);
+					LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
 				}
 				
 				for(int i=0; i<elements.size();i++) {

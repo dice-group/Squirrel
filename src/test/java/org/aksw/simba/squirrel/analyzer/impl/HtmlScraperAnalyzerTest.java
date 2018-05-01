@@ -109,6 +109,7 @@ public class HtmlScraperAnalyzerTest {
 		expectedTriplesMcloudResultPage.add(new Triple(s,p,
 				NodeFactory.createURI("https://www.mcloud.de/web/guest/suche/-/results/detail/mdmarbeitsstellenlngererdaueraufbabinthringen?_mysearchportlet_backURL=https%3A%2F%2Fwww.mcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mysearchportlet_currentAggs%3Dextras.subgroups%253A%2522roads%2522%26_mysearchportlet_page%3D0")));
 		
+		
 	}
 	
 	@Test
@@ -144,7 +145,7 @@ public class HtmlScraperAnalyzerTest {
 		 
 		 
 	}
-	@Test
+	
 	public void testAnalyzer() throws URISyntaxException {
 		CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten/-/details/jahresbericht-der-bundespolizei-2014"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");

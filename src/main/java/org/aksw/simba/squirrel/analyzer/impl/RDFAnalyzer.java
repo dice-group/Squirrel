@@ -2,19 +2,15 @@ package org.aksw.simba.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -22,7 +18,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +54,7 @@ public class RDFAnalyzer implements Analyzer {
             Lang lang = null;
             String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
             StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
-            if (contentType != null) {
+            if (contentType != null ) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
                 RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
             } else {

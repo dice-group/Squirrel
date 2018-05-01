@@ -12,9 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
-import org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer;
-import org.aksw.simba.squirrel.analyzer.impl.McloudAnalyzer;
-import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
+import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -53,6 +51,7 @@ public class WorkerImpl implements Worker, Closeable
     protected Frontier frontier;
     protected Sink sink;
     protected UriCollector collector;
+    protected Analyzer analyzer;
     protected RobotsManager manager;
     protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
     protected Fetcher fetcher;
@@ -201,7 +200,10 @@ public class WorkerImpl implements Worker, Closeable
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
             // new SparqlBasedFetcher(),
-            new HTTPFetcher(), new FTPFetcher());
+            new HTTPFetcher(),
+            new FTPFetcher());
+
+        analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
 
     @Override
@@ -305,10 +307,6 @@ public class WorkerImpl implements Worker, Closeable
             }
             LOGGER.debug("I start crawling {} now...", uri);
 
-            Analyzer analyzer = new McloudAnalyzer(collector, sink);
-            Analyzer rdfAnalyzer = new RDFAnalyzer(collector);
-            Analyzer htmlScraperAnalyzer = new HTMLScraperAnalyzer(collector);
-
             FileManager fm = new FileManager();
 
             File fetched = null;
@@ -341,7 +339,6 @@ public class WorkerImpl implements Worker, Closeable
 
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList = null;
-
             for (File data : fetchedFiles)
             {
                 if (data != null)
@@ -354,13 +351,9 @@ public class WorkerImpl implements Worker, Closeable
                             // open the sink only if a fetcher has been found
                             sink.openSinkForUri(uri);
                             collector.openSinkForUri(uri);
-                            Iterator<byte[]> resultRdf = rdfAnalyzer.analyze(uri, file, sink);
-                            Iterator<byte[]> resultHtmlScraper = htmlScraperAnalyzer.analyze(uri, data, sink);
-                            Iterator<byte[]> result = analyzer.analyze(uri, file, sink);
+                            Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                             sink.closeSinkForUri(uri);
-                            sendNewUris(resultRdf);
-                            sendNewUris(resultHtmlScraper);
-                            sendNewUris(result);
+                            sendNewUris(resultUris);
                             collector.closeSinkForUri(uri);
                         }
                         catch (Exception e)

@@ -60,12 +60,6 @@ public class McloudAnalyzer implements Analyzer
     private static final String METADATA_URI_SUFFIX = "#URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
-//    /**
-//     * Defines the language to use when storing data sets depicting mCloud meta data to file with the Jena Stream API.
-//     * Be careful, not all Languages support the stream serialization {@link https://jena.apache.org/documentation/io/streaming-io.html}
-//     */
-//    public static final Lang lang = Lang.TURTLE;
-//    public static final String fileExt = lang.getFileExtensions().get(0);
 
     // fugly collection of mCloud HTML scraping related constants for css selector
     private final String paginationElement = "ul.pagination__list.mq-hide-m";
@@ -87,13 +81,11 @@ public class McloudAnalyzer implements Analyzer
     private final String tagSmall = "small";
 
     private UriCollector collector;
-    private MCloudDataSink mCloudSink;
     private Set<String> dynamicUris;
 
-    public McloudAnalyzer(UriCollector collector, Sink sink)
+    public McloudAnalyzer(UriCollector collector)
     {
         this.collector = collector;
-        this.mCloudSink = new MCloudDataSink(sink);
         dynamicUris = new HashSet<>();
     }
 
@@ -124,9 +116,24 @@ public class McloudAnalyzer implements Analyzer
         }
         else if (curi.getData().containsKey(Constants.MCLOUD_DETAIL))
         {
+            MCloudDataSink mCloudSink = new MCloudDataSink(sink);
             try
             {
-                processDetailPage(curi, data);
+                Iterator<CrawleableUri> resourceIterator = scrapeDetailPage(curi, data);
+
+                while (resourceIterator.hasNext())
+                {
+                    CrawleableUri crawledUri = resourceIterator.next();
+                    mCloudSink.sinkCatalogData(crawledUri);
+
+                    //because for now we are only able to process FTP and HTTP downloads, 
+                    //let's filter URIs from other protocols here to save on many failed fetcher attempts
+                    //this can be extended e.g. if API implementations are available
+                    if (curi.getData().containsKey(Constants.FETCHABLE_PROTOCOL))
+                    {
+                        collector.addNewUri(curi, crawledUri);
+                    }
+                }
             }
             catch (IOException e)
             {
@@ -135,6 +142,7 @@ public class McloudAnalyzer implements Analyzer
         }
         else if (downloadDataSets && data != null && curi.getData().containsKey(Constants.MCLOUD_METADATA_GRAPH))
         {
+            MCloudDataSink mCloudSink = new MCloudDataSink(sink);
             try
             {
                 mCloudSink.sinkData(curi, data);
@@ -206,29 +214,10 @@ public class McloudAnalyzer implements Analyzer
         }
     }
 
-    protected void processDetailPage(CrawleableUri baseUri, File data) throws IOException
-    {
-        LOGGER.debug("Collecting and processing metadata for {}", baseUri.getUri().toString());
-
-        Iterator<CrawleableUri> resourceIterator = scrapeDetailPage(baseUri, data);
-
-        while (resourceIterator.hasNext())
-        {
-            CrawleableUri curi = resourceIterator.next();
-            mCloudSink.sinkCatalogData(curi);
-
-            //because for now we are only able to process FTP and HTTP downloads, 
-            //let's filter URIs from other protocols here to save on many failed fetcher attempts
-            //this can be extended e.g. if API implementations are available
-            if (curi.getData().containsKey(Constants.FETCHABLE_PROTOCOL))
-            {
-                collector.addNewUri(baseUri, curi);
-            }
-        }
-    }
-
     private Iterator<CrawleableUri> scrapeDetailPage(CrawleableUri baseUri, File data) throws IOException
     {
+        LOGGER.debug("Collecting and processing metadata for {}", baseUri.getUri().toString());
+        
         String detailURI = baseUri.getUri().toString();
         LOGGER.debug("Scraping data from {}", detailURI);
         Document detailPage = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), detailURI);
