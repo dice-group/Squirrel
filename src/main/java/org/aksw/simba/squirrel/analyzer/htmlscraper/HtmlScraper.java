@@ -62,11 +62,24 @@ public class HtmlScraper {
 			
 			for(Entry<String,Map<String, Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
 				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
-					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
-						@SuppressWarnings("unchecked")
-						Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
-						listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
+					
+					List<String> regexList = new ArrayList<String>();
+					
+					if(cfg.getValue() instanceof List<?> && ((ArrayList<String>) cfg.getValue()).size() > 1) {
+						regexList = (ArrayList<String>) cfg.getValue();
+					}else {
+						regexList.add(cfg.getValue().toString().toLowerCase());
 					}
+					
+					for(String regex : regexList) {
+						if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase())) {
+							@SuppressWarnings("unchecked")
+							Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
+							listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
+							break;
+						}						
+					}
+					
 				}
 			}
 			

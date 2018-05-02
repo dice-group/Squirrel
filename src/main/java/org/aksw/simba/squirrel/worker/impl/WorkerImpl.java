@@ -244,7 +244,7 @@ public class WorkerImpl implements Worker, Closeable {
         // check robots.txt
 
     	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
-
+    	LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
