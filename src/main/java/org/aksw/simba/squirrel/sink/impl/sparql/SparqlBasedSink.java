@@ -3,10 +3,6 @@ package org.aksw.simba.squirrel.sink.impl.sparql;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -15,9 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -38,10 +31,6 @@ public class SparqlBasedSink implements Sink {
      * The data structure (map) in which the triples are buffered.
      */
     private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
-    /**
-     * Counter for the already buffered triples
-     */
-    private long bufferedTriplesCounter;
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
@@ -63,43 +52,39 @@ public class SparqlBasedSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
+        mapBufferedTriples.get(uri).add(triple);
 
-        if (!mapBufferedTriples.containsKey(uri)) {
-            mapBufferedTriples.put(uri, new ConcurrentLinkedQueue<>());
-        }
-        ((ConcurrentLinkedQueue) mapBufferedTriples.get(uri)).add(triple);
-        bufferedTriplesCounter++;
-
-        if (bufferedTriplesCounter >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
-            bufferedTriplesCounter = 0;
-            sendAllTriplesToDB();
+        if (mapBufferedTriples.get(uri).size() >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
+            sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
         }
     }
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-        mapBufferedTriples = new ConcurrentHashMap<>();
+        mapBufferedTriples.put(uri, new ConcurrentLinkedQueue<>());
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-        if (!mapBufferedTriples.isEmpty()) {
-            sendAllTriplesToDB();
+        if (!mapBufferedTriples.get(uri).isEmpty()) {
+            sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
         }
-        mapBufferedTriples.clear();
+        mapBufferedTriples.remove(uri);
     }
 
     /**
      * Method to send all buffered triples to the database
+     * @param uri
+     * @param tripleList
      */
-    private void sendAllTriplesToDB() {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(mapBufferedTriples));
+    private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
-        mapBufferedTriples.clear();
     }
 
     @Override
     public void addData(CrawleableUri uri, InputStream stream) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -36,20 +36,18 @@ public class QueryGenerator {
     }
 
     /**
-     * Return an Add Query for the given graph id and triple.
-     *
-     * @param mapBufferedTriples the given map from uri to the List of triples.
+     *Return an Add Query for the given uri and its triples.
+     * @param uri the uri where the triples found.
+     * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
-    public String getAddQuery(ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples) {
+    public String getAddQuery(CrawleableUri uri, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("INSERT DATA {");
-        for (CrawleableUri uri : mapBufferedTriples.keySet()) {
-            stringBuilder.append(" Graph <");
+        stringBuilder.append("INSERT DATA { Graph <");
+        stringBuilder.append("0430");
             stringBuilder.append(uri.getUri());
             stringBuilder.append("> { ");
-
-            for (Triple triple : mapBufferedTriples.get(uri)) {
+        for (Triple triple : listBufferedTriples) {
                 stringBuilder.append("<");
                 stringBuilder.append(triple.getSubject());
                 stringBuilder.append("> <");
@@ -59,7 +57,6 @@ public class QueryGenerator {
                 stringBuilder.append("> . ");
             }
             stringBuilder.append("} ");
-        }
         stringBuilder.append("}");
         return stringBuilder.toString();
     }
