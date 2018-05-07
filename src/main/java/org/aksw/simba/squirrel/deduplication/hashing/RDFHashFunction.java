@@ -15,5 +15,5 @@ public interface RDFHashFunction {
      * @param triples The given list of {@ink Triple}s.
      * @return The hash value.
      */
-    int hash(List<Triple> triples);
+    List<Integer> hash(List<Triple> triples);
 }

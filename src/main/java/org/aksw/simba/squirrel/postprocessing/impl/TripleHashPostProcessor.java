@@ -1,12 +1,12 @@
 package org.aksw.simba.squirrel.postprocessing.impl;
 
-import org.aksw.simba.squirrel.deduplication.hashing.impl.MinHashFunction;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
 import org.aksw.simba.squirrel.postprocessing.PostProcessor;
 import org.apache.jena.graph.Triple;
 
 import java.util.List;
 
-public class TripleHashPostProcessor implements PostProcessor<Integer> {
+public class TripleHashPostProcessor implements PostProcessor {
 
     private List<Triple> triples;
 
@@ -15,7 +15,7 @@ public class TripleHashPostProcessor implements PostProcessor<Integer> {
     }
 
     @Override
-    public Integer postprocess() {
-        return new MinHashFunction().hash(triples);
+    public void postprocess() {
+        new IntervalBasedMinHashFunction().hash(triples);
     }
 }

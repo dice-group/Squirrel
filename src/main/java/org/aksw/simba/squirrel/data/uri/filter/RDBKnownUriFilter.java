@@ -37,6 +37,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
     public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    private static final String COLUMN_HASH_VALUE = "hashValue";
 
 
     public RDBKnownUriFilter(String hostname, Integer port) {
@@ -117,11 +118,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         if (cursor.hasNext()) {
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_HASH_VALUE, -1));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
         } else {
             r.db(DATABASE_NAME)
                 .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false))
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, -1))
                 .run(connector.connection);
         }
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
@@ -136,11 +138,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TYPE, uriType.toString());
     }
 
-    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
+    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess, int hashValue) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
-            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
+            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess)
+            .with(COLUMN_HASH_VALUE, hashValue);
     }
 
     @Override
