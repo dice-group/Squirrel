@@ -1,6 +1,8 @@
 package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -98,7 +100,7 @@ public class HtmlScraper {
 
 
 		List<String> resourcesList = new ArrayList<String>();
-		Node objectNode;
+		Node objectNode = null;
 		for(Entry<String, Object> entry: 
 			resources.entrySet()) {
 			resourcesList.clear();
@@ -127,9 +129,25 @@ public class HtmlScraper {
 				
 				for(int i=0; i<elements.size();i++) {
 					if(elements.get(i).hasAttr("href")) {
-						objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+						if(!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
+							URL url = new URL(uri);
+							String path = elements.get(i).attr("href");
+							String base = url.getProtocol() + "://" + url.getHost() + path;
+							objectNode = NodeFactory.createURI(base);
+						}else {
+							objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+						}
 					}else {
-						objectNode = NodeFactory.createLiteral(elements.get(i).text());
+						boolean uriFlag = true;
+						try {
+							URL url = new URL(elements.get(i).text());
+						}catch(MalformedURLException e) {
+							uriFlag = false;
+							objectNode = NodeFactory.createLiteral(elements.get(i).text());
+						}
+						if(uriFlag) {
+							objectNode = NodeFactory.createURI(elements.get(i).text());	
+						}
 					}
 					
 					Triple triple = new Triple(s, p, objectNode);
