@@ -42,10 +42,10 @@ public interface Frontier {
      * Adds the given list of URIs to the {@link Frontier}. It is like calling
      * {@link #addNewUri(CrawleableUri)} with every single URI.
      *
-     * @param uris
+     * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    void addNewUris(List<CrawleableUri> uris);
+    void addNewUris(List<CrawleableUri> newUris);
 
     /**
      * This method should be called after a list of URIs have been requested

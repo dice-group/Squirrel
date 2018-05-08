@@ -83,7 +83,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if (env.containsKey(VISUALIZATION_OF_CRAWLED_GRAPH)) {
             visualizationOfCrawledGraphEnabaled = env.get(VISUALIZATION_OF_CRAWLED_GRAPH).equalsIgnoreCase("true");
-            LOGGER.info("Set the visualization of the crawled graph feature to " + communicationWithWebserviceEnabled);
+            LOGGER.info("Set the visualization of the crawled graph feature to " + visualizationOfCrawledGraphEnabaled);
         } else {
             visualizationOfCrawledGraphEnabaled = false;
             LOGGER.warn("Couldn't get {" + VISUALIZATION_OF_CRAWLED_GRAPH + "} from the environment. Communication to the Webservice is disabled!");

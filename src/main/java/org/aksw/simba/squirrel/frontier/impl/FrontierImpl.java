@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.frontier.impl;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithReferences;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -124,12 +125,18 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
-        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
-        Enumeration<List<CrawleableUri>> newUrisEnumeration = uriMap.elements();
-        while (newUrisEnumeration.hasMoreElements()) {
-            newUris.addAll(newUrisEnumeration.nextElement());
-        }
         List<CrawleableUri> crawledUris = Collections.list(uriMap.keys());
+
+        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+        Enumeration<CrawleableUri> newUrisEnumeration = uriMap.keys();
+        while (newUrisEnumeration.hasMoreElements()) {
+            CrawleableUri uri = newUrisEnumeration.nextElement();
+            newUris.addAll(uriMap.get(uri));
+            if (knownUriFilter instanceof RDBKnownUriFilterWithReferences)
+                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis());
+            else
+                knownUriFilter.add(uri);
+        }
 
         // If there is a graph logger, log the data
         if (graphLogger != null) {
@@ -148,9 +155,9 @@ public class FrontierImpl implements Frontier {
             ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
         }
         // send list of crawled URIs to the knownUriFilter
-        for (CrawleableUri uri : crawledUris) {
-            knownUriFilter.add(uri);
-        }
+        //for (CrawleableUri uri : crawledUris) {
+        //    knownUriFilter.add(uri);
+        //}
 
         // Add the new URIs to the Frontier
         addNewUris(newUris);

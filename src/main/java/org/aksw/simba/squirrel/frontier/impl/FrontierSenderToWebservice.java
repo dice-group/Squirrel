@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.frontier.impl;
 
 import com.SquirrelWebObject;
 import com.graph.VisualisationGraph;
+import com.graph.VisualisationNode;
 import com.rabbitmq.client.Channel;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
@@ -117,8 +118,9 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
                     if (sendCrawledGraph) {
                         // if something changed in general, then probably the crawled graph, too
-                        webQueue.basicPublish("", WEB_QUEUE_GRAPH_NAME, null, generateVisualisationGraph().convertToByteStream());
-                        LOGGER.debug("Putted a new crawled graph into the queue " + WEB_QUEUE_GRAPH_NAME);
+                        VisualisationGraph graph = generateVisualisationGraph();
+                        webQueue.basicPublish("", WEB_QUEUE_GRAPH_NAME, null, graph.convertToByteStream());
+                        LOGGER.info("Putted a new crawled graph into the queue " + WEB_QUEUE_GRAPH_NAME + " with " + graph.getNodes().length + " nodes and " + graph.getEdges().length + " edges!");
                     }
                 }
                 Thread.sleep(100);
@@ -185,13 +187,18 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         }
 
         VisualisationGraph graph = new VisualisationGraph();
-        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(0, true, true);
+        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(25, true, false);
 
         int counter = 0;
         while (iterator.hasNext() && counter < 25) {
             AbstractMap.SimpleEntry<String, List<String>> nextNode = iterator.next();
-            graph.addNode(nextNode.getKey()).setColor((counter == 0) ? Color.ORANGE : ((counter <= 20) ? Color.GRAY : Color.GREEN));
+            VisualisationNode g = graph.addNode(nextNode.getKey());
+            if (g != null)
+                g.setColor((counter == 0) ? Color.ORANGE : ((counter <= 20) ? Color.GRAY : Color.GREEN));
             nextNode.getValue().forEach(v -> graph.addEdge(nextNode.getKey(), v));
+            ////////
+            LOGGER.debug("Retrieves a node from the crawled graph with the knownUriFilter-Iterator: " + graph.getNode(nextNode.getKey()) + ", including " + graph.getEdges(graph.getNode(nextNode.getKey())).length + " edges, counter is " + counter);
+            ////////
 
             counter++;
         }

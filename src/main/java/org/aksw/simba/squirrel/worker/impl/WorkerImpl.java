@@ -215,9 +215,7 @@ public class WorkerImpl implements Worker, Closeable {
                 crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    List<CrawleableUri> newUris = new ArrayList<>();
-                    performCrawling(uri, newUris);
-                    uriMap.put(uri, newUris);
+                    uriMap.put(uri, performCrawling(uri));
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
@@ -242,8 +240,9 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+    public List<CrawleableUri> performCrawling(CrawleableUri uri) {
         // check robots.txt
+        List<CrawleableUri> ret = new ArrayList<>();
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
@@ -265,7 +264,7 @@ public class WorkerImpl implements Worker, Closeable {
                     collector.openSinkForUri(uri);
                     Iterator<byte[]> result = analyzer.analyze(uri, data, sink);
                     sink.closeSinkForUri(uri);
-                    sendNewUris(result);
+                    ret.addAll(sendNewUris(result));
                     collector.closeSinkForUri(uri);
                 } catch (Exception e) {
                     // We don't want to handle the exception. Just make sure that sink and collector
@@ -279,6 +278,8 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
+
+        return ret;
     }
 
     @Override
@@ -291,23 +292,26 @@ public class WorkerImpl implements Worker, Closeable {
         return sendAliveMessages;
     }
 
-    public void sendNewUris(Iterator<byte[]> uriIterator) {
-        List<CrawleableUri> uris = new ArrayList<>(10);
-        CrawleableUri uri;
+    public List<CrawleableUri> sendNewUris(Iterator<byte[]> uriIterator) {
+        List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
+        CrawleableUri newUri;
+        int packageCount = 0;
         while (uriIterator.hasNext()) {
             try {
-                uri = serializer.deserialize(uriIterator.next());
-                uriProcessor.recognizeUriType(uri);
-                uris.add(uri);
-                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(uris);
-                    uris.clear();
+                newUri = serializer.deserialize(uriIterator.next());
+                uriProcessor.recognizeUriType(newUri);
+                newUris.add(newUri);
+                if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    frontier.addNewUris(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size()));
+                    packageCount++;
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        frontier.addNewUris(uris);
+        frontier.addNewUris(newUris);
+
+        return newUris;
     }
 
     @Override
