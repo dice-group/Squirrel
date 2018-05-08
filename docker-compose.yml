@@ -15,11 +15,13 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - SEED_FILE=/var/squirrel/seeds.txt
+      - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - RDB_HOST_NAME=rethinkdb
       - RDB_PORT=28015
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
+      - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
 
   rethinkdb:
@@ -45,8 +47,10 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
+      - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
     volumes:
         - ./data/worker1:/var/squirrel/data
+        - ./yaml:/var/squirrel/yaml
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
   worker2:
@@ -55,8 +59,10 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
+      - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
     volumes:
         - ./data/worker2:/var/squirrel/data
+        - ./yaml:/var/squirrel/yaml
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
   worker3:
@@ -65,8 +71,10 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
+      - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
     volumes:
         - ./data/worker3:/var/squirrel/data
+        - ./yaml:/var/squirrel/yaml
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
 
 networks:
