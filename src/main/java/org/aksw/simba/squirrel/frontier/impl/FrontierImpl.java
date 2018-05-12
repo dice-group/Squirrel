@@ -231,6 +231,11 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
+    public boolean doesRecrawling() {
+        return doesRecrawling;
+    }
+
+    @Override
     public void close() {
         timerRecrawling.cancel();
     }
