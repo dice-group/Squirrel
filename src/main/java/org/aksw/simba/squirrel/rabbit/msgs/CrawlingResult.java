@@ -58,7 +58,7 @@ public class CrawlingResult implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("CrawlingResult [crawledUris=");
+        builder.append("CrawlingResult [crawledUriDatePairs=");
         builder.append(crawledUris);
         builder.append(", newUris=");
         builder.append(newUris);

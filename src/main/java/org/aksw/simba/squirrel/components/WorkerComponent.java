@@ -43,7 +43,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
-    private Timer timer;
+    private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
@@ -72,10 +72,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         serializer = new GzipJavaUriSerializer();
         uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 
-        timer = new Timer();
-
         if (worker.sendsAliveMessages()) {
-            timer.schedule(new TimerTask() {
+            timerAliveMessages = new Timer();
+            timerAliveMessages.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
@@ -99,7 +98,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void close() throws IOException {
         IOUtils.closeQuietly(sender);
         IOUtils.closeQuietly(client);
-        timer.cancel();
+        timerAliveMessages.cancel();
         super.close();
     }
 
@@ -153,6 +152,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
+    }
+
+    @Override
+    public boolean doesRecrawling() {
+        return false;
     }
 
 }
