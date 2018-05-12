@@ -7,11 +7,11 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
@@ -114,7 +114,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Override
     public void run() throws Exception {
         if (communicationWithWebserviceEnabled) {
-            Thread sender = new Thread(new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter));
+            Thread sender = new Thread(/*new FrontierSenderToWebservice(workerGuard, queue, knownUriFilter)*/);
             sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             sender.start();
             LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
@@ -185,6 +185,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
 
+            } else if (object instanceof HashValueUriPair) {
+                HashValueUriPair hashValueUriPair = (HashValueUriPair) object;
+                frontier.addHashValueForUri(hashValueUriPair.hashValue, hashValueUriPair.uri);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

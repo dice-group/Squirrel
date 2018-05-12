@@ -6,6 +6,8 @@ import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.ListHashValue;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
@@ -14,6 +16,7 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
@@ -21,6 +24,7 @@ import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
+import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -238,7 +242,6 @@ public class WorkerImpl implements Worker, Closeable {
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         Integer count = 0;
-        //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
 
@@ -275,6 +278,10 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
+        //TODO: get triples somehow!
+        List<Triple> triples = new ArrayList<>();
+        TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri, new ListHashValue());
+        tripleHashPostProcessor.postprocess();
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
@@ -311,6 +318,11 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         frontier.addNewUris(uris);
+    }
+
+    public void sendHashValue(HashValue value, CrawleableUri uri) {
+        // TODO: send hash value together with uri to frontier
+        frontier.addHashValueForUri(value, uri);
     }
 
     @Override

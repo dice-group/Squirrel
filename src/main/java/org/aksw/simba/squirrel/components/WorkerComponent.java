@@ -7,6 +7,8 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
@@ -152,6 +154,15 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
+    }
+
+    @Override
+    public void addHashValueForUri(HashValue value, CrawleableUri uri) {
+        try {
+            sender.sendData(serializer.serialize(new HashValueUriPair(value, uri)));
+        } catch (Exception e) {
+            LOGGER.error("Exception while sending hash value to the frontier.", e);
+        }
     }
 
 }

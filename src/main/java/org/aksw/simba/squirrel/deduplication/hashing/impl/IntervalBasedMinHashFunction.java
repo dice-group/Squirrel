@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.deduplication.hashing.RDFHashFunction;
 import org.apache.jena.graph.Triple;
 
@@ -19,7 +20,7 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
     }
 
     @Override
-    public List<Integer> hash(List<Triple> triples) {
+    public HashValue hash(List<Triple> triples) {
 
         List<Integer> list1 = new ArrayList<>();
         List<Integer> list2 = new ArrayList<>();
@@ -52,7 +53,7 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
         List<Integer> listHashValues = new ArrayList<>();
         listHashValues.add(min1);
         listHashValues.add(min2);
-        return listHashValues;
+        return new ListHashValue(listHashValues);
     }
 
     public class IntTuple {

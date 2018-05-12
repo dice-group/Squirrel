@@ -4,8 +4,10 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
+import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -49,6 +51,8 @@ public class FrontierImpl implements Frontier {
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
     protected GraphLogger graphLogger;
+
+    private TripleHashPostProcessor tripleHashPostProcessor;
 
 
     /**
@@ -145,7 +149,6 @@ public class FrontierImpl implements Frontier {
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
         FrontierImpl.generalRecrawlTime = generalRecrawlTime;
-
         if (this.doesRecrawling) {
             timerRecrawling = new Timer();
             timerRecrawling.schedule(new TimerTask() {
@@ -212,9 +215,10 @@ public class FrontierImpl implements Frontier {
                 ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
             }
         }
-        // send list of crawled URIs to the knownUriFilter
+        // send list of crawled URIs to the knownUriFilter and start post processing of hash values
         for (CrawleableUri uri : crawledUris) {
             knownUriFilter.add(uri, uri.getTimestampNextCrawl());
+
         }
 
         // Add the new URIs to the Frontier
@@ -228,6 +232,11 @@ public class FrontierImpl implements Frontier {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public void addHashValueForUri(HashValue value, CrawleableUri uri) {
+        knownUriFilter.addHashValueForUri(uri, value);
     }
 
     @Override

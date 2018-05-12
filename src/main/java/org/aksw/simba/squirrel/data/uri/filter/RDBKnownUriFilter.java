@@ -5,6 +5,7 @@ import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
@@ -38,6 +39,8 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_TYPE = "type";
     public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
     private static final String COLUMN_HASH_VALUE = "hashValue";
+
+    private static final String DUMMY_HASH_VALUE = "dummyValue";
 
 
     public RDBKnownUriFilter(String hostname, Integer port) {
@@ -118,15 +121,31 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         if (cursor.hasNext()) {
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_HASH_VALUE, -1));
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
         } else {
             r.db(DATABASE_NAME)
                 .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, -1))
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
                 .run(connector.connection);
         }
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+    }
+
+    @Override
+    public void addHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+        r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+            update(r.hashMap(COLUMN_HASH_VALUE, hashValue.encodeToString())).run(connector.connection);
+    }
+
+    @Override
+    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+        Cursor<String> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).getField(COLUMN_HASH_VALUE).run(connector.connection);
+        if (cursor.hasNext()) {
+            return hashValue.decodeFromString(cursor.next());
+        } else {
+            throw new RuntimeException("The uri is not contained in the uri filter!");
+        }
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {
@@ -138,7 +157,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TYPE, uriType.toString());
     }
 
-    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess, int hashValue) {
+    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess, String hashValue) {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
