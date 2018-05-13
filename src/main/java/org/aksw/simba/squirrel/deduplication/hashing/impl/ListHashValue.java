@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A hash value as a list of integers. The single integers represent the different Triples.
+ * A hash value as a list of integers.
  */
 public class ListHashValue implements HashValue {
 
