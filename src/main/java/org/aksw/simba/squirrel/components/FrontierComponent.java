@@ -12,6 +12,7 @@ import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
@@ -115,7 +116,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Override
     public void run() throws Exception {
         if (communicationWithWebserviceEnabled) {
-            Thread sender = new Thread(/*new FrontierSenderToWebservice(workerGuard, queue, knownUriFilter)*/);
+            Thread sender = new Thread(new FrontierSenderToWebservice(incomingDataQueueFactory, workerGuard, queue, knownUriFilter));
             sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             sender.start();
             LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
