@@ -4,6 +4,7 @@ import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.components.DeduplicatorComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
@@ -277,10 +278,12 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
-        //TODO: get triples somehow!
-        List<Triple> triples = new ArrayList<>();
-        TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
-        tripleHashPostProcessor.postprocess();
+        if (DeduplicatorComponent.deduplicationActive) {
+            //TODO: get triples somehow!
+            List<Triple> triples = new ArrayList<>();
+            TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
+            tripleHashPostProcessor.postprocess();
+        }
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
