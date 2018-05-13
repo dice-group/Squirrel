@@ -184,10 +184,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     }
 
     @Override
-    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValueForDecoding) {
         Cursor<String> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).getField(COLUMN_HASH_VALUE).run(connector.connection);
         if (cursor.hasNext()) {
-            return hashValue.decodeFromString(cursor.next());
+            return hashValueForDecoding.decodeFromString(cursor.next());
         } else {
             throw new RuntimeException("The uri is not contained in the uri filter!");
         }

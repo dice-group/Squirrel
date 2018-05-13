@@ -65,7 +65,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     }
 
     @Override
-    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValueForDecoding) {
         // TODO: Implement
         return null;
     }
