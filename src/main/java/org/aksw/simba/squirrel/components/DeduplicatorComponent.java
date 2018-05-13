@@ -14,11 +14,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This component is responsible for deduplication, which means it periodically compares all
+ * {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s behind all uris with each other.
+ * Note: The hash value behind an uri represents the triples behind the uris, it does not represent the uri itself.
+ * If The hash values of two uris are equal, it look behind the triples of those two uris and compares them. If the
+ * lists of triples are equal, one of the two lists of triples will be deleted as it is a duplicate.
+ */
 public class DeduplicatorComponent extends AbstractComponent {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
+    /**
+     * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
+     */
     private KnownUriFilter knownUriFilter;
+
+    /**
+     * Needed to access the {@link Triple}s.
+     */
     private TripleBasedSink sink;
 
 
