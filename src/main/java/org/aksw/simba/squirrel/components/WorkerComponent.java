@@ -165,4 +165,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         }
     }
 
+    @Override
+    public boolean doesRecrawling() {
+        return false;
+    }
+
 }

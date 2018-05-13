@@ -27,14 +27,22 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
     private RDBConnector connector = null;
-    private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
     private RethinkDB r;
 
+    /**
+     * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
+     */
+    private boolean frontierDoesRecrawling;
+
+    /*
+    Some constants for the rethinkdb
+     */
     public static final String DATABASE_NAME = "squirrel";
     public static final String TABLE_NAME = "knownurifilter";
-    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
     public static final String COLUMN_URI = "uri";
+    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
     public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
@@ -42,15 +50,40 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     private static final String DUMMY_HASH_VALUE = "dummyValue";
 
-
-    public RDBKnownUriFilter(String hostname, Integer port) {
+    /**
+     * Constructor.
+     *
+     * @param hostname               The hostname for database.
+     * @param port                   The port for the database.
+     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
+     */
+    public RDBKnownUriFilter(String hostname, Integer port, boolean frontierDoesRecrawling) {
         this.connector = new RDBConnector(hostname, port);
         r = RethinkDB.r;
+        this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
-    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r) {
+    /**
+     * Constructor.
+     *
+     * @param hostname The hostname for database.
+     * @param port     The port for the database.
+     */
+    public RDBKnownUriFilter(String hostname, Integer port) {
+        this(hostname, port, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param connector              Value for {@link #connector}.
+     * @param r                      Value for {@link #r}.
+     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
+     */
+    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling) {
         this.connector = connector;
         this.r = r;
+        this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
     public void open() {
@@ -84,7 +117,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             try {
                 HashMap row = cursor.next();
                 String ipString = (String) row.get(COLUMN_IP);
-                ipString = ipString.split("/")[1];
+                if (ipString.contains("/")) {
+                    ipString = ipString.split("/")[1];
+                }
                 urisToRecrawl.add(new CrawleableUri(new URI((String) row.get(COLUMN_URI)), InetAddress.getByName(ipString)));
             } catch (URISyntaxException | UnknownHostException e) {
                 LOGGER.warn(e.toString());
@@ -171,13 +206,16 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .table(TABLE_NAME)
             .getAll(uri.getUri().toString())
             .optArg("index", COLUMN_URI)
-            .g(COLUMN_TIMESTAMP_LAST_CRAWL)
+            .g(COLUMN_TIMESTAMP_NEXT_CRAWL)
             .run(connector.connection);
         if (cursor.hasNext()) {
-            LOGGER.debug("URI {} is not good", uri.toString());
-            Long timestampRetrieved = cursor.next();
+            if (!frontierDoesRecrawling) {
+                LOGGER.debug("URI {} is not good", uri.toString());
+                return false;
+            }
+            Long timestampNextCrawl = cursor.next();
             cursor.close();
-            return (System.currentTimeMillis() - timestampRetrieved) >= recrawlEveryWeek;
+            return System.currentTimeMillis() > timestampNextCrawl;
         } else {
             LOGGER.debug("URI {} is good", uri.toString());
             cursor.close();
@@ -191,6 +229,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public long count() {
-        return r.db("squirrel").table("knownurifilter").count().run(connector.connection);
+        return r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
     }
 }

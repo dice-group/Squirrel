@@ -74,4 +74,10 @@ public interface Frontier extends Closeable {
 
 
 
+    /**
+     * Indicates whether this frontier does recrawling.
+     *
+     * @return True iff recrawling is active.
+     */
+    boolean doesRecrawling();
 }
