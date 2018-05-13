@@ -55,19 +55,4 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
         listHashValues.add(min2);
         return new ListHashValue(listHashValues);
     }
-
-    public class IntTuple {
-        int x, y;
-
-        public IntTuple(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return x == x && y == y;
-        }
-    }
-
 }

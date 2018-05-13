@@ -3,7 +3,9 @@ package org.aksw.simba.squirrel.deduplication.hashing.impl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 
-public class HashValueUriPair {
+import java.io.Serializable;
+
+public class HashValueUriPair implements Serializable {
 
     public HashValue hashValue;
     public CrawleableUri uri;
