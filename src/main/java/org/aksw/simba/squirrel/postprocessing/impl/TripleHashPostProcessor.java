@@ -37,7 +37,7 @@ public class TripleHashPostProcessor implements PostProcessor {
 
     @Override
     public void postprocess() {
-        HashValue value = (new IntervalBasedMinHashFunction(2).hash(triples));
+        HashValue value = (new IntervalBasedMinHashFunction(1).hash(triples));
         worker.sendHashValue(value, uri);
     }
 }
