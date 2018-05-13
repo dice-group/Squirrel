@@ -14,4 +14,9 @@ public class HashValueUriPair implements Serializable {
         this.hashValue = hashValue;
         this.uri = uri;
     }
+
+    public HashValueUriPair() {
+    }
+
+
 }

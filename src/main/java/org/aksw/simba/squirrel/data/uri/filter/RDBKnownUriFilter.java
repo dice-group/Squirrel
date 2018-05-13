@@ -6,6 +6,7 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
@@ -30,6 +31,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private RethinkDB r;
 
     /**
+     * Used for converting Strings to {@link HashValue}s.
+     */
+    private HashValue hashValueForDecoding;
+
+    /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
      */
     private boolean frontierDoesRecrawling;
@@ -48,6 +54,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_HASH_VALUE = "hashValue";
 
     private static final String DUMMY_HASH_VALUE = "dummyValue";
+
 
     /**
      * Constructor.
@@ -180,6 +187,30 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         } else {
             throw new RuntimeException("The uri is not contained in the uri filter!");
         }
+    }
+
+    @Override
+    public List<HashValueUriPair> getAllUrisAndHashValues() {
+        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).run(connector.connection);
+        List<HashValueUriPair> pairs = new ArrayList<>();
+        while (cursor.hasNext()) {
+            HashMap<String, Object> nextRow = cursor.next();
+            HashValueUriPair pair = new HashValueUriPair();
+            for (String key : nextRow.keySet()) {
+                if (key.equals(COLUMN_HASH_VALUE)) {
+                    pair.hashValue = hashValueForDecoding.decodeFromString((String) nextRow.get(key));
+                } else if (key.equals(COLUMN_URI)) {
+                    try {
+                        pair.uri = new CrawleableUri(new URI((String) nextRow.get(key)));
+                    } catch (URISyntaxException e) {
+                        LOGGER.error("Error while constructing an uri: " + nextRow.get(key));
+                    }
+                }
+            }
+            pairs.add(pair);
+        }
+        cursor.close();
+        return pairs;
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {

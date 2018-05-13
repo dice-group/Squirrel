@@ -2,10 +2,9 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-
-import com.carrotsearch.hppc.ObjectLongOpenHashMap;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,12 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
+    public List<HashValueUriPair> getAllUrisAndHashValues() {
         // TODO: Implement
         return null;
     }
