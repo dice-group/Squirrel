@@ -10,15 +10,28 @@ import java.util.List;
  * A hash value as a list of integers.
  */
 public class ListHashValue implements HashValue {
-
+    /**
+     * The List of HashValues.
+     */
     private List<Integer> hashValues;
 
+    /**
+     * The delimeter between the individual HashValues
+     */
     private static final String DELIMETER = ",";
 
+    /**
+     * Constructor.
+     */
     public ListHashValue() {
         this(Collections.emptyList());
     }
 
+    /**
+     * Constructor.
+     *
+     * @param hashValues The List of Hashvalues.
+     */
     public ListHashValue(List<Integer> hashValues) {
         this.hashValues = hashValues;
     }
