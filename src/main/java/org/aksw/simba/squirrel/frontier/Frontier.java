@@ -70,6 +70,12 @@ public interface Frontier extends Closeable {
      */
     int getNumberOfPendingUris();
 
+    /**
+     * Add a hash value for this given uri.
+     *
+     * @param value The hash value to set.
+     * @param uri   The given uri.
+     */
     void addHashValueForUri(HashValue value, CrawleableUri uri);
 
 

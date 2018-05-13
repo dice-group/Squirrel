@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.worker;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 
 import java.util.List;
 
@@ -40,4 +41,6 @@ public interface Worker extends Runnable {
      * @return True iff the worker sends alive messages.
      */
     boolean sendsAliveMessages();
+
+    public void sendHashValue(HashValue value, CrawleableUri uri);
 }

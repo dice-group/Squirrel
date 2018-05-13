@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A hash value as a list of integers. The single integers represent the different Triples.
+ */
 public class ListHashValue implements HashValue {
 
     private List<Integer> hashValues;
@@ -30,6 +33,7 @@ public class ListHashValue implements HashValue {
         return sb.toString();
     }
 
+    @Override
     public HashValue decodeFromString(String s) {
         List<Integer> hashValues = new ArrayList<>();
         String[] array = s.split(DELIMETER);

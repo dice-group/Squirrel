@@ -3,8 +3,9 @@ package org.aksw.simba.squirrel.components;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
+import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class DeduplicatorComponent extends AbstractComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
     private KnownUriFilter knownUriFilter;
-    private Sink sink;
+    private TripleBasedSink sink;
 
 
     @Override
@@ -48,7 +49,7 @@ public class DeduplicatorComponent extends AbstractComponent {
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         // periodically compare hash values for all uris
         List<HashValueUriPair> allUrisAndHashValues = knownUriFilter.getAllUrisAndHashValues();
 
@@ -57,8 +58,19 @@ public class DeduplicatorComponent extends AbstractComponent {
                 if (!pair1.uri.equals(pair2.uri)) {
                     if (pair1.hashValue.equals(pair2.hashValue)) {
                         // get triples from pair1 and pair2 and compare them
-                        //sink.getTriplesForUri(pair1.uri);
-                        //sink.getTriplesForUri(pair2.uri);
+                        List<Triple> triples1 = sink.getTriplesForGraph(pair1.uri);
+                        List<Triple> triples2 = sink.getTriplesForGraph(pair2.uri);
+                        boolean equal = true;
+                        for (Triple triple : triples1) {
+                            if (!triples2.contains(triple)) {
+                                equal = false;
+                                break;
+                            }
+                        }
+
+                        if (equal) {
+                            // TODO: delete duplicate
+                        }
                     }
                 }
             }

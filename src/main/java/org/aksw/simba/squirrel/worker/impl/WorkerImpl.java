@@ -7,7 +7,6 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.ListHashValue;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
@@ -280,7 +279,7 @@ public class WorkerImpl implements Worker, Closeable {
 
         //TODO: get triples somehow!
         List<Triple> triples = new ArrayList<>();
-        TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri, new ListHashValue());
+        TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
         tripleHashPostProcessor.postprocess();
     }
 
@@ -320,8 +319,8 @@ public class WorkerImpl implements Worker, Closeable {
         frontier.addNewUris(uris);
     }
 
+    @Override
     public void sendHashValue(HashValue value, CrawleableUri uri) {
-        // TODO: send hash value together with uri to frontier
         frontier.addHashValueForUri(value, uri);
     }
 
