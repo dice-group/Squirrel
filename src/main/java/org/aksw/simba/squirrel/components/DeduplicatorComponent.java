@@ -35,7 +35,8 @@ public class DeduplicatorComponent extends AbstractComponent {
     private TripleBasedSink sink;
 
     /**
-     * Indicates whether deduplication is active.
+     * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
+     * no processing of hash values will be done.
      */
     public static final boolean deduplicationActive = true;
 
