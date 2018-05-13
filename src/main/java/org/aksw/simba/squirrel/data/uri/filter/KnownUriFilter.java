@@ -39,14 +39,6 @@ public interface KnownUriFilter extends UriFilter {
      */
     public void addHashValueForUri(CrawleableUri uri, HashValue hashValue);
 
-    /**
-     * Get the hash value for the given uri.
-     *
-     * @param uri                  The given uri.
-     * @param hashValueForDecoding Used for decoding of String to {@link HashValue}.
-     * @return The hash value.
-     */
-    public HashValue getHashValueForUri(CrawleableUri uri, HashValue hashValueForDecoding);
 
     /**
      * Get all uris together with their hash values.

@@ -90,6 +90,11 @@ public class RDFSink implements Sink {
     }
 
     @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
     public void openSinkForUri(CrawleableUri uri) {
     }
 

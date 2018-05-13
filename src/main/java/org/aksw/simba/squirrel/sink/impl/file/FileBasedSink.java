@@ -1,14 +1,5 @@
 package org.aksw.simba.squirrel.sink.impl.file;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
@@ -18,6 +9,12 @@ import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 public class FileBasedSink implements Sink {
 
@@ -68,6 +65,11 @@ public class FileBasedSink implements Sink {
                         + uriString + "\". Ignoring it.", e);
             }
         }
+    }
+
+    @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override
