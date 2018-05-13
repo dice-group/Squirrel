@@ -45,7 +45,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
-    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
     private static final String COLUMN_HASH_VALUE = "hashValue";
 
     private static final String DUMMY_HASH_VALUE = "dummyValue";
