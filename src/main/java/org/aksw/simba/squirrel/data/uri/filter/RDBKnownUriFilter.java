@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.ListHashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     /**
      * Used for converting Strings to {@link HashValue}s.
      */
-    private HashValue hashValueForDecoding;
+    private HashValue hashValueForDecoding = new ListHashValue();
 
     /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
@@ -53,6 +54,9 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_TYPE = "type";
     private static final String COLUMN_HASH_VALUE = "hashValue";
 
+    /**
+     * Used as a default hash value for URIS, will be replaced by real hash value as soon as it has been computed.
+     */
     private static final String DUMMY_HASH_VALUE = "dummyValue";
 
 
@@ -193,12 +197,20 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public List<HashValueUriPair> getAllUrisAndHashValues() {
         Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).run(connector.connection);
         List<HashValueUriPair> pairs = new ArrayList<>();
+
+        outer:
         while (cursor.hasNext()) {
             HashMap<String, Object> nextRow = cursor.next();
             HashValueUriPair pair = new HashValueUriPair();
             for (String key : nextRow.keySet()) {
                 if (key.equals(COLUMN_HASH_VALUE)) {
-                    pair.hashValue = hashValueForDecoding.decodeFromString((String) nextRow.get(key));
+                    String hashAsString = (String) nextRow.get(key);
+                    if (hashAsString.equals(DUMMY_HASH_VALUE)) {
+                        // no hash value in database yet for this uri
+                        continue outer;
+                    } else {
+                        pair.hashValue = hashValueForDecoding.decodeFromString(hashAsString);
+                    }
                 } else if (key.equals(COLUMN_URI)) {
                     try {
                         pair.uri = new CrawleableUri(new URI((String) nextRow.get(key)));

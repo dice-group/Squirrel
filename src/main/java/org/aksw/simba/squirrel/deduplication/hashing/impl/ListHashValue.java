@@ -40,4 +40,24 @@ public class ListHashValue implements HashValue {
         }
         return new ListHashValue(hashValues);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ListHashValue) {
+            ListHashValue listHashValue = (ListHashValue) obj;
+            if (hashValues.size() != listHashValue.hashValues.size()) {
+                return false;
+            }
+            boolean equal = true;
+            for (int i = 0; i < hashValues.size(); i++) {
+                if (!hashValues.get(i).equals(listHashValue.hashValues.get(i))) {
+                    equal = false;
+                    break;
+                }
+            }
+
+            return equal;
+        }
+        return false;
+    }
 }
