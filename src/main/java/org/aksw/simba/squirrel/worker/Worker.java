@@ -42,5 +42,11 @@ public interface Worker extends Runnable {
      */
     boolean sendsAliveMessages();
 
-    public void sendHashValue(HashValue value, CrawleableUri uri);
+    /**
+     * Tells the worker to send / give the given hash value and uri to its {@link org.aksw.simba.squirrel.frontier.Frontier}.
+     *
+     * @param value The given hash value.
+     * @param uri   The given hash value
+     */
+    void giveHashValueAndUriToFrontier(HashValue value, CrawleableUri uri);
 }

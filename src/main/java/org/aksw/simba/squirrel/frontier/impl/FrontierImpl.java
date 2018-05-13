@@ -215,10 +215,9 @@ public class FrontierImpl implements Frontier {
                 ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
             }
         }
-        // send list of crawled URIs to the knownUriFilter and start post processing of hash values
+        // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : crawledUris) {
             knownUriFilter.add(uri, uri.getTimestampNextCrawl());
-
         }
 
         // Add the new URIs to the Frontier

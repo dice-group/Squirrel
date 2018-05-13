@@ -320,7 +320,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public void sendHashValue(HashValue value, CrawleableUri uri) {
+    public void giveHashValueAndUriToFrontier(HashValue value, CrawleableUri uri) {
         frontier.addHashValueForUri(value, uri);
     }
 
