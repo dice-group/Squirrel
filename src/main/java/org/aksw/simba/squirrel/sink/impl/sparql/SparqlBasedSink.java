@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -60,6 +61,11 @@ public class SparqlBasedSink implements Sink {
     }
 
     @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        return null;
+    }
+
+    @Override
     public void openSinkForUri(CrawleableUri uri) {
         mapBufferedTriples.put(uri, new ConcurrentLinkedQueue<>());
     }
@@ -74,6 +80,7 @@ public class SparqlBasedSink implements Sink {
 
     /**
      * Method to send all buffered triples to the database
+     *
      * @param uri
      * @param tripleList
      */

@@ -7,9 +7,6 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -36,8 +33,9 @@ public class QueryGenerator {
     }
 
     /**
-     *Return an Add Query for the given uri and its triples.
-     * @param uri the uri where the triples found.
+     * Return an Add Query for the given uri and its triples.
+     *
+     * @param uri                 the uri where the triples found.
      * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
@@ -45,18 +43,18 @@ public class QueryGenerator {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { Graph <");
         stringBuilder.append("0430");
-            stringBuilder.append(uri.getUri());
-            stringBuilder.append("> { ");
+        stringBuilder.append(uri.getUri());
+        stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {
-                stringBuilder.append("<");
-                stringBuilder.append(triple.getSubject());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getPredicate());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getObject());
-                stringBuilder.append("> . ");
-            }
-            stringBuilder.append("} ");
+            stringBuilder.append("<");
+            stringBuilder.append(triple.getSubject());
+            stringBuilder.append("> <");
+            stringBuilder.append(triple.getPredicate());
+            stringBuilder.append("> <");
+            stringBuilder.append(triple.getObject());
+            stringBuilder.append("> . ");
+        }
+        stringBuilder.append("} ");
         stringBuilder.append("}");
         return stringBuilder.toString();
     }

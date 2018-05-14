@@ -4,7 +4,7 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class DeduplicatorComponent extends AbstractComponent {
             }
 
             // TODO: other kinds of sinks must be possible as well
-            sink = new RDFSink();
+            sink = new SparqlBasedSink(null, null);
         }
     }
 
