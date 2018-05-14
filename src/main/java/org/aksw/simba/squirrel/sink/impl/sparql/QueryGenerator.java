@@ -7,9 +7,6 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -44,7 +41,6 @@ public class QueryGenerator {
     public String getAddQuery(CrawleableUri uri, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { Graph <");
-        stringBuilder.append("0430");
             stringBuilder.append(uri.getUri());
             stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {

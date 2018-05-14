@@ -83,11 +83,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
             queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, frontier.doesRecrawling());
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
             knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(frontier.doesRecrawling());
+            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
         }
 
         if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
