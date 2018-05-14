@@ -25,6 +25,7 @@ public class AliveMessage implements Serializable {
 
     /**
      * Get the id of the worker.
+     *
      * @return the id of the worker.
      */
     public int getIdOfWorker() {

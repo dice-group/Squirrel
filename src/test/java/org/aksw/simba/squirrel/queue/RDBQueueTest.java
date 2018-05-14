@@ -1,8 +1,15 @@
 package org.aksw.simba.squirrel.queue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.exc.ReqlDriverError;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Connection;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,17 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.rethinkdb.model.MapObject;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueueTest {
@@ -80,7 +77,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void openClose() throws Exception {
+    public void openClose() {
         rdbQueue.open();
         assertTrue("squirrel database was created", rdbQueue.squirrelDatabaseExists());
         assertTrue("queue table was created", rdbQueue.queueTableExists());
@@ -88,14 +85,14 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void openOpen() throws Exception {
+    public void openOpen() {
         rdbQueue.open();
         rdbQueue.open();
         rdbQueue.close();
     }
 
     @Test
-    public void packTuple() throws Exception {
+    public void packTuple() {
         List rArray = rdbQueue.packTuple("192.168.1.1", "http://localhost");
         assertTrue(rArray.contains("192.168.1.1"));
         assertTrue(rArray.contains("http://localhost"));
@@ -105,7 +102,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getIpAddressTypeKey() throws Exception {
+    public void getIpAddressTypeKey() {
         List rArray = rdbQueue.getIpAddressTypeKey(uris.get(0));
         String arrayString = rArray.toString();
         assertTrue(arrayString, rArray.contains("127.0.0.1"));
@@ -114,7 +111,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void queueContainsIpAddressTypeKey() throws Exception {
+    public void queueContainsIpAddressTypeKey() {
         rdbQueue.open();
         List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(0));
         assertFalse(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
@@ -124,7 +121,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void purgeQueue() throws Exception {
+    public void purgeQueue() {
         rdbQueue.open();
         rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
@@ -138,7 +135,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void addCrawleableUri() throws Exception {
+    public void addCrawleableUri() {
         rdbQueue.open();
         rdbQueue.purge();
         rdbQueue.addCrawleableUri(uris.get(1));
@@ -150,7 +147,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void addToQueue() throws Exception {
+    public void addToQueue() {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
@@ -160,7 +157,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void crawleableUriToRDBHashMap() throws Exception {
+    public void crawleableUriToRDBHashMap() {
         MapObject rHashMap = rdbQueue.crawleableUriToRDBHashMap(uris.get(0));
         assertTrue(rHashMap.containsKey("uris"));
         assertTrue(rHashMap.containsKey("ipAddress"));
@@ -170,7 +167,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getIterator() throws Exception {
+    public void getIterator() {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
@@ -184,7 +181,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getUris() throws Exception {
+    public void getUris() {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);

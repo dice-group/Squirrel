@@ -1,0 +1,102 @@
+version: '2'
+
+services:
+  rethinkdb:
+    image: rethinkdb:2.3.5
+#    volumes:
+#      - ./scenarios/1/rethinkdb:/data
+    ports:
+      - "28015:28015"
+
+  # message bus
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbit
+    hostname: rabbit
+    ports:
+      - "15672:15672"
+      # Forwarding the port for testing
+      - "5672:5672"
+
+  jena:
+      image: stain/jena-fuseki
+      container_name: jena
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./scenarios/1/data/jena:/fuseki
+      environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
+
+  frontier:
+    image: squirrel
+    container_name: frontier
+    environment:
+      HOBBIT_RABBIT_HOST: rabbit
+      SEED_FILE: /var/squirrel/data/seeds.txt
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      COMMUNICATION_WITH_WEBSERVICE: "true"
+    volumes:
+      - ./scenarios/1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
+
+  web:
+    image: squirrel/webimage:latest
+    container_name: web
+    ports:
+      - "8080:8080"
+
+  worker1:
+    image: squirrel
+    container_name: worker1
+    environment:
+      HOBBIT_RABBIT_HOST: rabbit
+      OUTPUT_FOLDER: /var/squirrel/data
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1/worker1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+
+  SimulationNodeA:
+    image: squirrel
+    container_name: NodeA
+    environment:
+      RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
+      RESOURCE_MODEL_LANG: N3
+      PORT: 80
+      DUMP_FILE_NAME: dump.gz
+      USE_DEREF: "true"
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.SimpleHttpServerComponent
+
+  SimulationNodeB:
+    image: squirrel
+    container_name: NodeB
+    environment:
+      RESOURCE_MODEL: /var/squirrel/data/nodeB.ttl
+      RESOURCE_MODEL_LANG: N3
+      PORT: 80
+      USE_DEREF: "true"
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.SimpleHttpServerComponent
+
+  SimulationNodeC:
+    image: squirrel
+    container_name: NodeC
+    environment:
+      RESOURCE_MODEL: /var/squirrel/data/nodeC.ttl
+      RESOURCE_MODEL_LANG: N3
+      PORT: 80
+      DUMP_FILE_NAME: dump.gz
+      USE_DEREF: "false"
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.SimpleHttpServerComponent

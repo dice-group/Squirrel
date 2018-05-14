@@ -1,15 +1,15 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 public class UriSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     public List<CrawleableUri> uris;
 
     public UriSet(List<CrawleableUri> uris) {
