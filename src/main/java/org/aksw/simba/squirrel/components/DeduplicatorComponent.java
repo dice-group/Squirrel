@@ -25,6 +25,11 @@ public class DeduplicatorComponent extends AbstractComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
     /**
+     * The time that will last between the different executions of deduplication.
+     */
+    private static final int SLEEP_TIME = 10000;
+
+    /**
      * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
      */
     private KnownUriFilter knownUriFilter;
@@ -72,33 +77,39 @@ public class DeduplicatorComponent extends AbstractComponent {
     @Override
     public void run() {
         if (deduplicationActive) {
-            // periodically compare hash values for all uris
-            List<HashValueUriPair> allUrisAndHashValues = knownUriFilter.getAllUrisAndHashValues();
+            while (true) {
+                // periodically compare hash values for all uris
+                List<HashValueUriPair> allUrisAndHashValues = knownUriFilter.getAllUrisAndHashValues();
 
-            for (HashValueUriPair pair1 : allUrisAndHashValues) {
-                for (HashValueUriPair pair2 : allUrisAndHashValues) {
-                    if (!pair1.uri.equals(pair2.uri)) {
-                        if (pair1.hashValue.equals(pair2.hashValue)) {
-                            // get triples from pair1 and pair2 and compare them
-                            List<Triple> triples1 = sink.getTriplesForGraph(pair1.uri);
-                            List<Triple> triples2 = sink.getTriplesForGraph(pair2.uri);
-                            boolean equal = true;
-                            for (Triple triple : triples1) {
-                                if (!triples2.contains(triple)) {
-                                    equal = false;
-                                    break;
+                for (HashValueUriPair pair1 : allUrisAndHashValues) {
+                    for (HashValueUriPair pair2 : allUrisAndHashValues) {
+                        if (!pair1.uri.equals(pair2.uri)) {
+                            if (pair1.hashValue.equals(pair2.hashValue)) {
+                                // get triples from pair1 and pair2 and compare them
+                                List<Triple> triples1 = sink.getTriplesForGraph(pair1.uri);
+                                List<Triple> triples2 = sink.getTriplesForGraph(pair2.uri);
+                                boolean equal = true;
+                                for (Triple triple : triples1) {
+                                    if (!triples2.contains(triple)) {
+                                        equal = false;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            if (equal) {
-                                // TODO: delete duplicate
+                                if (equal) {
+                                    // TODO: delete duplicate
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // TODO: sleep for some time
+                try {
+                    Thread.sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    LOGGER.error("Error while trying to sleep", e);
+                }
+            }
         }
     }
 
