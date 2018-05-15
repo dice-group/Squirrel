@@ -23,7 +23,7 @@ public class RDBKnownUriFilterWithoutReferences implements KnownUriFilter, Close
     static final String RDBDATABASENAME = "squirrel";
 
     protected RDBConnector connector;
-    private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
+    private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in milliseconds
     protected RethinkDB r = RethinkDB.r;
 
     public RDBKnownUriFilterWithoutReferences(String hostname, Integer port) {

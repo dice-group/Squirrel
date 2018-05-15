@@ -187,15 +187,17 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         }
 
         VisualisationGraph graph = new VisualisationGraph();
-        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(25, true, false);
+        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(25, true, true);
 
         int counter = 0;
         while (iterator.hasNext() && counter < 25) {
             AbstractMap.SimpleEntry<String, List<String>> nextNode = iterator.next();
-            VisualisationNode g = graph.addNode(nextNode.getKey());
+            int ipDivider = nextNode.getKey().lastIndexOf('|');
+            String uri = (ipDivider == -1) ? nextNode.getKey() : nextNode.getKey().substring(0, ipDivider);
+            VisualisationNode g = (ipDivider == -1) ? graph.addNode(uri) : graph.addNode(uri, nextNode.getKey().substring(ipDivider + 1));
             if (g != null)
                 g.setColor((counter == 0) ? Color.ORANGE : ((counter <= 20) ? Color.GRAY : Color.GREEN));
-            nextNode.getValue().forEach(v -> graph.addEdge(nextNode.getKey(), v));
+            nextNode.getValue().forEach(v -> graph.addEdge(uri, v));
             ////////
             LOGGER.debug("Retrieves a node from the crawled graph with the knownUriFilter-Iterator: " + graph.getNode(nextNode.getKey()) + ", including " + graph.getEdges(graph.getNode(nextNode.getKey())).length + " edges, counter is " + counter);
             ////////

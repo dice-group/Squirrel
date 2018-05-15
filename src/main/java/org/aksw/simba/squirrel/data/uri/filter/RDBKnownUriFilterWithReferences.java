@@ -84,21 +84,21 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
 
     KnownUriReferenceIterator(RDBConnector connector, long offset, boolean onlyCrawledUris) {
         if (offset <= 0) {
-            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).run(connector.connection);
+            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).orderBy().optArg("index", r.asc("id")).run(connector.connection);
         } else {
-            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).skip(offset).run(connector.connection);
+            cursor = r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME).table(RDBKnownUriFilterWithoutReferences.RDBTABLENAME).orderBy().optArg("index", r.asc("id")).skip(offset).run(connector.connection);
         }
         this.connector = connector;
         this.onlyCrawledUris = onlyCrawledUris;
     }
 
     private boolean containURI(String uri) {
-        return r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME)
+        return !((boolean) r.db(RDBKnownUriFilterWithReferences.RDBDATABASENAME)
             .table(RDBKnownUriFilterWithReferences.RDBTABLENAME)
             .getAll(uri)
             .optArg("index", "uri")
             .isEmpty()
-            .run(connector.connection);
+            .run(connector.connection));
     }
 
     @Override
@@ -119,7 +119,7 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
                 references.removeIf(s -> !containURI(s));
                 LOGGER.debug("Because you enabled the \"onlyCrawledUris\"-option, " + (referencesSize - references.size()) + " URIs were removed from the foundedURI list!");
             }
-            ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString(), (ArrayList<String>) row.get(RDBKnownUriFilterWithReferences.ADDITIONALCOLUMN));
+            ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString() + ((row.containsKey("ipAddress")) ? "|" + row.get("ipAddress") : ""), (ArrayList<String>) row.get(RDBKnownUriFilterWithReferences.ADDITIONALCOLUMN));
         } catch (NullPointerException e) {
             ret = new AbstractMap.SimpleEntry<>("FAIL [" + e.hashCode() + "]", Collections.singletonList((e.getMessage() == null) ? "unknown error" : e.getMessage()));
         }
