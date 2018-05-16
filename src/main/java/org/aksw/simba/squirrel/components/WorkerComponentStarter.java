@@ -1,5 +1,7 @@
 package org.aksw.simba.squirrel.components;
 
+import java.io.File;
+
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.Component;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ public class WorkerComponentStarter{
         boolean success = true;
         try {
         	
-        	context = new FileSystemXmlApplicationContext("//home/gsjunior/git/Squirrel/src/main/resources/context.xml");
+        	context = new FileSystemXmlApplicationContext(File.separator + System.getenv("CONTEXT_CONFIG_FILE"));
         	component = (Component) context.getBean("workerComponent");
             // initialize the component
             component.init();

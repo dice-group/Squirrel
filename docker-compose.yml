@@ -48,10 +48,12 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+        - ./spring-config:/var/squirrel/spring-config
+    command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker2:
     image: squirrel:latest
@@ -60,10 +62,12 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+        - ./spring-config:/var/squirrel/spring-config
+    command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker3:
     image: squirrel:latest
@@ -72,10 +76,12 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
+        - ./spring-config:/var/squirrel/spring-config
+    command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
 networks:
   default:

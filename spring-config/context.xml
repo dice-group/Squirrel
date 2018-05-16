@@ -62,12 +62,12 @@
         	<property name="password" value="" />
         </bean>
         
-        <bean id="robotsManagerBean" class="org.aksw.simba.squirrel.robots.RobotsManagerImpl">
+        	<bean id="robotsManagerBean" class="org.aksw.simba.squirrel.robots.RobotsManagerImpl">
         	<constructor-arg index="0" ref="simpleHttpFetcherBean" />
         	<property name="defaultMinWaitingTime" value="100"></property>
-        </bean>
-        
-        <bean id="simpleHttpFetcherBean" class="crawlercommons.fetcher.http.SimpleHttpFetcher" >
+    </bean>
+    
+    <bean id="simpleHttpFetcherBean" class="crawlercommons.fetcher.http.SimpleHttpFetcher" >
         	<constructor-arg index="0" ref="userAgentBean" />
         </bean>
         
