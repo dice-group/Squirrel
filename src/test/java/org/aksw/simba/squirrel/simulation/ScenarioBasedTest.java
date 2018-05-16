@@ -134,7 +134,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = (Frontier) context.getBean("workerComponent");
+        Frontier frontier = (Frontier) context.getBean("frontierBean");
         InMemorySink sink = (InMemorySink) context.getBean("sinkBean");
 //        Serializer serializer = (Serializer) context.getBean("serializerBean");
 //        UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
@@ -178,7 +178,6 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         }
         Assert.assertTrue(success);
         Assert.assertTrue("The sink is not healthy!", sink.isSinkHealthy());
-        context.close();
     }
 
     private boolean compareModels(String resourceName, Model expModel, Model carwledModel) {

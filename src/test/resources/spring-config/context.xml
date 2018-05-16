@@ -26,6 +26,18 @@
         	<bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
         
          -->
+         
+         <bean id="frontierBean" class="org.aksw.simba.squirrel.frontier.impl.Frontier">
+         	<constructor-arg index="0" ref="filterBean" />
+         	<constructor-arg index="1" ref="queueBean" />
+         </bean>
+         
+         <bean id="filterBean" class="org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter">
+			<constructor-arg index="0" value="100000" />         
+         </bean>
+         
+         <bean id="queueBean" class="org.aksw.simba.squirrel.queue.InMemoryQueue" />
+         	
         
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
