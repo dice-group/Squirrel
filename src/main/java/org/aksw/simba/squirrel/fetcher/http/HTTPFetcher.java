@@ -33,7 +33,13 @@ import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
+@Component
+@Order(value=1)
+@Qualifier("httpFetcher")
 public class HTTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPFetcher.class);

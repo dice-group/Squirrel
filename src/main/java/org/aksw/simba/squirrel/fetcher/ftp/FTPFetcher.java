@@ -18,6 +18,9 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * TODO Update this class by removing its dependency regarding the deprecated
@@ -26,6 +29,9 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
+@Component
+@Order(value=2)
+@Qualifier("ftpFetcher")
 public class FTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FTPFetcher.class);

@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.sql.DataSource;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -53,6 +55,8 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
     private long total_uris = 0;
+    
+    
 
     public static SqlBasedUriCollector create(Serializer serializer) {
         return create(serializer, "foundUris");
@@ -94,7 +98,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     protected int bufferSize = DEFAULT_BUFFER_SIZE;
     protected Map<String, UriTableStatus> knownUris = new HashMap<>();
 
-    public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) {
+    public SqlBasedUriCollector(DataSource dataSource, Serializer serializer) throws SQLException {
+        this.dbConnection = dataSource.getConnection();
+        this.serializer = serializer;
+    }
+    
+    public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) throws SQLException {
         this.dbConnection = dbConnection;
         this.serializer = serializer;
     }
