@@ -20,7 +20,6 @@
                 ${propertyKey}.
         -->
         
-        <import resource="classpath:default-config.xml"/>
         
         <!-- 
         	<bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
