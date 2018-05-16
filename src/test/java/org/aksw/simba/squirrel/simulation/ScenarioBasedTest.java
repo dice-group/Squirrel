@@ -39,6 +39,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
@@ -129,7 +130,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
     public void test() throws IOException {
     	
     	FileSystemXmlApplicationContext  context =
-    			new FileSystemXmlApplicationContext("spring-config/context.xml");
+    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context.xml");
     	
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
@@ -138,7 +139,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         InMemorySink sink = (InMemorySink) context.getBean("sinkBean");
 //        Serializer serializer = (Serializer) context.getBean("serializerBean");
 //        UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
-        WorkerImpl worker =(WorkerImpl) context.getBean("workerComponent");
+        WorkerImpl worker =(WorkerImpl) context.getBean("workerBean");
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);

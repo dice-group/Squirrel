@@ -23,6 +23,7 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.aksw.simba.squirrel.worker.Worker;
@@ -52,8 +53,7 @@ public class WorkerImpl implements Worker, Closeable {
     @Autowired
     protected SparqlBasedFetcher sparqlBasedFetcher;
     protected Fetcher fetcher;
-    @Autowired
-    protected UriProcessorInterface uriProcessor;
+    protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime;

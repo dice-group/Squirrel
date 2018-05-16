@@ -112,6 +112,13 @@
 		  <artifactId>spring-jdbc</artifactId>
 		  <version>5.0.6.RELEASE</version>
 		</dependency>
+		
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-test</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
 		        
 
         <!-- crawler commons -->

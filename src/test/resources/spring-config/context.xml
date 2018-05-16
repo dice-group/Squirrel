@@ -25,8 +25,10 @@
         	<bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
         
          -->
+          
+        
          
-         <bean id="frontierBean" class="org.aksw.simba.squirrel.frontier.impl.Frontier">
+         <bean id="frontierBean" class="org.aksw.simba.squirrel.frontier.impl.FrontierImpl">
          	<constructor-arg index="0" ref="filterBean" />
          	<constructor-arg index="1" ref="queueBean" />
          </bean>
@@ -39,7 +41,7 @@
          	
         
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
-        	<constructor-arg index="0" ref="workerComponent" />
+        	<constructor-arg index="0" ref="frontierBean" />
         	<constructor-arg index="1" ref="sinkBean" />
         	<constructor-arg index="2" ref="robotsManagerBean" />
         	<constructor-arg index="3" ref="serializerBean" />
@@ -48,15 +50,9 @@
         	<constructor-arg index="6" value="//home/gsjunior/Documentos/crawled_data/log" /><!-- Logging -->
         </bean> 
          
-        <!-- Output folder for FileBasedSink -->
-        <bean id="outputFolderBean" class="java.io.File">
-        	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
-        </bean>
-         
         <!-- File Based Sink implementation -->
-        <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.mem.InMemorySink">
+        <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.mem.InMemorySink" />
 
-        </bean>
         
         <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
         	<constructor-arg index="0" ref="datasourceConnection" />
