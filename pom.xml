@@ -103,7 +103,14 @@
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-context</artifactId>
-		  <version>4.3.5.RELEASE</version>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+		
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-jdbc</artifactId>
+		  <version>5.0.6.RELEASE</version>
 		</dependency>
 		        
 
