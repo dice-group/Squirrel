@@ -30,6 +30,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
+import org.hobbit.core.components.Component;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
@@ -125,16 +127,18 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     @Test
     public void test() throws IOException {
+    	
+    	FileSystemXmlApplicationContext  context =
+    			new FileSystemXmlApplicationContext("spring-config/context.xml");
+    	
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
-        InMemorySink sink = new InMemorySink();
-        Serializer serializer = new GzipJavaUriSerializer();
-        UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
-        WorkerImpl worker = new WorkerImpl(frontier, sink,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-                null);
+        Frontier frontier = (Frontier) context.getBean("workerComponent");
+        InMemorySink sink = (InMemorySink) context.getBean("sinkBean");
+//        Serializer serializer = (Serializer) context.getBean("serializerBean");
+//        UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
+        WorkerImpl worker =(WorkerImpl) context.getBean("workerComponent");
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -174,6 +178,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         }
         Assert.assertTrue(success);
         Assert.assertTrue("The sink is not healthy!", sink.isSinkHealthy());
+        context.close();
     }
 
     private boolean compareModels(String resourceName, Model expModel, Model carwledModel) {
