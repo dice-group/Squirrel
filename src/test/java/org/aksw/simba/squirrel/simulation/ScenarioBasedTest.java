@@ -9,19 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
-import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.queue.InMemoryQueue;
-import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -30,7 +22,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
-import org.hobbit.core.components.Component;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +30,6 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
 
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
@@ -130,7 +117,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
     public void test() throws IOException {
     	
     	FileSystemXmlApplicationContext  context =
-    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context.xml");
+    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
     	
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
