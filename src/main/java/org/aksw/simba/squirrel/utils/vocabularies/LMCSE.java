@@ -6,6 +6,11 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
 
+/**
+ * Vocabulary defined in the scope of mCloud data retrieval,
+ * containing required Properties and Resources that were not sufficiently defined in other vocabularies 
+ * LMCSE is an abbreviation for LimboMCloudStatisticsEngine
+ */
 public class LMCSE
 {
     /** <p>The RDF model that holds the vocabulary terms</p> */
@@ -31,20 +36,13 @@ public class LMCSE
     /** <p>indicates which protocol/API/Webservice can be used to download data</p> */
     public static final Property accessType = M_MODEL.createProperty(NS + "accessType");
 
-    /** <p>The given resource gives a description of some sort about the object</p> */
-    public static final Property describes = M_MODEL.createProperty(NS + "describes");
-
-    /** <p>Placeholder to collect all Datasets that have no category attached</p> */
-    public static final String NullCategory = NS + "NullCategory";
-
-    /** <p>Placeholder to collect all Datasets that have no license attached or errors 
-     *  retrieving the license</p>
+    /** 
+     * <p>Placeholder to collect all Datasets that have no license attached or errors retrieving the license</p>
      */
     public static final String NullLicense = NS + "NullLicense";
 
-    /** <p>Placeholder to collect all Datasets that have no publisher attached or errors 
-     *  retrieving the publisher</p>
+    /**
+     *  <p>Placeholder to collect all Datasets that have no publisher attached or errors retrieving the publisher</p>
      */
     public static final String NullPublisher = NS + "NullPublisher";
-
 }

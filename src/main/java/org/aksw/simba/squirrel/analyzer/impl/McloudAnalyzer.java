@@ -11,10 +11,8 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,14 +21,15 @@ import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.utils.vocabularies.CreativeCommons;
+import org.aksw.simba.squirrel.utils.vocabularies.DCAT;
 import org.aksw.simba.squirrel.utils.vocabularies.LMCSE;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCTerms;
-import org.apache.jena.vocabulary.DCTypes;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
@@ -42,6 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * @author ivierle
+ * Analyzer collection dataSets and metaData provided by {@link https://www.mcloud.de/web/guest/home}
+ */
 public class McloudAnalyzer implements Analyzer
 {
     /**
@@ -56,10 +59,11 @@ public class McloudAnalyzer implements Analyzer
     private static final Logger LOGGER = LoggerFactory.getLogger(McloudAnalyzer.class);
 
     // mCloud URI related Strings and Patterns
-    private static final String URI_SUFFIX = "#URI";
-    private static final String METADATA_URI_SUFFIX = "#URI-METADATA";
+    private static final String URI_SUFFIX = "/URI";
+    private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
+    public static final String dataSetUriBase = LMCSE.getURI() + "dataset"; //+ -distribution is the distribution uri
 
     // fugly collection of mCloud HTML scraping related constants for css selector
     private final String paginationElement = "ul.pagination__list.mq-hide-m";
@@ -81,14 +85,15 @@ public class McloudAnalyzer implements Analyzer
     private final String tagSmall = "small";
 
     private UriCollector collector;
-    private Set<String> dynamicUris;
 
     public McloudAnalyzer(UriCollector collector)
     {
         this.collector = collector;
-        dynamicUris = new HashSet<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink)
     {
@@ -160,7 +165,18 @@ public class McloudAnalyzer implements Analyzer
         return collector.getUris(curi);
     }
 
-    protected void scrapePaginatonList(CrawleableUri baseUri, File data) throws IOException, URISyntaxException
+    ////
+    // mCloud scraping process
+    ////
+
+    /**
+     * Starting at the seed ( @param baseUri) this method uses CSS-selectors to navigate 
+     * the WebSites HTML content (in @param data) to retrieve and construct all pagination URIs containing dataSets.
+     * Adds all found pagination URLs to the collector.
+     * @throws IOException if @param data is not found or corrupted
+     * @throws URISyntaxException if construction of pagination URLs CrawleableUri fails
+     */
+    private void scrapePaginatonList(CrawleableUri baseUri, File data) throws IOException, URISyntaxException
     {
         LOGGER.debug("Collecting pagination from mCloud base {}", baseUri.getUri().toString());
 
@@ -197,7 +213,14 @@ public class McloudAnalyzer implements Analyzer
         }
     }
 
-    protected void scrapeDetailPagesList(CrawleableUri baseUri, File data) throws IOException, URISyntaxException
+    /**
+     * Starting on one page of the pagination ( @param baseUri) this method uses CSS-selectors to navigate 
+     * the WebSites HTML content (in @param data) to collect all links to detail pages.
+     * Adds all found detail URLs to the collector. 
+     * @throws IOException if @param data is not found or corrupted
+     * @throws URISyntaxException if construction of detail URLs CrawleableUri fails
+     */
+    private void scrapeDetailPagesList(CrawleableUri baseUri, File data) throws IOException, URISyntaxException
     {
         LOGGER.debug("Collecting detail pages from mCloud pagination {}", baseUri.getUri().toString());
 
@@ -214,10 +237,18 @@ public class McloudAnalyzer implements Analyzer
         }
     }
 
+    /**
+     * On a detail page containing all desired information ( @param baseUri) this method uses CSS-selectors to navigate 
+     * the WebSites HTML content (in @param data) to extract the relevant metaData. 
+     * Constructs a graph with all metaData for the mCloud entry in the DCAT vocabulary. 
+     * Extracts all URLs that access an actual download page for a dataSet and adds the metadataGraph to the constructed CrawleableUri.
+     * @return an iterator over all extracted download URLs containing the metaData Graph and additional information
+     * @throws IOException if @param data is not found or corrupted
+     */
     private Iterator<CrawleableUri> scrapeDetailPage(CrawleableUri baseUri, File data) throws IOException
     {
         LOGGER.debug("Collecting and processing metadata for {}", baseUri.getUri().toString());
-        
+
         String detailURI = baseUri.getUri().toString();
         LOGGER.debug("Scraping data from {}", detailURI);
         Document detailPage = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), detailURI);
@@ -281,6 +312,17 @@ public class McloudAnalyzer implements Analyzer
             licenseName = null;
         }
 
+        //create Model
+        String datasetURI = createUniqueDatasetURI(title, detailURI);
+        Model datasetModel = metaInformationToDcatDataset(
+            datasetURI,
+            detailURI,
+            title,
+            description,
+            providerName,
+            providerURI,
+            categories);
+
         //Sources including Download Type
         Elements downloadGrid = detailPage.select(elDownloadGrid);
         Elements downloadList = downloadGrid.select(elDownloadSplit);
@@ -304,10 +346,17 @@ public class McloudAnalyzer implements Analyzer
                         //if fetcher implementation is available, add the fetchable constant
                         uri.addData(Constants.FETCHABLE_PROTOCOL, true);
                     }
-                    String metadataUri = createURIString(url, true);
-                    uri.addData(Constants.MCLOUD_METADATA_URI, metadataUri);
-                    Model metadataModel = metaInformationToRdf(metadataUri, url, detailURI, title, description, type, providerName, providerURI, licenseName, licenseURI, categories);
-                    uri.addData(Constants.MCLOUD_METADATA_GRAPH, metadataModel);
+
+                    String distributionURI = datasetURI + "-" + type;
+
+                    addDcatDistributionToDataSet(
+                        datasetModel,
+                        datasetURI,
+                        distributionURI,
+                        url,
+                        type,
+                        licenseName,
+                        licenseURI);
 
                     downloadSources.add(uri);
                 }
@@ -317,20 +366,171 @@ public class McloudAnalyzer implements Analyzer
                 LOGGER.error("Error parsing URI " + url + ". It will be ignored.", e2);
             }
         }
+
+        //add full DataSet Model to each "Distribution" URI since they are stored seperately
+        for (CrawleableUri source : downloadSources)
+        {
+            source.addData(Constants.MCLOUD_METADATA_URI, datasetURI + METADATA_URI_SUFFIX);
+            source.addData(Constants.MCLOUD_METADATA_GRAPH, datasetModel);
+        }
+
         return downloadSources.iterator();
     }
 
+    ////
+    // Creation of metaData catalog entries using the DCAT vocabulary
+    ////
+
     /**
-     * filters all broken or corrupt URIs
-     * @param uri
-     * @return
+     * Transforms the scraped information to a DCAT.Dataset entry
+     * @param datasetURI the URI created for this dataSet ({@link McloudAnalyzer#createUniqueDatasetURI(String, String)})
+     * @param mCloudSourceUri the mCloud detail URI this information was scraped from
+     * @param title the dataSets title
+     * @param description the dataSets description
+     * @param publisherName the name of the publisher of this dataSet
+     * @param publisherURI a link to the webSite of the publisher
+     * @param categories all mCloud categories that this dataSet was labeled with
+     * @return a Model containing the newly created DataSet
+     */
+    private Model metaInformationToDcatDataset(String datasetURI,
+                                               String mCloudSourceUri,
+                                               String title,
+                                               String description,
+                                               String publisherName,
+                                               URI publisherURI,
+                                               List<String> categories)
+    {
+        Model model = ModelFactory.createDefaultModel();
+        model.setNsPrefix("dcterms", DCTerms.getURI());
+        model.setNsPrefix("xsd", XSD.getURI());
+        model.setNsPrefix("lmcse", LMCSE.getURI());
+        model.setNsPrefix("rdf", RDF.getURI());
+        model.setNsPrefix("rdfs", RDFS.getURI());
+        model.setNsPrefix("dcat", DCAT.getURI());
+
+        Resource dataSet = model.createResource(datasetURI);
+
+        dataSet.addProperty(RDF.type, DCAT.Dataset);
+        dataSet.addProperty(DCAT.landingPage, mCloudSourceUri);
+
+        dataSet.addProperty(DCTerms.title, title);
+        dataSet.addProperty(DCTerms.description, description);
+
+        Date timeStampDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //correct format according to https://www.w3.org/TR/xmlschema-2/#dateTime
+        String timeStamp = dt.format(timeStampDate).toString();
+        Literal timeLiteral = model.createTypedLiteral(timeStamp, XSD.dateTime.getURI());
+        dataSet.addProperty(DCTerms.issued, timeLiteral);
+
+        if (categories.isEmpty())
+        {
+            dataSet.addProperty(DCAT.keyword, model.createLiteral("No category attached", "en"));
+        }
+        else
+        {
+            for (String category : categories)
+            {
+                dataSet.addProperty(DCAT.keyword, model.createLiteral(category, "de"));
+            }
+        }
+
+        if (publisherName != null && publisherURI != null)
+        {
+            Resource publisher = model.createResource(publisherURI.toString() + URI_SUFFIX);
+            publisher.addProperty(RDF.type, DCTerms.Agent);
+            publisher.addProperty(RDFS.label, publisherName);
+            publisher.addProperty(DCTerms.source, publisherURI.toString());
+            dataSet.addProperty(DCTerms.publisher, publisher);
+        }
+        else
+        {
+            Resource nullPublisher = model.createResource(LMCSE.NullPublisher);
+            nullPublisher.addProperty(RDFS.label, model.createLiteral("Placeholder for empty publishers", "en"));
+            nullPublisher.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable publisher attached", "en"));
+            dataSet.addProperty(DCTerms.publisher, nullPublisher);
+        }
+
+        return model;
+    }
+
+    /**
+     * Creates a new DCAT.Distribution for each download link and adds the distribution to the owning DCAT.Dataset
+     * @param model the model containing the dataSet
+     * @param datasetURI the URI identifying the DataSet
+     * @param distributionURI the URI identifying the Distribution, consisting of the DataSet URI appended by the access type
+     * @param accessURL the download link
+     * @param accessType the type describing the protocol/API/technology to access the data
+     * @param licenseName the title of the license this Distribution was released under
+     * @param licenseURI link to more detailed information about the license
+     */
+    private void addDcatDistributionToDataSet(Model model,
+                                              String datasetURI,
+                                              String distributionURI,
+                                              String accessURL,
+                                              String accessType,
+                                              String licenseName,
+                                              URI licenseURI)
+    {
+        if (!model.containsResource(ResourceFactory.createResource(datasetURI)))
+        {
+            throw new IllegalArgumentException("Creating and retrieving the DCat DataSet failed: " + datasetURI);
+        }
+
+        Resource dataset = model.getResource(datasetURI);
+        Resource distribution = model.createResource(distributionURI);
+        distribution.addProperty(RDF.type, DCAT.Distribution);
+        distribution.addProperty(DCTerms.title, accessType + " distribution of dataset " + datasetURI);
+
+        Resource accessResource = model.createResource(LMCSE.getURI() + createURIConformString(accessType));
+        accessResource.addProperty(RDFS.label, accessType);
+        distribution.addProperty(LMCSE.accessType, accessResource);
+
+        if ("Portal".equals(accessType))
+        {
+            distribution.addProperty(DCAT.accessURL, accessURL);
+        }
+        else
+        {
+            distribution.addProperty(DCAT.downloadURL, accessURL);
+        }
+
+        if (licenseURI != null && licenseName != null)
+        {
+            Resource license = model.createResource(licenseURI.toString() + URI_SUFFIX);
+            license.addProperty(RDF.type, DCTerms.LicenseDocument);
+            license.addProperty(RDFS.label, licenseName);
+            license.addProperty(DCTerms.source, licenseURI.toString());
+            distribution.addProperty(DCTerms.license, license);
+        }
+        else
+        {
+            Resource nullLicense = model.createResource(LMCSE.NullLicense);
+            nullLicense.addProperty(RDFS.label, model.createLiteral("Placeholder for empty licenses", "en"));
+            nullLicense.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable license attached", "en"));
+            distribution.addProperty(DCTerms.license, nullLicense);
+        }
+
+        Literal timeStamp = dataset.getProperty(DCTerms.issued).getLiteral();
+        distribution.addProperty(DCTerms.issued, timeStamp);
+
+        dataset.addProperty(DCAT.distribution, distribution);
+    }
+
+    ////
+    // Helper methods
+    ////
+
+    /**
+     * Filters all broken or corrupt URIs from the metaData to ensure data quality
+     * @param uri the URL to connect to
+     * @return true iff a connection the webSite could be established within 10 seconds and with an HTTP-StatusCode < 400 
      */
     private boolean pageIsAvailable(String uri)
     {
         try
         {
             URLConnection connection = new URL(uri).openConnection();
-            connection.setConnectTimeout(60 * 100);
+            connection.setConnectTimeout(10 * 1000);
             connection.connect();
             return true;
         }
@@ -341,120 +541,32 @@ public class McloudAnalyzer implements Analyzer
         }
     }
 
-    private Model metaInformationToRdf(String metadataGraphUri,
-                                       String describedUri,
-                                       String mCloudSourceUri,
-                                       String title,
-                                       String description,
-                                       String accessType,
-                                       String providerName,
-                                       URI providerURI,
-                                       String licenseName,
-                                       URI licenseURI,
-                                       List<String> categories)
+    /**
+     * Creates a unique URI for each DCAT dataSet as the dataSets can not be enumerated.
+     * Based on {@link McloudAnalyzer#dataSetUriBase} it is appended by the dataSets title and a unique HashCode
+     * @param identifier the title of the dataSet
+     * @param url used to create unique hash
+     * @return the URI String
+     */
+    private String createUniqueDatasetURI(String identifier, String url)
     {
-        Model model = ModelFactory.createDefaultModel();
+        HashCodeBuilder builder = new HashCodeBuilder();
+        builder.append(identifier).append(url);
 
-        model.setNsPrefix("dcterms", DCTerms.getURI());
-        model.setNsPrefix("dctypes", DCTypes.getURI());
-        model.setNsPrefix("cc", CreativeCommons.getURI());
-        model.setNsPrefix("xsd", XSD.getURI());
-        model.setNsPrefix("lmcse", LMCSE.getURI());
-        model.setNsPrefix("rdf", RDF.getURI());
-        model.setNsPrefix("rdfs", RDFS.getURI());
-
-        Date timeStampDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss"); //correct format according to https://www.w3.org/TR/xmlschema-2/#dateTime
-        String timeStamp = dt.format(timeStampDate).toString();
-
-        Resource resource = model.createResource(metadataGraphUri);
-        resource.addProperty(RDF.type, DCTypes.Dataset);
-        resource.addProperty(DCTerms.source, mCloudSourceUri);
-        resource.addProperty(LMCSE.describes, describedUri);
-
-        resource.addProperty(DCTerms.title, title);
-        resource.addProperty(DCTerms.description, description);
-        Resource accessResource = createOrGetDynamicResource(model, LMCSE.getURI(), accessType);
-        accessResource.addProperty(RDFS.label, accessType);
-        resource.addProperty(LMCSE.accessType, accessResource);
-
-        Literal timeLiteral = model.createTypedLiteral(timeStamp, XSD.dateTime.getURI());
-        resource.addProperty(DCTerms.created, timeLiteral);
-
-        if (categories.isEmpty())
-        {
-            Resource nullCategory = model.createResource(LMCSE.NullCategory);
-            nullCategory.addProperty(RDFS.label, model.createLiteral("Placeholder for empty categories", "en"));
-            nullCategory.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable category attached", "en"));
-            resource.addProperty(DCTerms.subject, nullCategory);
-        }
-        else
-        {
-            for (String category : categories)
-            {
-                Resource categoryResource = createOrGetDynamicResource(model, LMCSE.getURI(), category);
-                categoryResource.addProperty(RDFS.label, category);
-                resource.addProperty(DCTerms.subject, categoryResource);
-            }
-        }
-
-        if (providerName != null && providerURI != null)
-        {
-            Resource publisher = model.createResource(createURIString(providerURI.toString(), false));
-            publisher.addProperty(RDF.type, DCTerms.Agent);
-            publisher.addProperty(RDFS.label, providerName);
-            publisher.addProperty(DCTerms.source, providerURI.toString());
-
-            resource.addProperty(DCTerms.publisher, publisher);
-        }
-        else
-        {
-            Resource nullPublisher = model.createResource(LMCSE.NullPublisher);
-            nullPublisher.addProperty(RDFS.label, model.createLiteral("Placeholder for empty publishers", "en"));
-            nullPublisher.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable publisher attached", "en"));
-            resource.addProperty(DCTerms.publisher, nullPublisher);
-        }
-
-        if (licenseURI != null && licenseName != null)
-        {
-            Resource license = model.createResource(createURIString(licenseURI.toString(), false));
-            license.addProperty(RDF.type, DCTerms.LicenseDocument);
-            license.addProperty(RDFS.label, licenseName);
-            license.addProperty(DCTerms.source, licenseURI.toString());
-            resource.addProperty(CreativeCommons.license, license);
-        }
-        else
-        {
-            Resource nullLicense = model.createResource(LMCSE.NullLicense);
-            nullLicense.addProperty(RDFS.label, model.createLiteral("Placeholder for empty licenses", "en"));
-            nullLicense.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable license attached", "en"));
-            resource.addProperty(CreativeCommons.license, nullLicense);
-        }
-
-        return model;
+        return dataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.hashCode();
     }
 
-    private Resource createOrGetDynamicResource(Model model, String nameSpace, String propertyName)
+    /**
+     * @return escaped @param string that conforms to the URISyntax to prevent URISyntaxException on URI creation
+     */
+    private String createURIConformString(String string)
     {
-        String truncName = propertyName.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-");
-        String uri = nameSpace + truncName;
-        boolean isUriKnown = dynamicUris.stream().anyMatch(u -> u.equals(uri));
-
-        if (isUriKnown)
-        {
-            return model.getResource(uri);
-        }
-        else
-        {
-            dynamicUris.add(uri);
-            return model.createResource(uri);
-        }
+        return string.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-").replaceAll("[-]+", "-");
     }
 
-    private String createURIString(String baseName, boolean isMetadata)
-    {
-        return isMetadata ? baseName + METADATA_URI_SUFFIX : baseName + URI_SUFFIX;
-    }
+    ////
+    // Sink to store MetaData graphs to file
+    ////
 
     protected static class MCloudDataSink
     {
@@ -465,6 +577,9 @@ public class McloudAnalyzer implements Analyzer
             this.sink = sink;
         }
 
+        /**
+         * Stores the metaData graph of the given @param curi to file
+         */
         public void sinkCatalogData(CrawleableUri curi)
         {
             String uri = curi.getUri().toString();
@@ -475,8 +590,7 @@ public class McloudAnalyzer implements Analyzer
                     String metadataUriString = (String) curi.getData(Constants.MCLOUD_METADATA_URI);
                     Model metadataModel = (Model) curi.getData(Constants.MCLOUD_METADATA_GRAPH);
 
-                    //create a new MetadataURI with the Suffix to store the metadata graph
-                    //this graph points to the real uri via LMCSE.describes
+                    //create a new MetadataURI with the Suffix to store the metaData graph
                     CrawleableUri metadataUri = new CrawleableUri(new URI(metadataUriString));
                     sink.addModel(metadataUri, metadataModel);
                 }
@@ -488,10 +602,13 @@ public class McloudAnalyzer implements Analyzer
             }
         }
 
+        /**
+         * Stored a dataSet ( @param data) for the given @param curi to file
+         * @throws FileNotFoundException if @param data is not found or corrupted
+         */
         public void sinkData(CrawleableUri curi, File data) throws FileNotFoundException
         {
             sink.addData(curi, new FileInputStream(data));
         }
     }
-
 }
