@@ -4,10 +4,8 @@ import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
-import org.aksw.simba.squirrel.components.DeduplicatorComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
@@ -15,14 +13,12 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
-import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -272,13 +268,6 @@ public class WorkerImpl implements Worker, Closeable {
         }
         LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
-
-        if (DeduplicatorComponent.deduplicationActive) {
-            //TODO: get triples somehow!
-            List<Triple> triples = new ArrayList<>();
-            TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
-            tripleHashPostProcessor.postprocess();
-        }
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
@@ -317,10 +306,6 @@ public class WorkerImpl implements Worker, Closeable {
         frontier.addNewUris(uris);
     }
 
-    @Override
-    public void giveHashValueAndUriToFrontier(HashValue value, CrawleableUri uri) {
-        frontier.addHashValueForUri(value, uri);
-    }
 
     @Override
     public void close() {

@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.worker;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 
 import java.util.List;
 
@@ -41,12 +40,4 @@ public interface Worker extends Runnable {
      * @return True iff the worker sends alive messages.
      */
     boolean sendsAliveMessages();
-
-    /**
-     * Tells the worker to send / give the given hash value and uri to its {@link org.aksw.simba.squirrel.frontier.Frontier}.
-     *
-     * @param value The given hash value.
-     * @param uri   The given hash value
-     */
-    void giveHashValueAndUriToFrontier(HashValue value, CrawleableUri uri);
 }

@@ -6,7 +6,6 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.ListHashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
@@ -178,20 +177,21 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     }
 
     @Override
-    public void addHashValueForUri(CrawleableUri uri, HashValue hashValue) {
+    public void addHashValueForUri(CrawleableUri uri) {
         r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-            update(r.hashMap(COLUMN_HASH_VALUE, hashValue.encodeToString())).run(connector.connection);
+            update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
     }
 
     @Override
-    public List<HashValueUriPair> getAllUrisAndHashValues() {
+    public List<CrawleableUri> getAllUris() {
         Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).run(connector.connection);
-        List<HashValueUriPair> pairs = new ArrayList<>();
+        List<CrawleableUri> uris = new ArrayList<>();
 
         outer:
         while (cursor.hasNext()) {
             HashMap<String, Object> nextRow = cursor.next();
-            HashValueUriPair pair = new HashValueUriPair();
+            CrawleableUri newUri = null;
+            HashValue hashValue = null;
             for (String key : nextRow.keySet()) {
                 if (key.equals(COLUMN_HASH_VALUE)) {
                     String hashAsString = (String) nextRow.get(key);
@@ -199,20 +199,21 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
                         // no hash value in database yet for this uri
                         continue outer;
                     } else {
-                        pair.hashValue = hashValueForDecoding.decodeFromString(hashAsString);
+                        hashValue = hashValueForDecoding.decodeFromString(hashAsString);
                     }
                 } else if (key.equals(COLUMN_URI)) {
                     try {
-                        pair.uri = new CrawleableUri(new URI((String) nextRow.get(key)));
+                        newUri = new CrawleableUri(new URI((String) nextRow.get(key)));
                     } catch (URISyntaxException e) {
                         LOGGER.error("Error while constructing an uri: " + nextRow.get(key));
                     }
                 }
             }
-            pairs.add(pair);
+            newUri.setHashValue(hashValue);
+            uris.add(newUri);
         }
         cursor.close();
-        return pairs;
+        return uris;
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {

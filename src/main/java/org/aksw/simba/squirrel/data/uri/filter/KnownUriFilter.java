@@ -1,8 +1,6 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 
 import java.util.List;
 
@@ -32,19 +30,18 @@ public interface KnownUriFilter extends UriFilter {
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
-     * Add the given hash value for the given uri.
+     * Add the given hash value for the given uri. Hash value is contained in the uri.
      *
      * @param uri       The given uri.
-     * @param hashValue The given hash value.
      */
-    public void addHashValueForUri(CrawleableUri uri, HashValue hashValue);
+    public void addHashValueForUri(CrawleableUri uri);
 
 
     /**
-     * Get all uris together with their hash values.
-     * @return The pairs of uris and hash values.
+     * Get all uris.
+     * @return All uris contained in this filter.
      */
-    public List<HashValueUriPair> getAllUrisAndHashValues();
+    public List<CrawleableUri> getAllUris();
 
     /**
      * Close RDB connection, destroy the database.

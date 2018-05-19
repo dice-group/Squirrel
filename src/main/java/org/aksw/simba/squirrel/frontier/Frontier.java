@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 
 import java.io.Closeable;
 import java.util.List;
@@ -71,12 +70,11 @@ public interface Frontier extends Closeable {
     int getNumberOfPendingUris();
 
     /**
-     * Add a hash value for this given uri.
+     * Add a hash value for this given uri. Hash value is contained in the uri.
      *
-     * @param value The hash value to set.
      * @param uri   The given uri.
      */
-    void addHashValueForUri(HashValue value, CrawleableUri uri);
+    void addHashValueForUri(CrawleableUri uri);
 
 
 

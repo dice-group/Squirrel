@@ -7,7 +7,6 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
@@ -187,9 +186,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
 
-            } else if (object instanceof HashValueUriPair) {
-                HashValueUriPair hashValueUriPair = (HashValueUriPair) object;
-                frontier.addHashValueForUri(hashValueUriPair.hashValue, hashValueUriPair.uri);
+            } else if (object instanceof CrawleableUri) {
+                CrawleableUri uri = (CrawleableUri) object;
+                frontier.addHashValueForUri(uri);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

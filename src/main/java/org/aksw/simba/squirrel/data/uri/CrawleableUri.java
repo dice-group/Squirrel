@@ -1,5 +1,9 @@
 package org.aksw.simba.squirrel.data.uri;
 
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.URI;
@@ -9,9 +13,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class represents a URI and additional meta data that is helpful for
@@ -44,6 +45,11 @@ public class CrawleableUri implements Serializable {
     private static final int URI_START_INDEX = 5;
 
     private long timestampNextCrawl;
+
+    /**
+     * The hash value for the triples that are behind this uri.
+     */
+    private HashValue hashValue;
 
     /**
      * Creates a CrawleableUri object from the given byte array.
@@ -253,5 +259,13 @@ public class CrawleableUri implements Serializable {
 
     public void setTimestampNextCrawl(long timestampNextCrawl) {
         this.timestampNextCrawl = timestampNextCrawl;
+    }
+
+    public HashValue getHashValue() {
+        return hashValue;
+    }
+
+    public void setHashValue(HashValue hashValue) {
+        this.hashValue = hashValue;
     }
 }

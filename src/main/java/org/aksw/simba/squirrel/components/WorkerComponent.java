@@ -8,7 +8,6 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
@@ -43,7 +42,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
 
     private Worker worker;
-    private DataSender sender;
+    private DataSender senderFrontier, senderDeduplicator;
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
@@ -71,7 +70,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         String updateDatasetURI = sparqlDatasetPrefix + "update";
         String queryDatasetURI = sparqlDatasetPrefix + "query";
 
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+        senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+            .build();
+        senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
             .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
@@ -92,7 +93,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
                 @Override
                 public void run() {
                     try {
-                        sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                        senderFrontier.sendData(serializer.serialize(new AliveMessage(worker.getId())));
                     } catch (IOException e) {
                         LOGGER.warn(e.toString());
                     }
@@ -110,7 +111,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(sender);
+        IOUtils.closeQuietly(senderFrontier);
         IOUtils.closeQuietly(client);
         timerAliveMessages.cancel();
         super.close();
@@ -147,7 +148,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
         try {
-            sender.sendData(serializer.serialize(new UriSet(uris)));
+            senderFrontier.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
@@ -156,9 +157,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            senderFrontier.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+
+            if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+                senderDeduplicator.sendData(serializer.serialize(crawledUris));
+            }
         } catch (Exception e) {
-            LOGGER.error("Exception while sending crawl result to the frontier.", e);
+            LOGGER.error("Exception while sending crawl result.", e);
         }
     }
 
@@ -168,12 +173,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void addHashValueForUri(HashValue value, CrawleableUri uri) {
-        try {
-            sender.sendData(serializer.serialize(new HashValueUriPair(value, uri)));
-        } catch (Exception e) {
-            LOGGER.error("Exception while sending hash value to the frontier.", e);
-        }
+    public void addHashValueForUri(CrawleableUri uri) {
+        // no need to implement here
     }
 
     @Override

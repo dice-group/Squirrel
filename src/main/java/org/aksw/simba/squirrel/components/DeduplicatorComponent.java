@@ -1,17 +1,24 @@
 package org.aksw.simba.squirrel.components;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.HashValueUriPair;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
+import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
+import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
+import org.hobbit.core.rabbit.DataSender;
+import org.hobbit.core.rabbit.DataSenderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This component is responsible for deduplication, which means it periodically compares all
@@ -20,7 +27,9 @@ import java.util.Map;
  * If The hash values of two uris are equal, it look behind the triples of those two uris and compares them. If the
  * lists of triples are equal, one of the two lists of triples will be deleted as it is a duplicate.
  */
-public class DeduplicatorComponent extends AbstractComponent {
+public class DeduplicatorComponent extends AbstractComponent implements RespondingDataHandler {
+
+    public static final String DEDUPLICATOR_QUEUE_NAME = "deduplicatorQueue";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
@@ -39,16 +48,20 @@ public class DeduplicatorComponent extends AbstractComponent {
      */
     private TripleBasedSink sink;
 
+    private Serializer serializer;
+
+    private DataSender senderFrontier;
+
     /**
      * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
      * no processing of hash values will be done.
      */
-    public static final boolean deduplicationActive = true;
+    public static final boolean DEDUPLICATION_ACTIVE = true;
 
 
     @Override
     public void init() {
-        if (deduplicationActive) {
+        if (DEDUPLICATION_ACTIVE) {
             Map<String, String> env = System.getenv();
 
             String rdbHostName = null;
@@ -71,26 +84,36 @@ public class DeduplicatorComponent extends AbstractComponent {
 
             // TODO: other kinds of sinks must be possible as well
             sink = new SparqlBasedSink(null, null);
+
+            serializer = new GzipJavaUriSerializer();
+
+            try {
+                senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+                    .build();
+            } catch (IOException e) {
+                LOGGER.error("Error while creating sender object.", e);
+            }
         }
     }
 
     @Override
     public void run() {
-        if (deduplicationActive) {
+        if (DEDUPLICATION_ACTIVE) {
             while (true) {
                 // periodically compare hash values for all uris
-                List<HashValueUriPair> allUrisAndHashValues = knownUriFilter.getAllUrisAndHashValues();
+                List<CrawleableUri> allUris = knownUriFilter.getAllUris();
 
-                for (HashValueUriPair pair1 : allUrisAndHashValues) {
-                    for (HashValueUriPair pair2 : allUrisAndHashValues) {
-                        if (!pair1.uri.equals(pair2.uri)) {
-                            if (pair1.hashValue.equals(pair2.hashValue)) {
+                for (CrawleableUri uri1 : allUris) {
+                    for (CrawleableUri uri2 : allUris) {
+                        if (!uri1.equals(uri2)) {
+                            if (uri1.getHashValue().equals(uri2.getHashValue())) {
                                 // get triples from pair1 and pair2 and compare them
-                                List<Triple> triples1 = sink.getTriplesForGraph(pair1.uri);
-                                List<Triple> triples2 = sink.getTriplesForGraph(pair2.uri);
+                                Set<Triple> set1 = new HashSet<>(sink.getTriplesForGraph(uri1));
+                                Set<Triple> set2 = new HashSet<>(sink.getTriplesForGraph(uri2));
+
                                 boolean equal = true;
-                                for (Triple triple : triples1) {
-                                    if (!triples2.contains(triple)) {
+                                for (Triple triple : set1) {
+                                    if (!set2.contains(triple)) {
                                         equal = false;
                                         break;
                                     }
@@ -116,5 +139,44 @@ public class DeduplicatorComponent extends AbstractComponent {
     @Override
     public void close() {
         knownUriFilter.close();
+    }
+
+    @Override
+    public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
+        Object object = null;
+        try {
+            object = serializer.deserialize(data);
+        } catch (IOException e) {
+            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
+        }
+        LOGGER.trace("Got a message (\"{}\").", object.toString());
+        if (object != null) {
+            if (object instanceof List) {
+                List<CrawleableUri> uris = (List<CrawleableUri>) object;
+                for (CrawleableUri uri : uris) {
+                    List<Triple> triples = new ArrayList<>();
+                    TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
+                    tripleHashPostProcessor.run();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void handleData(byte[] bytes) {
+        handleData(bytes, null, null, null);
+    }
+
+    /**
+     * Send an uri for which a {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue} has been computed.
+     *
+     * @param uri
+     */
+    public void sendUriWithComputedHashValue(CrawleableUri uri) {
+        try {
+            senderFrontier.sendData(serializer.serialize(uri));
+        } catch (IOException e) {
+            LOGGER.error("Error while serializing uri " + uri, e);
+        }
     }
 }

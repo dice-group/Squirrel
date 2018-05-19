@@ -4,10 +4,8 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
-import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -51,9 +49,6 @@ public class FrontierImpl implements Frontier {
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
     protected GraphLogger graphLogger;
-
-    private TripleHashPostProcessor tripleHashPostProcessor;
-
 
     /**
      * Indicates whether recrawling is active.
@@ -234,8 +229,8 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void addHashValueForUri(HashValue value, CrawleableUri uri) {
-        knownUriFilter.addHashValueForUri(uri, value);
+    public void addHashValueForUri(CrawleableUri uri) {
+        knownUriFilter.addHashValueForUri(uri);
     }
 
     @Override
