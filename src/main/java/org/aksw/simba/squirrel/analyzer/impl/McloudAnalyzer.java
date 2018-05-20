@@ -523,7 +523,7 @@ public class McloudAnalyzer implements Analyzer
     /**
      * Filters all broken or corrupt URIs from the metaData to ensure data quality
      * @param uri the URL to connect to
-     * @return true iff a connection the webSite could be established within 10 seconds and with an HTTP-StatusCode < 400 
+     * @return true iff a connection the webSite could be established within 10 seconds and with an statusCode < 400 
      */
     private boolean pageIsAvailable(String uri)
     {
@@ -553,7 +553,7 @@ public class McloudAnalyzer implements Analyzer
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(identifier).append(url);
 
-        return dataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.hashCode();
+        return dataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
     }
 
     /**
