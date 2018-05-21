@@ -7,15 +7,14 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -112,6 +111,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void close() throws IOException {
         IOUtils.closeQuietly(senderFrontier);
+        IOUtils.closeQuietly(senderDeduplicator);
         IOUtils.closeQuietly(client);
         timerAliveMessages.cancel();
         super.close();
