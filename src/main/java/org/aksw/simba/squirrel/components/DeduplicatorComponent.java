@@ -5,9 +5,11 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
+import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.apache.jena.graph.Triple;
@@ -33,10 +35,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
-    /**
-     * The time that will last between the different executions of deduplication.
-     */
-    private static final int SLEEP_TIME = 10000;
+    private static final int MAX_NEW_URIS_LIST_SIZE = 10;
 
     /**
      * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
@@ -51,6 +50,12 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private Serializer serializer;
 
     private DataSender senderFrontier;
+
+    /**
+     * A list of uris for which hash values have already been computed. If size of the list exceeds {@link #MAX_NEW_URIS_LIST_SIZE}
+     * send the uris to the frontier.
+     */
+    private final List<CrawleableUri> newUrisBufferList = new ArrayList<>();
 
     /**
      * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
@@ -98,39 +103,36 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     @Override
     public void run() {
-        if (DEDUPLICATION_ACTIVE) {
-            while (true) {
-                // periodically compare hash values for all uris
-                List<CrawleableUri> allUris = knownUriFilter.getAllUris();
 
-                for (CrawleableUri uri1 : allUris) {
-                    for (CrawleableUri uri2 : allUris) {
-                        if (!uri1.equals(uri2)) {
-                            if (uri1.getHashValue().equals(uri2.getHashValue())) {
-                                // get triples from pair1 and pair2 and compare them
-                                Set<Triple> set1 = new HashSet<>(sink.getTriplesForGraph(uri1));
-                                Set<Triple> set2 = new HashSet<>(sink.getTriplesForGraph(uri2));
+    }
 
-                                boolean equal = true;
-                                for (Triple triple : set1) {
-                                    if (!set2.contains(triple)) {
-                                        equal = false;
-                                        break;
-                                    }
-                                }
+    private void compairNewUrisWithOldUris() {
+        List<CrawleableUri> allUris = knownUriFilter.getAllUris();
+        Set<CrawleableUri> set = new HashSet<>(allUris);
+        set.addAll(newUrisBufferList);
 
-                                if (equal) {
-                                    // TODO: delete duplicate
-                                }
+        outer:
+        for (CrawleableUri uriNew : newUrisBufferList) {
+            for (CrawleableUri uriOld : set) {
+                if (!uriOld.equals(uriNew)) {
+                    if (uriOld.getHashValue().equals(uriNew.getHashValue())) {
+                        // get triples from pair1 and pair2 and compare them
+                        Set<Triple> set1 = new HashSet<>(sink.getTriplesForGraph(uriOld));
+                        Set<Triple> set2 = new HashSet<>(sink.getTriplesForGraph(uriNew));
+
+                        boolean equal = true;
+                        for (Triple triple : set1) {
+                            if (!set2.contains(triple)) {
+                                equal = false;
+                                break;
                             }
                         }
-                    }
-                }
 
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e) {
-                    LOGGER.error("Error while trying to sleep", e);
+                        if (equal) {
+                            // TODO: delete duplicate
+                            continue outer;
+                        }
+                    }
                 }
             }
         }
@@ -143,6 +145,11 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
+
+        if (!DEDUPLICATION_ACTIVE) {
+            return;
+        }
+
         Object object = null;
         try {
             object = serializer.deserialize(data);
@@ -151,9 +158,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         }
         LOGGER.trace("Got a message (\"{}\").", object.toString());
         if (object != null) {
-            if (object instanceof List) {
-                List<CrawleableUri> uris = (List<CrawleableUri>) object;
-                for (CrawleableUri uri : uris) {
+            if (object instanceof UriSet) {
+                UriSet uriSet = (UriSet) object;
+                for (CrawleableUri uri : uriSet.uris) {
                     List<Triple> triples = new ArrayList<>();
                     TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
                     tripleHashPostProcessor.run();
@@ -169,12 +176,19 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     /**
      * Send an uri for which a {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue} has been computed.
+     * Also add uri to {@link #newUrisBufferList} and call {@link #recognizeUriWithComputedHashValue(CrawleableUri)} if necessary.
      *
-     * @param uri
+     * @param uri The new uri with the computed hash value.
      */
-    public void sendUriWithComputedHashValue(CrawleableUri uri) {
+    public void recognizeUriWithComputedHashValue(CrawleableUri uri) {
         try {
-            senderFrontier.sendData(serializer.serialize(uri));
+            newUrisBufferList.add(uri);
+            if (newUrisBufferList.size() > MAX_NEW_URIS_LIST_SIZE) {
+                compairNewUrisWithOldUris();
+                UriHashValueResult result = new UriHashValueResult(newUrisBufferList);
+                senderFrontier.sendData(serializer.serialize(result));
+            }
+            newUrisBufferList.clear();
         } catch (IOException e) {
             LOGGER.error("Error while serializing uri " + uri, e);
         }

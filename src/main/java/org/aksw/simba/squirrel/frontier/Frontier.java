@@ -74,7 +74,7 @@ public interface Frontier extends Closeable {
      *
      * @param uri   The given uri.
      */
-    void addHashValueForUri(CrawleableUri uri);
+    void addHashValuesForUris(List<CrawleableUri> uris);
 
 
 

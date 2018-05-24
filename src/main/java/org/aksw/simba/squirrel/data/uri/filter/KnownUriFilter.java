@@ -32,9 +32,9 @@ public interface KnownUriFilter extends UriFilter {
     /**
      * Add the given hash value for the given uri. Hash value is contained in the uri.
      *
-     * @param uri       The given uri.
+     * @param uris       The given uri.
      */
-    public void addHashValueForUri(CrawleableUri uri);
+    public void addHashValuesForUris(List<CrawleableUri> uris);
 
 
     /**

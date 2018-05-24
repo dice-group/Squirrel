@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
@@ -84,11 +85,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
             queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, frontier.doesRecrawling());
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
             knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(frontier.doesRecrawling());
+            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
         }
 
         if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
@@ -186,9 +187,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
 
-            } else if (object instanceof CrawleableUri) {
-                CrawleableUri uri = (CrawleableUri) object;
-                frontier.addHashValueForUri(uri);
+            } else if (object instanceof UriHashValueResult) {
+                UriHashValueResult result = (UriHashValueResult) object;
+                frontier.addHashValuesForUris(result.uris);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

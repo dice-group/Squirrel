@@ -2,7 +2,6 @@ package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.deduplication.hashing.RDFHashFunction;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 
 import java.util.ArrayList;
@@ -34,11 +33,12 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
         for (int i = 0; i < powerNumberOfIntervals; i++) {
             listHashValues.add(i, null);
         }
-        int intervalSize = 2 * Integer.MAX_VALUE / (int) Math.pow(2, powerNumberOfIntervals);
+        long intervalSize = 2 * Integer.MAX_VALUE / (int) Math.pow(2, powerNumberOfIntervals);
         for (Triple triple : triples) {
-            Integer hash = triple.hashCode();
+            int hash = triple.hashCode();
             int currentInterval = Integer.MIN_VALUE;
-            for (int i = 0; i < Math.pow(2, powerNumberOfIntervals); i++) {
+            final double numIntervals = Math.pow(2, powerNumberOfIntervals);
+            for (int i = 0; i < numIntervals; i++) {
                 if (hash >= currentInterval && hash < currentInterval + intervalSize) {
                     if (listHashValues.get(i) == null || listHashValues.get(i) > hash) {
                         listHashValues.add(i, hash);

@@ -160,7 +160,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             senderFrontier.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
 
             if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
-                senderDeduplicator.sendData(serializer.serialize(crawledUris));
+                UriSet uriSet = new UriSet();
+                uriSet.uris = crawledUris;
+                senderDeduplicator.sendData(serializer.serialize(uriSet));
             }
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result.", e);
@@ -173,7 +175,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void addHashValueForUri(CrawleableUri uri) {
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
         // no need to implement here
     }
 
