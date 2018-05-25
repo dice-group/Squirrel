@@ -35,7 +35,22 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
-    private static final int MAX_NEW_URIS_LIST_SIZE = 10;
+    /**
+     * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
+     * no processing of hash values will be done.
+     */
+    public static final boolean DEDUPLICATION_ACTIVE = true;
+
+    /**
+     * The maximal size for {@link #newUrisBufferList}.
+     */
+    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 10;
+
+    /**
+     * A list of uris for which hash values have already been computed. If size of the list exceeds {@link #MAX_SIZE_NEW_URIS_BUFFER_LIST}
+     * send the uris to the frontier.
+     */
+    private final List<CrawleableUri> newUrisBufferList = new ArrayList<>();
 
     /**
      * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
@@ -50,18 +65,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private Serializer serializer;
 
     private DataSender senderFrontier;
-
-    /**
-     * A list of uris for which hash values have already been computed. If size of the list exceeds {@link #MAX_NEW_URIS_LIST_SIZE}
-     * send the uris to the frontier.
-     */
-    private final List<CrawleableUri> newUrisBufferList = new ArrayList<>();
-
-    /**
-     * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
-     * no processing of hash values will be done.
-     */
-    public static final boolean DEDUPLICATION_ACTIVE = true;
 
 
     @Override
@@ -106,7 +109,11 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     }
 
-    private void compairNewUrisWithOldUris() {
+    /**
+     * Compare the hash values of the uris in {@link #newUrisBufferList} with the hash values of all uris contained
+     * in {@link #knownUriFilter}.
+     */
+    private void compareNewUrisWithOldUris() {
         List<CrawleableUri> allUris = knownUriFilter.getAllUris();
         Set<CrawleableUri> set = new HashSet<>(allUris);
         set.addAll(newUrisBufferList);
@@ -183,8 +190,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     public void recognizeUriWithComputedHashValue(CrawleableUri uri) {
         try {
             newUrisBufferList.add(uri);
-            if (newUrisBufferList.size() > MAX_NEW_URIS_LIST_SIZE) {
-                compairNewUrisWithOldUris();
+            if (newUrisBufferList.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
+                compareNewUrisWithOldUris();
                 UriHashValueResult result = new UriHashValueResult(newUrisBufferList);
                 senderFrontier.sendData(serializer.serialize(result));
             }
