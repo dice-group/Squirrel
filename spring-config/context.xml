@@ -34,7 +34,7 @@
         	<constructor-arg index="3" ref="serializerBean" />
         	<constructor-arg index="4" ref="uriCollectorBean" />
         	<constructor-arg index="5" value="2000" />
-        	<constructor-arg index="6" value="//home/gsjunior/Documentos/crawled_data/log" /><!-- Logging -->
+        	<constructor-arg index="6" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
         </bean> 
          
         <!-- Output folder for FileBasedSink -->
