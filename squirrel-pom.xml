@@ -268,7 +268,7 @@
                     <quiet>true</quiet>
                     <reportOutputDirectory>${project.build.directory}/javadoc/_html</reportOutputDirectory>
                     <show>private</show>
-                    <skip>false</skip>
+                    <skip>true</skip>
                     <windowtitle>Documentation about squirrels from computer scientists</windowtitle>
                 </configuration>
                 <executions>

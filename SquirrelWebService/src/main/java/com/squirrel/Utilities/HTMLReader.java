@@ -1,8 +1,10 @@
 package com.squirrel.Utilities;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Collections;
 
 public abstract class HTMLReader {
@@ -20,6 +22,9 @@ public abstract class HTMLReader {
         try {
             return new BufferedReader(new FileReader(filename)).lines().collect(StringBuilder::new, StringBuilder::append, StringBuilder::append) + "";
         } catch (FileNotFoundException e) {
+            if (filename.endsWith("_exception.html")) {
+                return "<html><head><title>Unresolvable error</title></head><body>FILE EXCEPTION. Only files are: " + Arrays.deepToString(new File("./").list()) + "</body></html>";
+            }
             return getHTMLErrorPage(e.getMessage());
         }
     }

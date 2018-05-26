@@ -2,6 +2,7 @@
 
 echo Please don't forget to execute "mvn clean package", if you made some changes!
 
+cd %~dp0
 cd target
 copy /B /Y *.jar start.jar
 move start.jar ../

@@ -2,6 +2,7 @@
 
 echo We will install the current SquirrelWebObject to your maven repository now!
 
+cd %~dp0
 cd target
 
 for %%f IN (*.jar) DO (
@@ -17,4 +18,4 @@ echo Current Version is %version%. Install it!
 
 cd ..
 
-mvn install:install-file -DgroupId=org.aksw.simba.squirrel -DartifactId=SquirrelWebObject -Dpackaging=jar -Dversion=%version% -Dfile=%file% -DgeneratePom=true
+mvn install:install-file -DgroupId=org.aksw.simba.squirrel -DartifactId=SquirrelWebObject -Dpackaging=jar -Dversion=%version% -Dfile=%file% -DgeneratePom=true -DlocalRepositoryPath=..\repository
