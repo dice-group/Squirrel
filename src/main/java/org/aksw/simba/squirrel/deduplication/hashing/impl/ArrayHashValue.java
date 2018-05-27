@@ -2,18 +2,14 @@ package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
- * A hash value as a list of integers.
+ * A hash value as a Array of integers.
  */
-public class ListHashValue implements HashValue {
+public class ArrayHashValue implements HashValue {
     /**
-     * The List of HashValues.
+     * The Array of HashValues.
      */
-    private List<Integer> hashValues;
+    private Integer[] hashValues;
 
     /**
      * The delimeter between the individual HashValues
@@ -23,16 +19,16 @@ public class ListHashValue implements HashValue {
     /**
      * Constructor.
      */
-    public ListHashValue() {
-        this(Collections.emptyList());
+    public ArrayHashValue() {
+
     }
 
     /**
      * Constructor.
      *
-     * @param hashValues The List of Hashvalues.
+     * @param hashValues The Array of Hashvalues.
      */
-    public ListHashValue(List<Integer> hashValues) {
+    public ArrayHashValue(Integer[] hashValues) {
         this.hashValues = hashValues;
     }
 
@@ -48,26 +44,26 @@ public class ListHashValue implements HashValue {
 
     @Override
     public HashValue decodeFromString(String s) {
-        List<Integer> hashValues = new ArrayList<>();
         String[] array = s.split(DELIMETER);
-        for (String part : array) {
-            if (!part.equals("")) {
-                hashValues.add(Integer.parseInt(part));
+        Integer[] hashValues = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != "") {
+                hashValues[i] = Integer.parseInt(array[i]);
             }
         }
-        return new ListHashValue(hashValues);
+        return new ArrayHashValue(hashValues);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ListHashValue) {
-            ListHashValue listHashValue = (ListHashValue) obj;
-            if (hashValues.size() != listHashValue.hashValues.size()) {
+        if (obj instanceof ArrayHashValue) {
+            ArrayHashValue arrayHashValue = (ArrayHashValue) obj;
+            if (hashValues.length != arrayHashValue.hashValues.length) {
                 return false;
             }
             boolean equal = true;
-            for (int i = 0; i < hashValues.size(); i++) {
-                if (!hashValues.get(i).equals(listHashValue.hashValues.get(i))) {
+            for (int i = 0; i < hashValues.length; i++) {
+                if (hashValues[i] != arrayHashValue.hashValues[i]) {
                     equal = false;
                     break;
                 }

@@ -6,7 +6,7 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.ListHashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.ArrayHashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     /**
      * Used for converting Strings to {@link HashValue}s.
      */
-    private HashValue hashValueForDecoding = new ListHashValue();
+    private HashValue hashValueForDecoding = new ArrayHashValue();
 
     /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
