@@ -70,11 +70,11 @@ public interface Frontier extends Closeable {
     int getNumberOfPendingUris();
 
     /**
-     * Add a hash value for this given uri. Hash value is contained in the uri.
+     * Add hash values for this given uris. Hash values are contained in the uris.
      *
-     * @param uri   The given uri.
+     * @param uris   The given uris.
      */
-    void addHashValueForUri(CrawleableUri uri);
+    void addHashValuesForUris(List<CrawleableUri> uris);
 
 
 

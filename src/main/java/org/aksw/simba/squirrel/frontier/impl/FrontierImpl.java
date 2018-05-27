@@ -229,8 +229,8 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void addHashValueForUri(CrawleableUri uri) {
-        knownUriFilter.addHashValueForUri(uri);
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
+        knownUriFilter.addHashValuesForUris(uris);
     }
 
     @Override

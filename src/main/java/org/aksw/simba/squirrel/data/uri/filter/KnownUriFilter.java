@@ -30,11 +30,11 @@ public interface KnownUriFilter extends UriFilter {
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
-     * Add the given hash value for the given uri. Hash value is contained in the uri.
+     * Add the given hash values for the given uris. Hash values are contained in the uris.
      *
-     * @param uri       The given uri.
+     * @param uris       The given uris.
      */
-    public void addHashValueForUri(CrawleableUri uri);
+    public void addHashValuesForUris(List<CrawleableUri> uris);
 
 
     /**

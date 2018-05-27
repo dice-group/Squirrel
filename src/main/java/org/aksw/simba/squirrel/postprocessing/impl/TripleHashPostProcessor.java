@@ -39,6 +39,6 @@ public class TripleHashPostProcessor implements PostProcessor {
     public void postprocess() {
         HashValue value = (new IntervalBasedMinHashFunction(1).hash(triples));
         uri.setHashValue(value);
-        deduplicatorComponent.sendUriWithComputedHashValue(uri);
+        deduplicatorComponent.recognizeUriWithComputedHashValue(uri);
     }
 }

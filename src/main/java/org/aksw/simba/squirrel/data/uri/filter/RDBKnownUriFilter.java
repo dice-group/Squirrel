@@ -177,9 +177,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     }
 
     @Override
-    public void addHashValueForUri(CrawleableUri uri) {
-        r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-            update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+                update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
+        }
     }
 
     @Override
