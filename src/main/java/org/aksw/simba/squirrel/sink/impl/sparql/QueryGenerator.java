@@ -107,11 +107,11 @@ public class QueryGenerator {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
             stringBuilder.append("< ");
-            stringBuilder.append(node.getName());
+            stringBuilder.append(node.getURI());
             stringBuilder.append("> ");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");
-            stringBuilder.append(node.getName());
+            stringBuilder.append(node.getBlankNodeLabel());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
             stringBuilder.append(node.getName());
