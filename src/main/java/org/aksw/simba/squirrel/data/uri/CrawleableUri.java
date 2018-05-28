@@ -9,9 +9,12 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * This class represents a URI and additional meta data that is helpful for
@@ -113,7 +116,9 @@ public class CrawleableUri implements Serializable {
     private InetAddress ipAddress;
     @Deprecated
     private UriType type = UriType.UNKNOWN;
-    private Map<String,Object> data = new HashMap<>();
+
+    private Map<String,Object> data = new TreeMap<String,Object>();
+
     public CrawleableUri(URI uri) {
         this(uri, null);
     }

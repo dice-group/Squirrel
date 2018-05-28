@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.8-SNAPSHOT</version>
+            <version>1.0.10</version>
         </dependency>
         <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq) -->
         <dependency>
@@ -58,6 +58,68 @@
             <artifactId>jzmq</artifactId>
             <version>3.0.1</version>
         </dependency>
+
+        <!--compress commons-->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-compress</artifactId>
+		    <version>1.7</version>
+		</dependency>
+
+
+		<!-- Jackason databind and Jackson’s YAML extension  -->
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.dataformat</groupId>
+		        <artifactId>jackson-dataformat-yaml</artifactId>
+		        <version>2.3.0</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.core</groupId>
+		        <artifactId>jackson-databind</artifactId>
+		        <version>2.2.3</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>org.apache.commons</groupId>
+		        <artifactId>commons-lang3</artifactId>
+		        <version>3.4</version>
+		    </dependency>
+
+
+		<!-- Content detect utility tool -->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>1.17</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <version>1.11.2</version>
+		</dependency>
+
+		<!-- Spring Context -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-context</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-jdbc</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-test</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+
 
         <!-- crawler commons -->
         <dependency>
@@ -79,7 +141,6 @@
             <artifactId>jena-rdfconnection</artifactId>
             <version>3.6.0</version>
         </dependency>
-
 
         <!-- HTTP Requests -->
         <dependency>
@@ -166,7 +227,6 @@
             <artifactId>snappy-java</artifactId>
             <version>1.1.4</version>
         </dependency>
-
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- JUnit -->

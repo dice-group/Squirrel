@@ -5,6 +5,7 @@ import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Connection;
 import com.rethinkdb.net.Cursor;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -26,45 +27,13 @@ import java.util.List;
 /**
  * Created by ivan on 8/18/16.
  */
-public class RDBConnectorTest {
-    Connection connection;
+public class RDBConnectorTest extends RethinkDBBasedTest {
     RDBConnector rdbConnector = null;
-    RethinkDB r = RethinkDB.r;
 
     private CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();
 
     @Before
     public void init() throws IOException, InterruptedException {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
-            "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
-        BufferedReader stdInput = new BufferedReader(new
-            InputStreamReader(p.getInputStream()));
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
-
-        r = RethinkDB.r;
-        int retryCount = 0;
-        while (true) {
-            try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
-                break;
-            } catch (ReqlDriverError error) {
-                System.out.println("Could not connect, retrying");
-                retryCount++;
-                if (retryCount > 10) break;
-                Thread.sleep(5000);
-            }
-        }
-
         String RDBHost = "localhost";
         Integer RDBPort = 58015;
 
@@ -90,12 +59,6 @@ public class RDBConnectorTest {
     public void teardown() throws IOException, InterruptedException {
         r.dbDrop("squirrel").run(rdbConnector.connection);
         rdbConnector.close();
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        p.waitFor();
     }
 
     @Test
@@ -138,7 +101,7 @@ public class RDBConnectorTest {
         assert(cursor.hasNext());
         HashMap crawleableUri = (HashMap) cursor.next();
         long retrievedTimestamp = (long) crawleableUri.get("timestamp");
-        assert ((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
+        assert((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
         cursor.close();
     }
 
@@ -203,7 +166,7 @@ public class RDBConnectorTest {
                 .getAll(ipAddressTypeKey)
                 .optArg("index", "ipAddressType")
                 .run(rdbConnector.connection);
-        // if URI exists update the uriDatePairs list
+        // if URI exists update the uris list
         if(cursor.hasNext()) {
             r.db("squirrel")
                     .table("queue")

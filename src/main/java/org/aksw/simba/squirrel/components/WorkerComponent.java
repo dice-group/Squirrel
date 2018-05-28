@@ -1,12 +1,14 @@
 package org.aksw.simba.squirrel.components;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
-import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
@@ -21,45 +23,40 @@ import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.rabbit.DataSender;
-import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
+@Component
+@Qualifier("workerComponent")
+public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
-    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
-    public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
-    public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
-
+    @Qualifier("workerBean")
+    @Autowired
     private Worker worker;
+    @Qualifier("sender")
+    @Autowired
     private DataSender sender;
+    @Qualifier("client")
+    @Autowired
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
+    @Qualifier("serializerBean")
+    @Autowired
     private Serializer serializer;
     private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
-        super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
-        }
-
-        String sparqlDatasetPrefix;
+        //TODO Merge: add env for sparqlBasedSink
+        //public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
+        //public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
+        /*String sparqlDatasetPrefix;
         if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
             sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
         } else {
@@ -68,21 +65,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         }
         String updateDatasetURI = sparqlDatasetPrefix + "update";
         String queryDatasetURI = sparqlDatasetPrefix + "query";
+        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);*/
 
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-            .build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
-
-        serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
-        UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log", true);
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
+        uriSetRequest = serializer.serialize(new UriSetRequest());
 
         if (worker.sendsAliveMessages()) {
             timerAliveMessages = new Timer();
@@ -99,6 +84,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         }
         LOGGER.info("Worker initialized.");
+
     }
 
     @Override
@@ -144,6 +130,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {

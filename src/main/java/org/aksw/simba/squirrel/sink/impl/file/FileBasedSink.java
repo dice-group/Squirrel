@@ -13,6 +13,7 @@ import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.commons.collections15.MapUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
@@ -28,18 +29,34 @@ public class FileBasedSink implements Sink {
     private static final byte SEPERATOR[] = " ".getBytes(Constants.DEFAULT_CHARSET);
     private static final byte END_OF_QUAD[] = " .\n".getBytes(Constants.DEFAULT_CHARSET);
 
+    /**
+     * Directory to which the files of this sink are written.
+     */
+   
     protected File outputDirectory;
+    /**
+     * Flag whether a compression algorithm should be used.
+     */
+    
     protected boolean useCompression;
-    protected Map<String, OutputStream> streamMapping = new HashMap<String, OutputStream>();
+    /**
+     * Synchronized mapping of crawled URIs to their output stream.
+     */
+    protected Map<String, OutputStream> streamMapping = MapUtils.synchronizedMap(new HashMap<String, OutputStream>());
 
     public FileBasedSink(File outputDirectory, boolean useCompression) {
         this.outputDirectory = outputDirectory;
         this.useCompression = useCompression;
+        openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-        String uriString = uri.getUri().toString();
+    	String uriString = uri.getUri().toString();
+    	if(uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
+    		uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
+    	}
+        
         OutputStream outputStream = getStream(uri);
         if (outputStream != null) {
             try {
@@ -107,7 +124,8 @@ public class FileBasedSink implements Sink {
             return outputStream;
         } else {
             LOGGER.error(
-                    "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.");
+                    "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
+                    uri.getUri().toString());
             return null;
         }
     }

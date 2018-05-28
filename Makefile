@@ -14,4 +14,4 @@ restart:
 	docker-compose -f deployment/docker-compose-simulation-scenario1.yml down
 	docker-compose -f deployment/docker-compose-simulation-scenario1.yml up
 clean:
-	rm -rf data/worker*
+	rm -rf data/worker* && rm -rf deployment/scenarios/1/worker*

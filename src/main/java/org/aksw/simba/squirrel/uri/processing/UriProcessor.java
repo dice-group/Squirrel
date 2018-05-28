@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Uri Processor implementation.
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author Ivan Ermilov (iermilov@informatik.uni-leipzig.de)
  *
  */
+@Component
 public class UriProcessor implements UriProcessorInterface {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UriProcessor.class);
