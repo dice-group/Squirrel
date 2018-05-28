@@ -14,6 +14,9 @@ public class RethinkDBMockTest extends TestCase {
     public RethinkDB r;
     public Connection connection;
 
+    public final static String DB_HOST_NAME = "localhost";
+    public final static int DB_PORT = 58015;
+
     public void setUp() throws IOException, InterruptedException {
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
             "-p 58015:28015 -p 58887:8080 -d rethinkdb";
@@ -36,7 +39,7 @@ public class RethinkDBMockTest extends TestCase {
         int retryCount = 0;
         while(true) {
             try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
+                connection = r.connection().hostname(DB_HOST_NAME).port(DB_PORT).connect();
                 break;
             } catch(ReqlDriverError error) {
                 System.out.println("Could not connect, retrying");

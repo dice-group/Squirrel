@@ -12,10 +12,10 @@ import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.worker.Worker;
@@ -70,11 +70,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            Serializer for serializing and deserializing URIs.
      *
      * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, boolean)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, boolean)}
-     *             instead.
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, boolean sendAliveMessages) {
@@ -118,11 +113,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            The UriCollector implementation used by this worker.
      *
      * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String, boolean)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String, boolean)}
-     *             instead.
+     *
      */
     @Deprecated
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
@@ -205,22 +196,20 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void crawl(List<CrawleableUri> uris) {
-        CrawlingActivity crawlingActivity = new CrawlingActivity(uris, this, sink);
         // perform work
         List<CrawleableUri> newUris = new ArrayList<>();
+        List<CrawleableUri> crawledUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
-                crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
-                crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
                     performCrawling(uri, newUris);
-                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    crawledUris.add(uri);
+                    //TODO crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
-                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
                 }
@@ -231,19 +220,21 @@ public class WorkerImpl implements Worker, Closeable {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
-        crawlingActivity.finishActivity();
-        if (sink instanceof RDFSink) {
-            ((RDFSink) sink).addMetadata(crawlingActivity);
-        } else {
-            //TODO ADD METADATA IF SINK IS NOT RDFSINK
-        }
-        frontier.crawlingDone(uris, newUris);
+        //TODO
+//        crawlingActivity.finishActivity();
+//        if (sink instanceof RDFSink) {
+//            ((RDFSink) sink).addMetadata(crawlingActivity);
+//        } else {
+//            //TODO ADD METADATA IF SINK IS NOT RDFSINK
+//        }
+        frontier.crawlingDone(crawledUris, newUris);
     }
 
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
         Integer count = 0;
+        //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             LOGGER.debug("I start crawling {} now...", uri);
 
@@ -278,6 +269,15 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
         LOGGER.debug("Fetched {} triples", count);
+        setSpecificRecrawlTime(uri);
+
+    }
+
+    private void setSpecificRecrawlTime(CrawleableUri uri) {
+        //TODO: implement special cases
+
+        //else set everytime to default
+        uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
     }
 
     @Override

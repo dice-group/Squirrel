@@ -57,6 +57,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
+    private final boolean doRecrawling = true;
 
     private final long startRunTime = System.currentTimeMillis();
 
@@ -82,11 +83,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
             queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
             knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(-1);
+            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
         }
 
         if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
@@ -98,7 +99,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -113,7 +114,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Override
     public void run() throws Exception {
         if (communicationWithWebserviceEnabled) {
-            Thread sender = new Thread(new FrontierSenderToWebservice(workerGuard, queue, knownUriFilter));
+            Thread sender = new Thread(new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter));
             sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             sender.start();
             LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
@@ -131,6 +132,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter.close();
         }
         workerGuard.shutdown();
+        frontier.close();
         super.close();
     }
 
@@ -174,7 +176,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 CrawlingResult crawlingResult = (CrawlingResult) object;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
                     crawlingResult.crawledUris);
-                frontier.crawlingDone(crawlingResult.crawledUris, ((CrawlingResult) object).newUris);
+                frontier.crawlingDone(crawlingResult.crawledUris, crawlingResult.newUris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
 
             } else if (object instanceof AliveMessage) {
