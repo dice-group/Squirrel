@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -44,15 +45,11 @@ public class QueryGenerator {
             stringBuilder.append(uri.getUri());
             stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {
-                stringBuilder.append("<");
-                stringBuilder.append(triple.getSubject());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getPredicate());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getObject());
-                stringBuilder.append("> . ");
-            }
-            stringBuilder.append("} ");
+            formatNodeToString(triple.getSubject());
+            formatNodeToString(triple.getPredicate());
+            formatNodeToString(triple.getObject());
+        }
+        stringBuilder.append("} ");
         stringBuilder.append("}");
         return stringBuilder.toString();
     }
@@ -96,16 +93,39 @@ public class QueryGenerator {
         if (bSelectAll) {
             stringBuilder.append("?subject ?predicate ?object ");
         } else {
-            stringBuilder.append(triple.getSubject().getName());
-            stringBuilder.append(" ");
-            stringBuilder.append(triple.getPredicate().getName());
-            stringBuilder.append(" ");
-            stringBuilder.append(triple.getObject().getName());
-            stringBuilder.append(" ; ");
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+//            stringBuilder.append(" ; ");
         }
         stringBuilder.append("} } ");
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
+    public static String formatNodeToString(Node node) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (node.isURI()) {
+            stringBuilder.append("< ");
+            stringBuilder.append(node.getName());
+            stringBuilder.append("> ");
+        } else if (node.isBlank()) {
+            stringBuilder.append("_:");
+            stringBuilder.append(node.getName());
+        } else if (node.isLiteral()) {
+            stringBuilder.append("\"");
+            stringBuilder.append(node.getName());
+            stringBuilder.append("\"");
+            if (node.getLiteralLanguage() != null) {
+                stringBuilder.append("@");
+                stringBuilder.append(node.getLiteralLanguage());
+            }
+            if (node.getLiteralDatatype() != null) {
+                stringBuilder.append("^^");
+                stringBuilder.append(node.getLiteralDatatype());
+            }
+        }
+        stringBuilder.append(" ");
+        return stringBuilder.toString();
+    }
 }
