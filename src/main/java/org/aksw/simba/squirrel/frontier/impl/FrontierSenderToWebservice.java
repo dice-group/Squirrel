@@ -164,9 +164,9 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
                 .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
                 .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
             List<String> pendingURIs = new ArrayList<>(currentQueue.size());
-            currentQueue.forEach((key, value) -> value.forEach(uri -> pendingURIs.add(uri.getUri().getPath())));
+            currentQueue.forEach((key, value) -> value.forEach(uri -> pendingURIs.add(uri.getUri().toString())));
             newObject.setPendingURIs(pendingURIs);
-            newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().getRawPath()).collect(Collectors.toList()));
+            newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().toString()).collect(Collectors.toList()));
         }
 
         //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...

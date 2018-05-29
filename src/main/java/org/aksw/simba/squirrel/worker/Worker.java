@@ -22,6 +22,7 @@ public interface Worker extends Runnable {
      * @param uri
      *            the URI that should be crawled
      * @return a list of URIs that were found by crawling the uri
+     *          TODO: prove, if this interface change is really sensible...
      */
     List<CrawleableUri> performCrawling(CrawleableUri uri);
 

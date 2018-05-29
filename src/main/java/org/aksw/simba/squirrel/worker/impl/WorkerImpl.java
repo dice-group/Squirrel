@@ -279,7 +279,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         LOGGER.debug("Fetched {} triples", count);
 
-        return ret;
+        //TODO (this is only a unsatisfying quick fix to avoid unreadable graphs because of too much nodes)
+        return (ret.size() > 25) ? ret.subList(0, 25) : ret;
     }
 
     @Override

@@ -5,51 +5,136 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fact Checking</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-    <link href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.9/angular-material.css" rel="stylesheet">
-    <link href="https://material.angularjs.org/1.1.9/docs.css" rel="stylesheet">
-    <link href="/pages/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/pages/css/app.css" rel="stylesheet">
+    <script src="/pages/js/jquery-3.3.1.min.js"></script>
+    <script src="/pages/js/jquery-ui.min.js"></script>
+    <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+
+    <script>
+      $( function() {
+        $( "#slider" ).slider({
+          min: 0,
+          max: 100,
+          value: 100
+        });
+      } );
+
+      $( function() {
+        $( "#slider" ).slider({
+          change: function( event, ui ) { update(true); }
+        });
+      } );
+
+      $( function() {
+        $( "#accordion" ).accordion({
+          heightStyle: "content",
+          animate: "swing"
+        });
+      } );
+
+      function update(forceUpdate) {
+        if (forceUpdate || $( "#slider" ).slider( "value" ) === 100) {
+          var uri;
+          if ($( "#slider" ).length === 0 ||  $( "#slider" ).slider( "value" ) === 100) {
+            uri = "/observer";
+          } else {
+            uri = "/observer?id=" + $( "#slider" ).slider( "value" ) + "&percent=true";
+          }
+          $.ajax({
+            url: uri,
+            dataType: "json",
+            method: "GET"
+          }).done(function (data) {
+            $( "#pendingURIs" ).html(data.countOfPendingURIs);
+            $( "#countOfCrawledURIs" ).html(data.countOfCrawledURIs);
+            $( "#countOfWorker" ).html(data.countOfWorker);
+            $( "#countOfDeadWorker" ).html(data.countOfDeadWorker);
+            $( "#runtimeInSeconds" ).html(data.runtimeInSeconds);
+            $( "#pURIs" ).html(JSONElementToString(data.pendingURIs));
+            $( "#mURIs" ).html(JSONElementToString(data.ipStringListMap));
+            $( "#ncURIs" ).html(JSONElementToString(data.nextCrawledURIs));
+          }).fail(function () {
+            alert("AJAX request to \"" + uri + "\" failed :(");
+          });
+        }
+      }
+
+      function JSONElementToString(obj) {
+        if (obj.length == 0) {
+          return "Nothing to show...";
+        }
+        if (obj instanceof Array) {
+          return JSONArrayToString(obj);
+        }
+        if (obj instanceof Object) {
+          var ret = "";
+          Object.keys(obj).forEach(function (value) {
+            ret += "<h6>" + value + "</h6>";
+            ret += JSONElementToString(obj[value]);
+          });
+          return ret;
+        }
+
+        return "Failed to convert " + obj;
+      }
+
+      function JSONArrayToString(obj) {
+        var ret = "<ul>";
+        obj.forEach(function (value) {
+          if (value instanceof Array) {
+            ret += JSONArrayToString(value);
+          } else {
+            ret += "<li>" + value + "</li>";
+          }
+        });
+        return ret + "</ul>";
+      }
+
+      setInterval(function () {
+        update(false)
+      }, 5000);
+    </script>
   </head>
 
-  <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" ui-sref="fact-check" ui-sref-active="active">Fact Checking</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a ui-sref="home" ui-sref-active="active">Home</a></li>
-            <li><a ui-sref="crawler" ui-sref-active="active">Crawler</a></li>
-            <li><a ui-sref="squirrel" ui-sref-active="active">Squirrel</a></li>
-            <li><a ui-sref="about" ui-sref-active="active">About Us</a></li>
-            <!--<li><a href="#">Help</a></li>-->
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <ui-view></ui-view>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="/pages/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
-    <script src="/pages/js/angular-ui-router.min.js"></script>
-    <script src="/pages/js/app.js"></script>
-    <script src="/pages/js/controllers/home-controller.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular-route.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular-messages.min.js"></script>
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
-    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.9/angular-material.js"></script>
-
+  <body bgcolor="#d3d3d3">
+    <table width="100%" cellpadding="8px">
+      <tr>
+        <td bgcolor="#5f9ea0" align="center" colspan="2"><a href="index.html">Home</a> | <a href="graph.html">Crawled Graph</a></td>
+      </tr>
+      <tr>
+        <td align="center" width="50%">
+          <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200" alt="Nice picture"><br>
+          <table width="100%">
+            <tr>
+              <td width="50%">Number of pending URIs</td><td width="50%" align="right"><span id="pendingURIs">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%">Number of crawled URIs</td><td width="50%" align="right"><span id="countOfCrawledURIs">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%">Number of workers</td><td width="50%" align="right"><span id="countOfWorker">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%">Number of dead workers</td><td width="50%" align="right"><span id="countOfDeadWorker">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%">RuntimeInSeconds</td><td width="50%" align="right"><span id="runtimeInSeconds">load...</span></td>
+            </tr>
+          </table>
+          Crawl through the history <i>(right: auto update to the current status)</i>: <div id="slider"></div>
+        </td>
+        <td width="50%">
+          <div id="accordion">
+            <h3>Pending URIs: pure</h3>
+            <div id="pURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+            <h3>Pending URIs: IP --> URI</h3>
+            <div id="mURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+            <h3>URIs, that will be crawled next</h3>
+            <div id="ncURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+          </div>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
