@@ -367,7 +367,7 @@ public class McloudAnalyzer implements Analyzer
             }
         }
 
-        //add full DataSet Model to each "Distribution" URI since they are stored seperately
+        //add full DataSet Model to each "Distribution" URI since they are stored separately
         for (CrawleableUri source : downloadSources)
         {
             source.addData(Constants.MCLOUD_METADATA_URI, datasetURI + METADATA_URI_SUFFIX);
@@ -561,7 +561,7 @@ public class McloudAnalyzer implements Analyzer
      */
     private String createURIConformString(String string)
     {
-        return string.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-").replaceAll("[-]+", "-");
+        return string.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-").replaceAll("[-]+", "-").replaceAll("-$","");
     }
 
     ////
