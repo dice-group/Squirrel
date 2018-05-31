@@ -94,7 +94,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
             sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
         } else {
-            String httpPrefix = "http:/" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/ContentSet/";
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/ContentSet/";
             sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
         }
 
