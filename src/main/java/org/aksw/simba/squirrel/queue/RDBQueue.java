@@ -123,7 +123,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
 
 			for (int i = 0; i < suri.length; i++) {
 				s.append(suri[i]);
-				if(i != suri.length-1);
+                if (i < suri.length - 1)
 					s.append(",");
 			}
 			return s.toString();

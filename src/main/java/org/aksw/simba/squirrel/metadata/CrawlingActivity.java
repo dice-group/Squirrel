@@ -94,18 +94,19 @@ public class CrawlingActivity {
     }
 
     /**
+     * TODO
      * count the triples of the activity.
      */
     private void countTriples() {
-        int sum = 0;
+        /*int sum = 0;
         if (sink instanceof SparqlBasedSink) {
             for (CrawleableUri uri : mapUri.keySet()) {
-                //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
+                sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
             }
             numTriples = sum;
         } else {
             numTriples = -1;
-        }
+        } */
     }
 
     public UUID getId() {

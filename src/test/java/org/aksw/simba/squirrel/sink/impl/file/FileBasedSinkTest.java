@@ -107,8 +107,8 @@ public class FileBasedSinkTest {
         crawledModels.add(ModelFactory.createDefaultModel());
         crawledUris.add(new URI("http://example.org/empty"));
 
-        models = crawledModels.toArray(new Model[crawledModels.size()]);
-        modelUris = crawledUris.toArray(new URI[crawledUris.size()]);
+        models = crawledModels.toArray(new Model[0]);
+        modelUris = crawledUris.toArray(new URI[0]);
     }
 
     @After

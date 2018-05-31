@@ -319,10 +319,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         private void execute_unsecured() {
             try {
-            } catch (Exception e) {
-                LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
-            }
-            try {
                 for (String uri : buffer.keySet()) {
                     insertStmt.setString(1, uri);
                     insertStmt.setInt(2, uri.hashCode());

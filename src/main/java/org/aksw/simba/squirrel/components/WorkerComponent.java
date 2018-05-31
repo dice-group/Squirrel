@@ -1,34 +1,42 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.rabbit.DataSender;
+import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Qualifier("workerComponent")
@@ -53,20 +61,10 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void init() throws Exception {
-        //TODO Merge: add env for sparqlBasedSink
-        //public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
-        //public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
-        /*String sparqlDatasetPrefix;
-        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
-            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
-        } else {
-            String msg = "Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.";
-            throw new Exception(msg);
+        if (worker == null || sender == null || client == null || serializer == null) {
+            LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
+            initWithoutSpring();
         }
-        String updateDatasetURI = sparqlDatasetPrefix + "update";
-        String queryDatasetURI = sparqlDatasetPrefix + "query";
-        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);*/
-
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
         if (worker.sendsAliveMessages()) {
@@ -85,6 +83,27 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         }
         LOGGER.info("Worker initialized.");
 
+    }
+
+    private void initWithoutSpring() throws Exception {
+        super.init();
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+
+        Sink sink;
+        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
+            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
+        } else {
+            String httpPrefix = "http:/" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/ContentSet/";
+            sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
+        }
+
+        serializer = new GzipJavaUriSerializer();
+
+        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+
+        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
+        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }
 
     @Override

@@ -26,9 +26,11 @@ public class RDBKnownUriFilterTest {
 
     /**
      * For functionality regarding the starting of rethinkdb container
+     * TODO references - MERGE :\
      */
     private RethinkDBMockTest rethinkDBMockTest;
 
+    /*
     @Before
     public void setUp() throws IOException, InterruptedException {
         r = RethinkDB.r;
@@ -98,4 +100,5 @@ public class RDBKnownUriFilterTest {
     public void tearDown() throws IOException {
         rethinkDBMockTest.tearDown();
     }
+    */
 }

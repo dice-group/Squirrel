@@ -48,7 +48,6 @@ public class RDFAnalyzer implements Analyzer {
 
     @Override
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-        FileInputStream fin = null;
         try {
             // First, try to get the language of the data
             Lang lang = null;
@@ -90,9 +89,8 @@ public class RDFAnalyzer implements Analyzer {
 
         } catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting. ", e);
-        } finally {
-            IOUtils.closeQuietly(fin);
         }
+
         return collector.getUris(curi);
     }
 

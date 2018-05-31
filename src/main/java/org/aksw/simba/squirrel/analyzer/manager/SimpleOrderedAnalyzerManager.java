@@ -20,31 +20,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SimpleOrderedAnalyzerManager implements Analyzer{
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleOrderedAnalyzerManager.class);
-	
+
 	private static final String RDF = "RDF";
 	private static final String HTML = "HTML";
-	
-	
-	private Map<String, Analyzer> analyzers;
-	
-	
-	public SimpleOrderedAnalyzerManager(UriCollector uriCollector) {
+
+
+    private Map<String, Analyzer> analyzers;
+
+
+    public SimpleOrderedAnalyzerManager(UriCollector uriCollector) {
 		analyzers = new HashMap<String, Analyzer>();
 		analyzers.put(RDF, new RDFAnalyzer(uriCollector));
 		analyzers.put(HTML, new HTMLScraperAnalyzer(uriCollector));
 	}
-	
 
 
-	@Override
+    @Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		Tika tika = new Tika();
-		
-		Iterator<byte[]> iterator = null;
-		
-		InputStream is = null;
+
+        Iterator<byte[]> iterator = null;
+
+        InputStream is = null;
 		try {
 			is = new FileInputStream(data);
 			String mimeType = tika.detect(is);
@@ -54,15 +53,17 @@ public class SimpleOrderedAnalyzerManager implements Analyzer{
 			}else {
 				iterator =  analyzers.get(RDF).analyze(curi, data, sink);
 			}
-			
-		} catch (Exception e) {
+
+        } catch (Exception e) {
 			LOGGER.error("An error was found whenSimpleOrderedAnalyzerManager",e);
 		}finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				LOGGER.error("Was not possible to close File Input Stream in SimpleOrderedAnalyzerManager",e);
-			}
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOGGER.error("Was not possible to close File Input Stream in SimpleOrderedAnalyzerManager", e);
+                }
+            }
 		}
 		return iterator;
 	}

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.rethinkdb.model.MapObject;
 import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
@@ -129,7 +130,7 @@ public class RDBQueueTest extends RethinkDBBasedTest {
     }
 
     @Test
-    public void crawleableUriToRDBHashMap() throws Exception {
+    public void crawleableUriToRDBHashMap() {
         MapObject rHashMap = rdbQueue.crawleableUriToRDBHashMap(uris.get(0));
         assertTrue(rHashMap.containsKey("uris"));
         assertTrue(rHashMap.containsKey("ipAddress"));

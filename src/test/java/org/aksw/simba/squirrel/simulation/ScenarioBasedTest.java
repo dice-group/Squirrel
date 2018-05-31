@@ -8,12 +8,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
+import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
+import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.queue.InMemoryQueue;
+import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -122,7 +132,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(true), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
