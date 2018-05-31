@@ -87,5 +87,4 @@ public class SimpleOrderedAnalyzerManager implements Analyzer
         }
         return iterator;
     }
-
 }

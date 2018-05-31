@@ -32,6 +32,7 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -45,7 +46,7 @@ public class WorkerImpl implements Worker, Closeable
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
-    private static final long DEFAULT_WAITING_TIME = 10000;
+    private static final long DEFAULT_WAITING_TIME = TimeUnit.SECONDS.toMillis(60);
     private static final int MAX_URIS_PER_MESSAGE = 20;
 
     protected Frontier frontier;
@@ -53,7 +54,8 @@ public class WorkerImpl implements Worker, Closeable
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
-    protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
+    @Autowired
+    protected SparqlBasedFetcher sparqlBasedFetcher;
     protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
@@ -61,93 +63,6 @@ public class WorkerImpl implements Worker, Closeable
     protected long waitingTime;
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
-
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param waitingTime
-     *            The time the worker waits if it did not got any
-     * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
-     *             instead.
-     */
-    @Deprecated
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer)
-    {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, null);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
-     * @param logDir
-     *            The directory to which a domain log will be written (or
-     *            {@code null} if no log should be written).
-     */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, String logDir)
-    {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, logDir);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
-     * @deprecated Because a default configuration of the UriCollector is created.
-     *             Please use
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, String)}
-     *             or
-     *             {@link #WorkerImpl(Frontier, Sink, RobotsManager, Serializer, UriCollector, long, String)}
-     *             instead.
-     */
-    @Deprecated
-    public WorkerImpl(Frontier frontier,
-                      Sink sink,
-                      RobotsManager manager,
-                      Serializer serializer,
-                      UriCollector collector)
-    {
-        this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null);
-    }
 
     /**
      * Constructor.
@@ -202,7 +117,6 @@ public class WorkerImpl implements Worker, Closeable
             // new SparqlBasedFetcher(),
             new HTTPFetcher(),
             new FTPFetcher());
-
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
 
@@ -287,8 +201,8 @@ public class WorkerImpl implements Worker, Closeable
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris)
     {
         // check robots.txt
-
         uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis());
+        LOGGER.warn(uri.getUri().toString());
 
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri()))
@@ -320,9 +234,9 @@ public class WorkerImpl implements Worker, Closeable
                 if (e instanceof SocketTimeoutException)
                 {
                     //if we run into a SocketTimeoutException try to recrawl the URI shortly after (currently 1 minute)
-                    long recrawlMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60);
+                    long recrawlMillis = System.currentTimeMillis() + DEFAULT_WAITING_TIME;
                     uri.addData(Constants.URI_PREFERRED_RECRAWL_ON, recrawlMillis);
-                    LOGGER.error("Socket closed for URI {} . Will be recrawled in {} seconds.", uri, TimeUnit.MILLISECONDS.toSeconds(recrawlMillis));
+                    LOGGER.error("Socket closed for URI {} . Will be recrawled in {} seconds.", uri, TimeUnit.MILLISECONDS.toSeconds(DEFAULT_WAITING_TIME));
                 }
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }

@@ -39,10 +39,12 @@ public class FileBasedSink implements Sink
     /**
      * Directory to which the files of this sink are written.
      */
+   
     protected File outputDirectory;
     /**
      * Flag whether a compression algorithm should be used.
      */
+    
     protected boolean useCompression;
     /**
      * Synchronized mapping of crawled URIs to their output stream.

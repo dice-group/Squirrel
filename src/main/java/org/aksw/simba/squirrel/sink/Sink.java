@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.springframework.stereotype.Component;
 
 /**
  * The interface of a sink used by a worker. It has to be able to handle
@@ -16,6 +17,7 @@ import org.apache.jena.rdf.model.StmtIterator;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
+@Component
 public interface Sink extends TripleBasedSink, UnstructuredDataSink, Closeable {
     
     public default void addMetaData(Model model) {
