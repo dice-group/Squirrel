@@ -108,7 +108,7 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
     	
-    	boolean addErrorCheck = false;
+    	boolean addErrorCheck = true;
     	
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
@@ -124,7 +124,6 @@ public class FrontierImpl implements Frontier {
 	            		addErrorCheck = false;
 	            	}catch(Exception e) {
 	            		LOGGER.warn(e.getMessage());
-	            		addErrorCheck = true;
 	            	}
             	}
             } else {
