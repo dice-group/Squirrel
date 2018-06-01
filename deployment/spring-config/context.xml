@@ -45,7 +45,7 @@
         <!-- File Based Sink implementation -->
         <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.file.FileBasedSink">
         	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
-        	<constructor-arg name="useCompression" value="true"/>
+        	<constructor-arg name="useCompression" value="false"/>
         </bean>
         
         <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
