@@ -22,14 +22,14 @@ import org.junit.Test;
  * thread adds URIs to the queue until the second thread has finished its work.
  * Every added URI has the same type and one of two IPs.
  * </p>
- * 
+ *
  * <p>
  * The second thread takes a single chunk, thus, blocks one of the two IPs and
  * sets this IP in the third thread. After that the second thread sleeps for a
  * long time. At the end of this sleeping period, it informs the other two
  * threads about its termination, marks the ip as accessible and terminates.
  * </p>
- * 
+ *
  * <p>
  * The third thread requests new chunks from the queue (with a lower frequency
  * than the first thread is adding them) and checks whether it gets chunks
@@ -37,7 +37,7 @@ import org.junit.Test;
  * finished, this thread makes sure that it gets at least one time URIs of the
  * IP that has been blocked by the second thread.
  * </p>
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -81,7 +81,7 @@ public class IpAddressBasedQueueIpBlockingTest {
     /**
      * Simple threads that adds URIs with a delay until its run flag is set to
      * false.
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */
@@ -139,7 +139,7 @@ public class IpAddressBasedQueueIpBlockingTest {
      * This thread waits a short time, requests a chunk of URIs and waits for a
      * long time. After that it stops the {@link UriAdder} and informs the
      * {@link RegularUriConsumer} about its termination.
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */
@@ -182,20 +182,20 @@ public class IpAddressBasedQueueIpBlockingTest {
 
     /**
      * <p>
-     * This thread waits for a short time. After that it requests chunks of uris
+     * This thread waits for a short time. After that it requests chunks of uriDatePairs
      * and makes sure, that they are not null and not empty (since the adding
      * thread is faster that this thread, this should never happen) and that it
      * does not get a URI with the IP blocked by the other
      * {@link LongDelayUriConsumer}.
      * </p>
-     * 
+     *
      * <p>
      * After the {@link LongDelayUriConsumer} is dead, this thread waits for a
      * short time. After that it requests three more chunks. It makes sure that
      * at least one of the first two chunks contains the IP that has been
      * blocked by the other thread and that the third chunk is null.
      * </p>
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */

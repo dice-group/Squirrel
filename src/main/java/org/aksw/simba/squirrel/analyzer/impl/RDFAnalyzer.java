@@ -27,10 +27,10 @@ public class RDFAnalyzer implements Analyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private UriCollector collector;
-    
+
     private List<Lang> listLangs = new ArrayList<Lang>();
-    
-    
+
+
 
     public RDFAnalyzer(UriCollector collector) {
         this.collector = collector;
@@ -48,7 +48,6 @@ public class RDFAnalyzer implements Analyzer {
 
     @Override
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-        FileInputStream fin = null;
         try {
             // First, try to get the language of the data
             Lang lang = null;
@@ -64,12 +63,12 @@ public class RDFAnalyzer implements Analyzer {
             			RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
             			break;
             		}catch(Exception e) {
-            			
+
             			LOGGER.warn("Could not parse file as " + l.getName());
             		}
-            		
+
             	}
-            	
+
 //                InputStream is = new FileInputStream(data);
 //                lang = RDFLanguages.contentTypeToLang(tika.detect(is));
 //                try {
@@ -78,21 +77,20 @@ public class RDFAnalyzer implements Analyzer {
 //                	if(Lang.NTRIPLES.equals(lang)) {
 //	                	LOGGER.warn("Could not parse file as N-Triples. Trying N-Quads...");
 //	                	RDFDataMgr.parse(filtered, data.getAbsolutePath(), Lang.N3);
-//	                } else 
+//	                } else
 //	                {
 //	                	throw e;
-//	                }   	
+//	                }
 //                }finally {
 //					is.close();
 //				}
             }
-            
-            
+
+
         } catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting. ", e);
-        } finally {
-            IOUtils.closeQuietly(fin);
         }
+
         return collector.getUris(curi);
     }
 
@@ -113,7 +111,7 @@ public class RDFAnalyzer implements Analyzer {
         	sink.addTriple(curi, triple);
             collector.addTriple(curi, triple);
         }
-        
+
         @Override
         public void quad(Quad quad) {
         	sink.addTriple(curi, quad.asTriple());
