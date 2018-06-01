@@ -1,6 +1,8 @@
 package org.aksw.simba.squirrel.analyzer.htmlscraper;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -17,6 +19,8 @@ import org.apache.jena.graph.Triple;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -27,7 +31,7 @@ import org.jsoup.select.Elements;
  */
 public class HtmlScraper {
 	
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(HtmlScraper.class);
 	
 	private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
 	
@@ -37,7 +41,7 @@ public class HtmlScraper {
 		try {
 			yamlFiles = new YamlFilesParser(file).getYamlFiles();
 		} catch (Exception e) {
-			
+			LOGGER.error("An error occurred when trying to scrape HTML files", e);
 		}
 	}
 	
@@ -45,7 +49,7 @@ public class HtmlScraper {
 		try {
 			yamlFiles = new YamlFilesParser().getYamlFiles();
 		} catch (Exception e) {
-			
+			LOGGER.error("An error occurred when trying to scrape HTML files", e);
 		}
 
 	}
@@ -56,15 +60,28 @@ public class HtmlScraper {
 		
 		YamlFile yamlFile = yamlFiles.get(UriUtils.getDomainName(uri));
 		if(yamlFile != null) {
-			yamlFile.getSearch().remove(YamlFileAtributes.SEARCH_CHECK);
+			yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
 			
-			for(Entry<String,Map<String, Object>> entry : yamlFile.getSearch().entrySet()) {
+			for(Entry<String,Map<String, Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
 				for(Entry<String,Object>  cfg : entry.getValue().entrySet()) {
-					if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(cfg.getValue().toString().toLowerCase())) {
-						@SuppressWarnings("unchecked")
-						Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
-						listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
+					
+					List<String> regexList = new ArrayList<String>();
+					
+					if(cfg.getValue() instanceof List<?> && ((ArrayList<String>) cfg.getValue()).size() > 1) {
+						regexList = (ArrayList<String>) cfg.getValue();
+					}else {
+						regexList.add(cfg.getValue().toString().toLowerCase());
 					}
+					
+					for(String regex : regexList) {
+						if(cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase())) {
+							@SuppressWarnings("unchecked")
+							Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
+							listTriples.addAll(scrapeDownloadLink(resources,filetToScrape,uri));
+							break;
+						}						
+					}
+					
 				}
 			}
 			
@@ -83,7 +100,7 @@ public class HtmlScraper {
 
 
 		List<String> resourcesList = new ArrayList<String>();
-		Node objectNode;
+		Node objectNode = null;
 		for(Entry<String, Object> entry: 
 			resources.entrySet()) {
 			resourcesList.clear();
@@ -107,14 +124,30 @@ public class HtmlScraper {
 						
 					}
 				}catch(Exception e) {
-					throw new Exception(e);
+					LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
 				}
 				
 				for(int i=0; i<elements.size();i++) {
 					if(elements.get(i).hasAttr("href")) {
-						objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+						if(!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
+							URL url = new URL(uri);
+							String path = elements.get(i).attr("href");
+							String base = url.getProtocol() + "://" + url.getHost() + path;
+							objectNode = NodeFactory.createURI(base);
+						}else {
+							objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+						}
 					}else {
-						objectNode = NodeFactory.createLiteral(elements.get(i).text());
+						boolean uriFlag = true;
+						try {
+							URL url = new URL(elements.get(i).text());
+						}catch(MalformedURLException e) {
+							uriFlag = false;
+							objectNode = NodeFactory.createLiteral(elements.get(i).text());
+						}
+						if(uriFlag) {
+							objectNode = NodeFactory.createURI(elements.get(i).text());	
+						}
 					}
 					
 					Triple triple = new Triple(s, p, objectNode);

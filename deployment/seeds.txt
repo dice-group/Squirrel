@@ -1,2 +1,6 @@
 http://danbri.org/foaf.rdf
 http://dbpedia.org/resource/New_York
+http://dbpedia.org/page/United_States
+http://dbpedia.org/page/Asian_Americans
+http://dbpedia.org/page/Christian
+http://dbpedia.org/page/New_College_Berkeley

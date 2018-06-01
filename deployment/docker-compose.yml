@@ -2,17 +2,24 @@ version: "2"
 
 services:
   rethinkdb:
-    image: rethinkdb:2.3.5
+    image: rethinkdb:2.3.6
     volumes:
       - ./data/rethinkdb:/data
-    networks:
-      - squirrel
 
   # message bus
   rabbit:
     image: rabbitmq:management
-    networks:
-      - squirrel
+
+  sparqlHost:
+      image: stain/jena-fuseki
+      container_name: sparqlHost
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./scenarios/1/data/sparqlHost:/fuseki
+      environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
 
   frontier:
     image: squirrel
@@ -22,12 +29,11 @@ services:
       RDB_HOST_NAME: rethinkdb
       RDB_PORT: 28015
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      COMMUNICATION_WITH_WEBSERVICE: "false"
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seeds.txt:/var/squirrel/data/seeds.txt:ro
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
-    networks:
-      - squirrel
 
   worker1:
     image: squirrel
@@ -35,11 +41,11 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
     volumes:
         - ./data/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
-    networks:
-      - squirrel
 
   worker2:
     image: squirrel
@@ -50,8 +56,6 @@ services:
     volumes:
         - ./data/worker2:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
-    networks:
-      - squirrel
 
   worker3:
     image: squirrel
@@ -62,10 +66,3 @@ services:
     volumes:
         - ./data/worker3:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
-    networks:
-      - squirrel
-
-networks:
-  squirrel:
-    external:
-      name: squirrel

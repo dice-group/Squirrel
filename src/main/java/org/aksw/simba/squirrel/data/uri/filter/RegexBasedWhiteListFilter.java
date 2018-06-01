@@ -68,9 +68,8 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 		return list;
 	}
 
-	@Override
 	public void add(CrawleableUri uri) {
-		super.add(uri);
+        super.add(uri, System.currentTimeMillis() + 60 * 60 * 1000);
 
 	}
 
@@ -79,6 +78,12 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 		super.add(uri, timestamp);
 
 	}
+
+    @Override
+    public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
+        super.add(uri, timestamp, nextCrawlTimestamp);
+
+    }
 
 	@Override
 	public void close() {
