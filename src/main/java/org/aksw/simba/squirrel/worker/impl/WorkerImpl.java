@@ -42,7 +42,6 @@ public class WorkerImpl implements Worker, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
-    private static final long DEFAULT_WAITING_TIME = 10000;
     private static final int MAX_URIS_PER_MESSAGE = 20;
 
     protected Frontier frontier;
