@@ -27,7 +27,7 @@ public class Configuration {
 		}
 	}
 
-    public static boolean getEnvBoolean(String envVariableName, Logger logger) {
+	public static boolean getEnvBoolean(String envVariableName, Logger logger) throws ParseException {
 		String toBool = getEnv(envVariableName, logger);
 		try {
 			return Boolean.getBoolean(toBool);

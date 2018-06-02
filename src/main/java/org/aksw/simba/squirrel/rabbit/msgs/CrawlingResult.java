@@ -1,10 +1,10 @@
 package org.aksw.simba.squirrel.rabbit.msgs;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 public class CrawlingResult implements Serializable {
 
@@ -12,16 +12,14 @@ public class CrawlingResult implements Serializable {
 
     public List<CrawleableUri> crawledUris;
     public List<CrawleableUri> newUris;
-    public int idOfWorker;
 
-    public CrawlingResult(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris, int idOfWorker) {
+    public CrawlingResult(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
         this.newUris = (newUris == null) ? this.newUris = Collections.emptyList() : newUris;
         this.crawledUris = crawledUris;
-        this.idOfWorker = idOfWorker;
     }
 
     public CrawlingResult(List<CrawleableUri> crawledUris) {
-        this(crawledUris, Collections.emptyList(), -1);
+        this(crawledUris, Collections.emptyList());
     }
 
     @Override
@@ -57,11 +55,12 @@ public class CrawlingResult implements Serializable {
 
     @Override
     public String toString() {
-        String ret = "CrawlingResult [crawledUriDatePairs=" +
-            crawledUris +
-            ", newUris=" +
-            newUris +
-            "]";
-        return ret;
+        StringBuilder builder = new StringBuilder();
+        builder.append("CrawlingResult [crawledUris=");
+        builder.append(crawledUris);
+        builder.append(", newUris=");
+        builder.append(newUris);
+        builder.append("]");
+        return builder.toString();
     }
 }

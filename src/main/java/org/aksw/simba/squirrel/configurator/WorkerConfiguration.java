@@ -7,26 +7,17 @@ public class WorkerConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerConfiguration.class);
 
     private static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
-    public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
-    public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
+    private String outputFolder = null;
 
-    private String outputFolder;
-    private String sparqlHost;
-    private String sqarqlPort;
-
-    private WorkerConfiguration(String outputFolder, String sparqlHost, String sqarqlPort) {
+    private WorkerConfiguration(String outputFolder) {
         this.outputFolder = outputFolder;
-        this.sqarqlPort = sqarqlPort;
-        this.sparqlHost = sparqlHost;
     }
 
     public static WorkerConfiguration getWorkerConfiguration() throws Exception {
-        String outputFolder = getEnv(OUTPUT_FOLDER_KEY, LOGGER);
+        String outputFolder = getEnvOutputFolder();
         if(outputFolder != null) {
             LOGGER.info("The worker will use " + OUTPUT_FOLDER_KEY + " as an output folder.");
-            String sparqlHost = getEnv(SPARQL_HOST_CONTAINER_NAME_KEY, LOGGER);
-            String sqarqlPort = getEnv(SPARQL_HOST_PORTS_KEY, LOGGER);
-            return new WorkerConfiguration(outputFolder, sparqlHost, sqarqlPort);
+            return new WorkerConfiguration(outputFolder);
         } else {
             String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment. " +
                 "The worker can not be initialized.";
@@ -34,15 +25,11 @@ public class WorkerConfiguration extends Configuration {
         }
     }
 
+    private static String getEnvOutputFolder() {
+        return getEnv(OUTPUT_FOLDER_KEY, LOGGER);
+    }
+
     public String getOutputFolder() {
         return outputFolder;
-    }
-
-    public String getSparqlHost() {
-        return sparqlHost;
-    }
-
-    public String getSqarqlPort() {
-        return sqarqlPort;
     }
 }

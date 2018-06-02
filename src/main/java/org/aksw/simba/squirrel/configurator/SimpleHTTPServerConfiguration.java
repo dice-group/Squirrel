@@ -62,7 +62,12 @@ public class SimpleHTTPServerConfiguration extends Configuration {
     }
 
     private static boolean getEnvDerefKey() {
-        return getEnvBoolean(USE_DEREF_KEY, LOGGER);
+        try {
+            return getEnvBoolean(USE_DEREF_KEY, LOGGER);
+        } catch(ParseException e) {
+            LOGGER.warn("Setting deref to true by default. ", e);
+            return true;
+        }
     }
 
     public String getModelFile() {

@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.model;
 
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.ast.Map;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Connection;

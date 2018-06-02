@@ -25,7 +25,7 @@ import com.google.gson.stream.JsonWriter;
 /**
  * A serializer that uses {@link Gson} to serialize URIs. Kept for backwards
  * compatibility.
- *
+ * 
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -100,8 +100,8 @@ public class GsonUriSerializer implements Serializer {
             out.name(ADDRESS_IP_KEY);
             byte ip[] = ipAddress.getAddress();
             out.beginArray();
-            for (byte anIp : ip) {
-                out.value(anIp);
+            for (int i = 0; i < ip.length; ++i) {
+                out.value(ip[i]);
             }
             out.endArray();
             out.endObject();
@@ -128,35 +128,35 @@ public class GsonUriSerializer implements Serializer {
             String key;
             InetAddress inetAddress = null;
             UriType type = UriType.UNKNOWN;
-            Map<String, Object> data = new HashMap<>();
+            Map<String, Object> data = new HashMap<String, Object>();
             while (in.peek() != JsonToken.END_OBJECT) {
                 key = in.nextName();
                 switch (key) {
-                    case URI_KEY: {
-                        uri = in.nextString();
-                        break;
+                case URI_KEY: {
+                    uri = in.nextString();
+                    break;
+                }
+                case URI_TYPE_KEY: {
+                    type = UriType.valueOf(in.nextString());
+                    break;
+                }
+                case ADDRESS_KEY: {
+                    inetAddress = readInetAddress(in);
+                    break;
+                }
+                case DATA_KEY: {
+                    in.beginArray();
+                    while (in.hasNext()) {
+                        readDataObject(in, data);
                     }
-                    case URI_TYPE_KEY: {
-                        type = UriType.valueOf(in.nextString());
-                        break;
-                    }
-                    case ADDRESS_KEY: {
-                        inetAddress = readInetAddress(in);
-                        break;
-                    }
-                    case DATA_KEY: {
-                        in.beginArray();
-                        while (in.hasNext()) {
-                            readDataObject(in, data);
-                        }
-                        in.endArray();
-                        break;
-                    }
-                    default: {
-                        LOGGER.error(
+                    in.endArray();
+                    break;
+                }
+                default: {
+                    LOGGER.error(
                             "Got an unknown attribute name \"{}\" while parsing an CrawleableUri object. It will be ignored.",
                             key);
-                    }
+                }
                 }
             }
             in.endObject();

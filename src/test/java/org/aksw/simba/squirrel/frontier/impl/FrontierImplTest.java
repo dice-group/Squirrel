@@ -49,21 +49,21 @@ public class FrontierImplTest {
         // read any errors from the attempted command
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null)
-        {
+        while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
 
         r = RethinkDB.r;
         int retryCount = 0;
-        while(true) {
+        while (true) {
             try {
                 connection = r.connection().hostname("localhost").port(58015).connect();
                 break;
-            } catch(ReqlDriverError error) {
+            } catch (ReqlDriverError error) {
                 System.out.println("Could not connect, retrying");
                 retryCount++;
-                if(retryCount > 10) break;
+                if (retryCount > 10)
+                    break;
                 Thread.sleep(5000);
             }
         }
@@ -81,7 +81,7 @@ public class FrontierImplTest {
     }
 
     @Test
-    public void getNextUris() {
+    public void getNextUris() throws Exception {
         queue.addCrawleableUri(uris.get(1));
 
         List<CrawleableUri> nextUris = frontier.getNextUris();
@@ -137,7 +137,7 @@ public class FrontierImplTest {
     }
 
     @Test
-    public void getNumberOfPendingUris() {
+    public void getNumberOfPendingUris() throws Exception {
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();

@@ -1,10 +1,9 @@
 package org.aksw.simba.squirrel.queue;
 
-import org.aksw.simba.squirrel.data.uri.UriType;
-
 import java.net.InetAddress;
 
-@Deprecated
+import org.aksw.simba.squirrel.data.uri.UriType;
+
 public class IpUriTypePair implements Comparable<IpUriTypePair> {
     public InetAddress ip;
     public UriType type;
@@ -37,7 +36,9 @@ public class IpUriTypePair implements Comparable<IpUriTypePair> {
                 return false;
         } else if (!ip.equals(other.ip))
             return false;
-        return type == other.type;
+        if (type != other.type)
+            return false;
+        return true;
     }
 
     @Override

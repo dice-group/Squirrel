@@ -56,7 +56,7 @@ public class SimpleHttpServerComponent implements Component {
             addDeref(resources, model);
         }
 
-        container = new CrawleableResourceContainer(resources.toArray(new CrawleableResource[0]));
+        container = new CrawleableResourceContainer(resources.toArray(new CrawleableResource[resources.size()]));
         server = new ContainerServer(container);
         connection = new SocketConnection(server);
         SocketAddress address = new InetSocketAddress(conf.getServerPort());

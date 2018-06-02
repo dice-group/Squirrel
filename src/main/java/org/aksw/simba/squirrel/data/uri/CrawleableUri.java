@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 /**
  * This class represents a URI and additional meta data that is helpful for
  * crawling it.
- *
+ * 
  * <p>
  * <b>Serialization</b> - objects of this class can be serialized to byte
  * arrays. These arrays are organized as follows.<br>
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * If <code>(bytes.length > (uLength + {@value #URI_START_INDEX}))</code> then
  * the remaining bytes are the {@link #ipAddress}.
  * </p>
- *
+ * 
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -46,11 +46,9 @@ public class CrawleableUri implements Serializable {
     private static final Charset ENCODING_CHARSET = Charset.forName(CHARSET_NAME);
     private static final int URI_START_INDEX = 5;
 
-    private long timestampNextCrawl;
-
     /**
      * Creates a CrawleableUri object from the given byte array.
-     *
+     * 
      * @param bytes
      * @return
      * @deprecated Use the JSON deserialization instead.
@@ -63,8 +61,9 @@ public class CrawleableUri implements Serializable {
         // We need the buffer to get int values from the byte array.
         return fromByteBuffer(ByteBuffer.wrap(bytes));
     }
+
     /**
-     *
+     * 
      * @param buffer
      * @return
      * @deprecated Use the JSON deserialization instead.
@@ -112,11 +111,10 @@ public class CrawleableUri implements Serializable {
     }
 
     private final URI uri;
-
     private InetAddress ipAddress;
     @Deprecated
     private UriType type = UriType.UNKNOWN;
-
+    
     private Map<String,Object> data = new TreeMap<String,Object>();
 
     public CrawleableUri(URI uri) {
@@ -156,11 +154,11 @@ public class CrawleableUri implements Serializable {
     public URI getUri() {
         return uri;
     }
-
+    
     public void addData(String key, Object data) {
         this.data.put(key, data);
     }
-
+    
     public Object getData(String key) {
         if(data.containsKey(key)) {
             return data.get(key);
@@ -168,11 +166,11 @@ public class CrawleableUri implements Serializable {
             return null;
         }
     }
-
+    
     public Map<String, Object> getData() {
         return data;
     }
-
+    
     public void setData(Map<String, Object> data) {
         this.data = data;
     }
@@ -203,7 +201,7 @@ public class CrawleableUri implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      * @deprecated Use the JSON serialization instead.
      */
@@ -229,7 +227,7 @@ public class CrawleableUri implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      * @deprecated Use the JSON serialization instead.
      */
@@ -250,13 +248,5 @@ public class CrawleableUri implements Serializable {
         builder.append(type.name());
         builder.append(')');
         return builder.toString();
-    }
-
-    public long getTimestampNextCrawl() {
-        return timestampNextCrawl;
-    }
-
-    public void setTimestampNextCrawl(long timestampNextCrawl) {
-        this.timestampNextCrawl = timestampNextCrawl;
     }
 }
