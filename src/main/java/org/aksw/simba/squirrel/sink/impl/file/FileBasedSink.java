@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -65,11 +64,6 @@ public class FileBasedSink implements Sink {
                         + uriString + "\". Ignoring it.", e);
             }
         }
-    }
-
-    @Override
-    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override

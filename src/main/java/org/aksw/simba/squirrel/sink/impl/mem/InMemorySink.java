@@ -78,11 +78,6 @@ public class InMemorySink implements Sink {
     }
 
     @Override
-    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        return null;
-    }
-
-    @Override
     public void openSinkForUri(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
         if (!rdfData.containsKey(uriString)) {
