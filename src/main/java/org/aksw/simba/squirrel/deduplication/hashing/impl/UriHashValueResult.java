@@ -3,7 +3,7 @@ package org.aksw.simba.squirrel.deduplication.hashing.impl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Sent by the {@link org.aksw.simba.squirrel.components.DeduplicatorComponent} to the
@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class UriHashValueResult implements Serializable {
 
-    public List<CrawleableUri> uris;
+    public Set<CrawleableUri> uris;
 
     /**
      * Constructor.
      *
      * @param uris Value for {@link #uris}.
      */
-    public UriHashValueResult(List<CrawleableUri> uris) {
+    public UriHashValueResult(Set<CrawleableUri> uris) {
         this.uris = uris;
     }
 }

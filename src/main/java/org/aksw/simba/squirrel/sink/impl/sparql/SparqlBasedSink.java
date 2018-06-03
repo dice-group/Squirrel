@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SparqlBasedSink implements Sink {
+public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
      */
@@ -62,7 +63,8 @@ public class SparqlBasedSink implements Sink {
 
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        return null;
+        // TODO: Implement!
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     @Override

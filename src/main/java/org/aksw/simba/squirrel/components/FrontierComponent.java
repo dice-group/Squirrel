@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -188,7 +189,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
             } else if (object instanceof UriHashValueResult) {
                 UriHashValueResult result = (UriHashValueResult) object;
-                frontier.addHashValuesForUris(result.uris);
+                frontier.addHashValuesForUris(new ArrayList<>(result.uris));
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }
