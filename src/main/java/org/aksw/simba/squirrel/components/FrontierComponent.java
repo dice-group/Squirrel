@@ -58,9 +58,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
-    public static final boolean doRecrawling = true;
 
-    private final long startRunTime = System.currentTimeMillis();
+    public static final boolean RECRAWLING_ACTIVE = true;
 
 
     @Override
@@ -85,11 +84,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if ((rdbHostName != null) && (rdbPort > 0)) {
             queue = new RDBQueue(rdbHostName, rdbPort);
             queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, RECRAWLING_ACTIVE);
             knownUriFilter.open();
         } else {
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
+            knownUriFilter = new InMemoryKnownUriFilter(RECRAWLING_ACTIVE);
         }
 
         if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
@@ -101,7 +100,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, RECRAWLING_ACTIVE);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)

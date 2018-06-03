@@ -18,6 +18,8 @@ public class QueryGenerator {
      * The instance of the class QueryGenerator.
      */
     private static final QueryGenerator instance = new QueryGenerator();
+
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
     private QueryGenerator() {
@@ -42,7 +44,6 @@ public class QueryGenerator {
     public String getAddQuery(CrawleableUri uri, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { Graph <");
-        stringBuilder.append("0430");
         stringBuilder.append(uri.getUri());
         stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {

@@ -1,19 +1,24 @@
 package org.aksw.simba.squirrel.components;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
+import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlUtils;
 import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
+import org.hobbit.core.data.RabbitQueue;
+import org.hobbit.core.rabbit.DataReceiverImpl;
 import org.hobbit.core.rabbit.DataSender;
 import org.hobbit.core.rabbit.DataSenderImpl;
 import org.slf4j.Logger;
@@ -31,7 +36,7 @@ import java.util.*;
  */
 public class DeduplicatorComponent extends AbstractComponent implements RespondingDataHandler {
 
-    public static final String DEDUPLICATOR_QUEUE_NAME = "deduplicatorQueue";
+    public static final String DEDUPLICATOR_QUEUE_NAME = "squirrel.deduplicator";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
@@ -65,10 +70,12 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private Serializer serializer;
 
     private DataSender senderFrontier;
+    private DataReceiverImpl receiver;
 
 
     @Override
-    public void init() {
+    public void init() throws Exception {
+        super.init();
         if (DEDUPLICATION_ACTIVE) {
             Map<String, String> env = System.getenv();
 
@@ -86,16 +93,22 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             }
 
             if ((rdbHostName != null) && (rdbPort > 0)) {
-                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.doRecrawling);
+                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
                 knownUriFilter.open();
+            } else {
+                knownUriFilter = new InMemoryKnownUriFilter(FrontierComponent.RECRAWLING_ACTIVE);
             }
 
             // TODO: other kinds of sinks must be possible as well
-            sink = new SparqlBasedSink(null, null);
+            sink = new SparqlBasedSink(SparqlUtils.getDatasetUriForUpdate(), SparqlUtils.getDatasetUriForQuery());
 
             serializer = new GzipJavaUriSerializer();
 
             try {
+                RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(DEDUPLICATOR_QUEUE_NAME);
+                receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
+                    .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+
                 senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
                     .build();
             } catch (IOException e) {
@@ -147,6 +160,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     @Override
     public void close() {
+        receiver.closeWhenFinished();
         knownUriFilter.close();
     }
 
@@ -168,10 +182,13 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
                 for (CrawleableUri uri : uriSet.uris) {
+                    LOGGER.info("dedup hat uri " + uri);
                     List<Triple> triples = new ArrayList<>();
                     TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri);
                     tripleHashPostProcessor.run();
                 }
+            } else {
+                LOGGER.info("Received an unknown object. It will be ignored.");
             }
         }
     }
@@ -194,8 +211,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 compareNewUrisWithOldUris();
                 UriHashValueResult result = new UriHashValueResult(newUrisBufferList);
                 senderFrontier.sendData(serializer.serialize(result));
+                newUrisBufferList.clear();
             }
-            newUrisBufferList.clear();
         } catch (IOException e) {
             LOGGER.error("Error while serializing uri " + uri, e);
         }

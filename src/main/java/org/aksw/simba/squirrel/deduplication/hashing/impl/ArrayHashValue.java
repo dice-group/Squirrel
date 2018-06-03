@@ -26,7 +26,7 @@ public class ArrayHashValue implements HashValue {
     /**
      * Constructor.
      *
-     * @param hashValues The Array of Hashvalues.
+     * @param hashValues The Array of Hash values.
      */
     public ArrayHashValue(Integer[] hashValues) {
         this.hashValues = hashValues;
@@ -47,7 +47,7 @@ public class ArrayHashValue implements HashValue {
         String[] array = s.split(DELIMETER);
         Integer[] hashValues = new Integer[array.length];
         for (int i = 0; i < array.length; i++) {
-            if (array[i] != "") {
+            if (!array[i].equals("")) {
                 hashValues[i] = Integer.parseInt(array[i]);
             }
         }
@@ -63,7 +63,7 @@ public class ArrayHashValue implements HashValue {
             }
             boolean equal = true;
             for (int i = 0; i < hashValues.length; i++) {
-                if (hashValues[i] != arrayHashValue.hashValues[i]) {
+                if (hashValues[i].equals(arrayHashValue.hashValues[i])) {
                     equal = false;
                     break;
                 }
