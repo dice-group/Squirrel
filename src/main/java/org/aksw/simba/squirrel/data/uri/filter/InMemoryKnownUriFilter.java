@@ -5,9 +5,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
@@ -63,7 +61,13 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public List<CrawleableUri> getAllUris() {
-        return Arrays.asList(uris.keys);
+        List<CrawleableUri> urisToReturn = new ArrayList<>();
+        for (CrawleableUri uri : uris.keys) {
+            if (uris.get(uri).hashValue != null) {
+                urisToReturn.add(uri);
+            }
+        }
+        return urisToReturn;
     }
 
     @Override
