@@ -36,19 +36,17 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
             }
             int hash = triple.hashCode();
 
-            //TODO Change to bitshifting
-            final int sizeInt = 32;
-            int i = hash >>> (sizeInt - powerNumberOfIntervals);
-            StringBuilder binaryString = new StringBuilder(Integer.toBinaryString(i));
-
+            int bitShiftedNumber = hash >>> (32 - powerNumberOfIntervals);
+            String shortBinaryString = Integer.toBinaryString(bitShiftedNumber);
+            StringBuilder binaryString = new StringBuilder();
             //fill with zeros
-            for (int j = 0; j < powerNumberOfIntervals - binaryString.length() - 1; j++) {
-                binaryString.insert(0, "0");
+            for (int j = 0; j < powerNumberOfIntervals - shortBinaryString.length(); j++) {
+                binaryString.append("0");
             }
+            binaryString.append(shortBinaryString);
+            String lastBits = binaryString.toString().substring(0, powerNumberOfIntervals);
 
-            String lastBits = binaryString.substring(0, powerNumberOfIntervals);
-
-            //if we have only one interval, the zero is the desired intervall
+            //if we have only one interval, the zero is the desired interval
             if (lastBits.equals("")) {
                 lastBits = "0";
             }

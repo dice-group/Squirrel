@@ -109,7 +109,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
             try {
                 RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(DEDUPLICATOR_QUEUE_NAME);
-                receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
+                receiver = DataReceiverImpl.builder().dataHandler(this)
                     .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
 
                 senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)

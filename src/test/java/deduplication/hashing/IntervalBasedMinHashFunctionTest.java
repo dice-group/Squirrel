@@ -12,11 +12,14 @@ import java.util.List;
 
 public class IntervalBasedMinHashFunctionTest {
 
-    private IntervalBasedMinHashFunction hashFunction;
+    private IntervalBasedMinHashFunction[] hashFunctions;
 
     @Before
     public void setUp() {
-        hashFunction = new IntervalBasedMinHashFunction(0);
+        hashFunctions = new IntervalBasedMinHashFunction[5];
+        for (int i = 0; i < hashFunctions.length; i++) {
+            hashFunctions[i] = new IntervalBasedMinHashFunction(i);
+        }
     }
 
     @Test
@@ -24,13 +27,15 @@ public class IntervalBasedMinHashFunctionTest {
 
         // create two lists of triples with same triples but in different order
         // => hash values must be equal
-        List<Triple> tripleList1 = generateNonBlankTriples(5000);
+        List<Triple> tripleList1 = generateNonBlankTriples(100);
         List<Triple> tripleList2 = new ArrayList<>();
         for (int i = tripleList1.size() - 1; i >= 0; i--) {
             tripleList2.add(tripleList1.get(i));
         }
 
-        Assert.assertTrue(hashFunction.hash(tripleList1).equals(hashFunction.hash(tripleList2)));
+        for (int i = 0; i < hashFunctions.length; i++) {
+            Assert.assertTrue(hashFunctions[i].hash(tripleList1).equals(hashFunctions[i].hash(tripleList2)));
+        }
     }
 
     @Test
@@ -47,7 +52,9 @@ public class IntervalBasedMinHashFunctionTest {
             NodeFactory.createURI("object"));
         tripleList2.add(tripleWithBlankNode);
 
-        Assert.assertTrue(hashFunction.hash(tripleList1).equals(hashFunction.hash(tripleList2)));
+        for (int i = 0; i < hashFunctions.length; i++) {
+            Assert.assertTrue(hashFunctions[i].hash(tripleList1).equals(hashFunctions[i].hash(tripleList2)));
+        }
     }
 
     /**
