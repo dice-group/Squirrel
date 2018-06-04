@@ -15,6 +15,9 @@ import java.util.List;
  */
 public class IntervalBasedMinHashFunctionTest {
 
+    /**
+     * An array of hash functions to test different amounts of intervals.
+     */
     private IntervalBasedMinHashFunction[] hashFunctions;
 
     @Before
@@ -36,8 +39,8 @@ public class IntervalBasedMinHashFunctionTest {
             tripleList2.add(tripleList1.get(i));
         }
 
-        for (int i = 0; i < hashFunctions.length; i++) {
-            Assert.assertTrue(hashFunctions[i].hash(tripleList1).equals(hashFunctions[i].hash(tripleList2)));
+        for (IntervalBasedMinHashFunction hashFunction : hashFunctions) {
+            Assert.assertEquals(hashFunction.hash(tripleList1), hashFunction.hash(tripleList2));
         }
     }
 
@@ -55,8 +58,8 @@ public class IntervalBasedMinHashFunctionTest {
             NodeFactory.createURI("object"));
         tripleList2.add(tripleWithBlankNode);
 
-        for (int i = 0; i < hashFunctions.length; i++) {
-            Assert.assertTrue(hashFunctions[i].hash(tripleList1).equals(hashFunctions[i].hash(tripleList2)));
+        for (IntervalBasedMinHashFunction hashFunction : hashFunctions) {
+            Assert.assertEquals(hashFunction.hash(tripleList1), hashFunction.hash(tripleList2));
         }
     }
 
