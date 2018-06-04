@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -28,8 +26,7 @@ public class HTMLController {
      */
     @RequestMapping(value = {"/","/home"}, produces = "text/html")
     public String index() {
-
-        return HTMLReader.getText("./SquirrelWebService/WEB-INF/pages/index.html");
+        return HTMLReader.getText("./WEB-INF/pages/index.html");
     }
 
     /**
@@ -50,7 +47,7 @@ public class HTMLController {
      */
     @RequestMapping(value = "/pages/**", produces = MediaType.ALL_VALUE, method = RequestMethod.GET)
     public String getStaticCode(Model model, HttpServletRequest request) {
-        String path = "./SquirrelWebService/WEB-INF" + request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        String path = "./WEB-INF" + request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 
         File filePath = new File(path.substring(0, path.lastIndexOf('/')));
 
