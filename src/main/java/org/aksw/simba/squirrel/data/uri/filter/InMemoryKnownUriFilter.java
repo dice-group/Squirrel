@@ -2,9 +2,11 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
+
     protected ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris = new ObjectObjectOpenHashMap<>();
     /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
@@ -35,16 +38,6 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         this(false);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param uris                   Value for {@link #uris}.
-     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
-     */
-    public InMemoryKnownUriFilter(ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris, boolean frontierDoesRecrawling) {
-        this.uris = uris;
-        this.frontierDoesRecrawling = frontierDoesRecrawling;
-    }
 
     @Override
     public void add(CrawleableUri uri, long nextCrawlTimestamp) {
@@ -53,19 +46,24 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false);
+        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false, null);
         uris.put(uri, uriInfo);
     }
 
     @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-        // TODO: Implement
+    public void addHashValuesForUris(List<CrawleableUri> urisWithHashValues) {
+        for (CrawleableUri uri : urisWithHashValues) {
+            if (uris.containsKey(uri)) {
+                UriInfo uriInfo = uris.get(uri);
+                uriInfo.hashValue = uri.getHashValue();
+                uris.put(uri, uriInfo);
+            }
+        }
     }
 
     @Override
     public List<CrawleableUri> getAllUris() {
-        // TODO: Implement
-        return null;
+        return Arrays.asList(uris.keys);
     }
 
     @Override
@@ -116,11 +114,13 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         long lastCrawlTimestamp;
         long nextCrawlTimestamp;
         boolean crawlingInProcess;
+        HashValue hashValue;
 
-        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
+        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess, HashValue hashValue) {
             this.lastCrawlTimestamp = lastCrawlTimestamp;
             this.nextCrawlTimestamp = nextCrawlTimestamp;
             this.crawlingInProcess = crawlingInProcess;
+            this.hashValue = hashValue;
         }
     }
 }

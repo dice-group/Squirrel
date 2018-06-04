@@ -41,7 +41,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     private Worker worker;
     private DataSender senderFrontier, senderDeduplicator;
-    private RabbitRpcClient client;
+    private RabbitRpcClient clientFrontier;
     private byte[] uriSetRequest;
     private Serializer serializer;
     private Timer timerAliveMessages;
@@ -62,7 +62,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             .build();
         senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
             .build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
+        clientFrontier = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
@@ -101,7 +101,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void close() throws IOException {
         IOUtils.closeQuietly(senderFrontier);
         IOUtils.closeQuietly(senderDeduplicator);
-        IOUtils.closeQuietly(client);
+        IOUtils.closeQuietly(clientFrontier);
         timerAliveMessages.cancel();
         super.close();
     }
@@ -110,7 +110,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public List<CrawleableUri> getNextUris() {
         UriSet set = null;
         try {
-            byte[] response = client.request(uriSetRequest);
+            byte[] response = clientFrontier.request(uriSetRequest);
             if (response != null) {
                 set = serializer.deserialize(response);
             }

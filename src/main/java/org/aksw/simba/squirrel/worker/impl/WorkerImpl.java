@@ -273,7 +273,7 @@ public class WorkerImpl implements Worker, Closeable {
     private void setSpecificRecrawlTime(CrawleableUri uri) {
         //TODO: implement special cases
 
-        //else set everytime to default
+        //else set every time to default
         uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
     }
 

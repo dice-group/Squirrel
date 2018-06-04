@@ -190,6 +190,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (object instanceof UriHashValueResult) {
                 UriHashValueResult result = (UriHashValueResult) object;
                 frontier.addHashValuesForUris(new ArrayList<>(result.uris));
+                LOGGER.info("frontier hat hash result bekommen " + result.uris);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

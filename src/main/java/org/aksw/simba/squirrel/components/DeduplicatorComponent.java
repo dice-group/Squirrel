@@ -52,7 +52,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * The maximal size for {@link #newUrisBufferSet}.
      */
-    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 100;
+    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 2;
 
     /**
      * A set of uris for which hash values have already been computed. If the size of the set exceeds {@link #MAX_SIZE_NEW_URIS_BUFFER_LIST}
@@ -180,7 +180,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         } catch (IOException e) {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
-        LOGGER.trace("Got a message (\"{}\").", object.toString());
+        LOGGER.info("Deduplicator got a message (\"{}\").", object.toString());
         if (object != null) {
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
@@ -208,12 +208,14 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      * @param uri The new uri with the computed hash value.
      */
     public void recognizeUriWithComputedHashValue(CrawleableUri uri) {
+        LOGGER.info("dedup recognized uri " + uri);
         try {
             newUrisBufferSet.add(uri);
             if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
                 compareNewUrisWithOldUris();
                 UriHashValueResult result = new UriHashValueResult(newUrisBufferSet);
                 senderFrontier.sendData(serializer.serialize(result));
+                LOGGER.info("dedup sent result to frontier");
                 newUrisBufferSet.clear();
             }
         } catch (IOException e) {
