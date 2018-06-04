@@ -26,7 +26,7 @@ public class IntervalBasedMinHashFunctionTest {
         // => hash values must be equal
         List<Triple> tripleList1 = generateNonBlankTriples(5);
         List<Triple> tripleList2 = new ArrayList<>();
-        for (int i = tripleList1.size() - 1; i >= 0; i++) {
+        for (int i = tripleList1.size() - 1; i >= 0; i--) {
             tripleList2.add(tripleList1.get(i));
         }
 
