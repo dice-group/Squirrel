@@ -41,8 +41,8 @@ public class IntervalBasedMinHashFunctionTest {
     @Test
     public void testBlankNode() {
 
-        // create two lists of triples with same content, but list 2 has one blank node
-        // => blank node must be ignored, so hash values must be equal
+        // create two lists of triples with same content, but list 2 has one additional triple with blank node
+        // => triple with blank node must be ignored, so hash values must be equal
 
         List<Triple> tripleList1 = generateNonBlankTriples(1);
         List<Triple> tripleList2 = new ArrayList<>(tripleList1);
