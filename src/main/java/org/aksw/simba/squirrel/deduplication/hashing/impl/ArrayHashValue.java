@@ -64,8 +64,8 @@ public class ArrayHashValue implements HashValue {
             for (int i = 0; i < hashValues.length; i++) {
                 if (hashValues[i] == null ^ arrayHashValue.hashValues[i] == null) {
                     return false;
-                } else if ((hashValues[i] == null && arrayHashValue.hashValues[i] == null)
-                    || hashValues[i].equals(arrayHashValue.hashValues[i])) {
+                } else if (!(hashValues[i] == null && arrayHashValue.hashValues[i] == null)
+                    || !hashValues[i].equals(arrayHashValue.hashValues[i])) {
                     // in this case they are equal
                     return false;
                 }

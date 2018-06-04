@@ -31,11 +31,20 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
         Integer[] hashValues = new Integer[(int) Math.pow(2, powerNumberOfIntervals)];
 
         for (Triple triple : triples) {
+            if (triple.getObject().isBlank() || triple.getSubject().isBlank()) {
+                continue;
+            }
             int hash = triple.hashCode();
 
             //TODO Change to bitshifting
-            int i = hash >>> (32 - powerNumberOfIntervals);
-            String lastBits = Integer.toBinaryString(hash).substring(0, powerNumberOfIntervals);
+            final int sizeInt = 32;
+            int i = hash >>> (sizeInt - powerNumberOfIntervals);
+            String binaryString = Integer.toBinaryString(i);
+            for (int j = 0; j < sizeInt - binaryString.length() - 1; j++) {
+                binaryString = "0" + binaryString;
+            }
+
+            String lastBits = binaryString.substring(0, powerNumberOfIntervals);
             int intervalNumber = Integer.parseInt(lastBits, 2);
 
             if (hashValues[intervalNumber] == null || hashValues[intervalNumber] > hash) {
