@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Tests for {@link IntervalBasedMinHashFunction}.
+ */
 public class IntervalBasedMinHashFunctionTest {
 
     private IntervalBasedMinHashFunction[] hashFunctions;

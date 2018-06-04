@@ -8,7 +8,6 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
-import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
@@ -58,7 +57,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      * A set of uris for which hash values have already been computed. If the size of the set exceeds {@link #MAX_SIZE_NEW_URIS_BUFFER_LIST}
      * the uris will be sent to the frontier and the set will be cleared.
      */
-    private final Set<CrawleableUri> newUrisBufferSet = new HashSet<>();
+    private final Set<CrawleableUri> newUrisBufferSet = new HashSet<>(MAX_SIZE_NEW_URIS_BUFFER_LIST);
 
     /**
      * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
