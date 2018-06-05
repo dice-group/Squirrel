@@ -21,8 +21,9 @@
 
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
-            <constructor-arg index="1"
-                             ref="#{{systemEnvironment['SPARQL_HOST_NAME']} != null and {systemEnvironment['SPARQL_HOST_PORT']} != null ? 'tripleStoreSinkBean' : 'fileBasedSinkBean'}"/>
+            <constructor-arg index="1" ref="fileBasedSinkBean" />
+                       <!-- DOESN'T WORK UNTIL YET (Syntax error?)
+                            ref="#{{systemEnvironment['SPARQL_HOST_NAME']} != null and {systemEnvironment['SPARQL_HOST_PORT']} != null ? 'tripleStoreSinkBean' : 'fileBasedSinkBean'}"/> -->
         	<constructor-arg index="2" ref="robotsManagerBean" />
         	<constructor-arg index="3" ref="serializerBean" />
         	<constructor-arg index="4" ref="uriCollectorBean" />
