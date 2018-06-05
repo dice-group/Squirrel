@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>squirrel-pom.xml</module>
-        <module>SquirrelWebservice</module>
+        <module>SquirrelWebService</module>
         <module>SquirrelWebObject</module>
     </modules>
 
