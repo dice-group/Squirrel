@@ -35,9 +35,11 @@ public class ArrayHashValue implements HashValue {
     @Override
     public String encodeToString() {
         StringBuilder sb = new StringBuilder();
-        for (int hashValue : hashValues) {
-            sb.append(hashValue);
-            sb.append(DELIMETER);
+        for (int i = 0; i < hashValues.length; i++) {
+            sb.append(hashValues[i]);
+            if (i < hashValues.length - 1) {
+                sb.append(DELIMETER);
+            }
         }
         return sb.toString();
     }
@@ -47,9 +49,7 @@ public class ArrayHashValue implements HashValue {
         String[] array = s.split(DELIMETER);
         Integer[] hashValues = new Integer[array.length];
         for (int i = 0; i < array.length; i++) {
-            if (!array[i].equals("")) {
-                hashValues[i] = Integer.parseInt(array[i]);
-            }
+            hashValues[i] = Integer.parseInt(array[i]);
         }
         return new ArrayHashValue(hashValues);
     }
