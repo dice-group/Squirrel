@@ -8,9 +8,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -58,31 +59,30 @@ public class McloudAnalyzer implements Analyzer
 
     private static final Logger LOGGER = LoggerFactory.getLogger(McloudAnalyzer.class);
 
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); //correct format according to https://www.w3.org/TR/xmlschema-2/#dateTime
+    private static final DateTimeFormatter mCloudDatasetFormat = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss O yyyy");
+
     // mCloud URI related Strings and Patterns
     private static final String URI_SUFFIX = "/URI";
     private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
-    public static final String dataSetUriBase = LMCSE.getURI() + "dataset"; //+ -distribution is the distribution uri
+    private static final String dataSetUriBase = LMCSE.getURI() + "dataset"; //+ -distribution is the distribution uri
 
-    // fugly collection of mCloud HTML scraping related constants for css selector
-    private final String paginationElement = "ul.pagination__list.mq-hide-m";
-    private final String paginationRightWrapper = "ul li a.pagination__right.is-active";
-    private final String paginationDoubleArrow = "double-arrow";
-    private final String paginationFFPath = "a > svg > use";
-    private final String pageLinkToDetailPage = "a.mcloud__link.tx-bold";
+    // collection of mCloud CSS selector constants for scraping
+    private final String selectPagination = "ul.pagination > li.pagination-end > a[href]";
+    private final String selectLinkToDetailPage = "div.small-24 > div.results-header ~ a[href]";
+    private final String selectTitle = "div.content > h3";
+    private final String selectDescription = "div.content > p";
+    private final String selectDownloadEntry = "div.download-list-row";
+    private final String selectDownloadUrl = "div.row > div.small-22 > a[href]";
+    private final String selectDownloadType = "div.row > div.small-2 > span.filetype";
+    private final String selectProvider = "div.detail-card > h5:contains(Bereitgestellt durch) + p > span.tag-date > a[href]";
+    private final String selectCategories = "div.tag-theme > span.tag-theme-text";
+    private final String selectLicense = "div.detail-card > h5:contains(Nutzungsbedingung) + p > a[href]";
+    private final String selectDatasetDate = "div.detail-card > h5:contains(Aktualität d. Datensatzbeschreibung) + p > span.tag-date";
+    private final String selectDistributionDate = "div.detail-card > h5:contains(Aktualität) + p > span.tag-date";
     private final String attrHref = "href";
-    private final String attrWrappedHref = "a[href]";
-    private final String attrXLinkHref = "xlink:href";
-    private final String attrTitle = "title";
-    private final String elHeading1 = "h1.mary-2";
-    private final String elCategoryImage = "img.mcloud__content__img";
-    private final String elTable = "table";
-    private final String elDownloadGrid = "ul.link-list.download-list";
-    private final String elDownloadSplit = "ul li a";
-    private final String tagP = "p";
-    private final String tagTd = "td";
-    private final String tagSmall = "small";
 
     private UriCollector collector;
 
@@ -180,34 +180,20 @@ public class McloudAnalyzer implements Analyzer
     {
         LOGGER.debug("Collecting pagination from mCloud base {}", baseUri.getUri().toString());
 
-        Document docBase = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), baseUri.getUri().toString());
+        String baseUriString = baseUri.getUri().toString();
+        Document docBase = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), baseUriString);
 
-        Elements paginationArrows =
-            docBase.select(paginationElement).select(paginationRightWrapper);
+        //create all pagination URLs from found limit and add to URI queue      
+        String highestPage = docBase.select(selectPagination).attr(attrHref);
+        Matcher matcher = Pattern.compile("[0-9]+").matcher(highestPage);
+        matcher.find();
+        int highestPageCount = Integer.parseInt(matcher.group());
 
-        //create all pagination URLs from found limit and add to URI queue
-        int highestPageCount = 0;
-        for (Element rightArr : paginationArrows)
-        {
-            String check = rightArr.select(paginationFFPath).first().attr(attrXLinkHref);
-
-            if (check.contains(paginationDoubleArrow))
-            {
-                String ffLink = rightArr.attr(attrHref);
-
-                Matcher matcher = Pattern.compile("[0-9]+").matcher(ffLink);
-                while (matcher.find())
-                {
-                    String index = matcher.group();
-                    highestPageCount = Integer.parseInt(index);
-                    break;
-                }
-            }
-        }
+        String searchBaseString = highestPage.substring(0, highestPage.lastIndexOf("/") + 1);
 
         for (int i = 0; i <= highestPageCount; i++)
         {
-            CrawleableUri newUri = new CrawleableUri(new URI(Constants.MCLOUD_SEED + Constants.MCLOUD_SEARCH + i));
+            CrawleableUri newUri = new CrawleableUri(new URI(searchBaseString + i));
             newUri.addData(Constants.MCLOUD_SEARCH, i);
             collector.addNewUri(baseUri, newUri);
         }
@@ -225,8 +211,9 @@ public class McloudAnalyzer implements Analyzer
         LOGGER.debug("Collecting detail pages from mCloud pagination {}", baseUri.getUri().toString());
 
         Document pageBase = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), baseUri.getUri().toString());
-
-        Elements detailPages = pageBase.select(attrWrappedHref).select(pageLinkToDetailPage);
+        Elements detailPages = pageBase.select(selectLinkToDetailPage);
+        
+        LOGGER.debug("[YYY] ADDING " + detailPages.size() + " detail URIS to frontier");
 
         for (Element link : detailPages)
         {
@@ -247,72 +234,110 @@ public class McloudAnalyzer implements Analyzer
      */
     private Iterator<CrawleableUri> scrapeDetailPage(CrawleableUri baseUri, File data) throws IOException
     {
-        LOGGER.debug("Collecting and processing metadata for {}", baseUri.getUri().toString());
-
         String detailURI = baseUri.getUri().toString();
-        LOGGER.debug("Scraping data from {}", detailURI);
+        LOGGER.debug("Collecting and processing metadata for {}", detailURI);
+
         Document detailPage = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), detailURI);
 
-        //Metadata
-        String title;
+        //metadata
+        String title = "";
         List<String> categories = new ArrayList<>();
-        String description;
-        String providerName;
-        URI providerURI;
-        URI licenseURI;
-        String licenseName;
+        String description = "";
+        String providerName = "";
+        URI providerURI = null;
+        String licenseName = "";
+        URI licenseURI = null;
+        String datasetDate = "";
+        String distributionDate = "";
         List<CrawleableUri> downloadSources = new ArrayList<>();
+        String fallbackCurrentTime = LocalDateTime.now().format(dateTimeFormatter);
 
-        //Title
-        Element titleElement = detailPage.select(elHeading1).first();
-        title = titleElement.text();
+        //title
+        Element titleElement = detailPage.selectFirst(selectTitle);
+        if (titleElement != null)
+        {
+            title = titleElement.text();
+        }
+        else
+        {
+            LOGGER.warn("Failed to parse Dataset title from mCloud for URI {}.", detailURI);
+        }
 
-        //Categories
-        Elements categoryElements = detailPage.select(elCategoryImage);
+        //description
+        Elements descriptionElement = detailPage.select(selectDescription);
+        for (Element part : descriptionElement)
+        {
+            description = description.concat(part.text());
+        }
+
+        //categories
+        Elements categoryElements = detailPage.select(selectCategories);
         for (Element category : categoryElements)
         {
-            categories.add(category.attr(attrTitle));
+            categories.add(category.text());
         }
 
-        //Description (first <p> tag)
-        Element descriptionElement = detailPage.select(tagP).first();
-        description = descriptionElement.text();
-
-        //Table
-        Element table = detailPage.select(elTable).first();
-        Elements tableElements = table.getElementsByTag(tagTd);
-
-        //first row = provider
-        Element firstRow = tableElements.get(0);
-        providerName = firstRow.text();
-        String providerUrl = firstRow.select(attrWrappedHref).first() != null ? firstRow.select(attrWrappedHref).first().attr(attrHref) : null;
-        try
+        //provider
+        Element providerElement = detailPage.selectFirst(selectProvider);
+        if (providerElement != null)
         {
-            providerURI = new URI(providerUrl);
+            try
+            {
+                providerURI = new URI(providerElement.attr(attrHref));
+                providerName = providerElement.text();
+            }
+            catch (URISyntaxException | NullPointerException e)
+            {
+                LOGGER.warn("Failed to parse Dataset publisher URL from mCloud for URI {}. The publisher will be ignored.", detailURI);
+            }
         }
-        catch (URISyntaxException | NullPointerException e)
+        else
         {
-            LOGGER.debug("Error parsing Provider. The Provider will be ignored.", e);
-            providerName = null;
-            providerURI = null;
+            LOGGER.warn("Failed to parse Dataset publisher from mCloud for URI {}.", detailURI);
         }
 
-        //second row = license 
-        Element secondRow = tableElements.get(1);
-        licenseName = secondRow.text();
-        String licenseUrl = secondRow.select(attrWrappedHref).first() != null ? secondRow.select(attrWrappedHref).first().attr(attrHref) : null;
-        try
+        //license
+        Element licenseElement = detailPage.selectFirst(selectLicense);
+        if (licenseElement != null)
         {
-            licenseURI = new URI(licenseUrl);
+            try
+            {
+                licenseURI = new URI(licenseElement.attr(attrHref));
+                licenseName = licenseElement.text();
+            }
+            catch (URISyntaxException | NullPointerException e)
+            {
+                LOGGER.warn("Failed to parse Dataset license URL from mCloud for URI {}. The license will be ignored.", detailURI);
+            }
         }
-        catch (URISyntaxException | NullPointerException e)
+        else
         {
-            LOGGER.warn("Error parsing LICENSE URI. The License will be ignored.", e);
-            licenseURI = null;
-            licenseName = null;
+            LOGGER.warn("Failed to parse Dataset license from mCloud for URI {}.", detailURI);
         }
 
-        //create Model
+        //dataset timestamp
+        Element datasetDateElement = detailPage.selectFirst(selectDatasetDate);
+        if (datasetDateElement != null)
+        {
+            datasetDate = datasetDateElement.text();
+        }
+        else
+        {
+            LOGGER.warn("Failed to parse publication date for Dataset from mCloud for URI {}. The crawling timestamp will be used instead.", detailURI);
+        }
+
+        //distribution timestamp
+        Element distDateElement = detailPage.selectFirst(selectDistributionDate);
+        if (distDateElement != null)
+        {
+            distributionDate = distDateElement.text();
+        }
+        else
+        {
+            LOGGER.warn("Failed to parse publication date for Dataset from mCloud for URI {}. The crawling timestamp will be used instead.", detailURI);
+        }
+
+        //create Model with DataSet
         String datasetURI = createUniqueDatasetURI(title, detailURI);
         Model datasetModel = metaInformationToDcatDataset(
             datasetURI,
@@ -321,27 +346,42 @@ public class McloudAnalyzer implements Analyzer
             description,
             providerName,
             providerURI,
-            categories);
+            categories,
+            datasetDate,
+            fallbackCurrentTime);
 
-        //Sources including Download Type
-        Elements downloadGrid = detailPage.select(elDownloadGrid);
-        Elements downloadList = downloadGrid.select(elDownloadSplit);
+        //sources including accessType
+        Elements downloadRow = detailPage.select(selectDownloadEntry);
 
-        for (Element download : downloadList)
+        for (Element download : downloadRow)
         {
-            String url = download.attr(attrHref);
-            String type = download.getElementsByTag(tagSmall).first().text();
+            Element sourceLinkElement = download.selectFirst(selectDownloadUrl);
+            Element sourceTypeElement = download.selectFirst(selectDownloadType);
+
             try
             {
-                if (url == null || url.isEmpty())
+                if (sourceLinkElement == null)
                 {
-                    throw new URISyntaxException(url, "The given URL String may not be empty.");
+                    throw new URISyntaxException("", "Failed to extract the Download link from mCloud. This Distribution will be ignored.");
                 }
+
+                String type;
+                if (sourceTypeElement == null)
+                {
+                    LOGGER.warn("Failed to extract the links access type from mCloud.");
+                    type = LMCSE.NullAccessType;
+                }
+                else
+                {
+                    type = sourceTypeElement.text();
+                }
+
+                String url = sourceLinkElement.attr(attrHref);
 
                 if (pageIsAvailable(url))
                 {
                     CrawleableUri uri = new CrawleableUri(new URI(url));
-                    if (type != null && (FTP_CONSTANT.equals(type.toUpperCase()) || DOWNLOAD_CONSTANT.equals(type.toUpperCase())))
+                    if (FTP_CONSTANT.equalsIgnoreCase(type.toUpperCase()) || DOWNLOAD_CONSTANT.equalsIgnoreCase(type.toUpperCase()))
                     {
                         //if fetcher implementation is available, add the fetchable constant
                         uri.addData(Constants.FETCHABLE_PROTOCOL, true);
@@ -356,14 +396,16 @@ public class McloudAnalyzer implements Analyzer
                         url,
                         type,
                         licenseName,
-                        licenseURI);
+                        licenseURI,
+                        distributionDate,
+                        fallbackCurrentTime);
 
-                    downloadSources.add(uri);
+                    LOGGER.debug("[XXX] ADD DISTRIBUTION TO LIST " + url);
                 }
             }
             catch (URISyntaxException e2)
             {
-                LOGGER.error("Error parsing URI " + url + ". It will be ignored.", e2);
+                LOGGER.error("Error parsing Distribution URI for Dataset " + detailURI + ". It will be ignored.", e2);
             }
         }
 
@@ -373,6 +415,7 @@ public class McloudAnalyzer implements Analyzer
             source.addData(Constants.MCLOUD_METADATA_URI, datasetURI + METADATA_URI_SUFFIX);
             source.addData(Constants.MCLOUD_METADATA_GRAPH, datasetModel);
         }
+        LOGGER.debug("[ZZZ] Added " + downloadSources.size() + " Distributions to DS and send them up");
 
         return downloadSources.iterator();
     }
@@ -380,7 +423,6 @@ public class McloudAnalyzer implements Analyzer
     ////
     // Creation of metaData catalog entries using the DCAT vocabulary
     ////
-
     /**
      * Transforms the scraped information to a DCAT.Dataset entry
      * @param datasetURI the URI created for this dataSet ({@link McloudAnalyzer#createUniqueDatasetURI(String, String)})
@@ -390,6 +432,8 @@ public class McloudAnalyzer implements Analyzer
      * @param publisherName the name of the publisher of this dataSet
      * @param publisherURI a link to the webSite of the publisher
      * @param categories all mCloud categories that this dataSet was labeled with
+     * @param datasetDate the DataSet timeStamp provided by mCloud
+     * @param fallbackDate the scraping time as fallback if no timeStamp is provided (already in right format)
      * @return a Model containing the newly created DataSet
      */
     private Model metaInformationToDcatDataset(String datasetURI,
@@ -398,7 +442,9 @@ public class McloudAnalyzer implements Analyzer
                                                String description,
                                                String publisherName,
                                                URI publisherURI,
-                                               List<String> categories)
+                                               List<String> categories,
+                                               String datasetDate,
+                                               String fallbackDate)
     {
         Model model = ModelFactory.createDefaultModel();
         model.setNsPrefix("dcterms", DCTerms.getURI());
@@ -416,10 +462,24 @@ public class McloudAnalyzer implements Analyzer
         dataSet.addProperty(DCTerms.title, title);
         dataSet.addProperty(DCTerms.description, description);
 
-        Date timeStampDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //correct format according to https://www.w3.org/TR/xmlschema-2/#dateTime
-        String timeStamp = dt.format(timeStampDate).toString();
-        Literal timeLiteral = model.createTypedLiteral(timeStamp, XSD.dateTime.getURI());
+        Literal timeLiteral;
+        try
+        {
+            String timeStamp = LocalDateTime.parse(datasetDate, mCloudDatasetFormat).format(dateTimeFormatter);
+            timeLiteral = model.createTypedLiteral(timeStamp, XSD.dateTime.getURI());
+        }
+        catch (DateTimeException e)
+        {
+            //try parsing the date to the expected dateTime format, let this fail silently and fallback to scraping time
+            timeLiteral = model.createTypedLiteral(fallbackDate, XSD.dateTime.getURI());
+
+            //if the given timeframe is not empty just not parseable add it in a more general setting
+            if (!datasetDate.isEmpty())
+            {
+                Literal generalTimeInfo = model.createTypedLiteral(datasetDate, DCTerms.PeriodOfTime.getURI());
+                dataSet.addProperty(DCTerms.temporal, generalTimeInfo);
+            }
+        }
         dataSet.addProperty(DCTerms.issued, timeLiteral);
 
         if (categories.isEmpty())
@@ -434,7 +494,7 @@ public class McloudAnalyzer implements Analyzer
             }
         }
 
-        if (publisherName != null && publisherURI != null)
+        if (!publisherName.isEmpty() && publisherURI != null)
         {
             Resource publisher = model.createResource(publisherURI.toString() + URI_SUFFIX);
             publisher.addProperty(RDF.type, DCTerms.Agent);
@@ -454,6 +514,9 @@ public class McloudAnalyzer implements Analyzer
     }
 
     /**
+     
+     */
+    /**
      * Creates a new DCAT.Distribution for each download link and adds the distribution to the owning DCAT.Dataset
      * @param model the model containing the dataSet
      * @param datasetURI the URI identifying the DataSet
@@ -462,6 +525,8 @@ public class McloudAnalyzer implements Analyzer
      * @param accessType the type describing the protocol/API/technology to access the data
      * @param licenseName the title of the license this Distribution was released under
      * @param licenseURI link to more detailed information about the license
+     * @param distributionDate the Distribution timeStamp provided by mCloud
+     * @param fallbackDate the scraping time as fallback if no timeStamp is provided (already in right format)
      */
     private void addDcatDistributionToDataSet(Model model,
                                               String datasetURI,
@@ -469,7 +534,9 @@ public class McloudAnalyzer implements Analyzer
                                               String accessURL,
                                               String accessType,
                                               String licenseName,
-                                              URI licenseURI)
+                                              URI licenseURI,
+                                              String distributionDate,
+                                              String fallbackDate)
     {
         if (!model.containsResource(ResourceFactory.createResource(datasetURI)))
         {
@@ -509,6 +576,10 @@ public class McloudAnalyzer implements Analyzer
             nullLicense.addProperty(RDFS.comment, model.createLiteral("Placeholder to collect all datasets that have no parseable license attached", "en"));
             distribution.addProperty(DCTerms.license, nullLicense);
         }
+
+        //format of 'Aktualität' is too irregular to even attempt to parse it, so we add it as a general temporal and use the datasets timetsamp as issued
+        Literal generalTimeInfo = model.createTypedLiteral(distributionDate, DCTerms.PeriodOfTime.getURI());
+        distribution.addProperty(DCTerms.temporal, generalTimeInfo);
 
         Literal timeStamp = dataset.getProperty(DCTerms.issued).getLiteral();
         distribution.addProperty(DCTerms.issued, timeStamp);
@@ -561,7 +632,7 @@ public class McloudAnalyzer implements Analyzer
      */
     private String createURIConformString(String string)
     {
-        return string.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-").replaceAll("[-]+", "-").replaceAll("-$","");
+        return string.replaceAll("\\s", "-").replaceAll("[^a-zA-Z0-9/#ßüöä]", "-").replaceAll("[-]+", "-").replaceAll("-$", "");
     }
 
     ////
@@ -593,6 +664,8 @@ public class McloudAnalyzer implements Analyzer
                     //create a new MetadataURI with the Suffix to store the metaData graph
                     CrawleableUri metadataUri = new CrawleableUri(new URI(metadataUriString));
                     sink.addModel(metadataUri, metadataModel);
+                    
+                    LOGGER.debug("[AAA] SINKIND metadata for " + metadataUri);
                 }
             }
             catch (URISyntaxException e)
@@ -608,6 +681,14 @@ public class McloudAnalyzer implements Analyzer
          */
         public void sinkData(CrawleableUri curi, File data) throws FileNotFoundException
         {
+            //example for post-modifying the metadatagraph 
+            Model metadataGraph = (Model) curi.getData(Constants.MCLOUD_METADATA_GRAPH);
+            if (metadataGraph != null)
+            {
+                metadataGraph.listResourcesWithProperty(DCAT.accessURL, curi.getUri());
+                metadataGraph.listResourcesWithProperty(DCAT.downloadURL, curi.getUri());
+            }
+
             sink.addData(curi, new FileInputStream(data));
         }
     }

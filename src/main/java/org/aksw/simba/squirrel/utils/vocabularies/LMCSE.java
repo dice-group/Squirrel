@@ -45,4 +45,9 @@ public class LMCSE
      *  <p>Placeholder to collect all Datasets that have no publisher attached or errors retrieving the publisher</p>
      */
     public static final String NullPublisher = NS + "NullPublisher";
+    
+    /**
+     *  <p>Placeholder to collect all Distributions for which the accessType of the URI could not be parsed</p>
+     */
+    public static final String NullAccessType = NS + "NullAccessType";
 }
