@@ -164,9 +164,9 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
         // check robots.txt
+    	LOGGER.warn("Now working on: " + uri.getUri().toString());
 
     	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
-    	LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
