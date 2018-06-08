@@ -13,27 +13,39 @@ import org.apache.jena.rdf.model.Resource;
  */
 public class LMCSE
 {
-    /** <p>The RDF model that holds the vocabulary terms</p> */
+    /** 
+     * <p>The RDF model that holds the vocabulary terms</p>
+     */
     private static final Model M_MODEL = ModelFactory.createDefaultModel();
 
-    /** <p>The namespace of the vocabulary as a string</p> */
+    /** 
+     * <p>The namespace of the vocabulary as a string</p> 
+     */
     public static final String NS = "http://limbo-mCloudStatisticsEngine.org/metadata#";
 
-    /** <p>The namespace of the vocabulary as a string</p>
+    /** 
+     * <p>The namespace of the vocabulary as a string</p>
      * @return namespace as String
-     * @see #NS */
+     * @see #NS 
+     */
     public static String getURI()
     {
         return NS;
     }
 
-    /** <p>The namespace of the vocabulary as a resource</p> */
+    /** 
+     * <p>The namespace of the vocabulary as a resource</p> 
+     */
     public static final Resource NAMESPACE = M_MODEL.createResource(NS);
 
-    /** <p>The ontology's owl:versionInfo as a string</p> */
+    /** 
+     * <p>The ontology's owl:versionInfo as a string</p> 
+     */
     public static final String VERSION_INFO = "1.0";
 
-    /** <p>indicates which protocol/API/Webservice can be used to download data</p> */
+    /** 
+     * <p>indicates which protocol/API/Webservice can be used to download data</p>
+     */
     public static final Property accessType = M_MODEL.createProperty(NS + "accessType");
 
     /** 
@@ -45,9 +57,19 @@ public class LMCSE
      *  <p>Placeholder to collect all Datasets that have no publisher attached or errors retrieving the publisher</p>
      */
     public static final String NullPublisher = NS + "NullPublisher";
-    
+
     /**
      *  <p>Placeholder to collect all Distributions for which the accessType of the URI could not be parsed</p>
      */
-    public static final String NullAccessType = NS + "NullAccessType";
+    public static final String UnknownAccessType = NS + "UnknownAccessType";
+
+    /**
+     * <p>Base for URI creation of Datasets for DCAT catalog</p>
+     */
+    public static final String DataSetUriBase = NS + "dataset";
+
+    /**
+     * <p>Base for URI creation of Distributions for DCAT catalog</p>
+     */
+    public static final String DistributionUriBase = NS + "distribution";
 }

@@ -67,7 +67,6 @@ public class McloudAnalyzer implements Analyzer
     private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
-    private static final String dataSetUriBase = LMCSE.getURI() + "dataset"; //+ -distribution is the distribution uri
 
     // collection of mCloud CSS selector constants for scraping
     private final String selectPagination = "ul.pagination > li.pagination-end > a[href]";
@@ -212,8 +211,6 @@ public class McloudAnalyzer implements Analyzer
 
         Document pageBase = Jsoup.parse(data, Constants.DEFAULT_CHARSET.name(), baseUri.getUri().toString());
         Elements detailPages = pageBase.select(selectLinkToDetailPage);
-        
-        LOGGER.debug("[YYY] ADDING " + detailPages.size() + " detail URIS to frontier");
 
         for (Element link : detailPages)
         {
@@ -369,7 +366,7 @@ public class McloudAnalyzer implements Analyzer
                 if (sourceTypeElement == null)
                 {
                     LOGGER.warn("Failed to extract the links access type from mCloud.");
-                    type = LMCSE.NullAccessType;
+                    type = LMCSE.UnknownAccessType;
                 }
                 else
                 {
@@ -387,7 +384,7 @@ public class McloudAnalyzer implements Analyzer
                         uri.addData(Constants.FETCHABLE_PROTOCOL, true);
                     }
 
-                    String distributionURI = datasetURI + "-" + type;
+                    String distributionURI = datasetURI.replace(LMCSE.DataSetUriBase, LMCSE.DistributionUriBase) + "-" + type;
 
                     addDcatDistributionToDataSet(
                         datasetModel,
@@ -400,7 +397,7 @@ public class McloudAnalyzer implements Analyzer
                         distributionDate,
                         fallbackCurrentTime);
 
-                    LOGGER.debug("[XXX] ADD DISTRIBUTION TO LIST " + url);
+                    downloadSources.add(uri);
                 }
             }
             catch (URISyntaxException e2)
@@ -415,7 +412,6 @@ public class McloudAnalyzer implements Analyzer
             source.addData(Constants.MCLOUD_METADATA_URI, datasetURI + METADATA_URI_SUFFIX);
             source.addData(Constants.MCLOUD_METADATA_GRAPH, datasetModel);
         }
-        LOGGER.debug("[ZZZ] Added " + downloadSources.size() + " Distributions to DS and send them up");
 
         return downloadSources.iterator();
     }
@@ -624,7 +620,7 @@ public class McloudAnalyzer implements Analyzer
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(identifier).append(url);
 
-        return dataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
+        return LMCSE.DataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
     }
 
     /**
@@ -664,8 +660,6 @@ public class McloudAnalyzer implements Analyzer
                     //create a new MetadataURI with the Suffix to store the metaData graph
                     CrawleableUri metadataUri = new CrawleableUri(new URI(metadataUriString));
                     sink.addModel(metadataUri, metadataModel);
-                    
-                    LOGGER.debug("[AAA] SINKIND metadata for " + metadataUri);
                 }
             }
             catch (URISyntaxException e)
