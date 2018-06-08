@@ -108,6 +108,8 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
     	
+    	boolean addErrorCheck = true;
+    	
         if (knownUriFilter.isUriGood(uri) && schemeUriFilter.isUriGood(uri)) {
             // Make sure that the IP is known
             try {
@@ -116,7 +118,14 @@ public class FrontierImpl implements Frontier {
                 LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
             }
             if (uri.getIpAddress() != null) {
-                queue.addUri(this.uriProcessor.recognizeUriType(uri));
+            	while(addErrorCheck) {
+	            	try {
+	            		queue.addUri(this.uriProcessor.recognizeUriType(uri));
+	            		addErrorCheck = false;
+	            	}catch(Exception e) {
+	            		LOGGER.warn(e.getMessage());
+	            	}
+            	}
             } else {
                 LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
             }
