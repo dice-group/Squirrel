@@ -24,6 +24,17 @@ services:
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
 
+  sparqlHost:
+      image: stain/jena-fuseki
+      container_name: sparqlHost
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./scenarios/1/data/sparqlHost:/fuseki
+      environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
+
   rethinkdb:
     image: rethinkdb:2.3.5
     volumes:
@@ -48,7 +59,9 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlHost
+      - SPARQL_HOST_PORT=3030
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -62,7 +75,9 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlHost
+       - SPARQL_HOST_PORT=3030
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -76,7 +91,9 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlHost
+      - SPARQL_HOST_PORT=3030
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml

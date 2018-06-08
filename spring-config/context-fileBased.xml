@@ -21,9 +21,7 @@
 
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
-            <constructor-arg index="1" ref="fileBasedSinkBean" />
-                       <!-- DOESN'T WORK UNTIL YET (Syntax error?)
-                            ref="#{{systemEnvironment['SPARQL_HOST_NAME']} != null and {systemEnvironment['SPARQL_HOST_PORT']} != null ? 'tripleStoreSinkBean' : 'fileBasedSinkBean'}"/> -->
+            <constructor-arg index="1" ref="fileBasedSinkBean"/>
         	<constructor-arg index="2" ref="robotsManagerBean" />
         	<constructor-arg index="3" ref="serializerBean" />
         	<constructor-arg index="4" ref="uriCollectorBean" />
@@ -42,14 +40,6 @@
         	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
         	<constructor-arg name="useCompression" value="true"/>
         </bean>
-
-    <!-- Triple Store (JENA) Sink implementation -->
-    <bean id="tripleStoreSinkBean" class="org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink">
-        <constructor-arg name="updateDatasetURI"
-                         value="http://#{systemEnvironment['SPARQL_HOST_NAME']}:#{systemEnvironment['SPARQL_HOST_PORT']}/ContentSet/update"/>
-        <constructor-arg name="queryDatasetURI"
-                         value="http://#{systemEnvironment['SPARQL_HOST_NAME']}:#{systemEnvironment['SPARQL_HOST_PORT']}/ContentSet/query"/>
-    </bean>
 
     <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
         	<constructor-arg index="0" ref="datasourceConnection" />
