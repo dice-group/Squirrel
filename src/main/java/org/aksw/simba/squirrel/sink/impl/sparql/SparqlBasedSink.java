@@ -46,6 +46,12 @@ public class SparqlBasedSink implements Sink {
         this.queryDatasetURI = queryDatasetURI;
     }
 
+
+    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
+        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
+        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
+    }
+
     public void addMetadata() {
         throw new UnsupportedOperationException();
     }
@@ -78,7 +84,9 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, tripleList));
+        String query = QueryGenerator.getInstance().getAddQuery(uri, tripleList);
+        LOGGER.info("Forward this query to the SPARQL (" + updateDatasetURI + "): " + ((query.length() > 500) ? query.substring(0, 500) + "..." : query));
+        UpdateRequest request = UpdateFactory.create(query);
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }

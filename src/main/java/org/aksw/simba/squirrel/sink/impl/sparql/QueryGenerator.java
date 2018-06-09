@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -44,17 +45,26 @@ public class QueryGenerator {
             stringBuilder.append(uri.getUri());
             stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {
-                stringBuilder.append("<");
-                stringBuilder.append(triple.getSubject());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getPredicate());
-                stringBuilder.append("> <");
-                stringBuilder.append(triple.getObject());
-                stringBuilder.append("> . ");
+                stringBuilder.append(getQueryPartFromATriple(triple.getSubject()));
+                stringBuilder.append(' ');
+                stringBuilder.append(getQueryPartFromATriple(triple.getPredicate()));
+                stringBuilder.append(' ');
+                stringBuilder.append(getQueryPartFromATriple(triple.getObject()));
+                stringBuilder.append(" . ");
             }
             stringBuilder.append("} ");
         stringBuilder.append("}");
         return stringBuilder.toString();
+    }
+
+    private String getQueryPartFromATriple(Node node) {
+        if (node.isURI()) {
+            return "<" + node.getURI() + ">";
+        } else if (node.isBlank()) {
+            return node.getBlankNodeLabel();
+        }
+
+        return node.toString();
     }
 
     /**
