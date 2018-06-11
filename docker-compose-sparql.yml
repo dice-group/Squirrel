@@ -77,7 +77,7 @@ services:
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
       - SPARQL_HOST_NAME=sparqlHost
-       - SPARQL_HOST_PORT=3030
+      - SPARQL_HOST_PORT=3030
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
