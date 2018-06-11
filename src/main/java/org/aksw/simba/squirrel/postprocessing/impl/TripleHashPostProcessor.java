@@ -4,6 +4,7 @@ import org.aksw.simba.squirrel.components.DeduplicatorComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.TripleHashFunction;
 import org.aksw.simba.squirrel.postprocessing.PostProcessor;
 import org.apache.jena.graph.Triple;
 
@@ -20,6 +21,7 @@ public class TripleHashPostProcessor implements PostProcessor {
     private List<Triple> triples;
     private CrawleableUri uri;
     private DeduplicatorComponent deduplicatorComponent;
+    private TripleHashFunction tripleHashFunction;
 
 
     /**
@@ -28,16 +30,18 @@ public class TripleHashPostProcessor implements PostProcessor {
      * @param deduplicatorComponent  Value for {@link #deduplicatorComponent}.
      * @param triples Value for {@link #triples}.
      * @param uri     Value for {@link #uri}.
+     * @param tripleHashFunction The hash used to computes hashes for single triples.
      */
-    public TripleHashPostProcessor(DeduplicatorComponent deduplicatorComponent, List<Triple> triples, CrawleableUri uri) {
+    public TripleHashPostProcessor(DeduplicatorComponent deduplicatorComponent, List<Triple> triples, CrawleableUri uri, TripleHashFunction tripleHashFunction) {
         this.deduplicatorComponent = deduplicatorComponent;
         this.triples = triples;
         this.uri = uri;
+        this.tripleHashFunction = tripleHashFunction;
     }
 
     @Override
     public void postprocess() {
-        HashValue value = (new IntervalBasedMinHashFunction(1).hash(triples));
+        HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
         uri.setHashValue(value);
         deduplicatorComponent.recognizeUriWithComputedHashValue(uri);
     }

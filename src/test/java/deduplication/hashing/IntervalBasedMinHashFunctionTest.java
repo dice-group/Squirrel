@@ -1,6 +1,7 @@
 package deduplication.hashing;
 
 import org.aksw.simba.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.junit.Assert;
@@ -24,7 +25,7 @@ public class IntervalBasedMinHashFunctionTest {
     public void setUp() {
         hashFunctions = new IntervalBasedMinHashFunction[5];
         for (int i = 0; i < hashFunctions.length; i++) {
-            hashFunctions[i] = new IntervalBasedMinHashFunction(i);
+            hashFunctions[i] = new IntervalBasedMinHashFunction(i, new SimpleTripleHashFunction());
         }
     }
 

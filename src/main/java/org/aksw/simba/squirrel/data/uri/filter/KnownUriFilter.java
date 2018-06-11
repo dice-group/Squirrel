@@ -30,20 +30,6 @@ public interface KnownUriFilter extends UriFilter {
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
-     * Add the given hash values for the given uris. Hash values are contained in the uris.
-     *
-     * @param uris       The given uris.
-     */
-    public void addHashValuesForUris(List<CrawleableUri> uris);
-
-
-    /**
-     * Get all uris.
-     * @return All uris contained in this filter.
-     */
-    public List<CrawleableUri> getAllUris();
-
-    /**
      * Close RDB connection, destroy the database.
      */
     public void close();

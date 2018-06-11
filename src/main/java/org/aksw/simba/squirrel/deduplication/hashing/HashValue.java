@@ -3,7 +3,7 @@ package org.aksw.simba.squirrel.deduplication.hashing;
 import java.io.Serializable;
 
 /**
- * An abstract representation of a hash value computed by a {@link RDFHashFunction}.
+ * An abstract representation of a hash value computed by a {@link TripleSetHashFunction}.
  * It can be encoded to a String, and it can be decoded from a String.
  */
 public interface HashValue extends Serializable {

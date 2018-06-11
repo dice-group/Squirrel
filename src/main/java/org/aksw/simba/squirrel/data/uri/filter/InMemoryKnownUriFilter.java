@@ -2,10 +2,10 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
@@ -44,30 +44,8 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false, null);
+        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false);
         uris.put(uri, uriInfo);
-    }
-
-    @Override
-    public void addHashValuesForUris(List<CrawleableUri> urisWithHashValues) {
-        for (CrawleableUri uri : urisWithHashValues) {
-            if (uris.containsKey(uri)) {
-                UriInfo uriInfo = uris.get(uri);
-                uriInfo.hashValue = uri.getHashValue();
-                uris.put(uri, uriInfo);
-            }
-        }
-    }
-
-    @Override
-    public List<CrawleableUri> getAllUris() {
-        List<CrawleableUri> urisToReturn = new ArrayList<>();
-        for (CrawleableUri uri : uris.keys) {
-            if (uris.get(uri).hashValue != null) {
-                urisToReturn.add(uri);
-            }
-        }
-        return urisToReturn;
     }
 
     @Override
@@ -118,13 +96,11 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         long lastCrawlTimestamp;
         long nextCrawlTimestamp;
         boolean crawlingInProcess;
-        HashValue hashValue;
 
-        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess, HashValue hashValue) {
+        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
             this.lastCrawlTimestamp = lastCrawlTimestamp;
             this.nextCrawlTimestamp = nextCrawlTimestamp;
             this.crawlingInProcess = crawlingInProcess;
-            this.hashValue = hashValue;
         }
     }
 }

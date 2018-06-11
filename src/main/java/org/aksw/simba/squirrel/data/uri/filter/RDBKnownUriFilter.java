@@ -6,6 +6,7 @@ import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.ArrayHashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
@@ -17,14 +18,12 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ivan on 8/18/16.
  */
-public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
+public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
     private RDBConnector connector = null;
@@ -177,18 +176,17 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     }
 
     @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : uris) {
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-                update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
+    public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
+
+        Set<String> stringHashValues = new HashSet<>();
+        for (HashValue value : hashValuesForComparison) {
+            stringHashValues.add(value.encodeToString());
         }
-    }
 
-    @Override
-    public List<CrawleableUri> getAllUris() {
-        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).run(connector.connection);
-        List<CrawleableUri> uris = new ArrayList<>();
+        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter
+            (doc -> stringHashValues.contains(doc.getField(COLUMN_HASH_VALUE))).run(connector.connection);
 
+        Set<CrawleableUri> uris = new HashSet<>();
         outer:
         while (cursor.hasNext()) {
             HashMap<String, Object> nextRow = cursor.next();
@@ -216,6 +214,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         }
         cursor.close();
         return uris;
+    }
+
+    @Override
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+                update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
+        }
     }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {

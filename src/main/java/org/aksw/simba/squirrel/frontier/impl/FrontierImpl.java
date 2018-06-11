@@ -4,6 +4,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
+import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
@@ -31,6 +32,9 @@ public class FrontierImpl implements Frontier {
      * crawled.
      */
     protected KnownUriFilter knownUriFilter;
+
+
+    protected UriHashCustodian uriHashCustodian;
 
     /**
      * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
@@ -90,54 +94,59 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling     used to select if URIs should be recrawled.
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
+     * @param uriHashCustodian   used to access and write hash values for uris.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
-        this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
+        this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
     }
 
     /**
      * Constructor.
      *
-     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
-     *                       crawled.
-     * @param queue          {@link UriQueue} used to manage the URIs that should be
-     *                       crawled.
-     * @param doesRecrawling Value for {@link #doesRecrawling}.
+     * @param knownUriFilter   {@link UriFilter} used to identify URIs that already have been
+     *                         crawled.
+     * @param queue            {@link UriQueue} used to manage the URIs that should be
+     *                         crawled.
+     * @param doesRecrawling   Value for {@link #doesRecrawling}.
+     * @param uriHashCustodian used to access and write hash values for uris.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
-        this(knownUriFilter, queue, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, UriHashCustodian uriHashCustodian) {
+        this(knownUriFilter, queue, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, uriHashCustodian);
     }
 
     /**
      * Constructor.
      *
-     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
-     *                       crawled.
-     * @param queue          {@link UriQueue} used to manage the URIs that should be
-     *                       crawled.
+     * @param knownUriFilter   {@link UriFilter} used to identify URIs that already have been
+     *                         crawled.
+     * @param queue            {@link UriQueue} used to manage the URIs that should be
+     *                         crawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(knownUriFilter, queue, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+        this(knownUriFilter, queue, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, null);
     }
 
 
     /**
      * Constructor.
      *
-     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
-     *                       crawled.
-     * @param queue          {@link UriQueue} used to manage the URIs that should be
-     *                       crawled.
-     * @param graphLogger    {@link GraphLogger} used to log graphs.
-     * @param doesRecrawling used to select if URIs should be recrawled.
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that already have been
+     *                           crawled.
+     * @param queue              {@link UriQueue} used to manage the URIs that should be
+     *                           crawled.
+     * @param graphLogger        {@link GraphLogger} used to log graphs.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
+     * @param uriHashCustodian   used to access and write hash values for uris.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
+                        long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
         this.knownUriFilter = knownUriFilter;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
+        this.uriHashCustodian = uriHashCustodian;
 
         this.queue.open();
         this.knownUriFilter.open();
@@ -230,7 +239,7 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
-        knownUriFilter.addHashValuesForUris(uris);
+        uriHashCustodian.addHashValuesForUris(uris);
     }
 
     @Override

@@ -60,8 +60,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
-        senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
-            .build();
+
+        if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+            senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
+                .build();
+        }
         clientFrontier = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
@@ -100,7 +103,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void close() throws IOException {
         IOUtils.closeQuietly(senderFrontier);
-        IOUtils.closeQuietly(senderDeduplicator);
+        if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+            IOUtils.closeQuietly(senderDeduplicator);
+        }
         IOUtils.closeQuietly(clientFrontier);
         timerAliveMessages.cancel();
         super.close();

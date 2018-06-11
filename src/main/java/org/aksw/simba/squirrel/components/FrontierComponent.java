@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -52,6 +53,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
+    private UriHashCustodian uriHashCustodian;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
@@ -100,8 +102,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             LOGGER.warn("Couldn't get {" + COMMUNICATION_WITH_WEBSERVICE + "} from the environment. Communication to the Webservice is disabled!");
         }
 
+        if (knownUriFilter instanceof UriHashCustodian) {
+            uriHashCustodian = (UriHashCustodian) knownUriFilter;
+        }
+
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, RECRAWLING_ACTIVE);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, RECRAWLING_ACTIVE, uriHashCustodian);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)

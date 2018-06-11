@@ -8,7 +8,7 @@ import java.util.List;
  * A component hat computes a {@link HashValue} for lists of {@link Triple}s. These hash values can for example be used to find
  * duplicated data.
  */
-public interface RDFHashFunction {
+public interface TripleSetHashFunction {
 
     /**
      * Compute hash value for the given list of {@link Triple}s.

@@ -1,7 +1,7 @@
 package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
-import org.aksw.simba.squirrel.deduplication.hashing.RDFHashFunction;
+import org.aksw.simba.squirrel.deduplication.hashing.TripleSetHashFunction;
 import org.apache.jena.graph.Triple;
 
 import java.util.List;
@@ -10,20 +10,23 @@ import java.util.List;
 /**
  * Use Min hash algorithm to compute hash values for triples.
  */
-public class IntervalBasedMinHashFunction implements RDFHashFunction {
+public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
 
     /**
      * The number n for the 2^n Intervals for the Hashing.
      */
     private int powerNumberOfIntervals;
 
+    private TripleHashFunction tripleHashFunction;
+
     /**
      * Constructor.
      *
      * @param powerNumberOfIntervals The powered number of Intervalls for the hashing.
      */
-    public IntervalBasedMinHashFunction(int powerNumberOfIntervals) {
+    public IntervalBasedMinHashFunction(int powerNumberOfIntervals, TripleHashFunction tripleHashFunction) {
         this.powerNumberOfIntervals = powerNumberOfIntervals;
+        this.tripleHashFunction = tripleHashFunction;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class IntervalBasedMinHashFunction implements RDFHashFunction {
             if (triple.getObject().isBlank() || triple.getSubject().isBlank()) {
                 continue;
             }
-            int hash = triple.hashCode();
+            int hash = tripleHashFunction.hash(triple);
 
             int bitShiftedNumber = hash >>> (32 - powerNumberOfIntervals);
             String shortBinaryString = Integer.toBinaryString(bitShiftedNumber);
