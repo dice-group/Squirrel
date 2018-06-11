@@ -169,11 +169,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-        // no need to implement here
-    }
-
-    @Override
     public boolean doesRecrawling() {
         return false;
     }

@@ -1,18 +1,17 @@
 package org.aksw.simba.squirrel.components;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
 import org.aksw.simba.squirrel.deduplication.hashing.TripleComparator;
+import org.aksw.simba.squirrel.deduplication.hashing.TripleHashFunction;
 import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.SimpleTripleComparator;
 import org.aksw.simba.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
-import org.aksw.simba.squirrel.postprocessing.impl.TripleHashPostProcessor;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
@@ -23,8 +22,6 @@ import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
-import org.hobbit.core.rabbit.DataSender;
-import org.hobbit.core.rabbit.DataSenderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,16 +55,16 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      */
     private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 100;
 
+
+    private static final int SLEEP_TIME = 500;
+
     /**
      * A set of uris for which hash values have already been computed. If the size of the set exceeds {@link #MAX_SIZE_NEW_URIS_BUFFER_LIST}
      * the uris will be sent to the frontier and the set will be cleared.
      */
     private final Set<CrawleableUri> newUrisBufferSet = new HashSet<>(MAX_SIZE_NEW_URIS_BUFFER_LIST);
 
-    /**
-     * Needed to access the {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue}s of the uris.
-     */
-    private KnownUriFilter knownUriFilter;
+    private final List<CrawleableUri> uriQueue = new ArrayList<>();
 
     /**
      * Needed to access the {@link Triple}s.
@@ -76,12 +73,13 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     private Serializer serializer;
 
-    private DataSender senderFrontier;
     private DataReceiverImpl receiver;
 
     private TripleComparator tripleComparator = new SimpleTripleComparator();
 
     private UriHashCustodian uriHashCustodian;
+
+    private TripleHashFunction tripleHashFunction = new SimpleTripleHashFunction();
 
     @Override
     public void init() throws Exception {
@@ -103,19 +101,12 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             }
 
             if ((rdbHostName != null) && (rdbPort > 0)) {
-                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
+                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
                 knownUriFilter.open();
-            } else {
-                knownUriFilter = new InMemoryKnownUriFilter(FrontierComponent.RECRAWLING_ACTIVE);
+                uriHashCustodian = knownUriFilter;
             }
 
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
-            if (knownUriFilter instanceof UriHashCustodian) {
-                uriHashCustodian = (UriHashCustodian) knownUriFilter;
-            } else {
-                LOGGER.error("No custodian for hash values could be found. Deduplicator is not able to work in this situation.");
-                return;
-            }
 
             sink = new SparqlBasedSink(SparqlUtils.getDatasetUriForUpdate(), SparqlUtils.getDatasetUriForQuery());
 
@@ -125,9 +116,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(DEDUPLICATOR_QUEUE_NAME);
                 receiver = DataReceiverImpl.builder().dataHandler(this)
                     .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-
-                senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-                    .build();
             } catch (IOException e) {
                 LOGGER.error("Error while creating sender object.", e);
             }
@@ -135,13 +123,33 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     }
 
     @Override
-    public void run() {
+    public void run() throws InterruptedException {
+        while (true) {
+            if (uriQueue.isEmpty()) {
+                Thread.sleep(SLEEP_TIME * 10);
+                return;
+            }
 
+            CrawleableUri nextUri = uriQueue.get(0);
+            uriQueue.remove(0);
+            List<Triple> triples = sink.getTriplesForGraph(nextUri);
+            HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
+            nextUri.setHashValue(value);
+            newUrisBufferSet.add(nextUri);
+
+            if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
+                compareNewUrisWithOldUris();
+                uriHashCustodian.addHashValuesForUris(new ArrayList<>(newUrisBufferSet));
+                newUrisBufferSet.clear();
+            }
+
+            Thread.sleep(SLEEP_TIME);
+        }
     }
 
     /**
      * Compare the hash values of the uris in {@link #newUrisBufferSet} with the hash values of all uris contained
-     * in {@link #knownUriFilter}.
+     * in {@link #uriHashCustodian}.
      */
     private void compareNewUrisWithOldUris() {
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
@@ -171,7 +179,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     @Override
     public void close() {
         receiver.closeWhenFinished();
-        knownUriFilter.close();
+        if (uriHashCustodian instanceof KnownUriFilter) {
+            ((KnownUriFilter) uriHashCustodian).close();
+        }
     }
 
     @Override
@@ -192,10 +202,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
                 for (CrawleableUri uri : uriSet.uris) {
-                    LOGGER.info("dedup hat uri " + uri);
                     List<Triple> triples = new ArrayList<>();
-                    TripleHashPostProcessor tripleHashPostProcessor = new TripleHashPostProcessor(this, triples, uri, new SimpleTripleHashFunction());
-                    tripleHashPostProcessor.run();
+                    uriQueue.add(uri);
                 }
             } else {
                 LOGGER.info("Received an unknown object. It will be ignored.");
@@ -206,25 +214,5 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     @Override
     public void handleData(byte[] bytes) {
         handleData(bytes, null, null, null);
-    }
-
-    /**
-     * Send an uri for which a {@link org.aksw.simba.squirrel.deduplication.hashing.HashValue} has been computed.
-     * Also add uri to {@link #newUrisBufferSet} and call {@link #recognizeUriWithComputedHashValue(CrawleableUri)} if necessary.
-     *
-     * @param uri The new uri with the computed hash value.
-     */
-    public void recognizeUriWithComputedHashValue(CrawleableUri uri) {
-        try {
-            newUrisBufferSet.add(uri);
-            if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
-                compareNewUrisWithOldUris();
-                UriHashValueResult result = new UriHashValueResult(newUrisBufferSet);
-                senderFrontier.sendData(serializer.serialize(result));
-                newUrisBufferSet.clear();
-            }
-        } catch (IOException e) {
-            LOGGER.error("Error while serializing uri " + uri, e);
-        }
     }
 }

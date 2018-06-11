@@ -238,11 +238,6 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-        uriHashCustodian.addHashValuesForUris(uris);
-    }
-
-    @Override
     public boolean doesRecrawling() {
         return doesRecrawling;
     }

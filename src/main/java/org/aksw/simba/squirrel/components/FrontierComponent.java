@@ -8,7 +8,6 @@ import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
-import org.aksw.simba.squirrel.deduplication.hashing.impl.UriHashValueResult;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
@@ -35,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -193,10 +191,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
 
-            } else if (object instanceof UriHashValueResult) {
-                UriHashValueResult result = (UriHashValueResult) object;
-                frontier.addHashValuesForUris(new ArrayList<>(result.uris));
-                LOGGER.info("frontier hat hash result bekommen " + result.uris);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
             }

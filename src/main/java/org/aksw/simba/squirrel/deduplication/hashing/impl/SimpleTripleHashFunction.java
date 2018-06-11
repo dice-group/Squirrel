@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
+import org.aksw.simba.squirrel.deduplication.hashing.TripleHashFunction;
 import org.apache.jena.graph.Triple;
 
 /**

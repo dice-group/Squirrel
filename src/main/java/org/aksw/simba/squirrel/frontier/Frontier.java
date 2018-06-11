@@ -70,15 +70,6 @@ public interface Frontier extends Closeable {
     int getNumberOfPendingUris();
 
     /**
-     * Add hash values for this given uris. Hash values are contained in the uris.
-     *
-     * @param uris   The given uris.
-     */
-    void addHashValuesForUris(List<CrawleableUri> uris);
-
-
-
-    /**
      * Indicates whether this frontier does recrawling.
      *
      * @return True iff recrawling is active.
