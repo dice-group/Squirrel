@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.analyzer.impl;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -13,10 +14,15 @@ import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class RDFAnalyzer implements Analyzer {
 
@@ -41,11 +47,15 @@ public class RDFAnalyzer implements Analyzer {
                 lang = RDFLanguages.filenameToLang(data.getName(), null);
             }
             FilterSinkRDF filtered = new FilterSinkRDF(curi, sink, collector);
+            FileInputStream inputStream = new FileInputStream(data.getAbsolutePath());
+            String fileContent=IOUtils.toString(inputStream);           
+            Guess.parse(fileContent);
             RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
-        } catch (Exception e) {
+            }
+        catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting.");
         } finally {
-            IOUtils.closeQuietly(fin);
+        	IOUtils.closeQuietly(fin);
         }
         return collector.getUris(curi);
     }
