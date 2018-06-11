@@ -56,7 +56,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int MAX_ALPHANUM_PART_OF_TABLE_NAME = 30;
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
-    private long total_uris = 0;
+//    private long total_uris = 0;
     
     
 
@@ -333,7 +333,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         public void addUri(String uri, byte[] serializedUri) {
             synchronized (buffer) {
-            	System.out.println(cont++);
+//            	System.out.println(cont++);
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {
                     execute_unsecured();

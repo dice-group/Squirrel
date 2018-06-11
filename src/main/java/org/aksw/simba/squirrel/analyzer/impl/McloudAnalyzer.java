@@ -691,7 +691,7 @@ public class McloudAnalyzer implements Analyzer
                 {
                     downloadIt.next().addProperty(DCAT.byteSize, String.valueOf(data.length()));
                 }
-                //sink metadata
+                //sink metadata, this will only work properly when we can synchronize an URI DB from all workers
                 sinkCatalogData(curi);
             }
 
