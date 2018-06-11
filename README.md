@@ -10,9 +10,9 @@ Squirrel searches and collects Linked Data
 
 ## Using a Sparql-Host
 
-You can use a sparql-based triple store to store the crawled. If you want use it, you have to do the following:
+You can use a sparql-based triple store to store the crawled data. If you want use it, you have to do the following:
 
-Until yet, the necessary datasets in the Jena Database are not created automatically. So you have to create them by hand:
+Until yet, the necessary datasets in the database are not created automatically. So you have to create them by hand:
 1. Run Squirrel as explained above 
 2. Enter *localhost:3030* in your browser's address line
 3. Go to *manage datasets*
