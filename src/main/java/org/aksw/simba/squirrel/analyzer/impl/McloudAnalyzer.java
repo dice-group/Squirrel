@@ -28,6 +28,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCTerms;
@@ -679,8 +680,19 @@ public class McloudAnalyzer implements Analyzer
             Model metadataGraph = (Model) curi.getData(Constants.MCLOUD_METADATA_GRAPH);
             if (metadataGraph != null)
             {
-                metadataGraph.listResourcesWithProperty(DCAT.accessURL, curi.getUri());
-                metadataGraph.listResourcesWithProperty(DCAT.downloadURL, curi.getUri());
+                //add filesize to distribution
+                ResIterator accessIt = metadataGraph.listResourcesWithProperty(DCAT.accessURL, curi.getUri());
+                while (accessIt.hasNext())
+                {
+                    accessIt.next().addProperty(DCAT.byteSize, String.valueOf(data.length()));
+                }
+                ResIterator downloadIt = metadataGraph.listResourcesWithProperty(DCAT.downloadURL, curi.getUri());
+                while (downloadIt.hasNext())
+                {
+                    downloadIt.next().addProperty(DCAT.byteSize, String.valueOf(data.length()));
+                }
+                //sink metadata
+                sinkCatalogData(curi);
             }
 
             sink.addData(curi, new FileInputStream(data));
