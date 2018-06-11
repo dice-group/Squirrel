@@ -8,6 +8,7 @@ import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
@@ -43,8 +44,9 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
-    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) FROM ";
-    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(255), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
+    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ?";
+//    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ? where uri = ?";
+    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(1024), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ";
     protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
     protected static final String INSERT_URI_QUERY_PART_2 = "(uri,serial,data) VALUES(?,?,?)";
@@ -164,6 +166,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             }
         }
     }
+    
 
     @Override
     public void addNewUri(CrawleableUri uri, CrawleableUri newUri) {
@@ -173,7 +176,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             synchronized (table) {
                 try {
                     table.addUri(newUri.getUri().toString(), serializer.serialize(newUri));
-                    total_uris++;
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 } catch (Exception e) {
@@ -203,8 +205,34 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         }
     }
     
-    public long getSize() {
-    	return total_uris;
+    public int getSize(CrawleableUri uri) {
+    	int totalUris = 0;
+        String uriString = uri.getUri().toString();
+        if (knownUris.containsKey(uriString)) {
+            UriTableStatus table = knownUris.get(uriString);
+            synchronized (table) {
+                try {
+		                    String tableName = table.getTableName();
+		                    // Make sure everything has been committed
+		                    table.commitPendingChanges();
+		    	PreparedStatement ps = dbConnection
+		                .prepareStatement(COUNT_URIS_QUERY.replaceFirst("\\?", tableName));
+		    	
+//		    	ps.setString(1, uri.getUri().toString());
+		    	ResultSet rs = ps.executeQuery();
+		    	while(rs.next()) {
+		    		totalUris = rs.getInt(1);	
+		    	}
+		    	
+		    	ps.close();
+		    	rs.close();
+                }catch(Exception e) {
+                	LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
+                }
+            }
+        }
+    	
+    	return totalUris;
     }
 
     @Override
@@ -282,6 +310,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         private final PreparedStatement insertStmt;
         private final Map<String, byte[]> buffer;
         private final int bufferSize;
+        private int cont = 0;
 
         public static UriTableStatus create(String tableName, Connection dbConnection, int bufferSize)
                 throws SQLException {
@@ -304,6 +333,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         public void addUri(String uri, byte[] serializedUri) {
             synchronized (buffer) {
+            	System.out.println(cont++);
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {
                     execute_unsecured();
@@ -319,10 +349,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         private void execute_unsecured() {
             try {
-            } catch (Exception e) {
-                LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
-            }
-            try {
                 for (String uri : buffer.keySet()) {
                     insertStmt.setString(1, uri);
                     insertStmt.setInt(2, uri.hashCode());
@@ -330,11 +356,13 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     try {
                         insertStmt.execute();
                     } catch (Exception e) {
+                    	LOGGER.error("Error while inserting URI", e);
                     }
                 }
+                System.out.println(cont++);
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
-                // LOGGER.error("URI already exists in the table. It will be ignored.", e);
+                 LOGGER.error("URI already exists in the table. It will be ignored.", e);
             } catch (Exception e) {
                 LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }

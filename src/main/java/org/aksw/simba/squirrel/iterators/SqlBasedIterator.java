@@ -31,6 +31,7 @@ public class SqlBasedIterator implements Iterator<byte[]> {
             LOGGER.error("Exception while iterating over the results. Returning false.", e);
         }
     }
+    
 
     @Override
     public boolean hasNext() {
