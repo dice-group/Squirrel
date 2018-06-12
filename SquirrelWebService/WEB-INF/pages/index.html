@@ -10,6 +10,7 @@
     <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
     <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
     <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="/pages/css/app.css" rel="stylesheet">
 
     <script>
       $( function() {
@@ -29,7 +30,9 @@
       $( function() {
         $( "#accordion" ).accordion({
           heightStyle: "content",
-          animate: "swing"
+          animate: "swing",
+          collapsible: true,
+          active: false
         });
       } );
 
@@ -98,9 +101,18 @@
   </head>
 
   <body bgcolor="#d3d3d3">
-    <table width="100%" cellpadding="8px">
+     <table width="100%" cellpadding="8px">
       <tr>
-        <td bgcolor="#5f9ea0" align="center" colspan="2"><a href="/pages/index.html">Home</a> | <a href="/pages/graph.html">Crawled Graph</a></td>
+        <td class="nopadding" colspan="2">
+          <div class="topnav">
+            <a class="active" href="/pages/index.html">Home</a> |
+            <a href="/pages/graph.html">Crawled Graph</a> |
+            <a href="/pages/templates/fact-check.html">Fact Check</a> |
+            <a href="/pages/templates/crawler.html">Crawler</a> |
+            <a href="/pages/templates/squirrel.html">Squirrel</a> |
+            <a href="/pages/templates/about.html">About Us</a>
+          </div>
+        </td>
       </tr>
       <tr>
         <td align="center" width="50%">
@@ -132,6 +144,12 @@
             <div id="mURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
             <h3>URIs, that will be crawled next</h3>
             <div id="ncURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+          </div>
+
+          <div>
+            <input id="urlInput" type="text">
+
+            <input type="submit">
           </div>
         </td>
       </tr>

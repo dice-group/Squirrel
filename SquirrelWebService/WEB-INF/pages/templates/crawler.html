@@ -1,3 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Crawler</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+</head>
+
+<body bgcolor="#d3d3d3">
+<table width="100%" cellpadding="8px">
+  <tr>
+    <td class="nopadding" colspan="2">
+      <div class="topnav">
+        <a href="/pages/index.html">Home</a> |
+        <a href="/pages/graph.html">Crawled Graph</a> |
+        <a href="/pages/templates/fact-check.html">Fact Check</a> |
+        <a class="active" href="/pages/templates/crawler.html">Crawler</a> |
+        <a href="/pages/templates/squirrel.html">Squirrel</a> |
+        <a href="/pages/templates/about.html">About Us</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
 <div class="container">
   <div class="markdown-body">
     <h1>
@@ -22,81 +53,31 @@
 
       <ul>
         <li>24/7 crawling</li>
-      </ul>
-
-      <ul>
-        <li>Parts of the development of the crawler <a href="https://github.com/dice-group/Squirrel/">Squirrel(Github)</a> are carried out by Geraldo Souza, Ivan Ermilov and Michael Röder.</li>
-        <li>The Frontier has to be able to handle the sudden death of a worker. Blocked IP addresses have to be given to another worker if a timeout is reached. This includes a “keep alive” mechanism with which the workers can convince the frontier that they are still working.</li>
-        <li>he Frontier has to be able to recrawl old URIs to update the data. There should be a default time duration after which the recrawling takes place. But it also has to be possible to set individual recrawling times for single URIs (e.g., if the worker found this information in an HTTP header field).</li>
-      </ul>
-      <ul>
+        <li style="text-align: justify">Parts of the development of the crawler <a href="https://github.com/dice-group/Squirrel/">Squirrel(Github)</a> are carried out by Geraldo Souza, Ivan Ermilov and Michael Röder.</li>
+        <li style="text-align: justify">The Frontier has to be able to handle the sudden death of a worker. Blocked IP addresses have to be given to another worker if a timeout is reached. This includes a “keep alive” mechanism with which the workers can convince the frontier that they are still working.</li>
+        <li style="text-align: justify">he Frontier has to be able to recrawl old URIs to update the data. There should be a default time duration after which the recrawling takes place. But it also has to be possible to set individual recrawling times for single URIs (e.g., if the worker found this information in an HTTP header field).</li>
         <li>Frontend for Frontier</li>
-      </ul>
-
-      <ul>
         <li>Shows statistics about status</li>
-      </ul>
-
-      <ul>
         <li>Number of crawled URIs</li>
         <li>Number of blocked IPs</li>
         <li>Length of queue</li>
         <li>......</li>
         <li>Statistics about workers</li>
-      </ul>
-
-      <ul>
         <li>Provenance</li>
-      </ul>
-
-      <ul>
         <li>Handled by sink</li>
         <li>Metadata</li>
-      </ul>
-
-      <ul>
         <li>Visualize the crawled graph</li>
-      </ul>
-
-      <ul>
         <li>E.g., gexf <a href="https://gephi.org/gexf/format/">GEXF File Format</a></li>
-      </ul>
-
-      <ul>
         <li>Triple store as sink</li>
-      </ul>
-
-      <ul>
         <li>1 graph per crawled URI</li>
         <li>1 metadata graph</li>
-      </ul>
-
-      <ul>
         <li>Deduplication</li>
-      </ul>
-
-      <ul>
         <li>Can be handled by reusing the triple store sink</li>
         <li>Check randomly chosen triples against store before processing data</li>
-      </ul>
-
-      <ul>
         <li>Team abilities</li>
-      </ul>
-
-      <ul>
         <li>Necessary</li>
-      </ul>
-
-      <ul>
         <li>Java programming</li>
-      </ul>
-    
-      <ul>
         <li>Helpful</li>
-      </ul>
-
-      <ul>
         <li>Maven</li>
         <li>Docker</li>
         <li>Java web services</li>
@@ -104,11 +85,22 @@
         <li>Team management</li>
       </ul>
 
-      <li>Steps</li>
-        <p> Get into the field of developing a crawler. An example for a linked data crawler is 
-          <a href="https://github.com/ldspider/ldspider">LDSpider(Github)</a> , 
-          <a href="http://iswc2010.semanticweb.org/pdf/495.pdf">LDSpider: An open-source crawling framework for the Web of Linked Data</a>. 
-          However, it has its limitations.<br>      
-          The deduplication is mainly build on the assumption that the sink is a triple store. All other parts have no specific order.</p>      
+    <h3>
+      <a id="user-content-steps" class="anchor" href="#steps" aria-hidden="true"></a>Steps
+    </h3>
+      <ul>
+        <li style = "text-align: justify">Get into the field of developing a crawler. An example for a linked data crawler is
+          <a href="https://github.com/ldspider/ldspider">LDSpider(Github)</a> ,
+          <a href="http://iswc2010.semanticweb.org/pdf/495.pdf">LDSpider: An open-source crawling framework for the Web of Linked Data</a>.
+          However, it has its limitations.
+        </li>
+        <li style = "text-align: justify">
+          The deduplication is mainly build on the assumption that the sink is a triple store. All other parts have no specific order.
+        </li>
+      </ul>
+
   </div>
 </div>
+
+</body>
+</html>

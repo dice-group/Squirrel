@@ -1,3 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Squirrel</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+</head>
+<body bgcolor="#d3d3d3">
+<table width="100%" cellpadding="8px">
+  <tr>
+  <tr>
+    <td class="nopadding" colspan="2">
+      <div class="topnav">
+        <a href="/pages/index.html">Home</a> |
+        <a href="/pages/graph.html">Crawled Graph</a> |
+        <a href="/pages/templates/fact-check.html">Fact Check</a> |
+        <a href="/pages/templates/crawler.html">Crawler</a> |
+        <a class="active" href="/pages/templates/squirrel.html">Squirrel</a> |
+        <a href="/pages/templates/about.html">About Us</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
 <div class="jumbotron">
   <div class="big-image squirrel-img"></div>
 </div>
@@ -5,7 +36,7 @@
 <div class="container">
   <div class="markdown-body">
     <h1><a id="user-content-squirrel" class="anchor" href="#squirrel" aria-hidden="true"></a>SQUIRREL</h1>
-    
+
     <p>
       <a href="https://philippheinisch.de/img/PG/squirrel_components_updated.pdf">SQUIRREL updated (20.11.2017)</a>
       is our link-data-crawler. We should develop him.
@@ -41,7 +72,7 @@
     </h4>
 
     <p>You have a URI, take a URI and send a request</p>
-    
+
     <p>
       =&gt; E.g.: <a href="http://w.de/Berlin">http://w.de/Berlin</a> -&gt; DEREFERENCEABLE: means you can open them, to get to know information about Berlin <strong>(answer is expected as RDF)</strong>
     </p>
@@ -52,7 +83,7 @@
     </h4>
 
     <p>URI endpoint - here you can ask the endpoint with SPARQL questions to "download" the conent.</p>
-    
+
     <h4>
       <a id="user-content-dump" class="anchor" href="#dump" aria-hidden="true"></a>
       DUMP</h4>
@@ -117,14 +148,14 @@
     </ul>
     <p>To get an idea how to use the rabiitMQ, read this
       <a href="http://www.rabbitmq.com/tutorials/tutorial-one-java.html">toturial</a>. Notice, that there is already a rabbitMQ-container:</p>
-    <div class="highlight highlight-source-java">
+    <div class="highlight highlight-source-java" style="text-align: justify">
       <pre><span class="pl-c"><span class="pl-c">//</span>Build rabbit queue to the web (producer)</span>
       <span class="pl-smi">ConnectionFactory</span> factory <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ConnectionFactory</span>();
       factory<span class="pl-k">.</span>setHost(<span class="pl-s"><span class="pl-pds">"</span>rabbit<span class="pl-pds">"</span></span>);
-      factory<span class="pl-k">.</span>setUsername(<span class="pl-s"><span class="pl-pds">"</span>guest<span class="pl-pds">"</span></span>);
+      factory<span class="pl-k">.</span>setUsername(<span class="pl-s"><span class="pl-pds">"</span>guest<span class="pl-pds">"</span></span>);<br>
       factory<span class="pl-k">.</span>setPassword(<span class="pl-s"><span class="pl-pds">"</span>guest<span class="pl-pds">"</span></span>);
       <span class="pl-smi">Connection</span> connection <span class="pl-k">=</span> factory<span class="pl-k">.</span>newConnection();
-      webqueuechannel <span class="pl-k">=</span> connection<span class="pl-k">.</span>createChannel();
+      webqueuechannel <span class="pl-k">=</span> connection<span class="pl-k">.</span>createChannel();<br>
       webqueuechannel<span class="pl-k">.</span>queueDeclare(<span class="pl-c1">WEB_QUEUE_NAME</span>, <span class="pl-c1">false</span>, <span class="pl-c1">false</span>, <span class="pl-c1">false</span>, <span class="pl-c1">null</span>);</pre>
     </div>
     <p>If you want to have a closer look at the queues while there is a
@@ -256,3 +287,6 @@
 
   </div>
 </div>
+
+</body>
+</html>
