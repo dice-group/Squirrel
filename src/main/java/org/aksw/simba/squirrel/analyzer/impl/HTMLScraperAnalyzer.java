@@ -1,9 +1,5 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.htmlscraper.HtmlScraper;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -13,18 +9,22 @@ import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
 public class HTMLScraperAnalyzer implements Analyzer{
-	
+
     private static final Logger LOGGER = LoggerFactory.getLogger(HTMLScraperAnalyzer.class);
-	
+
 	private UriCollector collector;
 	private HtmlScraper htmlScraper = new HtmlScraper();
-	
+
 	public HTMLScraperAnalyzer(UriCollector collector, HtmlScraper htmlScraper) {
 		this.collector = collector;
 		this.htmlScraper = htmlScraper;
 	}
-	
+
 	public HTMLScraperAnalyzer(UriCollector collector) {
 		this.collector = collector;
 	}
@@ -38,14 +38,14 @@ public class HTMLScraperAnalyzer implements Analyzer{
 				collector.addTriple(curi, triple);
 			}
 			return collector.getUris(curi);
-			
+
 		} catch (Exception e) {
 			LOGGER.error("Exception while analyzing. Aborting. ", e);
 			LOGGER.error(e.getMessage(), e);
 		}
 		return null;
 	}
-	
+
 
 
 }

@@ -2,8 +2,8 @@ package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
-import java.util.Dictionary;
 import java.io.Closeable;
+import java.util.Dictionary;
 import java.util.List;
 
 /**

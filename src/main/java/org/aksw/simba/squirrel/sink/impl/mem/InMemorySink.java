@@ -1,30 +1,20 @@
 package org.aksw.simba.squirrel.sink.impl.mem;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * This is a simple in-memory implementation of a sink that can be used for
@@ -35,7 +25,7 @@ import com.google.common.collect.Sets.SetView;
  * status does not influence the functionality of the sink. The status of the
  * sink, i.e., whether it is healthy or not, can be accessed using the
  * {@link #isSinkHealthy()} method.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -61,7 +51,7 @@ public class InMemorySink implements Sink {
      * The healthyness of the sink that is set to false if an error is encountered.
      */
     private boolean healthyness = true;
-    
+
     public InMemorySink() {
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
@@ -114,7 +104,7 @@ public class InMemorySink implements Sink {
     /**
      * Returns the data written to the sink as a map with the crawled URI as key and
      * the RDF data as value.
-     * 
+     *
      * @return the data written to the sink.
      */
     public Map<String, Model> getCrawledRdfData() {
@@ -124,7 +114,7 @@ public class InMemorySink implements Sink {
     /**
      * Returns the data written to the sink as a map with the crawled URI as key and
      * the unstructured data as value.
-     * 
+     *
      * @return the data written to the sink.
      */
     public Map<String, List<byte[]>> getCrawledUnstructuredData() {
@@ -133,7 +123,7 @@ public class InMemorySink implements Sink {
 
     /**
      * Returns the status of the sink.
-     * 
+     *
      * @return the status of the sink.
      */
     public boolean isSinkHealthy() {

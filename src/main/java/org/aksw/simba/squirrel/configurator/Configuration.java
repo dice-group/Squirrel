@@ -2,7 +2,6 @@ package org.aksw.simba.squirrel.configurator;
 
 import org.slf4j.Logger;
 
-import java.text.ParseException;
 import java.util.Map;
 
 public class Configuration {
@@ -30,7 +29,7 @@ public class Configuration {
     public static boolean getEnvBoolean(String envVariableName, Logger logger) {
 		String toBool = getEnv(envVariableName, logger);
 		try {
-			return Boolean.getBoolean(toBool);
+			return Boolean.parseBoolean(toBool);
 		} catch (Exception e) {
 			logger.error(envVariableName + " not found.", e);
 			return false;

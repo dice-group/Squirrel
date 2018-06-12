@@ -1,20 +1,15 @@
 package org.aksw.simba.squirrel.fetcher.ftp;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 public class FTPFetcherTest {
 

@@ -6,7 +6,7 @@ import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.components.WorkerComponent;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithoutReferences;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.queue.RDBQueue;
@@ -26,7 +26,7 @@ public class WorkerGuardTest {
 
 
     FrontierImpl frontier;
-    RDBKnownUriFilterWithoutReferences filter;
+    RDBKnownUriFilter filter;
     WorkerComponent workerComponent;
     FrontierComponent frontierComponent;
     Worker worker;
@@ -38,7 +38,7 @@ public class WorkerGuardTest {
     public void setUp() {
 
 
-        filter = new RDBKnownUriFilterWithoutReferences("localhost", 28015);
+        filter = new RDBKnownUriFilter("localhost", 28015);
         filter.open();
         queue = new RDBQueue("localhost", 28015);
         queue.open();

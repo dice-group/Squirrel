@@ -86,7 +86,7 @@ public class FTPFetcher implements Fetcher {
             }else {
             	output = new FileOutputStream(dataFile);
             	if (!client.retrieveFile(uri.getUri().getPath(), output)) {
-                    LOGGER.error("Downloading {} was not succesful. Returning null.", uri.getUri().toString());
+                    LOGGER.error("Downloading {} was not successful. Returning null.", uri.getUri().toString());
                 }
             }
 

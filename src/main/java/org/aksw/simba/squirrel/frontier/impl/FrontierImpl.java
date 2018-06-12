@@ -1,13 +1,8 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithReferences;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -20,10 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -207,10 +199,10 @@ public class FrontierImpl implements Frontier {
         while (newUrisEnumeration.hasMoreElements()) {
             CrawleableUri uri = newUrisEnumeration.nextElement();
             newUris.addAll(uriMap.get(uri));
-            if (knownUriFilter instanceof RDBKnownUriFilterWithReferences)
-                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis());
+            if (knownUriFilter.savesReferenceList())
+                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis(), System.currentTimeMillis()+getGeneralRecrawlTime());
             else
-                knownUriFilter.add(uri);
+                knownUriFilter.add(uri, System.currentTimeMillis(), System.currentTimeMillis()+getGeneralRecrawlTime());
         }
 
         // If there is a graph logger, log the data

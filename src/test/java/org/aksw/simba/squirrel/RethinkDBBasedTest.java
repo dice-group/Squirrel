@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.net.Connection;
-import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

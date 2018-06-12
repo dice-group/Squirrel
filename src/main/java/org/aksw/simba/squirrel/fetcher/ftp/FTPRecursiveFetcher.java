@@ -1,29 +1,26 @@
 package org.aksw.simba.squirrel.fetcher.ftp;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
 public class FTPRecursiveFetcher {
-	
+
 	private OutputStream output;
 	private Path path;
 
-	
+
 	protected FTPRecursiveFetcher(Path path) throws IOException {
 		this.path = path;
 		output = new FileOutputStream(File.createTempFile("fetched_", "", path.toFile()));
 	}
-	
-	
+
+
 	 protected void listDirectory(FTPClient ftpClient, String parentDir,
 	        String currentDir, int level) throws IOException {
 	        String dirToList = parentDir;
@@ -52,7 +49,7 @@ public class FTPRecursiveFetcher {
 	            }
 	        }
 	    }
-	 
-		
+
+
 
 }

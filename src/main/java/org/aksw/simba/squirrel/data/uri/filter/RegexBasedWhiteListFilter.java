@@ -1,5 +1,9 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,11 +13,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class RegexBasedWhiteListFilter extends RDBKnownUriFilterWithoutReferences {
+public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
 
@@ -23,8 +23,19 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilterWithoutReference
 		super(hostname, port);
 	}
 
+	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList) { super(hostname, port, saveReferenceList); }
+
 	public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
         super(hostname, port);
+        try {
+            whiteList = loadWhiteList(whiteListFile);
+        } catch (IOException e) {
+            LOGGER.error("A problem was found when loading the WhiteList");
+        }
+    }
+
+	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList, File whiteListFile) {
+        super(hostname, port, saveReferenceList);
 		try {
 			whiteList = loadWhiteList(whiteListFile);
 		} catch (IOException e) {

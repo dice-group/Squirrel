@@ -25,7 +25,7 @@ public class WebConfiguration extends Configuration {
         return communicationWithWebserviceEnabled;
     }
 
-    public boolean isVisualizationOfCrawledGraphEnabaled() {
+    public boolean isVisualizationOfCrawledGraphEnabled() {
         return visualizationOfCrawledGraphEnabaled;
     }
 }

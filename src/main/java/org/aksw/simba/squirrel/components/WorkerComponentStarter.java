@@ -1,15 +1,15 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.File;
-
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import java.io.File;
+
 public class WorkerComponentStarter{
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponentStarter.class);
 
     /**
@@ -21,7 +21,7 @@ public class WorkerComponentStarter{
     private static Component component;
 
     private static boolean closed = false;
-    
+
     private static FileSystemXmlApplicationContext context;
 
     /**
@@ -35,7 +35,7 @@ public class WorkerComponentStarter{
         addShutdownHook();
         boolean success = true;
         try {
-        	
+
         	context = new FileSystemXmlApplicationContext(File.separator + System.getenv("CONTEXT_CONFIG_FILE"));
         	component = (Component) context.getBean("workerComponent");
             // initialize the component

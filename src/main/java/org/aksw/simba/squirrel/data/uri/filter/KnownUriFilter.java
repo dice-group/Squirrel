@@ -35,9 +35,10 @@ public interface KnownUriFilter extends UriFilter {
      *
      * @param uri       the URI that should be added to the list.
      * @param urisFound uris, that were found by crawling the uri
-     * @param timestamp the time at which the given URI has eben crawled.
+     * @param lastCrawlTimestamp the time at which the given URI has eben crawled.
+     * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
-    void add(CrawleableUri uri, List<CrawleableUri> urisFound, long timestamp);
+    void add(CrawleableUri uri, List<CrawleableUri> urisFound, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
      * Close RDB connection, destroy the database.
@@ -61,4 +62,10 @@ public interface KnownUriFilter extends UriFilter {
      * @return the number of lines in that database
      */
     long count();
+
+    /**
+     * A reference list is a list for eacch crawled (known) URIs, that contains URIs (or namespaces of URIs or something else), that were found while crawling the certain URI
+     * @return {@code true} iff the object stores the reference list
+     */
+    boolean savesReferenceList();
 }

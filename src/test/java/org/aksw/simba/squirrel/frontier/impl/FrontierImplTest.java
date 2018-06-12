@@ -1,21 +1,13 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.exc.ReqlDriverError;
+import com.rethinkdb.net.Connection;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithoutReferences;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,9 +21,6 @@ import java.net.URI;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
 
 public class FrontierImplTest {
 
@@ -39,7 +28,7 @@ public class FrontierImplTest {
     private Connection connection;
     private FrontierImpl frontier;
     private RDBQueue queue;
-    private RDBKnownUriFilterWithoutReferences filter;
+    private RDBKnownUriFilter filter;
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
@@ -75,7 +64,7 @@ public class FrontierImplTest {
             }
         }
 
-        filter = new RDBKnownUriFilterWithoutReferences("localhost", 58015);
+        filter = new RDBKnownUriFilter("localhost", 58015);
         queue = new RDBQueue("localhost", 58015);
         // filter.purge();
         // queue.purge();
@@ -181,7 +170,9 @@ public class FrontierImplTest {
             }
         }
 
-        frontier.crawlingDone(nextUris, new ArrayList<>());
+        Dictionary<CrawleableUri, List<CrawleableUri>> crawledList = new Hashtable<>();
+        nextUris.forEach(u -> crawledList.put(u, Collections.EMPTY_LIST));
+        frontier.crawlingDone(crawledList);
 
         nextUris = frontier.getNextUris();
         Assert.assertNotNull(nextUris);

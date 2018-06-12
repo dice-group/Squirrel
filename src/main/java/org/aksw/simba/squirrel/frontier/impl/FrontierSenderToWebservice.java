@@ -6,7 +6,7 @@ import com.graph.VisualisationNode;
 import com.rabbitmq.client.Channel;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilterWithReferences;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.rabbit.RabbitQueueFactory;
@@ -177,17 +177,17 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     }
 
     /**
-     * Collects all crawled URIs from knownUriFilter (assumes a {@link RDBKnownUriFilterWithReferences} object) for generating zu crawled graph
+     * Collects all crawled URIs from knownUriFilter (assumes a {@link org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter} object) for generating zu crawled graph
      *
      * @return a instance (crawled graph) of {@link VisualisationGraph}
      */
     private VisualisationGraph generateVisualisationGraph() {
-        if (!(knownUriFilter instanceof RDBKnownUriFilterWithReferences)) {
+        if (!(knownUriFilter.savesReferenceList()) || !(knownUriFilter instanceof RDBKnownUriFilter)) {
             throw new IllegalAccessError("This method uses the knownUriFilter attribute, requires it from type RDBKnownUriFilterWithReferences, but actually it is from type " + knownUriFilter.getClass().getTypeName());
         }
 
         VisualisationGraph graph = new VisualisationGraph();
-        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilterWithReferences) knownUriFilter).walkThroughCrawledGraph(25, true, true);
+        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilter) knownUriFilter).walkThroughCrawledGraph(25, true, true);
 
         int counter = 0;
         while (iterator.hasNext() && counter < 25) {

@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.worker.impl;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
@@ -22,7 +15,6 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -36,9 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -177,13 +167,13 @@ public class WorkerImpl implements Worker, Closeable {
 //        } else {
 //            //TODO ADD METADATA IF SINK IS NOT RDFSINK
 //        }
-        // send results to the Frontier
-        crawlingActivity.finishActivity();
-        if (sink instanceof RDFSink) {
-            ((RDFSink) sink).addMetadata(crawlingActivity);
-        } else {
+        // TODO send results to the Frontier
+        //crawlingActivity.finishActivity();
+        //if (sink instanceof RDFSink) {
+        //    ((RDFSink) sink).addMetadata(crawlingActivity);
+        //} else {
             //TODO ADD METADATA IF SINK IS NOT RDFSINK
-        }
+        //}
         frontier.crawlingDone(uriMap);
     }
 
@@ -219,7 +209,7 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
 
-            List<File> fetchedFiles = new ArrayList<File>();
+            List<File> fetchedFiles = new ArrayList<>();
             if(fetched != null && fetched.isDirectory()) {
             	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
             } else {
@@ -227,7 +217,7 @@ public class WorkerImpl implements Worker, Closeable {
             }
 
             timeStampLastUriFetched = System.currentTimeMillis();
-            List<File> fileList = null;
+            List<File> fileList;
 
 
             for(File data: fetchedFiles){
@@ -265,7 +255,7 @@ public class WorkerImpl implements Worker, Closeable {
     private void setSpecificRecrawlTime(CrawleableUri uri) {
         //TODO: implement special cases
 
-        //else set everytime to default
+        //else set every time to default
         uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
     }
 

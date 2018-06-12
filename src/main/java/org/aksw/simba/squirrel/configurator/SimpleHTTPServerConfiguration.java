@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel.configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
 import java.util.Map;
 
 public class SimpleHTTPServerConfiguration extends Configuration {

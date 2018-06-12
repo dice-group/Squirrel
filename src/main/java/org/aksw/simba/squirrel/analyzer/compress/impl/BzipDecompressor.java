@@ -1,17 +1,13 @@
 package org.aksw.simba.squirrel.analyzer.compress.impl;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class BzipDecompressor extends TarDecompressor implements Decompressor{
 
@@ -21,9 +17,9 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor{
 
 	@Override
 	public List<File> decompress(File inputFile) throws IOException {
-		
+
 		File outputFile = createOutputFile();
-		
+
 		InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
 		BufferedInputStream in = new BufferedInputStream(fin);
 		OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
@@ -35,13 +31,13 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor{
 		}
 		out.close();
 		bzIn.close();
-		
+
 		File tempoutputFile = new File(outputFile + ".tar");
-		
+
 		if(tempoutputFile.exists() && tempoutputFile.isFile()) {
 			return new TarDecompressor().decompress(tempoutputFile);
 		}
-		
+
 		return TempPathUtils.searchPath4Files(outputFile);
 	}
 

@@ -1,12 +1,5 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.htmlscraper.HtmlScraper;
 import org.aksw.simba.squirrel.collect.SimpleUriCollector;
@@ -21,6 +14,13 @@ import org.apache.jena.graph.Triple;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HtmlScraperAnalyzerTest {
 
