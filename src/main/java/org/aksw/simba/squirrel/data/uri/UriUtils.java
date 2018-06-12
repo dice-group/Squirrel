@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.data.uri;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,5 +69,11 @@ public class UriUtils {
             }
         }
         return false;
+    }
+    
+    public static String getDomainName(String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        String domain = uri.getHost();
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
     }
 }

@@ -3,6 +3,7 @@ package org.aksw.simba.squirrel.frontier;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.util.Dictionary;
+import java.io.Closeable;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public interface Frontier {
+public interface Frontier extends Closeable {
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
@@ -69,4 +70,11 @@ public interface Frontier {
      */
     int getNumberOfPendingUris();
 
+
+    /**
+     * Indicates whether this frontier does recrawling.
+     *
+     * @return True iff recrawling is active.
+     */
+    boolean doesRecrawling();
 }

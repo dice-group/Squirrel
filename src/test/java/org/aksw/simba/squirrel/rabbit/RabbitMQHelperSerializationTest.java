@@ -11,7 +11,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @RunWith(Parameterized.class)
 public class RabbitMQHelperSerializationTest {
@@ -22,12 +25,12 @@ public class RabbitMQHelperSerializationTest {
 
         CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();
 
-        testConfigs.add(new Object[] { null });
+        testConfigs.add(new Object[]{null});
 
-        testConfigs.add(new Object[] { new UriSet() });
-        testConfigs.add(new Object[] { new UriSet(null) });
-        testConfigs.add(new Object[] { new UriSet(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
+        testConfigs.add(new Object[]{new UriSet()});
+        testConfigs.add(new Object[]{new UriSet(null)});
+        testConfigs.add(new Object[]{new UriSet(
+            Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")))});
 
         testConfigs.add(new Object[]{new UriSetRequest()});
 

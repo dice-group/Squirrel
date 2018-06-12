@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.queue;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
 
     private Semaphore queueMutex = new Semaphore(1);
     private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
+
 
     @Override
     public void addUri(CrawleableUri uri) {
@@ -78,7 +80,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     public int getNumberOfBlockedIps() {
         return blockedIps.size();
     }
-
     @Override
     public abstract Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
+
 }

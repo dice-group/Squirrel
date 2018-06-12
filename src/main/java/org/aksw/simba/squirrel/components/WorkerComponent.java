@@ -3,7 +3,7 @@ package org.aksw.simba.squirrel.components;
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -14,7 +14,8 @@ import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.impl.rdfSink.RDFSink;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -25,57 +26,50 @@ import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
+@Component
+@Qualifier("workerComponent")
+public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
-    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
-
+    @Qualifier("workerBean")
+    @Autowired
     private Worker worker;
+    @Qualifier("sender")
+    @Autowired
     private DataSender sender;
+    @Qualifier("client")
+    @Autowired
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
+    @Qualifier("serializerBean")
+    @Autowired
     private Serializer serializer;
-    private Timer timer;
+    private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
-        super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
+        if (worker == null || sender == null || client == null || serializer == null) {
+            LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
+            initWithoutSpring();
         }
-
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-            .build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
-
-        serializer = new GzipJavaUriSerializer();
-        Sink sink = new RDFSink();
-        UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log", true);
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
-        timer = new Timer();
+        uriSetRequest = serializer.serialize(new UriSetRequest());
 
         if (worker.sendsAliveMessages()) {
-            timer.schedule(new TimerTask() {
+            timerAliveMessages = new Timer();
+            timerAliveMessages.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
@@ -88,6 +82,28 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         }
         LOGGER.info("Worker initialized.");
+
+    }
+
+    private void initWithoutSpring() throws Exception {
+        super.init();
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+
+        Sink sink;
+        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
+            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
+        } else {
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/ContentSet/";
+            sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
+        }
+
+        serializer = new GzipJavaUriSerializer();
+
+        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+
+        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
+        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }
 
     @Override
@@ -99,7 +115,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void close() throws IOException {
         IOUtils.closeQuietly(sender);
         IOUtils.closeQuietly(client);
-        timer.cancel();
+        timerAliveMessages.cancel();
         super.close();
     }
 
@@ -126,7 +142,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
 
-
     @Override
     public void addNewUri(CrawleableUri uri) {
         addNewUris(Collections.singletonList(uri));
@@ -134,6 +149,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
@@ -164,6 +180,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public int getNumberOfPendingUris() {
         return 0;
+    }
+
+    @Override
+    public boolean doesRecrawling() {
+        return false;
     }
 
 }

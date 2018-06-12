@@ -4,6 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.rethinkdb.model.MapObject;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -12,61 +26,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.rethinkdb.model.MapObject;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("rawtypes")
-public class RDBQueueTest {
-    Connection connection;
-    RDBQueue rdbQueue;
-    RethinkDB r = RethinkDB.r;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+public class RDBQueueTest extends RethinkDBBasedTest {
+
+    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private RDBQueue rdbQueue;
 
     @Before
     public void setUp() throws Exception {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb " +
-            "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
-        BufferedReader stdInput = new BufferedReader(new
-            InputStreamReader(p.getInputStream()));
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
-
-        r = RethinkDB.r;
-        int retryCount = 0;
-        while (true) {
-            try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
-                break;
-            } catch (ReqlDriverError error) {
-                System.out.println("Could not connect, retrying");
-                retryCount++;
-                if (retryCount > 10) break;
-                Thread.sleep(5000);
-            }
-        }
-
-        // to start up the server run
-        // docker run -p 8080:8080 -p 29015:29015 -p 28015:28015 --name rethinkdb -v "$PWD:/data" -it --rm rethinkdb:2.3.5
         rdbQueue = new RDBQueue("localhost", 58015);
-        //rdbQueue = new RDBQueue("192.168.99.100", 28015);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -80,7 +50,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void openClose() {
+    public void openClose() throws Exception {
         rdbQueue.open();
         assertTrue("squirrel database was created", rdbQueue.squirrelDatabaseExists());
         assertTrue("queue table was created", rdbQueue.queueTableExists());
@@ -88,14 +58,14 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void openOpen() {
+    public void openOpen() throws Exception {
         rdbQueue.open();
         rdbQueue.open();
         rdbQueue.close();
     }
 
     @Test
-    public void packTuple() {
+    public void packTuple() throws Exception {
         List rArray = rdbQueue.packTuple("192.168.1.1", "http://localhost");
         assertTrue(rArray.contains("192.168.1.1"));
         assertTrue(rArray.contains("http://localhost"));
@@ -105,7 +75,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getIpAddressTypeKey() {
+    public void getIpAddressTypeKey() throws Exception {
         List rArray = rdbQueue.getIpAddressTypeKey(uris.get(0));
         String arrayString = rArray.toString();
         assertTrue(arrayString, rArray.contains("127.0.0.1"));
@@ -114,7 +84,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void queueContainsIpAddressTypeKey() {
+    public void queueContainsIpAddressTypeKey() throws Exception {
         rdbQueue.open();
         List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(0));
         assertFalse(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
@@ -124,7 +94,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void purgeQueue() {
+    public void purgeQueue() throws Exception {
         rdbQueue.open();
         rdbQueue.purge();
         assertEquals(0, rdbQueue.length());
@@ -138,7 +108,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void addCrawleableUri() {
+    public void addCrawleableUri() throws Exception {
         rdbQueue.open();
         rdbQueue.purge();
         rdbQueue.addCrawleableUri(uris.get(1));
@@ -150,7 +120,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void addToQueue() {
+    public void addToQueue() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
@@ -170,7 +140,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getIterator() {
+    public void getIterator() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
@@ -184,7 +154,7 @@ public class RDBQueueTest {
     }
 
     @Test
-    public void getUris() {
+    public void getUris() throws Exception {
         rdbQueue.open();
         for (CrawleableUri uri : uris) {
             rdbQueue.addToQueue(uri);
@@ -198,15 +168,5 @@ public class RDBQueueTest {
             }
         }
         rdbQueue.close();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        p.waitFor();
     }
 }

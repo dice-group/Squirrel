@@ -8,6 +8,7 @@ import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A very simple manager for {@link Fetcher} instances that is based on the
@@ -25,6 +26,7 @@ public class SimpleOrderedFetcherManager implements Fetcher {
 
     private Fetcher[] fetchers;
 
+    @Autowired
     public SimpleOrderedFetcherManager(Fetcher... fetchers) {
         this.fetchers = fetchers;
     }
@@ -58,5 +60,6 @@ public class SimpleOrderedFetcherManager implements Fetcher {
             }
         }
     }
+
 
 }

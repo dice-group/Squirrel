@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.springframework.stereotype.Component;
 
 /**
  * A sink that can handle unstructured data.
@@ -12,6 +13,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
+@Component
 public interface UnstructuredDataSink extends SinkBase {
 
     /**

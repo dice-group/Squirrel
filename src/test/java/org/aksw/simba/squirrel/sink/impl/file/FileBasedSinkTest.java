@@ -107,8 +107,8 @@ public class FileBasedSinkTest {
         crawledModels.add(ModelFactory.createDefaultModel());
         crawledUris.add(new URI("http://example.org/empty"));
 
-        models = crawledModels.toArray(new Model[crawledModels.size()]);
-        modelUris = crawledUris.toArray(new URI[crawledUris.size()]);
+        models = crawledModels.toArray(new Model[0]);
+        modelUris = crawledUris.toArray(new URI[0]);
     }
 
     @After
@@ -140,14 +140,6 @@ public class FileBasedSinkTest {
             e.printStackTrace();
         }
 
-        try {
-            // break to make sure that the written files are available
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Assert.fail(e.getLocalizedMessage());
-        }
-
         for (int i = 0; i < models.length; ++i) {
             checkModel(models[i], modelUris[i], useCompression);
         }
@@ -170,7 +162,7 @@ public class FileBasedSinkTest {
         }
 
         Model readModel = null;
-        Dataset readData = DatasetFactory.createMem();
+        Dataset readData = DatasetFactory.create();
         InputStream in = null;
 
         try {

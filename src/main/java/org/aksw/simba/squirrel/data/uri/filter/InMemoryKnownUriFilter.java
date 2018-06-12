@@ -51,22 +51,40 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         if (uris.containsKey(uri)) {
-            // if recrawling is disabled
-            if (timeBeforeRecrawling < 0) {
+            if (!frontierDoesRecrawling){
                 return false;
             }
-            long nextCrawlingAt = uris.get(uri).getValue() + timeBeforeRecrawling;
-            return nextCrawlingAt < System.currentTimeMillis();
+            return uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis();
         } else {
             return true;
         }
     }
 
     @Override
-    public void open() {}
+    public void open() {
+    }
 
     @Override
-    public void close() {}
+    public List<CrawleableUri> getOutdatedUris() {
+        // get all uris with the following property:
+        // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
+
+        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
+        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+
+        for (CrawleableUri uri : uris.keys) {
+            if (uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis() &&
+                (!uris.get(uri).crawlingInProcess || uris.get(uri).lastCrawlTimestamp < System.currentTimeMillis() - generalRecrawlTime * 3)) {
+                urisToRecrawl.add(uri);
+                uris.get(uri).crawlingInProcess = true;
+            }
+        }
+        return urisToRecrawl;
+    }
+
+    @Override
+    public void close() {
+    }
 
     @Override
     public long count() {
