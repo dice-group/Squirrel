@@ -1,5 +1,19 @@
 package org.aksw.simba.squirrel.collect;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.sql.DataSource;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -8,15 +22,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
@@ -33,8 +38,8 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
-    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) FROM ";
-    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(255), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
+    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ?";
+    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(1024), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ";
     protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
     protected static final String INSERT_URI_QUERY_PART_2 = "(uri,serial,data) VALUES(?,?,?)";
@@ -197,6 +202,36 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     	return total_uris;
     }
 
+    public int getSize(CrawleableUri uri) {
+        int totalUris = 0;
+        String uriString = uri.getUri().toString();
+        if (knownUris.containsKey(uriString)) {
+            UriTableStatus table = knownUris.get(uriString);
+            synchronized (table) {
+                try {
+                    String tableName = table.getTableName();
+                    // Make sure everything has been committed
+                    table.commitPendingChanges();
+                    PreparedStatement ps = dbConnection
+                        .prepareStatement(COUNT_URIS_QUERY.replaceFirst("\\?", tableName));
+
+//		    	ps.setString(1, uri.getUri().toString());
+                    ResultSet rs = ps.executeQuery();
+                    while(rs.next()) {
+                        totalUris = rs.getInt(1);
+                    }
+
+                    ps.close();
+                    rs.close();
+                }catch(Exception e) {
+                    LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
+                }
+            }
+        }
+
+        return totalUris;
+    }
+
     @Override
     public void close() {
         // It might be necessary to go through the list of known URIs and close all of
@@ -316,11 +351,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     try {
                         insertStmt.execute();
                     } catch (Exception e) {
+                        LOGGER.error("Error while inserting URI", e);
                     }
                 }
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
-                // LOGGER.error("URI already exists in the table. It will be ignored.", e);
+                LOGGER.error("URI already exists in the table. It will be ignored.", e);
             } catch (Exception e) {
                 LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }
