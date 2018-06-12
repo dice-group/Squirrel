@@ -336,7 +336,7 @@ public class McloudAnalyzer implements Analyzer
         }
 
         //create Model with DataSet
-        String datasetURI = createUniqueDatasetURI(title, detailURI);
+        String datasetURI = createUniqueURI(LMCSE.DataSetUriBase, title, detailURI);
         Model datasetModel = metaInformationToDcatDataset(
             datasetURI,
             detailURI,
@@ -385,7 +385,7 @@ public class McloudAnalyzer implements Analyzer
                         uri.addData(Constants.FETCHABLE_PROTOCOL, true);
                     }
 
-                    String distributionURI = datasetURI.replace(LMCSE.DataSetUriBase, LMCSE.DistributionUriBase) + "-" + type;
+                    String distributionURI = createUniqueURI(LMCSE.DistributionUriBase, title, url) + "-" + type;
 
                     addDcatDistributionToDataSet(
                         datasetModel,
@@ -422,7 +422,7 @@ public class McloudAnalyzer implements Analyzer
     ////
     /**
      * Transforms the scraped information to a DCAT.Dataset entry
-     * @param datasetURI the URI created for this dataSet ({@link McloudAnalyzer#createUniqueDatasetURI(String, String)})
+     * @param datasetURI the URI created for this dataSet ({@link McloudAnalyzer#createUniqueURI(String, String)})
      * @param mCloudSourceUri the mCloud detail URI this information was scraped from
      * @param title the dataSets title
      * @param description the dataSets description
@@ -616,12 +616,12 @@ public class McloudAnalyzer implements Analyzer
      * @param url used to create unique hash
      * @return the URI String
      */
-    private String createUniqueDatasetURI(String identifier, String url)
+    private String createUniqueURI(String base, String identifier, String url)
     {
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(identifier).append(url);
 
-        return LMCSE.DataSetUriBase + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
+        return base + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
     }
 
     /**
