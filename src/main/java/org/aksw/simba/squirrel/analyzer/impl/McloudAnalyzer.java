@@ -385,7 +385,7 @@ public class McloudAnalyzer implements Analyzer
                         uri.addData(Constants.FETCHABLE_PROTOCOL, true);
                     }
 
-                    String distributionURI = createUniqueURI(LMCSE.DistributionUriBase, title, url) + "-" + type;
+                    String distributionURI = createUniqueURI(LMCSE.DistributionUriBase, title, url) + "-" + createURIConformString(type);
 
                     addDcatDistributionToDataSet(
                         datasetModel,
