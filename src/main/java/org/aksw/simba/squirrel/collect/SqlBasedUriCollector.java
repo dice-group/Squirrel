@@ -205,8 +205,8 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         }
     }
     
-    public int getSize(CrawleableUri uri) {
-    	int totalUris = 0;
+    public long getSize(CrawleableUri uri) {
+    	long totalUris = 0;
         String uriString = uri.getUri().toString();
         if (knownUris.containsKey(uriString)) {
             UriTableStatus table = knownUris.get(uriString);
@@ -221,7 +221,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 //		    	ps.setString(1, uri.getUri().toString());
 		    	ResultSet rs = ps.executeQuery();
 		    	while(rs.next()) {
-		    		totalUris = rs.getInt(1);	
+		    		totalUris = rs.getLong(1);	
 		    	}
 		    	
 		    	ps.close();
@@ -310,7 +310,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         private final PreparedStatement insertStmt;
         private final Map<String, byte[]> buffer;
         private final int bufferSize;
-        private int cont = 0;
 
         public static UriTableStatus create(String tableName, Connection dbConnection, int bufferSize)
                 throws SQLException {
@@ -332,8 +331,8 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         }
 
         public void addUri(String uri, byte[] serializedUri) {
+        	 
             synchronized (buffer) {
-            	System.out.println(cont++);
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {
                     execute_unsecured();
@@ -356,10 +355,10 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     try {
                         insertStmt.execute();
                     } catch (Exception e) {
-                    	LOGGER.error("Error while inserting URI", e);
+//                    	if(!e.getMessage().substring(0, e.getMessage().indexOf(":")).equals("integrity constraint violation"))
+                    	LOGGER.error("URI already exists in the table. It will be ignored.", e);
                     }
                 }
-                System.out.println(cont++);
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
                  LOGGER.error("URI already exists in the table. It will be ignored.", e);

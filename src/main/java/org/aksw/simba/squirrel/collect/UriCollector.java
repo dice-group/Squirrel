@@ -62,5 +62,17 @@ public interface UriCollector extends SinkBase {
      *         that have been collected for the given URI.
      */
     public Iterator<byte[]> getUris(CrawleableUri uri);
+    
+    
+    /**
+     * 
+     * Returns the total of uris that have been collected
+     * 
+     * @param uri
+     *            The URI from which the returned serialized URIs have been
+     *            collected.
+     * @return A long number of total uris collected
+     */
+    public long getSize(CrawleableUri uri);
 
 }

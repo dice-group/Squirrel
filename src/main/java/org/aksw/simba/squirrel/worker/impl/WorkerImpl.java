@@ -211,6 +211,7 @@ public class WorkerImpl implements Worker, Closeable {
 	                        sink.openSinkForUri(uri);
 	                        collector.openSinkForUri(uri);
 	                        Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+	                        LOGGER.warn("Found " + collector.getSize(uri) + " uris for URI: " + uri.getUri().toString());
 	                        sink.closeSinkForUri(uri);
 	                        sendNewUris(resultUris);
 	                        collector.closeSinkForUri(uri);
