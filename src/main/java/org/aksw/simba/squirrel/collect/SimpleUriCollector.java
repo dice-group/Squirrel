@@ -53,6 +53,7 @@ public class SimpleUriCollector implements UriCollector {
             LOGGER.error("Error while trying to collect URI \"" + newUri + "\". It will be ignored.", e);
         }
     }
+    
     public long getSize() {
     	return total_uris;
     }
@@ -61,5 +62,12 @@ public class SimpleUriCollector implements UriCollector {
     public void closeSinkForUri(CrawleableUri uri) {
         urisOfUris.remove(uri.getUri().toString());
     }
+
+	@Override
+	public long getSize(CrawleableUri uri) {
+		return total_uris;
+	}
+
+
 
 }
