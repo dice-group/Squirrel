@@ -12,6 +12,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -68,6 +69,7 @@ public class McloudAnalyzer implements Analyzer
     private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
+    
 
     // collection of mCloud CSS selector constants for scraping
     private final String selectPagination = "ul.pagination > li.pagination-end > a[href]";
@@ -549,13 +551,13 @@ public class McloudAnalyzer implements Analyzer
         accessResource.addProperty(RDFS.label, accessType);
         distribution.addProperty(LMCSE.accessType, accessResource);
 
-        if ("Portal".equals(accessType))
+        if ("FTP".equalsIgnoreCase(accessType) || "Dateidownload".equalsIgnoreCase(accessType))
         {
-            distribution.addProperty(DCAT.accessURL, accessURL);
+            distribution.addProperty(DCAT.downloadURL, accessURL);
         }
         else
         {
-            distribution.addProperty(DCAT.downloadURL, accessURL);
+            distribution.addProperty(DCAT.accessURL, accessURL);
         }
 
         if (licenseURI != null && licenseName != null)
