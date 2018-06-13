@@ -69,7 +69,6 @@ public class McloudAnalyzer implements Analyzer
     private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
-    
 
     // collection of mCloud CSS selector constants for scraping
     private final String selectPagination = "ul.pagination > li.pagination-end > a[href]";
@@ -475,6 +474,7 @@ public class McloudAnalyzer implements Analyzer
             //if the given timeframe is not empty just not parseable add it in a more general setting
             if (!datasetDate.isEmpty())
             {
+                LOGGER.warn("The parsed Date does not match the expected format and will be added as temporal.");
                 Literal generalTimeInfo = model.createTypedLiteral(datasetDate, DCTerms.PeriodOfTime.getURI());
                 dataSet.addProperty(DCTerms.temporal, generalTimeInfo);
             }
@@ -551,7 +551,7 @@ public class McloudAnalyzer implements Analyzer
         accessResource.addProperty(RDFS.label, accessType);
         distribution.addProperty(LMCSE.accessType, accessResource);
 
-        if ("FTP".equalsIgnoreCase(accessType) || "Dateidownload".equalsIgnoreCase(accessType))
+        if (FTP_CONSTANT.equalsIgnoreCase(accessType) || DOWNLOAD_CONSTANT.equalsIgnoreCase(accessType))
         {
             distribution.addProperty(DCAT.downloadURL, accessURL);
         }
@@ -577,8 +577,11 @@ public class McloudAnalyzer implements Analyzer
         }
 
         //format of 'Aktualität' is too irregular to even attempt to parse it, so we add it as a general temporal and use the datasets timetsamp as issued
-        Literal generalTimeInfo = model.createTypedLiteral(distributionDate, DCTerms.PeriodOfTime.getURI());
-        distribution.addProperty(DCTerms.temporal, generalTimeInfo);
+        if (!distributionDate.isEmpty())
+        {
+            Literal generalTimeInfo = model.createTypedLiteral(distributionDate, DCTerms.PeriodOfTime.getURI());
+            distribution.addProperty(DCTerms.temporal, generalTimeInfo);
+        }
 
         Literal timeStamp = dataset.getProperty(DCTerms.issued).getLiteral();
         distribution.addProperty(DCTerms.issued, timeStamp);
