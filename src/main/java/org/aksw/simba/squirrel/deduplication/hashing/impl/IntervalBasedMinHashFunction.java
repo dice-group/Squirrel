@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.TripleHashFunction;
 import org.aksw.simba.squirrel.deduplication.hashing.TripleSetHashFunction;
 import org.apache.jena.graph.Triple;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
 
     /**
-     * The number n for the 2^n Intervals for the Hashing.
+     * The number n for the 2^n intervals for the Hashing.
      */
     private int powerNumberOfIntervals;
 
@@ -22,11 +23,23 @@ public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
     /**
      * Constructor.
      *
-     * @param powerNumberOfIntervals The powered number of Intervalls for the hashing.
+     * @param powerNumberOfIntervals The powered number of intervals for the hashing.
      */
     public IntervalBasedMinHashFunction(int powerNumberOfIntervals, TripleHashFunction tripleHashFunction) {
         this.powerNumberOfIntervals = powerNumberOfIntervals;
         this.tripleHashFunction = tripleHashFunction;
+    }
+
+    public static void main(String[] arhs) {
+
+        // so bekommt man die letzten k bits aus der Zahl n
+
+        int n = 1;
+        int k = 5;
+
+        int x = (k & (1 << n) - 1);
+        System.out.println(x);
+
     }
 
     @Override
@@ -38,28 +51,25 @@ public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
                 continue;
             }
             int hash = tripleHashFunction.hash(triple);
-
             int bitShiftedNumber = hash >>> (32 - powerNumberOfIntervals);
-            String shortBinaryString = Integer.toBinaryString(bitShiftedNumber);
-            StringBuilder binaryString = new StringBuilder();
 
-            //fill with zeros
-            for (int j = 0; j < powerNumberOfIntervals - shortBinaryString.length(); j++) {
-                binaryString.append("0");
-            }
-            binaryString.append(shortBinaryString);
-            String lastBits = binaryString.toString().substring(0, powerNumberOfIntervals);
+            // add leading zeros so that length is 32
+//            String extendBitShiftedNumber = String.format("%032d", bitShiftedNumber);
+//
+//            String lastBits = extendBitShiftedNumber.substring(0, powerNumberOfIntervals);
+
+            int lastBits = (powerNumberOfIntervals & (1 << bitShiftedNumber) - 1);
 
             //if we have only one interval, the zero is the desired interval
-            if (lastBits.equals("")) {
-                lastBits = "0";
-            }
+//            if (lastBits.equals("")) {
+//                lastBits = "0";
+//            }
 
-            int intervalNumber = Integer.parseInt(lastBits, 2);
-
-            if (hashValues[intervalNumber] == null || hashValues[intervalNumber] > hash) {
-                hashValues[intervalNumber] = hash;
-            }
+//            int intervalNumber = Integer.parseInt(lastBits, 2);
+//
+//            if (hashValues[intervalNumber] == null || hashValues[intervalNumber] > hash) {
+//                hashValues[intervalNumber] = hash;
+//            }
         }
         return new ArrayHashValue(hashValues);
     }

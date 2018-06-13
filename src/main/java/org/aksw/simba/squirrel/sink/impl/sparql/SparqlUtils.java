@@ -22,7 +22,7 @@ public final class SparqlUtils {
 
     static {
         Map<String, String> env = System.getenv();
-        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
+        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) && env.containsKey(SPARQL_HOST_PORTS_KEY)) {
             sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
         } else {
             LOGGER.error("Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.");

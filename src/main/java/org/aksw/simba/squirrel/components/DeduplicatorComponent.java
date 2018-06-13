@@ -53,9 +53,11 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * The maximal size for {@link #newUrisBufferSet}.
      */
-    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 100;
+    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 2;
 
-
+    /**
+     * The deduplicator will wait for some before getting the next uri from {@link #uriQueue}.
+     */
     private static final int SLEEP_TIME = 500;
 
     /**
@@ -64,6 +66,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      */
     private final Set<CrawleableUri> newUrisBufferSet = new HashSet<>(MAX_SIZE_NEW_URIS_BUFFER_LIST);
 
+    /**
+     * A queue for uris which have to be processed (hash values have to computed for them).
+     */
     private final List<CrawleableUri> uriQueue = new ArrayList<>();
 
     /**
@@ -129,6 +134,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 Thread.sleep(SLEEP_TIME * 10);
                 return;
             }
+
 
             CrawleableUri nextUri = uriQueue.get(0);
             uriQueue.remove(0);
@@ -201,10 +207,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         if (object != null) {
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
-                for (CrawleableUri uri : uriSet.uris) {
-                    List<Triple> triples = new ArrayList<>();
-                    uriQueue.add(uri);
-                }
+                uriQueue.addAll(uriSet.uris);
             } else {
                 LOGGER.info("Received an unknown object. It will be ignored.");
             }
