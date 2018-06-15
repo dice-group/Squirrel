@@ -1,14 +1,14 @@
 package org.aksw.simba.squirrel;
 
-import java.net.URI;
-import java.nio.charset.Charset;
-
 import org.apache.commons.io.Charsets;
 import org.apache.http.HttpHeaders;
 
+import java.net.URI;
+import java.nio.charset.Charset;
+
 /**
  * This class contains constant values of the Squirrel project.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -32,6 +32,8 @@ public class Constants {
 
     public static final String URI_HTTP_ACCEPT_HEADER = "http-" + HttpHeaders.ACCEPT;
     public static final String URI_HTTP_ACCEPT_CHARSET_HEADER = "http-" + HttpHeaders.ACCEPT_CHARSET;
+
+    public static final String URI_HASH_Key = "HashValue";
 
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms

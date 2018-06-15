@@ -3,6 +3,7 @@ package org.aksw.simba.squirrel.data.uri.filter;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
@@ -94,10 +95,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
-    public void open() {
+    public synchronized void open() {
         this.connector.open();
-        if (!connector.squirrelDatabaseExists())
+        if (!connector.squirrelDatabaseExists()) {
             r.dbCreate(DATABASE_NAME).run(this.connector.connection);
+        }
         if (!knownUriFilterTableExists()) {
             r.db(DATABASE_NAME).tableCreate(TABLE_NAME).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexCreate(COLUMN_URI).run(this.connector.connection);
@@ -209,7 +211,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
                     }
                 }
             }
-            newUri.setHashValue(hashValue);
+            newUri.putData(Constants.URI_HASH_Key, hashValue);
             uris.add(newUri);
         }
         cursor.close();
@@ -220,7 +222,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     public void addHashValuesForUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-                update(r.hashMap(COLUMN_HASH_VALUE, uri.getHashValue().encodeToString())).run(connector.connection);
+                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_Key)).encodeToString())).run(connector.connection);
         }
     }
 

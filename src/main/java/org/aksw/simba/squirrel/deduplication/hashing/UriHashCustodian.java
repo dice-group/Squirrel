@@ -14,9 +14,9 @@ import java.util.Set;
 public interface UriHashCustodian {
 
     /**
-     * Get all uris that have a common hash value with one of the hash values of the given list.
+     * Get all uris that have a common hash value with one of the hash values of the given set.
      *
-     * @param hashValuesForComparison The given list of hash values.
+     * @param hashValuesForComparison The given set of hash values.
      * @return All uris that have a common hash value with one of the hash values of the given list.
      */
     Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison);

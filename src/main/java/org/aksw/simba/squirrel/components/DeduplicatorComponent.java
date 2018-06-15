@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.components;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
@@ -132,15 +133,14 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         while (true) {
             if (uriQueue.isEmpty()) {
                 Thread.sleep(SLEEP_TIME * 10);
-                return;
+                continue;
             }
-
 
             CrawleableUri nextUri = uriQueue.get(0);
             uriQueue.remove(0);
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
-            nextUri.setHashValue(value);
+            nextUri.putData(Constants.URI_HASH_Key, value);
             newUrisBufferSet.add(nextUri);
 
             if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
@@ -160,7 +160,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private void compareNewUrisWithOldUris() {
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : newUrisBufferSet) {
-            hashValuesOfNewUris.add(uri.getHashValue());
+            hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_Key));
         }
         Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
 
