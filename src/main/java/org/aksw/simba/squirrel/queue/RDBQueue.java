@@ -4,6 +4,7 @@ import com.rethinkdb.RethinkDB;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
@@ -245,7 +246,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     private List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
-        List<CrawleableUri> resultUris = new ArrayList<CrawleableUri>();
+        List<CrawleableUri> resultUris = new ArrayList<>();
 
         for (Object uriString : uris) {
             try {
@@ -273,7 +274,38 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 HashMap row = (HashMap) cursor.next();
                 LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
                 try {
-                    return new AbstractMap.SimpleEntry<>(InetAddress.getByName(row.get("ipAddress").toString()), UriUtils.createCrawleableUriList((ArrayList) row.get("uris")));
+                    String baseURI = row.get("ipAddress").toString();
+                    InetAddress key = null;
+                    try {
+                        key = InetAddress.getByName(baseURI);
+                    } catch (Exception e) {
+                        LOGGER.error("Can't parse the address " + baseURI, e);
+                    }
+                    key = (key == null) ? InetAddress.getLocalHost() : key;
+                    Object uriField =  row.get("uris");
+                    List<CrawleableUri> value;
+                    CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
+                    if (uriField instanceof List) {
+                        value = createCrawleableUriList((ArrayList) uriField);
+//                        ((List) uriField).forEach(uri -> {
+//                            if (uri instanceof CrawleableUri) {
+//                                value.add((CrawleableUri) uri);
+//                            } else if (uri instanceof String) {
+//                                value.add(factory.create((String) uri));
+//                            } else if (uri instanceof byte[]) {
+//                                value.add(factory.create(r.binary(uri).coerceTo("string").run(connector.connection).toString()));
+//                            } else {
+//                                LOGGER.warn("There was an unknown/ unconvertible element in the list of " + uriField + ":" + uri);
+//                            }
+//                        });
+                    } else if (uriField instanceof String) {
+                        value = Collections.singletonList(factory.create((String) uriField));
+                    } else {
+                        LOGGER.error("Was not able to read the field from the RDBQueue \"uris\"");
+                        value = Collections.EMPTY_LIST;
+                    }
+
+                    return new AbstractMap.SimpleEntry<>(key, value);
                 } catch (UnknownHostException e) {
                     LOGGER.error("Error while parsing the data from the RDBQueue into an HashMap", e);
                     return null;

@@ -182,8 +182,11 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @return a instance (crawled graph) of {@link VisualisationGraph}
      */
     private VisualisationGraph generateVisualisationGraph() {
-        if (!(knownUriFilter.savesReferenceList()) || !(knownUriFilter instanceof RDBKnownUriFilter)) {
-            throw new IllegalAccessError("This method uses the knownUriFilter attribute, requires it from type RDBKnownUriFilterWithReferences, but actually it is from type " + knownUriFilter.getClass().getTypeName());
+        if(!knownUriFilter.savesReferenceList()) {
+            throw new IllegalAccessError(knownUriFilter + " doesn't saves a referemce list, that is necessary to build the graph!");
+        }
+        if (!(knownUriFilter instanceof RDBKnownUriFilter)) {
+            throw new IllegalAccessError("This method uses the knownUriFilter attribute, requires it from type RDBKnownUriFilter, but actually it is from type " + knownUriFilter.getClass().getTypeName());
         }
 
         VisualisationGraph graph = new VisualisationGraph();

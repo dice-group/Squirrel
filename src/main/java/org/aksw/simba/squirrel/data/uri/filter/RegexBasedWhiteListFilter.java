@@ -23,7 +23,7 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 		super(hostname, port);
 	}
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList) { super(hostname, port, saveReferenceList); }
+	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList) { super(hostname, port, true, saveReferenceList); }
 
 	public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
         super(hostname, port);
@@ -35,7 +35,7 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
     }
 
 	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList, File whiteListFile) {
-        super(hostname, port, saveReferenceList);
+        super(hostname, port, true, saveReferenceList);
 		try {
 			whiteList = loadWhiteList(whiteListFile);
 		} catch (IOException e) {

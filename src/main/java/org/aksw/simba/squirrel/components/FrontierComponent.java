@@ -79,7 +79,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     rdbConfiguration.getRDBPort(), webConfiguration.isVisualizationOfCrawledGraphEnabled(), whitelistFile);
                 knownUriFilter.open();
             } else {
-                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
+                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling, webConfiguration.isVisualizationOfCrawledGraphEnabled());
                 knownUriFilter.open();
             }
         } else {
@@ -124,13 +124,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void close() throws IOException {
-        receiver.closeWhenFinished();
-        queue.close();
+        if (receiver != null)   receiver.closeWhenFinished();
+        if (queue != null)      queue.close();
         if (knownUriFilter instanceof Closeable) {
             knownUriFilter.close();
         }
         workerGuard.shutdown();
-        frontier.close();
+        if (frontier != null)   frontier.close();
         super.close();
     }
 
