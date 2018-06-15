@@ -249,7 +249,7 @@ public class WorkerImpl implements Worker, Closeable {
         setSpecificRecrawlTime(uri);
 
         //TODO (this is only a unsatisfying quick fix to avoid unreadable graphs because of too much nodes)
-        return (ret.size() > 25) ? ret.subList(0, 25) : ret;
+        return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {

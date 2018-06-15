@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by ivan on 8/18/16.
@@ -337,13 +338,13 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
         LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
         AbstractMap.SimpleEntry<String, List<String>> ret;
         try {
-            List<String> references = (ArrayList<String>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS);
+            List<String> references = ((ArrayList<CrawleableUri>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS)).stream().map(uri -> uri.toString()).collect(Collectors.toList());
             int referencesSize = references.size();
             if (onlyCrawledUris) {
                 references.removeIf(s -> !containURI(s));
                 LOGGER.debug("Because you enabled the \"onlyCrawledUris\"-option, " + (referencesSize - references.size()) + " URIs were removed from the foundedURI list!");
             }
-            ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString() + ((row.containsKey("ipAddress")) ? "|" + row.get("ipAddress") : ""), (ArrayList<String>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS));
+            ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString() + ((row.containsKey("ipAddress")) ? "|" + row.get("ipAddress") : ""), references);
         } catch (NullPointerException e) {
             ret = new AbstractMap.SimpleEntry<>("FAIL [" + e.hashCode() + "]", Collections.singletonList((e.getMessage() == null) ? "unknown error" : e.getMessage()));
         }
