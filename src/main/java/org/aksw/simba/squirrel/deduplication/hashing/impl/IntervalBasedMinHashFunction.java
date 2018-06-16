@@ -30,18 +30,6 @@ public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
         this.tripleHashFunction = tripleHashFunction;
     }
 
-    public static void main(String[] arhs) {
-
-        // so bekommt man die letzten k bits aus der Zahl n
-
-        int n = 1;
-        int k = 5;
-
-        int x = (k & (1 << n) - 1);
-        System.out.println(x);
-
-    }
-
     @Override
     public HashValue hash(List<Triple> triples) {
         Integer[] hashValues = new Integer[(int) Math.pow(2, powerNumberOfIntervals)];
@@ -51,25 +39,22 @@ public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
                 continue;
             }
             int hash = tripleHashFunction.hash(triple);
+            //TODO Change to bitshifting
             int bitShiftedNumber = hash >>> (32 - powerNumberOfIntervals);
-
-            // add leading zeros so that length is 32
-//            String extendBitShiftedNumber = String.format("%032d", bitShiftedNumber);
-//
-//            String lastBits = extendBitShiftedNumber.substring(0, powerNumberOfIntervals);
-
-            int lastBits = (powerNumberOfIntervals & (1 << bitShiftedNumber) - 1);
+            String shortBinaryString = Integer.toBinaryString(bitShiftedNumber);
+            //fill with zeros
+            String extendBitShiftedNumber = String.format("%032d", shortBinaryString);
+            String lastBits = extendBitShiftedNumber.substring(32 - powerNumberOfIntervals, powerNumberOfIntervals);
 
             //if we have only one interval, the zero is the desired interval
-//            if (lastBits.equals("")) {
-//                lastBits = "0";
-//            }
+            if (lastBits.equals("")) {
+                lastBits = "0";
+            }
 
-//            int intervalNumber = Integer.parseInt(lastBits, 2);
-//
-//            if (hashValues[intervalNumber] == null || hashValues[intervalNumber] > hash) {
-//                hashValues[intervalNumber] = hash;
-//            }
+            int intervalNumber = Integer.parseInt(lastBits, 2);
+            if (hashValues[intervalNumber] == null || hashValues[intervalNumber] > hash) {
+                hashValues[intervalNumber] = hash;
+            }
         }
         return new ArrayHashValue(hashValues);
     }

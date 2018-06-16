@@ -148,8 +148,6 @@ public class FrontierImpl implements Frontier {
         this.graphLogger = graphLogger;
         this.uriHashCustodian = uriHashCustodian;
 
-        this.queue.open();
-        this.knownUriFilter.open();
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
         FrontierImpl.generalRecrawlTime = generalRecrawlTime;

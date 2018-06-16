@@ -12,6 +12,7 @@ public interface TripleComparator {
 
     /**
      * Tests whether the given sets of triples are equal.
+     * Note: Triples which contain a blank node may be handled differently.
      *
      * @param tripleList1
      * @param tripleList2
