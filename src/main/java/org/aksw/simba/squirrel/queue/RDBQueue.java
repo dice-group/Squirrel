@@ -91,18 +91,12 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     public boolean queueContainsIpAddressTypeKey(List ipAddressTypeKey) {
-        Cursor cursor = r.db("squirrel")
+        return !((boolean) r.db("squirrel")
             .table("queue")
             .getAll(ipAddressTypeKey)
             .optArg("index", "ipAddressType")
-            .run(connector.connection);
-        if(cursor.hasNext()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
-        }
+            .isEmpty()
+            .run(connector.connection));
     }
 
     @SuppressWarnings("unchecked")
@@ -287,17 +281,6 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                     CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
                     if (uriField instanceof List) {
                         value = createCrawleableUriList((ArrayList) uriField);
-//                        ((List) uriField).forEach(uri -> {
-//                            if (uri instanceof CrawleableUri) {
-//                                value.add((CrawleableUri) uri);
-//                            } else if (uri instanceof String) {
-//                                value.add(factory.create((String) uri));
-//                            } else if (uri instanceof byte[]) {
-//                                value.add(factory.create(r.binary(uri).coerceTo("string").run(connector.connection).toString()));
-//                            } else {
-//                                LOGGER.warn("There was an unknown/ unconvertible element in the list of " + uriField + ":" + uri);
-//                            }
-//                        });
                     } else if (uriField instanceof String) {
                         value = Collections.singletonList(factory.create((String) uriField));
                     } else {

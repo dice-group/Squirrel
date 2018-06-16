@@ -114,7 +114,7 @@ public class CrawleableUri implements Serializable {
     @Deprecated
     private UriType type = UriType.UNKNOWN;
 
-    private Map<String,Object> data = new TreeMap<String,Object>();
+    private Map<String,Object> data = new TreeMap<>();
 
     public CrawleableUri(URI uri) {
         this(uri, null);

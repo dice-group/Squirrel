@@ -279,7 +279,7 @@ public class WorkerImpl implements Worker, Closeable {
                 uriProcessor.recognizeUriType(newUri);
                 newUris.add(newUri);
                 if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size()));
+                    frontier.addNewUris(new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
                     packageCount++;
                 }
             } catch (Exception e) {

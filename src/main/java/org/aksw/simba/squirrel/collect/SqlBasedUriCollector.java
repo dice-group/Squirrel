@@ -351,7 +351,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     try {
                         insertStmt.execute();
                     } catch (Exception e) {
-                        LOGGER.error("Error while inserting URI", e);
+                        LOGGER.debug("Error while inserting URI (java.sql.SQLIntegrityConstraintViolationException is ok)", e);
                     }
                 }
                 insertStmt.getConnection().commit();

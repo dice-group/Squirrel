@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -183,21 +184,25 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).run(connector.connection);
-        if (cursor.hasNext()) {
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
-            if(saveReferenceList) {
-                r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_FOUNDURIS, urisFound));
+        try {
+            if(r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
+                r.db(DATABASE_NAME)
+                    .table(TABLE_NAME)
+                    .insert(convertURITimestampToRDB(uri, urisFound, lastCrawlTimestamp, nextCrawlTimestamp, false))
+                    .run(connector.connection);
+            } else {
+                ReqlExpr row =  r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
+                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
+                row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
+                if(saveReferenceList) {
+                    row.update(r.hashMap(COLUMN_FOUNDURIS, urisFound)).run(connector.connection);
+                }
+                row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
             }
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
-        } else {
-            r.db(DATABASE_NAME)
-                .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, urisFound, lastCrawlTimestamp, nextCrawlTimestamp, false))
-                .run(connector.connection);
+            LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+        } catch (Exception e) {
+            LOGGER.error("Failed to add the URI \"" + uri.toString() + "\" to the known uri filter list", e);
         }
-        LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
 
     public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long nextCrawlTimestamp) {
@@ -219,7 +224,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
             .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
         if (saveReferenceList) {
-            uriMap.with(COLUMN_FOUNDURIS, urisFound);
+            uriMap.with(COLUMN_FOUNDURIS, r.expr(urisFound.stream().map(u -> u.getUri().toString()).toArray()));
             LOGGER.trace("Appended " + urisFound.size() + " founded uris to the list.");
         }
 
@@ -338,14 +343,14 @@ class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<Stri
         LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
         AbstractMap.SimpleEntry<String, List<String>> ret;
         try {
-            List<String> references = ((ArrayList<CrawleableUri>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS)).stream().map(uri -> uri.toString()).collect(Collectors.toList());
+            List<String> references = (ArrayList<String>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS);
             int referencesSize = references.size();
             if (onlyCrawledUris) {
                 references.removeIf(s -> !containURI(s));
                 LOGGER.debug("Because you enabled the \"onlyCrawledUris\"-option, " + (referencesSize - references.size()) + " URIs were removed from the foundedURI list!");
             }
             ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString() + ((row.containsKey("ipAddress")) ? "|" + row.get("ipAddress") : ""), references);
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             ret = new AbstractMap.SimpleEntry<>("FAIL [" + e.hashCode() + "]", Collections.singletonList((e.getMessage() == null) ? "unknown error" : e.getMessage()));
         }
         if (!cursor.hasNext())

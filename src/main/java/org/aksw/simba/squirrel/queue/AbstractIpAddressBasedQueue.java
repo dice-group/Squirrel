@@ -21,7 +21,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIpAddressBasedQueue.class);
 
     private Semaphore queueMutex = new Semaphore(1);
-    private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
+    private Set<InetAddress> blockedIps = new HashSet<>();
 
 
     @Override

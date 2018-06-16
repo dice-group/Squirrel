@@ -192,6 +192,8 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
+        LOGGER.info("One worker finished his work and crawled " + uriMap.size() + " URIs.");
+
         List<CrawleableUri> crawledUris = Collections.list(uriMap.keys());
 
         List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
@@ -200,9 +202,9 @@ public class FrontierImpl implements Frontier {
             CrawleableUri uri = newUrisEnumeration.nextElement();
             newUris.addAll(uriMap.get(uri));
             if (knownUriFilter.savesReferenceList())
-                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis(), System.currentTimeMillis()+getGeneralRecrawlTime());
+                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis(), uri.getTimestampNextCrawl());
             else
-                knownUriFilter.add(uri, System.currentTimeMillis(), System.currentTimeMillis()+getGeneralRecrawlTime());
+                knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
         }
 
         // If there is a graph logger, log the data
@@ -233,9 +235,6 @@ public class FrontierImpl implements Frontier {
                 CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
                 recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
                 addNewUri(recrawlUri);
-            } else {
-                // send list of crawled URIs to the knownUriFilter
-                knownUriFilter.add(uri, uri.getTimestampNextCrawl());
             }
         }
 
