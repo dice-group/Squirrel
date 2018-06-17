@@ -1,4 +1,4 @@
-package deduplication.hashing;
+package org.aksw.simba.squirrel.hashing;
 
 import org.aksw.simba.squirrel.deduplication.hashing.impl.ArrayHashValue;
 import org.junit.Assert;

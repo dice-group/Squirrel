@@ -140,7 +140,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             uriQueue.remove(0);
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
-            nextUri.putData(Constants.URI_HASH_Key, value);
+            nextUri.putData(Constants.URI_HASH_KEY, value);
             newUrisBufferSet.add(nextUri);
 
             if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
@@ -160,7 +160,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private void compareNewUrisWithOldUris() {
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : newUrisBufferSet) {
-            hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_Key));
+            hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
         }
         Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
 
