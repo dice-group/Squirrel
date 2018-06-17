@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -64,7 +65,8 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         // TODO: Implement!
-        throw new UnsupportedOperationException("Not yet implemented.");
+//        throw new UnsupportedOperationException("Not yet implemented.");
+        return new ArrayList<>();
     }
 
     @Override

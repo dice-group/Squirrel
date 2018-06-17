@@ -188,8 +188,8 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter
             (doc -> stringHashValues.contains(doc.getField(COLUMN_HASH_VALUE))).run(connector.connection);
 
-        Set<CrawleableUri> uris = new HashSet<>();
-        outer:
+        Set<CrawleableUri> urisToReturn = new HashSet<>();
+
         while (cursor.hasNext()) {
             HashMap<String, Object> nextRow = cursor.next();
             CrawleableUri newUri = null;
@@ -197,12 +197,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
             for (String key : nextRow.keySet()) {
                 if (key.equals(COLUMN_HASH_VALUE)) {
                     String hashAsString = (String) nextRow.get(key);
-                    if (hashAsString.equals(DUMMY_HASH_VALUE)) {
-                        // no hash value in database yet for this uri
-                        continue outer;
-                    } else {
-                        hashValue = hashValueForDecoding.decodeFromString(hashAsString);
-                    }
+                    hashValue = hashValueForDecoding.decodeFromString(hashAsString);
                 } else if (key.equals(COLUMN_URI)) {
                     try {
                         newUri = new CrawleableUri(new URI((String) nextRow.get(key)));
@@ -211,18 +206,18 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
                     }
                 }
             }
-            newUri.putData(Constants.URI_HASH_Key, hashValue);
-            uris.add(newUri);
+            newUri.putData(Constants.URI_HASH_KEY, hashValue);
+            urisToReturn.add(newUri);
         }
         cursor.close();
-        return uris;
+        return urisToReturn;
     }
 
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_Key)).encodeToString())).run(connector.connection);
+                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
         }
     }
 
