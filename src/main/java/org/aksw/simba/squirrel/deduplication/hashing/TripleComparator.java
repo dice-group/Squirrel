@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.deduplication.hashing;
 
 import org.apache.jena.graph.Triple;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,5 +19,5 @@ public interface TripleComparator {
      * @param tripleList2
      * @return True iff the given sets of triples are equal.
      */
-    boolean triplesAreEqual(Set<Triple> tripleList1, Set<Triple> tripleList2);
+    boolean triplesAreEqual(List<Triple> tripleList1, List<Triple> tripleList2);
 }

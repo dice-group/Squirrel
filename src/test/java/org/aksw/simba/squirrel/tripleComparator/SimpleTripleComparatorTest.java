@@ -7,7 +7,8 @@ import org.apache.jena.graph.Triple;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,62 +19,103 @@ public class SimpleTripleComparatorTest {
     private TripleComparator tripleComparator = new SimpleTripleComparator();
 
     @Test
-    public void testSetsOnlyWithBlankNodes() {
+    public void testListsOnlyWithBlankNodes() {
         // two lists only with blank-node-triples, but with different labels for the nodes
         // => lists must be equal
-        Set<Triple> set1 = new HashSet<>();
-        Set<Triple> set2 = new HashSet<>();
+        List<Triple> list1 = new ArrayList<>();
+        List<Triple> list2 = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            set1.add(getTriple(true, true, "labelS" + i, "labelP" + i, "labelO" + i));
-            set2.add(getTriple(true, true, "labelSu" + i, "labelP" + i, "labelOb" + i));
+            list1.add(getTriple(true, true, "labelS" + i, "labelP" + i, "labelO" + i));
+            list2.add(getTriple(true, true, "labelSu" + i, "labelP" + i, "labelOb" + i));
         }
 
-        Assert.assertTrue(tripleComparator.triplesAreEqual(set1, set2));
+        Assert.assertTrue(tripleComparator.triplesAreEqual(list1, list2));
     }
 
     @Test
-    public void testSetsWithoutBlankNodes() {
-        Set<Triple> set1 = new HashSet<>();
-        Set<Triple> set2 = new HashSet<>();
+    public void testListsWithDifferentDuplicateTriples() {
+        // two lists with the same size, but with different duplicated triples
+        // => lists must be equal
+        List<Triple> list1 = new ArrayList<>();
+        List<Triple> list2 = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) {
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list2.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+            } else {
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list2.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list2.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+            }
+        }
+
+        Assert.assertTrue(tripleComparator.triplesAreEqual(list1, list2));
+    }
+
+    @Test
+    public void testListsWithDuplicateTriples() {
+        // two lists with the same content, but one list contains a duplicate
+        // => lists must be equal
+        List<Triple> list1 = new ArrayList<>();
+        List<Triple> list2 = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            if (i == 5) {
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list2.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+            } else {
+                list1.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+                list2.add(getTriple(false, false, "labelS" + i, "labelP" + i, "labelO" + i));
+            }
+        }
+
+        Assert.assertFalse(tripleComparator.triplesAreEqual(list1, list2));
+    }
+
+    @Test
+    public void testListsWithoutBlankNodes() {
+        List<Triple> list1 = new ArrayList<>();
+        List<Triple> list2 = new ArrayList<>();
 
         // all labels are equal
-        set1.add(getTriple(false, false, "labelS", "labelP", "labelO"));
-        set2.add(getTriple(false, false, "labelS", "labelP", "labelO"));
-        Assert.assertTrue(tripleComparator.triplesAreEqual(set1, set2));
+        list1.add(getTriple(false, false, "labelS", "labelP", "labelO"));
+        list2.add(getTriple(false, false, "labelS", "labelP", "labelO"));
+        Assert.assertTrue(tripleComparator.triplesAreEqual(list1, list2));
 
         // different labels for subjects
-        set1.add(getTriple(false, false, "labelS1", "labelP", "labelO"));
-        set2.add(getTriple(false, false, "labelS2", "labelP", "labelO"));
-        Assert.assertFalse(tripleComparator.triplesAreEqual(set1, set2));
-        set1.clear();
-        set2.clear();
+        list1.add(getTriple(false, false, "labelS1", "labelP", "labelO"));
+        list2.add(getTriple(false, false, "labelS2", "labelP", "labelO"));
+        Assert.assertFalse(tripleComparator.triplesAreEqual(list1, list2));
+        list1.clear();
+        list2.clear();
 
         // different labels for objects
-        set1.add(getTriple(false, false, "labelS", "labelP", "labelO1"));
-        set2.add(getTriple(false, false, "labelS", "labelP", "labelO2"));
-        Assert.assertFalse(tripleComparator.triplesAreEqual(set1, set2));
-        set1.clear();
-        set2.clear();
+        list1.add(getTriple(false, false, "labelS", "labelP", "labelO1"));
+        list2.add(getTriple(false, false, "labelS", "labelP", "labelO2"));
+        Assert.assertFalse(tripleComparator.triplesAreEqual(list1, list2));
+        list1.clear();
+        list2.clear();
 
         // different labels for predicates
-        set1.add(getTriple(false, false, "labelS", "labelP1", "labelO"));
-        set2.add(getTriple(false, false, "labelS", "labelP2", "labelO"));
-        Assert.assertFalse(tripleComparator.triplesAreEqual(set1, set2));
-        set1.clear();
-        set2.clear();
+        list1.add(getTriple(false, false, "labelS", "labelP1", "labelO"));
+        list2.add(getTriple(false, false, "labelS", "labelP2", "labelO"));
+        Assert.assertFalse(tripleComparator.triplesAreEqual(list1, list2));
+        list1.clear();
+        list2.clear();
     }
 
     @Test
-    public void testSetsWithMiscellaneousNodes() {
-        Set<Triple> set1 = new HashSet<>();
-        Set<Triple> set2 = new HashSet<>();
+    public void testListsWithMiscellaneousNodes() {
+        List<Triple> list1 = new ArrayList<>();
+        List<Triple> list2 = new ArrayList<>();
 
-        set1.add(getTriple(true, false, "s", "p", "o"));
-        set1.add(getTriple(false, false, "s1", "p1", "o1"));
+        list1.add(getTriple(true, false, "s", "p", "o"));
+        list1.add(getTriple(false, false, "s1", "p1", "o1"));
 
-        set2.add(getTriple(true, false, "s2", "p", "o"));
-        set2.add(getTriple(false, false, "s1", "p1", "o1"));
-        Assert.assertFalse(tripleComparator.triplesAreEqual(set1, set2));
+        list2.add(getTriple(true, false, "s2", "p", "o"));
+        list2.add(getTriple(false, false, "s1", "p1", "o1"));
+        Assert.assertFalse(tripleComparator.triplesAreEqual(list1, list2));
     }
 
     /**

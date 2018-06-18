@@ -4,26 +4,40 @@ import org.aksw.simba.squirrel.deduplication.hashing.TripleComparator;
 import org.apache.jena.graph.Triple;
 import sun.font.TrueTypeGlyphMapper;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * A simple implementation of {@link TripleComparator} which just iterates over the sets of triples and compares them one by one.
+ * Note: The comparator can possibly return true for two lists of triples that are in fact not equal.
+ * If the two lists contain duplicates of different triples, there sizes can be equal, and they can still be equal after converting the lists to sets.
+ * By converting the lists to sets, duplicates are removed and therefore precision is lost. But we chose to use sets for better performance.
+ * A more precise comparison could be done in future, it can get quite complex if a good performance is desired.
  */
 public class SimpleTripleComparator implements TripleComparator {
 
 
     @Override
-    public boolean triplesAreEqual(Set<Triple> tripleSet1, Set<Triple> tripleSet2) {
+    public boolean triplesAreEqual(List<Triple> tripleList1, List<Triple> tripleList2) {
+        if (tripleList1.size() != tripleList2.size()) {
+            return false;
+        }
+
+        //Use Set for faster performance
+        Set<Triple> tripleSet1 = new HashSet<>(tripleList1);
+        Set<Triple> tripleSet2 = new HashSet<>(tripleList2);
         if (tripleSet1.size() != tripleSet2.size()) {
             return false;
         }
         for (Triple triple : tripleSet1) {
             if (containsBlankNode(triple)) {
                 return containsTripleIgnoringBlankNodes(tripleSet2, triple);
-            } else if (!tripleSet2.contains(triple)) {
+            } else if (!tripleList2.contains(triple)) {
                 return false;
             }
         }
+
         return true;
     }
 

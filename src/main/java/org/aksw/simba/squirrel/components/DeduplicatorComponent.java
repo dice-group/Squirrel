@@ -169,10 +169,10 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             for (CrawleableUri uriOld : oldUrisForComparison) {
                 if (!uriOld.equals(uriNew)) {
                     // get triples from pair1 and pair2 and compare them
-                    Set<Triple> setOld = new HashSet<>(sink.getTriplesForGraph(uriOld));
-                    Set<Triple> setNew = new HashSet<>(sink.getTriplesForGraph(uriNew));
+                    List<Triple> listOld = sink.getTriplesForGraph(uriOld);
+                    List<Triple> listNew = sink.getTriplesForGraph(uriNew);
 
-                    if (tripleComparator.triplesAreEqual(setOld, setNew)) {
+                    if (tripleComparator.triplesAreEqual(listOld, listNew)) {
                         // TODO: delete duplicate
                         continue outer;
                     }
