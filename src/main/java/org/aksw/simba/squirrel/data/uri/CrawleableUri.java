@@ -1,5 +1,8 @@
 package org.aksw.simba.squirrel.data.uri;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.URI;
@@ -7,11 +10,8 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.TreeMap;
 
 /**
  * This class represents a URI and additional meta data that is helpful for
@@ -113,7 +113,9 @@ public class CrawleableUri implements Serializable {
     private InetAddress ipAddress;
     @Deprecated
     private UriType type = UriType.UNKNOWN;
-    private Map<String,Object> data = new HashMap<>();
+
+    private Map<String,Object> data = new TreeMap<>();
+
     public CrawleableUri(URI uri) {
         this(uri, null);
     }

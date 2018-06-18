@@ -1,13 +1,12 @@
 package org.aksw.simba.squirrel.collect;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
+import java.util.TreeSet;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -15,79 +14,86 @@ import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SqlBasedUriCollectorTest {
 
+    GzipJavaUriSerializer serializer;
+    String dbdir;
+    File file;
+    FileReader fr;
+    BufferedReader br;
+
+    @Before
+    public void prepare() throws Exception {
+        serializer = new GzipJavaUriSerializer();
+        dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
+        ClassLoader classLoader = getClass().getClassLoader();
+        file = new File(classLoader.getResource("collector/mCloudURIs.txt").getFile());
+        fr = new FileReader(file);
+        br = new BufferedReader(fr);
+
+    }
+
     @Test
     public void test() throws Exception {
-        String dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
+
+        CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test1"));
+
+        SqlBasedUriCollector collector = SqlBasedUriCollector.create(serializer, dbdir);
+
+        collector.openSinkForUri(uri);
+
 
         Model model = ModelFactory.createDefaultModel();
-        Set<String> expectedUris = new HashSet<String>();
-        for (int i = 0; i < 1000; ++i) {
+        Set<String> expectedUris = new TreeSet<String>();
+        for (int i = 0; i < 100; ++i) {
             Resource r = model.getResource("http://example.org/entity" + i);
             model.add(r, RDF.type, model.getResource("http://example.org/type" + (i & 1)));
             expectedUris.add(r.getURI());
+            collector.addNewUri(uri, new CrawleableUri(new URI(r.getURI())));
         }
-        expectedUris.add(RDF.type.getURI());
-        expectedUris.add("http://example.org/type0");
-        expectedUris.add("http://example.org/type1");
 
-        CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test"));
+        Iterator<byte[]> iterator = collector.getUris(uri);
 
-        GzipJavaUriSerializer serializer = new GzipJavaUriSerializer();
+        Set<String> listCuris = new TreeSet<String>();
+
+        while(iterator.hasNext()) {
+            listCuris.add( ((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString() );
+
+        }
+
+        collector.closeSinkForUri(uri);
+        Assert.assertEquals(expectedUris, listCuris);
+    }
+
+    @Test
+    public void testFile() throws Exception {
+        String sCurrentLine;
+
+        Set<URI> expectedUris = new TreeSet<URI>();
+        Set<URI> listUris = new TreeSet<URI>();
 
         SqlBasedUriCollector collector = SqlBasedUriCollector.create(serializer, dbdir);
-        Assert.assertNotNull(collector);
-
+        CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test2"));
         collector.openSinkForUri(uri);
-        StmtIterator iterator = model.listStatements();
-        while (iterator.hasNext()) {
-            collector.addTriple(uri, iterator.next().asTriple());
+
+        while ((sCurrentLine = br.readLine()) != null) {
+            expectedUris.add(new URI(sCurrentLine));
+            collector.addNewUri(uri, new CrawleableUri(new URI(sCurrentLine)));
         }
 
-        String uris[] = StreamSupport
-                .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
-                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
+        Iterator<byte[]> it = collector.getUris(uri);
+        while(it.hasNext()) {
+            listUris.add(new URI( ((CrawleableUri) serializer.deserialize(it.next())).getUri().toString() ));
+        }
+
+
         collector.closeSinkForUri(uri);
-        System.out.println(uris.length);
-        Arrays.sort(uris);
-        String eUris[] = expectedUris.toArray(new String[expectedUris.size()]);
-        Arrays.sort(eUris);
-        Assert.assertArrayEquals(eUris, uris);
-
-        // Repeat the test with different URIs to make sure that the clear
-        // method is working as well
-        model = ModelFactory.createDefaultModel();
-        expectedUris = new HashSet<String>();
-        for (int i = 0; i < 1000; ++i) {
-            Resource r = model.getResource("http://example2.org/entity" + i);
-            model.add(r, RDF.type, model.getResource("http://example2.org/type" + (i & 1)));
-            expectedUris.add(r.getURI());
-        }
-        expectedUris.add(RDF.type.getURI());
-        expectedUris.add("http://example2.org/type0");
-        expectedUris.add("http://example2.org/type1");
-        uri = new CrawleableUri(new URI("http://example2.org/test"));
-
-        collector.openSinkForUri(uri);
-        iterator = model.listStatements();
-        while (iterator.hasNext()) {
-            collector.addTriple(uri, iterator.next().asTriple());
-        }
-
-        uris = StreamSupport
-                .stream(Spliterators.spliteratorUnknownSize(collector.getUris(uri), Spliterator.IMMUTABLE), false)
-                .map((bytes) -> serializer.deserializeSafely(bytes)).toArray(String[]::new);
-        collector.closeSinkForUri(uri);
-        Arrays.sort(uris);
-        eUris = expectedUris.toArray(new String[expectedUris.size()]);
-        Arrays.sort(eUris);
-        Assert.assertArrayEquals(eUris, uris);
+        Assert.assertEquals(expectedUris.size(), listUris.size());
     }
 
 }

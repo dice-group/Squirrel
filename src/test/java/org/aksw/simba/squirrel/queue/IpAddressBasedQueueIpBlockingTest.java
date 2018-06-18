@@ -1,19 +1,17 @@
 package org.aksw.simba.squirrel.queue;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.aksw.simba.squirrel.data.uri.UriType;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.queue.InMemoryQueue;
-import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * <p>
