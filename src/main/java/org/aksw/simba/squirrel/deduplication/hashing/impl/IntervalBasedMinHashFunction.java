@@ -43,8 +43,12 @@ public class IntervalBasedMinHashFunction implements TripleSetHashFunction {
             int bitShiftedNumber = hash >>> (32 - powerNumberOfIntervals);
             String shortBinaryString = Integer.toBinaryString(bitShiftedNumber);
             //fill with zeros
-            String extendBitShiftedNumber = String.format("%032d", shortBinaryString);
-            String lastBits = extendBitShiftedNumber.substring(32 - powerNumberOfIntervals, powerNumberOfIntervals);
+            String prefix = "";
+            if (shortBinaryString.length() < 32) {
+                prefix = String.format("%0" + (32 - shortBinaryString.length()) + "d", 0);
+            }
+            String extendBitShiftedNumber = prefix + shortBinaryString;
+            String lastBits = extendBitShiftedNumber.substring(32 - powerNumberOfIntervals, 32);
 
             //if we have only one interval, the zero is the desired interval
             if (lastBits.equals("")) {

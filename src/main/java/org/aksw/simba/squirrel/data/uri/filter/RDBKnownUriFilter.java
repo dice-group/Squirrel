@@ -15,10 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 
 /**
@@ -104,6 +101,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
             r.db(DATABASE_NAME).tableCreate(TABLE_NAME).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexCreate(COLUMN_URI).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexWait(COLUMN_URI).run(this.connector.connection);
+        }
+    }
+
+    public void openConnector() {
+        if (this.connector.connection == null) {
+            this.connector.open();
         }
     }
 
@@ -216,6 +219,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
+            LOGGER.info("hi matze " + uri.getData(Constants.URI_HASH_KEY));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
                 update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
         }

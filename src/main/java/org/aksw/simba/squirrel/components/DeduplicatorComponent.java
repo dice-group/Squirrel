@@ -108,7 +108,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
             if ((rdbHostName != null) && (rdbPort > 0)) {
                 RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
-                knownUriFilter.open();
                 uriHashCustodian = knownUriFilter;
             }
 
@@ -158,6 +157,11 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      * in {@link #uriHashCustodian}.
      */
     private void compareNewUrisWithOldUris() {
+
+        if (uriHashCustodian instanceof RDBKnownUriFilter) {
+            ((RDBKnownUriFilter) uriHashCustodian).openConnector();
+        }
+
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : newUrisBufferSet) {
             hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
