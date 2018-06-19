@@ -16,8 +16,9 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by ivan on 8/18/16.
@@ -33,13 +34,8 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      */
     private boolean frontierDoesRecrawling;
 
-    /**
-     * Indicates weather the filter should save in addition a list of referred (found) URIs for each URI in the list (know URI)
-     */
-    private final boolean saveReferenceList;
-
     /*
-    Some constants for the rethinkdb
+    Some constants for the rethinkDB
      */
     public static final String DATABASE_NAME = "squirrel";
     public static final String TABLE_NAME = "knownurifilter";
@@ -57,24 +53,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      * @param hostname               The hostname for database.
      * @param port                   The port for the database.
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
-     * @param saveReferenceList      Value for {@link #saveReferenceList}.
      */
-    public RDBKnownUriFilter(String hostname, Integer port, boolean frontierDoesRecrawling, boolean saveReferenceList) {
+    public RDBKnownUriFilter(String hostname, Integer port, boolean frontierDoesRecrawling) {
         this.connector = new RDBConnector(hostname, port);
         r = RethinkDB.r;
         this.frontierDoesRecrawling = frontierDoesRecrawling;
-        this.saveReferenceList = saveReferenceList;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param hostname               The hostname for database.
-     * @param port                   The port for the database.
-     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
-     */
-    public RDBKnownUriFilter(String hostname, Integer port, boolean frontierDoesRecrawling) {
-        this(hostname, port, frontierDoesRecrawling, false);
     }
 
     /**
@@ -93,24 +76,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      * @param connector              Value for {@link #connector}.
      * @param r                      Value for {@link #r}.
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
-     * @param saveReferenceList      Value for {@link #saveReferenceList}.
      */
-    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling, boolean saveReferenceList) {
+    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling) {
         this.connector = connector;
         this.r = r;
         this.frontierDoesRecrawling = frontierDoesRecrawling;
-        this.saveReferenceList = saveReferenceList;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param connector              Value for {@link #connector}.
-     * @param r                      Value for {@link #r}.
-     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
-     */
-    public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling) {
-        this(connector, r, frontierDoesRecrawling, false);
     }
 
     public void open() {
@@ -179,34 +149,22 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        add(uri, Collections.EMPTY_LIST, lastCrawlTimestamp, nextCrawlTimestamp);
-    }
-
-    @Override
-    public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long lastCrawlTimestamp, long nextCrawlTimestamp) {
         try {
-            if(r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
+            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
                 r.db(DATABASE_NAME)
                     .table(TABLE_NAME)
-                    .insert(convertURITimestampToRDB(uri, urisFound, lastCrawlTimestamp, nextCrawlTimestamp, false))
+                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false))
                     .run(connector.connection);
             } else {
-                ReqlExpr row =  r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
+                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
                 row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
                 row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
-                if(saveReferenceList) {
-                    row.update(r.hashMap(COLUMN_FOUNDURIS, urisFound)).run(connector.connection);
-                }
                 row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
             }
             LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
         } catch (Exception e) {
             LOGGER.error("Failed to add the URI \"" + uri.toString() + "\" to the known uri filter list", e);
         }
-    }
-
-    public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long nextCrawlTimestamp) {
-        add(uri, urisFound, System.currentTimeMillis(),  nextCrawlTimestamp);
     }
 
     protected MapObject convertURIToRDB(CrawleableUri uri) {
@@ -218,15 +176,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TYPE, uriType.toString());
     }
 
-    private MapObject convertURITimestampToRDB(CrawleableUri uri, List<CrawleableUri> urisFound, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
+    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
         MapObject uriMap = convertURIToRDB(uri);
         uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
             .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
-        if (saveReferenceList) {
-            uriMap.with(COLUMN_FOUNDURIS, r.expr(urisFound.stream().map(u -> u.getUri().toString()).toArray()));
-            LOGGER.trace("Appended " + urisFound.size() + " founded uris to the list.");
-        }
 
         return uriMap;
     }
@@ -263,99 +217,4 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         return r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
     }
 
-    /**
-     * A reference list is a list for eacch crawled (known) URIs, that contains URIs (or namespaces of URIs or something else), that were found while crawling the certain URI
-     *
-     * @return {@code true} iff the object stores the reference list
-     */
-    @Override
-    public boolean savesReferenceList() {
-        return saveReferenceList;
-    }
-
-    /**
-     * Get a iterator. With that iterator, you can walk through the crawled graph.
-     * If {@link #saveReferenceList} is {@code false}, you'll get an empty Iterator!
-     *
-     * @param offset          skip the first entries. A negative number means to avoid skipping anything.
-     * @param latest          if {@code true}, the iterator starts from the last entry - offset
-     * @param onlyCrawledUris if {@code true}, uris, that are not in the {@link KnownUriFilter} will be discarded from the result
-     * @return the iterator {@link KnownUriReferenceIterator}
-     */
-    public Iterator<AbstractMap.SimpleEntry<String, List<String>>> walkThroughCrawledGraph(int offset, boolean latest, boolean onlyCrawledUris) {
-        if (!saveReferenceList) {
-            return Collections.emptyIterator();
-        }
-
-        long entryCount = r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
-        if (entryCount < offset) {
-            if (latest) {
-                LOGGER.debug("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + "), so we'll return an iterator over the whole graph from the beginning!");
-            } else {
-                LOGGER.warn("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + ")! Return an empty iterator...");
-                return Collections.emptyIterator();
-            }
-        }
-        long finalOffset = (offset < 0) ? -1 : ((latest) ? entryCount - offset : offset);
-
-        return new KnownUriReferenceIterator(connector, finalOffset, onlyCrawledUris);
-    }
-}
-
-class KnownUriReferenceIterator implements Iterator<AbstractMap.SimpleEntry<String, List<String>>> {
-    private final Logger LOGGER = LoggerFactory.getLogger(KnownUriReferenceIterator.class);
-
-    private final boolean onlyCrawledUris;
-
-    private final RethinkDB r = RethinkDB.r;
-    private RDBConnector connector;
-
-    private Cursor cursor;
-
-    KnownUriReferenceIterator(RDBConnector connector, long offset, boolean onlyCrawledUris) {
-        if (offset <= 0) {
-            cursor = r.db(RDBKnownUriFilter.DATABASE_NAME).table(RDBKnownUriFilter.TABLE_NAME).orderBy().optArg("index", r.asc("id")).run(connector.connection);
-        } else {
-            cursor = r.db(RDBKnownUriFilter.DATABASE_NAME).table(RDBKnownUriFilter.TABLE_NAME).orderBy().optArg("index", r.asc("id")).skip(offset).run(connector.connection);
-        }
-        this.connector = connector;
-        this.onlyCrawledUris = onlyCrawledUris;
-    }
-
-    private boolean containURI(String uri) {
-        return !((boolean) r.db(RDBKnownUriFilter.DATABASE_NAME)
-            .table(RDBKnownUriFilter.TABLE_NAME)
-            .getAll(uri)
-            .optArg("index", "uri")
-            .isEmpty()
-            .run(connector.connection));
-    }
-
-    @Override
-    public boolean hasNext() {
-        //LOGGER.info("Asked for existing of next results of " + cursor);
-        return cursor.hasNext();
-    }
-
-    @Override
-    public AbstractMap.SimpleEntry<String, List<String>> next() {
-        HashMap row = (HashMap) cursor.next();
-        LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
-        AbstractMap.SimpleEntry<String, List<String>> ret;
-        try {
-            List<String> references = (ArrayList<String>) row.get(RDBKnownUriFilter.COLUMN_FOUNDURIS);
-            int referencesSize = references.size();
-            if (onlyCrawledUris) {
-                references.removeIf(s -> !containURI(s));
-                LOGGER.debug("Because you enabled the \"onlyCrawledUris\"-option, " + (referencesSize - references.size()) + " URIs were removed from the foundedURI list!");
-            }
-            ret = new AbstractMap.SimpleEntry<>(row.get("uri").toString() + ((row.containsKey("ipAddress")) ? "|" + row.get("ipAddress") : ""), references);
-        } catch (Exception e) {
-            ret = new AbstractMap.SimpleEntry<>("FAIL [" + e.hashCode() + "]", Collections.singletonList((e.getMessage() == null) ? "unknown error" : e.getMessage()));
-        }
-        if (!cursor.hasNext())
-            cursor.close();
-
-        return ret;
-    }
 }

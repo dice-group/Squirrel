@@ -10,6 +10,8 @@ import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
+import org.aksw.simba.squirrel.data.uri.info.RDBURIReferences;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
@@ -50,6 +52,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
+    private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
@@ -75,12 +78,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if(whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
-                    rdbConfiguration.getRDBPort(), webConfiguration.isVisualizationOfCrawledGraphEnabled(), whitelistFile);
+                knownUriFilter = new RegexBasedWhiteListFilter(rdbHostName,
+                    rdbPort, doRecrawling, whitelistFile);
                 knownUriFilter.open();
             } else {
-                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling, webConfiguration.isVisualizationOfCrawledGraphEnabled());
+                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
                 knownUriFilter.open();
+            }
+
+            if (webConfiguration.isVisualizationOfCrawledGraphEnabled()) {
+                uriReferences = new RDBURIReferences(rdbHostName, rdbPort);
+                uriReferences.open();
             }
         } else {
             LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
@@ -89,7 +97,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -103,9 +111,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         LOGGER.info("Frontier initialized.");
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
-            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter);
-            sender.sendCrawledGraph = webConfiguration.isVisualizationOfCrawledGraphEnabled();
-            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to " + sender.sendCrawledGraph);
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter, uriReferences);
+            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to " + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
             senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             senderThread.start();
@@ -124,13 +131,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void close() throws IOException {
-        if (receiver != null)   receiver.closeWhenFinished();
-        if (queue != null)      queue.close();
+        if (receiver != null) receiver.closeWhenFinished();
+        if (queue != null) queue.close();
+        if (uriReferences != null) uriReferences.close();
         if (knownUriFilter instanceof Closeable) {
             knownUriFilter.close();
         }
         workerGuard.shutdown();
-        if (frontier != null)   frontier.close();
+        if (frontier != null) frontier.close();
         super.close();
     }
 

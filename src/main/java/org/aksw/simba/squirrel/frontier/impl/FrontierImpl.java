@@ -5,6 +5,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.graph.GraphLogger;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
@@ -32,6 +33,12 @@ public class FrontierImpl implements Frontier {
      * crawled.
      */
     protected KnownUriFilter knownUriFilter;
+
+    /**
+     * {@link org.aksw.simba.squirrel.data.uri.info.URIReferences} used to identify URIs that already have been
+     * crawled.
+     */
+    protected URIReferences uriReferences = null;
 
     /**
      * {@link SchemeBasedUriFilter} used to identify URIs with known protocol.
@@ -89,12 +96,41 @@ public class FrontierImpl implements Frontier {
      *                           crawled.
      * @param queue              {@link UriQueue} used to manage the URIs that should be
      *                           crawled.
+     * @param graphLogger        {@link GraphLogger} used to log graphs.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
+     * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
+     * @param timerPeriod        used to select if URIs should be recrawled.
+     */
+    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+        this(knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
+    }
+    /**
+     * Constructor.
+     *
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that already have been
+     *                           crawled.
+     * @param queue              {@link UriQueue} used to manage the URIs that should be
+     *                           crawled.
      * @param doesRecrawling     used to select if URIs should be recrawled.
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
+     *                       crawled.
+     * @param uriReferences  {@link URIReferences} used to manage URI references
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param doesRecrawling Value for {@link #doesRecrawling}.
+     */
+    public FrontierImpl(KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
+        this(knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
     /**
@@ -127,6 +163,7 @@ public class FrontierImpl implements Frontier {
      *
      * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
      *                       crawled.
+     * @param uriReferences  {@link URIReferences} used to manage URI references
      * @param queue          {@link UriQueue} used to manage the URIs that should be
      *                       crawled.
      * @param graphLogger    {@link GraphLogger} used to log graphs.
@@ -134,8 +171,9 @@ public class FrontierImpl implements Frontier {
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+    public FrontierImpl(KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this.knownUriFilter = knownUriFilter;
+        this.uriReferences = uriReferences;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
@@ -201,10 +239,10 @@ public class FrontierImpl implements Frontier {
         while (newUrisEnumeration.hasMoreElements()) {
             CrawleableUri uri = newUrisEnumeration.nextElement();
             newUris.addAll(uriMap.get(uri));
-            if (knownUriFilter.savesReferenceList())
-                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis(), uri.getTimestampNextCrawl());
-            else
-                knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
+            knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
+            if (uriReferences != null) {
+                uriReferences.add(uri, uriMap.get(uri));
+            }
         }
 
         // If there is a graph logger, log the data

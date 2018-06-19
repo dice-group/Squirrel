@@ -4,7 +4,6 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -59,17 +58,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false, Collections.EMPTY_LIST);
-        uris.put(uri, uriInfo);
-    }
-
-    public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long nextCrawlTimestamp) {
-        add(uri, urisFound, System.currentTimeMillis(), nextCrawlTimestamp);
-    }
-
-    @Override
-    public void add(CrawleableUri uri, List<CrawleableUri> urisFound, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false, urisFound);
+        UriInfo uriInfo = new UriInfo(lastCrawlTimestamp, nextCrawlTimestamp, false);
         uris.put(uri, uriInfo);
     }
 
@@ -116,27 +105,15 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         return uris.size();
     }
 
-    /**
-     * A reference list is a list for eacch crawled (known) URIs, that contains URIs (or namespaces of URIs or something else), that were found while crawling the certain URI
-     *
-     * @return {@code true} iff the object stores the reference list
-     */
-    @Override
-    public boolean savesReferenceList() {
-        return true;
-    }
-
     private class UriInfo {
         long lastCrawlTimestamp;
         long nextCrawlTimestamp;
         boolean crawlingInProcess;
-        List<CrawleableUri> referencedURIs;
 
-        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess, List<CrawleableUri> referencedURIs) {
+        UriInfo(long lastCrawlTimestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
             this.lastCrawlTimestamp = lastCrawlTimestamp;
             this.nextCrawlTimestamp = nextCrawlTimestamp;
             this.crawlingInProcess = crawlingInProcess;
-            this.referencedURIs = referencedURIs;
         }
     }
 }

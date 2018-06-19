@@ -23,25 +23,18 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 		super(hostname, port);
 	}
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList) { super(hostname, port, true, saveReferenceList); }
+    public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
+        this(hostname, port, false, whiteListFile);
+    }
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
-        super(hostname, port);
+    public RegexBasedWhiteListFilter(String hostname, Integer port, boolean frontierDoesRecrawling, File whiteListFile) {
+        super(hostname, port, frontierDoesRecrawling);
         try {
             whiteList = loadWhiteList(whiteListFile);
         } catch (IOException e) {
             LOGGER.error("A problem was found when loading the WhiteList");
         }
     }
-
-	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList, File whiteListFile) {
-        super(hostname, port, true, saveReferenceList);
-		try {
-			whiteList = loadWhiteList(whiteListFile);
-		} catch (IOException e) {
-			LOGGER.error("A problem was found when loading the WhiteList");
-		}
-	}
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {

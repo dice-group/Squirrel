@@ -6,7 +6,7 @@ import com.graph.VisualisationNode;
 import com.rabbitmq.client.Channel;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.rabbit.RabbitQueueFactory;
@@ -31,13 +31,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private WorkerGuard workerGuard;
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
+    private URIReferences uriReferences = null;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web";
     private final static String WEB_QUEUE_GRAPH_NAME = "squirrel.web.graph";
     private RabbitQueueFactory factory;
     private Channel webQueue = null;
     private boolean run;
-
-    public boolean sendCrawledGraph = false;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierSenderToWebservice.class);
 
@@ -48,12 +47,14 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @param workerGuard    has information about the workers
      * @param queue          has information about the pending URIs
      * @param knownUriFilter has information about the crawled URIs
+     * @param uriReferences  has information for the crawled graph. if it is {@code null}, the feature of creating a crawled graph is disabled
      */
-    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, IpAddressBasedQueue queue, KnownUriFilter knownUriFilter) {
+    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, IpAddressBasedQueue queue, KnownUriFilter knownUriFilter, URIReferences uriReferences) {
         this.factory = factory;
         this.workerGuard = workerGuard;
         this.queue = queue;
         this.knownUriFilter = knownUriFilter;
+        this.uriReferences = uriReferences;
     }
 
     /**
@@ -116,7 +117,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
                     LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_GENERAL_NAME);
                     lastSentObject = newObject;
 
-                    if (sendCrawledGraph) {
+                    if (uriReferences != null) {
                         // if something changed in general, then probably the crawled graph, too
                         VisualisationGraph graph = generateVisualisationGraph();
                         webQueue.basicPublish("", WEB_QUEUE_GRAPH_NAME, null, graph.convertToByteStream());
@@ -182,15 +183,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @return a instance (crawled graph) of {@link VisualisationGraph}
      */
     private VisualisationGraph generateVisualisationGraph() {
-        if(!knownUriFilter.savesReferenceList()) {
-            throw new IllegalAccessError(knownUriFilter + " doesn't saves a referemce list, that is necessary to build the graph!");
-        }
-        if (!(knownUriFilter instanceof RDBKnownUriFilter)) {
-            throw new IllegalAccessError("This method uses the knownUriFilter attribute, requires it from type RDBKnownUriFilter, but actually it is from type " + knownUriFilter.getClass().getTypeName());
+        if (uriReferences == null) {
+            throw new IllegalAccessError(this + " doesn't saves a uriReferences list, that is necessary to build the graph!");
         }
 
         VisualisationGraph graph = new VisualisationGraph();
-        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = ((RDBKnownUriFilter) knownUriFilter).walkThroughCrawledGraph(25, true, true);
+        Iterator<AbstractMap.SimpleEntry<String, List<String>>> iterator = uriReferences.walkThroughCrawledGraph(25, true, true);
 
         int counter = 0;
         while (iterator.hasNext() && counter < 25) {
@@ -202,7 +200,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
                 g.setColor((counter == 0) ? Color.ORANGE : ((counter <= 20) ? Color.GRAY : Color.GREEN));
             nextNode.getValue().forEach(v -> graph.addEdge(uri, v));
             ////////
-            LOGGER.debug("Retrieves a node from the crawled graph with the knownUriFilter-Iterator: " + graph.getNode(nextNode.getKey()) + ", including " + graph.getEdges(graph.getNode(nextNode.getKey())).length + " edges, counter is " + counter);
+            LOGGER.debug("Retrieves a node from the crawled graph with the uriReferences-Iterator: " + graph.getNode(nextNode.getKey()) + ", including " + graph.getEdges(graph.getNode(nextNode.getKey())).length + " edges, counter is " + counter);
             ////////
 
             counter++;
