@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.frontier.impl;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.SchemeBasedUriFilter;
@@ -121,7 +122,6 @@ public class FrontierImpl implements Frontier {
         this(knownUriFilter, queue, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
-
     /**
      * Constructor.
      *
@@ -184,7 +184,6 @@ public class FrontierImpl implements Frontier {
             }
             if (uri.getIpAddress() != null) {
                 queue.addUri(this.uriProcessor.recognizeUriType(uri));
-
             } else {
                 LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
             }
@@ -192,14 +191,29 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
+        LOGGER.info("One worker finished his work and crawled " + uriMap.size() + " URIs.");
+
+        List<CrawleableUri> crawledUris = Collections.list(uriMap.keys());
+
+        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+        Enumeration<CrawleableUri> newUrisEnumeration = uriMap.keys();
+        while (newUrisEnumeration.hasMoreElements()) {
+            CrawleableUri uri = newUrisEnumeration.nextElement();
+            newUris.addAll(uriMap.get(uri));
+            if (knownUriFilter.savesReferenceList())
+                knownUriFilter.add(uri, uriMap.get(uri), System.currentTimeMillis(), uri.getTimestampNextCrawl());
+            else
+                knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
+        }
+
         // If there is a graph logger, log the data
         if (graphLogger != null) {
             graphLogger.log(crawledUris, newUris);
         }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
-            Set<InetAddress> ips = new HashSet<InetAddress>();
+            Set<InetAddress> ips = new HashSet<>();
             InetAddress ip;
             for (CrawleableUri uri : crawledUris) {
                 ip = uri.getIpAddress();
@@ -207,14 +221,21 @@ public class FrontierImpl implements Frontier {
                     ips.add(ip);
                 }
             }
-            Iterator<InetAddress> iterator = ips.iterator();
-            while (iterator.hasNext()) {
-                ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(iterator.next());
-            }
+            ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
         }
         // send list of crawled URIs to the knownUriFilter
+        //for (CrawleableUri uri : crawledUris) {
+        //    knownUriFilter.add(uri);
+        //}
         for (CrawleableUri uri : crawledUris) {
-            knownUriFilter.add(uri, uri.getTimestampNextCrawl());
+            Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
+            // If a recrawling is defined, check whether we can directly add it back to the queue
+            if((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
+                // Create a new uri object reusing only meta data that is useful
+                CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
+                recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
+                addNewUri(recrawlUri);
+            }
         }
 
         // Add the new URIs to the Frontier

@@ -21,11 +21,10 @@ public interface Worker extends Runnable {
      *
      * @param uri
      *            the URI that should be crawled
-     * @param newUris
-     *            the new URIs that have been extracted will be added to this
-     *            list.
+     * @return a list of URIs that were found by crawling the uri
+     *          TODO: prove, if this interface change is really sensible...
      */
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
+    List<CrawleableUri> performCrawling(CrawleableUri uri);
 
     /**
      * Gives the unique id of the worker.
