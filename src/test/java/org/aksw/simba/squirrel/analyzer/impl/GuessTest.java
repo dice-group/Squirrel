@@ -3,34 +3,55 @@ package org.aksw.simba.squirrel.analyzer.impl;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.aksw.simba.squirrel.analyzer.Guess;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class GuessTest {
 
-	private Guess guess;
-	private String[] filesToTest= {"new_york.rdf","sample.n3","sample.jsonld","sample.nt","sample.rj","sample.ttl"};
-	private File[] data = new File[filesToTest.length];
-	private String[] expectedMimeTypes = {"RDF/XML","N3","JSON-LD","N-Triples","RDFJSON","Turtle"};
+    private Guess guess;
+    private ClassLoader classLoader;
+    private String fileName;
+    private String expectedType;
 
-	@Before
-	public void prepare() {
+    public GuessTest(String fileName, String type) {
+        this.fileName = fileName;
+        this.expectedType= type;
+    }
 
-		guess = new GuessMimeType();
-		ClassLoader classLoader = getClass().getClassLoader();
-		for (int i=0; i<filesToTest.length;i++) {
-			data[i] = new File(classLoader.getResource(filesToTest[i]).getFile());
-		}
-	}
+    @Before
+    public void initialize() {
+        guess = new GuessMimeType();
+        classLoader = getClass().getClassLoader();
+    }
 
-	@Test
-	public void test() {
+    public String validate(String fileName) {
+        File file = new File(classLoader.getResource(fileName).getFile());
+        return guess.guess(file);
+    }
 
-		for (int i=0; i<data.length; i++) {
-			String mimeType=guess.guess(data[i]);
-			assertEquals(expectedMimeTypes[i], mimeType);
-		}
-	}
+    @Parameterized.Parameters
+    public static Collection filesToTest() {
+        return Arrays.asList(new Object[][] {
+            {"rdf_analyzer/new_york/new_york_rdf", "RDF/XML"},
+            {"sample.n3", "N3"},
+            {"sample.jsonld", "JSON-LD"},
+            {"sample.nt", "N-Triples"},
+            {"sample.rj", "RDFJSON"},
+            {"sample.ttl", "Turtle"}
+        });
+    }
+
+    @Test
+    public void test() {
+        System.out.println("Parameterized file is : " + fileName);
+        assertEquals(expectedType, validate(fileName));
+    }
 }
 
