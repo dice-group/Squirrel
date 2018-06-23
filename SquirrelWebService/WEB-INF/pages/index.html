@@ -94,6 +94,7 @@
         return ret + "</ul>";
       }
 
+      update(false);
       setInterval(function () {
         update(false)
       }, 5000);
@@ -149,7 +150,22 @@
           <div>
             <input id="urlInput" type="text">
 
-            <input type="submit">
+            <input type="button" id="pushURI" value="Add URI to the pending URI list">
+
+            <script>
+              $("#pushURI").on("click", function () {
+                $.ajax({
+                  url: "/observer/push",
+                  data: {uri: $("#urlInput").val()},
+                  dataType: "text",
+                  method: "POST"
+                }).done(function (data) {
+                  alert(data);
+                }).fail(function () {
+                  alert("AJAX request to \"/observer/push\" failed :(");
+                });
+              });
+            </script>
           </div>
         </td>
       </tr>

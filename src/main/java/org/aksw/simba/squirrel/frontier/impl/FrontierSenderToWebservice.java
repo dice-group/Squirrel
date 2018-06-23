@@ -31,9 +31,9 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private WorkerGuard workerGuard;
     private IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
-    private URIReferences uriReferences = null;
-    private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web";
-    private final static String WEB_QUEUE_GRAPH_NAME = "squirrel.web.graph";
+    private URIReferences uriReferences;
+    private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
+    private final static String WEB_QUEUE_GRAPH_NAME = "squirrel.web.in.graph";
     private RabbitQueueFactory factory;
     private Channel webQueue = null;
     private boolean run;

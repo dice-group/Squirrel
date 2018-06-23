@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * A class, that stores the references: crawled URI --> URIs, that were found by crawling this URI
  *
- * @author Pilipp Heinisch
+ * @author Philipp Heinisch
  */
 public class RDBURIReferences implements URIReferences, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBURIReferences.class);

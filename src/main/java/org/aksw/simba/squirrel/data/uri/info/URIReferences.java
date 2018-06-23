@@ -38,7 +38,7 @@ public interface URIReferences {
      * @param offset          skip the first entries. A negative number means to avoid skipping anything.
      * @param latest          if {@code true}, the iterator starts from the last entry - offset
      * @param onlyCrawledUris if {@code true}, uris, that are not in the {@link KnownUriFilter} will be discarded from the result
-     * @return the iterator {@link org.aksw.simba.squirrel.data.uri.info.URIReferencesIterator}
+     * @return the iterator, e.g. an {@link org.aksw.simba.squirrel.data.uri.info.URIReferencesIterator}
      */
     Iterator<AbstractMap.SimpleEntry<String, List<String>>> walkThroughCrawledGraph(int offset, boolean latest, boolean onlyCrawledUris);
 }

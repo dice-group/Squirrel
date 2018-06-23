@@ -5,6 +5,7 @@ import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.configurator.WebConfiguration;
 import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
@@ -72,7 +73,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if(rdbConfiguration != null) {
             String rdbHostName = rdbConfiguration.getRDBHostName();
             Integer rdbPort = rdbConfiguration.getRDBPort();
-            queue = new RDBQueue(rdbHostName, rdbPort,serializer);
+            queue = new RDBQueue(rdbHostName, rdbPort, serializer);
             queue.open();
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
@@ -153,8 +154,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         try {
             deserializedData = serializer.deserialize(data);
         } catch (IOException e) {
-            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
-            return;
+            //try to convert the string into a single URI, that maybe comes from the WebService
+            CrawleableUri uri = new CrawleableUriFactoryImpl().create(new String(data));
+            if (uri != null) {
+                LOGGER.warn("Received a single URI " + uri.getUri() + " without a wrapping of \"org.aksw.simba.squirrel.rabbit.msgs\". We converted it into a UriSet.");
+                deserializedData = new UriSet(Collections.singletonList(uri));
+            } else {
+                LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
+                return;
+            }
         }
 
         if (deserializedData != null) {
