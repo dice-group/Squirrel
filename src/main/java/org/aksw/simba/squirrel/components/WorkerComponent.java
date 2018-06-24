@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
+import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -61,13 +62,15 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         String sparqlDatasetPrefix;
         if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
-            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
+            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/";
         } else {
             String msg = "Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.";
             throw new Exception(msg);
         }
-        String updateDatasetURI = sparqlDatasetPrefix + "update";
-        String queryDatasetURI = sparqlDatasetPrefix + "query";
+        String updateDatasetURI = sparqlDatasetPrefix + "ContentSet/update";
+        String queryDatasetURI = sparqlDatasetPrefix + "ContentSet/query";
+        String updateMetaDataDatasetURI = sparqlDatasetPrefix + "MetaData/update";
+        String queryMetaDataDatasetURI = sparqlDatasetPrefix + "MetaData/query";
 
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
@@ -76,8 +79,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         serializer = new GzipJavaUriSerializer();
         Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
+        MetaDataHandler metaDataHandler = new MetaDataHandler(updateMetaDataDatasetURI, queryMetaDataDatasetURI);
         UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
+        worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, collector, 2000, outputFolder + File.separator + "log", true);
         uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 

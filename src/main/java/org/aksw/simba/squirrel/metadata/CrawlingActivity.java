@@ -43,6 +43,11 @@ public class CrawlingActivity {
     private CrawleableUri uri;
 
     /**
+     * The graph where the uri is stored.
+     */
+    private String graphId;
+
+    /**
      * The crawling state of the uri.
      */
     private CrawlingURIState state;
@@ -61,6 +66,7 @@ public class CrawlingActivity {
      * The sink used for the activity.
      */
     private Sink sink;
+
     /**
      * Constructor
      *
@@ -77,8 +83,21 @@ public class CrawlingActivity {
         this.sink = sink;
     }
 
-    public void setState(CrawleableUri uri, CrawlingURIState state) {
+    public void setState(CrawlingURIState state) {
+        this.state = state;
+        if (state.equals(CrawlingURIState.SUCCESSFUL)) {
+            if (sink instanceof SparqlBasedSink) {
+                graphId = ((SparqlBasedSink) sink).getGraphId(uri);
+            }
+        }
+    }
 
+    public void setGraphId() {
+        if (state.equals(CrawlingURIState.SUCCESSFUL)) {
+            if (sink instanceof SparqlBasedSink) {
+                graphId = ((SparqlBasedSink) sink).getGraphId(uri);
+            }
+        }
     }
 
     public void finishActivity() {
@@ -135,7 +154,11 @@ public class CrawlingActivity {
         return state;
     }
 
-    public CrawleableUri getUri() {
+    public CrawleableUri getCrawleableUri() {
         return uri;
+    }
+
+    public String getGraphId() {
+        return graphId;
     }
 }

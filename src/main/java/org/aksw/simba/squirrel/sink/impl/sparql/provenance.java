@@ -27,7 +27,7 @@ public class provenance {
         model.add(CrawlingActivity, p1("wasAssociatedWith"), l(crawlingActivity.getWorker().getId()));
         model.add(CrawlingActivity, p2("numberOfTriples"), l(crawlingActivity.getNumTriples()));
         model.add(CrawlingActivity, p2("hostedOn"), datasetPrefix);
-        String uri = crawlingActivity.getUri().toString().replace("\"", "");
+        String uri = crawlingActivity.getCrawleableUri().toString().replace("\"", "");
         model.add(CrawlingActivity, p1("wasGeneratedBy"), uri);
 //        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(crawlingActivity.getUri(), model));
 //        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strMetaDatasetUriUpdate);

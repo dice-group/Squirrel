@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Provenance {
+public class MetaDataHandler {
 
     private Sink sink;
 
@@ -30,7 +30,7 @@ public class Provenance {
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
 
-    public Provenance(String updateDatasetURI, String queryDatasetURI) {
+    public MetaDataHandler(String updateDatasetURI, String queryDatasetURI) {
         sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
     }
 
@@ -45,7 +45,9 @@ public class Provenance {
         //TODO lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:hostedOn"), NodeFactory.createLiteral(datasetPrefix)));
         //TODO for Meher: Merge new change from other branch manually for hadPlan
         //lstTriples.add(new Triple(nodeCrawlingActivity,NodeFactory.createURI("prov:hadPlan"),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:wasGeneratedBy"), NodeFactory.createURI(crawlingActivity.getUri().toString())));
+        Node nodeResultGraph = NodeFactory.createLiteral(crawlingActivity.getGraphId());
+        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:wasGeneratedBy"), nodeResultGraph));
+        lstTriples.add(new Triple(nodeResultGraph, NodeFactory.createURI("sq:uriName"), NodeFactory.createURI(crawlingActivity.getCrawleableUri().getUri().toString())));
 
         //TODO null is not supproted
         sink.openSinkForUri(null);
