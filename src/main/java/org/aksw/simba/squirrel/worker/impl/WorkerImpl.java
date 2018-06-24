@@ -208,7 +208,7 @@ public class WorkerImpl implements Worker, Closeable {
                 try {
                     performCrawling(uri, newUris);
                     crawledUris.add(uri);
-//                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    //TODO crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
@@ -220,6 +220,7 @@ public class WorkerImpl implements Worker, Closeable {
             uriProcessor.recognizeUriType(uri);
         }
         // send results to the Frontier
+        //TODO
 //        crawlingActivity.finishActivity();
 //        if (sink instanceof RDFSink) {
 //            ((RDFSink) sink).addMetadata(crawlingActivity);

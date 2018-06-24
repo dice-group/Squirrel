@@ -8,9 +8,6 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -22,6 +19,7 @@ public class QueryGenerator {
      * The instance of the class QueryGenerator.
      */
     private static final QueryGenerator instance = new QueryGenerator();
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
     private QueryGenerator() {
     }
@@ -114,7 +112,7 @@ public class QueryGenerator {
             stringBuilder.append("> ");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");
-            stringBuilder.append(node.getBlankNodeId());
+            stringBuilder.append(node.getBlankNodeLabel());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
             stringBuilder.append(node.getName());
@@ -131,5 +129,4 @@ public class QueryGenerator {
         stringBuilder.append(" ");
         return stringBuilder.toString();
     }
-
 }

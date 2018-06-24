@@ -100,7 +100,7 @@ public class CrawlingActivity {
         int sum = 0;
         if (sink instanceof SparqlBasedSink) {
             for (CrawleableUri uri : mapUri.keySet()) {
-//                sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
+                //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
             }
             numTriples = sum;
         } else {
