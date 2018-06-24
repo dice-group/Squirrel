@@ -39,6 +39,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
 
+    /**
+     * Indicates whether deduplication is active. If it is not active, this component will send data to the deduplicator.
+     */
+    private static boolean deduplicationActive;
+
     private Worker worker;
     private DataSender senderFrontier, senderDeduplicator;
     private RabbitRpcClient clientFrontier;
@@ -57,11 +62,17 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
             throw new Exception(msg);
         }
+        if (env.containsKey(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY)) {
+            deduplicationActive = Boolean.parseBoolean(env.get(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY));
+        } else {
+            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY);
+            deduplicationActive = DeduplicatorComponent.DEFAULT_DEDUPLICATION_ACTIVE;
+        }
 
         senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
 
-        if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+        if (deduplicationActive) {
             senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
                 .build();
         }
@@ -103,7 +114,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     @Override
     public void close() throws IOException {
         IOUtils.closeQuietly(senderFrontier);
-        if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+        if (deduplicationActive) {
             IOUtils.closeQuietly(senderDeduplicator);
         }
         IOUtils.closeQuietly(clientFrontier);
@@ -153,7 +164,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         try {
             senderFrontier.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
 
-            if (DeduplicatorComponent.DEDUPLICATION_ACTIVE) {
+            if (deduplicationActive) {
                 UriSet uriSet = new UriSet();
                 uriSet.uris = crawledUris;
                 senderDeduplicator.sendData(serializer.serialize(uriSet));

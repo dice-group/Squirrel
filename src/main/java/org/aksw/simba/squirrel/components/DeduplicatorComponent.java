@@ -46,10 +46,20 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
 
     /**
+     * default value for {@link #deduplicationActive}
+     */
+    public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = true;
+
+    /**
      * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
      * no processing of hash values will be done.
      */
-    public static final boolean DEDUPLICATION_ACTIVE = true;
+    private static boolean deduplicationActive;
+
+    /**
+     * Key for the environments variable for {@link #deduplicationActive}
+     */
+    public static final String DEDUPLICATION_ACTIVE_KEY = "DEDUPLICATION_ACTIVE";
 
     /**
      * The maximal size for {@link #newUrisBufferSet}.
@@ -90,9 +100,14 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     @Override
     public void init() throws Exception {
         super.init();
-        if (DEDUPLICATION_ACTIVE) {
-            Map<String, String> env = System.getenv();
-
+        Map<String, String> env = System.getenv();
+        if (env.containsKey(DEDUPLICATION_ACTIVE_KEY)) {
+            deduplicationActive = Boolean.parseBoolean(env.get(DEDUPLICATION_ACTIVE_KEY));
+        } else {
+            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", DEDUPLICATION_ACTIVE_KEY);
+            deduplicationActive = DEFAULT_DEDUPLICATION_ACTIVE;
+        }
+        if (deduplicationActive) {
             String rdbHostName = null;
             int rdbPort = -1;
             if (env.containsKey(FrontierComponent.RDB_HOST_NAME_KEY)) {
@@ -196,11 +211,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-
-        if (!DEDUPLICATION_ACTIVE) {
+        if (!deduplicationActive) {
             return;
         }
-
         Object object = null;
         try {
             object = serializer.deserialize(data);

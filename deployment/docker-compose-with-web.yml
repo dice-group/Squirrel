@@ -21,6 +21,22 @@ services:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
 
+  deduplicator:
+      image: squirrel
+      container_name: deduplicator
+      environment:
+        DEDUPLICATION_ACTIVE: "true"
+        HOBBIT_RABBIT_HOST: rabbit
+        OUTPUT_FOLDER: /var/squirrel/data
+        RDB_HOST_NAME: rethinkdb
+        RDB_PORT: 28015
+        SPARQL_HOST_NAME: sparqlHost
+        SPARQL_HOST_PORT: 3030
+        SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      volumes:
+          - ./data/deduplicator:/var/squirrel/data
+      command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent
+
   frontier:
     image: squirrel
     environment:
@@ -47,6 +63,7 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      DEDUPLICATION_ACTIVE: "true"
     volumes:
         - ./data/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
@@ -57,6 +74,7 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      DEDUPLICATION_ACTIVE: "true"
     volumes:
         - ./data/worker2:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
@@ -67,6 +85,7 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      DEDUPLICATION_ACTIVE: "true"
     volumes:
         - ./data/worker3:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
