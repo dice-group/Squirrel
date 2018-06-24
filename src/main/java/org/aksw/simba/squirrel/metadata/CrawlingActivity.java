@@ -5,6 +5,7 @@ import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,52 +36,45 @@ public class CrawlingActivity {
      * When the activity has ended.
      */
     private Date dateEnded;
+
     /**
-     * A mapping from uris to states indicating whether they have been crawled successfully.
+     * The uri for the crawling activity.
      */
-    private Map<CrawleableUri, CrawlingURIState> mapUri;
+    private CrawleableUri uri;
+
     /**
-     * A state of the activity.
+     * The crawling state of the uri.
      */
-    private CrawlingActivityState status;
+    private CrawlingURIState state;
+
     /**
      * The worker that has been assigned the activity.
      */
     private Worker worker;
+
     /**
      * Number of triples crawled by this activity.
      */
     private int numTriples;
+
     /**
      * The sink used for the activity.
      */
     private Sink sink;
-
     /**
      * Constructor
      *
-     * @param listUri
+     * @param uri
      * @param worker
      * @param sink
      */
-    public CrawlingActivity(List<CrawleableUri> listUri, Worker worker, Sink sink) {
+    public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
         this.worker = worker;
         this.dateStarted = new Date();
-        this.status = CrawlingActivityState.STARTED;
-        mapUri = new HashedMap();
-        for (CrawleableUri uri : listUri) {
-            mapUri.put(uri, CrawlingURIState.UNKNOWN);
-        }
+        this.uri = uri;
+        this.state = CrawlingURIState.UNKNOWN;
         id = UUID.randomUUID();
         this.sink = sink;
-    }
-
-    public Map<CrawleableUri, CrawlingURIState> getMapUri() {
-        return mapUri;
-    }
-
-    public int getNumTriples() {
-        return numTriples;
     }
 
     public void setState(CrawleableUri uri, CrawlingURIState state) {
@@ -90,7 +84,7 @@ public class CrawlingActivity {
     public void finishActivity() {
         countTriples();
         dateEnded = new Date();
-        status = CrawlingActivityState.ENDED;
+
     }
 
     /**
@@ -99,9 +93,9 @@ public class CrawlingActivity {
     private void countTriples() {
         int sum = 0;
         if (sink instanceof SparqlBasedSink) {
-            for (CrawleableUri uri : mapUri.keySet()) {
-                //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
-            }
+
+            //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
+
             numTriples = sum;
         } else {
             numTriples = -1;
@@ -127,15 +121,21 @@ public class CrawlingActivity {
         return dateString;
     }
 
-    public CrawlingActivityState getStatus() {
-        return status;
+    public int getNumTriples() {
+        return numTriples;
     }
 
     public Worker getWorker() {
         return worker;
     }
 
-    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED}
+    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED;}
 
-    public enum CrawlingActivityState {STARTED, ENDED, SUCCESSFUL, FAILED}
+    public CrawlingURIState getState() {
+        return state;
+    }
+
+    public CrawleableUri getUri() {
+        return uri;
+    }
 }

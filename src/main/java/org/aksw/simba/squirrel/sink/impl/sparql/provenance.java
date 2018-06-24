@@ -23,15 +23,15 @@ public class provenance {
         Resource CrawlingActivity = ResourceFactory.createResource(crawlingActivity.getId().toString());
         model.add(CrawlingActivity, p1("startedAtTime"), crawlingActivity.getDateStarted());
         model.add(CrawlingActivity, p1("endedAtTime"), crawlingActivity.getDateEnded());
-        model.add(CrawlingActivity, p1("status"), crawlingActivity.getStatus().toString());
+        model.add(CrawlingActivity, p1("status"), crawlingActivity.getState().toString());
         model.add(CrawlingActivity, p1("wasAssociatedWith"), l(crawlingActivity.getWorker().getId()));
         model.add(CrawlingActivity, p2("numberOfTriples"), l(crawlingActivity.getNumTriples()));
         model.add(CrawlingActivity, p2("hostedOn"), datasetPrefix);
-        String uri = crawlingActivity.geturi().toString().replace("\"", "");
+        String uri = crawlingActivity.getUri().toString().replace("\"", "");
         model.add(CrawlingActivity, p1("wasGeneratedBy"), uri);
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(crawlingActivity.uri, model));
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strMetaDatasetUriUpdate);
-        proc.execute();
+//        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(crawlingActivity.getUri(), model));
+//        UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, strMetaDatasetUriUpdate);
+//        proc.execute();
     }
 
     private static Literal l(Object value) {

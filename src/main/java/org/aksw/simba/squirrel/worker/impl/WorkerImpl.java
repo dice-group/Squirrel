@@ -200,20 +200,22 @@ public class WorkerImpl implements Worker, Closeable {
         List<CrawleableUri> newUris = new ArrayList<>();
         List<CrawleableUri> crawledUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
-            if (uri == null) {
-                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
-            } else if (uri.getUri() == null) {
+            CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
+            if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+                crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
                     performCrawling(uri, newUris);
                     crawledUris.add(uri);
-                    //TODO crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
+                    crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.FAILED);
                 }
             }
+            crawlingActivity.finishActivity();
         }
         // classify URIs
         for (CrawleableUri uri : newUris) {
