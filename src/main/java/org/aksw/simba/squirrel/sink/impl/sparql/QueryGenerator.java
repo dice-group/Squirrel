@@ -38,14 +38,14 @@ public class QueryGenerator {
     /**
      * Return an Add Query for the given uri and its triples.
      *
-     * @param uri                 the uri where the triples found.
+     * @param graphId                 the graph id where the triples are stored.
      * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
-    public String getAddQuery(CrawleableUri uri, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+    public String getAddQuery(String graphId, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { Graph <");
-        stringBuilder.append(uri.getUri());
+        stringBuilder.append(graphId);
         stringBuilder.append("> { ");
         for (Triple triple : listBufferedTriples) {
             formatNodeToString(triple.getSubject());
@@ -110,11 +110,11 @@ public class QueryGenerator {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
             stringBuilder.append("< ");
-            stringBuilder.append(node.getName());
+            stringBuilder.append(node.getURI());
             stringBuilder.append("> ");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");
-            stringBuilder.append(node.getName());
+            stringBuilder.append(node.getBlankNodeId());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
             stringBuilder.append(node.getName());
@@ -131,4 +131,5 @@ public class QueryGenerator {
         stringBuilder.append(" ");
         return stringBuilder.toString();
     }
+
 }

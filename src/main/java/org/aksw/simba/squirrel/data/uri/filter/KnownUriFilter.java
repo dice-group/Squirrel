@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public interface KnownUriFilter extends UriFilter {
      * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
+
+    public long getCrawlingCounterForUri(CrawleableUri uri);
 
     /**
      * Close RDB connection, destroy the database.

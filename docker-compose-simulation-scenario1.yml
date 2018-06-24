@@ -48,6 +48,8 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
 #    networks:
 #      - squirrel
     volumes:

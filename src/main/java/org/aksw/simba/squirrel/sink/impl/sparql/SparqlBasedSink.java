@@ -1,6 +1,10 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
+import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -8,10 +12,13 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -33,6 +40,11 @@ public class SparqlBasedSink implements Sink {
      */
     private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
 
+    private KnownUriFilter knownUriFilter;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
+
+
 
     /**
      * Constructor of SparqlBasedSink
@@ -43,6 +55,25 @@ public class SparqlBasedSink implements Sink {
     public SparqlBasedSink(String updateDatasetURI, String queryDatasetURI) {
         this.updateDatasetURI = updateDatasetURI;
         this.queryDatasetURI = queryDatasetURI;
+
+        Map<String, String> env = System.getenv();
+
+        String rdbHostName = null;
+        int rdbPort = -1;
+        if (env.containsKey(FrontierComponent.RDB_HOST_NAME_KEY)) {
+            rdbHostName = env.get(FrontierComponent.RDB_HOST_NAME_KEY);
+            if (env.containsKey(FrontierComponent.RDB_PORT_KEY)) {
+                rdbPort = Integer.parseInt(env.get(FrontierComponent.RDB_PORT_KEY));
+            } else {
+                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_PORT_KEY);
+            }
+        } else {
+            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_HOST_NAME_KEY);
+        }
+
+        if ((rdbHostName != null) && (rdbPort > 0)) {
+            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
+        }
     }
 
     public void addMetadata() {
@@ -77,7 +108,10 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, tripleList));
+        if (knownUriFilter instanceof RDBKnownUriFilter) {
+            ((RDBKnownUriFilter) knownUriFilter).openConnector();
+        }
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }
@@ -87,42 +121,7 @@ public class SparqlBasedSink implements Sink {
         throw new UnsupportedOperationException();
     }
 
-
-    public static void main(String[] args) {
-        Triple triple1 = new Triple(NodeFactory.createBlankNode("testSubject1"), NodeFactory.createBlankNode("testPredicate1"), NodeFactory.createBlankNode("testObject1"));
-        Triple triple2 = new Triple(NodeFactory.createLiteral("512335testSubject2"), NodeFactory.createLiteral("testPredicate2"), NodeFactory.createLiteral("testObject2"));
-        Triple triple3 = new Triple(NodeFactory.createURI("349rf0ejn4f90wj"), NodeFactory.createURI("49f0j4efh"), NodeFactory.createURI("30r9j3f9j"));
-        Triple triple4 = new Triple(NodeFactory.createVariable("349rf0ejn4f90wj"), NodeFactory.createVariable("pred49f0j4efh"), NodeFactory.createVariable("30r9j3f9j"));
-        List<Triple> listBufferedTriples = new ArrayList<>();
-//        listBufferedTriples.add(triple1);
-//        listBufferedTriples.add(triple2);
-        listBufferedTriples.add(triple4);
-
-        System.out.println(QueryGenerator.formatNodeToString(triple4.getSubject()));
-
-
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append("INSERT DATA { Graph <");
-//        stringBuilder.append("sampleUri");
-//        stringBuilder.append("> { ");
-//        for (Triple triple : listBufferedTriples) {
-////            stringBuilder.append("<");
-//            stringBuilder.append(triple.getSubject());
-////            stringBuilder.append("> <");
-//            stringBuilder.append(" ");
-//            stringBuilder.append(triple.getPredicate());
-////            stringBuilder.append("> <");
-//            stringBuilder.append(" ");
-//            stringBuilder.append(triple.getObject());
-////            stringBuilder.append("> . ");
-//            stringBuilder.append(" . ");
-//        }
-//        stringBuilder.append("} ");
-//        stringBuilder.append("}");
-//
-//        System.out.println(stringBuilder.toString());
-//        UpdateRequest request = UpdateFactory.create(stringBuilder.toString());
-
+    public String getGraphId(CrawleableUri uri) {
+        return uri.getUri().toString() + knownUriFilter.getCrawlingCounterForUri(uri);
     }
 }
