@@ -37,18 +37,21 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
     public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
+    public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
+    public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
 
     private Worker worker;
     private DataSender sender;
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
     private Serializer serializer;
+    private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
         super.init();
         Map<String, String> env = System.getenv();
-        String outputFolder = null;
+        String outputFolder;
         if (env.containsKey(OUTPUT_FOLDER_KEY)) {
             outputFolder = env.get(OUTPUT_FOLDER_KEY);
         } else {
@@ -56,37 +59,50 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
             throw new Exception(msg);
         }
 
+        String sparqlDatasetPrefix;
+        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
+            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/ContentSet/";
+        } else {
+            String msg = "Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.";
+            throw new Exception(msg);
+        }
+        String updateDatasetURI = sparqlDatasetPrefix + "update";
+        String queryDatasetURI = sparqlDatasetPrefix + "query";
+
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
             .build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
         serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink();
+        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
         UriCollector collector = SqlBasedUriCollector.create(serializer);
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log");
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
+            serializer, collector, 2000, outputFolder + File.separator + "log", true);
+        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 
         serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId()));
+        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
-                } catch (IOException e) {
-                    LOGGER.warn(e.toString());
+        if (worker.sendsAliveMessages()) {
+            timerAliveMessages = new Timer();
+            timerAliveMessages.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                    } catch (IOException e) {
+                        LOGGER.warn(e.toString());
+                    }
                 }
-            }
-        }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
+            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
 
+        }
         LOGGER.info("Worker initialized.");
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         worker.run();
     }
 
@@ -94,6 +110,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     public void close() throws IOException {
         IOUtils.closeQuietly(sender);
         IOUtils.closeQuietly(client);
+        timerAliveMessages.cancel();
         super.close();
     }
 
@@ -103,7 +120,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         try {
             byte[] response = client.request(uriSetRequest);
             if (response != null) {
-                set = (UriSet) serializer.deserialize(response);
+                set = serializer.deserialize(response);
             }
         } catch (IOException e) {
             LOGGER.error("Error while requesting the next set of URIs.", e);
@@ -120,10 +137,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
 
-
     @Override
     public void addNewUri(CrawleableUri uri) {
-        addNewUris(Arrays.asList(uri));
+        addNewUris(Collections.singletonList(uri));
     }
 
     @Override
@@ -149,11 +165,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         return 0;
     }
 
-    /*
-    The WorkerComponent does not have to implement this method.
-     */
     @Override
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+    public boolean doesRecrawling() {
+        return false;
     }
 
 }

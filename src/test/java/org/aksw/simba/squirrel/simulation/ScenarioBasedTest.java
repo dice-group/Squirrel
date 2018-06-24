@@ -127,13 +127,13 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(100000), new InMemoryQueue());
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
         WorkerImpl worker = new WorkerImpl(frontier, sink,
             new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-            null);
+            null, false);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);

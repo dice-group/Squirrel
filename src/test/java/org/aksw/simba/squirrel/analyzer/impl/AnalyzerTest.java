@@ -34,33 +34,33 @@ public class AnalyzerTest {
 	private int expectedUris = 2829;
 
 
-	@Before
+    @Before
 	public void prepare() throws URISyntaxException, UnknownHostException {
 
 		this.sink = new InMemorySink();
 		this.collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 
-		analyzer = new RDFAnalyzer(collector);
+        analyzer = new RDFAnalyzer(collector);
 
-		curi = new CrawleableUri(new URI(uriToFetch));
+        curi = new CrawleableUri(new URI(uriToFetch));
 		curi.setIpAddress(InetAddress.getByName("dbpedia.org"));
 		curi.setType(UriType.DEREFERENCEABLE);
 
-		sink.openSinkForUri(curi);
+        sink.openSinkForUri(curi);
 		collector.openSinkForUri(curi);
 
-		ClassLoader classLoader = getClass().getClassLoader();
+        ClassLoader classLoader = getClass().getClassLoader();
 
-		data = new File(classLoader.getResource(fileToTest).getFile());
+        data = new File(classLoader.getResource(fileToTest).getFile());
 
-	}
+    }
 
 
 	@Test
 	public void test() {
 		Iterator<byte[]> uris =  analyzer.analyze(curi, data, sink);
 
-		int cont = 0;
+        int cont = 0;
 		while(uris.hasNext()) {
 			cont ++;
             uris.next();
@@ -68,6 +68,6 @@ public class AnalyzerTest {
 
 		Assert.assertEquals(expectedUris, cont);
 
-	}
+    }
 
 }

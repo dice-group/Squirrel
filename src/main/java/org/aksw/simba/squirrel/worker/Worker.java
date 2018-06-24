@@ -13,7 +13,7 @@ public interface Worker extends Runnable {
      * @param uris
      *            the URIs that should be crawled
      */
-    public void crawl(List<CrawleableUri> uris);
+    void crawl(List<CrawleableUri> uris);
 
     /**
      * Crawls the given URI and adds new URIs that have been found while
@@ -32,4 +32,12 @@ public interface Worker extends Runnable {
      * @return The id of the worker.
      */
     int getId();
+
+    /**
+     * Indicates whether the worker sends alive messages in order to convince the {@link org.aksw.simba.squirrel.frontier.Frontier}
+     * that he is still alive.
+     *
+     * @return True iff the worker sends alive messages.
+     */
+    boolean sendsAliveMessages();
 }

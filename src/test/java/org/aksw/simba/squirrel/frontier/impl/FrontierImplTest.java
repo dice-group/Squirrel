@@ -76,7 +76,7 @@ public class FrontierImplTest {
     }
 
     @Test
-    public void getNextUris() throws Exception {
+    public void getNextUris() {
         queue.addCrawleableUri(uris.get(1));
 
         List<CrawleableUri> nextUris = frontier.getNextUris();
@@ -129,7 +129,7 @@ public class FrontierImplTest {
     }
 
     @Test
-    public void getNumberOfPendingUris() throws Exception {
+    public void getNumberOfPendingUris() {
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();

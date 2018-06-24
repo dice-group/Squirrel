@@ -1,8 +1,8 @@
 package org.aksw.simba.squirrel.metadata;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
@@ -55,6 +55,7 @@ public class CrawlingActivity {
      * The sink used for the activity.
      */
     private Sink sink;
+
     /**
      * Constructor
      *
@@ -99,7 +100,7 @@ public class CrawlingActivity {
         int sum = 0;
         if (sink instanceof SparqlBasedSink) {
             for (CrawleableUri uri : mapUri.keySet()) {
-                sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
+                //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
             }
             numTriples = sum;
         } else {

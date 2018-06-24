@@ -1,4 +1,4 @@
-version: "2"
+version: '2'
 
 services:
   rethinkdb:
@@ -14,17 +14,17 @@ services:
     container_name: rabbit
     hostname: rabbit
     ports:
-      - "8081:15672"
+      - "15672:15672"
       # Forwarding the port for testing
       - "5672:5672"
 
-  sparqlHost:
+  jena:
       image: stain/jena-fuseki
-      container_name: sparqlHost
+      container_name: jena
       ports:
         - "3030:3030"
       volumes:
-        - ./scenarios/1/data/sparqlHost:/fuseki
+        - ./scenarios/1/data/jena:/fuseki
       environment:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
@@ -38,10 +38,16 @@ services:
       RDB_HOST_NAME: rethinkdb
       RDB_PORT: 28015
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-      COMMUNICATION_WITH_WEBSERVICE: "false"
+      COMMUNICATION_WITH_WEBSERVICE: "true"
     volumes:
       - ./scenarios/1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
+
+  web:
+    image: squirrel/webimage:latest
+    container_name: web
+    ports:
+      - "8080:8080"
 
   worker1:
     image: squirrel
@@ -50,8 +56,6 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-      SPARQL_HOST_NAME: sparqlHost
-      SPARQL_HOST_PORT: 3030
     volumes:
         - ./scenarios/1/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent

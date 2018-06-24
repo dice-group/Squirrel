@@ -1,5 +1,15 @@
 package org.aksw.simba.squirrel.fetcher.ftp;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,19 +18,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.fetcher.Fetcher;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * TODO Update this class by removing its dependency regarding the deprecated
  * {@link DumpFetcher} class.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -81,7 +82,7 @@ public class FTPFetcher implements Fetcher {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         // nothing to do
     }
 

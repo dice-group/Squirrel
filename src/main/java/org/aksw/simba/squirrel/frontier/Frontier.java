@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
+import java.io.Closeable;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public interface Frontier {
+public interface Frontier extends Closeable {
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
@@ -26,7 +27,7 @@ public interface Frontier {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    public List<CrawleableUri> getNextUris();
+    List<CrawleableUri> getNextUris();
 
     /**
      * Add this URIs to the {@link Frontier}s internal queue if the internal
@@ -35,7 +36,7 @@ public interface Frontier {
      * @param uri
      *            the URI that should be added to the {@link Frontier}
      */
-    public void addNewUri(CrawleableUri uri);
+    void addNewUri(CrawleableUri uri);
 
     /**
      * Adds the given list of URIs to the {@link Frontier}. It is like calling
@@ -44,7 +45,7 @@ public interface Frontier {
      * @param uris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void addNewUris(List<CrawleableUri> uris);
+    void addNewUris(List<CrawleableUri> uris);
 
     /**
      * This method should be called after a list of URIs have been requested
@@ -57,7 +58,7 @@ public interface Frontier {
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris);
+    void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
@@ -66,14 +67,13 @@ public interface Frontier {
      *
      * @return the number of pending URIs.
      */
-    public int getNumberOfPendingUris();
+    int getNumberOfPendingUris();
+
 
     /**
-     * The frontier gets the information that some worker has died and he has to react somehow.
+     * Indicates whether this frontier does recrawling.
      *
-     * @param idOfWorker        The id of the dead {@link org.aksw.simba.squirrel.worker.Worker}.
-     * @param lstUrisToReassign A list of {@link CrawleableUri} that should have been handeled by the
-     *                          dead worker, but was not due to his sudden death.
+     * @return True iff recrawling is active.
      */
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign);
+    boolean doesRecrawling();
 }

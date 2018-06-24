@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
+import java.util.List;
+
 /**
  * A {@link UriFilter} that works like a blacklist filter and contains only those
  * URIs on its blacklist that the crawler already has seen before.
@@ -14,16 +16,18 @@ public interface KnownUriFilter extends UriFilter {
      * Adds the given URI to the list of already known URIs. Works like calling {@link #add(CrawleableUri, long)} with the current system time.
      *
      * @param uri the URI that should be added to the list.
+     * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
-    public void add(CrawleableUri uri);
+    public void add(CrawleableUri uri, long nextCrawlTimestamp);
 
     /**
      * Adds the given URI to the list of already known URIs together with the the time at which it has been crawled.
      *
      * @param uri       the URI that should be added to the list.
-     * @param timestamp the time at which the given URI has eben crawled.
+     * @param lastCrawlTimestamp the time at which the given URI has eben crawled.
+     * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
-    public void add(CrawleableUri uri, long timestamp);
+    public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
      * Close RDB connection, destroy the database.
@@ -34,4 +38,17 @@ public interface KnownUriFilter extends UriFilter {
      * Open RDB connection, init the database.
      */
     public void open();
+
+    /**
+     * Returns all {@link CrawleableUri}s which have to be recrawled. This means their time to next crawl has passed.
+     *
+     * @return The outdated {@link CrawleableUri}s.
+     */
+    public List<CrawleableUri> getOutdatedUris();
+
+    /**
+     * count the numbers of known URIs
+     * @return the number of lines in that database
+     */
+    public long count();
 }

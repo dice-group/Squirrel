@@ -1,73 +1,74 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * This class is used to provides templates for basic SPARQL commands needed in this project.
  */
 public class QueryGenerator {
 
+    /**
+     * The instance of the class QueryGenerator.
+     */
     private static final QueryGenerator instance = new QueryGenerator();
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
-
 
     private QueryGenerator() {
     }
 
+    /**
+     * Getter for {@link #instance}.
+     *
+     * @return instannce of the class.
+     */
     public static QueryGenerator getInstance() {
         return instance;
     }
 
     /**
-     * Return an Add Query for the given graph id and triple.
-     *
-     * @param graphIdentifier the given graph id.
-     * @param triple          The given triple.
+     *Return an Add Query for the given uri and its triples.
+     * @param uri the uri where the triples found.
+     * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
-    public String getAddQuery(String graphIdentifier, Triple triple, boolean isMetaData) {
-        String strQuery = "";
-        if (isMetaData) {
-            strQuery += "prefix prov: <http://www.w3.org/ns/prov-o/> ";
-            strQuery += "prefix sq: <https://w3id.org/squirrel/> ";
+    public String getAddQuery(CrawleableUri uri, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("INSERT DATA { Graph <");
+            stringBuilder.append(uri.getUri());
+            stringBuilder.append("> { ");
+        for (Triple triple : listBufferedTriples) {
+            formatNodeToString(triple.getSubject());
+            formatNodeToString(triple.getPredicate());
+            formatNodeToString(triple.getObject());
         }
-        strQuery += "INSERT DATA { GRAPH <" + graphIdentifier + "> { ";
-        if (!isMetaData) {
-            strQuery += "<" + triple.getSubject() + "> <" + triple.getPredicate() + "> <" + triple.getObject() + "> ; ";
-        } else {
-            strQuery += "<" + triple.getSubject().getName() + "> " + triple.getPredicate().getName() + " <" + triple.getObject().getName() + "> ; ";
-        }
-        strQuery += "} }";
-        return strQuery;
-    }
-
-    /**
-     * Return an Add Query for a given uri and a triple.
-     * @param uri The given Uri.
-     * @param triple The given triple.
-     * @return The generated query.
-     */
-    public String getAddQuery(CrawleableUri uri, Triple triple, boolean isMetaData) {
-        return getAddQuery(uri.getUri().toString(), triple, isMetaData);
+        stringBuilder.append("} ");
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 
     /**
      * Return a select all query for a given uri.
+     *
      * @param uri The given uri.
      * @return The generated query.
      */
+    @SuppressWarnings("unused")
     public Query getSelectAllQuery(CrawleableUri uri) {
         return getSelectQuery(uri, null, true);
     }
 
     /**
      * Return a select query for a given uri and triple.
-     * @param uri The given uri.
+     *
+     * @param uri    The given uri.
      * @param triple The given triple.
      * @return The generated query.
      */
@@ -85,16 +86,46 @@ public class QueryGenerator {
      * @return
      */
     public Query getSelectQuery(CrawleableUri uri, Triple triple, boolean bSelectAll) {
-        String strQuery = "SELECT ?subject ?predicate ?object WHERE { GRAPH <" + uri.getUri().toString() + "> { ";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { GRAPH <");
+        stringBuilder.append(uri.getUri());
+        stringBuilder.append("> { ");
         if (bSelectAll) {
-            strQuery += "?subject ?predicate ?object ";
+            stringBuilder.append("?subject ?predicate ?object ");
         } else {
-            strQuery += triple.getSubject().getName() + " " + triple.getPredicate().getName() + " " + triple.getObject().getName() + " ; ";
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+//            stringBuilder.append(" ; ");
         }
-        strQuery += "} }";
-        Query query = QueryFactory.create(strQuery);
+        stringBuilder.append("} } ");
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
-
+    public static String formatNodeToString(Node node) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (node.isURI()) {
+            stringBuilder.append("< ");
+            stringBuilder.append(node.getURI());
+            stringBuilder.append("> ");
+        } else if (node.isBlank()) {
+            stringBuilder.append("_:");
+            stringBuilder.append(node.getBlankNodeLabel());
+        } else if (node.isLiteral()) {
+            stringBuilder.append("\"");
+            stringBuilder.append(node.getName());
+            stringBuilder.append("\"");
+            if (node.getLiteralLanguage() != null) {
+                stringBuilder.append("@");
+                stringBuilder.append(node.getLiteralLanguage());
+            }
+            if (node.getLiteralDatatype() != null) {
+                stringBuilder.append("^^");
+                stringBuilder.append(node.getLiteralDatatype());
+            }
+        }
+        stringBuilder.append(" ");
+        return stringBuilder.toString();
+    }
 }

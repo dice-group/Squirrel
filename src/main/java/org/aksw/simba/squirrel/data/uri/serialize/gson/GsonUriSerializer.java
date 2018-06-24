@@ -100,8 +100,8 @@ public class GsonUriSerializer implements Serializer {
             out.name(ADDRESS_IP_KEY);
             byte ip[] = ipAddress.getAddress();
             out.beginArray();
-            for (int i = 0; i < ip.length; ++i) {
-                out.value(ip[i]);
+            for (byte anIp : ip) {
+                out.value(anIp);
             }
             out.endArray();
             out.endObject();
@@ -128,7 +128,7 @@ public class GsonUriSerializer implements Serializer {
             String key;
             InetAddress inetAddress = null;
             UriType type = UriType.UNKNOWN;
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             while (in.peek() != JsonToken.END_OBJECT) {
                 key = in.nextName();
                 switch (key) {

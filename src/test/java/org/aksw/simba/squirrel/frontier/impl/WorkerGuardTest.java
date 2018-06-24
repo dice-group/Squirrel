@@ -35,7 +35,7 @@ public class WorkerGuardTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
 
         filter = new RDBKnownUriFilter("localhost", 28015);
@@ -54,10 +54,9 @@ public class WorkerGuardTest {
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         UriCollector collector = SqlBasedUriCollector.create(serializer);
         worker = new WorkerImpl(null, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log");
+            serializer, collector, 2000, outputFolder + File.separator + "log", true);
 
         workerComponent.setWorker(worker);
-        System.out.println("hier da");
     }
 
     @Test
@@ -69,12 +68,12 @@ public class WorkerGuardTest {
             frontierComponent.run();
             int workerId = worker.getId();
             Thread.sleep(WorkerGuard.TIME_WORKER_DEAD / 2 + 10);
-            boolean idContained = frontierComponent.getWorkerGuard().getMapTimestamps().containsKey(workerId);
+            boolean idContained = frontierComponent.getWorkerGuard().getMapWorkerInfo().containsKey(workerId);
             ((WorkerImpl) worker).setTerminateFlag(true);
 
 
             Thread.sleep(WorkerGuard.TIME_WORKER_DEAD + 10);
-            boolean idStillContained = frontierComponent.getWorkerGuard().getMapTimestamps().containsKey(workerId);
+            boolean idStillContained = frontierComponent.getWorkerGuard().getMapWorkerInfo().containsKey(workerId);
 
             Assert.assertTrue(idContained && !idStillContained);
 
