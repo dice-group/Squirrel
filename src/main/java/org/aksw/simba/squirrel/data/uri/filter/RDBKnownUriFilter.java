@@ -44,7 +44,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
-    private static final String COLUMN_CRAWL_COUNTER = "crawlingCounter";
 
     /**
      * Constructor.
@@ -159,11 +158,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
                 .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, 1))
                 .run(connector.connection);
         }
-        cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).run(connector.connection);
-        HashMap map = cursor.next();
-        long counter = (long) map.get(COLUMN_CRAWL_COUNTER);
-        counter++;
-        r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_CRAWL_COUNTER), counter)).run(connector.connection);
         cursor.close();
         LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
@@ -174,24 +168,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         }
     }
 
-    @Override
-    public long getCrawlingCounterForUri(CrawleableUri uri) {
-        Cursor<Long> cursor = r.db(DATABASE_NAME)
-            .table(TABLE_NAME)
-            .getAll(uri.getUri().toString())
-            .optArg("index", COLUMN_URI)
-            .g(COLUMN_CRAWL_COUNTER)
-            .run(connector.connection);
-
-        long counter;
-        if (cursor.hasNext()) {
-            counter = (Long) cursor.next();
-        } else {
-            counter = 0;
-        }
-        cursor.close();
-        return counter;
-    }
 
     private MapObject convertURIToRDB(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
@@ -206,7 +182,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         MapObject uriMap = convertURIToRDB(uri);
         return uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
-            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess).with(COLUMN_CRAWL_COUNTER, crawlingCounter);
+            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
     }
 
     @Override
