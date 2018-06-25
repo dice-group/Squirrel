@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -213,6 +214,9 @@ public class WorkerImpl implements Worker, Closeable {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
                 }
+
+                // calculate uuid for uri
+                uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
             }
         }
         // classify URIs
