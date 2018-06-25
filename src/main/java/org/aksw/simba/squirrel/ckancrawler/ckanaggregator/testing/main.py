@@ -24,9 +24,19 @@
 # dump.dump_things(ckan, thing, arguments)
 
 
-from ckanapi.cli import dump
-from ckanapi import RemoteCKAN
-thing = ['dump', 'datasets']
-arguments= ['-all', '-O', 'datasets.jsonl.gz', '-z', '-p', 1, '-r', 'https://demo.ckan.org/']
-ckan = RemoteCKAN('http://demo.ckan.org/api')
-dump.dump_things(ckan, thing, arguments)
+# from ckanapi.cli import dump
+# from ckanapi import RemoteCKAN
+# thing = ['datasets']
+# arguments= ['-all', '-O', 'datasets.jsonl.gz', '-z', '-p', 1, '-r', 'https://demo.ckan.org/']
+# ckan = RemoteCKAN('http://demo.ckan.org/api')
+# dump.dump_things(ckan, thing, arguments)
+
+# from ckanapi.cli import main
+#
+# arguments = 'ckanapi dump datasets --all -O datase.jsonl.gz -z -l -p 1 -r https://demo.ckan.org/'
+# main.main(arguments)
+
+import os
+
+os.system("sudo ckanapi dump datasets --all -O datasetcanada.jsonl.gz -z -p 2 -r https://demo.ckan.org/")
+
