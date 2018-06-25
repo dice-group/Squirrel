@@ -30,8 +30,6 @@ public interface KnownUriFilter extends UriFilter {
      */
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
-    public long getCrawlingCounterForUri(CrawleableUri uri);
-
     /**
      * Close RDB connection, destroy the database.
      */

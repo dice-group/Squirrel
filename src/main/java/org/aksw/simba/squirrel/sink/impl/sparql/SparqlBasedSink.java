@@ -40,8 +40,6 @@ public class SparqlBasedSink implements Sink {
      */
     private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
 
-    private KnownUriFilter knownUriFilter;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
 
@@ -55,25 +53,6 @@ public class SparqlBasedSink implements Sink {
     public SparqlBasedSink(String updateDatasetURI, String queryDatasetURI) {
         this.updateDatasetURI = updateDatasetURI;
         this.queryDatasetURI = queryDatasetURI;
-
-        Map<String, String> env = System.getenv();
-
-        String rdbHostName = null;
-        int rdbPort = -1;
-        if (env.containsKey(FrontierComponent.RDB_HOST_NAME_KEY)) {
-            rdbHostName = env.get(FrontierComponent.RDB_HOST_NAME_KEY);
-            if (env.containsKey(FrontierComponent.RDB_PORT_KEY)) {
-                rdbPort = Integer.parseInt(env.get(FrontierComponent.RDB_PORT_KEY));
-            } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_PORT_KEY);
-            }
-        } else {
-            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_HOST_NAME_KEY);
-        }
-
-        if ((rdbHostName != null) && (rdbPort > 0)) {
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-        }
     }
 
     public void addMetadata() {
@@ -108,10 +87,7 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        if (knownUriFilter instanceof RDBKnownUriFilter) {
-            ((RDBKnownUriFilter) knownUriFilter).openConnector();
-        }
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }
@@ -121,7 +97,12 @@ public class SparqlBasedSink implements Sink {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Get the id of the graph in which the given uri is stored.
+     * @param uri The given uri.
+     * @return The id of the graph.
+     */
     public String getGraphId(CrawleableUri uri) {
-        return uri.getUri().toString() + knownUriFilter.getCrawlingCounterForUri(uri);
+        return (String) uri.getData(CrawleableUri.UUID_KEY);
     }
 }
