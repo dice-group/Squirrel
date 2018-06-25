@@ -6,3 +6,5 @@ print x
 
 
 print r.headers['content-type']
+
+print r
