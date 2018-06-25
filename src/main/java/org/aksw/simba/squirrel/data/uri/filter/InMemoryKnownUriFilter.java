@@ -58,11 +58,6 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     }
 
     @Override
-    public long getCrawlingCounterForUri(CrawleableUri uri) {
-        return 0;
-    }
-
-    @Override
     public boolean isUriGood(CrawleableUri uri) {
         if (uris.containsKey(uri)) {
             if (!frontierDoesRecrawling){

@@ -155,7 +155,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         } else {
             r.db(DATABASE_NAME)
                 .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, 1))
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false))
                 .run(connector.connection);
         }
         cursor.close();

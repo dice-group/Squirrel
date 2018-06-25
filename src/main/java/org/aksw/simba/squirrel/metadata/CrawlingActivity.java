@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.metadata;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.collections.map.HashedMap;
@@ -27,7 +28,7 @@ public class CrawlingActivity {
     /**
      * A unique id.
      */
-    private UUID id;
+    private String id;
     /**
      * When the activity has started.
      */
@@ -65,7 +66,7 @@ public class CrawlingActivity {
     /**
      * The sink used for the activity.
      */
-    private Sink sink;
+    private TripleBasedSink sink;
 
     /**
      * Constructor
@@ -74,30 +75,20 @@ public class CrawlingActivity {
      * @param worker
      * @param sink
      */
-    public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
+    public CrawlingActivity(CrawleableUri uri, Worker worker, TripleBasedSink sink) {
         this.worker = worker;
         this.dateStarted = new Date();
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
-        id = UUID.randomUUID();
+        if (sink instanceof SparqlBasedSink) {
+            graphId = ((SparqlBasedSink) sink).getGraphId(uri);
+        }
+        id = "activity:" + graphId;
         this.sink = sink;
     }
 
     public void setState(CrawlingURIState state) {
         this.state = state;
-        if (state.equals(CrawlingURIState.SUCCESSFUL)) {
-            if (sink instanceof SparqlBasedSink) {
-                graphId = ((SparqlBasedSink) sink).getGraphId(uri);
-            }
-        }
-    }
-
-    public void setGraphId() {
-        if (state.equals(CrawlingURIState.SUCCESSFUL)) {
-            if (sink instanceof SparqlBasedSink) {
-                graphId = ((SparqlBasedSink) sink).getGraphId(uri);
-            }
-        }
     }
 
     public void finishActivity() {
@@ -121,7 +112,7 @@ public class CrawlingActivity {
         }
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

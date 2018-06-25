@@ -184,19 +184,18 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
                 crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
             } else {
+                // calculate uuid for uri
+                uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
                 try {
                     performCrawling(uri, newUris);
                     crawledUris.add(uri);
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
-                    crawlingActivity.setGraphId();
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
                         + "\". It will be ignored.", e);
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 }
 
-                // calculate uuid for uri
-                uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
             }
             crawlingActivity.finishActivity();
             metaDataHandler.addMetadata(crawlingActivity);

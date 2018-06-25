@@ -87,7 +87,7 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(uri, tripleList));
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }
@@ -99,6 +99,7 @@ public class SparqlBasedSink implements Sink {
 
     /**
      * Get the id of the graph in which the given uri is stored.
+     *
      * @param uri The given uri.
      * @return The id of the graph.
      */
