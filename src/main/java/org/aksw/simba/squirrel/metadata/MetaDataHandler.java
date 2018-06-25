@@ -37,17 +37,17 @@ public class MetaDataHandler {
     public void addMetadata(final CrawlingActivity crawlingActivity) {
         List<Triple> lstTriples = new LinkedList<>();
         Node nodeCrawlingActivity = NodeFactory.createLiteral("crawlingActivity" + crawlingActivity.getId());
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:startedAtTime"), NodeFactory.createLiteral(crawlingActivity.getDateStarted())));
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:endedAtTime"), NodeFactory.createLiteral(crawlingActivity.getDateEnded())));
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:Status"), NodeFactory.createLiteral(crawlingActivity.getState().toString())));
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:wasAssociatedWith"), NodeFactory.createLiteral(String.valueOf(crawlingActivity.getWorker().getId()))));
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:numberOfTriples"), NodeFactory.createLiteral(String.valueOf(crawlingActivity.getNumTriples()))));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.startedAtTime.asNode(), NodeFactory.createLiteral(crawlingActivity.getDateStarted())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.endedAtTime.asNode(), NodeFactory.createLiteral(crawlingActivity.getDateEnded())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.status.asNode(), NodeFactory.createLiteral(crawlingActivity.getState().toString())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.wasAssociatedWith.asNode(), NodeFactory.createLiteral(String.valueOf(crawlingActivity.getWorker().getId()))));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.numberOfTriples.asNode(), NodeFactory.createLiteral(String.valueOf(crawlingActivity.getNumTriples()))));
+        Node nodeResultGraph = NodeFactory.createLiteral(crawlingActivity.getGraphId());
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.wasGeneratedBy.asNode(), nodeResultGraph));
+        lstTriples.add(new Triple(nodeResultGraph, MetaDataVocabulary.uriName.asNode(), NodeFactory.createURI(crawlingActivity.getCrawleableUri().getUri().toString())));
         //TODO lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:hostedOn"), NodeFactory.createLiteral(datasetPrefix)));
         //TODO for Meher: Merge new change from other branch manually for hadPlan
         //lstTriples.add(new Triple(nodeCrawlingActivity,NodeFactory.createURI("prov:hadPlan"),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
-        Node nodeResultGraph = NodeFactory.createLiteral(crawlingActivity.getGraphId());
-        lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("prov:wasGeneratedBy"), nodeResultGraph));
-        lstTriples.add(new Triple(nodeResultGraph, NodeFactory.createURI("sq:uriName"), NodeFactory.createURI(crawlingActivity.getCrawleableUri().getUri().toString())));
 
         //TODO null is not supproted
         sink.openSinkForUri(null);
