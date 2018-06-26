@@ -155,14 +155,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             deserializedData = serializer.deserialize(data);
         } catch (IOException e) {
             //try to convert the string into a single URI, that maybe comes from the WebService
-            CrawleableUri uri = new CrawleableUriFactoryImpl().create(new String(data));
-            if (uri != null) {
-                LOGGER.warn("Received a single URI " + uri.getUri() + " without a wrapping of \"org.aksw.simba.squirrel.rabbit.msgs\". We converted it into a UriSet.");
-                deserializedData = new UriSet(Collections.singletonList(uri));
-            } else {
-                LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
-                return;
-            }
+//            CrawleableUri uri = new CrawleableUriFactoryImpl().create(new String(data));
+//            if (uri != null) {
+//                LOGGER.warn("Received a single URI " + uri.getUri() + " without a wrapping of \"org.aksw.simba.squirrel.rabbit.frontier\". We converted it into a UriSet.");
+//                deserializedData = new UriSet(Collections.singletonList(uri));
+//            } else {
+            LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
+            return;
+//            }
         }
 
         if (deserializedData != null) {

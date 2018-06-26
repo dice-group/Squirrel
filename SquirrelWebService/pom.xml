@@ -58,6 +58,12 @@
             <version>0.4.2</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.aksw.simba</groupId>
+            <artifactId>squirrel</artifactId>
+            <version>0.3.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -90,6 +96,10 @@
         <repository>
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <repository>
+            <id>local repository</id>
+            <url>file://${project.basedir}\..\repository</url>
         </repository>
     </repositories>
     <pluginRepositories>

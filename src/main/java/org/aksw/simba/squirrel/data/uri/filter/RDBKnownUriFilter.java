@@ -195,10 +195,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .run(connector.connection);
         if (cursor.hasNext()) {
             if (!frontierDoesRecrawling) {
-                LOGGER.debug("URI {} is not good", uri.toString());
+                LOGGER.debug("URI {} is not good, because it was already crawled and the frontier does not recrawl anything!", uri.toString());
+                cursor.close();
                 return false;
             }
             Long timestampNextCrawl = cursor.next();
+            LOGGER.debug("URI {} was already crawled and will be next crawled at " + timestampNextCrawl + ". Current time stamp is " + System.currentTimeMillis(), uri.toString());
             cursor.close();
             return System.currentTimeMillis() > timestampNextCrawl;
         } else {

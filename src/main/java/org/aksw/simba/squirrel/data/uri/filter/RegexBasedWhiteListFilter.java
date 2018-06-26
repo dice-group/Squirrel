@@ -38,7 +38,7 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
-		if (super.isUriGood(uri) && whiteList != null && whiteList.size() > 0) {
+		if (super.isUriGood(uri) && whiteList != null && !whiteList.isEmpty()) {
 
 			for (String s : whiteList) {
 
@@ -46,11 +46,11 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 				Matcher m = p.matcher(uri.getUri().toString().toLowerCase());
 
 				if (m.find()) {
+				    LOGGER.trace("The URI {} fits to the pattern " + p.pattern() + " of the whitelist", uri.getUri().toString());
 					return true;
 				}
-
 			}
-
+			LOGGER.warn("The URI {} is itself a good URI, but no of the " + whiteList.size() + " patterns of the whitelist matches! (in " + this + ")", uri.getUri().toString());
 		}
 		return false;
 	}

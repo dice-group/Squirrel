@@ -107,18 +107,17 @@ public class RabbitController {
             return "Please enter something!";
         }
         try {
-            new URI(uri);
+            URI uriObject = new URI(uri);
+            uri = (uriObject.getScheme() == null) ? "http://" + uri : uri;
         } catch (URISyntaxException e) {
             return "Your input " + e.getInput() + " is not a URI! Syntax error: " + e.getReason();
         }
 
         //PROCEEDING
-        try {
-            Application.listenerThread.publishURI(uri);
-        } catch (IOException e) {
-            return "Can't publish " + uri + " (" + e.getMessage() + "). Maybe you should try out it again?";
+        if(Application.listenerThread.publishURI(uri)) {
+            return "Succeeded with forwarding the URI " + uri + " to the queue to the Frontier! Maybe the Frontier denies adding the URI to the pending URI list, so in cases of doubt pay attention to the frontier LOGGING or contact the developer";
+        } else {
+            return "Failed to forward the URI " + uri + " to the =rabbit=> frontier. Try it (later) again!";
         }
-
-        return "Succeeded with forwarding the URI " + uri + " to the queue to the Frontier! Maybe you must wait a few moments for sending& crawling that certain URI.";
     }
 }

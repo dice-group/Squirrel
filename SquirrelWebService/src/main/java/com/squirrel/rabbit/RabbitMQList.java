@@ -5,13 +5,20 @@ import com.SquirrelWebObjectHelper;
 import com.graph.VisualisationGraph;
 import com.graph.VisualisationHelper;
 import com.rabbitmq.client.*;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -30,6 +37,8 @@ public class RabbitMQList implements Runnable {
     private final static String QUEUE_OUTPUT_URI_NAME = "squirrel.frontier"; // "squirrel.web.out.uri";
     private Connection connection;
     private Channel channel;
+
+    private Serializer serializer = new GzipJavaUriSerializer();
 
     private Logger logger = LoggerFactory.getLogger(RabbitMQList.class);
 
@@ -239,14 +248,21 @@ public class RabbitMQList implements Runnable {
     }
 
     /**
-     * Just publishes a URI to the queue (connected with the Frontier)
+     * Just publishes a URI to the queue (connected with the Frontier): for serialising, a {@link Serializer} is used.
+     * Until yet, it's common to use as the {@link Serializer} implementation the {@link GzipJavaUriSerializer}. If it changes, you should adpat this method!
      *
      * @param uri the {@link java.net.URI}
-     * @throws IOException if it doesn't work
+     * @return {@code true} if and only if the publish to the {@link Channel} succeeded!
      */
-    void publishURI(String uri) throws IOException {
+    boolean publishURI(String uri) {
         logger.trace("Received a request to publish " + uri);
-        channel.basicPublish("", QUEUE_OUTPUT_URI_NAME, null, uri.getBytes());
-        logger.info("Successful pushed the URI " + uri + " to the rabbit queue " + QUEUE_OUTPUT_URI_NAME);
+        try {
+            channel.basicPublish("", QUEUE_OUTPUT_URI_NAME, null, serializer.serialize(new UriSet(Collections.singletonList(new CrawleableUriFactoryImpl().create(uri)))));
+            logger.info("Successful pushed the URI " + uri + " to the rabbit queue " + QUEUE_OUTPUT_URI_NAME);
+            return true;
+        } catch (IOException e) {
+            logger.error("ERROR during serializing/ publishing the " + uri, e);
+        }
+        return false;
     }
 }
