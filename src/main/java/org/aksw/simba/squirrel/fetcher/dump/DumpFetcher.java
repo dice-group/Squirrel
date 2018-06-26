@@ -1,22 +1,10 @@
 package org.aksw.simba.squirrel.fetcher.dump;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.utils.ZipArchiver;
-import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -33,10 +21,17 @@ import org.apache.jena.riot.lang.PipedTriplesStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
- * 
+ *
  * @deprecated Use the {@link HTTPFetcher} instead.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -109,15 +104,15 @@ public class DumpFetcher implements Fetcher {
         return null;
     }
 
-    protected String downloadFile(CrawleableUri uri, String tempfolder) {
+    protected String downloadFile(CrawleableUri uri, String tempFolder) {
         // Download files to temp folder
-        String tempfile = UriUtils.generateFileName(uri.toString(), false);
-        File outputFile = new File(tempfolder, tempfile);
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        String tempFile = UriUtils.generateFileName(uri.toString(), false);
+        File outputFile = new File(tempFolder, tempFile);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet(uri.getUri());
         try {
             LOGGER.debug("Executing request: " + httpget.getRequestLine());
-            CloseableHttpResponse response = httpclient.execute(httpget);
+            CloseableHttpResponse response = httpClient.execute(httpget);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 InputStream inputStream = entity.getContent();
@@ -131,9 +126,9 @@ public class DumpFetcher implements Fetcher {
                 }
             }
             response.close();
-            httpclient.close();
+            httpClient.close();
         } catch (ClientProtocolException ServerFail) {
-            LOGGER.error("Worker failed to prcess request. Returning null.", ServerFail);
+            LOGGER.error("Worker failed to process request. Returning null.", ServerFail);
             return null;
         } catch (IOException ClientProtocolException) {
             LOGGER.error("Worker could not process request. Returning null.", ClientProtocolException);
@@ -157,12 +152,13 @@ public class DumpFetcher implements Fetcher {
     }
 
     private boolean matchesSerialization(String uriString, String serialization) {
-        String[] regexs = { ".*\\." + serialization + ".*" };
-        return UriUtils.isStringMatchRegexs(uriString, regexs);
+        String[] regexps = { ".*\\." + serialization + ".*" };
+        return UriUtils.isStringMatchRegexps(uriString, regexps);
     }
-    
+
     @Override
     public void close() throws IOException {
         // nothing to do
     }
+
 }

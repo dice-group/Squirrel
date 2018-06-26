@@ -3,6 +3,7 @@ package org.aksw.simba.squirrel.frontier.impl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.UriFilter;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.aksw.simba.squirrel.queue.UriQueue;
@@ -41,6 +42,20 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      */
     public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
         super(knownUriFilter, queue, doesRecrawling);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
+     *                       crawled.
+     * @param uriReferences  {@link URIReferences} used to manage URI references
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param doesRecrawling used to select if URIs should be recrawled.
+     */
+    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling) {
+        super(knownUriFilter, uriReferences, queue, doesRecrawling);
     }
 
     @Override
