@@ -27,7 +27,23 @@ All yml files in the root folder crawls real existing data portals with the help
 - `docker-compose-simulation-sparql-web.yml`: sparql-sink based (_JENA_), with web including the visualization of crawled graph!
 
 ---
+
 ## Dependencies
+
+### Using a Sparql-Host
+
+You can use a sparql-based triple store to store the crawled data. If you want use it, you have to do the following:
+
+Until yet, the necessary datasets in the database are not created automatically. So you have to create them by hand:
+1. Run Squirrel as explained above 
+2. Enter *localhost:3030* in your browser's address line
+3. Go to *manage datasets*
+4. Click *add new dataset*
+5. For *Dataset name* paste *ContentSet*
+6. For *Dataset type* select *Persistent – dataset will persist across Fuseki restarts*
+7. Go to step 4 again and do the same, **but this time with *"Metadata"* as *"Dataset name"***
+
+### Further dependencies
 
 The [Squirrel-Webservice](https://github.com/phhei/Squirrel-Webservice) and the [SquirrelWebObject](https://github.com/phhei/SquirrelWebObject) are included in this project, now. This leads to the fact, that this project is a multi module maven project now. For that, there are 2 pom.xml's in the root layer:
 - `pom.xml`: this is the module bundle pom xml. If you execute ``mvn clean package``, this file will be called. As a consequence from this, all submodules including the _squirrel_ will be complied an packed
