@@ -98,8 +98,12 @@
             <url>https://repo.spring.io/libs-release</url>
         </repository>
         <repository>
-            <id>local repository</id>
-            <url>file://${project.basedir}\..\repository</url>
+            <id>local repository own</id>
+            <url>file://${project.basedir}/repository</url>
+        </repository>
+        <repository>
+            <id>local repository upper</id>
+            <url>file://${project.basedir}/../repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
