@@ -12,7 +12,6 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -65,7 +64,6 @@ public class McloudAnalyzer implements Analyzer
     private static final DateTimeFormatter mCloudDatasetFormat = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss O yyyy");
 
     // mCloud URI related Strings and Patterns
-    private static final String URI_SUFFIX = "/URI";
     private static final String METADATA_URI_SUFFIX = "/URI-METADATA";
     private static final String FTP_CONSTANT = "FTP";
     private static final String DOWNLOAD_CONSTANT = "DATEIDOWNLOAD";
@@ -495,7 +493,7 @@ public class McloudAnalyzer implements Analyzer
 
         if (!publisherName.isEmpty() && publisherURI != null)
         {
-            Resource publisher = model.createResource(publisherURI.toString() + URI_SUFFIX);
+            Resource publisher = model.createResource(createUniqueURI(LMCSE.getURI(), publisherName, publisherURI.toString()));
             publisher.addProperty(RDF.type, DCTerms.Agent);
             publisher.addProperty(RDFS.label, publisherName);
             publisher.addProperty(DCTerms.source, publisherURI.toString());
@@ -562,7 +560,7 @@ public class McloudAnalyzer implements Analyzer
 
         if (licenseURI != null && licenseName != null)
         {
-            Resource license = model.createResource(licenseURI.toString() + URI_SUFFIX);
+            Resource license = model.createResource(createUniqueURI(LMCSE.getURI(), licenseName, licenseURI.toString()));
             license.addProperty(RDF.type, DCTerms.LicenseDocument);
             license.addProperty(RDFS.label, licenseName);
             license.addProperty(DCTerms.source, licenseURI.toString());
@@ -626,7 +624,7 @@ public class McloudAnalyzer implements Analyzer
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(identifier).append(url);
 
-        return base + "-" + createURIConformString(identifier) + "-" + builder.toHashCode();
+        return base + createURIConformString(identifier) + "-" + builder.toHashCode();
     }
 
     /**

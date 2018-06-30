@@ -66,10 +66,10 @@ public class LMCSE
     /**
      * <p>Base for URI creation of Datasets for DCAT catalog</p>
      */
-    public static final String DataSetUriBase = NS + "dataset";
+    public static final String DataSetUriBase = NS + "dataset-";
 
     /**
      * <p>Base for URI creation of Distributions for DCAT catalog</p>
      */
-    public static final String DistributionUriBase = NS + "distribution";
+    public static final String DistributionUriBase = NS + "distribution-";
 }
