@@ -49,9 +49,10 @@ public class QueryGenerator {
             stringBuilder.append("> { ");
         }
         for (Triple triple : listBufferedTriples) {
-            formatNodeToString(triple.getSubject());
-            formatNodeToString(triple.getPredicate());
-            formatNodeToString(triple.getObject());
+            stringBuilder.append(formatNodeToString(triple.getSubject()));
+            stringBuilder.append(formatNodeToString(triple.getPredicate()));
+            stringBuilder.append(formatNodeToString(triple.getObject()));
+            stringBuilder.append(". ");
         }
         if (graphId != null) {
             stringBuilder.append("} ");
@@ -102,7 +103,7 @@ public class QueryGenerator {
             stringBuilder.append(formatNodeToString(triple.getSubject()));
             stringBuilder.append(formatNodeToString(triple.getSubject()));
             stringBuilder.append(formatNodeToString(triple.getSubject()));
-//            stringBuilder.append(" ; ");
+//            stringBuilder.append(". ");
         }
         stringBuilder.append("} } ");
         Query query = QueryFactory.create(stringBuilder.toString());
@@ -112,23 +113,24 @@ public class QueryGenerator {
     public static String formatNodeToString(Node node) {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
-            stringBuilder.append("< ");
+            stringBuilder.append("<");
             stringBuilder.append(node.getURI());
-            stringBuilder.append("> ");
+            stringBuilder.append(">");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");
             stringBuilder.append(node.getBlankNodeLabel());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
-            stringBuilder.append(node.getName());
+            stringBuilder.append(node.getLiteral());
             stringBuilder.append("\"");
-            if (node.getLiteralLanguage() != null) {
+            if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
                 stringBuilder.append("@");
                 stringBuilder.append(node.getLiteralLanguage());
-            }
-            if (node.getLiteralDatatype() != null) {
+            }else if (node.getLiteralDatatype() != null) {
                 stringBuilder.append("^^");
-                stringBuilder.append(node.getLiteralDatatype());
+                stringBuilder.append("<");
+                stringBuilder.append(node.getLiteralDatatype().getURI());
+                stringBuilder.append(">");
             }
         }
         stringBuilder.append(" ");

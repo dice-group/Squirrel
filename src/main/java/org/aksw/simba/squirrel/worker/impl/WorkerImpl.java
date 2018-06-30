@@ -180,7 +180,7 @@ public class WorkerImpl implements Worker, Closeable {
         List<CrawleableUri> crawledUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
-            uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
+            uri.addData(CrawleableUri.UUID_KEY, "graph:"+ UUID.randomUUID().toString());
             CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
             if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");

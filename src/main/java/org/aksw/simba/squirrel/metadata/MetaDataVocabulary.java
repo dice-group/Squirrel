@@ -12,7 +12,7 @@ public class MetaDataVocabulary {
 
     public static final Property startedAtTime = model.createProperty(baseProv + "startedAtTime");
     public static final Property endedAtTime = model.createProperty(baseProv + "endedAtTime");
-    public static final Property wasAssociatedWith = model.createProperty(baseProv + "Status");
+    public static final Property wasAssociatedWith = model.createProperty(baseProv + "wasAssociatedWith");
     public static final Property wasGeneratedBy = model.createProperty(baseProv + "wasGeneratedBy");
 
 
