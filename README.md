@@ -22,9 +22,9 @@ Squirrel searches and collects Linked Data
 #### There are currently 3 yml-options
 
 All yml files in the root folder crawls real existing data portals with the help of [HtmlScraper](https://github.com/dice-group/Squirrel/wiki/HtmlScraper_how_to)
-- `docker-compose-simulation.yml`: file-sink based, without web
-- `docker-compose-simulation-sparql.yml`: sparql-sink based (_JENA_), without web
-- `docker-compose-simulation-sparql-web.yml`: sparql-sink based (_JENA_), with web including the visualization of crawled graph!
+- `docker-compose.yml`: file-sink based, without web
+- `docker-compose-sparql.yml`: sparql-sink based (_JENA_), without web
+- `docker-compose-sparql-web.yml`: sparql-sink based (_JENA_), with web including the visualization of crawled graph!
 
 ---
 

@@ -37,12 +37,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     /*
     Some constants for the rethinkDB
      */
-    public static final String DATABASE_NAME = "squirrel";
-    public static final String TABLE_NAME = "knownurifilter";
-    public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
-    public static final String COLUMN_URI = "uri";
-    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
-    public static final String COLUMN_FOUNDURIS = "foundUris";
+    private static final String DATABASE_NAME = "squirrel";
+    private static final String TABLE_NAME = "knownurifilter";
+    private static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
+    private static final String COLUMN_URI = "uri";
+    private static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
@@ -77,6 +76,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      * @param r                      Value for {@link #r}.
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
      */
+    @SuppressWarnings("unused")
     public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling) {
         this.connector = connector;
         this.r = r;
