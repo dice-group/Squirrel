@@ -9,7 +9,7 @@ channel = connection.channel()
 
 channel.basic_publish(exchange='',
                       routing_key='ckan',
-                      body='https://www.facebook.com')
+                      body='https://demo.ckan.org')
 
 print(" [x] Sent 'ckancrawler started'")
 connection.close()
