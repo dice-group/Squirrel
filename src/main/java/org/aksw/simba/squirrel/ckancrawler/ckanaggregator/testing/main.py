@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #from ckanapi import
 
 #url = 'https://demo.ckan.org/api'
