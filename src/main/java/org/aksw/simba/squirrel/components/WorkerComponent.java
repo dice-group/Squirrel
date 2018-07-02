@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
+import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -88,17 +89,18 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
 
         Sink sink;
+        MetaDataHandler metaDataHandler = null;
         if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
             sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
         } else {
-            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/ContentSet/";
-            sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+            sink = new SparqlBasedSink(httpPrefix + "ContentSet/update", httpPrefix + "ContentSet/query");
+            metaDataHandler = new MetaDataHandler(httpPrefix + "MetaData/update", httpPrefix + "MetaData/query");
         }
 
         serializer = new GzipJavaUriSerializer();
 
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
-
+        worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }

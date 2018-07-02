@@ -35,6 +35,7 @@ import java.util.TreeMap;
  */
 public class CrawleableUri implements Serializable {
 
+    public static final String UUID_KEY = "UUID";
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawleableUri.class);

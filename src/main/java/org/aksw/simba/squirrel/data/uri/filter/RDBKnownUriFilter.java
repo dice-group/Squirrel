@@ -167,6 +167,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         }
     }
 
+    public void openConnector() {
+        if (this.connector.connection == null) {
+            this.connector.open();
+        }
+    }
+
+
     protected MapObject convertURIToRDB(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
         URI uriPath = uri.getUri();

@@ -10,13 +10,13 @@ services:
   rabbit:
     image: rabbitmq:management
 
-  jena:
+  sparqlHost:
       image: stain/jena-fuseki
-      container_name: jena
+      container_name: sparqlHost
       ports:
         - "3030:3030"
       volumes:
-        - ./scenarios/1/data/jena:/fuseki
+        - ./data/jena:/fuseki
       environment:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
@@ -48,6 +48,10 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
     volumes:
         - ./data/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
@@ -58,6 +62,10 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
     volumes:
         - ./data/worker2:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent
@@ -68,6 +76,10 @@ services:
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
     volumes:
         - ./data/worker3:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent

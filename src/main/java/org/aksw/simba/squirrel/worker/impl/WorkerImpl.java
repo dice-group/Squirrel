@@ -15,6 +15,8 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -29,12 +31,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Closeable;
 import java.io.File;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Standard implementation of the {@link Worker} interface.
  *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
- *
  */
 public class WorkerImpl implements Worker, Closeable {
 
@@ -45,6 +50,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     protected Frontier frontier;
     protected Sink sink;
+    protected MetaDataHandler metaDataHandler;
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
@@ -57,7 +63,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime;
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
-    private final int id = (int)Math.floor(Math.random()*100000);
+    private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
 
@@ -70,6 +76,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            send new URIs to.
      * @param sink
      *            Sink used by this worker to store crawled data.
+     * @param metaDataHandler Handler used by this worker to store meta data.
      * @param manager
      *            RobotsManager for handling robots.txt files.
      * @param serializer
@@ -83,10 +90,11 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier, Sink sink, MetaDataHandler metaDataHandler, RobotsManager manager, Serializer serializer,
                       UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
+        this.metaDataHandler = metaDataHandler;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
@@ -142,17 +150,25 @@ public class WorkerImpl implements Worker, Closeable {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
-            if (uri == null) {
-                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
-            } else if (uri.getUri() == null) {
+            // calculate uuid for graph
+            uri.addData(CrawleableUri.UUID_KEY, "graph:"+ UUID.randomUUID().toString());
+            CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
+            if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+                crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
                     uriMap.put(uri, performCrawling(uri));
+                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);
+                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 }
+            }
+            crawlingActivity.finishActivity();
+            if (metaDataHandler!=null) {
+                metaDataHandler.addMetadata(crawlingActivity);
             }
         }
         // classify URIs
@@ -160,20 +176,6 @@ public class WorkerImpl implements Worker, Closeable {
         while (uriMapEnumeration.hasMoreElements()) {
             uriMapEnumeration.nextElement().forEach(uri -> uriProcessor.recognizeUriType(uri));
         }
-        //TODO
-//        crawlingActivity.finishActivity();
-//        if (sink instanceof RDFSink) {
-//            ((RDFSink) sink).addMetadata(crawlingActivity);
-//        } else {
-//            //TODO ADD METADATA IF SINK IS NOT RDFSINK
-//        }
-        // TODO send results to the Frontier
-        //crawlingActivity.finishActivity();
-        //if (sink instanceof RDFSink) {
-        //    ((RDFSink) sink).addMetadata(crawlingActivity);
-        //} else {
-            //TODO ADD METADATA IF SINK IS NOT RDFSINK
-        //}
         frontier.crawlingDone(uriMap);
     }
 
