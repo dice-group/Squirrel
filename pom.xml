@@ -179,6 +179,13 @@
             <version>20140107</version>
         </dependency>
         <!-- End JSON processing -->
+        
+        <!-- MongoDBDriver -->
+        <dependency>
+	        <groupId>org.mongodb</groupId>
+	        <artifactId>mongodb-driver</artifactId>
+	        <version>3.6.4</version>
+	    </dependency>
 
         <!-- RethinkDB client -->
         <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
