@@ -1,10 +1,10 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
-import com.carrotsearch.hppc.ObjectObjectOpenHashMap;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -13,8 +13,11 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
 public class InMemoryKnownUriFilter implements KnownUriFilter {
-
-    protected ObjectObjectOpenHashMap<CrawleableUri, UriInfo> uris = new ObjectObjectOpenHashMap<>();
+    /**
+     * - key: the crawled (known) uri
+     * - value: the info about the URI (see {@link UriInfo}), including the reference list
+     */
+    protected Hashtable<CrawleableUri, UriInfo> uris;
     /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
      */
@@ -26,6 +29,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
      */
     public InMemoryKnownUriFilter(boolean frontierDoesRecrawling) {
+        uris = new Hashtable<>();
         this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
@@ -36,6 +40,16 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         this(false);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param uris                   Value for {@link #uris}.
+     * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
+     */
+    public InMemoryKnownUriFilter(Hashtable<CrawleableUri, UriInfo> uris, boolean frontierDoesRecrawling) {
+        this.uris = uris;
+        this.frontierDoesRecrawling = frontierDoesRecrawling;
+    }
 
     @Override
     public void add(CrawleableUri uri, long nextCrawlTimestamp) {
@@ -72,7 +86,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
         long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
 
-        for (CrawleableUri uri : uris.keys) {
+        for (CrawleableUri uri : uris.keySet()) {
             if (uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis() &&
                 (!uris.get(uri).crawlingInProcess || uris.get(uri).lastCrawlTimestamp < System.currentTimeMillis() - generalRecrawlTime * 3)) {
                 urisToRecrawl.add(uri);

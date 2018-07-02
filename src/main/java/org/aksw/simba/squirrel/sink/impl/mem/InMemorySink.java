@@ -2,6 +2,9 @@ package org.aksw.simba.squirrel.sink.impl.mem;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
@@ -50,6 +53,10 @@ public class InMemorySink implements Sink {
      * The healthyness of the sink that is set to false if an error is encountered.
      */
     private boolean healthyness = true;
+
+    public InMemorySink() {
+        openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
+    }
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

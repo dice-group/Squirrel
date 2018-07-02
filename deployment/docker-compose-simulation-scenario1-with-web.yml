@@ -18,9 +18,9 @@ services:
       # Forwarding the port for testing
       - "5672:5672"
 
-  jena:
+  sparqlHost:
       image: stain/jena-fuseki
-      container_name: jena
+      container_name: sparqlHost
       ports:
         - "3030:3030"
       volumes:
@@ -39,6 +39,7 @@ services:
       RDB_PORT: 28015
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
       COMMUNICATION_WITH_WEBSERVICE: "true"
+      VISUALIZATION_OF_CRAWLED_GRAPH: "true"
     volumes:
       - ./scenarios/1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
@@ -57,6 +58,10 @@ services:
       OUTPUT_FOLDER: /var/squirrel/data
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
       DEDUPLICATION_ACTIVE: "true"
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
     volumes:
         - ./scenarios/1/worker1:/var/squirrel/data
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.WorkerComponent

@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.Constants;
@@ -38,13 +39,14 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     private boolean frontierDoesRecrawling;
 
     /*
-    Some constants for the rethinkdb
+    Some constants for the rethinkDB
      */
     public static final String DATABASE_NAME = "squirrel";
     public static final String TABLE_NAME = "knownurifilter";
     public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
     public static final String COLUMN_URI = "uri";
     public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    public static final String COLUMN_FOUNDURIS = "foundUris";
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
@@ -92,11 +94,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         this.frontierDoesRecrawling = frontierDoesRecrawling;
     }
 
-    public synchronized void open() {
+    public void open() {
         this.connector.open();
-        if (!connector.squirrelDatabaseExists()) {
+        if (!connector.squirrelDatabaseExists())
             r.dbCreate(DATABASE_NAME).run(this.connector.connection);
-        }
         if (!knownUriFilterTableExists()) {
             r.db(DATABASE_NAME).tableCreate(TABLE_NAME).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexCreate(COLUMN_URI).run(this.connector.connection);
@@ -165,19 +166,23 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).run(connector.connection);
-        if (cursor.hasNext()) {
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
-        } else {
-            r.db(DATABASE_NAME)
-                .table(TABLE_NAME)
-                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
-                .run(connector.connection);
+        try {
+            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
+                r.db(DATABASE_NAME)
+                    .table(TABLE_NAME)
+                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
+                    .run(connector.connection);
+            } else {
+                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
+                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
+                row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
+                row.update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
+                row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
+            }
+            LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+        } catch (Exception e) {
+            LOGGER.error("Failed to add the URI \"" + uri.toString() + "\" to the known uri filter list", e);
         }
-        LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
 
     @Override
@@ -236,10 +241,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
 
     private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess, String hashValue) {
         MapObject uriMap = convertURIToRDB(uri);
-        return uriMap
+        uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
             .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess)
             .with(COLUMN_HASH_VALUE, hashValue);
+        return uriMap;
     }
 
     @Override
@@ -252,10 +258,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
             .run(connector.connection);
         if (cursor.hasNext()) {
             if (!frontierDoesRecrawling) {
-                LOGGER.debug("URI {} is not good", uri.toString());
+                LOGGER.debug("URI {} is not good, because it was already crawled and the frontier does not recrawl anything!", uri.toString());
+                cursor.close();
                 return false;
             }
             Long timestampNextCrawl = cursor.next();
+            LOGGER.debug("URI {} was already crawled and will be next crawled at " + timestampNextCrawl + ". Current time stamp is " + System.currentTimeMillis(), uri.toString());
             cursor.close();
             return System.currentTimeMillis() > timestampNextCrawl;
         } else {

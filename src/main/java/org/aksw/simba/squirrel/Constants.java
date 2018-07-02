@@ -33,6 +33,8 @@ public class Constants {
     public static final String URI_HTTP_ACCEPT_HEADER = "http-" + HttpHeaders.ACCEPT;
     public static final String URI_HTTP_ACCEPT_CHARSET_HEADER = "http-" + HttpHeaders.ACCEPT_CHARSET;
 
+    public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
+
     public static final String URI_HASH_KEY = "HashValue";
 
     /**

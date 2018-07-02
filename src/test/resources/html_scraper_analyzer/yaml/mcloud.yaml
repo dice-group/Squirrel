@@ -1,0 +1,16 @@
+file_descriptor:
+ check:
+  domain: mcloud.de
+ search-result-page:
+  regex: results/searchAction
+  resources: 
+    "http://sindice.com/vocab/search#link": .mcloud__container h4 a 
+ download_page:
+  regex: results/detail
+  resources:
+   "http://schema.org/downloadUrl": .download-list li a
+   "http://www.w3.org/2000/01/rdf-schema#label": [class="mary-2"]
+   "http://www.w3.org/2000/01/rdf-schema#comment": .block--padded p
+   "http://schema.org/provider": .table--lined tr:eq(0) td a
+   "http://schema.org/license": .table--lined tr:eq(1) td a
+

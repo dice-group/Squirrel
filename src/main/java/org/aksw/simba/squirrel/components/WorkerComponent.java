@@ -3,12 +3,13 @@ package org.aksw.simba.squirrel.components;
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
+import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -16,6 +17,8 @@ import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlUtils;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -26,14 +29,18 @@ import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
+@Component
+@Qualifier("workerComponent")
+public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
@@ -44,24 +51,33 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
      */
     private static boolean deduplicationActive;
 
+    @Qualifier("workerBean")
+    @Autowired
     private Worker worker;
     private DataSender senderFrontier, senderDeduplicator;
     private RabbitRpcClient clientFrontier;
+    @Qualifier("sender")
+    @Autowired
+    private DataSender sender;
+    @Qualifier("client")
+    @Autowired
+    private RabbitRpcClient client;
     private byte[] uriSetRequest;
+    @Qualifier("serializerBean")
+    @Autowired
     private Serializer serializer;
     private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
-        super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
+        if (worker == null || sender == null || client == null || serializer == null) {
+            LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
+            initWithoutSpring();
         }
+        uriSetRequest = serializer.serialize(new UriSetRequest());
+
+        //TODO:
+        Map<String, String> env = System.getenv();
         if (env.containsKey(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY)) {
             deduplicationActive = Boolean.parseBoolean(env.get(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY));
         } else {
@@ -79,16 +95,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
         clientFrontier = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
-        serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink(SparqlUtils.getDatasetUriForUpdate(), SparqlUtils.getDatasetUriForQuery());
-        UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log", true);
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
         if (worker.sendsAliveMessages()) {
             timerAliveMessages = new Timer();
             timerAliveMessages.schedule(new TimerTask() {
@@ -104,6 +110,29 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         }
         LOGGER.info("Worker initialized.");
+
+    }
+
+    private void initWithoutSpring() throws Exception {
+        super.init();
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+
+        Sink sink;
+        MetaDataHandler metaDataHandler = null;
+        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
+            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
+        } else {
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+            sink = new SparqlBasedSink(httpPrefix + "ContentSet/update", httpPrefix + "ContentSet/query");
+            metaDataHandler = new MetaDataHandler(httpPrefix + "MetaData/update", httpPrefix + "MetaData/query");
+        }
+
+        serializer = new GzipJavaUriSerializer();
+
+        worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
+        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }
 
     @Override
@@ -160,8 +189,19 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
         try {
+            Hashtable<CrawleableUri, List<CrawleableUri>> uriMapHashtable;
+            if (uriMap instanceof Hashtable) {
+                uriMapHashtable = (Hashtable<CrawleableUri, List<CrawleableUri>>) uriMap;
+            } else {
+                uriMapHashtable = new Hashtable<>(uriMap.size(), 1);
+                Enumeration<CrawleableUri> keys = uriMap.keys();
+                while (keys.hasMoreElements()) {
+                    CrawleableUri key = keys.nextElement();
+                    uriMapHashtable.put(key, uriMap.get(key));
+                }
+            }
             senderFrontier.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
 
             if (deduplicationActive) {
@@ -170,7 +210,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
                 senderDeduplicator.sendData(serializer.serialize(uriSet));
             }
         } catch (Exception e) {
-            LOGGER.error("Exception while sending crawl result.", e);
+            LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }
     }
 

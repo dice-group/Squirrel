@@ -1,10 +1,18 @@
 package org.aksw.simba.squirrel.components;
 
+import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.SeedConfiguration;
+import org.aksw.simba.squirrel.configurator.WebConfiguration;
+import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
+import org.aksw.simba.squirrel.data.uri.info.RDBURIReferences;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
@@ -34,8 +42,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
@@ -46,19 +54,19 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     public static final String RDB_PORT_KEY = "RDB_PORT";
     private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
-
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
-    private IpAddressBasedQueue queue;
+    protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
     private UriHashCustodian uriHashCustodian;
+    private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
     private Serializer serializer;
-    private boolean communicationWithWebserviceEnabled;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
+    private final boolean doRecrawling = true;
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
@@ -67,37 +75,33 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void init() throws Exception {
         super.init();
         serializer = new GzipJavaUriSerializer();
-        Map<String, String> env = System.getenv();
+        RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
+        WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+        if(rdbConfiguration != null) {
+            String rdbHostName = rdbConfiguration.getRDBHostName();
+            Integer rdbPort = rdbConfiguration.getRDBPort();
+            queue = new RDBQueue(rdbHostName, rdbPort, serializer);
+            queue.open();
 
-        String rdbHostName = null;
-        int rdbPort = -1;
-        if (env.containsKey(RDB_HOST_NAME_KEY)) {
-            rdbHostName = env.get(RDB_HOST_NAME_KEY);
-            if (env.containsKey(RDB_PORT_KEY)) {
-                rdbPort = Integer.parseInt(env.get(RDB_PORT_KEY));
+            WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
+            if(whiteListConfiguration != null) {
+                File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
+                knownUriFilter = new RegexBasedWhiteListFilter(rdbHostName,
+                    rdbPort, doRecrawling, whitelistFile);
+                knownUriFilter.open();
             } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_PORT_KEY);
+                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
+                knownUriFilter.open();
+            }
+
+            if (webConfiguration.isVisualizationOfCrawledGraphEnabled()) {
+                uriReferences = new RDBURIReferences(rdbHostName, rdbPort);
+                uriReferences.open();
             }
         } else {
-            LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", RDB_HOST_NAME_KEY);
-        }
-
-        if ((rdbHostName != null) && (rdbPort > 0)) {
-            queue = new RDBQueue(rdbHostName, rdbPort);
-            queue.open();
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, RECRAWLING_ACTIVE);
-            knownUriFilter.open();
-        } else {
+            LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(RECRAWLING_ACTIVE);
-        }
-
-        if (env.containsKey(COMMUNICATION_WITH_WEBSERVICE)) {
-            communicationWithWebserviceEnabled = env.get(COMMUNICATION_WITH_WEBSERVICE).equalsIgnoreCase("true");
-            LOGGER.info("Set communication to the Webservice with SquirrelWebObject via the rabbitMQ to " + communicationWithWebserviceEnabled);
-        } else {
-            communicationWithWebserviceEnabled = false;
-            LOGGER.warn("Couldn't get {" + COMMUNICATION_WITH_WEBSERVICE + "} from the environment. Communication to the Webservice is disabled!");
+            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
         }
 
         if (knownUriFilter instanceof UriHashCustodian) {
@@ -105,26 +109,33 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, RECRAWLING_ACTIVE, uriHashCustodian);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling, uriHashCustodian);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
             .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
-        if (env.containsKey(SEED_FILE_KEY)) {
-            processSeedFile(env.get(SEED_FILE_KEY));
+
+        SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
+        if (seedConfiguration != null) {
+            processSeedFile(seedConfiguration.getSeedFile());
         }
 
         LOGGER.info("Frontier initialized.");
+
+        if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter, uriReferences);
+            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to " + webConfiguration.isVisualizationOfCrawledGraphEnabled());
+            Thread senderThread = new Thread(sender);
+            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
+            senderThread.start();
+            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state " + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
+        } else {
+            LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to " + webConfiguration.isCommunicationWithWebserviceEnabled() + "/" + webConfiguration.isVisualizationOfCrawledGraphEnabled() + ". No WebServiceSenderThread will be started!");
+        }
     }
 
     @Override
     public void run() throws Exception {
-        if (communicationWithWebserviceEnabled) {
-            Thread sender = new Thread(new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter));
-            sender.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
-            sender.start();
-            LOGGER.info("Started thread [" + sender.getName() + "] <ID " + sender.getId() + " in the state " + sender.getState() + " with the priority " + sender.getPriority() + ">");
-        }
         // The main thread has nothing to do except waiting for its
         // termination...
         terminationMutex.acquire();
@@ -132,13 +143,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void close() throws IOException {
-        receiver.closeWhenFinished();
-        queue.close();
+        if (receiver != null) receiver.closeWhenFinished();
+        if (queue != null) queue.close();
+        if (uriReferences != null) uriReferences.close();
         if (knownUriFilter instanceof Closeable) {
             knownUriFilter.close();
         }
         workerGuard.shutdown();
-        frontier.close();
+        if (frontier != null) frontier.close();
         super.close();
     }
 
@@ -149,51 +161,61 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-        Object object = null;
+        Object deserializedData;
         try {
-            object = serializer.deserialize(data);
+            deserializedData = serializer.deserialize(data);
         } catch (IOException e) {
+            //try to convert the string into a single URI, that maybe comes from the WebService
+//            CrawleableUri uri = new CrawleableUriFactoryImpl().create(new String(data));
+//            if (uri != null) {
+//                LOGGER.warn("Received a single URI " + uri.getUri() + " without a wrapping of \"org.aksw.simba.squirrel.rabbit.frontier\". We converted it into a UriSet.");
+//                deserializedData = new UriSet(Collections.singletonList(uri));
+//            } else {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
+            return;
+//            }
         }
-        LOGGER.trace("Got a message (\"{}\").", object.toString());
-        if (object != null) {
-            if (object instanceof UriSetRequest) {
-                if (handler != null) {
-                    // get next UriSet
-                    try {
-                        List<CrawleableUri> uris = frontier.getNextUris();
-                        String size = uris == null ? "null" : Integer.toString(uris.size());
-                        LOGGER.info("Responding with a list of {} uris.", size);
-                        handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
-                        UriSetRequest uriSetRequest = (UriSetRequest) object;
-                        if (uris != null && uris.size() > 0) {
-                            workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uriSetRequest.workerSendsAliveMessages(), uris);
-                        }
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't serialize new URI set.", e);
-                    }
-                } else {
-                    LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
-                }
-            } else if (object instanceof UriSet) {
-                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) object).uris.size());
-                frontier.addNewUris(((UriSet) object).uris);
-            } else if (object instanceof CrawlingResult) {
-                CrawlingResult crawlingResult = (CrawlingResult) object;
-                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                    crawlingResult.crawledUris);
-                frontier.crawlingDone(crawlingResult.crawledUris, crawlingResult.newUris);
-                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.crawledUris);
 
-            } else if (object instanceof AliveMessage) {
-                AliveMessage message = (AliveMessage) object;
+        if (deserializedData != null) {
+            LOGGER.trace("Got a message (\"{}\").", deserializedData.toString());
+            if (deserializedData instanceof UriSetRequest) {
+                responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
+            } else if (deserializedData instanceof UriSet) {
+                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+                frontier.addNewUris(((UriSet) deserializedData).uris);
+            } else if (deserializedData instanceof CrawlingResult) {
+                CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
+                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
+                    ((CrawlingResult) deserializedData).uriMap.size());
+                frontier.crawlingDone(crawlingResult.uriMap);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, Collections.list(crawlingResult.uriMap.keys()));
+            } else if (deserializedData instanceof AliveMessage) {
+                AliveMessage message = (AliveMessage) deserializedData;
                 int idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
-
             } else {
-                LOGGER.warn("Received an unknown object {}. It will be ignored.", object.toString());
+                LOGGER.warn("Received an unknown object {}. It will be ignored.", deserializedData.toString());
             }
+        }
+    }
+
+    private void responseToUriSetRequest(ResponseHandler handler, String responseQueueName, String correlId, UriSetRequest uriSetRequest) {
+        if (handler != null) {
+            // get next UriSet
+            try {
+                List<CrawleableUri> uris = frontier.getNextUris();
+                LOGGER.trace("Responding with a list of {} uris.",
+                    uris == null ? "null" : Integer.toString(uris.size()));
+                handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
+                if (uris != null && uris.size() > 0) {
+                    workerGuard.putUrisForWorker(uriSetRequest.getIdOfWorker(), uriSetRequest.workerSendsAliveMessages(), uris);
+                }
+            } catch (IOException e) {
+                LOGGER.error("Couldn't serialize new URI set.", e);
+            }
+        } else {
+            LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
 

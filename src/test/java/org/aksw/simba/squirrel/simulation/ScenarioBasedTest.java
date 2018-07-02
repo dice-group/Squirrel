@@ -31,6 +31,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,16 +125,20 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     @Test
     public void test() throws IOException {
+
+    	FileSystemXmlApplicationContext  context =
+    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
+
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(), new InMemoryQueue());
+        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(true), new InMemoryQueue());
         InMemorySink sink = new InMemorySink();
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
-        WorkerImpl worker = new WorkerImpl(frontier, sink,
-            new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-            null, false);
+        WorkerImpl worker = new WorkerImpl(frontier, sink, null,
+                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
+                null, false);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -150,8 +155,14 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
             }
             Assert.assertTrue("The worker crashed", t.isAlive());
         } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
-        // save.
+                                                           // save.
         worker.setTerminateFlag(true);
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+        worker.close();
 
         // compare the expected results with those found inside the sink
         boolean success = true;
