@@ -88,6 +88,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     public void closeSinkForUri(CrawleableUri uri) {
         if (mapBufferedTriples.get(uri) == null) {
             LOGGER.info("Try to close Sink for an uri, without open it before. Do nothing.");
+            return;
         }
         if (!mapBufferedTriples.get(uri).isEmpty()) {
             sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
