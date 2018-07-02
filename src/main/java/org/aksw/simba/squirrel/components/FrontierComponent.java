@@ -58,7 +58,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
-    private UriHashCustodian uriHashCustodian;
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -77,14 +76,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        if(rdbConfiguration != null) {
+        if (rdbConfiguration != null) {
             String rdbHostName = rdbConfiguration.getRDBHostName();
             Integer rdbPort = rdbConfiguration.getRDBPort();
             queue = new RDBQueue(rdbHostName, rdbPort, serializer);
             queue.open();
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
-            if(whiteListConfiguration != null) {
+            if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
                 knownUriFilter = new RegexBasedWhiteListFilter(rdbHostName,
                     rdbPort, doRecrawling, whitelistFile);
@@ -104,12 +103,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling);
         }
 
-        if (knownUriFilter instanceof UriHashCustodian) {
-            uriHashCustodian = (UriHashCustodian) knownUriFilter;
-        }
-
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling, uriHashCustodian);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)

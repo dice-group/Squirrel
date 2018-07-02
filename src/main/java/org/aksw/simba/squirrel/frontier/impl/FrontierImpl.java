@@ -115,10 +115,9 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling     used to select if URIs should be recrawled.
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
-     * @param uriHashCustodian   used to access and write hash values for uris.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
+        this(knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
     /**
@@ -145,7 +144,7 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
-        this(knownUriFilter, queue, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+        this(knownUriFilter, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
     /**
@@ -157,7 +156,7 @@ public class FrontierImpl implements Frontier {
      *                       crawled.
      */
     public FrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(knownUriFilter, queue, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+        this(knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
 
@@ -216,7 +215,7 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
-        if(knownUriFilter.isUriGood(uri)) {
+        if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
                 LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
@@ -276,13 +275,11 @@ public class FrontierImpl implements Frontier {
         for (CrawleableUri uri : crawledUris) {
             Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
             // If a recrawling is defined, check whether we can directly add it back to the queue
-            if((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
+            if ((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
                 // Create a new uri object reusing only meta data that is useful
                 CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
                 recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
                 addNewUri(recrawlUri);
-                //TODO.
-                knownUriFilter.add(uri, uri.getTimestampNextCrawl());
             }
         }
 

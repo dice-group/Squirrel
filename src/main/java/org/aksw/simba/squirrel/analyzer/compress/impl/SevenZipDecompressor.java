@@ -10,21 +10,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class SevenZipDecompressor extends AbstractDecompressor implements Decompressor{
+public class SevenZipDecompressor extends AbstractDecompressor implements Decompressor {
 
-	protected SevenZipDecompressor() throws IOException {
-		super();
-	}
+    protected SevenZipDecompressor() throws IOException {
+        super();
+    }
 
-	@Override
-	public List<File> decompress(File inputFile) throws IOException {
-		File outputFile = createOutputFile();
+    @Override
+    public List<File> decompress(File inputFile) throws IOException {
+        File outputFile = createOutputFile();
 
-		SevenZFile sevenZFile = new SevenZFile(inputFile);
+        SevenZFile sevenZFile = new SevenZFile(inputFile);
 
         SevenZArchiveEntry entry;
-        while ((entry = sevenZFile.getNextEntry()) != null){
-            if (entry.isDirectory()){
+        while ((entry = sevenZFile.getNextEntry()) != null) {
+            if (entry.isDirectory()) {
                 continue;
             }
             File curfile = new File(outputFile, entry.getName());
@@ -40,7 +40,7 @@ public class SevenZipDecompressor extends AbstractDecompressor implements Decomp
         }
         sevenZFile.close();
 
-	return TempPathUtils.searchPath4Files(outputFile);
-	}
+        return TempPathUtils.searchPath4Files(outputFile);
+    }
 
 }

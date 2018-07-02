@@ -7,10 +7,11 @@ import java.util.*;
 
 /**
  * SquirrelWebObject is a container class for the RabbitMQ to deliver the data from the Frontier to the Web-Service
+ *
  * @author Philipp Heinisch
  */
 public class SquirrelWebObject implements Serializable {
-    public enum State implements Serializable { NEW, WRITE, READ, OBSOLETE }
+    public enum State implements Serializable {NEW, WRITE, READ, OBSOLETE}
 
     ///////////////////
     //DATA/////////////
@@ -76,11 +77,11 @@ public class SquirrelWebObject implements Serializable {
         boolean read = false;
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '>' && i > 3) {
-                if (string.startsWith("</e", i-3)) {
-                    ret.add(buffer.substring(1, buffer.length()-3));
+                if (string.startsWith("</e", i - 3)) {
+                    ret.add(buffer.substring(1, buffer.length() - 3));
                     buffer = new StringBuilder();
                     read = false;
-                } else if (string.startsWith("<e", i-2)) {
+                } else if (string.startsWith("<e", i - 2)) {
                     read = true;
                 }
             }
@@ -110,18 +111,16 @@ public class SquirrelWebObject implements Serializable {
         boolean readValue = false;
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '>' && i > 3) {
-                if (string.startsWith("</c", i-3)) {
-                    ret.put(bufferKey.substring(1, bufferKey.length()-3), StringToList(bufferValue.substring(1, bufferValue.length()-3)));
+                if (string.startsWith("</c", i - 3)) {
+                    ret.put(bufferKey.substring(1, bufferKey.length() - 3), StringToList(bufferValue.substring(1, bufferValue.length() - 3)));
                     bufferKey = new StringBuilder();
                     bufferValue = new StringBuilder();
                     readKey = false;
                     readValue = false;
-                }
-                else if (string.startsWith("</h", i-3)) {
+                } else if (string.startsWith("</h", i - 3)) {
                     readKey = false;
                     readValue = true;
-                }
-                else if (string.startsWith("<h", i-2)) {
+                } else if (string.startsWith("<h", i - 2)) {
                     readKey = true;
                 }
             }
@@ -142,17 +141,17 @@ public class SquirrelWebObject implements Serializable {
 
         Date refer = new Date();
         //1h old = obsolete!
-        refer.setTime(refer.getTime()-3600000);
+        refer.setTime(refer.getTime() - 3600000);
         if (writeDatetime.before(refer)) {
             currentState = State.OBSOLETE;
         }
     }
 
-    private List<String> isReadable (List<String> object) {
+    private List<String> isReadable(List<String> object) {
         checkObsolete();
 
         List<String> ret = new ArrayList<>();
-        if (currentState == State.NEW || currentState == State.OBSOLETE)  {
+        if (currentState == State.NEW || currentState == State.OBSOLETE) {
             ret.add("I'm sorry, but I can not read - this object " + ID + " is " + currentState.toString() + " and not written.");
         }
         if (object == null) {
@@ -168,12 +167,12 @@ public class SquirrelWebObject implements Serializable {
         }
     }
 
-    private Map<String, List<String>> isReadable (Map<String, List<String>> object) {
+    private Map<String, List<String>> isReadable(Map<String, List<String>> object) {
         checkObsolete();
 
         Map<String, List<String>> ret = new HashMap<>();
         List<String> arrayList = new ArrayList<>();
-        if (currentState == State.NEW || currentState == State.OBSOLETE)  {
+        if (currentState == State.NEW || currentState == State.OBSOLETE) {
             arrayList.add("I'm sorry, but I can not read - this object " + ID + " is " + currentState.toString() + " and not written.");
         }
         if (object == null) {
@@ -193,8 +192,8 @@ public class SquirrelWebObject implements Serializable {
     private <E extends Number> E isReadable(E object) {
         checkObsolete();
 
-        if (currentState == State.NEW || currentState == State.OBSOLETE || object == null)  {
-            if(object instanceof Integer)
+        if (currentState == State.NEW || currentState == State.OBSOLETE || object == null) {
+            if (object instanceof Integer)
                 return (E) Integer.valueOf(-1);
             else if (object instanceof Long)
                 return (E) Long.valueOf(-1);
@@ -350,19 +349,19 @@ public class SquirrelWebObject implements Serializable {
     public boolean equals(Object o) {
         if (o != null && o instanceof SquirrelWebObject) {
             SquirrelWebObject compareSquirrel = (SquirrelWebObject) o;
-            if (Math.abs(compareSquirrel.RuntimeInSeconds-RuntimeInSeconds) >= 10) {
+            if (Math.abs(compareSquirrel.RuntimeInSeconds - RuntimeInSeconds) >= 10) {
                 return false;
             }
             if ((pendingURIs == null && compareSquirrel.pendingURIs != null) ||
-                    (nextCrawledURIs == null && compareSquirrel.nextCrawledURIs != null) ||
-                    (IPMapPendingURis == null && compareSquirrel.IPMapPendingURis != null))
+                (nextCrawledURIs == null && compareSquirrel.nextCrawledURIs != null) ||
+                (IPMapPendingURis == null && compareSquirrel.IPMapPendingURis != null))
                 return false;
             if (((pendingURIs == null && compareSquirrel.pendingURIs == null) || (pendingURIs.equals(compareSquirrel.pendingURIs))) &&
-                    ((nextCrawledURIs == null && compareSquirrel.nextCrawledURIs == null) || (nextCrawledURIs.equals(compareSquirrel.nextCrawledURIs))) &&
-                    ((IPMapPendingURis == null && compareSquirrel.IPMapPendingURis == null) || (IPMapPendingURis.equals(compareSquirrel.IPMapPendingURis))) &&
-                    countOfWorker == compareSquirrel.countOfWorker &&
-                    countOfDeadWorker == compareSquirrel.countOfDeadWorker &&
-                    countOfCrawledURIs == compareSquirrel.countOfCrawledURIs)
+                ((nextCrawledURIs == null && compareSquirrel.nextCrawledURIs == null) || (nextCrawledURIs.equals(compareSquirrel.nextCrawledURIs))) &&
+                ((IPMapPendingURis == null && compareSquirrel.IPMapPendingURis == null) || (IPMapPendingURis.equals(compareSquirrel.IPMapPendingURis))) &&
+                countOfWorker == compareSquirrel.countOfWorker &&
+                countOfDeadWorker == compareSquirrel.countOfDeadWorker &&
+                countOfCrawledURIs == compareSquirrel.countOfCrawledURIs)
                 return true;
         }
 
@@ -373,17 +372,18 @@ public class SquirrelWebObject implements Serializable {
 
     /**
      * converts the {@link SquirrelWebObject} into a byte stream (is needed for e.g. rabbitMQ)
+     *
      * @return a byte stream
      */
     public byte[] convertToByteStream() {
-        try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
-            try(ObjectOutputStream o = new ObjectOutputStream(b)){
+        try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
+            try (ObjectOutputStream o = new ObjectOutputStream(b)) {
                 o.writeObject(this);
             }
             return b.toByteArray();
         } catch (IOException e) {
             System.out.println("ERROR during serializing: " + e.getMessage());
-            return new byte[] {};
+            return new byte[]{};
         }
     }
 }

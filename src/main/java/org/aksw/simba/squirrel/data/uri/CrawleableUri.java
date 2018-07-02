@@ -1,5 +1,8 @@
 package org.aksw.simba.squirrel.data.uri;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.URI;
@@ -113,7 +116,7 @@ public class CrawleableUri implements Serializable {
     @Deprecated
     private UriType type = UriType.UNKNOWN;
 
-    private Map<String,Object> data = new TreeMap<>();
+    private Map<String, Object> data = new TreeMap<>();
 
     public CrawleableUri(URI uri) {
         this(uri, null);

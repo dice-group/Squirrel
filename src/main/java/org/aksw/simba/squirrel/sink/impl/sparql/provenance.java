@@ -38,19 +38,17 @@ public class provenance {
         return ResourceFactory.createTypedLiteral(value);
     }
 
-    public String getAddQuery(CrawleableUri uri, Model model)
-    {
+    public String getAddQuery(CrawleableUri uri, Model model) {
         StringBuilder stringBuilder = new StringBuilder();
         StmtIterator iter = model.listStatements();
         stringBuilder.append("INSERT { Graph <");
         stringBuilder.append(uri.getUri());
         stringBuilder.append(">");
-        Statement stmt      = iter.nextStatement();  // get next statement
-        Resource subject   = stmt.getSubject();     // get the subject
+        Statement stmt = iter.nextStatement();  // get next statement
+        Resource subject = stmt.getSubject();     // get the subject
         Property predicate = stmt.getPredicate();   // get the predicate
-        RDFNode   object    = stmt.getObject();      // get the object
-        while(iter.hasNext())
-        {
+        RDFNode object = stmt.getObject();      // get the object
+        while (iter.hasNext()) {
             stringBuilder.append("{");
             stringBuilder.append("<");
             stringBuilder.append(subject.toString());

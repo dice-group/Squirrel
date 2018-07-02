@@ -22,7 +22,7 @@ public class WorkerConfiguration extends Configuration {
 
     public static WorkerConfiguration getWorkerConfiguration() throws Exception {
         String outputFolder = getEnv(OUTPUT_FOLDER_KEY, LOGGER);
-        if(outputFolder != null) {
+        if (outputFolder != null) {
             LOGGER.info("The worker will use " + OUTPUT_FOLDER_KEY + " as an output folder.");
             String sparqlHost = getEnv(SPARQL_HOST_CONTAINER_NAME_KEY, LOGGER);
             String sqarqlPort = getEnv(SPARQL_HOST_PORTS_KEY, LOGGER);

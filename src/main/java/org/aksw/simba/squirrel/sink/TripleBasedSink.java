@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * A sink that can handle triples.
- * 
- * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  */
 @Component
 public interface TripleBasedSink extends SinkBase {

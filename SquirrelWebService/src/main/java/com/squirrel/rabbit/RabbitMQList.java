@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * The interface between the RabbitMQ and the Web-Service
  * Or better to say: Listener for the RabbitMQ - receives and organize the {@link SquirrelWebObject}s and the {@link com.graph.VisualisationGraph}s
+ *
  * @author Philipp Heinisch
  */
 public class RabbitMQList implements Runnable {
@@ -83,7 +84,7 @@ public class RabbitMQList implements Runnable {
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
             try {
-               Thread.sleep(5000);
+                Thread.sleep(5000);
             } catch (InterruptedException ei) {
                 ei.printStackTrace();
                 return;
@@ -167,14 +168,16 @@ public class RabbitMQList implements Runnable {
 
     /**
      * Gets the fetched data from the Frontier. Contains many information about the current crawling status and so on
+     *
      * @return the latest {@link SquirrelWebObject}
      */
     public SquirrelWebObject getSquirrel() {
-        return getSquirrel(dataQueue.size()-1);
+        return getSquirrel(dataQueue.size() - 1);
     }
 
     /**
      * Gets the fetched data from the Frontier. Contains many information about the current crawling status and so on
+     *
      * @param index All received {@link SquirrelWebObject} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link SquirrelWebObject}
      */
@@ -185,14 +188,16 @@ public class RabbitMQList implements Runnable {
 
     /**
      * Gets the fected crawled graph from Frontier.
+     *
      * @return the latest {@link VisualisationGraph}
      */
     VisualisationGraph getCrawledGraph() {
-        return getCrawledGraph(graphQueue.size() -1);
+        return getCrawledGraph(graphQueue.size() - 1);
     }
 
     /**
      * Gets the fected crawled graph from Frontier.
+     *
      * @param index All received {@link VisualisationGraph} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link VisualisationGraph}
      */
@@ -206,14 +211,14 @@ public class RabbitMQList implements Runnable {
         return ret;
     }
 
-    private<T> T getObject(List<T> list, int index) {
+    private <T> T getObject(List<T> list, int index) {
         if (list.isEmpty()) {
             return null;
         }
         try {
             return list.get(index);
         } catch (IndexOutOfBoundsException e) {
-            return list.get(dataQueue.size()-1);
+            return list.get(dataQueue.size() - 1);
         }
     }
 
@@ -229,15 +234,16 @@ public class RabbitMQList implements Runnable {
     /**
      * Adds a element to a {@link List}, but checks in addition before, if a certain size limit (MAXLENGTHOFHISTORY) is reached. If yes, the method truncates every second element from the list.
      * <b>Attention:</b> if the list is bigger than MAXLENGTHOFHISTORY*2, then the truncate procedure will execute multiple times.
-     * @param list the {@link List}, in that the element should be added. Must not be null.
+     *
+     * @param list            the {@link List}, in that the element should be added. Must not be null.
      * @param insertedElement the element, that should be added Must not be null.
-     * @param <T> this method is generic
+     * @param <T>             this method is generic
      */
     private <T> void addElementToLimitedList(@NotNull List<T> list, @NotNull T insertedElement) {
         while (list.size() >= MAXLENGTHOFHISTORY) {
             List<T> toBeDeleted = new ArrayList<>(MAXLENGTHOFHISTORY >> 1);
             for (int i = 0; i < list.size(); i++) {
-                if (i%2 == 1) {
+                if (i % 2 == 1) {
                     toBeDeleted.add(list.get(i));
                 }
             }

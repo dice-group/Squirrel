@@ -66,17 +66,17 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Qualifier("serializerBean")
     @Autowired
     private Serializer serializer;
-    private Timer timerAliveMessages;
+    private Timer timerAliveMessages = new Timer();
 
     @Override
     public void init() throws Exception {
+        super.init();
         if (worker == null || sender == null || client == null || serializer == null) {
             LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
             initWithoutSpring();
         }
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
-        //TODO:
         Map<String, String> env = System.getenv();
         if (env.containsKey(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY)) {
             deduplicationActive = Boolean.parseBoolean(env.get(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY));
@@ -96,7 +96,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             FrontierComponent.FRONTIER_QUEUE_NAME);
 
         if (worker.sendsAliveMessages()) {
-            timerAliveMessages = new Timer();
             timerAliveMessages.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -202,11 +201,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                     uriMapHashtable.put(key, uriMap.get(key));
                 }
             }
-            senderFrontier.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
 
             if (deduplicationActive) {
                 UriSet uriSet = new UriSet();
-                uriSet.uris = crawledUris;
+                uriSet.uris = Collections.list(uriMapHashtable.keys());
                 senderDeduplicator.sendData(serializer.serialize(uriSet));
             }
         } catch (Exception e) {

@@ -42,10 +42,9 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param queue            {@link UriQueue} used to manage the URIs that should be
      *                         crawled.
      * @param doesRecrawling   used to select if URIs should be recrawled.
-     * @param uriHashCustodian used to access and write hash values for uris.
      */
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling, UriHashCustodian uriHashCustodian) {
-        super(knownUriFilter, queue, doesRecrawling, uriHashCustodian);
+    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
+        super(knownUriFilter, queue, doesRecrawling);
     }
 
     /**

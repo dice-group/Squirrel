@@ -31,7 +31,7 @@ import java.util.Set;
  *
  */
 @Component
-@Order(value=2)
+@Order(value = 2)
 @Qualifier("ftpFetcher")
 public class FTPFetcher implements Fetcher {
 
@@ -60,7 +60,7 @@ public class FTPFetcher implements Fetcher {
     }
 
     @SuppressWarnings("resource")
-	private File requestData(CrawleableUri uri, File dataFile) {
+    private File requestData(CrawleableUri uri, File dataFile) {
 
         // Download file to temp folder
         FTPClient client = new FTPClient();
@@ -77,15 +77,15 @@ public class FTPFetcher implements Fetcher {
             client.enterLocalPassiveMode();
             client.login("anonymous", "");
 
-            if(client.mlistFile(uri.getUri().getPath()).isDirectory()) {
-            	Path path = Files.createTempDirectory("file_");
-            	recursiveFetcher = new FTPRecursiveFetcher(path);
+            if (client.mlistFile(uri.getUri().getPath()).isDirectory()) {
+                Path path = Files.createTempDirectory("file_");
+                recursiveFetcher = new FTPRecursiveFetcher(path);
                 recursiveFetcher.listDirectory(client, uri.getUri().getPath(), "", 0);
                 dataFile = path.toFile();
 
-            }else {
-            	output = new FileOutputStream(dataFile);
-            	if (!client.retrieveFile(uri.getUri().getPath(), output)) {
+            } else {
+                output = new FileOutputStream(dataFile);
+                if (!client.retrieveFile(uri.getUri().getPath(), output)) {
                     LOGGER.error("Downloading {} was not successful. Returning null.", uri.getUri().toString());
                 }
             }

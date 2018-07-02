@@ -28,9 +28,9 @@ public class UriProcessor implements UriProcessorInterface {
         String uriPath = uriString.getPath();
         LOGGER.debug("uriPath is {}", uriPath);
 
-        String[] refDumpRegexps = { ".*\\.rdf.*", ".*\\.ttl.*", ".*\\.nt.*", ".*\\.n3.*", ".*\\.zip.*", ".*\\.tar.*" };
-        String[] snarlRegexps = { ".*sparql.*" };
-        String[] differentiableRegexps = { ".*htm.*", ".*page.*", ".*resource.*" };
+        String[] refDumpRegexps = {".*\\.rdf.*", ".*\\.ttl.*", ".*\\.nt.*", ".*\\.n3.*", ".*\\.zip.*", ".*\\.tar.*"};
+        String[] snarlRegexps = {".*sparql.*"};
+        String[] differentiableRegexps = {".*htm.*", ".*page.*", ".*resource.*"};
 
         try {
             if ((uriPath != null) && (this.isStringMatchRegexps(uriPath, refDumpRegexps))) {

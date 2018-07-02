@@ -152,7 +152,7 @@ public class DumpFetcher implements Fetcher {
     }
 
     private boolean matchesSerialization(String uriString, String serialization) {
-        String[] regexps = { ".*\\." + serialization + ".*" };
+        String[] regexps = {".*\\." + serialization + ".*"};
         return UriUtils.isStringMatchRegexps(uriString, regexps);
     }
 
