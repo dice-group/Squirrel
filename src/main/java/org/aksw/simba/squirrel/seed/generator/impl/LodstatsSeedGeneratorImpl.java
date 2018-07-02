@@ -1,13 +1,11 @@
 package org.aksw.simba.squirrel.seed.generator.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class LodstatsSeedGeneratorImpl extends AbstractSeedGenerator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeedGenerator.class);

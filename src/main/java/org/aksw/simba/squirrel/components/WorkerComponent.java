@@ -3,7 +3,7 @@ package org.aksw.simba.squirrel.components;
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -14,8 +14,9 @@ import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -26,67 +27,43 @@ import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class WorkerComponent extends AbstractComponent implements Frontier, Serializable {
+@Component
+@Qualifier("workerComponent")
+public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
-    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
-    public static final String SPARQL_HOST_PORTS_KEY = "SPARQL_HOST_PORT";
-    public static final String SPARQL_HOST_CONTAINER_NAME_KEY = "SPARQL_HOST_NAME";
-
+    @Qualifier("workerBean")
+    @Autowired
     private Worker worker;
+    @Qualifier("sender")
+    @Autowired
     private DataSender sender;
+    @Qualifier("client")
+    @Autowired
     private RabbitRpcClient client;
     private byte[] uriSetRequest;
+    @Qualifier("serializerBean")
+    @Autowired
     private Serializer serializer;
     private Timer timerAliveMessages;
 
     @Override
     public void init() throws Exception {
-        super.init();
-        Map<String, String> env = System.getenv();
-        String outputFolder;
-        if (env.containsKey(OUTPUT_FOLDER_KEY)) {
-            outputFolder = env.get(OUTPUT_FOLDER_KEY);
-        } else {
-            String msg = "Couldn't get " + OUTPUT_FOLDER_KEY + " from the environment.";
-            throw new Exception(msg);
+        if (worker == null || sender == null || client == null || serializer == null) {
+            LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
+            initWithoutSpring();
         }
-
-        String sparqlDatasetPrefix;
-        if (env.containsKey(SPARQL_HOST_CONTAINER_NAME_KEY) || env.containsKey(SPARQL_HOST_PORTS_KEY)) {
-            sparqlDatasetPrefix = "http://" + env.get(SPARQL_HOST_CONTAINER_NAME_KEY) + ":" + env.get(SPARQL_HOST_PORTS_KEY) + "/";
-        } else {
-            String msg = "Couldn't get " + SPARQL_HOST_CONTAINER_NAME_KEY + " or " + SPARQL_HOST_PORTS_KEY + " from the environment.";
-            throw new Exception(msg);
-        }
-        String updateDatasetURI = sparqlDatasetPrefix + "ContentSet/update";
-        String queryDatasetURI = sparqlDatasetPrefix + "ContentSet/query";
-        String updateMetaDataDatasetURI = sparqlDatasetPrefix + "MetaData/update";
-        String queryMetaDataDatasetURI = sparqlDatasetPrefix + "MetaData/query";
-
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-            .build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
-
-        serializer = new GzipJavaUriSerializer();
-        Sink sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
-        MetaDataHandler metaDataHandler = new MetaDataHandler(updateMetaDataDatasetURI, queryMetaDataDatasetURI);
-        UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
-            serializer, collector, 2000, outputFolder + File.separator + "log", true);
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
-
-        serializer = new GzipJavaUriSerializer();
-        uriSetRequest = serializer.serialize(new UriSetRequest(worker.getId(), worker.sendsAliveMessages()));
+        uriSetRequest = serializer.serialize(new UriSetRequest());
 
         if (worker.sendsAliveMessages()) {
             timerAliveMessages = new Timer();
@@ -103,6 +80,33 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
         }
         LOGGER.info("Worker initialized.");
+
+    }
+
+    private void initWithoutSpring() throws Exception {
+        super.init();
+
+        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+
+        Sink sink;
+        MetaDataHandler metaDataHandler=null;
+        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
+            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
+        } else {
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+            sink = new SparqlBasedSink(httpPrefix + "ContentSet/update", httpPrefix + "ContentSet/query");
+            metaDataHandler = new MetaDataHandler(httpPrefix + "MetaData/update", httpPrefix + "MetaData/query");
+        }
+
+        serializer = new GzipJavaUriSerializer();
+
+        if (metaDataHandler!=null){
+            worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+        }else {
+            worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+        }
+        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
+        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }
 
     @Override
@@ -148,6 +152,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+
         try {
             sender.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
@@ -156,9 +161,20 @@ public class WorkerComponent extends AbstractComponent implements Frontier, Seri
     }
 
     @Override
-    public void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris) {
+    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
         try {
-            sender.sendData(serializer.serialize(new CrawlingResult(crawledUris, newUris, worker.getId())));
+            Hashtable<CrawleableUri, List<CrawleableUri>> uriMapHashtable;
+            if (uriMap instanceof Hashtable) {
+                uriMapHashtable = (Hashtable<CrawleableUri, List<CrawleableUri>>) uriMap;
+            } else {
+                uriMapHashtable = new Hashtable<>(uriMap.size(), 1);
+                Enumeration<CrawleableUri> keys = uriMap.keys();
+                while (keys.hasMoreElements()) {
+                    CrawleableUri key = keys.nextElement();
+                    uriMapHashtable.put(key, uriMap.get(key));
+                }
+            }
+            sender.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }

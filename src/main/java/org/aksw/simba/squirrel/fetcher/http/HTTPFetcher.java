@@ -1,16 +1,5 @@
 package org.aksw.simba.squirrel.fetcher.http;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
@@ -32,7 +21,18 @@ import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+@Component
+@Order(value=1)
+@Qualifier("httpFetcher")
 public class HTTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPFetcher.class);
@@ -156,5 +156,7 @@ public class HTTPFetcher implements Fetcher {
     public void close() throws IOException {
         client.close();
     }
+
+
 
 }

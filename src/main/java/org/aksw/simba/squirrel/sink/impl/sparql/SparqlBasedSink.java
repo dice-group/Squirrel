@@ -40,9 +40,8 @@ public class SparqlBasedSink implements Sink {
      */
     private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
-
-
 
     /**
      * Constructor of SparqlBasedSink
@@ -53,6 +52,12 @@ public class SparqlBasedSink implements Sink {
     public SparqlBasedSink(String updateDatasetURI, String queryDatasetURI) {
         this.updateDatasetURI = updateDatasetURI;
         this.queryDatasetURI = queryDatasetURI;
+    }
+
+
+    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
+        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
+        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
     }
 
     public void addMetadata() {
@@ -87,7 +92,9 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
+        String query = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
+        LOGGER.info("Forward this query to the SPARQL (" + updateDatasetURI + "): " + ((query.length() > 500) ? query.substring(0, 500) + "..." : query));
+        UpdateRequest request = UpdateFactory.create(query);
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }

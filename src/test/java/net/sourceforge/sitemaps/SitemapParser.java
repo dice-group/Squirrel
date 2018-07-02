@@ -1,6 +1,6 @@
 /**
  * SitemapParser.java - Parses a Sitemap (http://www.sitemaps.org/)
- * 
+ *
  * Copyright 2009 Frank McCown
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,25 +18,19 @@
 
 package net.sourceforge.sitemaps;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
-import java.util.zip.GZIPInputStream;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import net.sourceforge.sitemaps.Sitemap.SitemapType;
-import net.sourceforge.sitemaps.UnknownFormatException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+import java.util.zip.GZIPInputStream;
 
 
 /**
@@ -45,29 +39,29 @@ import org.xml.sax.InputSource;
  *
  */
 public class SitemapParser {
-	
+
 	/** The Sitemap we are processing or have processed */
 	private Sitemap sitemap = null;
-	
+
 	/** The Sitemap Index we are processing */
 	public SitemapIndex sitemapIndex;
-		
+
 	/** According to the specs, 50K URLs per Sitemap is the max */
 	private int MAX_URLS = 50000;
-	
+
 	/** Sitemap docs must be limited to 10MB (10,485,760 bytes) */
 	public static int MAX_BYTES_ALLOWED = 10485760;
-	
+
 	/** Turn on verbose output */
 	public boolean VERBOSE = false;
-	
+
 	/** Turn on debug output */
 	public boolean DEBUG = false;
-	
+
 	/** Delay between HTTP requests in milliseconds */
 	private int delayBetweenRequests = 5000;
-	
-	/** 
+
+    /**
 	 * @return the number of milliseconds the parser will wait between HTTP
 	 * requests.
 	 */
@@ -86,17 +80,17 @@ public class SitemapParser {
 			this.delayBetweenRequests = delayBetweenRequests;
 		}
 	}
-	
-	public SitemapParser() {						
+
+    public SitemapParser() {
 		;
 	}
-	
+
 	/**
-	 * Download and process the given Sitemap (using the Sitemap's URL and 
-	 * return back its type. If the Sitemap's URL is pointing to a Sitemap 
+     * Download and process the given Sitemap (using the Sitemap's URL and
+     * return back its type. If the Sitemap's URL is pointing to a Sitemap
 	 * Index, the parser's Sitemap will point to null, and the Sitemap
 	 * argument should not be used; the parser's sitemapIndex should be
-	 * used instead. 
+     * used instead.
 	 * @param sitemap
 	 * @return
 	 * @throws UnknownFormatException if the Sitemap's format is not known
@@ -104,83 +98,83 @@ public class SitemapParser {
 	 * @throws InterruptedException
 	 */
 	public SitemapType processSitemap(Sitemap sitemap, String contentType, InputStream content) throws UnknownFormatException, IOException, InterruptedException {
-		
+
 		this.sitemap = sitemap;
 		URL url = sitemap.getUrl();
-		
+
 		if (VERBOSE) System.out.println("Processing Sitemap at " + url);
-		
+
 		// Set so we don't try to re-process it later
-		sitemap.setProcessed(true);	
-			
+        sitemap.setProcessed(true);
+
 		// Use extension or MIME type to determine how we should try
 		// to process the response
-		
-	    if (url.getPath().endsWith(".xml") ||    
-	    		contentType.contains("text/xml") || 
+
+        if (url.getPath().endsWith(".xml") ||
+            contentType.contains("text/xml") ||
 	    		contentType.contains("application/xml") ||
 	    		contentType.contains("application/x-xml") ||
 	    		contentType.contains("application/atom+xml") ||
 	    		contentType.contains("application/rss+xml")) {
 
-	    	// Try parsing the XML which could be in a number of formats	
+            // Try parsing the XML which could be in a number of formats
 	    	processXml(url, content);
-	    }	
+        }
 	    else if (contentType.contains("text/plain")) {
-	    	
+
 	    	// plain text
-	    	processText(content);	    	
-		}		
+            processText(content);
+        }
 		else {
 			throw new UnknownFormatException("Unknown format " + contentType + " at " + url);
 		}
-	        
+
 	    SitemapType type = sitemap.getType();
 	    if (type == SitemapType.INDEX) {
 	    	// A Sitemap Index contains Sitemaps but is not a Sitemap
-	    	this.sitemap = null;  	
+            this.sitemap = null;
 	    }
-	    
-	    return type;		
-	}
-	
+
+        return type;
+    }
+
 	/**
 	 * Parse the given XML content.
 	 * @param sitemapUrl
 	 * @param xmlContent
 	 * @return
-	 * @throws UnknownFormatException 
+     * @throws UnknownFormatException
 	 */
 	private void processXml(URL sitemapUrl, InputStream xmlContent) throws UnknownFormatException {
-		        
-        processXml(sitemapUrl, new InputSource(xmlContent));	        
-	}
-	
+
+        processXml(sitemapUrl, new InputSource(xmlContent));
+    }
+
 	/**Parse the given XML content.
-	 * 
+     *
 	 * @param sitemapUrl
 	 * @param is
 	 * @throws UnknownFormatException
 	 */
 	private void processXml(URL sitemapUrl, InputSource is) throws UnknownFormatException {
-		
+
 		Document doc = null;
-		
+
 		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();			
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			doc = dbf.newDocumentBuilder().parse(is);
 		} catch (Exception e) {
 			throw new UnknownFormatException("Error parsing XML for " + sitemapUrl);
-		}	
+        }
 
 		// See if this is a sitemap index
 		NodeList nodeList = doc.getElementsByTagName("sitemapindex");
-		if (nodeList.getLength() > 0) {			
+        if (nodeList.getLength() > 0) {
 			nodeList = doc.getElementsByTagName("sitemap");
 			parseSitemapIndex(sitemapUrl, nodeList);
 		}
 		else if (doc.getElementsByTagName("urlset").getLength() > 0) {
-			// This is a regular Sitemap			
+            // This is a regular Sitemap
 			parseXmlSitemap(doc);
 		}
 		else if (doc.getElementsByTagName("link").getLength() > 0) {
@@ -189,9 +183,9 @@ public class SitemapParser {
 		}
 		else {
 			throw new UnknownFormatException("Unknown XML format for " + sitemapUrl);
-		}	
-	}
-	
+        }
+    }
+
 	/**
 	 * Parse XML that contains a valid Sitemap.
 	 * Example of a Sitemap:
@@ -211,28 +205,28 @@ public class SitemapParser {
 	 * @param doc
 	 */
 	private void parseXmlSitemap(Document doc) {
-				
+
 		sitemap.setType(SitemapType.XML);
-			
+
 		NodeList list = doc.getElementsByTagName("url");
-	
-		// Loop through the <url>s			
+
+        // Loop through the <url>s
 		for (int i = 0; i < list.getLength(); i++) {
-			
+
 			Node n = list.item(i);
-			
+
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				Element elem = (Element) n;
-				
-				String loc = getElementValue(elem, "loc");				
-			   
+
+                String loc = getElementValue(elem, "loc");
+
 				URL url = null;
 		    	try {
-		    		url = new URL(loc);		
+                    url = new URL(loc);
 		    		String lastMod = getElementValue(elem, "lastmod");
 					String changeFreq = getElementValue(elem, "changefreq");
-					String priority = getElementValue(elem, "priority");						
-					
+                    String priority = getElementValue(elem, "priority");
+
 					if (urlIsLegal(sitemap.getBaseUrl(), url.toString())) {
 						SitemapUrl sUrl = new SitemapUrl(url.toString(), lastMod, changeFreq, priority);
 						sitemap.addUrl(sUrl);
@@ -241,18 +235,18 @@ public class SitemapParser {
 				}
 				catch (MalformedURLException e) {
 					//e.printStackTrace();
-					
+
 					// Can't create an entry with a bad URL
-					if (DEBUG) System.out.println("Bad url: [" + loc + "]");						
-				}					 
-			}			
-		}			 
-	}
-	
+                    if (DEBUG) System.out.println("Bad url: [" + loc + "]");
+                }
+            }
+        }
+    }
+
 	/**
 	 * Parse XML that contains a Sitemap Index.
 	 * Example Sitemap Index:
-		 
+
 		  <?xml version="1.0" encoding="UTF-8"?>
 			<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    				<sitemap>
@@ -268,85 +262,84 @@ public class SitemapParser {
 	 * @param nodeList
 	 */
 	private void parseSitemapIndex(URL url, NodeList nodeList) {
-			
+
 		if (VERBOSE) System.out.println("Parsing Sitemap Index");
-		
-		// Set the sitemap type which affects parseSitemap's return value 
+
+        // Set the sitemap type which affects parseSitemap's return value
 		sitemap.setType(SitemapType.INDEX);
-		
+
 		sitemapIndex = new SitemapIndex(url);
-		
+
 		// Loop through the <sitemap>s
 		for (int i = 0; i < nodeList.getLength() && i < MAX_URLS; i++) {
-			
+
 			Node firstNode = nodeList.item(i);
-			
+
 			URL sitemapUrl = null;
 			Date lastModified = null;
-			
+
 			if (firstNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element elem = (Element) firstNode;
-				String loc = getElementValue(elem, "loc");		
-				
+                String loc = getElementValue(elem, "loc");
+
 				try {
-		    		sitemapUrl = new URL(loc);		    			
-		    		String lastmod = getElementValue(elem, "lastmod");		
+                    sitemapUrl = new URL(loc);
+                    String lastmod = getElementValue(elem, "lastmod");
 		    		lastModified = Sitemap.convertToDate(lastmod);
-		    		
+
 		    		// Right now we are not worried about sitemapUrls that point
 		    		// to different websites.
-		    		
+
 		    		Sitemap s = new Sitemap(sitemapUrl, lastModified);
 		    		sitemapIndex.addSitemap(s);
-		    		if (VERBOSE) System.out.println("  " + (i+1) + ". " + s);		    		
+                    if (VERBOSE) System.out.println("  " + (i + 1) + ". " + s);
 				}
 				catch (MalformedURLException e) {
 					//e.printStackTrace();
-					
-					// Don't create an entry for a bad URL
-					if (DEBUG) System.out.println("Bad url: [" + loc + "]");						
-				}								
-			}			
+
+                    // Don't create an entry for a bad URL
+                    if (DEBUG) System.out.println("Bad url: [" + loc + "]");
+                }
+            }
 		}
 	}
-	
-	/**
+
+    /**
 	 * Parse the XML document, looking for "feed" element to determine if it's an
-	 * Atom doc and "rss" to determine if it's an RSS doc. 
+     * Atom doc and "rss" to determine if it's an RSS doc.
 	 * @param sitemapUrl
 	 * @param doc - XML document to parse
 	 * @throws UnknownFormatException if XML does not appear to be Arom or RSS
 	 */
 	private void parseSyndicationFormat(URL sitemapUrl, Document doc) throws UnknownFormatException {
-		
-		// See if this is an Atom feed by looking for "feed" element		
-		NodeList list = doc.getElementsByTagName("feed");		
+
+        // See if this is an Atom feed by looking for "feed" element
+        NodeList list = doc.getElementsByTagName("feed");
 		if (list.getLength() > 0) {
 			parseAtom((Element) list.item(0), doc);
 			sitemap.setType(SitemapType.ATOM);
-		}
-		else {			
+		} else {
 			// See if RSS feed by looking for "rss" element
 			list = doc.getElementsByTagName("rss");
-		
-			if (list.getLength() > 0) {
+
+            if (list.getLength() > 0) {
 				parseRSS(sitemap, doc);
 				sitemap.setType(SitemapType.RSS);
 			}
 			else {
 				throw new UnknownFormatException("Unknown syndication format at " + sitemapUrl);
 			}
-		}	
-	}
-	
+        }
+    }
+
 	/**
 	 * Parse the XML document which is assumed to be in Atom format.
-	 * Atom 1.0 example:		 
-		 
+     * Atom 1.0 example:
+
 		<?xml version="1.0" encoding="utf-8"?>
 		<feed xmlns="http://www.w3.org/2005/Atom">
-		 
-		 <title>Example Feed</title>
+
+     <title>Example Feed</title>
 		 <subtitle>A subtitle.</subtitle>
 		 <link href="http://example.org/feed/" rel="self"/>
 		 <link href="http://example.org/"/>
@@ -356,66 +349,66 @@ public class SitemapParser {
 		   <email>johndoe@example.com</email>
 		 </author>
 		 <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
-		 
-		 <entry>
+
+     <entry>
 		   <title>Atom-Powered Robots Run Amok</title>
 		   <link href="http://example.org/2003/12/13/atom03"/>
 		   <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
 		   <updated>2003-12-13T18:30:02Z</updated>
 		   <summary>Some text.</summary>
 		 </entry>
-		 
-		</feed>
+
+     </feed>
 	 * @param elem
 	 * @param doc
 	 */
 	private void parseAtom(Element elem, Document doc) {
-				
-		// Grab items from <feed><entry><link href="URL" /></entry></feed>
+
+        // Grab items from <feed><entry><link href="URL" /></entry></feed>
 		// Use lastmod date from <feed><modified>DATE</modified></feed>
-		
-		if (DEBUG) System.out.println("Parsing Atom XML");
-		
-		String lastMod = getElementValue(elem, "modified");
+
+        if (DEBUG) System.out.println("Parsing Atom XML");
+
+        String lastMod = getElementValue(elem, "modified");
 		if (DEBUG) System.out.println("lastMod=" + lastMod);
-		
-		NodeList list = doc.getElementsByTagName("entry");	
-				
-		// Loop through the <entry>s			
+
+        NodeList list = doc.getElementsByTagName("entry");
+
+        // Loop through the <entry>s
 		for (int i = 0; i < list.getLength() && i < MAX_URLS; i++) {
-			
-			Node n = list.item(i);
-			
-			if (n.getNodeType() == Node.ELEMENT_NODE) {
+
+            Node n = list.item(i);
+
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
 				elem = (Element) n;
-				
-				String href = getElementAttributeValue(elem, "link", "href");
+
+                String href = getElementAttributeValue(elem, "link", "href");
 				if (DEBUG) System.out.println("href=" + href);
-							   
-				URL url = null;
+
+                URL url = null;
 		    	try {
-		    		url = new URL(href);		    					    
-				    
+                    url = new URL(href);
+
 					if (urlIsLegal(sitemap.getBaseUrl(), url.toString())) {
 						SitemapUrl sUrl = new SitemapUrl(url.toString(), lastMod, null, null);
 						sitemap.addUrl(sUrl);
-						if (VERBOSE) System.out.println("  " + (i+1) + ". " + sUrl);	
+                        if (VERBOSE) System.out.println("  " + (i + 1) + ". " + sUrl);
 					}
 				}
 				catch (MalformedURLException e) {
 					// Can't create an entry with a bad URL
-					if (DEBUG) System.out.println("Bad url: [" + href + "]");						
-				}	
-								 
-			}			
-		}	
-	}
-	
+                    if (DEBUG) System.out.println("Bad url: [" + href + "]");
+                }
+
+            }
+        }
+    }
+
 	/**
 	 * Parse XML document which is assumed to be in RSS format.
 	 * RSS 2.0 example:
-		 
-		<?xml version="1.0"?>
+
+     <?xml version="1.0"?>
 		<rss version="2.0">
 		  <channel>
 		    <title>Lift Off News</title>
@@ -429,8 +422,8 @@ public class SitemapParser {
 		    <managingEditor>editor@example.com</managingEditor>
 		    <webMaster>webmaster@example.com</webMaster>
 		    <ttl>5</ttl>
-		 
-		    <item>
+
+     <item>
 		      <title>Star City</title>
 		      <link>http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp</link>
 		      <description>How do Americans get ready to work with Russians aboard the
@@ -439,64 +432,63 @@ public class SitemapParser {
 		      <pubDate>Tue, 03 Jun 2003 09:39:21 GMT</pubDate>
 		      <guid>http://liftoff.msfc.nasa.gov/2003/06/03.html#item573</guid>
 		    </item>
-		 
-		    <item>
+
+     <item>
 		      <title>Space Exploration</title>
 		      <link>http://liftoff.msfc.nasa.gov/</link>
 		      <description>Sky watchers in Europe, Asia, and parts of Alaska and Canada
 		        will experience a partial eclipse of the Sun on Saturday, May 31.</description>
 		      <pubDate>Fri, 30 May 2003 11:06:42 GMT</pubDate>
 		      <guid>http://liftoff.msfc.nasa.gov/2003/05/30.html#item572</guid>
-		    </item> 
-		 
+     </item>
+
 		  </channel>
 		</rss>
 	 * @param sitemap
 	 * @param doc
 	 */
 	private void parseRSS(Sitemap sitemap, Document doc) {
-		
-		// Grab items from <item><link>URL</link></item>
-		// and last modified date from <pubDate>DATE</pubDate>		
-		
+
+        // Grab items from <item><link>URL</link></item>
+        // and last modified date from <pubDate>DATE</pubDate>
+
 		if (DEBUG) System.out.println("Parsing RSS doc");
-		
-		NodeList list = doc.getElementsByTagName("channel");
+
+        NodeList list = doc.getElementsByTagName("channel");
 		Element elem = (Element) list.item(0);
-		
-		// Treat publication date as last mod (Tue, 10 Jun 2003 04:00:00 GMT)
+
+        // Treat publication date as last mod (Tue, 10 Jun 2003 04:00:00 GMT)
 		String lastMod = getElementValue(elem, "pubDate");
-		
-		if (DEBUG) System.out.println("lastMod=" + lastMod);			
-		
-		list = doc.getElementsByTagName("item");	
-				
-		// Loop through the <item>s			
+
+        if (DEBUG) System.out.println("lastMod=" + lastMod);
+
+        list = doc.getElementsByTagName("item");
+
+        // Loop through the <item>s
 		for (int i = 0; i < list.getLength() && i < MAX_URLS; i++) {
-			
-			Node n = list.item(i);
-			
-			if (n.getNodeType() == Node.ELEMENT_NODE) {
+
+            Node n = list.item(i);
+
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
 				elem = (Element) n;
-				
-				String link = getElementValue(elem, "link");
+
+                String link = getElementValue(elem, "link");
 				if (DEBUG) System.out.println("link=" + link);
-							   
-		    	try {
-		    		URL url = new URL(link);		    					    
-				    
+
+                try {
+                    URL url = new URL(link);
+
 					if (urlIsLegal(sitemap.getBaseUrl(), url.toString())) {
 						SitemapUrl sUrl = new SitemapUrl(url.toString(), lastMod, null, null);
 						sitemap.addUrl(sUrl);
-						if (VERBOSE) System.out.println("  " + (i+1) + ". " + sUrl);						
+                        if (VERBOSE) System.out.println("  " + (i + 1) + ". " + sUrl);
 					}
-				}
-				catch (MalformedURLException e) {					
+				} catch (MalformedURLException e) {
 					// Can't create an entry with a bad URL
-					if (DEBUG) System.out.println("Bad url: [" + link + "]");						
-				}								 
-			}			
-		}			 
+                    if (DEBUG) System.out.println("Bad url: [" + link + "]");
+                }
+            }
+        }
 	}
 
 	/**
@@ -506,8 +498,8 @@ public class SitemapParser {
 	 * @return
 	 */
 	private String getElementValue(Element elem, String elementName) {
-		
-		NodeList list = elem.getElementsByTagName(elementName);
+
+        NodeList list = elem.getElementsByTagName(elementName);
 	    Element e = (Element) list.item(0);
 	    if (e != null) {
 		    NodeList children = e.getChildNodes();
@@ -515,12 +507,12 @@ public class SitemapParser {
 		    	return ((Node) children.item(0)).getNodeValue().trim();
 		    }
 	    }
-	    
-	    return null;		    	
-	}
-	
+
+        return null;
+    }
+
 	/**
-	 * Get the element's attribute value. 
+     * Get the element's attribute value.
 	 * @param elem
 	 * @param elementName
 	 * @param attributeName
@@ -528,34 +520,34 @@ public class SitemapParser {
 	 */
 	private String getElementAttributeValue(Element elem, String elementName,
 			String attributeName) {
-		
-		NodeList list = elem.getElementsByTagName(elementName);
+
+        NodeList list = elem.getElementsByTagName(elementName);
 	    Element e = (Element) list.item(0);
 	    if (e != null) {
 	    	return e.getAttribute(attributeName);
 	    }
-	    
-	    return null;		    	
+
+        return null;
 	}
 
 
 	/**
-	 * Process a text-based Sitemap. Text sitemaps only list URLs 
+     * Process a text-based Sitemap. Text sitemaps only list URLs
 	 * but no priorities, last mods, etc.
 	 * @param content
 	 * @throws IOException
 	 */
-	private void processText(InputStream content) throws IOException { 
-		
+    private void processText(InputStream content) throws IOException {
+
 		if (DEBUG) System.out.println("Processing textual Sitemap");
-		
-		sitemap.setType(SitemapType.TEXT);
-		   	
-		BufferedReader reader = new BufferedReader(new InputStreamReader(content, "UTF-8"));
-		
-		String line;
-		
-		int i = 1;		
+
+        sitemap.setType(SitemapType.TEXT);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(content, "UTF-8"));
+
+        String line;
+
+        int i = 1;
 		while ((line = reader.readLine()) != null) {
 			if (line.length() > 0 && i <= MAX_URLS) {
 				try {
@@ -563,76 +555,75 @@ public class SitemapParser {
 					if (urlIsLegal(sitemap.getBaseUrl(), url.toString())) {
 						if (VERBOSE) System.out.println("  " + i + ". " + url);
 						i++;
-						sitemap.addUrl(url); 
+                        sitemap.addUrl(url);
 					}
 				}
 				catch (MalformedURLException e) {
 					if (DEBUG) System.out.println("Bad URL [" + line + "].");
-				}    	
+                }
 			}
-		}		
-	}
-	
-	
+        }
+    }
+
+
 	/**
 	 * Decompress the gzipped content and process the resulting XML Sitemap.
 	 * @param url - URL of the gzipped content
 	 * @param response - Gzipped content
 	 * @throws MalformedURLException
 	 * @throws IOException
-	 * @throws UnknownFormatException 
+     * @throws UnknownFormatException
 	 */
 	private void processGzip(URL url, byte[] response) throws MalformedURLException,
 			IOException, UnknownFormatException {
-		
-		if (DEBUG) System.out.println("Processing gzip");
-		
-		InputStream is = new ByteArrayInputStream(response);
-		
-		// Remove .gz ending
+
+        if (DEBUG) System.out.println("Processing gzip");
+
+        InputStream is = new ByteArrayInputStream(response);
+
+        // Remove .gz ending
 		String xmlUrl = url.toString().replaceFirst("\\.gz$", "");
-		
-		if (DEBUG) System.out.println("XML url = " + xmlUrl);
+
+        if (DEBUG) System.out.println("XML url = " + xmlUrl);
 
 		InputStream decompressed = new GZIPInputStream(is);
 		InputSource in = new InputSource(decompressed);
-		in.setSystemId(xmlUrl);			
+        in.setSystemId(xmlUrl);
 		processXml(url, in);
 		decompressed.close();
 	}
-	
 
-	/**
+
+    /**
 	 * See if testUrl is under sitemapUrl. Only URLs under sitemapUrl are legal.
 	 * Both URLs are first converted to lowercase before the comparison is made
 	 * (this could be an issue on web servers that are case sensitive).
-	 * @param sitemapUrl
 	 * @param testUrl
 	 * @return true if testUrl is under sitemapUrl, false otherwise
 	 */
 	private boolean urlIsLegal(String sitemapBaseUrl, String testUrl) {
-				
-		boolean ret = false;
-		
-		// Don't try a comparison if the URL is too short to match
+
+        boolean ret = false;
+
+        // Don't try a comparison if the URL is too short to match
 		if (sitemapBaseUrl != null && sitemapBaseUrl.length() <= testUrl.length()) {
 			String u = testUrl.substring(0, sitemapBaseUrl.length()).toLowerCase();
 			ret = sitemapBaseUrl.equals(u);
 		}
 
 		if (DEBUG) {
-			System.out.println("urlIsLegal: " + sitemapBaseUrl + " <= " + testUrl + 
-					" ? " + ret);		
-		}
-		
+            System.out.println("urlIsLegal: " + sitemapBaseUrl + " <= " + testUrl +
+                " ? " + ret);
+        }
+
 		return ret;
 	}
 
 	public Sitemap getSitemap() {
 		return sitemap;
 	}
-	
-	public void freeSitemap() {
+
+    public void freeSitemap() {
 		sitemap = null;
 	}
 }

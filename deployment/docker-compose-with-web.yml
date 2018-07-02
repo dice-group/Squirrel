@@ -30,6 +30,7 @@ services:
       RDB_PORT: 28015
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
       COMMUNICATION_WITH_WEBSERVICE: "true"
+      VISUALIZATION_OF_CRAWLED_GRAPH: "true"
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seeds.txt:/var/squirrel/data/seeds.txt:ro
