@@ -4,9 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+@Deprecated
 public abstract class VisualisationHelper {
     /**
      * converts a byte stream into a {@link VisualisationGraph}. If there are any exceptions, the methods tries to handle them
+     * USE SERIALIZATION OF {@link com.SquirrelWebObject} INSTEAD!
      * @param bytes the byte stream
      * @return a {@link VisualisationGraph}, that was in further times converted into a byte stream
      */
