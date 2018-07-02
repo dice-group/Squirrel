@@ -1,0 +1,14 @@
+file_descriptor:
+ check:
+  domain: govdata.de
+ search-result-page:
+  regex: searchresult
+  resources:
+ 
+ download_page:
+  regex: details
+  resources:
+   "http://schema.org/downloadUrl":
+    - .resource-list li dd a[id^=resource]
+    - ul li:contains(RDF) a
+   "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])

@@ -1,7 +1,9 @@
 package org.aksw.simba.squirrel.worker.impl;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
+import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
+import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -13,21 +15,20 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
+import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -45,81 +46,21 @@ public class WorkerImpl implements Worker, Closeable {
     protected Frontier frontier;
     protected Sink sink;
     protected UriCollector collector;
+    protected Analyzer analyzer;
     protected RobotsManager manager;
-    protected SparqlBasedFetcher sparqlBasedFetcher = new SparqlBasedFetcher();
+    @Autowired
+    protected SparqlBasedFetcher sparqlBasedFetcher;
     protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime;
+    protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final int id = (int)Math.floor(Math.random()*100000);
     private boolean sendAliveMessages;
 
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     *
-     * @deprecated Because a default configuration of the UriCollector is created.
-     */
-    @Deprecated
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, boolean sendAliveMessages) {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, null, sendAliveMessages);
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     *
-     * @param logDir
-     *            The directory to which a domain log will be written (or
-     *            {@code null} if no log should be written).
-     */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer, String logDir, boolean sendAliveMessages) {
-        this(frontier, sink, manager, serializer, null, DEFAULT_WAITING_TIME, logDir, sendAliveMessages);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     *
-     * @deprecated Because a default configuration of the UriCollector is created.
-     *
-     */
-    @Deprecated
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-                      UriCollector collector, boolean sendAliveMessages) {
-        this(frontier, sink, manager, serializer, collector, DEFAULT_WAITING_TIME, null, sendAliveMessages);
-    }
 
     /**
      * Constructor.
@@ -163,8 +104,10 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-            // new SparqlBasedFetcher(),
-            new HTTPFetcher(), new FTPFetcher());
+                // new SparqlBasedFetcher(),
+                new HTTPFetcher(), new FTPFetcher());
+
+        analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
 
     @Override
@@ -197,8 +140,7 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
-        List<CrawleableUri> newUris = new ArrayList<>();
-        List<CrawleableUri> crawledUris = new ArrayList<>();
+        Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
             if (uri == null) {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
@@ -206,20 +148,18 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
             } else {
                 try {
-                    performCrawling(uri, newUris);
-                    crawledUris.add(uri);
-                    //TODO crawlingActivity.setState(uri, CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    uriMap.put(uri, performCrawling(uri));
                 } catch (Exception e) {
-                    LOGGER.error("Unhandled exception whily crawling \"" + uri.getUri().toString()
-                        + "\". It will be ignored.", e);
+                    LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
+                            + "\". It will be ignored.", e);
                 }
             }
         }
         // classify URIs
-        for (CrawleableUri uri : newUris) {
-            uriProcessor.recognizeUriType(uri);
+        Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
+        while (uriMapEnumeration.hasMoreElements()) {
+            uriMapEnumeration.nextElement().forEach(uri -> uriProcessor.recognizeUriType(uri));
         }
-        // send results to the Frontier
         //TODO
 //        crawlingActivity.finishActivity();
 //        if (sink instanceof RDFSink) {
@@ -227,43 +167,80 @@ public class WorkerImpl implements Worker, Closeable {
 //        } else {
 //            //TODO ADD METADATA IF SINK IS NOT RDFSINK
 //        }
-        frontier.crawlingDone(crawledUris, newUris);
+        // TODO send results to the Frontier
+        //crawlingActivity.finishActivity();
+        //if (sink instanceof RDFSink) {
+        //    ((RDFSink) sink).addMetadata(crawlingActivity);
+        //} else {
+            //TODO ADD METADATA IF SINK IS NOT RDFSINK
+        //}
+        frontier.crawlingDone(uriMap);
     }
 
     @Override
-    public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+    public List<CrawleableUri> performCrawling(CrawleableUri uri) {
         // check robots.txt
+        List<CrawleableUri> ret = new ArrayList<>();
+
+    	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
+    	LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
         //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
+            try {
+                long delay = timeStampLastUriFetched
+                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                if (delay > 0) {
+                    Thread.sleep(delay);
+                }
+            } catch (InterruptedException e) {
+                LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
+            }
             LOGGER.debug("I start crawling {} now...", uri);
 
-            Analyzer analyzer = new RDFAnalyzer(collector);
 
-            File data = null;
+            FileManager fm = new FileManager();
+
+            File fetched = null;
 
             try {
-                data = fetcher.fetch(uri);
+            	fetched = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
 
-            if (data != null) {
-                try {
-                    // open the sink only if a fetcher has been found
-                    sink.openSinkForUri(uri);
-                    collector.openSinkForUri(uri);
-                    Iterator<byte[]> result = analyzer.analyze(uri, data, sink);
-                    sink.closeSinkForUri(uri);
-                    sendNewUris(result);
-                    collector.closeSinkForUri(uri);
-                } catch (Exception e) {
-                    // We don't want to handle the exception. Just make sure that sink and collector
-                    // do not handle this uri anymore.
-                    sink.closeSinkForUri(uri);
-                    collector.closeSinkForUri(uri);
-                    throw e;
-                }
+            List<File> fetchedFiles = new ArrayList<>();
+            if(fetched != null && fetched.isDirectory()) {
+            	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+            } else {
+            	fetchedFiles.add(fetched);
+            }
+
+            timeStampLastUriFetched = System.currentTimeMillis();
+            List<File> fileList;
+
+
+            for(File data: fetchedFiles){
+	            if (data != null) {
+	                fileList = fm.decompressFile(data);
+	                for (File file : fileList) {
+	                    try {
+	                        // open the sink only if a fetcher has been found
+	                        sink.openSinkForUri(uri);
+	                        collector.openSinkForUri(uri);
+	                        Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+	                        sink.closeSinkForUri(uri);
+                            ret.addAll(sendNewUris(resultUris));
+	                        collector.closeSinkForUri(uri);
+	                    } catch (Exception e) {
+	                        // We don't want to handle the exception. Just make sure that sink and collector
+	                        // do not handle this uri anymore.
+	                        sink.closeSinkForUri(uri);
+	                        collector.closeSinkForUri(uri);
+	                        throw e;
+	                    }
+	                }
+	            }
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
@@ -271,12 +248,14 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
+        //TODO (this is only a unsatisfying quick fix to avoid unreadable graphs because of too much nodes)
+        return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
         //TODO: implement special cases
 
-        //else set everytime to default
+        //else set every time to default
         uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
     }
 
@@ -290,28 +269,32 @@ public class WorkerImpl implements Worker, Closeable {
         return sendAliveMessages;
     }
 
-    public void sendNewUris(Iterator<byte[]> uriIterator) {
-        List<CrawleableUri> uris = new ArrayList<>(10);
-        CrawleableUri uri;
+    public List<CrawleableUri> sendNewUris(Iterator<byte[]> uriIterator) {
+        List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
+        CrawleableUri newUri;
+        int packageCount = 0;
         while (uriIterator.hasNext()) {
             try {
-                uri = serializer.deserialize(uriIterator.next());
-                uriProcessor.recognizeUriType(uri);
-                uris.add(uri);
-                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(uris);
-                    uris.clear();
+                newUri = serializer.deserialize(uriIterator.next());
+                uriProcessor.recognizeUriType(newUri);
+                newUris.add(newUri);
+                if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    frontier.addNewUris(new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
+                    packageCount++;
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        frontier.addNewUris(uris);
+        frontier.addNewUris(newUris);
+
+        return newUris;
     }
 
     @Override
     public void close() {
         IOUtils.closeQuietly(fetcher);
+        IOUtils.closeQuietly(sink);
     }
 
     public void setTerminateFlag(boolean terminateFlag) {
