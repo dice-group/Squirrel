@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.NodeFactory;
+import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -22,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SparqlBasedSink implements Sink {
+public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
      */
@@ -54,12 +55,6 @@ public class SparqlBasedSink implements Sink {
         this.queryDatasetURI = queryDatasetURI;
     }
 
-
-    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
-        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
-        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
-    }
-
     public void addMetadata() {
         throw new UnsupportedOperationException();
     }
@@ -75,6 +70,13 @@ public class SparqlBasedSink implements Sink {
         if (mapBufferedTriples.get(uri).size() >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
             sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
         }
+    }
+
+    @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        // TODO: Implement!
+//        throw new UnsupportedOperationException("Not yet implemented.");
+        return new ArrayList<>();
     }
 
     @Override
@@ -100,9 +102,7 @@ public class SparqlBasedSink implements Sink {
      * @param tripleList
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        String query = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
-        LOGGER.info("Forward this query to the SPARQL (" + updateDatasetURI + "): " + ((query.length() > 500) ? query.substring(0, 500) + "..." : query));
-        UpdateRequest request = UpdateFactory.create(query);
+        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         proc.execute();
     }

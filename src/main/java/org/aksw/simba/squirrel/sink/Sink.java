@@ -2,6 +2,7 @@ package org.aksw.simba.squirrel.sink;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.springframework.stereotype.Component;

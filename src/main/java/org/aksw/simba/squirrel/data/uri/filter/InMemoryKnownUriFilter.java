@@ -105,6 +105,7 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
         return uris.size();
     }
 
+
     private class UriInfo {
         long lastCrawlTimestamp;
         long nextCrawlTimestamp;

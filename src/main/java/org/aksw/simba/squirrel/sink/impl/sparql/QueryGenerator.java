@@ -19,6 +19,8 @@ public class QueryGenerator {
      * The instance of the class QueryGenerator.
      */
     private static final QueryGenerator instance = new QueryGenerator();
+
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
     private QueryGenerator() {
@@ -126,7 +128,7 @@ public class QueryGenerator {
             if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
                 stringBuilder.append("@");
                 stringBuilder.append(node.getLiteralLanguage());
-            }else if (node.getLiteralDatatype() != null) {
+            } else if (node.getLiteralDatatype() != null) {
                 stringBuilder.append("^^");
                 stringBuilder.append("<");
                 stringBuilder.append(node.getLiteralDatatype().getURI());

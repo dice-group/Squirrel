@@ -15,14 +15,14 @@ public class GreetingController {
     private final AtomicLong counter = new AtomicLong();
 
     @RequestMapping(method = RequestMethod.GET, path = "/greeting")
-    public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
+    public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
         return new Greeting(counter.incrementAndGet(),
-                String.format(template, name));
+            String.format(template, name));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/greeting2", produces = MediaType.APPLICATION_JSON_VALUE)
     public Greeting greeting2() {
         return new Greeting(counter.incrementAndGet(),
-                "German HALLO");
+            "German HALLO");
     }
 }

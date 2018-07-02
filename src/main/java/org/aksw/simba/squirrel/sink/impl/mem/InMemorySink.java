@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.sink.impl.mem;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -156,5 +158,4 @@ public class InMemorySink implements Sink {
             LOGGER.error("Error while reading data from stream. The data won't be stored.", e);
         }
     }
-
 }

@@ -18,6 +18,7 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * Adds a {@link VisualisationNode} to the graph
+     *
      * @param uri the uri-Label of the node
      * @return the added node. If the node (that URI) was already existing, the return is {@code null}
      */
@@ -27,8 +28,9 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * Adds a {@link VisualisationNode} to the graph
+     *
      * @param uri the uri-Label of the node
-     * @param ip the IP, where the URI is hosted
+     * @param ip  the IP, where the URI is hosted
      * @return the added node. If the node (that URI + IP) was already existing, the return is {@code null}
      */
     public VisualisationNode addNode(String uri, String ip) {
@@ -37,7 +39,7 @@ public class VisualisationGraph implements Serializable {
         }
 
         Optional<VisualisationNode> node = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(uri)).findFirst();
-        if(node.isPresent()) {
+        if (node.isPresent()) {
             node.get().setIp(ip);
             return null;
         }
@@ -50,8 +52,9 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * Adds a {@link VisualisationEdge} to the graph (directed)
+     *
      * @param fromURI the uri of the starting node (initiating node)
-     * @param toURI the uri of the ending node (destination node)
+     * @param toURI   the uri of the ending node (destination node)
      * @return the added edge. It's possible to have multiple edges between 2 nodes
      */
     public VisualisationEdge addEdge(String fromURI, String toURI) {
@@ -73,13 +76,14 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * adds the object to an array. If there is no place in the array left, it will be extended about 8 places.
-     * @param array the target array
+     *
+     * @param array  the target array
      * @param object the object, that should be added
      * @return the extended array
      */
     private <T> T[] extendArray(T[] array, T object) {
         T[] cloneArray = array.clone();
-        for (int i=0; i<cloneArray.length; i++) {
+        for (int i = 0; i < cloneArray.length; i++) {
             if (cloneArray[i] == null) {
                 cloneArray[i] = object;
                 return cloneArray;
@@ -87,7 +91,7 @@ public class VisualisationGraph implements Serializable {
         }
 
         // extend Array
-        T[] newArray = Arrays.copyOf(array, array.length+8);
+        T[] newArray = Arrays.copyOf(array, array.length + 8);
         newArray[array.length] = object;
         return newArray;
     }
@@ -102,6 +106,7 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * removes all {@code null} places in the array
+     *
      * @param array the array, that should be optimized
      * @return the optimized array
      */
@@ -123,23 +128,25 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * for the RABBIT
+     *
      * @return the byte stream of the graph
      */
     public byte[] convertToByteStream() {
         optimizeArrays();
-        try(ByteArrayOutputStream b = new ByteArrayOutputStream()){
-            try(ObjectOutputStream o = new ObjectOutputStream(b)){
+        try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
+            try (ObjectOutputStream o = new ObjectOutputStream(b)) {
                 o.writeObject(this);
             }
             return b.toByteArray();
         } catch (IOException e) {
             System.out.println("ERROR during serializing: " + e.getMessage());
-            return new byte[] {};
+            return new byte[]{};
         }
     }
 
     /**
      * get all nodes
+     *
      * @return all nodes
      */
     public VisualisationNode[] getNodes() {
@@ -148,6 +155,7 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * get a node with the certain URI
+     *
      * @param uri the URI
      * @return the node or {@code null}, if the node is not exiting
      */
@@ -157,6 +165,7 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * get all edges
+     *
      * @return all edges
      */
     public VisualisationEdge[] getEdges() {
@@ -165,10 +174,11 @@ public class VisualisationGraph implements Serializable {
 
     /**
      * get all edges, that are connected with a certain node
+     *
      * @param node the anchor node (must be {@link VisualisationNode}, not a uri)
      * @return all specified edges
      */
     public VisualisationEdge[] getEdges(VisualisationNode node) {
-        return Arrays.stream(edges).filter(e -> e != null && (e.getSourceNode() == node|| e.getTargetNode() == node)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll).toArray(new VisualisationEdge[0]);
+        return Arrays.stream(edges).filter(e -> e != null && (e.getSourceNode() == node || e.getTargetNode() == node)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll).toArray(new VisualisationEdge[0]);
     }
 }

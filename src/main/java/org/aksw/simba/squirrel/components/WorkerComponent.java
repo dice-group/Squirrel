@@ -15,6 +15,8 @@ import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlUtils;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
@@ -42,9 +44,18 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerComponent.class);
 
+    public static final String OUTPUT_FOLDER_KEY = "OUTPUT_FOLDER";
+
+    /**
+     * Indicates whether deduplication is active. If it is not active, this component will send data to the deduplicator.
+     */
+    private static boolean deduplicationActive;
+
     @Qualifier("workerBean")
     @Autowired
     private Worker worker;
+    private DataSender senderFrontier, senderDeduplicator;
+    private RabbitRpcClient clientFrontier;
     @Qualifier("sender")
     @Autowired
     private DataSender sender;
@@ -55,23 +66,41 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Qualifier("serializerBean")
     @Autowired
     private Serializer serializer;
-    private Timer timerAliveMessages;
+    private Timer timerAliveMessages = new Timer();
 
     @Override
     public void init() throws Exception {
+        super.init();
         if (worker == null || sender == null || client == null || serializer == null) {
             LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
             initWithoutSpring();
         }
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
+        Map<String, String> env = System.getenv();
+        if (env.containsKey(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY)) {
+            deduplicationActive = Boolean.parseBoolean(env.get(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY));
+        } else {
+            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY);
+            deduplicationActive = DeduplicatorComponent.DEFAULT_DEDUPLICATION_ACTIVE;
+        }
+
+        senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+            .build();
+
+        if (deduplicationActive) {
+            senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
+                .build();
+        }
+        clientFrontier = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
+            FrontierComponent.FRONTIER_QUEUE_NAME);
+
         if (worker.sendsAliveMessages()) {
-            timerAliveMessages = new Timer();
             timerAliveMessages.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
-                        sender.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                        senderFrontier.sendData(serializer.serialize(new AliveMessage(worker.getId())));
                     } catch (IOException e) {
                         LOGGER.warn(e.toString());
                     }
@@ -112,8 +141,11 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(sender);
-        IOUtils.closeQuietly(client);
+        IOUtils.closeQuietly(senderFrontier);
+        if (deduplicationActive) {
+            IOUtils.closeQuietly(senderDeduplicator);
+        }
+        IOUtils.closeQuietly(clientFrontier);
         timerAliveMessages.cancel();
         super.close();
     }
@@ -122,7 +154,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     public List<CrawleableUri> getNextUris() {
         UriSet set = null;
         try {
-            byte[] response = client.request(uriSetRequest);
+            byte[] response = clientFrontier.request(uriSetRequest);
             if (response != null) {
                 set = serializer.deserialize(response);
             }
@@ -148,9 +180,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
-
         try {
-            sender.sendData(serializer.serialize(new UriSet(uris)));
+            senderFrontier.sendData(serializer.serialize(new UriSet(uris)));
         } catch (Exception e) {
             LOGGER.error("Exception while sending URIs to the frontier.", e);
         }
@@ -170,7 +201,13 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                     uriMapHashtable.put(key, uriMap.get(key));
                 }
             }
-            sender.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
+            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
+
+            if (deduplicationActive) {
+                UriSet uriSet = new UriSet();
+                uriSet.uris = Collections.list(uriMapHashtable.keys());
+                senderDeduplicator.sendData(serializer.serialize(uriSet));
+            }
         } catch (Exception e) {
             LOGGER.error("Exception while sending crawl result to the frontier.", e);
         }

@@ -318,7 +318,7 @@ public class SitemapParser {
 		if (list.getLength() > 0) {
 			parseAtom((Element) list.item(0), doc);
 			sitemap.setType(SitemapType.ATOM);
-		} else {
+        } else {
 			// See if RSS feed by looking for "rss" element
 			list = doc.getElementsByTagName("rss");
 
@@ -483,7 +483,7 @@ public class SitemapParser {
 						sitemap.addUrl(sUrl);
                         if (VERBOSE) System.out.println("  " + (i + 1) + ". " + sUrl);
 					}
-				} catch (MalformedURLException e) {
+                } catch (MalformedURLException e) {
 					// Can't create an entry with a bad URL
                     if (DEBUG) System.out.println("Bad url: [" + link + "]");
                 }

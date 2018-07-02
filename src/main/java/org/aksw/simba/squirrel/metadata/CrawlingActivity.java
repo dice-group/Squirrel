@@ -66,7 +66,7 @@ public class CrawlingActivity {
     /**
      * The sink used for the activity.
      */
-    private TripleBasedSink sink;
+    private Sink sink;
 
     /**
      * Constructor
@@ -75,7 +75,7 @@ public class CrawlingActivity {
      * @param worker
      * @param sink
      */
-    public CrawlingActivity(CrawleableUri uri, Worker worker, TripleBasedSink sink) {
+    public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
         this.worker = worker;
         this.dateStarted = new Date();
         this.uri = uri;

@@ -62,6 +62,9 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -78,6 +81,9 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -94,8 +100,27 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
+
+deduplicator:
+    image: squirrel
+    container_name: deduplicator
+    environment:
+      DEDUPLICATION_ACTIVE: "true"
+      HOBBIT_RABBIT_HOST: rabbit
+      OUTPUT_FOLDER: /var/squirrel/data
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
+      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_PORT: 3030
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1/deduplicator:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent
