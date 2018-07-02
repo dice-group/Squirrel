@@ -54,15 +54,15 @@ public class SparqlBasedSink implements Sink {
         this.queryDatasetURI = queryDatasetURI;
     }
 
-
-    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
-        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
-        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
-    }
-
     public void addMetadata() {
         throw new UnsupportedOperationException();
     }
+
+    public String getHost()
+    {
+        return updateDatasetURI;
+    }
+
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

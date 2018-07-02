@@ -1,5 +1,7 @@
 package org.aksw.simba.squirrel.metadata;
 
+import org.aksw.simba.squirrel.components.WorkerComponent;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
@@ -10,6 +12,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +71,10 @@ public class CrawlingActivity {
      * The sink used for the activity.
      */
     private TripleBasedSink sink;
+    /**
+     * date format for start_date and end_date
+     */
+    public SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
 
     /**
      * Constructor
@@ -83,7 +91,7 @@ public class CrawlingActivity {
         if (sink instanceof SparqlBasedSink) {
             graphId = ((SparqlBasedSink) sink).getGraphId(uri);
         }
-        id = "activity:" + graphId;
+        id = "crawlingActivity:" + graphId;
         this.sink = sink;
     }
 
@@ -116,18 +124,25 @@ public class CrawlingActivity {
         return id;
     }
 
+    public String getHost() {
+        try {
+            WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+            return httpPrefix;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public String getDateStarted() {
-        String dateString = dateStarted.toString();
-        dateString = dateString.replace(" ", "_");
-        dateString = dateString.replace(":", "_");
+
+        String dateString = ft.format(dateStarted).toString();
         return dateString;
     }
 
     public String getDateEnded() {
 
-        String dateString = dateEnded.toString();
-        dateString = dateString.replace(" ", "_");
-        dateString = dateString.replace(":", "_");
+        String dateString = ft.format(dateEnded).toString();
         return dateString;
     }
 
@@ -149,7 +164,9 @@ public class CrawlingActivity {
         return uri;
     }
 
-    public String getGraphId() {
-        return graphId;
+    public URI getUri()
+    {
+        return URI.create(getUri().toString());
+
     }
 }
