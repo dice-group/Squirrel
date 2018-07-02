@@ -167,7 +167,9 @@ public class WorkerImpl implements Worker, Closeable {
                 }
             }
             crawlingActivity.finishActivity();
-            metaDataHandler.addMetadata(crawlingActivity);
+            if (metaDataHandler!=null) {
+                metaDataHandler.addMetadata(crawlingActivity);
+            }
         }
         // classify URIs
         Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();

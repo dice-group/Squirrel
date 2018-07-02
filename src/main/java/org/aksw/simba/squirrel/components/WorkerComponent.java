@@ -89,7 +89,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
 
         Sink sink;
-        MetaDataHandler metaDataHandler=null;
+        MetaDataHandler metaDataHandler = null;
         if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
             sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
         } else {
@@ -100,11 +100,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
         serializer = new GzipJavaUriSerializer();
 
-        if (metaDataHandler!=null){
-            worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
-        }else {
-            worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
-        }
+        worker = new WorkerImpl(this, sink, metaDataHandler, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
     }
