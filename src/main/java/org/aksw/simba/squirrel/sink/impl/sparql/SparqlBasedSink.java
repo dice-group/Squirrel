@@ -58,11 +58,6 @@ public class SparqlBasedSink implements Sink {
         throw new UnsupportedOperationException();
     }
 
-    public String getHost()
-    {
-        return updateDatasetURI;
-    }
-
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

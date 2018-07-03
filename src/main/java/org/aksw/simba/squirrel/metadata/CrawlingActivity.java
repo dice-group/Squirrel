@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.metadata;
 
+import com.sun.org.apache.xalan.internal.xsltc.runtime.Node;
 import org.aksw.simba.squirrel.components.WorkerComponent;
 import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -9,15 +10,18 @@ import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
@@ -74,7 +78,7 @@ public class CrawlingActivity {
     /**
      * date format for start_date and end_date
      */
-    public SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
+
 
     /**
      * Constructor
@@ -134,16 +138,62 @@ public class CrawlingActivity {
         }
     }
 
-    public String getDateStarted() {
 
-        String dateString = ft.format(dateStarted).toString();
-        return dateString;
+
+    /*public void addStep (Object k){
+
+        //uri.addData(k.getClass().getSimpleName().toString(),k);
+
     }
 
-    public String getDateEnded() {
+    public String getHadPlan()
+    {
+        for(Object object : uri.getData().keySet())
+        {
+            int count = 1;
+            String l = "step" + count++ ;
+            uri.addData(l,object.getClass().getSimpleName());
+        }
+        ArrayList<String> list = new ArrayList<>();
+        for(Object o: uri.getData().values())
+        {
+            list.add(o.toString());
 
-        String dateString = ft.format(dateEnded).toString();
-        return dateString;
+        }
+        return list.toString();
+    }*/
+
+    public Date getDateStarted() {
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
+
+        String dstarted = ft.format(dateStarted);
+        try
+        {
+            Date date = ft.parse(dstarted);
+            return date;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    public Date getDateEnded() {
+        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
+        String dended = ft.format(dateEnded);
+        try {
+            Date date = ft.parse(dended);
+            return date;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+
+    }
+    public CrawleableUri getCrawleableUri()
+    {
+        return uri;
     }
 
     public int getNumTriples() {
@@ -154,19 +204,26 @@ public class CrawlingActivity {
         return worker;
     }
 
-    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED;}
+    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED};
 
     public CrawlingURIState getState() {
         return state;
     }
+    public URL geturl(String o) {
+        try {
+            URL Domain = new URL("http://www.example.org/dataset1/file.ttl/");
+             URL url = new URL(Domain + o );
+             return url;
 
-    public CrawleableUri getCrawleableUri() {
-        return uri;
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
-    public URI getUri()
+   public URI getUri()
     {
-        return URI.create(getUri().toString());
+        return URI.create(uri.getUri().toString());
 
     }
+
 }
