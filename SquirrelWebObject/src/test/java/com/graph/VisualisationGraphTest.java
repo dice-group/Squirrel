@@ -24,29 +24,32 @@ public class VisualisationGraphTest {
 
     @Test
     public void optimizeArrays() {
-        assertEquals(8, graph.getEdges().length);
+        assertEquals(8, graph.getEdges().size());
         graph.optimizeArrays();
-        assertEquals(2, graph.getEdges().length);
+        assertEquals(2, graph.getEdges().size());
     }
 
     @Test
     public void convertToByteStream() {
         VisualisationGraph converted = VisualisationHelper.convertToObject(graph.convertToByteStream());
 
-        assertThat(converted.getEdges()[0].toString(), CoreMatchers.equalTo(graph.getEdges()[0].toString()));
-        assertThat(converted.getEdges()[1].toString(), CoreMatchers.equalTo(graph.getEdges()[1].toString()));
+        assertThat(converted.getEdges().get(0).toString(), CoreMatchers.equalTo(graph.getEdges().get(0).toString()));
+        assertThat(converted.getEdges().get(1).toString(), CoreMatchers.equalTo(graph.getEdges().get(1).toString()));
+
+//        assertThat(converted.getEdges()[0].toString(), CoreMatchers.equalTo(graph.getEdges()[0].toString()));
+//        assertThat(converted.getEdges()[1].toString(), CoreMatchers.equalTo(graph.getEdges()[1].toString()));
         assertEquals(graph.getNode("Test 1").toInt(), converted.getNode("Test 1").toInt());
     }
 
     @Test
     public void getEdges() {
-        assertThat(graph.getEdges()[0].toString(), CoreMatchers.equalTo("Test 1 -> Test 2 (1.1.1.1)"));
-        assertThat(graph.getEdges()[1].toString(), CoreMatchers.equalTo("Test 2 (1.1.1.1) -> Test 1"));
+        assertThat(graph.getEdges().get(0).toString(), CoreMatchers.equalTo("Test 1 -> Test 2 (1.1.1.1)"));
+        assertThat(graph.getEdges().get(1).toString(), CoreMatchers.equalTo("Test 2 (1.1.1.1) -> Test 1"));
     }
 
     @Test
     public void getEdges1() {
         graph.optimizeArrays();
-        assertArrayEquals(graph.getEdges(), graph.getEdges(graph.getNode("Test 1")));
+        assertArrayEquals(graph.getEdges().toArray(), graph.getEdges(graph.getNode("Test 1")).toArray());
     }
 }
