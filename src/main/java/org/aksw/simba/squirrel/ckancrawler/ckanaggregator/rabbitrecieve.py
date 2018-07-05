@@ -12,20 +12,22 @@ channel = connection.channel()
 channel.queue_declare(queue='ckan')
 
 def callback(ch, method, properties, body):
-    print(" [x] Received %r" % body)
+    #print(" [x] Received %r" % body)
     if body == "hi ckan":
-        #print(" [x] Received %r" % body)  #TODO:JAVAEND FOR SENDING SPECIFIC MESSAGES INSTEAD OF ALL MESSAGES
+        print(" [x] Received %r" % body)  #TODO:JAVAEND FOR SENDING SPECIFIC MESSAGES INSTEAD OF ALL MESSAGES
         channel.basic_publish(exchange='',
-                              routing_key='ckan',
+                              routing_key='ckan2',
                               body='hello component')
+        channel.queue_declare(queue='ckan')
 
     elif re.match('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', body):
+        print(" [x] Received %r" % body)
         urls = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', body)
         urlse = str(urls[0])
         print("sending url")
         main.dump(urlse)
         channel.basic_publish(exchange='',
-                              routing_key='ckan',
+                              routing_key='ckan2',
                               body='finished dumping')
 
 
