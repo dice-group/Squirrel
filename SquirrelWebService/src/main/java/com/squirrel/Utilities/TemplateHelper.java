@@ -24,7 +24,7 @@ public abstract class TemplateHelper {
         Matcher m = pattern.matcher(output.toString());
 
         while (m.find()) {
-            String replaceStringKey = m.group().substring(2, m.group().length()-1);
+            String replaceStringKey = m.group().substring(2, m.group().length() - 1);
             Optional<Map.Entry<String, List<String>>> match = replacements.entrySet().stream().filter(e -> e.getKey().equals(replaceStringKey)).findFirst();
             final StringBuilder replaceString = new StringBuilder("");
             match.ifPresent(matchEntry -> {

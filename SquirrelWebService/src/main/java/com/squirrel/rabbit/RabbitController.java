@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -22,10 +25,10 @@ import java.util.*;
 public class RabbitController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/observer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SquirrelWebObject observeFrontier(@RequestParam(value="id", defaultValue="n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
+    public SquirrelWebObject observeFrontier(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o;
         try {
-            int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property)/100f)*Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
+            int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property) / 100f) * Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
             o = Application.listenerThread.getSquirrel(id);
         } catch (NumberFormatException e) {
             o = Application.listenerThread.getSquirrel();
@@ -37,7 +40,7 @@ public class RabbitController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/observer/html", produces = MediaType.TEXT_HTML_VALUE)
-    public String observerFrontierHTML(@RequestParam(value="id", defaultValue="n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
+    public String observerFrontierHTML(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o = observeFrontier(property, percent);
 
         Map<String, List<String>> stringListMap = new HashMap<>();
@@ -50,8 +53,8 @@ public class RabbitController {
         List<String> IPURImap = new ArrayList<>(o.getIpStringListMap().size());
         o.getIpStringListMap().forEach((k, v) -> {
             StringBuilder vString = new StringBuilder(": ");
-            v.forEach(s -> vString.append(s + ", "));
-            IPURImap.add(k + vString.substring(0, vString.length()-2));
+            v.forEach(s -> vString.append(s).append(", "));
+            IPURImap.add(k + vString.substring(0, vString.length() - 2));
         });
         stringListMap.put("IPURImap", IPURImap);
 
@@ -64,14 +67,14 @@ public class RabbitController {
         switch (property) {
             case "ls":
                 for (int i = 0; i < Application.listenerThread.countSquirrelWebObjects(); i++) {
-                    ret.append(Application.listenerThread.getSquirrel(i).toString() + System.lineSeparator());
+                    ret.append(Application.listenerThread.getSquirrel(i).toString()).append(System.lineSeparator());
                 }
                 break;
             case "lsc":
                 ret.append(Application.listenerThread.countSquirrelWebObjects()).append(" SquirrelWebObjects are in the list");
                 break;
             default:
-                ret.append("Please set another prop param: " + System.lineSeparator() + "- ls" + System.lineSeparator() + "- lsc");
+                ret.append("Please set another prop param: ").append(System.lineSeparator()).append("- ls").append(System.lineSeparator()).append("- lsc");
                 break;
         }
 
@@ -79,7 +82,7 @@ public class RabbitController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/observer/crawledGraph", produces = MediaType.APPLICATION_JSON_VALUE)
-    public VisualisationGraph observeCrawledGraph(@RequestParam(value="id", defaultValue="n/a") String property) {
+    public VisualisationGraph observeCrawledGraph(@RequestParam(value = "id", defaultValue = "n/a") String property) {
         VisualisationGraph graph;
         try {
             graph = Application.listenerThread.getCrawledGraph(Integer.parseInt(property));
@@ -91,5 +94,30 @@ public class RabbitController {
             return new VisualisationGraph();
 
         return graph;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/observer/push", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String pushURI(@RequestParam(value = "uri", defaultValue = "") String uri) {
+        //ERROR CATCHING
+        if (uri == null) {
+            return "Forwarding error. Try it again!";
+        }
+        uri = uri.trim().toLowerCase();
+        if (uri.equals("")) {
+            return "Please enter something!";
+        }
+        try {
+            URI uriObject = new URI(uri);
+            uri = (uriObject.getScheme() == null) ? "http://" + uri : uri;
+        } catch (URISyntaxException e) {
+            return "Your input " + e.getInput() + " is not a URI! Syntax error: " + e.getReason();
+        }
+
+        //PROCEEDING
+        if (Application.listenerThread.publishURI(uri)) {
+            return "Succeeded with forwarding the URI " + uri + " to the queue to the Frontier! Maybe the Frontier denies adding the URI to the pending URI list, so in cases of doubt pay attention to the frontier LOGGING or contact the developer";
+        } else {
+            return "Failed to forward the URI " + uri + " to the =rabbit=> frontier. Try it (later) again!";
+        }
     }
 }

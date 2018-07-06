@@ -53,8 +53,9 @@ public class SimpleUriCollector implements UriCollector {
             LOGGER.error("Error while trying to collect URI \"" + newUri + "\". It will be ignored.", e);
         }
     }
+
     public long getSize() {
-    	return total_uris;
+        return total_uris;
     }
 
     @Override

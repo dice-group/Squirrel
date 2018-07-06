@@ -15,18 +15,20 @@ import java.util.regex.Pattern;
 
 public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
 
-	private Set<String> whiteList;
+    private Set<String> whiteList;
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port) {
-		super(hostname, port);
-	}
-
-	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList) { super(hostname, port, true, saveReferenceList); }
-
-	public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
+    public RegexBasedWhiteListFilter(String hostname, Integer port) {
         super(hostname, port);
+    }
+
+    public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
+        this(hostname, port, false, whiteListFile);
+    }
+
+    public RegexBasedWhiteListFilter(String hostname, Integer port, boolean frontierDoesRecrawling, File whiteListFile) {
+        super(hostname, port, frontierDoesRecrawling);
         try {
             whiteList = loadWhiteList(whiteListFile);
         } catch (IOException e) {
@@ -34,61 +36,52 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
         }
     }
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port, boolean saveReferenceList, File whiteListFile) {
-        super(hostname, port, true, saveReferenceList);
-		try {
-			whiteList = loadWhiteList(whiteListFile);
-		} catch (IOException e) {
-			LOGGER.error("A problem was found when loading the WhiteList");
-		}
-	}
+    @Override
+    public boolean isUriGood(CrawleableUri uri) {
+        if (super.isUriGood(uri) && whiteList != null && !whiteList.isEmpty()) {
 
-	@Override
-	public boolean isUriGood(CrawleableUri uri) {
-		if (super.isUriGood(uri) && whiteList != null && whiteList.size() > 0) {
+            for (String s : whiteList) {
 
-			for (String s : whiteList) {
+                Pattern p = Pattern.compile(s.toLowerCase());
+                Matcher m = p.matcher(uri.getUri().toString().toLowerCase());
 
-				Pattern p = Pattern.compile(s.toLowerCase());
-				Matcher m = p.matcher(uri.getUri().toString().toLowerCase());
+                if (m.find()) {
+                    LOGGER.trace("The URI {} fits to the pattern " + p.pattern() + " of the whitelist", uri.getUri().toString());
+                    return true;
+                }
+            }
+            LOGGER.warn("The URI {} is itself a good URI, but no of the " + whiteList.size() + " patterns of the whitelist matches! (in " + this + ")", uri.getUri().toString());
+        }
+        return false;
+    }
 
-				if (m.find()) {
-					return true;
-				}
+    private Set<String> loadWhiteList(File whiteListFile) throws IOException {
+        Set<String> list = new LinkedHashSet<>();
 
-			}
+        FileReader fr = new FileReader(whiteListFile);
+        BufferedReader br = new BufferedReader(fr);
 
-		}
-		return false;
-	}
+        String line;
 
-	private Set<String> loadWhiteList(File whiteListFile) throws IOException {
-		Set<String> list = new LinkedHashSet<>();
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
 
-		FileReader fr = new FileReader(whiteListFile);
-		BufferedReader br = new BufferedReader(fr);
+        br.close();
 
-		String line;
+        return list;
+    }
 
-		while ((line = br.readLine()) != null) {
-			list.add(line);
-		}
-
-		br.close();
-
-		return list;
-	}
-
-	public void add(CrawleableUri uri) {
+    public void add(CrawleableUri uri) {
         super.add(uri, System.currentTimeMillis() + 60 * 60 * 1000);
 
-	}
+    }
 
-	@Override
-	public void add(CrawleableUri uri, long timestamp) {
-		super.add(uri, timestamp);
+    @Override
+    public void add(CrawleableUri uri, long timestamp) {
+        super.add(uri, timestamp);
 
-	}
+    }
 
     @Override
     public void add(CrawleableUri uri, long timestamp, long nextCrawlTimestamp) {
@@ -96,16 +89,16 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
     }
 
-	@Override
-	public void close() {
-		super.close();
+    @Override
+    public void close() {
+        super.close();
 
-	}
+    }
 
-	@Override
-	public void open() {
-		super.open();
+    @Override
+    public void open() {
+        super.open();
 
-	}
+    }
 
 }

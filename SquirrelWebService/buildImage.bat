@@ -3,6 +3,7 @@
 echo Please don't forget to execute "mvn clean package", if you made some changes!
 
 cd %~dp0
+start "First step: compiling..." /D %~dp0 /NORMAL /WAIT cmd /C mvn clean package
 cd target
 
 if EXIST "original-*.jar" (

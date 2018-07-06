@@ -23,15 +23,21 @@ public class VisualisationEdge implements Serializable {
         weight++;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getSource() { return source.getId(); }
+    public String getSource() {
+        return source.getId();
+    }
 
     public VisualisationNode getSourceNode() {
         return source;
     }
 
-    public String getTarget() { return target.getId(); }
+    public String getTarget() {
+        return target.getId();
+    }
 
     public VisualisationNode getTargetNode() {
         return target;

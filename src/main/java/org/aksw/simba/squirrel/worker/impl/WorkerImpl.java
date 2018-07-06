@@ -15,8 +15,11 @@ import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
@@ -29,12 +32,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Closeable;
 import java.io.File;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Standard implementation of the {@link Worker} interface.
  *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
- *
  */
 public class WorkerImpl implements Worker, Closeable {
 
@@ -45,6 +51,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     protected Frontier frontier;
     protected Sink sink;
+    protected MetaDataHandler metaDataHandler;
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
@@ -57,7 +64,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime;
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
-    private final int id = (int)Math.floor(Math.random()*100000);
+    private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
 
@@ -70,6 +77,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            send new URIs to.
      * @param sink
      *            Sink used by this worker to store crawled data.
+     * @param metaDataHandler Handler used by this worker to store meta data.
      * @param manager
      *            RobotsManager for handling robots.txt files.
      * @param serializer
@@ -83,10 +91,11 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier, Sink sink, MetaDataHandler metaDataHandler, RobotsManager manager, Serializer serializer,
                       UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
+        this.metaDataHandler = metaDataHandler;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
@@ -104,8 +113,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new FTPFetcher());
+            // new SparqlBasedFetcher(),
+            new HTTPFetcher(), new FTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
@@ -142,54 +151,49 @@ public class WorkerImpl implements Worker, Closeable {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
-            if (uri == null) {
-                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
-            } else if (uri.getUri() == null) {
-                LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
-            } else {
-                try {
-                    uriMap.put(uri, performCrawling(uri));
-                } catch (Exception e) {
-                    LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
+            // calculate uuid for graph
+            uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
+            if (sink instanceof TripleBasedSink) {
+                CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
+                if (uri.getUri() == null) {
+                    LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
+                } else {
+                    try {
+                        uriMap.put(uri, performCrawling(uri));
+                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    } catch (Exception e) {
+                        LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);
+                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
+                    }
+                }
+                crawlingActivity.finishActivity();
+                if (metaDataHandler != null && sink instanceof TripleBasedSink) {
+                    metaDataHandler.addMetadata(crawlingActivity);
                 }
             }
+            // classify URIs
+            Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
+            while (uriMapEnumeration.hasMoreElements()) {
+                uriMapEnumeration.nextElement().forEach(URI -> uriProcessor.recognizeUriType(URI));
+            }
+            frontier.crawlingDone(uriMap);
         }
-        // classify URIs
-        Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
-        while (uriMapEnumeration.hasMoreElements()) {
-            uriMapEnumeration.nextElement().forEach(uri -> uriProcessor.recognizeUriType(uri));
-        }
-        //TODO
-//        crawlingActivity.finishActivity();
-//        if (sink instanceof RDFSink) {
-//            ((RDFSink) sink).addMetadata(crawlingActivity);
-//        } else {
-//            //TODO ADD METADATA IF SINK IS NOT RDFSINK
-//        }
-        // TODO send results to the Frontier
-        //crawlingActivity.finishActivity();
-        //if (sink instanceof RDFSink) {
-        //    ((RDFSink) sink).addMetadata(crawlingActivity);
-        //} else {
-            //TODO ADD METADATA IF SINK IS NOT RDFSINK
-        //}
-        frontier.crawlingDone(uriMap);
     }
-
     @Override
     public List<CrawleableUri> performCrawling(CrawleableUri uri) {
         // check robots.txt
         List<CrawleableUri> ret = new ArrayList<>();
 
-    	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
-    	LOGGER.warn(uri.getUri().toString());
+        uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis());
+        LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
         //TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
                 long delay = timeStampLastUriFetched
-                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                    - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
                 if (delay > 0) {
                     Thread.sleep(delay);
                 }
@@ -204,43 +208,43 @@ public class WorkerImpl implements Worker, Closeable {
             File fetched = null;
 
             try {
-            	fetched = fetcher.fetch(uri);
+                fetched = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
 
             List<File> fetchedFiles = new ArrayList<>();
-            if(fetched != null && fetched.isDirectory()) {
-            	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+            if (fetched != null && fetched.isDirectory()) {
+                fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
             } else {
-            	fetchedFiles.add(fetched);
+                fetchedFiles.add(fetched);
             }
 
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList;
 
 
-            for(File data: fetchedFiles){
-	            if (data != null) {
-	                fileList = fm.decompressFile(data);
-	                for (File file : fileList) {
-	                    try {
-	                        // open the sink only if a fetcher has been found
-	                        sink.openSinkForUri(uri);
-	                        collector.openSinkForUri(uri);
-	                        Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-	                        sink.closeSinkForUri(uri);
+            for (File data : fetchedFiles) {
+                if (data != null) {
+                    fileList = fm.decompressFile(data);
+                    for (File file : fileList) {
+                        try {
+                            // open the sink only if a fetcher has been found
+                            sink.openSinkForUri(uri);
+                            collector.openSinkForUri(uri);
+                            Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                            sink.closeSinkForUri(uri);
                             ret.addAll(sendNewUris(resultUris));
-	                        collector.closeSinkForUri(uri);
-	                    } catch (Exception e) {
-	                        // We don't want to handle the exception. Just make sure that sink and collector
-	                        // do not handle this uri anymore.
-	                        sink.closeSinkForUri(uri);
-	                        collector.closeSinkForUri(uri);
-	                        throw e;
-	                    }
-	                }
-	            }
+                            collector.closeSinkForUri(uri);
+                        } catch (Exception e) {
+                            // We don't want to handle the exception. Just make sure that sink and collector
+                            // do not handle this uri anymore.
+                            sink.closeSinkForUri(uri);
+                            collector.closeSinkForUri(uri);
+                            throw e;
+                        }
+                    }
+                }
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);

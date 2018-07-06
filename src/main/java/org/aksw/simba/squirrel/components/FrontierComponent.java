@@ -5,13 +5,17 @@ import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.configurator.WebConfiguration;
 import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
+import org.aksw.simba.squirrel.data.uri.info.RDBURIReferences;
+import org.aksw.simba.squirrel.data.uri.info.URIReferences;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
 import org.aksw.simba.squirrel.frontier.ExtendedFrontier;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.ExtendedFrontierImpl;
@@ -46,10 +50,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
-    static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
+    private static final String SEED_FILE_KEY = "SEED_FILE";
+    public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
+    public static final String RDB_PORT_KEY = "RDB_PORT";
+    private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
+    public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
     protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
+    private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
@@ -58,7 +67,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
 
-    private final long startRunTime = System.currentTimeMillis();
+    public static final boolean RECRAWLING_ACTIVE = true;
+
 
     @Override
     public void init() throws Exception {
@@ -66,21 +76,26 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        if(rdbConfiguration != null) {
+        if (rdbConfiguration != null) {
             String rdbHostName = rdbConfiguration.getRDBHostName();
             Integer rdbPort = rdbConfiguration.getRDBPort();
-            queue = new RDBQueue(rdbHostName, rdbPort,serializer);
+            queue = new RDBQueue(rdbHostName, rdbPort, serializer);
             queue.open();
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
-            if(whiteListConfiguration != null) {
+            if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
-                    rdbConfiguration.getRDBPort(), webConfiguration.isVisualizationOfCrawledGraphEnabled(), whitelistFile);
+                knownUriFilter = new RegexBasedWhiteListFilter(rdbHostName,
+                    rdbPort, doRecrawling, whitelistFile);
                 knownUriFilter.open();
             } else {
-                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling, webConfiguration.isVisualizationOfCrawledGraphEnabled());
+                knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
                 knownUriFilter.open();
+            }
+
+            if (webConfiguration.isVisualizationOfCrawledGraphEnabled()) {
+                uriReferences = new RDBURIReferences(rdbHostName, rdbPort);
+                uriReferences.open();
             }
         } else {
             LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
@@ -89,7 +104,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -103,9 +118,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         LOGGER.info("Frontier initialized.");
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
-            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter);
-            sender.sendCrawledGraph = webConfiguration.isVisualizationOfCrawledGraphEnabled();
-            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to " + sender.sendCrawledGraph);
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory, workerGuard, queue, knownUriFilter, uriReferences);
+            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to " + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
             senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             senderThread.start();
@@ -124,13 +138,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void close() throws IOException {
-        if (receiver != null)   receiver.closeWhenFinished();
-        if (queue != null)      queue.close();
+        if (receiver != null) receiver.closeWhenFinished();
+        if (queue != null) queue.close();
+        if (uriReferences != null) uriReferences.close();
         if (knownUriFilter instanceof Closeable) {
             knownUriFilter.close();
         }
         workerGuard.shutdown();
-        if (frontier != null)   frontier.close();
+        if (frontier != null) frontier.close();
         super.close();
     }
 
@@ -145,8 +160,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         try {
             deserializedData = serializer.deserialize(data);
         } catch (IOException e) {
+            //try to convert the string into a single URI, that maybe comes from the WebService
+//            CrawleableUri uri = new CrawleableUriFactoryImpl().create(new String(data));
+//            if (uri != null) {
+//                LOGGER.warn("Received a single URI " + uri.getUri() + " without a wrapping of \"org.aksw.simba.squirrel.rabbit.frontier\". We converted it into a UriSet.");
+//                deserializedData = new UriSet(Collections.singletonList(uri));
+//            } else {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
             return;
+//            }
         }
 
         if (deserializedData != null) {

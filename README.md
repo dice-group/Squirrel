@@ -14,14 +14,17 @@ Squirrel searches and collects Linked Data
 ### ... or do it manually
 
 1. ``mvn clean package shade:shade -U -DskipTests``
+1. if you have a new version of squirrel, e.g. version 0.3.0, you **can** execute``mvn install:install-file -DgroupId=org.aksw.simba -DartifactId=squirrel -Dpackaging=jar -Dversion=0.3.0 -Dfile="target\original-squirrel.jar" -DgeneratePom=true -DlocalRepositoryPath=repository``
 1. If you want to use the Web-Components, have a look to the Depencies in this file
 1. ``docker build -t squirrel .``
 1. execute a `.yml` file with ``docker-compose -f <file> up``/ ``down``
 
-#### There are currently 2 yml-options
+#### There are currently 3 yml-options
 
-- `docker-compose-simulation-scenario1.yml`: there are 3 HTTP-nodes (simulated in Docker) with 7 URIs in total. Without Web-Service!
-- `docker-compose-simulation-scenario1-with-web.yml`: there are 3 HTTP-nodes (simulated in Docker) with 7 URIs in total. With Web-Service!
+All yml files in the root folder crawls real existing data portals with the help of [HtmlScraper](https://github.com/dice-group/Squirrel/wiki/HtmlScraper_how_to)
+- `docker-compose.yml`: file-sink based, without web
+- `docker-compose-sparql.yml`: sparql-sink based (_JENA_), without web
+- `docker-compose-sparql-web.yml`: sparql-sink based (_JENA_), with web including the visualization of crawled graph!
 
 ---
 

@@ -16,7 +16,7 @@ public class WhiteListConfiguration extends Configuration {
 
     public static WhiteListConfiguration getWhiteListConfiguration() {
         String whiteListURI = getEnvWhiteListURI();
-        if(whiteListURI != null) {
+        if (whiteListURI != null) {
             LOGGER.warn("{} found, loading it...", URI_WHITELIST_FILE);
             return new WhiteListConfiguration(whiteListURI);
         } else {

@@ -48,10 +48,10 @@ public class FileBasedSink implements Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-    	String uriString = uri.getUri().toString();
-    	if(uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
-    		uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
-    	}
+        String uriString = uri.getUri().toString();
+        if (uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
+            uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
+        }
 
         OutputStream outputStream = getStream(uri);
         if (outputStream != null) {
@@ -120,8 +120,8 @@ public class FileBasedSink implements Sink {
             return outputStream;
         } else {
             LOGGER.error(
-                    "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
-                    uri.getUri().toString());
+                "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
+                uri.getUri().toString());
             return null;
         }
     }

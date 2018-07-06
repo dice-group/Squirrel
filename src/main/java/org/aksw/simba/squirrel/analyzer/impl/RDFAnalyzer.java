@@ -51,21 +51,21 @@ public class RDFAnalyzer implements Analyzer {
             Lang lang = null;
             String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
             StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
-            if (contentType != null ) {
+            if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
                 RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
             } else {
-            	for(Lang l : listLangs) {
-            		try {
-            			System.out.println(data.getAbsolutePath());
-            			RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
-            			break;
-            		}catch(Exception e) {
+                for (Lang l : listLangs) {
+                    try {
+                        System.out.println(data.getAbsolutePath());
+                        RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+                        break;
+                    } catch (Exception e) {
 
-            			LOGGER.warn("Could not parse file as " + l.getName());
-            		}
+                        LOGGER.warn("Could not parse file as " + l.getName());
+                    }
 
-            	}
+                }
 
 //                InputStream is = new FileInputStream(data);
 //                lang = RDFLanguages.contentTypeToLang(tika.detect(is));
@@ -106,13 +106,13 @@ public class RDFAnalyzer implements Analyzer {
 
         @Override
         public void triple(Triple triple) {
-        	sink.addTriple(curi, triple);
+            sink.addTriple(curi, triple);
             collector.addTriple(curi, triple);
         }
 
         @Override
         public void quad(Quad quad) {
-        	sink.addTriple(curi, quad.asTriple());
+            sink.addTriple(curi, quad.asTriple());
             collector.addTriple(curi, quad.asTriple());
         }
 

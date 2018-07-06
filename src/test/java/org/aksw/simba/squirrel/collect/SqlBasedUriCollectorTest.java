@@ -61,8 +61,8 @@ public class SqlBasedUriCollectorTest {
 
         Set<String> listCuris = new TreeSet<String>();
 
-        while(iterator.hasNext()) {
-            listCuris.add( ((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString() );
+        while (iterator.hasNext()) {
+            listCuris.add(((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString());
 
         }
 
@@ -87,8 +87,8 @@ public class SqlBasedUriCollectorTest {
         }
 
         Iterator<byte[]> it = collector.getUris(uri);
-        while(it.hasNext()) {
-            listUris.add(new URI( ((CrawleableUri) serializer.deserialize(it.next())).getUri().toString() ));
+        while (it.hasNext()) {
+            listUris.add(new URI(((CrawleableUri) serializer.deserialize(it.next())).getUri().toString()));
         }
 
 
