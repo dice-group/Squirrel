@@ -1,7 +1,5 @@
 package com.graph;
 
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -15,8 +13,8 @@ public class VisualisationGraph implements Serializable {
 
 
     private int IDcounter = 0;
-    private ArrayList<VisualisationNode> nodes = new ArrayList<>();
-    private ArrayList<VisualisationEdge> edges = new ArrayList<>();
+    private VisualisationNode[] nodes = new VisualisationNode[8];
+    private VisualisationEdge[] edges = new VisualisationEdge[8];
 
     /**
      * Adds a {@link VisualisationNode} to the graph
@@ -38,22 +36,15 @@ public class VisualisationGraph implements Serializable {
             throw new IllegalArgumentException("uri and ip must not be null! (" + uri + "/" + ip + ")");
         }
 
-        for (VisualisationNode n : nodes) {
-            if (n != null && n.getUri().equals(uri)) {
-                n.setIp(ip);
-                return null;
-            }
+        Optional<VisualisationNode> node = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(uri)).findFirst();
+        if (node.isPresent()) {
+            node.get().setIp(ip);
+            return null;
         }
-//        Optional<VisualisationNode> node = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(uri)).findFirst();
-//        if(node.isPresent()) {
-//            node.get().setIp(ip);
-//            return null;
-//        }
 
         VisualisationNode newNode = new VisualisationNode(IDcounter, uri, ip);
         IDcounter++;
-        nodes.add(newNode);
-//        nodes = extendArray(nodes, newNode);
+        nodes = extendArray(nodes, newNode);
         return newNode;
     }
 
@@ -68,44 +59,15 @@ public class VisualisationGraph implements Serializable {
             throw new IllegalArgumentException("source and target must not be null! (" + fromURI + "->" + toURI + ")");
         }
 
-//        Optional<VisualisationNode> fromNode = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(fromURI)).findFirst();
-//        Optional<VisualisationNode> toNode = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(toURI)).findFirst();
+        Optional<VisualisationNode> fromNode = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(fromURI)).findFirst();
+        Optional<VisualisationNode> toNode = Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(toURI)).findFirst();
 
-        VisualisationNode finalFromNode = null;
-        VisualisationNode finalToNode = null;
-        for (VisualisationNode n : nodes) {
-            if (n != null) {
-                if(n.getUri().equals(fromURI)) {
-                    finalFromNode = n;
-                    break;
-                }
-            }
-        }
-        for (VisualisationNode n : nodes) {
-            if (n != null) {
-                if(n.getUri().equals(toURI)) {
-                    finalToNode = n;
-                    break;
-                }
-
-            }
-        }
-
-        if(finalFromNode == null) {
-            finalFromNode = addNode(fromURI);
-        }
-        if(finalToNode == null) {
-            finalToNode = addNode(toURI);
-        }
-
-//        VisualisationNode finalFromNode = fromNode.orElseGet(() -> addNode(fromURI));
-//        VisualisationNode finalToNode = toNode.orElseGet(() -> addNode(toURI));
+        VisualisationNode finalFromNode = fromNode.orElseGet(() -> addNode(fromURI));
+        VisualisationNode finalToNode = toNode.orElseGet(() -> addNode(toURI));
 
         VisualisationEdge newEdge = new VisualisationEdge(IDcounter, finalFromNode, finalToNode);
         IDcounter++;
-        ArrayList<VisualisationEdge> edges = getEdges();
-        edges.add(newEdge);
-//        edges = extendArray(edges, newEdge);
+        edges = extendArray(edges, newEdge);
         return newEdge;
     }
 
@@ -115,27 +77,27 @@ public class VisualisationGraph implements Serializable {
      * @param object the object, that should be added
      * @return the extended array
      */
-//    private <T> T[] extendArray(T[] array, T object) {
-//        T[] cloneArray = array.clone();
-//        for (int i=0; i<cloneArray.length; i++) {
-//            if (cloneArray[i] == null) {
-//                cloneArray[i] = object;
-//                return cloneArray;
-//            }
-//        }
-//
-//        // extend Array
-//        T[] newArray = Arrays.copyOf(array, array.length+8);
-//        newArray[array.length] = object;
-//        return newArray;
-//    }
+    private <T> T[] extendArray(T[] array, T object) {
+        T[] cloneArray = array.clone();
+        for (int i = 0; i < cloneArray.length; i++) {
+            if (cloneArray[i] == null) {
+                cloneArray[i] = object;
+                return cloneArray;
+            }
+        }
+
+        // extend Array
+        T[] newArray = Arrays.copyOf(array, array.length + 8);
+        newArray[array.length] = object;
+        return newArray;
+    }
 
     /**
      * removes all {@code null} places in the both array fields ({@link VisualisationNode} + {@link VisualisationEdge})
      */
     public void optimizeArrays() {
-//        nodes = optimizeArray(nodes);
-//        edges = optimizeArray(edges);
+        nodes = optimizeArray(nodes);
+        edges = optimizeArray(edges);
     }
 
     /**
@@ -182,7 +144,7 @@ public class VisualisationGraph implements Serializable {
      * get all nodes
      * @return all nodes
      */
-    public ArrayList<VisualisationNode> getNodes() {
+    public VisualisationNode[] getNodes() {
         return nodes;
     }
 
@@ -192,20 +154,14 @@ public class VisualisationGraph implements Serializable {
      * @return the node or {@code null}, if the node is not exiting
      */
     public VisualisationNode getNode(String uri) {
-        for(VisualisationNode node: nodes ) {
-            if(node.getUri().equals(uri)) {
-                return node;
-            }
-        }
-        return null;
-//        return Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(uri)).findFirst().orElse(null);
+        return Arrays.stream(nodes).filter(n -> n != null && n.getUri().equals(uri)).findFirst().orElse(null);
     }
 
     /**
      * get all edges
      * @return all edges
      */
-    public ArrayList<VisualisationEdge> getEdges() {
+    public VisualisationEdge[] getEdges() {
         return edges;
     }
 
@@ -214,19 +170,8 @@ public class VisualisationGraph implements Serializable {
      * @param node the anchor node (must be {@link VisualisationNode}, not a uri)
      * @return all specified edges
      */
-    public ArrayList<VisualisationEdge> getEdges(VisualisationNode node) {
-        ArrayList<VisualisationEdge> myEdges = new ArrayList<>();
-        for(VisualisationEdge e : edges) {
-            if(e.getSourceNode() == node || e.getTargetNode() == node ) {
-                myEdges.add(e);
-            }
-        }
-        if(edges.size() > 0) {
-            return edges;
-        } else {
-            return null;
-        }
-//        return Arrays.stream(Arrays.asList(edges)).filter((VisualisationEdge)e -> e != null && (e.getSourceNode() == node|| e.getTargetNode() == node)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll).toArray(new ArrayList<VisualisationEdge>());
+    public VisualisationEdge[] getEdges(VisualisationNode node) {
+        return Arrays.stream(edges).filter(e -> e != null && (e.getSourceNode() == node || e.getTargetNode() == node)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll).toArray(new VisualisationEdge[0]);
     }
 
     @Override
@@ -234,14 +179,14 @@ public class VisualisationGraph implements Serializable {
         if (this == o) return true;
         if (!(o instanceof VisualisationGraph)) return false;
         VisualisationGraph graph = (VisualisationGraph) o;
-        return Arrays.equals(getNodes().toArray(), graph.getNodes().toArray()) &&
-            Arrays.equals(getEdges().toArray(), graph.getEdges().toArray());
+        return Arrays.equals(getNodes(), graph.getNodes()) &&
+            Arrays.equals(getEdges(), graph.getEdges());
     }
 
     @Override
     public int hashCode() {
-        int result = Arrays.hashCode(getNodes().toArray());
-        result = 31 * result + Arrays.hashCode(getEdges().toArray());
+        int result = Arrays.hashCode(getNodes());
+        result = 31 * result + Arrays.hashCode(getEdges());
         return result;
     }
 }

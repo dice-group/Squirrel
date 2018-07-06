@@ -2,7 +2,6 @@ package com.squirrel.rabbit;
 
 import com.SquirrelWebObject;
 import com.graph.VisualisationGraph;
-import com.graph.VisualisationNode;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -169,7 +168,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
     }
 
     /**
-     * Gets the fected crawled graph from Frontier.
+     * Gets the fetched crawled graph from Frontier.
      * @param index All received {@link VisualisationGraph} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link VisualisationGraph}
      */
@@ -177,27 +176,9 @@ public class RabbitMQListener implements Runnable, DataHandler {
         SquirrelWebObject preRet = getObject(dataQueue, index);
         VisualisationGraph ret;
         if (preRet == null || preRet.getGraph() == null) {
-
             ret = new VisualisationGraph();
-            System.out.println("RMQL -> getCrawledGraph");
-
-            ret.addNode("http://www.dummy.com/1");
-            VisualisationNode node3 = ret.addNode("node 3");
-            VisualisationNode node4 = ret.addNode("node 4");
-            VisualisationNode node5 = ret.addNode("node 5");
-            ret.addEdge("http://www.dummy.com/1", node3.getUri());
-            ret.addEdge(node3.getUri(), node4.getUri());
-            ret.addEdge(node4.getUri(), node5.getUri());
-            ret.addEdge(node3.getUri(), node5.getUri());
-
-            VisualisationNode myNode  = ret.getNode("http://www.dummy.com/1");
-            myNode.x = 0;
-            myNode.y = 5;
-            VisualisationNode dummy = ret.addNode("http://www.dummy.com/2");
-            dummy.setColor(Color.RED);
-            ret.addEdge(node3.getUri(), dummy.getUri());
-
-            ret.addEdge("http://www.dummy.com/1", "http://www.dummy.com/2");
+            ret.addNode("No Graph available").setColor(Color.RED);
+            ret.optimizeArrays();
         } else {
             ret = preRet.getGraph();
         }

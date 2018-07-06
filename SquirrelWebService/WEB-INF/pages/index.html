@@ -50,7 +50,6 @@
             dataType: "json",
             method: "GET"
           }).done(function (data) {
-            data.pendingURIs = ["https://www.uni-paderborn.de", "https://www.uni-paderborn.d", "https://www.uni-paderborn.de", "https://www.uni-paderborn.de"];
             var pendingURIs = data.pendingURIs.slice(0, 5);
             $( "#pendingURIs" ).html(data.countOfPendingURIs);
             $( "#countOfCrawledURIs" ).html(data.countOfCrawledURIs);
