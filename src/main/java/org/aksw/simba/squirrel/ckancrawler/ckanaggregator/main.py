@@ -9,39 +9,17 @@ from tld import get_tld
 def dump(str):
     str2 = str
     res = get_tld(str2, as_object=True)
-    str2 = res.domain
-    cmd = "sudo ckanapi dump datasets --all -O " + str2 + ".jsonl.gz -z -p 1 -r " + str
-    str3 = str2+".jsonl.gz"
-    print("starting terminal with " + cmd)
+    str2= res.domain+".jsonl.gz"
     a = 0
-    c = 0
-    print("a is ", a , "c is ", c)
     try:
-        subprocess.check_output(["sudo","ckanapi","dump","datasets","--all","-O",str3,"-z","-p","4","-r",str])
-        a = 0
-        #os.system(cmd)
+        subprocess.check_output(["sudo","ckanapi","dump","datasets","--all","-O",str2,"-z","-p","1","-r",str])
     except:
         print("ckan dumping failed unexpectedly")
         a = 1
-
-    # except CKANAPIError:
-    #     print('reduce threads')
-    # except IOError(Exception):
-    #     #print(ioe)
-    #     c = 2
-    # except BaseException:
-    #     logging.exception("exception")
-    #     a = 1
-    #     #print str(error)
-    # else:
-    #     print("successful dump")
-    #     a.append(2)
     finally:
         print("exiting ckancrawler")
         b = 0
-
-
-    return a,b,c
+    return a,b
 
 #TODO: CLEANUP CODE FOR PRINTING SPECIFIC STUFF
 #
