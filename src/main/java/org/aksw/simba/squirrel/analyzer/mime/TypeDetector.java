@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer;
+package org.aksw.simba.squirrel.analyzer.mime;
 
 import org.apache.jena.riot.Lang;
 

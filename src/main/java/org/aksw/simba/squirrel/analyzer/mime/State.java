@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer.impl;
+package org.aksw.simba.squirrel.analyzer.mime;
 
 /**
  * State. Part of a finite state machine.
@@ -13,7 +13,7 @@ public interface State {
     State with(final Transition tr);
 
     /**
-     * Follow one of the transitions, to get 
+     * Follow one of the transitions, to get
      * to the next state.
      * @param c String.
      * @return State.

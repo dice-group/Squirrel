@@ -1,6 +1,6 @@
-package org.aksw.simba.squirrel.analyzer.impl;
+package org.aksw.simba.squirrel.analyzer.mime;
 
-import org.aksw.simba.squirrel.analyzer.TypeDetector;
+import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ public class MimeTypeDetector implements TypeDetector {
                     machine1 = machine1.switchState(String.valueOf(current));
                 if(!machine2.isError())
                     machine2 = machine2.switchState(String.valueOf(current));
-                System.out.println(current);
             }
 
             if(machine1.canStop() && !machine1.isError())

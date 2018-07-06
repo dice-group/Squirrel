@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer.impl;
+package org.aksw.simba.squirrel.analyzer.mime;
 
 /**
  * Transition in finite state machine.
@@ -10,8 +10,8 @@ public final class RtTransition implements Transition {
 
     /**
      * Ctor.
-     * @param rule Rule that a character has to meet 
-     *  in order to get to the next state.  
+     * @param rule Rule that a character has to meet
+     *  in order to get to the next state.
      * @param next Next state.
      */
     public RtTransition (String rule, State next) {
