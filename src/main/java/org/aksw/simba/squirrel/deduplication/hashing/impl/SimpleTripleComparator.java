@@ -2,7 +2,6 @@ package org.aksw.simba.squirrel.deduplication.hashing.impl;
 
 import org.aksw.simba.squirrel.deduplication.hashing.TripleComparator;
 import org.apache.jena.graph.Triple;
-import sun.font.TrueTypeGlyphMapper;
 
 import java.util.HashSet;
 import java.util.List;
