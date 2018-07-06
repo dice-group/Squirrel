@@ -2,6 +2,8 @@
 import pika
 import re
 import main
+import exceptions
+
 
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -25,11 +27,30 @@ def callback(ch, method, properties, body):
         urls = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', body)
         urlse = str(urls[0])
         print("sending url")
-        main.dump(urlse)
-        channel.basic_publish(exchange='',
-                              routing_key='ckan2',
-                              body='finished dumping')
+        try:
+            result = main.dump(urlse)
+        except Exception:
+            print("exception caught")
 
+        finally:
+            # print(result[0]) #a
+            # print(result[1]) #b
+            # print(result[2]) #c
+            if(result[0] == 0):
+                print(result[0])
+                channel.basic_publish(exchange='', routing_key='ckan2', body='finished dumping')
+            elif(result[0] == 1):
+                print(result[0])
+                channel.basic_publish(exchange='', routing_key='ckan2', body='Error# error processing ckan url')
+                if(result[2] == 2):
+                    print(result[2])
+                    channel.basic_publish(exchange='', routing_key='ckan2', body='Error# IOError')
+                    if(result[1] == 3):
+                        print(result[1])
+                        channel.basic_publish(exchange='', routing_key='ckan2', body='ckan crawler exited')
+
+
+        print(result)
 
 channel.basic_consume(callback,
                       queue='ckan',
