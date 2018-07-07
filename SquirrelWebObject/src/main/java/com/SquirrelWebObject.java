@@ -390,7 +390,6 @@ public class SquirrelWebObject implements Serializable {
         return getCountOfCrawledURIs() == that.getCountOfCrawledURIs() &&
             getCountOfWorker() == that.getCountOfWorker() &&
             getCountOfDeadWorker() == that.getCountOfDeadWorker() &&
-            Objects.equals(writeDatetime, that.writeDatetime) &&
             Objects.equals(pendingURIs, that.pendingURIs) &&
             Objects.equals(IPMapPendingURis, that.IPMapPendingURis) &&
             Objects.equals(nextCrawledURIs, that.nextCrawledURIs) &&
@@ -399,7 +398,7 @@ public class SquirrelWebObject implements Serializable {
 
     @Override
     public int hashCode() {
-        int ret = Objects.hash(writeDatetime, pendingURIs, IPMapPendingURis, nextCrawledURIs, getCountOfCrawledURIs(), getCountOfWorker(), getCountOfDeadWorker(), graph);
+        int ret = Objects.hash(pendingURIs, IPMapPendingURis, nextCrawledURIs, getCountOfCrawledURIs(), getCountOfWorker(), getCountOfDeadWorker(), graph);
         int runtimeHash = Long.hashCode(getRuntimeInSeconds() / 15);
         return ret ^ runtimeHash;
     }

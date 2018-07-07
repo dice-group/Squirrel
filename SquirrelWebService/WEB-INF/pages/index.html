@@ -13,6 +13,7 @@
     <link href="/pages/css/app.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
 
+    <script src="/pages/js/_json_utils.js"></script>
     <script>
       $( function() {
         $( "#slider" ).slider({
@@ -50,55 +51,24 @@
             dataType: "json",
             method: "GET"
           }).done(function (data) {
-            var pendingURIs = data.pendingURIs.slice(0, 5);
             $( "#pendingURIs" ).html(data.countOfPendingURIs);
             $( "#countOfCrawledURIs" ).html(data.countOfCrawledURIs);
             $( "#countOfWorker" ).html(data.countOfWorker);
             $( "#countOfDeadWorker" ).html(data.countOfDeadWorker);
-            $( "#runtimeInSeconds" ).html(data.runtimeInSeconds);
-            $( "#pURIs" ).html(JSONElementToString(pendingURIs));
-
+            $("#runtime").html(IntToTime(data.runtimeInSeconds));
+            $("#pURIs").html(JSONElementToString(data.pendingURIs.slice(0, 5)));
             if(data.pendingURIs.length > 5) {
               $( "#pURIs" ).append( "<a target='_blank' href='/pages/pending-uris.html'>See More...</a>" );
             }
-
             $( "#mURIs" ).html(JSONElementToString(data.ipStringListMap));
-            $( "#ncURIs" ).html(JSONElementToString(data.nextCrawledURIs));
+            $("#ncURIs").html(JSONElementToString(data.nextCrawledURIs.slice(0, 5)));
+            if (data.pendingURIs.length > 5) {
+              $("#ncURIs").append("And ").append(data.nextCrawledURIs.length - 5).append(" more...");
+            }
           }).fail(function () {
             alert("AJAX request to \"" + uri + "\" failed :(");
           });
         }
-      }
-
-      function JSONElementToString(obj) {
-        if (obj.length == 0) {
-          return "Nothing to show...";
-        }
-        if (obj instanceof Array) {
-          return JSONArrayToString(obj);
-        }
-        if (obj instanceof Object) {
-          var ret = "";
-          Object.keys(obj).forEach(function (value) {
-            ret += "<h6>" + value + "</h6>";
-            ret += JSONElementToString(obj[value]);
-          });
-          return ret;
-        }
-
-        return "Failed to convert " + obj;
-      }
-
-      function JSONArrayToString(obj) {
-        var ret = "<ul>";
-        obj.forEach(function (value) {
-          if (value instanceof Array) {
-            ret += JSONArrayToString(value);
-          } else {
-            ret += "<li>" + value + "</li>";
-          }
-        });
-        return ret + "</ul>";
       }
 
       update(false);
@@ -139,7 +109,8 @@
               <td width="50%"><p>Number of dead workers</p></td><td width="50%" align="right"><span id="countOfDeadWorker">load...</span></td>
             </tr>
             <tr>
-              <td width="50%"><p>RuntimeInSeconds</p></td><td width="50%" align="right"><span id="runtimeInSeconds">load...</span></td>
+              <td width="50%"><p>Runtime</p></td>
+              <td width="50%" align="right"><span id="runtime">load...</span></td>
             </tr>
           </table>
           Crawl through the history <i>(right: auto update to the current status)</i>: <div id="slider"></div>

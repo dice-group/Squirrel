@@ -13,38 +13,8 @@
   <link href="/pages/css/app.css" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
 
+  <script src="/pages/js/_json_utils.js"></script>
   <script>
-    function JSONArrayToString(obj) {
-      var ret = "<ul>";
-      obj.forEach(function (value) {
-        if (value instanceof Array) {
-          ret += JSONArrayToString(value);
-        } else {
-          ret += "<li>" + value + "</li>";
-        }
-      });
-      return ret + "</ul>";
-    }
-
-    function JSONElementToString(obj) {
-      if (obj.length == 0) {
-        return "Nothing to show...";
-      }
-      if (obj instanceof Array) {
-        return JSONArrayToString(obj);
-      }
-      if (obj instanceof Object) {
-        var ret = "";
-        Object.keys(obj).forEach(function (value) {
-          ret += "<h6>" + value + "</h6>";
-          ret += JSONElementToString(obj[value]);
-        });
-        return ret;
-      }
-
-      return "Failed to convert " + obj;
-    }
-
     function update() {
       var uri = "/observer";
 
@@ -60,6 +30,9 @@
     }
 
     update();
+    setInterval(function () {
+      update()
+    }, 5000);
   </script>
 </head>
 

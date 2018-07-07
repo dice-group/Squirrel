@@ -88,12 +88,11 @@ public class VisualisationNode implements Serializable {
         VisualisationNode that = (VisualisationNode) o;
         return size == that.size &&
             Objects.equals(getUri(), that.getUri()) &&
-            Objects.equals(getIp(), that.getIp()) &&
             Objects.equals(getColor(), that.getColor());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUri(), getIp(), size, getColor());
+        return Objects.hash(getUri(), size, getColor());
     }
 }

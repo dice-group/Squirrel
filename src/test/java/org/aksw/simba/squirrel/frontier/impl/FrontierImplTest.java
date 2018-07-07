@@ -29,7 +29,7 @@ public class FrontierImplTest {
     private FrontierImpl frontier;
     private RDBQueue queue;
     private RDBKnownUriFilter filter;
-    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private List<CrawleableUri> uris = new ArrayList<>();
     private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before

@@ -121,12 +121,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         try {
             while (run) {
                 SquirrelWebObject newObject = generateSquirrelWebObject();
+                if (uriReferences != null) {
+                    VisualisationGraph graph = generateVisualisationGraph();
+                    newObject.setGraph(graph);
+                    LOGGER.info("Added a new crawled graph to the SquirrelWebObject " + newObject + " with " + graph.getNodes().length + " nodes and " + graph.getEdges().length + " edges!");
+                }
                 if (!newObject.equals(lastSentObject)) {
-                    if (uriReferences != null) {
-                        VisualisationGraph graph = generateVisualisationGraph();
-                        newObject.setGraph(graph);
-                        LOGGER.info("Added a new crawled graph to the SquirrelWebObject " + newObject + " with " + graph.getNodes().length + " nodes and " + graph.getEdges().length + " edges!");
-                    }
                     sender.sendData(serializer.serialize(newObject));
                     //webQueue.basicPublish("", WEB_QUEUE_GENERAL_NAME, null, serializer.serialize(newObject));
                     LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_GENERAL_NAME);
