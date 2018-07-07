@@ -146,8 +146,8 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
             } else if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
-            } else {
-                try {
+            } else {            //TODO: IDENTIFY CKAN URI USING LIST COMPARISION
+                try {           //TODO: IMPLEMENT TRY CATCH FOR VALID PROCESS TERMINATION
                     uriMap.put(uri, performCrawling(uri));
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
