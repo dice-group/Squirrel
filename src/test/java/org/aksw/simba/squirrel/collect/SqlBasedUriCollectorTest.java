@@ -1,13 +1,5 @@
 package org.aksw.simba.squirrel.collect;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URI;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.utils.TempFileHelper;
@@ -18,6 +10,14 @@ import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.net.URI;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SqlBasedUriCollectorTest {
 

@@ -10,7 +10,6 @@ import java.io.File;
  * of RDF serializations
  *
  * @author Abhishek Hassan Chandrashekar (abhihc@mail.uni-paderborn.de)
- *
  */
 
 public interface TypeDetector {

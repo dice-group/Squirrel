@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel.deduplication.hashing;
 import org.apache.jena.graph.Triple;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * A component for comparing two sets of triples and telling whether they are equal.

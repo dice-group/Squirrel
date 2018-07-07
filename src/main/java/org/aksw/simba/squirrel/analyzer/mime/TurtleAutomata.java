@@ -18,6 +18,7 @@ public final class TurtleAutomata implements FiniteStateMachine {
 
     /**
      * Ctor.
+     *
      * @param initial Initial state of this machine.
      */
     private TurtleAutomata(final State initial) {
@@ -43,6 +44,7 @@ public final class TurtleAutomata implements FiniteStateMachine {
     /**
      * Builds a finite state machine to validate a simple
      * RDF file
+     *
      * @return
      */
     public static FiniteStateMachine buildTurtleStateMachine() {
@@ -68,7 +70,7 @@ public final class TurtleAutomata implements FiniteStateMachine {
         fifth.with(new RtTransition("[^f]", errorState));
         sixth.with(new RtTransition("i", seventh));
         sixth.with(new RtTransition("[^i]", errorState));
-        seventh.with(new RtTransition( "x", eighth));
+        seventh.with(new RtTransition("x", eighth));
         seventh.with(new RtTransition("[^x]", errorState));
 
         return new TurtleAutomata(first);

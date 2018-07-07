@@ -1,12 +1,7 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
-import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.apache.jena.graph.NodeFactory;
 import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -19,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -35,6 +29,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * The URI of the DB in which querys can be performed.
      */
+    @SuppressWarnings("unused")
     private String queryDatasetURI;
     /**
      * The data structure (map) in which the triples are buffered.
@@ -53,6 +48,12 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     public SparqlBasedSink(String updateDatasetURI, String queryDatasetURI) {
         this.updateDatasetURI = updateDatasetURI;
         this.queryDatasetURI = queryDatasetURI;
+    }
+
+    @SuppressWarnings("unused")
+    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
+        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
+        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
     }
 
     public void addMetadata() {
@@ -98,13 +99,17 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
 
     /**
      * Method to send all buffered triples to the database
-     * @param uri
-     * @param tripleList
+     * @param uri the crawled {@link CrawleableUri}
+     * @param tripleList the list of {@link Triple}s regarding that uri
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
         UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
-        proc.execute();
+        try {
+            proc.execute();
+        } catch (Exception e) {
+            LOGGER.error("Was not able to send the triples to the database (SPARQL). Information will get lost :( [" + request + "] on " + request.getBaseURI() + " with " + tripleList.size() + " triples]", e);
+        }
     }
 
     @Override

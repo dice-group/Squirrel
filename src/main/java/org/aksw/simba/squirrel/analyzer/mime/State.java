@@ -7,6 +7,7 @@ public interface State {
 
     /**
      * Add a Transition to this state.
+     *
      * @param tr Given transition.
      * @return Modified State.
      */
@@ -15,6 +16,7 @@ public interface State {
     /**
      * Follow one of the transitions, to get
      * to the next state.
+     *
      * @param c String.
      * @return State.
      * @throws IllegalStateException if the char is not accepted.
@@ -23,6 +25,7 @@ public interface State {
 
     /**
      * Can the automaton stop on this state?
+     *
      * @return true or false
      */
     boolean isFinal();

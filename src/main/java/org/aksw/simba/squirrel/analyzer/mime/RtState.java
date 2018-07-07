@@ -24,11 +24,11 @@ public final class RtState implements State {
 
     public State transit(final String c) {
         return transitions
-                .stream()
-                .filter(t -> t.isPossible(c))
-                .map(Transition::state)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Input not accepted: " + c));
+            .stream()
+            .filter(t -> t.isPossible(c))
+            .map(Transition::state)
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("Input not accepted: " + c));
     }
 
     public boolean isFinal() {

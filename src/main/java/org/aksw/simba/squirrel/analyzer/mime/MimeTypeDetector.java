@@ -22,15 +22,15 @@ public class MimeTypeDetector implements TypeDetector {
             char current;
             while (inputStream.available() > 0 && (!machine1.canStop() || !machine2.canStop())) {
                 current = (char) inputStream.read();
-                if(!machine1.isError()) //whichever leads to error state is processed anymore.
+                if (!machine1.isError()) //whichever leads to error state is processed anymore.
                     machine1 = machine1.switchState(String.valueOf(current));
-                if(!machine2.isError())
+                if (!machine2.isError())
                     machine2 = machine2.switchState(String.valueOf(current));
             }
 
-            if(machine1.canStop() && !machine1.isError())
+            if (machine1.canStop() && !machine1.isError())
                 mimeType = machine1.getMimeType();
-            if(machine2.canStop() && !machine2.isError())
+            if (machine2.canStop() && !machine2.isError())
                 mimeType = machine2.getMimeType();
             inputStream.close();
         } catch (IOException e) {

@@ -4,9 +4,9 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 
 /**
-        * Default implementation of a finite state machine.
-        * This class is immutable and thread-safe.
-        */
+ * Default implementation of a finite state machine.
+ * This class is immutable and thread-safe.
+ */
 
 public final class RdfAutomata implements FiniteStateMachine {
 
@@ -18,6 +18,7 @@ public final class RdfAutomata implements FiniteStateMachine {
 
     /**
      * Ctor.
+     *
      * @param initial Initial state of this machine.
      */
     private RdfAutomata(final State initial) {
@@ -43,6 +44,7 @@ public final class RdfAutomata implements FiniteStateMachine {
     /**
      * Builds a finite state machine to validate a simple
      * RDF file
+     *
      * @return
      */
     public static FiniteStateMachine buildRDFStateMachine() {
