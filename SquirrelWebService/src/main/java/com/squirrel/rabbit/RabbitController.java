@@ -26,10 +26,10 @@ public class RabbitController {
 
     @SuppressWarnings("all")
     @RequestMapping(method = RequestMethod.GET, path = "/observer", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SquirrelWebObject observeFrontier(@RequestParam(value="id", defaultValue="n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
+    public SquirrelWebObject observeFrontier(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o;
         try {
-            int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property)/100f)*Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
+            int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property) / 100f) * Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
             o = Application.listenerThread.getSquirrel(id);
         } catch (NumberFormatException e) {
             o = Application.listenerThread.getSquirrel();
@@ -42,7 +42,7 @@ public class RabbitController {
 
     @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.GET, path = "/observer/html", produces = MediaType.TEXT_HTML_VALUE)
-    public String observerFrontierHTML(@RequestParam(value="id", defaultValue="n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
+    public String observerFrontierHTML(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o = observeFrontier(property, percent);
 
         Map<String, List<String>> stringListMap = new HashMap<>();
@@ -56,7 +56,7 @@ public class RabbitController {
         o.getIpStringListMap().forEach((k, v) -> {
             StringBuilder vString = new StringBuilder(": ");
             v.forEach(s -> vString.append(s).append(", "));
-            IPURImap.add(k + vString.substring(0, vString.length()-2));
+            IPURImap.add(k + vString.substring(0, vString.length() - 2));
         });
         stringListMap.put("IPURImap", IPURImap);
 
@@ -86,7 +86,7 @@ public class RabbitController {
 
     @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.GET, path = "/observer/crawledGraph", produces = MediaType.APPLICATION_JSON_VALUE)
-    public VisualisationGraph observeCrawledGraph(@RequestParam(value="id", defaultValue="n/a") String property) {
+    public VisualisationGraph observeCrawledGraph(@RequestParam(value = "id", defaultValue = "n/a") String property) {
         VisualisationGraph graph;
         try {
             graph = Application.listenerThread.getCrawledGraph(Integer.parseInt(property));
@@ -119,7 +119,7 @@ public class RabbitController {
         }
 
         //PROCEEDING
-        if(Application.listenerThread.publishURI(uri)) {
+        if (Application.listenerThread.publishURI(uri)) {
             return "Succeeded with forwarding the URI " + uri + " to the queue to the Frontier! Maybe the Frontier denies adding the URI to the pending URI list, so in cases of doubt pay attention to the frontier LOGGING or contact the developer";
         } else {
             return "Failed to forward the URI " + uri + " to the =rabbit=> frontier. Try it (later) again!";

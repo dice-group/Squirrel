@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * The starting point for the Web-Service
+ *
  * @author Philipp Heinisch
  */
 @SpringBootApplication

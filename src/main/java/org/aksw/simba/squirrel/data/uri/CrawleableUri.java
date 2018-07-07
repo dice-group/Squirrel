@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
+
 import java.util.TreeMap;
 
 /**
@@ -35,6 +36,7 @@ import java.util.TreeMap;
  */
 public class CrawleableUri implements Serializable {
 
+    public static final String UUID_KEY = "UUID";
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawleableUri.class);
@@ -114,7 +116,7 @@ public class CrawleableUri implements Serializable {
     @Deprecated
     private UriType type = UriType.UNKNOWN;
 
-    private Map<String,Object> data = new TreeMap<>();
+    private Map<String, Object> data = new TreeMap<>();
 
     public CrawleableUri(URI uri) {
         this(uri, null);
@@ -172,6 +174,10 @@ public class CrawleableUri implements Serializable {
 
     public void setData(Map<String, Object> data) {
         this.data = data;
+    }
+
+    public void putData(String key, Object value) {
+        data.put(key, value);
     }
 
     @Override

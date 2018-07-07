@@ -12,35 +12,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class ZipDecompressor extends AbstractDecompressor implements Decompressor{
+public class ZipDecompressor extends AbstractDecompressor implements Decompressor {
 
-	protected ZipDecompressor() throws IOException {
-		super();
-	}
+    protected ZipDecompressor() throws IOException {
+        super();
+    }
 
-	@Override
-	public List<File> decompress(File inputFile) throws IOException {
+    @Override
+    public List<File> decompress(File inputFile) throws IOException {
 
-		File outputFile = createOutputFile();
+        File outputFile = createOutputFile();
 
-		ZipArchiveInputStream fin = new ZipArchiveInputStream(new FileInputStream(inputFile));
+        ZipArchiveInputStream fin = new ZipArchiveInputStream(new FileInputStream(inputFile));
 
-		ZipArchiveEntry entry;
+        ZipArchiveEntry entry;
 
-		while ((entry = (ZipArchiveEntry) fin.getNextEntry()) != null) {
-	        if (entry.isDirectory()) {
-	            continue;
-	        }
-	        File curfile = new File(outputFile, entry.getName());
-	        File parent = curfile.getParentFile();
-	        if (!parent.exists()) {
-	            parent.mkdirs();
-	        }
-	        IOUtils.copy(fin, new FileOutputStream(curfile));
-	    }
+        while ((entry = (ZipArchiveEntry) fin.getNextEntry()) != null) {
+            if (entry.isDirectory()) {
+                continue;
+            }
+            File curfile = new File(outputFile, entry.getName());
+            File parent = curfile.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+            IOUtils.copy(fin, new FileOutputStream(curfile));
+        }
 
 
-	 return TempPathUtils.searchPath4Files(outputFile);
-	}
+        return TempPathUtils.searchPath4Files(outputFile);
+    }
 
 }

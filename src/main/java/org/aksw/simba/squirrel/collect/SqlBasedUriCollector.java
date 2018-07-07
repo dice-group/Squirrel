@@ -134,7 +134,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                            e.getMessage());
+                        e.getMessage());
                 }
             }
         } else {
@@ -199,7 +199,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     }
 
     public long getSize() {
-    	return total_uris;
+        return total_uris;
     }
 
     public int getSize(CrawleableUri uri) {
@@ -217,13 +217,13 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
 //		    	ps.setString(1, uri.getUri().toString());
                     ResultSet rs = ps.executeQuery();
-                    while(rs.next()) {
+                    while (rs.next()) {
                         totalUris = rs.getInt(1);
                     }
 
                     ps.close();
                     rs.close();
-                }catch(Exception e) {
+                } catch (Exception e) {
                     LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
                 }
             }

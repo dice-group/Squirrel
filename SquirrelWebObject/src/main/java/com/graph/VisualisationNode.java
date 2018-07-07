@@ -9,7 +9,7 @@ public class VisualisationNode implements Serializable {
     private String id;
     private String uri;
     private String ip;
-    public int x,y;
+    public int x, y;
     public final int size = 3;
     private Color color;
 
@@ -40,11 +40,13 @@ public class VisualisationNode implements Serializable {
         color = Color.GREEN;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
     void setIp(String ip) {
         if (ip == null) {
-            throw new IllegalArgumentException("ip must not be null! (tried to reset the ip "+ this.ip + " from the node" + this + " )");
+            throw new IllegalArgumentException("ip must not be null! (tried to reset the ip " + this.ip + " from the node" + this + " )");
         }
 
         this.ip = ip;
@@ -54,7 +56,9 @@ public class VisualisationNode implements Serializable {
         return uri;
     }
 
-    public String getLabel() { return getUri(); }
+    public String getLabel() {
+        return getUri();
+    }
 
     public String getIp() {
         return ip;

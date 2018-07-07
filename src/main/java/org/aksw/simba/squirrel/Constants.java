@@ -35,6 +35,8 @@ public class Constants {
 
     public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
 
+    public static final String URI_HASH_KEY = "HashValue";
+
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms
      * from 1st January 1970).

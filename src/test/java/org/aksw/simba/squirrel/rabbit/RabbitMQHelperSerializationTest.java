@@ -41,7 +41,7 @@ public class RabbitMQHelperSerializationTest {
         uriMap.put(factory.create("http://example.org/1"), Arrays.asList(factory.create("http://example.org/99"), factory.create("http://example.org/45")));
         uriMap.put(factory.create("http://example.org/2"), Arrays.asList(factory.create("http://example.org/12"), factory.create("http://example.org/3")));
         testConfigs.add(new Object[]{new CrawlingResult(uriMap, -1)});
-        testConfigs.add(new Object[] { new UriSet(null) });
+        testConfigs.add(new Object[]{new UriSet(null)});
 
         return testConfigs;
     }
