@@ -5,7 +5,10 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 
 
+
+
 public class CkanComponent {
+
 
     //private final static String QUEUE_NAME = "ckan";
 
