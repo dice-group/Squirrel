@@ -225,7 +225,7 @@
         <dependency>
             <groupId>org.aksw.simba.squirrel</groupId>
             <artifactId>SquirrelWebObject</artifactId>
-            <version>0.4.2</version>
+            <version>0.5.0</version>
         </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -302,7 +302,7 @@
                             </manifestEntries>
                         </transformer>
                         <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                     </transformers>
                 </configuration>
                 <executions>

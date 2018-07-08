@@ -1,19 +1,5 @@
 package org.aksw.simba.squirrel.collect;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.sql.DataSource;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -22,6 +8,15 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
@@ -134,7 +129,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                            e.getMessage());
+                        e.getMessage());
                 }
             }
         } else {
@@ -199,7 +194,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     }
 
     public long getSize() {
-    	return total_uris;
+        return total_uris;
     }
 
     public int getSize(CrawleableUri uri) {
@@ -217,13 +212,13 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
 //		    	ps.setString(1, uri.getUri().toString());
                     ResultSet rs = ps.executeQuery();
-                    while(rs.next()) {
+                    while (rs.next()) {
                         totalUris = rs.getInt(1);
                     }
 
                     ps.close();
                     rs.close();
-                }catch(Exception e) {
+                } catch (Exception e) {
                     LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
                 }
             }

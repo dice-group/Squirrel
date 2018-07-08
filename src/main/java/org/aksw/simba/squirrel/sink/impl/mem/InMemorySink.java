@@ -156,5 +156,4 @@ public class InMemorySink implements Sink {
             LOGGER.error("Error while reading data from stream. The data won't be stored.", e);
         }
     }
-
 }

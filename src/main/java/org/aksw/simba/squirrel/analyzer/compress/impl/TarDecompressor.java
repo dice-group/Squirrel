@@ -13,41 +13,40 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class TarDecompressor extends AbstractDecompressor implements Decompressor{
+public class TarDecompressor extends AbstractDecompressor implements Decompressor {
 
 
-	protected TarDecompressor() throws IOException {
-		super();
-	}
+    protected TarDecompressor() throws IOException {
+        super();
+    }
 
-	@Override
-	public List<File> decompress(File inputFile) throws  IOException {
+    @Override
+    public List<File> decompress(File inputFile) throws IOException {
 
-		File outputFile = createOutputFile();
+        File outputFile = createOutputFile();
 
-		ArchiveInputStream fin = null;
+        ArchiveInputStream fin = null;
 
-			fin = new TarArchiveInputStream(new FileInputStream(inputFile));
+        fin = new TarArchiveInputStream(new FileInputStream(inputFile));
 
 
-            TarArchiveEntry entry;
-            while ((entry = (TarArchiveEntry) fin.getNextEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                File curfile = new File(outputFile, entry.getName());
-                File parent = curfile.getParentFile();
-                if (!parent.exists()) {
-                    parent.mkdirs();
-                }
-                IOUtils.copy(fin, new FileOutputStream(curfile));
+        TarArchiveEntry entry;
+        while ((entry = (TarArchiveEntry) fin.getNextEntry()) != null) {
+            if (entry.isDirectory()) {
+                continue;
             }
+            File curfile = new File(outputFile, entry.getName());
+            File parent = curfile.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+            IOUtils.copy(fin, new FileOutputStream(curfile));
+        }
 
 
-         return TempPathUtils.searchPath4Files(outputFile);
+        return TempPathUtils.searchPath4Files(outputFile);
 
-	}
-
+    }
 
 
 }

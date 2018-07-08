@@ -2,7 +2,7 @@ body {
   margin: 0;
 }
 
-.nopadding{
+.nopadding {
   padding: 0;
 }
 
@@ -46,7 +46,12 @@ body {
   border-radius: 1px;
 }
 
-.jumbotron{
+p{
+  font-family: Sigmar One;
+  font-size: 12px;
+}
+
+.jumbotron {
   padding-top: 0px;
   padding-bottom: 0px;
 }

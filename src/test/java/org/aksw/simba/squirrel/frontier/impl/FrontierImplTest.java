@@ -29,13 +29,13 @@ public class FrontierImplTest {
     private FrontierImpl frontier;
     private RDBQueue queue;
     private RDBKnownUriFilter filter;
-    private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private List<CrawleableUri> uris = new ArrayList<>();
     private CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-                + "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
+            + "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s = null;
@@ -45,21 +45,20 @@ public class FrontierImplTest {
         // read any errors from the attempted command
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null)
-        {
+        while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
 
         r = RethinkDB.r;
         int retryCount = 0;
-        while(true) {
+        while (true) {
             try {
                 connection = r.connection().hostname("localhost").port(58015).connect();
                 break;
-            } catch(ReqlDriverError error) {
+            } catch (ReqlDriverError error) {
                 System.out.println("Could not connect, retrying");
                 retryCount++;
-                if(retryCount > 10) break;
+                if (retryCount > 10) break;
                 Thread.sleep(5000);
             }
         }
@@ -71,9 +70,9 @@ public class FrontierImplTest {
         frontier = new FrontierImpl(filter, queue);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
     }
 
     @Test
@@ -96,9 +95,9 @@ public class FrontierImplTest {
 
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"),
-                InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
+            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
 
         assertEquals("Should be the same as uris array", assertion, nextUris);
     }
@@ -110,7 +109,7 @@ public class FrontierImplTest {
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"),
-                InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
+            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertEquals(assertion, nextUris);
     }
 
@@ -147,9 +146,9 @@ public class FrontierImplTest {
         // Add the URIs to the frontier
         List<CrawleableUri> uris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/normalUri"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         uris.add(uri_1);
         uris.add(uri_2);
 
@@ -165,7 +164,7 @@ public class FrontierImplTest {
 
         // Set the first URI as recrawlable
         for (CrawleableUri uri : nextUris) {
-            if(uri.getUri().equals(uri_1.getUri())) {
+            if (uri.getUri().equals(uri_1.getUri())) {
                 uri.addData(Constants.URI_PREFERRED_RECRAWL_ON, System.currentTimeMillis() - 1);
             }
         }

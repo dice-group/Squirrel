@@ -4,8 +4,12 @@ import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.ast.ReqlExpr;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
+import org.aksw.simba.squirrel.deduplication.hashing.UriHashCustodian;
+import org.aksw.simba.squirrel.deduplication.hashing.impl.ArrayHashValue;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
@@ -16,18 +20,21 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ivan on 8/18/16.
  */
-public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
+public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
     private RDBConnector connector = null;
     private RethinkDB r;
+
+    /**
+     * Used for converting Strings to {@link HashValue}s.
+     */
+    private HashValue hashValueForDecoding = new ArrayHashValue();
 
     /**
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
@@ -37,15 +44,21 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     /*
     Some constants for the rethinkDB
      */
-    public static final String DATABASE_NAME = "squirrel";
-    public static final String TABLE_NAME = "knownurifilter";
-    public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
-    public static final String COLUMN_URI = "uri";
-    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
-    public static final String COLUMN_FOUNDURIS = "foundUris";
+    private static final String DATABASE_NAME = "squirrel";
+    private static final String TABLE_NAME = "knownurifilter";
+    private static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
+    private static final String COLUMN_URI = "uri";
+    private static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
     private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
     private static final String COLUMN_IP = "ipAddress";
     private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_HASH_VALUE = "hashValue";
+
+    /**
+     * Used as a default hash value for URIS, will be replaced by real hash value as soon as it has been computed.
+     */
+    private static final String DUMMY_HASH_VALUE = "dummyValue";
+
 
     /**
      * Constructor.
@@ -77,6 +90,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
      * @param r                      Value for {@link #r}.
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
      */
+    @SuppressWarnings("unused")
     public RDBKnownUriFilter(RDBConnector connector, RethinkDB r, boolean frontierDoesRecrawling) {
         this.connector = connector;
         this.r = r;
@@ -91,6 +105,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             r.db(DATABASE_NAME).tableCreate(TABLE_NAME).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexCreate(COLUMN_URI).run(this.connector.connection);
             r.db(DATABASE_NAME).table(TABLE_NAME).indexWait(COLUMN_URI).run(this.connector.connection);
+        }
+    }
+
+    public void openConnector() {
+        if (this.connector.connection == null) {
+            this.connector.open();
         }
     }
 
@@ -153,12 +173,13 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
                 r.db(DATABASE_NAME)
                     .table(TABLE_NAME)
-                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false))
+                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
                     .run(connector.connection);
             } else {
                 ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
                 row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
                 row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
+                row.update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
                 row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
             }
             LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
@@ -167,7 +188,52 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
         }
     }
 
-    protected MapObject convertURIToRDB(CrawleableUri uri) {
+    @Override
+    public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
+
+        Set<String> stringHashValues = new HashSet<>();
+        for (HashValue value : hashValuesForComparison) {
+            stringHashValues.add(value.encodeToString());
+        }
+
+        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter
+            (doc -> stringHashValues.contains(doc.getField(COLUMN_HASH_VALUE))).run(connector.connection);
+
+        Set<CrawleableUri> urisToReturn = new HashSet<>();
+
+        while (cursor.hasNext()) {
+            HashMap<String, Object> nextRow = cursor.next();
+            CrawleableUri newUri = null;
+            HashValue hashValue = null;
+            for (String key : nextRow.keySet()) {
+                if (key.equals(COLUMN_HASH_VALUE)) {
+                    String hashAsString = (String) nextRow.get(key);
+                    hashValue = hashValueForDecoding.decodeFromString(hashAsString);
+                } else if (key.equals(COLUMN_URI)) {
+                    try {
+                        newUri = new CrawleableUri(new URI((String) nextRow.get(key)));
+                    } catch (URISyntaxException e) {
+                        LOGGER.error("Error while constructing an uri: " + nextRow.get(key));
+                    }
+                }
+            }
+            newUri.putData(Constants.URI_HASH_KEY, hashValue);
+            urisToReturn.add(newUri);
+        }
+        cursor.close();
+        return urisToReturn;
+    }
+
+    @Override
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+            LOGGER.info("hi matze " + uri.getData(Constants.URI_HASH_KEY));
+            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
+        }
+    }
+
+    private MapObject convertURIToRDB(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
         URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
@@ -176,12 +242,12 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
             .with(COLUMN_TYPE, uriType.toString());
     }
 
-    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess) {
+    private MapObject convertURITimestampToRDB(CrawleableUri uri, long timestamp, long nextCrawlTimestamp, boolean crawlingInProcess, String hashValue) {
         MapObject uriMap = convertURIToRDB(uri);
         uriMap
             .with(COLUMN_TIMESTAMP_LAST_CRAWL, timestamp).with(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
-            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess);
-
+            .with(COLUMN_CRAWLING_IN_PROCESS, crawlingInProcess)
+            .with(COLUMN_HASH_VALUE, hashValue);
         return uriMap;
     }
 
@@ -218,5 +284,4 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     public long count() {
         return r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
     }
-
 }

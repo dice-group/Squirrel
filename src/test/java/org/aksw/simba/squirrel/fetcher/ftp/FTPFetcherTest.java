@@ -13,18 +13,18 @@ import static org.junit.Assert.assertNull;
 
 public class FTPFetcherTest {
 
-	private UriProcessor uriProcessor;
-	private CrawleableUri uri;
+    private UriProcessor uriProcessor;
+    private CrawleableUri uri;
 
-	@Before
-	public void prepare() throws UnknownHostException, URISyntaxException {
+    @Before
+    public void prepare() throws UnknownHostException, URISyntaxException {
 
-		uriProcessor = new UriProcessor();
-		// TODO: this test takes ages
-		// TODO: Use mock FTP server here (docker or Java mock server)
+        uriProcessor = new UriProcessor();
+        // TODO: this test takes ages
+        // TODO: Use mock FTP server here (docker or Java mock server)
 //		uri = uriProcessor.recognizeInetAddress(new CrawleableUri(new URI("ftp://ftp.ncbi.nlm.nih.gov/pubchem/RDF")));
 //		uri = uriProcessor.recognizeInetAddress(new CrawleableUri(new URI("ftp://ftp.ncbi.nlm.nih.gov/pubchem/RDF/void.ttl")));
-	}
+    }
 
 
     @Test

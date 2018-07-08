@@ -20,7 +20,7 @@ public class RDBConfiguration extends Configuration {
     public static RDBConfiguration getRDBConfiguration() {
         String RDBHostName = getEnvRDBHostName();
         Integer RDBPort = getEnvRDBPort();
-        if(RDBHostName != null && RDBPort != null) {
+        if (RDBHostName != null && RDBPort != null) {
             return new RDBConfiguration(RDBHostName, RDBPort);
         } else {
             return null;
