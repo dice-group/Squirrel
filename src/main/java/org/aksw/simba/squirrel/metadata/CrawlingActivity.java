@@ -4,10 +4,12 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Node;
 import org.aksw.simba.squirrel.components.WorkerComponent;
 import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
+import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.jena.graph.NodeFactory;
@@ -17,6 +19,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -78,7 +81,7 @@ public class CrawlingActivity {
     /**
      * date format for start_date and end_date
      */
-
+    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 
     /**
      * Constructor
@@ -124,47 +127,68 @@ public class CrawlingActivity {
         }
     }
 
+    /**
+     *
+     * @return unique Id
+     */
+
     public String getId() {
         return id;
     }
 
+
     public String getHost() {
         try {
             WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
-            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+            String httpPrefix = "http://localhost:" + workerConfiguration.getSqarqlPort() + "/";
             return httpPrefix;
         } catch (Exception e) {
             return null;
         }
     }
 
+    private Map<String,Object> addStep()
+    {
+        //int count = 1;
+        if (worker instanceof WorkerImpl) {
+            List<Field> list = listAllFields(worker);
+
+            for (Field field : list)
+            {
+                //String l = "steps" + count++
+               uri.addData("steps",field.getClass().getSimpleName());
+            }
 
 
-    /*public void addStep (Object k){
+        }
+        return uri.getData();
+    }
 
-        //uri.addData(k.getClass().getSimpleName().toString(),k);
+    private List<Field> listAllFields(Object k)
+    {
+        List<Field> fields = new ArrayList<>();
+        Class tmpclass = k.getClass();
+        while(tmpclass!=null)
+        {
+            fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
+        }
+        return fields;
 
     }
 
     public String getHadPlan()
     {
-        for(Object object : uri.getData().keySet())
-        {
-            int count = 1;
-            String l = "step" + count++ ;
-            uri.addData(l,object.getClass().getSimpleName());
-        }
         ArrayList<String> list = new ArrayList<>();
-        for(Object o: uri.getData().values())
+        for(Object o: addStep().values())
         {
             list.add(o.toString());
 
         }
         return list.toString();
-    }*/
+    }
+
 
     public Date getDateStarted() {
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
 
         String dstarted = ft.format(dateStarted);
         try
@@ -174,12 +198,12 @@ public class CrawlingActivity {
         }
         catch (Exception e)
         {
-            return null;
+            return dateStarted;
         }
     }
 
     public Date getDateEnded() {
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd'T'hh:mm:ss");
+
         String dended = ft.format(dateEnded);
         try {
             Date date = ft.parse(dended);
@@ -187,13 +211,21 @@ public class CrawlingActivity {
         }
         catch (Exception e)
         {
-            return null;
+            return dateEnded;
         }
 
     }
     public CrawleableUri getCrawleableUri()
     {
         return uri;
+    }
+    public String getGraphId(CrawleableUri uri)
+    {
+        if (sink instanceof SparqlBasedSink)
+        return ((SparqlBasedSink) sink).getGraphId(uri);
+        else {
+            return null;
+        }
     }
 
     public int getNumTriples() {
@@ -209,21 +241,31 @@ public class CrawlingActivity {
     public CrawlingURIState getState() {
         return state;
     }
-    public URL geturl(String o) {
+
+    public URI geturl(String o) {
         try {
             URL Domain = new URL("http://www.example.org/dataset1/file.ttl/");
              URL url = new URL(Domain + o );
-             return url;
 
-        } catch (MalformedURLException e) {
-            return null;
+             return URI.create(url.toString());
+
+        } catch (MalformedURLException e)
+        {
+
+            return getUri();
         }
     }
 
    public URI getUri()
     {
-        return URI.create(uri.getUri().toString());
-
+       try
+       {
+           return URI.create(uri.getUri().toString());
+       }
+       catch (IllegalArgumentException e)
+       {
+           return null;
+       }
     }
 
 }

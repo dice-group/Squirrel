@@ -54,6 +54,8 @@ public class SparqlBasedSink implements Sink {
         this.queryDatasetURI = queryDatasetURI;
     }
 
+
+
     public void addMetadata() {
         throw new UnsupportedOperationException();
     }

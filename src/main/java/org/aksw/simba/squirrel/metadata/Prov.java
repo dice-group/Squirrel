@@ -22,5 +22,6 @@ public class Prov {
         public static final Property Association = m_model.createProperty("http://www.w3.org/ns/prov/Association");
         public static final Property hadPlan = m_model.createProperty("http://www.w3.org/ns/prov/hadPlan");
         public static final Property wasGeneratedBy = m_model.createProperty("http://www.w3.org/ns/prov/wasGeneratedBy");
+        public static final Property Activity = m_model.createProperty("http://www.w3.org/ns/prov/Activity");
     }
 
