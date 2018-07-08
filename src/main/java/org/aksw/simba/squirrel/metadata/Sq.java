@@ -19,5 +19,6 @@ public class Sq {
     public static final Property numberOfTriples = m_model.createProperty("https://www.w3id.org/squirrel/vocab/numberOfTriples");
     public static final Property hostedOn= m_model.createProperty("https://www.w3id.org/squirrel/vocab/hostedOn");
     public static final Property hasUri = m_model.createProperty("https://www.w3id.org/squirrel/vocab/uriName");
+    public static final Property steps = m_model.createProperty("https://www.w3id.org/squirrel/vocab/steps");
 
 }

@@ -155,7 +155,7 @@ public class CrawlingActivity {
 
             for (Field field : list)
             {
-                //String l = "steps" + count++
+                //String l = "step" + count++
                uri.addData("steps",field.getClass().getSimpleName());
             }
 
@@ -236,7 +236,7 @@ public class CrawlingActivity {
         return worker;
     }
 
-    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED};
+    public enum CrawlingURIState {SUCCESSFUL, UNKNOWN, FAILED}
 
     public CrawlingURIState getState() {
         return state;
@@ -252,11 +252,11 @@ public class CrawlingActivity {
         } catch (MalformedURLException e)
         {
 
-            return getUri();
+            return null;
         }
     }
 
-   public URI getUri()
+   /*public URI getUri()
     {
        try
        {
@@ -266,6 +266,6 @@ public class CrawlingActivity {
        {
            return null;
        }
-    }
+    }*/
 
 }
