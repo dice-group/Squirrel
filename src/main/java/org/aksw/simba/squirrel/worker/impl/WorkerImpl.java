@@ -7,6 +7,7 @@ import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
@@ -27,6 +28,10 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
@@ -142,10 +147,27 @@ public class WorkerImpl implements Worker, Closeable {
         }
     }
 
+    public List<String> ckanwhitelist(){
+        List<String> list = new ArrayList<String>();
+        try {
+            Scanner s = new Scanner(new File("/whitelist/ckanwhitelist.txt"));
+            while (s.hasNext()){
+                list.add(s.next());
+            }
+            s.close();
+        }catch (FileNotFoundException e){
+            LOGGER.error("ckanwhitlelist file missing.",e);
+        }
+        return list;
+    }
+
+
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
+
+
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
             uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
@@ -156,8 +178,17 @@ public class WorkerImpl implements Worker, Closeable {
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 } else {
                     try {
-                        uriMap.put(uri, performCrawling(uri));
-                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                        URL toURL = uri.getUri().toURL();
+                        String s = toURL.toString();
+                        LOGGER.info("the uri is ", s);
+                        List<String> urilist = ckanwhitelist();
+                        if (urilist.contains(s)){
+                            //Ckan stuff
+                        }else{
+                            uriMap.put(uri, performCrawling(uri));
+                            crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                        }
+
                     } catch (Exception e) {
                         LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);

@@ -9,9 +9,6 @@ import java.io.IOException;
 
 public class CkanComponent {
 
-
-    //private final static String QUEUE_NAME = "ckan";
-
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -33,15 +30,15 @@ public class CkanComponent {
                 String message = new String(body, "UTF-8");
                 System.out.println(" [x] Received '" + message + "'");
                 if(message.equals("hello component")){
-                    String message2 = "https://demo.ckan.org";
+                    String message2 = "https://www.europeandataportal.eu/";
+                    //String message2 = "https://demo.ckan.org";
                     channel.basicPublish("", "ckan", null, message2.getBytes("UTF-8"));
                     System.out.println(" [x] Sent '" + message2 + "'");
                 }
-//                else
-//                    if(message.equals("finished dumping")){
-//                    channel.close();
-//                    connection.close();
-//                }
+                else
+                    if(message.equals("finished dumping")){
+
+                }
 
             }
         };
