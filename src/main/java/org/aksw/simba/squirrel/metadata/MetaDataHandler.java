@@ -49,10 +49,11 @@ public class MetaDataHandler {
         List<Triple> lstTriples = new LinkedList<>();
         Model model  = ModelFactory.createDefaultModel();
         CrawleableUri uri = crawlingActivity.getCrawleableUri();
-        Node nodeResultGraph = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("ResultGraph_"+crawlingActivity.getGraphId(uri))));
+
+        Node nodeResultGraph = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("ResultGraph_"+ crawlingActivity.getGraphId(uri))));
         Node nodeCrawlingActivity = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl(crawlingActivity.getId())));
-        Node Association = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl(Prov.Association.toString())));
-        Node crawling = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Crawling")));
+        Node Association = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Worker-checking-Crawl-guide")));
+        Node crawling = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Crawl-guide")));
         Node Sink = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Sink")));
 
         lstTriples.add(new Triple(nodeCrawlingActivity,RDF.type.asNode(),Prov.Activity.asNode()));

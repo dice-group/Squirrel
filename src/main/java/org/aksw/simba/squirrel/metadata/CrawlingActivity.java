@@ -199,6 +199,7 @@ public class CrawlingActivity {
         catch (Exception e)
         {
             return dateStarted;
+
         }
     }
 
@@ -211,21 +212,21 @@ public class CrawlingActivity {
         }
         catch (Exception e)
         {
+
             return dateEnded;
         }
+        }
 
-    }
+
     public CrawleableUri getCrawleableUri()
     {
         return uri;
     }
+
     public String getGraphId(CrawleableUri uri)
     {
-        if (sink instanceof SparqlBasedSink)
-        return ((SparqlBasedSink) sink).getGraphId(uri);
-        else {
-            return null;
-        }
+        return graphId;
+
     }
 
     public int getNumTriples() {
@@ -244,19 +245,20 @@ public class CrawlingActivity {
 
     public URI geturl(String o) {
         try {
-            URL Domain = new URL("http://www.example.org/dataset1/file.ttl/");
+            URL Domain = new URL("http://www.example.org#");
              URL url = new URL(Domain + o );
 
              return URI.create(url.toString());
 
         } catch (MalformedURLException e)
         {
-
             return null;
+
         }
     }
 
-   /*public URI getUri()
+   @Deprecated
+   public URI getUri()
     {
        try
        {
@@ -266,6 +268,6 @@ public class CrawlingActivity {
        {
            return null;
        }
-    }*/
+    }
 
 }
