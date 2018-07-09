@@ -1,9 +1,6 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -26,30 +23,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable{
     private final String DB_NAME ="squirrel";
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; //in miiliseconds
     private final String COLLECTION_NAME = "knownurifilter";
-    
-    public static void main(String[] args) throws URISyntaxException, UnknownHostException {
-    	CrawleableUri curi = new CrawleableUri(new URI("http://www.google.com"));
-    	curi.setType(UriType.DEREFERENCEABLE);
-    	curi.setIpAddress(InetAddress.getByName(curi.getUri().getHost()));
-    	
-    	CrawleableUri curi2 = new CrawleableUri(new URI("http://www.google.com/politica"));
-    	curi2.setType(UriType.DEREFERENCEABLE);
-    	curi2.setIpAddress(InetAddress.getByName(curi2.getUri().getHost()));
-    	
-    	CrawleableUri curi3 = new CrawleableUri(new URI("http://www.google.com/esportes"));
-    	curi3.setType(UriType.DEREFERENCEABLE);
-    	curi3.setIpAddress(InetAddress.getByName(curi3.getUri().getHost()));
-    	
-    	MongoDBKnowUriFilter mdbf = new MongoDBKnowUriFilter("localhost", 27017);
-    	mdbf.open();
-    	
-    	mdbf.add(curi);
-    	mdbf.add(curi2);
-    	mdbf.add(curi3);
-    	
-    	mdbf.isUriGood(curi);
-    			
-	}
     
     public MongoDBKnowUriFilter(String hostName, Integer port) {
     	client = new MongoClient(hostName,port);
