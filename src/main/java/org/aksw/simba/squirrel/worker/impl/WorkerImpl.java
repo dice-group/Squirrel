@@ -161,7 +161,8 @@ public class WorkerImpl implements Worker, Closeable {
         return list;
     }
 
-
+    //analyser uri.getData(Constants.URI_TYPE_KEY)
+    //remove ckancomponent
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
@@ -178,6 +179,10 @@ public class WorkerImpl implements Worker, Closeable {
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 } else {
                     try {
+//                        Object ckanuri = uri.getData(Constants.URI_TYPE_KEY);
+//                        Object ckanuri = uri.getData(Constants.URI_TYPE_KEY);
+//                        String s = "URI_TYPE_KEY";
+//                        LOGGER.info(s, ckanuri);
                         URL toURL = uri.getUri().toURL();
                         String s = toURL.toString();
                         LOGGER.info("the uri is ", s);

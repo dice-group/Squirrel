@@ -68,6 +68,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
@@ -77,6 +78,7 @@ services:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        - ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker2:
@@ -87,6 +89,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
@@ -96,6 +99,7 @@ services:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        - ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker3:
@@ -106,6 +110,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
@@ -115,6 +120,7 @@ services:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        - ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   deduplicator:
