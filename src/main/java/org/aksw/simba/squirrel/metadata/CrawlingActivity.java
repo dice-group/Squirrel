@@ -98,7 +98,7 @@ public class CrawlingActivity {
         if (sink instanceof SparqlBasedSink) {
             graphId = ((SparqlBasedSink) sink).getGraphId(uri);
         }
-        id = "crawlingActivity:" + graphId;
+        id = "crawlingActivity_" + graphId;
         this.sink = sink;
     }
 
@@ -168,10 +168,8 @@ public class CrawlingActivity {
     {
         List<Field> fields = new ArrayList<>();
         Class tmpclass = k.getClass();
-        while(tmpclass!=null)
-        {
-            fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
-        }
+        fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
+
         return fields;
 
     }
@@ -186,6 +184,7 @@ public class CrawlingActivity {
         }
         return list.toString();
     }
+
 
 
     public Date getDateStarted() {

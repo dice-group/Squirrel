@@ -38,14 +38,10 @@
 
     <!-- Triple Store (JENA) Sink implementation -->
     <bean id="sparqlStoreSinkBean" class="org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink">
-        <constructor-arg name="host"
-                         value="#{systemEnvironment['SPARQL_HOST_NAME']}" />
-        <constructor-arg name="port"
-                         value="#{systemEnvironment['SPARQL_HOST_PORT']}" />
-        <constructor-arg name="updateAppendix"
-                         value="ContentSet/update" />
-        <constructor-arg name="queryAppendix"
-                         value="ContentSet/query" />
+        <constructor-arg name="updateDatasetURI"
+                         value="#{'http://' + systemEnvironment['SPARQL_HOST_NAME'] + ':' + systemEnvironment['SPARQL_HOST_PORT'] + '/ContentSet/update'}"/>
+        <constructor-arg name="queryDatasetURI"
+                         value="#{'http://' + systemEnvironment['SPARQL_HOST_NAME'] + ':' + systemEnvironment['SPARQL_HOST_PORT'] + '/ContentSet/update'}"/>
     </bean>
 
     <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
