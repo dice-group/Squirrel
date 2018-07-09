@@ -3,7 +3,11 @@ package org.aksw.simba.squirrel.sink.impl.sparql;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
+import org.apache.commons.collections.list.TransformedList;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -22,6 +26,10 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
      * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
      */
     private static final int SENDING_INTERVAL_BUFFERED_TRIPLES = 100;
+    /**
+     * Identifier for storing data in the default graph.
+     */
+    public static final String DEFAULT_GRAPH_STRING = "Default:Graph";
     /**
      * The URI of the DB in which updates can be performed.
      */
@@ -75,9 +83,19 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
 
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        // TODO: Implement!
-//        throw new UnsupportedOperationException("Not yet implemented.");
-        return new ArrayList<>();
+        final Query selectQuery = QueryGenerator.getInstance().getSelectQuery((String) uri.getData(CrawleableUri.UUID_KEY));
+        QueryExecution qe = QueryExecutionFactory.create(selectQuery);
+        ResultSet rs = qe.execSelect();
+        List<Triple> triplesFound = new ArrayList<>();
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode subject = sol.get("subject");
+            RDFNode predicate = sol.get("predicate");
+            RDFNode object = sol.get("object");
+            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+        }
+        qe.close();
+        return triplesFound;
     }
 
     @Override
@@ -103,7 +121,13 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
      * @param tripleList the list of {@link Triple}s regarding that uri
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        UpdateRequest request = UpdateFactory.create(QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList));
+        String stringQuery = null;
+        if (getGraphId(uri).equals(DEFAULT_GRAPH_STRING)) {
+            QueryGenerator.getInstance().getAddQuery(tripleList);
+        } else {
+            QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
+        }
+        UpdateRequest request = UpdateFactory.create();
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         try {
             proc.execute();

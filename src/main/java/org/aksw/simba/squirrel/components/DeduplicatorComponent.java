@@ -64,7 +64,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * The maximal size for {@link #newUrisBufferSet}.
      */
-    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 2;
+    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 10;
 
     /**
      * The deduplicator will wait for some before getting the next uri from {@link #uriQueue}.
