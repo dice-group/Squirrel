@@ -2,18 +2,12 @@ package org.aksw.simba.squirrel.metadata;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
@@ -71,9 +65,9 @@ public class CrawlingActivity {
     /**
      * Constructor
      *
-     * @param uri
-     * @param worker
-     * @param sink
+     * @param uri the URI, which was crawled
+     * @param worker the {@link Worker}, that crawled the URI
+     * @param sink the {@link Sink}, that was used to store the downloaded content from the URI
      */
     public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
         this.worker = worker;

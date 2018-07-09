@@ -2,6 +2,7 @@ package com.graph;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class VisualisationNode implements Serializable {
 
@@ -12,6 +13,7 @@ public class VisualisationNode implements Serializable {
     public final int size = 3;
     private Color color;
 
+    @SuppressWarnings("unused")
     public VisualisationNode(int id, String uri) {
         if (uri == null) {
             throw new IllegalArgumentException("uri must not be null! (ID " + id + ")");
@@ -80,5 +82,21 @@ public class VisualisationNode implements Serializable {
 
     public int toInt() {
         return uri.hashCode();
+    }
+
+    @SuppressWarnings("all")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VisualisationNode)) return false;
+        VisualisationNode that = (VisualisationNode) o;
+        return size == that.size &&
+            Objects.equals(getUri(), that.getUri()) &&
+            Objects.equals(getColor(), that.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUri(), size, getColor());
     }
 }

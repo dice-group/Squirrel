@@ -46,6 +46,11 @@ body {
   border-radius: 1px;
 }
 
+p{
+  font-family: Sigmar One;
+  font-size: 12px;
+}
+
 .jumbotron {
   padding-top: 0px;
   padding-bottom: 0px;

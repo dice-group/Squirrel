@@ -1,95 +1,68 @@
 package com.squirrel.rabbit;
 
 import com.SquirrelWebObject;
-import com.SquirrelWebObjectHelper;
 import com.graph.VisualisationGraph;
-import com.graph.VisualisationHelper;
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
+import org.apache.commons.io.IOUtils;
+import org.hobbit.core.rabbit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeoutException;
 
 /**
  * The interface between the RabbitMQ and the Web-Service
  * Or better to say: Listener for the RabbitMQ - receives and organize the {@link SquirrelWebObject}s and the {@link com.graph.VisualisationGraph}s
- *
  * @author Philipp Heinisch
  */
-public class RabbitMQList implements Runnable {
+public class RabbitMQListener implements Runnable, DataHandler {
 
     private List<SquirrelWebObject> dataQueue = new ArrayList<>();
-    private List<VisualisationGraph> graphQueue = new ArrayList<>();
     private final static String QUEUE_INPUT_GENERAL_NAME = "squirrel.web.in";
-    private final static String QUEUE_INPUT_GRAPH_NAME = "squirrel.web.in.graph";
     //reuse an already existing queue
     private final static String QUEUE_OUTPUT_URI_NAME = "squirrel.frontier"; // "squirrel.web.out.uri";
     private Connection connection;
     private Channel channel;
 
+    private Semaphore terminationMutex = new Semaphore(0);
+
     private Serializer serializer = new GzipJavaUriSerializer();
 
-    private Logger logger = LoggerFactory.getLogger(RabbitMQList.class);
+    private Logger logger = LoggerFactory.getLogger(RabbitMQListener.class);
 
     private final static int MAXLENGTHOFHISTORY = 2000;
 
     @Override
     public void run() {
-        if (!rabbitConnect(6) || !queueDeclare(QUEUE_INPUT_GENERAL_NAME)) {
+        if (!rabbitConnect(6)) {
+            logger.error("Finally the " + this + " was not able to connect to RabbitMQ, shut down...");
             return;
         }
 
-        // IN
-
-        boolean listenToVisualizationGraphs = queueDeclare(QUEUE_INPUT_GRAPH_NAME);
-
-        Consumer generalConsumer = new DefaultConsumer(channel) {
-            @Override
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                SquirrelWebObject o = SquirrelWebObjectHelper.convertToObject(body);
-                logger.debug("The consumer " + consumerTag + "received an SquirrelWebObject from the Frontier!");
-                addElementToLimitedList(dataQueue, o);
-                logger.trace("Added the new SquirrelWebObject to the dataQueue, contains " + dataQueue.size() + " SquirrelWebObjects now!");
-            }
-        };
-        Consumer graphConsumer = null;
-        if (listenToVisualizationGraphs) {
-            graphConsumer = new DefaultConsumer(channel) {
-                @Override
-                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                    VisualisationGraph graph = VisualisationHelper.convertToObject(body);
-                    logger.debug("The consumer " + consumerTag + "received an VisualisationGraph from the Frontier!");
-                    addElementToLimitedList(graphQueue, graph);
-                    logger.trace("Added the new VisualisationGraph to the graphQueue, contains " + graphQueue.size() + " VisualisationGraphs now!");
-                }
-            };
-        }
+        RabbitQueueFactory factory = null;
+        DataReceiver receiver;
         try {
-            channel.basicConsume(QUEUE_INPUT_GENERAL_NAME, true, generalConsumer);
-            if (listenToVisualizationGraphs) {
-                channel.basicConsume(QUEUE_INPUT_GRAPH_NAME, true, graphConsumer);
-            }
-        } catch (IOException e) {
-            logger.warn(e.getMessage(), e);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ei) {
-                ei.printStackTrace();
-                return;
-            }
-            run();
+            factory = new RabbitQueueFactoryImpl(connection);
+            receiver = DataReceiverImpl.builder().dataHandler(this).queue(factory, QUEUE_INPUT_GENERAL_NAME).build();
+            terminationMutex.acquire();
+            receiver.closeWhenFinished();
+        } catch (Exception e) {
+            logger.error("Receiver crashed with Exception.", e);
+        } finally {
+            IOUtils.closeQuietly(factory);
         }
 
         //OUT
@@ -97,6 +70,7 @@ public class RabbitMQList implements Runnable {
         //queueDeclare(QUEUE_OUTPUT_URI_NAME);
     }
 
+    @SuppressWarnings("unused")
     private boolean queueDeclare(String queueName) {
         try {
             channel.queueDeclare(queueName, false, false, false, null);
@@ -158,6 +132,7 @@ public class RabbitMQList implements Runnable {
         return true;
     }
 
+    @SuppressWarnings("unused")
     public void close() throws IOException, TimeoutException {
         if (channel == null)
             return;
@@ -168,16 +143,14 @@ public class RabbitMQList implements Runnable {
 
     /**
      * Gets the fetched data from the Frontier. Contains many information about the current crawling status and so on
-     *
      * @return the latest {@link SquirrelWebObject}
      */
     public SquirrelWebObject getSquirrel() {
-        return getSquirrel(dataQueue.size() - 1);
+        return getSquirrel(dataQueue.size()-1);
     }
 
     /**
      * Gets the fetched data from the Frontier. Contains many information about the current crawling status and so on
-     *
      * @param index All received {@link SquirrelWebObject} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link SquirrelWebObject}
      */
@@ -188,37 +161,39 @@ public class RabbitMQList implements Runnable {
 
     /**
      * Gets the fected crawled graph from Frontier.
-     *
      * @return the latest {@link VisualisationGraph}
      */
     VisualisationGraph getCrawledGraph() {
-        return getCrawledGraph(graphQueue.size() - 1);
+        return getCrawledGraph(dataQueue.size() - 1);
     }
 
     /**
-     * Gets the fected crawled graph from Frontier.
-     *
+     * Gets the fetched crawled graph from Frontier.
      * @param index All received {@link VisualisationGraph} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link VisualisationGraph}
      */
     VisualisationGraph getCrawledGraph(int index) {
-        VisualisationGraph ret = getObject(graphQueue, index);
-        if (ret == null) {
+        SquirrelWebObject preRet = getObject(dataQueue, index);
+        VisualisationGraph ret;
+        if (preRet == null || preRet.getGraph() == null) {
             ret = new VisualisationGraph();
             ret.addNode("No Graph available").setColor(Color.RED);
+            ret.optimizeArrays();
+        } else {
+            ret = preRet.getGraph();
         }
 
         return ret;
     }
 
-    private <T> T getObject(List<T> list, int index) {
+    private<T> T getObject(List<T> list, int index) {
         if (list.isEmpty()) {
             return null;
         }
         try {
             return list.get(index);
         } catch (IndexOutOfBoundsException e) {
-            return list.get(dataQueue.size() - 1);
+            return list.get(dataQueue.size()-1);
         }
     }
 
@@ -234,16 +209,15 @@ public class RabbitMQList implements Runnable {
     /**
      * Adds a element to a {@link List}, but checks in addition before, if a certain size limit (MAXLENGTHOFHISTORY) is reached. If yes, the method truncates every second element from the list.
      * <b>Attention:</b> if the list is bigger than MAXLENGTHOFHISTORY*2, then the truncate procedure will execute multiple times.
-     *
-     * @param list            the {@link List}, in that the element should be added. Must not be null.
+     * @param list the {@link List}, in that the element should be added. Must not be null.
      * @param insertedElement the element, that should be added Must not be null.
-     * @param <T>             this method is generic
+     * @param <T> this method is generic
      */
     private <T> void addElementToLimitedList(@NotNull List<T> list, @NotNull T insertedElement) {
         while (list.size() >= MAXLENGTHOFHISTORY) {
             List<T> toBeDeleted = new ArrayList<>(MAXLENGTHOFHISTORY >> 1);
             for (int i = 0; i < list.size(); i++) {
-                if (i % 2 == 1) {
+                if (i%2 == 1) {
                     toBeDeleted.add(list.get(i));
                 }
             }
@@ -270,5 +244,17 @@ public class RabbitMQList implements Runnable {
             logger.error("ERROR during serializing/ publishing the " + uri, e);
         }
         return false;
+    }
+
+    @Override
+    public void handleData(byte[] bytes) {
+        try {
+            SquirrelWebObject o = serializer.deserialize(bytes);
+            logger.debug("The Webservice received an SquirrelWebObject from the Frontier!");
+            addElementToLimitedList(dataQueue, o);
+            logger.trace("Added the new SquirrelWebObject to the dataQueue, contains " + dataQueue.size() + " SquirrelWebObjects now!");
+        } catch (IOException e) {
+            logger.warn("Serializer " + serializer + " can't deserialze the package of " + bytes.length + " bytes, that the Webservice received", e);
+        }
     }
 }

@@ -6,7 +6,7 @@
 
     <groupId>org.aksw.simba.squirrel</groupId>
     <artifactId>SquirrelWebService</artifactId>
-    <version>0.4.2</version>
+    <version>0.5.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.aksw.simba.squirrel</groupId>
             <artifactId>SquirrelWebObject</artifactId>
-            <version>0.4.2</version>
+            <version>0.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -97,10 +97,12 @@
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
+        <!--
         <repository>
             <id>local repository own</id>
             <url>file://${project.basedir}/repository</url>
         </repository>
+        -->
         <repository>
             <id>local repository upper</id>
             <url>file://${project.basedir}/../repository</url>

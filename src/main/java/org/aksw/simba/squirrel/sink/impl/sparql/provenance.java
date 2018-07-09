@@ -3,10 +3,6 @@ package org.aksw.simba.squirrel.sink.impl.sparql;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
 
 
 public class provenance {

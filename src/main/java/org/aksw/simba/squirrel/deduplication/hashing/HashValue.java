@@ -17,6 +17,7 @@ public interface HashValue extends Serializable {
 
     /**
      * Decode a {@link HashValue} from the given String. This is necessary when you load a hash from a database.
+     *
      * @param s The given String representation.
      * @return The decoded {@link HashValue}.
      */

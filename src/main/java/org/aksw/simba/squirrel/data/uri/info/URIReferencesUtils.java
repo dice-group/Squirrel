@@ -36,7 +36,7 @@ class URIReferencesUtils {
      * @return the merged result. Is not {@code null}.
      */
     List<String> mergeLists(List<String> originList, List<CrawleableUri> newList) {
-        final List<String> retList = (originList == null) ? new ArrayList<>(newList.size()) : originList;
+        final List<String> retList = (originList == null) ? new ArrayList<>((newList == null) ? 0 : newList.size()) : originList;
         if (newList == null || newList.isEmpty()) {
             return retList;
         }

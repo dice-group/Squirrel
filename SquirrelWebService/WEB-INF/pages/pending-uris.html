@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Home</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
+
+  <script src="/pages/js/_json_utils.js"></script>
+  <script>
+    function update() {
+      var uri = "/observer";
+
+      $.ajax({
+        url: uri,
+        dataType: "json",
+        method: "GET"
+      }).done(function (data) {
+        $( "#pURIs" ).html(JSONElementToString(data.pendingURIs));
+      }).fail(function () {
+        alert("AJAX request to \"" + uri + "\" failed :(");
+      });
+    }
+
+    update();
+    setInterval(function () {
+      update()
+    }, 5000);
+  </script>
+</head>
+
+<body bgcolor="#d3d3d3">
+  <table width="100%" cellpadding="8px">
+    <tr>
+      <td class="nopadding" colspan="2">
+        <div class="topnav">
+          <a class="active" href="/pages/index.html">Home</a> |
+          <a href="/pages/graph.html">Crawled Graph</a> |
+          <a href="/pages/templates/fact-check.html">Fact Check</a> |
+          <a href="/pages/templates/crawler.html">Crawler</a> |
+          <a href="/pages/templates/squirrel.html">Squirrel</a> |
+          <a href="/pages/templates/about.html">About Us</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+
+    <h3>Pending URIs: pure</h3>
+    <div id="pURIs"></div>
+
+</body>
+</html>

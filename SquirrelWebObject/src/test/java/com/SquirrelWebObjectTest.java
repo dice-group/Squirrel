@@ -1,12 +1,10 @@
 package com;
 
+import com.graph.VisualisationGraph;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -51,10 +49,12 @@ public class SquirrelWebObjectTest {
 
         assertTrue("2 new SquirrelWebObjects should be equal...", o1.equals(o2));
 
-        List<String> pendingURIS = new ArrayList<>(1);
-        pendingURIS.add("https://www.philippheinisch.de");
+        ArrayList<String> pendingURIs = new ArrayList<>();
+        pendingURIs.add("https://www.philippheinisch.de");
+        pendingURIs.add("https://www.bibleserver.com/");
         try {
-            o2.setPendingURIs(pendingURIS);
+            o2.setPendingURIs(pendingURIs);
+            o2.setIPMapPendingURis(Collections.singletonMap("1.1.1.1", pendingURIs));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -62,11 +62,18 @@ public class SquirrelWebObjectTest {
         assertFalse("One of them got pending URIs --> not equal any more", o1.equals(o2));
 
         try {
-            o1.setPendingURIs(pendingURIS);
+            o1.setPendingURIs((List<String>) pendingURIs.clone());
+            o1.setIPMapPendingURis(Collections.singletonMap("1.1.1.1", pendingURIs));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
         assertTrue("Now the other SquirrelWebObjects got the same list --> equal again!", o1.equals(o2));
+
+        o1.setGraph(new VisualisationGraph());
+        o2.setGraph(new VisualisationGraph());
+
+        assertTrue("SquirrelWebObjects with a similar graph should be the same", o1.equals(o2));
+
     }
 }

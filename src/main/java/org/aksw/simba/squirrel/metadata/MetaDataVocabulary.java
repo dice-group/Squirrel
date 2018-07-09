@@ -1,6 +1,9 @@
 package org.aksw.simba.squirrel.metadata;
 
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 
 public class MetaDataVocabulary {
     public static final String baseProv = "http://www.w3.org/ns/prov#";

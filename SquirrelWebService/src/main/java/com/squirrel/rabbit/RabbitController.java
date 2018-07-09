@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -21,9 +20,11 @@ import java.util.*;
  *
  * @author Philipp Heinisch
  */
+@SuppressWarnings("unused")
 @RestController
 public class RabbitController {
 
+    @SuppressWarnings("all")
     @RequestMapping(method = RequestMethod.GET, path = "/observer", produces = MediaType.APPLICATION_JSON_VALUE)
     public SquirrelWebObject observeFrontier(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o;
@@ -39,15 +40,16 @@ public class RabbitController {
         return o;
     }
 
+    @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.GET, path = "/observer/html", produces = MediaType.TEXT_HTML_VALUE)
     public String observerFrontierHTML(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o = observeFrontier(property, percent);
 
         Map<String, List<String>> stringListMap = new HashMap<>();
-        stringListMap.put("numberPendingURIs", Collections.singletonList(o.getCountOfPendingURIs() + ""));
-        stringListMap.put("numberCrawledURIs", Collections.singletonList(o.getCountOfCrawledURIs() + ""));
-        stringListMap.put("numberWorker", Collections.singletonList(o.getCountOfWorker() + ""));
-        stringListMap.put("numberDeadWorker", Collections.singletonList(o.getCountOfDeadWorker() + ""));
+        stringListMap.put("numberPendingURIs", Collections.singletonList(Integer.toString(o.getCountOfPendingURIs())));
+        stringListMap.put("numberCrawledURIs", Collections.singletonList(Integer.toString(o.getCountOfCrawledURIs())));
+        stringListMap.put("numberWorker", Collections.singletonList(Integer.toString(o.getCountOfWorker())));
+        stringListMap.put("numberDeadWorker", Collections.singletonList(Integer.toString(o.getCountOfDeadWorker())));
         stringListMap.put("pendingURIs", o.getPendingURIs());
         stringListMap.put("nextCrawledURIs", o.getNextCrawledURIs());
         List<String> IPURImap = new ArrayList<>(o.getIpStringListMap().size());
@@ -61,6 +63,7 @@ public class RabbitController {
         return TemplateHelper.replace(HTMLReader.getText("./WEB-INF/pages/_index.html"), stringListMap);
     }
 
+    @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.GET, path = "/observer/stat", produces = MediaType.TEXT_PLAIN_VALUE)
     public String observeFrontierStat(@RequestParam(value = "prop", defaultValue = "help") String property) {
         StringBuilder ret = new StringBuilder();
@@ -81,6 +84,7 @@ public class RabbitController {
         return ret.toString();
     }
 
+    @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.GET, path = "/observer/crawledGraph", produces = MediaType.APPLICATION_JSON_VALUE)
     public VisualisationGraph observeCrawledGraph(@RequestParam(value = "id", defaultValue = "n/a") String property) {
         VisualisationGraph graph;
@@ -96,6 +100,7 @@ public class RabbitController {
         return graph;
     }
 
+    @SuppressWarnings("unused")
     @RequestMapping(method = RequestMethod.POST, path = "/observer/push", produces = MediaType.TEXT_PLAIN_VALUE)
     public String pushURI(@RequestParam(value = "uri", defaultValue = "") String uri) {
         //ERROR CATCHING
