@@ -109,7 +109,7 @@ services:
         - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
-deduplicator:
+  deduplicator:
     image: squirrel
     container_name: deduplicator
     environment:

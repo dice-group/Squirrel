@@ -19,7 +19,8 @@ import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.TripleBasedSink;
+import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
@@ -153,25 +154,23 @@ public class WorkerImpl implements Worker, Closeable {
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
             uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
-            if (sink instanceof TripleBasedSink) {
-                CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
-                if (uri.getUri() == null) {
-                    LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+            CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
+            if (uri.getUri() == null) {
+                LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
+                crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
+            } else {
+                try {
+                    uriMap.put(uri, performCrawling(uri));
+                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                } catch (Exception e) {
+                    LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
+                        + "\". It will be ignored.", e);
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
-                } else {
-                    try {
-                        uriMap.put(uri, performCrawling(uri));
-                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
-                    } catch (Exception e) {
-                        LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
-                            + "\". It will be ignored.", e);
-                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
-                    }
                 }
-                crawlingActivity.finishActivity();
-                if (metaDataHandler != null && sink instanceof TripleBasedSink) {
-                    metaDataHandler.addMetadata(crawlingActivity);
-                }
+            }
+            crawlingActivity.finishActivity();
+            if (metaDataHandler != null && sink instanceof TripleBasedSink) {
+                metaDataHandler.addMetadata(crawlingActivity);
             }
             // classify URIs
             Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
