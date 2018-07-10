@@ -4,7 +4,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,9 +29,10 @@ public class URIReferencesUtilsTest {
         List<String> foundURI1String = foundURI1.stream().map(e -> e.getUri().toString()).collect(Collectors.toList());
         List<String> foundURI2String = foundURI2.stream().map(e -> e.getUri().toString()).collect(Collectors.toList());
         assertEquals("Merging nothing to something should return the same", foundURI1String, utils.mergeLists(foundURI1String, Collections.EMPTY_LIST));
-
-        assertTrue("Simple merging of 2 lists", Arrays.equals(new String[]{"https://www.philippheinisch.de/projects.html", "https://www.philippheinisch.de/multi/index.php"}, utils.mergeLists(foundURI1String, foundURI2).toArray(new String[2])));
-        assertTrue("Redundant merging of 2 lists", Arrays.equals(new String[]{"https://www.philippheinisch.de/projects.html"}, utils.mergeLists(foundURI1String, foundURI1).toArray(new String[1])));
+        List<String> combinedList = new ArrayList<>(foundURI1String);
+        combinedList.addAll(foundURI2String);
+        assertTrue("Simple merging of 2 lists", utils.mergeLists(foundURI1String, foundURI2).containsAll(combinedList));
+        assertTrue("Redundant merging of 2 lists", utils.mergeLists(foundURI1String, foundURI1).containsAll(foundURI1String));
     }
 
     @Test

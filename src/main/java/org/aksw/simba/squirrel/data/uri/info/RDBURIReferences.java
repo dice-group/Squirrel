@@ -169,11 +169,11 @@ public class RDBURIReferences implements URIReferences, Closeable {
      */
     public Iterator<AbstractMap.SimpleEntry<String, List<String>>> walkThroughCrawledGraph(int offset, boolean latest, boolean onlyCrawledUris) {
         long entryCount = r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
-        if (entryCount < offset) {
+        if (entryCount <= offset) {
             if (latest) {
-                LOGGER.debug("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + "), so we'll return an iterator over the whole graph from the beginning!");
+                LOGGER.debug("Your offset (" + offset + ") is higher or equal than the number of entries (" + entryCount + "), so we'll return an iterator over the whole graph from the beginning!");
             } else {
-                LOGGER.warn("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + ")! Return an empty iterator...");
+                LOGGER.warn("Your offset (" + offset + ") is higher or equal than the number of entries (" + entryCount + ")! Return an empty iterator...");
                 return Collections.emptyIterator();
             }
         }
