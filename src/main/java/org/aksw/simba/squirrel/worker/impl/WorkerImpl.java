@@ -1,12 +1,15 @@
 package org.aksw.simba.squirrel.worker.impl;
 
+import com.sun.jndi.toolkit.url.Uri;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
 import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.components.CkanComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
@@ -27,6 +30,10 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
@@ -142,10 +149,41 @@ public class WorkerImpl implements Worker, Closeable {
         }
     }
 
+    public List<String> ckanwhitelist(){
+
+        List<String> ckanlist = Arrays.asList("https://demo.ckan.org", "http://open.canada.ca/data/en/", "http://datahub.io/");
+        //This block can be used to feed list of CKANURLs for comparision
+        //In case of using this, please create ckanwhitelist.txt in whitelist folder under root
+        //Also enable volumes and environment for each worker in docker-compose-sparql-web.yml
+        /*
+        List<String> list = new ArrayList<String>();
+        try {
+            Scanner s = new Scanner(new File("/whitelist/ckanwhitelist.txt"));
+            while (s.hasNext()){
+                list.add(s.next());
+            }
+            s.close();
+        }catch (FileNotFoundException e){
+            LOGGER.error("ckanwhitlelist file missing.",e);
+        }
+        */
+        return ckanlist;
+    }
+
+    public static CrawleableUri ckandata(String r) throws Exception{
+        //String a = "https://demo.ckan.org";
+        CrawleableUri uri = new CrawleableUri(new URI(r));
+        //TODO: RECEIVED DATA FROM CKAN COMPONENT SHOULD BE CONVERTED INTO URIs AND FED TO FRONTIER
+        uri.addData(Constants.URI_TYPE_KEY, Constants.URI_TYPE_VALUE_DEREF);
+        return uri;
+    }
+
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
+        int x = 0;      //change value of x = 1 for enabling CKAN CRAWLER
+
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
             uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
@@ -156,8 +194,24 @@ public class WorkerImpl implements Worker, Closeable {
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 } else {
                     try {
-                        uriMap.put(uri, performCrawling(uri));
-                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                        //CKAN Crawler is disabled
+                        if (x == 1) {
+                            URL toURL = uri.getUri().toURL();
+                            String s = toURL.toString();
+                            LOGGER.info("the uri is ", s);
+                            List<String> urilist = ckanwhitelist();
+                            if (urilist.contains(s)) {
+                                //CKAN Component is called to communicate URL to CKANCrawler
+                                CkanComponent.send(s);
+                                String r = CkanComponent.recieve();
+                                CrawleableUri ckanuri = ckandata(r);
+                                //TODO:CHANGE DATATYPE AND HANDLE DATA TO SEND TO FRONTIER
+                            }
+                        }else{
+                            uriMap.put(uri, performCrawling(uri));
+                            crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                        }
+
                     } catch (Exception e) {
                         LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);
