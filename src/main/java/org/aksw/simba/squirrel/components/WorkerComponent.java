@@ -121,8 +121,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
         } else {
             String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
-            sink = new SparqlBasedSink(httpPrefix + "ContentSet/update", httpPrefix + "ContentSet/query");
-            metaDataHandler = new MetaDataHandler(httpPrefix + "MetaData/update", httpPrefix + "MetaData/query");
+            sink = new SparqlBasedSink(httpPrefix + "contentset/update", httpPrefix + "contentset/query");
+            metaDataHandler = new MetaDataHandler(httpPrefix + "metadata/update", httpPrefix + "metadata/query");
         }
 
         serializer = new GzipJavaUriSerializer();

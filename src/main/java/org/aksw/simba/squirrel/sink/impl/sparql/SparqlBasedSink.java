@@ -64,10 +64,6 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
         queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
     }
 
-    public void addMetadata() {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
         if (mapBufferedTriples.get(uri) == null) {
@@ -83,8 +79,14 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
 
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        final Query selectQuery = QueryGenerator.getInstance().getSelectQuery((String) uri.getData(CrawleableUri.UUID_KEY));
-        QueryExecution qe = QueryExecutionFactory.create(selectQuery);
+        Query selectQuery = null;
+        if (getGraphId(uri).equals(DEFAULT_GRAPH_STRING)) {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery();
+        } else {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery((String) uri.getData(CrawleableUri.UUID_KEY));
+        }
+
+        QueryExecution qe = QueryExecutionFactory.sparqlService(queryDatasetURI, selectQuery);
         ResultSet rs = qe.execSelect();
         List<Triple> triplesFound = new ArrayList<>();
         while (rs.hasNext()) {
@@ -123,11 +125,11 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
         String stringQuery = null;
         if (getGraphId(uri).equals(DEFAULT_GRAPH_STRING)) {
-            QueryGenerator.getInstance().getAddQuery(tripleList);
+            stringQuery = QueryGenerator.getInstance().getAddQuery(tripleList);
         } else {
-            QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
+            stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
         }
-        UpdateRequest request = UpdateFactory.create();
+        UpdateRequest request = UpdateFactory.create(stringQuery);
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
         try {
             proc.execute();

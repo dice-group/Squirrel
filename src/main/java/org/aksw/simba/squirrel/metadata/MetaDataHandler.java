@@ -49,7 +49,6 @@ public class MetaDataHandler {
         //TODO for Meher: Merge new change from other branch manually for hadPlan
         //lstTriples.add(new Triple(nodeCrawlingActivity,NodeFactory.createURI("prov:hadPlan"),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
 
-        crawlingActivity.getCrawleableUri().addData(CrawleableUri.UUID_KEY, GRAPH_NAME_FOR_METADATA);
         sink.openSinkForUri(defaultGraphUri);
         for (Triple triple : lstTriples) {
             sink.addTriple(defaultGraphUri, triple);

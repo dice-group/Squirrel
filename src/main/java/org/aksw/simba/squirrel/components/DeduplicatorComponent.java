@@ -139,6 +139,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             } catch (IOException e) {
                 LOGGER.error("Error while creating sender object.", e);
             }
+            LOGGER.info("Deduplicator initialized.");
         }
     }
 
@@ -153,7 +154,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             CrawleableUri nextUri = uriQueue.get(0);
             uriQueue.remove(0);
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
-            HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
+            HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.putData(Constants.URI_HASH_KEY, value);
             newUrisBufferSet.add(nextUri);
 

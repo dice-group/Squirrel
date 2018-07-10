@@ -32,13 +32,13 @@ services:
     ports:
       - "8080:8080"
 
-  sparqlHost:
+  sparqlhost:
       image: stain/jena-fuseki
-      container_name: sparqlHost
+      container_name: sparqlhost
       ports:
         - "3030:3030"
       volumes:
-        - ./data/sparqlHost/sparqlHost_data:/fuseki
+        - ./data/sparqlhost/sparqlhost_data:/fuseki
       environment:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
@@ -68,7 +68,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      - SPARQL_HOST_NAME=sparqlHost
+      - SPARQL_HOST_NAME=sparqlhost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
       - RDB_HOST_NAME=rethinkdb
@@ -87,7 +87,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      - SPARQL_HOST_NAME=sparqlHost
+      - SPARQL_HOST_NAME=sparqlhost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
       - RDB_HOST_NAME=rethinkdb
@@ -106,7 +106,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      - SPARQL_HOST_NAME=sparqlHost
+      - SPARQL_HOST_NAME=sparqlhost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
       - RDB_HOST_NAME=rethinkdb
@@ -126,7 +126,7 @@ services:
       OUTPUT_FOLDER: /var/squirrel/data
       RDB_HOST_NAME: rethinkdb
       RDB_PORT: 28015
-      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_NAME: sparqlhost
       SPARQL_HOST_PORT: 3030
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
     volumes:

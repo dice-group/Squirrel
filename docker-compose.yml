@@ -103,7 +103,7 @@ services:
       OUTPUT_FOLDER: /var/squirrel/data
       RDB_HOST_NAME: rethinkdb
       RDB_PORT: 28015
-      SPARQL_HOST_NAME: sparqlHost
+      SPARQL_HOST_NAME: sparqlhost
       SPARQL_HOST_PORT: 3030
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
     volumes:

@@ -76,4 +76,19 @@ public class ArrayHashValue implements HashValue {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ArrayHashValue [");
+        for (int i = 0; i < hashValues.length; i++) {
+            if (hashValues[i] != null) {
+                stringBuilder.append(hashValues[i] + DELIMETER);
+            } else {
+                stringBuilder.append("null" + DELIMETER);
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
 }
