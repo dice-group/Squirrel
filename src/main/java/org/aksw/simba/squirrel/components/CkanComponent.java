@@ -1,14 +1,73 @@
 package org.aksw.simba.squirrel.components;
-
 import com.rabbitmq.client.*;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class CkanComponent {
 
+    //Sends a message to python end via rabbitMQueue CKAN
+    public static String send(String s) throws Exception{
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+        //Declare SENDQueue and convert String to Bytes and sends it to CKAN queue
+        channel.queueDeclare("ckan", false, false, false, null);
+        channel.basicPublish("", "ckan", null, s.getBytes("UTF-8"));
+        //console output for testing
+        System.out.println(" [x] Sent '" + s + "'");
+        channel.close();
+        connection.close();
+
+        return "code 0";
+    }
+
+    //Receives a message from python end via rabbitMQueue CKAN2
+    public static String recieve() throws Exception{
+        String bytes = new String("empty");
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+        //Declare RECIEVEQueue named CKAN2
+        channel.queueDeclare("ckan2", false, false, false, null);
+        //Consumer consumes all messages continuously
+        Consumer consumer = new DefaultConsumer(channel) {
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+                throws IOException {
+                String message = new String(body, "UTF-8");
+                System.out.println(" [x] Received '" + message + "'");
+                //TODO: FIND A SPECIFIC METHOD IN RABBITMQ TO HANDLE RETURNING MESSAGES
+                //return message;
+            }
+        };
+        try {
+            //start a consumer for CKAN2 queue
+            channel.basicConsume("ckan2", true, consumer);
+            //TODO:MESSAGE FROM HANDLE DELIVERY SHOULD BE RECEIVED AND RETURNED TO WORKERIMPL
+        }
+        catch (IOException e) {
+        }
+        return bytes;
+    }
+
+    //THIS CODE BLOCK CAN BE USED TO CHECK WORKING MECHANISM
+    /*
+    public static void main(String[] argv) throws Exception {
+
+        String url = "https://demo.ckan.org" ;
+        String s = CkanComponent.send(url);
+        System.out.println(s);
+        String s1 = CkanComponent.recieve();
+        //ArrayList<String> s1 = CkanComponent.recieve();
+        System.out.println(s1);
+
+    }
+    */
+
+    //THIS BLOCK REPRESENTS A CONTINUOUS MESSAGE MECHANISM DESIGNED FOR COMMUNICATING WITH PYTHON CKAN END.
+    //THIS IS NO LONGER USED AND MUCH RELIABLE SERVICE DUE TO LARGE OVER HEAD OF MESSAGES.
+    /*
     public static void main(String[] argv) throws Exception {
 
       ConnectionFactory factory = new ConnectionFactory();
@@ -46,56 +105,8 @@ public class CkanComponent {
         channel.basicConsume("ckan2", true, consumer);
 
     }
-//    public List<String> recieve() throws Exception{
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost("localhost");
-//        Connection connection = factory.newConnection();
-//        Channel channel = connection.createChannel();
-//        List<String> list = new ArrayList<String>();
-//        channel.queueDeclare("ckan2", false, false, false, null);
-//        Consumer consumer = new DefaultConsumer(channel) {
-//            @Override
-//            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-//                throws IOException {
-//                String message = new String(body, "UTF-8");
-//                System.out.println(" [x] Received '" + message + "'");
-//            }
-//        };
-//        try {
-//            byte[] bytes = channel.basicConsume("ckan2", true, consumer).getBytes();
-//            System.out.println(bytes);
-//            String s = bytes.toString();
-//        }
-//        catch (IOException e) {
-//        }
-//        return list;
-//    }
-//
-//    public static String send(String s) throws Exception{
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost("localhost");
-//        Connection connection = factory.newConnection();
-//        Channel channel = connection.createChannel();
-//        channel.queueDeclare("ckan", false, false, false, null);
-//        channel.basicPublish("", "ckan", null, s.getBytes("UTF-8"));
-//        System.out.println(" [x] Sent '" + s + "'");
-//        channel.close();
-//        connection.close();
-//
-//        return "0";
-//    }
-//
-//    public void main(String[] argv) throws Exception {
-//
-//            String url = "abc" ;
-//            String s = CkanComponent.send(url);
-//            String s1 = CkanComponent.recieve();
-//
-//
-//        }
-//
-//
-//    }
+    */
+
 }
 
 
