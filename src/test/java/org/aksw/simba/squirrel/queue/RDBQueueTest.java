@@ -1,15 +1,6 @@
 package org.aksw.simba.squirrel.queue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.rethinkdb.model.MapObject;
 import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
@@ -17,7 +8,13 @@ import org.aksw.simba.squirrel.data.uri.UriType;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.rethinkdb.model.MapObject;
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueueTest extends RethinkDBBasedTest {
@@ -121,7 +118,7 @@ public class RDBQueueTest extends RethinkDBBasedTest {
     }
 
     @Test
-    public void crawleableUriToRDBHashMap() throws Exception {
+    public void crawleableUriToRDBHashMap() {
         MapObject rHashMap = rdbQueue.crawleableUriToRDBHashMap(uris.get(0));
         assertTrue(rHashMap.containsKey("uris"));
         assertTrue(rHashMap.containsKey("ipAddress"));

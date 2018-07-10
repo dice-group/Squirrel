@@ -1,13 +1,11 @@
 package org.aksw.simba.squirrel.seed.generator.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class LodstatsSeedGeneratorImpl extends AbstractSeedGenerator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSeedGenerator.class);
@@ -1338,7 +1336,7 @@ public class LodstatsSeedGeneratorImpl extends AbstractSeedGenerator {
                 "https://data.wa.gov/api/views/htr6-gzbh/rows.rdf?accessType=DOWNLOAD",
                 "http://biomodels.bio2rdf.org/sparql",
                 "https://www.dati.lombardia.it/api/views/mtrf-sqvd/rows.rdf?accessType=DOWNLOAD",
-                "https://data.mo.gov/api/views/uris-7eeg/rows.rdf?accessType=DOWNLOAD",
+            "https://data.mo.gov/api/views/uris-7eeg/rows.rdf?accessType=DOWNLOAD",
                 "https://data.lacity.org/api/views/ecai-dcsz/rows.rdf?accessType=DOWNLOAD",
                 "https://data.mo.gov/api/views/n7d6-s7dn/rows.rdf?accessType=DOWNLOAD",
                 "http://elpo.stat.gov.rs/lod2/RS-DATA/Science_technology_innovations/Representation_of_type_of_innovation_in_enterprises_innovators_by_territory/data_2012_03_27.rdf",

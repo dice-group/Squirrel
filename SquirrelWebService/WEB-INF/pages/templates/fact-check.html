@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Fact-Check</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+</head>
+<body bgcolor="#d3d3d3">
+<table width="100%" cellpadding="8px">
+  <tr>
+    <td class="nopadding" colspan="2">
+      <div class="topnav">
+        <a href="/pages/index.html">Home</a> |
+        <a href="/pages/graph.html">Crawled Graph</a> |
+        <a class="active" href="/pages/templates/fact-check.html">Fact Check</a> |
+        <a href="/pages/templates/crawler.html">Crawler</a> |
+        <a href="/pages/templates/squirrel.html">Squirrel</a> |
+        <a href="/pages/templates/about.html">About Us</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div class="jumbotron">
+  <div class="big-image fact-check-img"></div>
+</div>
+
+<div class="container">
+  <article>
+    <div class="row">
+      <div class="medium-8 columns">
+        <div class="panel article cutoffcorner highlightbottomborder">
+          <div id="c126360">
+            <h1>24/7 Fact Checking in the linked Web of Data</h1>
+
+            <div class="article_text">
+              <h3>Description</h3>
+
+              <p>This PG is composed of 3 parts which will be meshed together depending on the composition of the
+                PG.</p>
+
+              <ol>
+                <li style="text-align: justify">
+                  First, the PG will implement a crawler.
+                  In particular, focused crawlers are of
+                  central importance to gather domain-specific
+                  information from the Web to feed domain-specific
+                  applications including domain-specific search
+                  engines, digital assistant and education platforms.
+                  With the emergence of the Semantic Web as a
+                  supplementary layer of the Web comes the need
+                  to develop hybrid focused crawlers, which can
+                  gather domain-specific information from both
+                  the Document Web and the Web of Data as well
+                  as synchronize this information so as to return
+                  concise high-recall &nbsp;domain-specific corpora.
+                  In this task, the PG will devise algorithm for the
+                  classification of website, the classification of
+                  triples and the integration of text and Semantics.
+                  The crawler will be scalable and run efficiently
+                  in parallel. The data gathered will be cleaned
+                  and formatted so as to render further processing
+                  easier. The storage of provenance information is
+                  regarded as a must so as to be able to backtrack
+                  and update the corpus. See further
+                  <a href="http://github.com/aksw/squirrel">http://github.com/aksw/squirrel</a><br><br>
+                </li>
+
+                <li style="text-align: justify">
+                  The next phase is focused on Link Discovery.
+                  Link Discovery is one of the pillars of the Semantic Web.
+                  The core idea is to connect distributed knowledge graphs so as
+                  to create a Web of Knowledge that can be used to address complex
+                  information needs. In this PG, iterative approaches to data
+                  integration and link discovery are to be developed.
+                  These approaches must scale to the billions of entities
+                  described on the Web of Data. An important requirement for
+                  this task comes from the semantics of the links,
+                  which can be used to validate, invalidate and propagate linking results.
+                  Distributed algorithms will hence need to be developed to achieve
+                  the goal of continuously updating the links across knowledge bases.
+                  The core of the work will be carried out by extending the currently
+                  fastest link discovery framework available, LIMES
+                  (<a href="http://limes.sf.net">http://limes.sf.net</a>).<br><br>
+                </li>
+
+                <li style="text-align: justify">
+                  Third, the goal of a fact checking algorithm is to validate or invalidate
+                  statements by finding confirming sources for it on the Web.
+                  Typical fact checking algorithms take statements such as
+                  "Jamaica Inn was directed by Alfred Hitchcock" as input.
+                  They return a value between -1 (definitely false) and &nbsp;1
+                  (definitely true) by gathering information from the Web of Documents.
+                  In this PG, we will go beyond the state of the art and rely both on the
+                  Document Web and the Linked Data Web to gather evidence (including their provenance)
+                  for facts being true or false.
+                  The evidence will be combined using scalable machine learning algorithms
+                  to provide the user with time-efficient fact checking possibilities.
+                  We will focus on providing a justification for the results returned by
+                  our approach and develop interfaces (REST, natural-language, etc.) to the core algorithm.
+                </li>
+              </ol>
+
+              <p style="text-align: justify">
+                The required skills include good knowledge of the Java programming
+                language and the willingness to delve into exciting research.
+                The development will be carried out using Git in a Scrum-like setting.
+                The developers of LIMES will support the team and provide them with &nbsp;the
+                opportunity to impact the whole of the Semantic Web community.
+                Furthermore, we will offer a strong supervision based on the development
+                work already invested into the DeFacto framework
+                (<a href="http://aksw.org/Projects/DeFacto">http://aksw.org/Projects/DeFacto</a>).<br>
+              </p>
+
+              <div class="table-container">
+                <table summary="m" class="contenttable">
+                  <tbody>
+                  <tr>
+                    <td>Contact</td>
+                    <td>Prof. Dr. Axel Ngonga, Dr. Mohamed Sherif, Dr. Ricardo Usbeck, Michael Röder</td>
+                  </tr>
+
+                  <tr>
+                    <td>Group</td>
+                    <td>Data Science</td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1">More information</td>
+                    <td rowspan="1"><a
+                      href="http://cs.uni-paderborn.de/ds/teaching/thesis-and-projects/project-groups/">Website</a></td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1">Open for Computer Engineering</td>
+                    <td rowspan="1">no</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>
+
+</body>
+</html>

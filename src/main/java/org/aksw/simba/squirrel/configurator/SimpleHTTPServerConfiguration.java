@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel.configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
 import java.util.Map;
 
 public class SimpleHTTPServerConfiguration extends Configuration {
@@ -62,12 +61,7 @@ public class SimpleHTTPServerConfiguration extends Configuration {
     }
 
     private static boolean getEnvDerefKey() {
-        try {
-            return getEnvBoolean(USE_DEREF_KEY, LOGGER);
-        } catch(ParseException e) {
-            LOGGER.warn("Setting deref to true by default. ", e);
-            return true;
-        }
+        return getEnvBoolean(USE_DEREF_KEY, LOGGER);
     }
 
     public String getModelFile() {

@@ -1,19 +1,20 @@
 package org.aksw.simba.squirrel.collect;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class SimpleUriCollector implements UriCollector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUriCollector.class);
+    private long total_uris = 0;
 
     protected Map<String, Map<String, byte[]>> urisOfUris = new HashMap<String, Map<String, byte[]>>();
     protected Serializer serializer;
@@ -47,9 +48,14 @@ public class SimpleUriCollector implements UriCollector {
         Map<String, byte[]> uris = urisOfUris.get(uriString);
         try {
             uris.put(newUri.getUri().toString(), serializer.serialize(newUri));
+            total_uris++;
         } catch (IOException e) {
             LOGGER.error("Error while trying to collect URI \"" + newUri + "\". It will be ignored.", e);
         }
+    }
+
+    public long getSize() {
+        return total_uris;
     }
 
     @Override

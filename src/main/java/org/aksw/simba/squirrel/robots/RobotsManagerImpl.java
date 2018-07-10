@@ -1,17 +1,16 @@
 package org.aksw.simba.squirrel.robots;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import crawlercommons.fetcher.http.BaseHttpFetcher;
 import crawlercommons.robots.BaseRobotRules;
 import crawlercommons.robots.BaseRobotsParser;
 import crawlercommons.robots.RobotUtils;
 import crawlercommons.robots.SimpleRobotRulesParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 public class RobotsManagerImpl implements RobotsManager {
 
@@ -54,7 +53,7 @@ public class RobotsManagerImpl implements RobotsManager {
         BaseRobotRules rules = getRules(uri);
         return Math.max(rules.getCrawlDelay(), defaultMinWaitingTime);
     }
-    
+
     public void setDefaultMinWaitingTime(long defaultMinWaitingTime) {
         this.defaultMinWaitingTime = defaultMinWaitingTime;
     }

@@ -1,23 +1,5 @@
 package org.aksw.simba.squirrel.collect;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.BatchUpdateException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -27,10 +9,19 @@ import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.*;
+import java.util.regex.Pattern;
+
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
  * SQL database.
- * 
+ *
  * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
@@ -42,8 +33,8 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
-    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) FROM ";
-    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(255), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
+    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ?";
+    protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(1024), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ";
     protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
     protected static final String INSERT_URI_QUERY_PART_2 = "(uri,serial,data) VALUES(?,?,?)";
@@ -53,6 +44,9 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int MAX_ALPHANUM_PART_OF_TABLE_NAME = 30;
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
+    private long total_uris = 0;
+
+
 
     public static SqlBasedUriCollector create(Serializer serializer) {
         return create(serializer, "foundUris");
@@ -83,7 +77,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                 if (s != null) {
                     s.close();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
         }
         return collector;
@@ -94,7 +88,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     protected int bufferSize = DEFAULT_BUFFER_SIZE;
     protected Map<String, UriTableStatus> knownUris = new HashMap<>();
 
-    public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) {
+    public SqlBasedUriCollector(DataSource dataSource, Serializer serializer) throws SQLException {
+        this.dbConnection = dataSource.getConnection();
+        this.serializer = serializer;
+    }
+
+    public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) throws SQLException {
         this.dbConnection = dbConnection;
         this.serializer = serializer;
     }
@@ -130,7 +129,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                            e.getMessage());
+                        e.getMessage());
                 }
             }
         } else {
@@ -164,6 +163,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             synchronized (table) {
                 try {
                     table.addUri(newUri.getUri().toString(), serializer.serialize(newUri));
+                    total_uris++;
                 } catch (IOException e) {
                     LOGGER.error("Couldn't serialize URI \"" + newUri.getUri() + "\". It will be ignored.", e);
                 } catch (Exception e) {
@@ -193,20 +193,54 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
         }
     }
 
+    public long getSize() {
+        return total_uris;
+    }
+
+    public int getSize(CrawleableUri uri) {
+        int totalUris = 0;
+        String uriString = uri.getUri().toString();
+        if (knownUris.containsKey(uriString)) {
+            UriTableStatus table = knownUris.get(uriString);
+            synchronized (table) {
+                try {
+                    String tableName = table.getTableName();
+                    // Make sure everything has been committed
+                    table.commitPendingChanges();
+                    PreparedStatement ps = dbConnection
+                        .prepareStatement(COUNT_URIS_QUERY.replaceFirst("\\?", tableName));
+
+//		    	ps.setString(1, uri.getUri().toString());
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        totalUris = rs.getInt(1);
+                    }
+
+                    ps.close();
+                    rs.close();
+                } catch (Exception e) {
+                    LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
+                }
+            }
+        }
+
+        return totalUris;
+    }
+
     @Override
-    public void close() throws IOException {
+    public void close() {
         // It might be necessary to go through the list of known URIs and close all of
         // the remaining URIs
         try {
             dbConnection.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
     }
 
     /**
      * Retrieves the URIs table name from its properties or generates a new table
      * name and adds it to the URI (using the {@value #TABLE_NAME_KEY} property).
-     * 
+     *
      * @param uri
      *            the URI for which a table name is needed.
      * @return the table name of the URI
@@ -227,7 +261,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
      * {@link #MAX_ALPHANUM_PART_OF_TABLE_NAME}={@value #MAX_ALPHANUM_PART_OF_TABLE_NAME}
      * the exceeding part is cut off. After that the hash value of the original URI
      * is appended.
-     * 
+     *
      * @param uri
      *            the URI for which a table name has to be generated
      * @return the table name of the URI
@@ -305,10 +339,6 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
         private void execute_unsecured() {
             try {
-            } catch (Exception e) {
-                LOGGER.error("Error while creating insert statement for URI. It will be ignored.", e);
-            }
-            try {
                 for (String uri : buffer.keySet()) {
                     insertStmt.setString(1, uri);
                     insertStmt.setInt(2, uri.hashCode());
@@ -316,11 +346,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     try {
                         insertStmt.execute();
                     } catch (Exception e) {
+                        LOGGER.debug("Error while inserting URI (java.sql.SQLIntegrityConstraintViolationException is ok)", e);
                     }
                 }
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
-                // LOGGER.error("URI already exists in the table. It will be ignored.", e);
+                LOGGER.error("URI already exists in the table. It will be ignored.", e);
             } catch (Exception e) {
                 LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }
