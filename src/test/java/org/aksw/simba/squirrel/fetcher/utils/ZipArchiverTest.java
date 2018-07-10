@@ -13,12 +13,12 @@ import com.mchange.util.AssertException;
 public class ZipArchiverTest {
 
     @Test
-    public void testZipExtract() throws Exception{
+    public void testZipExtract(){
         String src = "C:\\Users\\kpten\\IdeaProjects\\Integration_Testing\\Squirrel\\src\\test\\resources\\sample_test.zip";
         String dest = "C:\\Users\\kpten\\IdeaProjects\\Integration_Testing\\Squirrel\\src\\test\\resources\\extracted_files" ;
         String password = null;
-        ZipArchiver archiver = new ZipArchiver();
         File[] data = ZipArchiver.unzip(src, dest, password);
         assertNotNull(data);
+
     }
 }

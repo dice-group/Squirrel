@@ -35,7 +35,6 @@ public class SqlBasedIteratorTest {
     }
 
 
-
     @Test
     public void test() throws SQLException {
         PreparedStatement stmt;
@@ -51,7 +50,7 @@ public class SqlBasedIteratorTest {
             boolean has_Next =  obj.hasNext();
             Assert.assertFalse(has_Next);
         } catch (SQLException e) {
-            LOGGER.error("Exception while selecting the values from table");
+            LOGGER.error("Exception while iterating through the values from table");
         }
 
     }
