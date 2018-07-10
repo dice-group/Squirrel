@@ -48,10 +48,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
-    private static final String SEED_FILE_KEY = "SEED_FILE";
     public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     public static final String RDB_PORT_KEY = "RDB_PORT";
-    private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
     protected IpAddressBasedQueue queue;

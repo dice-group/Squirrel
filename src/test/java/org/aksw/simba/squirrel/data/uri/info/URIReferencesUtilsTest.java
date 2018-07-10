@@ -12,10 +12,15 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * JUnit-Test regarding the {@link URIReferencesUtils}. Is used for e.g. from {@link RDBURIReferences}.
+ *
+ * @author Philipp Heinisch
+ */
 public class URIReferencesUtilsTest {
 
     //DUMMY DATA
-    CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
+    private final CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
     private final CrawleableUri mainURI1 = factory.create("https://www.philippheinisch.de/");
     private final CrawleableUri mainURI2 = factory.create("https://www.philippheinisch.de/aboutMe.html");
     private final CrawleableUri mainURI2_extend = factory.create("https://www.philippheinisch.de/aboutMe.html#me?p=1");
@@ -28,7 +33,7 @@ public class URIReferencesUtilsTest {
         assertTrue("Merging two null's should return an empty list", utils.mergeLists(null, null).isEmpty());
         List<String> foundURI1String = foundURI1.stream().map(e -> e.getUri().toString()).collect(Collectors.toList());
         List<String> foundURI2String = foundURI2.stream().map(e -> e.getUri().toString()).collect(Collectors.toList());
-        assertEquals("Merging nothing to something should return the same", foundURI1String, utils.mergeLists(foundURI1String, Collections.EMPTY_LIST));
+        assertEquals("Merging nothing to something should return the same", foundURI1String, utils.mergeLists(foundURI1String, Collections.emptyList()));
         List<String> combinedList = new ArrayList<>(foundURI1String);
         combinedList.addAll(foundURI2String);
         assertTrue("Simple merging of 2 lists", utils.mergeLists(foundURI1String, foundURI2).containsAll(combinedList));

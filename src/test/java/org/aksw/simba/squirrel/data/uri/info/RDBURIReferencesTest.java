@@ -16,24 +16,25 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Simulates a RethinkDB ({@link RethinkDBBasedTest}), that is filled with some crawled URIs with found URIs.
+ * See RDBURIReferences
+ *
+ * @author Philipp Heinisch
+ */
 public class RDBURIReferencesTest extends RethinkDBBasedTest {
 
     private RDBURIReferences rdburiReferences;
 
     //DUMMY DATA
-    CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
+    private final CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
     private final CrawleableUri mainURI1 = factory.create("https://www.philippheinisch.de/");
     private final CrawleableUri mainURI2 = factory.create("https://www.philippheinisch.de/aboutMe.html");
     private final List<CrawleableUri> foundURI1 = Collections.singletonList(factory.create("https://www.philippheinisch.de/projects.html"));
     private final List<CrawleableUri> foundURI2 = Collections.singletonList(factory.create("https://www.philippheinisch.de/multi/index.php"));
 
-    /**
-     * For functionality regarding the starting of rethinkdb container
-     */
-    private RethinkDBMockTest rethinkDBMockTest;
-
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         rdburiReferences = new RDBURIReferences(RethinkDBMockTest.DB_HOST_NAME, RethinkDBMockTest.DB_PORT, URIShortcutMode.TOTAL_URI);
 
         //run it
@@ -50,6 +51,7 @@ public class RDBURIReferencesTest extends RethinkDBBasedTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     public void add() {
         Cursor cursor = r.db(RDBURIReferences.DATABASE_NAME).table(RDBURIReferences.TABLE_NAME).run(connection);
 
