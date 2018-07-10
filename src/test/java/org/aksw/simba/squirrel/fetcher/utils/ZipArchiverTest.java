@@ -14,10 +14,10 @@ public class ZipArchiverTest {
 
     @Test
     public void testZipExtract(){
-        String source = "C:\\Users\\kpten\\IdeaProjects\\Integration_Testing\\Squirrel\\src\\test\\resources\\sample_test.zip";
+        String src = "C:\\Users\\kpten\\IdeaProjects\\Integration_Testing\\Squirrel\\src\\test\\resources\\sample_test.zip";
         String dest = "C:\\Users\\kpten\\IdeaProjects\\Integration_Testing\\Squirrel\\src\\test\\resources\\extracted_files" ;
         String password = null;
-        File[] data = ZipArchiver.unzip(source, dest,password);
+        File[] data = ZipArchiver.unzip(src, dest,password);
         assertNotNull(data);
 
     }

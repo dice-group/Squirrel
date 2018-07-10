@@ -19,7 +19,7 @@ public class RethinkDBBasedTest {
     @BeforeClass
     public static void setUpRDB() throws Exception {
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-            + "-p " + DB_PORT + ":28015 -p 5887:8080 -d rethinkdb:2.3.5";
+        + "-p " + DB_PORT + ":28015 -p " + DB_PORT + ":8080 -d rethinkdb:2.3.5";
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s = null;
