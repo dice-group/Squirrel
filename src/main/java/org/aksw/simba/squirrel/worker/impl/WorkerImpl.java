@@ -1,6 +1,5 @@
 package org.aksw.simba.squirrel.worker.impl;
 
-import com.sun.jndi.toolkit.url.Uri;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
@@ -9,7 +8,6 @@ import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.components.CkanComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
@@ -30,14 +28,12 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -51,6 +47,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     private static final long DEFAULT_WAITING_TIME = 10000;
     private static final int MAX_URIS_PER_MESSAGE = 20;
+    public static final boolean ENABLE_CKAN_CRAWLER_FORWARDING = false;
 
     protected Frontier frontier;
     protected Sink sink;
@@ -182,7 +179,6 @@ public class WorkerImpl implements Worker, Closeable {
     public void crawl(List<CrawleableUri> uris) {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
-        int x = 0;      //change value of x = 1 for enabling CKAN CRAWLER
 
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
@@ -194,20 +190,20 @@ public class WorkerImpl implements Worker, Closeable {
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 } else {
                     try {
-                        //CKAN Crawler is disabled
-                        if (x == 1) {
+                        //CKAN Crawler is disabled by default
+                        if (ENABLE_CKAN_CRAWLER_FORWARDING) {
                             URL toURL = uri.getUri().toURL();
                             String s = toURL.toString();
                             LOGGER.info("the uri is ", s);
-                            List<String> urilist = ckanwhitelist();
-                            if (urilist.contains(s)) {
+                            List<String> uriList = ckanwhitelist();
+                            if (uriList.contains(s)) {
                                 //CKAN Component is called to communicate URL to CKANCrawler
                                 CkanComponent.send(s);
                                 String r = CkanComponent.recieve();
-                                CrawleableUri ckanuri = ckandata(r);
+                                CrawleableUri ckanUri = ckandata(r);
                                 //TODO:CHANGE DATATYPE AND HANDLE DATA TO SEND TO FRONTIER
                             }
-                        }else{
+                        } else {
                             uriMap.put(uri, performCrawling(uri));
                             crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
                         }

@@ -1,4 +1,3 @@
-https://demo.ckan.org
 europeandataportal.eu
 mcloud.de
 
