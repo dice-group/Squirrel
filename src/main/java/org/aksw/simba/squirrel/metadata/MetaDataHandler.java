@@ -16,7 +16,6 @@ import java.util.List;
 
 public class MetaDataHandler {
 
-    private static final String GRAPH_NAME_FOR_METADATA = "MetaData";
     private Sink sink;
     private CrawleableUri defaultGraphUri;
 
@@ -45,16 +44,14 @@ public class MetaDataHandler {
         Node nodeResultGraph = NodeFactory.createURI(crawlingActivity.getGraphId());
         lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.wasGeneratedBy.asNode(), nodeResultGraph));
         lstTriples.add(new Triple(nodeResultGraph, MetaDataVocabulary.uriName.asNode(), NodeFactory.createURI(crawlingActivity.getCrawleableUri().getUri().toString())));
-        //TODO lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:hostedOn"), NodeFactory.createLiteral(datasetPrefix)));
-        //TODO for Meher: Merge new change from other branch manually for hadPlan
-        //lstTriples.add(new Triple(nodeCrawlingActivity,NodeFactory.createURI("prov:hadPlan"),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.hostedOn.asNode(), NodeFactory.createLiteral(crawlingActivity.getHostedOn())));
+        //TODO construct triples for hadPlan
 
         sink.openSinkForUri(defaultGraphUri);
         for (Triple triple : lstTriples) {
             sink.addTriple(defaultGraphUri, triple);
         }
         sink.closeSinkForUri(defaultGraphUri);
-        LOGGER.info("MetaData successfully added for crawling activity: " + crawlingActivity.getId());
     }
 
     /*

@@ -134,7 +134,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
         try {
             proc.execute();
         } catch (Exception e) {
-            LOGGER.error("Was not able to send the triples to the database (SPARQL). Information will get lost :( [" + request + "] on " + request.getBaseURI() + " with " + tripleList.size() + " triples]", e);
+            LOGGER.error("Exception: Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( [" + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]");
         }
     }
 
@@ -151,5 +151,9 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
      */
     public String getGraphId(CrawleableUri uri) {
         return (String) uri.getData(CrawleableUri.UUID_KEY);
+    }
+
+    public String getUpdateDatasetURI() {
+        return updateDatasetURI;
     }
 }
