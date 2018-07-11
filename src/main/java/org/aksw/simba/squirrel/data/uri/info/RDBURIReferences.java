@@ -200,8 +200,9 @@ class URIReferencesIterator implements Iterator<AbstractMap.SimpleEntry<String, 
 
     /**
      * Creates an iterator
-     * @param connector the connector to the RethinkDB (because the iterator will crawl over the data table {@link RDBURIReferences}.TABLE_NAME
-     * @param offset the number of data table lines, that should be skipped (crawled URIs). If the offset is 0 or below, no lines wil be skipped
+     *
+     * @param connector       the connector to the RethinkDB (because the iterator will crawl over the data table {@link RDBURIReferences}.TABLE_NAME
+     * @param offset          the number of data table lines, that should be skipped (crawled URIs). If the offset is 0 or below, no lines wil be skipped
      * @param onlyCrawledUris for each crawled URI there is a list with URIs, that were found by crawling that URI. If that parameter is {@code true}, only the already crawled URIs in these lists will be returned
      */
     URIReferencesIterator(RDBConnector connector, long offset, boolean onlyCrawledUris) {

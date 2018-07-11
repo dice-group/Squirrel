@@ -149,7 +149,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     /* Reads all CKAN URLs for determining CKAN URLs from URIs */
-    public List<String> ckanwhitelist(){
+    public List<String> ckanwhitelist() {
 
         List<String> ckanlist = Arrays.asList("https://demo.ckan.org", "http://open.canada.ca/data/en/", "http://datahub.io/");
         //This block can be used to feed list of CKANURLs for comparision
@@ -175,7 +175,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     /* converting data from CkanCrawl to URI format <key,value> */
-    public static CrawleableUri ckandata(String r) throws Exception{
+    public static CrawleableUri ckandata(String r) throws Exception {
         //String a = "https://demo.ckan.org";
         CrawleableUri uri = new CrawleableUri(new URI(r));
         //TODO: RECEIVED DATA FROM CKAN CRAWL SHOULD BE CONVERTED INTO URIs AND FED TO FRONTIER
