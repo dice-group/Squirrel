@@ -1,6 +1,6 @@
 package org.aksw.simba.squirrel.metadata;
 
-import com.sun.xml.internal.bind.v2.TODO;
+
 import org.aksw.jena_sparql_api.mapper.annotation.RdfType;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
@@ -50,28 +50,23 @@ public class MetaDataHandler {
         Model model  = ModelFactory.createDefaultModel();
         CrawleableUri uri = crawlingActivity.getCrawleableUri();
 
-        Node nodeResultGraph = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("ResultGraph_"+ crawlingActivity.getGraphId(uri))));
-        Node nodeCrawlingActivity = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl(crawlingActivity.getId())));
-        Node Association = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Worker-checking-Crawl-guide")));
-        Node crawling = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Crawl-guide")));
-        Node Sink = NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Sink")));
+        Node nodeResultGraph = NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl("Result_"+ crawlingActivity.getGraphId(uri))));
+        Node nodeCrawlingActivity = NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl(crawlingActivity.getId())));
+        Node Association = NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl("Worker-checking-Crawl-guide")));
+        Node crawling = NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl("Crawl-guide")));
 
         lstTriples.add(new Triple(nodeCrawlingActivity,RDF.type.asNode(),Prov.Activity.asNode()));
-        lstTriples.add(new Triple(nodeCrawlingActivity,Prov.used.asNode(),Sink));
-        lstTriples.add(new Triple(Sink,RDF.type.asNode(),Prov.Entity.asNode()));
-        lstTriples.add(new Triple(Sink,RDFS.comment.asNode(),NodeFactory.createLiteral("Sink used to store metadata and content of URI")));
-        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.startedAtTime.asNode(), model.createTypedLiteral(crawlingActivity.getDateStarted(),XSDDatatype.XSDdateTime).asNode()));
-        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.endedAtTime.asNode(), model.createTypedLiteral(crawlingActivity.getDateEnded(),XSDDatatype.XSDdateTime).asNode()));
+        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.startedAtTime.asNode(), model.createTypedLiteral(crawlingActivity.getLocalDateTime(),XSDDatatype.XSDdateTime).asNode()));
+        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.endedAtTime.asNode(), model.createTypedLiteral(crawlingActivity.getLocalDateTime(),XSDDatatype.XSDdateTime).asNode()));
         lstTriples.add(new Triple(nodeCrawlingActivity, Sq.status.asNode(), NodeFactory.createLiteral(crawlingActivity.getState().toString())));
         lstTriples.add(new Triple(nodeCrawlingActivity, Sq.numberOfTriples.asNode(), model.createTypedLiteral(crawlingActivity.getNumTriples(),XSDDatatype.XSDint).asNode()));
-        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.wasAssociatedWith.asNode(), NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Worker_"+ String.valueOf(crawlingActivity.getWorker().getId()))))));
-        lstTriples.add(new Triple(nodeCrawlingActivity, RDF.type.asNode(),Prov.Entity.asNode()));
+        lstTriples.add(new Triple(nodeCrawlingActivity, Prov.wasAssociatedWith.asNode(), NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl("Worker_"+ String.valueOf(crawlingActivity.getWorker().getId()))))));
         lstTriples.add(new Triple(nodeResultGraph, Prov.wasGeneratedBy.asNode(),nodeCrawlingActivity ));
         lstTriples.add(new Triple(nodeResultGraph, RDFS.comment.asNode(),NodeFactory.createLiteral("GraphID where the content is stored")));
         lstTriples.add(new Triple(nodeCrawlingActivity, Sq.hostedOn.asNode(),model.createResource(crawlingActivity.getHost()).asNode()));
         lstTriples.add(new Triple(nodeCrawlingActivity,Prov.qualifiedAssociation.asNode(),Association));
         lstTriples.add(new Triple(Association,RDF.type.asNode(),NodeFactory.createURI(Prov.Association.toString())));
-        lstTriples.add(new Triple(Association,Prov.agent.asNode(),NodeFactory.createURI(String.valueOf(crawlingActivity.geturl("Worker_"+ String.valueOf(crawlingActivity.getWorker().getId()))))));
+        lstTriples.add(new Triple(Association,Prov.agent.asNode(),NodeFactory.createURI(String.valueOf(crawlingActivity.getUrl("Worker_"+ String.valueOf(crawlingActivity.getWorker().getId()))))));
         lstTriples.add(new Triple(Association,Prov.hadPlan.asNode(),crawling));
         lstTriples.add(new Triple(crawling,RDF.type.asNode(),Prov.Plan.asNode()));
         lstTriples.add(new Triple(crawling,RDF.type.asNode(),Prov.Entity.asNode()));

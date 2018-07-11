@@ -19,12 +19,16 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 /**
  * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
@@ -43,11 +47,11 @@ public class CrawlingActivity {
     /**
      * When the activity has started.
      */
-    private Date dateStarted;
+    private LocalDateTime dateStarted;
     /**
      * When the activity has ended.
      */
-    private Date dateEnded;
+    private LocalDateTime dateEnded;
 
     /**
      * The uri for the crawling activity.
@@ -81,7 +85,7 @@ public class CrawlingActivity {
     /**
      * date format for start_date and end_date
      */
-    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
      * Constructor
@@ -92,7 +96,7 @@ public class CrawlingActivity {
      */
     public CrawlingActivity(CrawleableUri uri, Worker worker, TripleBasedSink sink) {
         this.worker = worker;
-        this.dateStarted = new Date();
+        this.dateStarted = getLocalDateTime();
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         if (sink instanceof SparqlBasedSink) {
@@ -108,7 +112,7 @@ public class CrawlingActivity {
 
     public void finishActivity() {
         countTriples();
-        dateEnded = new Date();
+        dateEnded = getLocalDateTime();
 
     }
 
@@ -149,14 +153,14 @@ public class CrawlingActivity {
 
     private Map<String,Object> addStep()
     {
-        //int count = 1;
+        int count = 1;
         if (worker instanceof WorkerImpl) {
             List<Field> list = listAllFields(worker);
 
             for (Field field : list)
             {
-                //String l = "step" + count++
-               uri.addData("steps",field.getClass().getSimpleName());
+                String l = "step" + count++;
+                uri.addData(l,field.getClass().getSimpleName());
             }
 
 
@@ -168,8 +172,10 @@ public class CrawlingActivity {
     {
         List<Field> fields = new ArrayList<>();
         Class tmpclass = k.getClass();
-        fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
-
+        while(tmpclass!=null)
+        {
+            fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
+        }
         return fields;
 
     }
@@ -186,35 +192,13 @@ public class CrawlingActivity {
     }
 
 
+    public LocalDateTime getLocalDateTime()
+    {
 
-    public Date getDateStarted() {
-
-        String dstarted = ft.format(dateStarted);
-        try
-        {
-            Date date = ft.parse(dstarted);
-            return date;
-        }
-        catch (Exception e)
-        {
-            return dateStarted;
-
-        }
+        LocalDateTime formatter = LocalDateTime.now();
+        return formatter;
     }
 
-    public Date getDateEnded() {
-
-        String dended = ft.format(dateEnded);
-        try {
-            Date date = ft.parse(dended);
-            return date;
-        }
-        catch (Exception e)
-        {
-
-            return dateEnded;
-        }
-        }
 
 
     public CrawleableUri getCrawleableUri()
@@ -242,31 +226,35 @@ public class CrawlingActivity {
         return state;
     }
 
-    public URI geturl(String o) {
-        try {
-            URL Domain = new URL("http://www.example.org#");
-             URL url = new URL(Domain + o );
+    public URI getUrl (String o)
+    {
+            try {
+                URL Domain = new URL("http://www.example.org/");
+                URL url = new URL(Domain + o);
 
-             return URI.create(url.toString());
+                return getUri(url);
 
-        } catch (MalformedURLException e)
-        {
-            return null;
+            } catch (MalformedURLException e) {
+                 LOGGER.info("MalformedURLException" + e);
+                e.printStackTrace();
+                 return null;
 
-        }
+            }
     }
 
-   @Deprecated
-   public URI getUri()
+    public URI getUri(URL u)
     {
        try
        {
-           return URI.create(uri.getUri().toString());
+           return URI.create(u.toString());
        }
-       catch (IllegalArgumentException e)
+       catch (IllegalArgumentException x)
        {
-           return null;
+           LOGGER.error("IllegalArgumentException"+x);
+            x.printStackTrace();
+            return null;
        }
     }
 
 }
+
