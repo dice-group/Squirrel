@@ -1,8 +1,17 @@
-package org.aksw.simba.squirrel.components;
+package org.aksw.simba.squirrel.ckancrawler;
+
 import com.rabbitmq.client.*;
 import java.io.IOException;
 
-public class CkanComponent {
+
+/**
+ * The starting point for CKAN Crawler
+ *
+ * @author Varun Maitreya Eranki
+ *
+ */
+
+public class CkanCrawl {
 
     //Sends a message to python end via rabbitMQueue CKAN
     public static String send(String s) throws Exception{
@@ -44,12 +53,13 @@ public class CkanComponent {
         try {
             //start a consumer for CKAN2 queue
             channel.basicConsume("ckan2", true, consumer);
-            //TODO:MESSAGE FROM HANDLE DELIVERY SHOULD BE RECEIVED AND RETURNED TO WORKERIMPL
+            //TODO:MESSAGE FROM handleDelivery SHOULD BE RECEIVED AND RETURNED TO WORKERIMPL
         }
         catch (IOException e) {
         }
         return bytes;
     }
+
 
     //THIS CODE BLOCK CAN BE USED TO CHECK WORKING MECHANISM
     /*
@@ -66,7 +76,7 @@ public class CkanComponent {
     */
 
     //THIS BLOCK REPRESENTS A CONTINUOUS MESSAGE MECHANISM DESIGNED FOR COMMUNICATING WITH PYTHON CKAN END.
-    //THIS IS NO LONGER USED AND MUCH RELIABLE SERVICE DUE TO LARGE OVER HEAD OF MESSAGES.
+    //THIS IS NO LONGER USED AND NOT A RELIABLE SERVICE DUE TO LARGE OVER HEAD OF MESSAGES.
     /*
     public static void main(String[] argv) throws Exception {
 
@@ -108,5 +118,8 @@ public class CkanComponent {
     */
 
 }
+
+
+
 
 

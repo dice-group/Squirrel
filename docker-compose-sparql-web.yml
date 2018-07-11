@@ -77,7 +77,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      #- URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
@@ -99,7 +99,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      #- URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
@@ -121,7 +121,7 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
-      #- URI_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
