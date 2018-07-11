@@ -40,7 +40,7 @@ public class CrawlingActivity {
     /**
      * The graph where the uri is stored.
      */
-    private String graphId;
+    private String graphId = null;
 
     /**
      * The crawling state of the uri.
@@ -57,6 +57,8 @@ public class CrawlingActivity {
      */
     private int numTriples;
 
+    private String hostedOn = null;
+
     /**
      * The sink used for the activity.
      */
@@ -65,9 +67,9 @@ public class CrawlingActivity {
     /**
      * Constructor
      *
-     * @param uri the URI, which was crawled
+     * @param uri    the URI, which was crawled
      * @param worker the {@link Worker}, that crawled the URI
-     * @param sink the {@link Sink}, that was used to store the downloaded content from the URI
+     * @param sink   the {@link Sink}, that was used to store the downloaded content from the URI
      */
     public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
         this.worker = worker;
@@ -76,6 +78,7 @@ public class CrawlingActivity {
         this.state = CrawlingURIState.UNKNOWN;
         if (sink instanceof SparqlBasedSink) {
             graphId = ((SparqlBasedSink) sink).getGraphId(uri);
+            hostedOn = ((SparqlBasedSink) sink).getUpdateDatasetURI();
         }
         id = "activity:" + graphId;
         this.sink = sink;
@@ -145,5 +148,9 @@ public class CrawlingActivity {
 
     public String getGraphId() {
         return graphId;
+    }
+
+    public String getHostedOn() {
+        return hostedOn;
     }
 }

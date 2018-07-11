@@ -9,20 +9,28 @@ import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MetaDataHandler {
 
-    private static final String GRAPH_NAME_FOR_METADATA = "MetaData";
     private Sink sink;
+    private CrawleableUri defaultGraphUri;
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataHandler.class);
 
 
     public MetaDataHandler(String updateDatasetURI, String queryDatasetURI) {
         sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
+        try {
+            defaultGraphUri = new CrawleableUri(new URI(SparqlBasedSink.DEFAULT_GRAPH_STRING));
+            defaultGraphUri.addData(CrawleableUri.UUID_KEY, SparqlBasedSink.DEFAULT_GRAPH_STRING);
+        } catch (URISyntaxException e) {
+            LOGGER.error("Error while constructing uri " + SparqlBasedSink.DEFAULT_GRAPH_STRING);
+        }
     }
 
     public void addMetadata(final CrawlingActivity crawlingActivity) {
@@ -36,17 +44,14 @@ public class MetaDataHandler {
         Node nodeResultGraph = NodeFactory.createURI(crawlingActivity.getGraphId());
         lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.wasGeneratedBy.asNode(), nodeResultGraph));
         lstTriples.add(new Triple(nodeResultGraph, MetaDataVocabulary.uriName.asNode(), NodeFactory.createURI(crawlingActivity.getCrawleableUri().getUri().toString())));
-        //TODO lstTriples.add(new Triple(nodeCrawlingActivity, NodeFactory.createURI("sq:hostedOn"), NodeFactory.createLiteral(datasetPrefix)));
-        //TODO for Meher: Merge new change from other branch manually for hadPlan
-        //lstTriples.add(new Triple(nodeCrawlingActivity,NodeFactory.createURI("prov:hadPlan"),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
+        lstTriples.add(new Triple(nodeCrawlingActivity, MetaDataVocabulary.hostedOn.asNode(), NodeFactory.createLiteral(crawlingActivity.getHostedOn())));
+        //TODO construct triples for hadPlan
 
-        crawlingActivity.getCrawleableUri().addData(CrawleableUri.UUID_KEY, GRAPH_NAME_FOR_METADATA);
-        sink.openSinkForUri(crawlingActivity.getCrawleableUri());
+        sink.openSinkForUri(defaultGraphUri);
         for (Triple triple : lstTriples) {
-            sink.addTriple(crawlingActivity.getCrawleableUri(), triple);
+            sink.addTriple(defaultGraphUri, triple);
         }
-        sink.closeSinkForUri(crawlingActivity.getCrawleableUri());
-        LOGGER.info("MetaData successfully added for crawling activity: " + crawlingActivity.getId());
+        sink.closeSinkForUri(defaultGraphUri);
     }
 
     /*

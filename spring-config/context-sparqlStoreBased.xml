@@ -43,9 +43,9 @@
         <constructor-arg name="port"
                          value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
         <constructor-arg name="updateAppendix"
-                         value="ContentSet/update"/>
+                         value="contentset/update"/>
         <constructor-arg name="queryAppendix"
-                         value="ContentSet/query"/>
+                         value="contentset/query"/>
     </bean>
 
     <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector">

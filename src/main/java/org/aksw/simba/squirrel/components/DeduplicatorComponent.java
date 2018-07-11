@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.components;
 
 import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
@@ -17,7 +18,6 @@ import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlUtils;
 import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * This component is responsible for deduplication.
@@ -62,22 +63,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     public static final String DEDUPLICATION_ACTIVE_KEY = "DEDUPLICATION_ACTIVE";
 
     /**
-     * The maximal size for {@link #newUrisBufferSet}.
-     */
-    private static final int MAX_SIZE_NEW_URIS_BUFFER_LIST = 2;
-
-    /**
-     * The deduplicator will wait for some before getting the next uri from {@link #uriQueue}.
-     */
-    private static final int SLEEP_TIME = 500;
-
-    /**
-     * A set of uris for which hash values have already been computed. If the size of the set exceeds {@link #MAX_SIZE_NEW_URIS_BUFFER_LIST}
-     * the uris will be sent to the frontier and the set will be cleared.
-     */
-    private final Set<CrawleableUri> newUrisBufferSet = new HashSet<>(MAX_SIZE_NEW_URIS_BUFFER_LIST);
-
-    /**
      * A queue for uris which have to be processed (hash values have to computed for them).
      */
     private final List<CrawleableUri> uriQueue = new ArrayList<>();
@@ -96,6 +81,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private UriHashCustodian uriHashCustodian;
 
     private TripleHashFunction tripleHashFunction = new SimpleTripleHashFunction();
+
+    private final Semaphore terminationMutex = new Semaphore(0);
 
     @Override
     public void init() throws Exception {
@@ -120,6 +107,20 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             } else {
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_HOST_NAME_KEY);
             }
+            String sparqlHostName = null;
+            String sparqlHostPort = null;
+            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
+                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
+                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
+                    sparqlHostPort = env.get(WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+                } else {
+                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+                }
+            } else {
+                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+            }
+            String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
+            sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
 
             if ((rdbHostName != null) && (rdbPort > 0)) {
                 RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
@@ -128,7 +129,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
 
-            sink = new SparqlBasedSink(SparqlUtils.getDatasetUriForUpdate(), SparqlUtils.getDatasetUriForQuery());
 
             serializer = new GzipJavaUriSerializer();
 
@@ -139,52 +139,45 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             } catch (IOException e) {
                 LOGGER.error("Error while creating sender object.", e);
             }
+            LOGGER.info("Deduplicator initialized.");
         }
+    }
+
+    private void handleNewUris(List<CrawleableUri> uris) {
+        for (CrawleableUri nextUri : uris) {
+            List<Triple> triples = sink.getTriplesForGraph(nextUri);
+            HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
+            nextUri.putData(Constants.URI_HASH_KEY, value);
+        }
+
+        compareNewUrisWithOldUris(uris);
+        uriHashCustodian.addHashValuesForUris(uris);
+
     }
 
     @Override
     public void run() throws InterruptedException {
-        while (true) {
-            if (uriQueue.isEmpty()) {
-                Thread.sleep(SLEEP_TIME * 10);
-                continue;
-            }
-
-            CrawleableUri nextUri = uriQueue.get(0);
-            uriQueue.remove(0);
-            List<Triple> triples = sink.getTriplesForGraph(nextUri);
-            HashValue value = (new IntervalBasedMinHashFunction(1, tripleHashFunction).hash(triples));
-            nextUri.putData(Constants.URI_HASH_KEY, value);
-            newUrisBufferSet.add(nextUri);
-
-            if (newUrisBufferSet.size() > MAX_SIZE_NEW_URIS_BUFFER_LIST) {
-                compareNewUrisWithOldUris();
-                uriHashCustodian.addHashValuesForUris(new ArrayList<>(newUrisBufferSet));
-                newUrisBufferSet.clear();
-            }
-
-            Thread.sleep(SLEEP_TIME);
-        }
+        terminationMutex.acquire();
     }
 
     /**
-     * Compare the hash values of the uris in {@link #newUrisBufferSet} with the hash values of all uris contained
+     * Compare the hash values of the uris in  with the hash values of all uris contained
      * in {@link #uriHashCustodian}.
+     * @param uris
      */
-    private void compareNewUrisWithOldUris() {
+    private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
 
         if (uriHashCustodian instanceof RDBKnownUriFilter) {
             ((RDBKnownUriFilter) uriHashCustodian).openConnector();
         }
 
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
-        for (CrawleableUri uri : newUrisBufferSet) {
+        for (CrawleableUri uri : uris) {
             hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
         }
         Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
-
         outer:
-        for (CrawleableUri uriNew : newUrisBufferSet) {
+        for (CrawleableUri uriNew : uris) {
             for (CrawleableUri uriOld : oldUrisForComparison) {
                 if (!uriOld.equals(uriNew)) {
                     // get triples from pair1 and pair2 and compare them
@@ -192,7 +185,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                     List<Triple> listNew = sink.getTriplesForGraph(uriNew);
 
                     if (tripleComparator.triplesAreEqual(listOld, listNew)) {
-                        // TODO: delete duplicate
+                        // TODO: delete duplicate, this means Delete the triples from the new uris and
+                        // replace them by a link to the old uris which has the same content
                         continue outer;
                     }
 
@@ -224,7 +218,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         if (object != null) {
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
-                uriQueue.addAll(uriSet.uris);
+                handleNewUris(uriSet.uris);
             } else {
                 LOGGER.info("Received an unknown object. It will be ignored.");
             }

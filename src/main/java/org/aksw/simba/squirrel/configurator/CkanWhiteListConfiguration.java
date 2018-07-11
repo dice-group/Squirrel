@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
  * The CKAN URL list for CKAN Crawler
  *
  * @author Varun Maitreya Eranki
- *
  */
 
 public class CkanWhiteListConfiguration extends Configuration {

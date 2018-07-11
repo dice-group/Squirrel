@@ -44,15 +44,15 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     /*
     Some constants for the rethinkDB
      */
-    private static final String DATABASE_NAME = "squirrel";
-    private static final String TABLE_NAME = "knownurifilter";
-    private static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
-    private static final String COLUMN_URI = "uri";
-    private static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
-    private static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
-    private static final String COLUMN_IP = "ipAddress";
-    private static final String COLUMN_TYPE = "type";
-    private static final String COLUMN_HASH_VALUE = "hashValue";
+    public static final String DATABASE_NAME = "squirrel";
+    public static final String TABLE_NAME = "knownurifilter";
+    public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
+    public static final String COLUMN_URI = "uri";
+    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
+    public static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
+    public static final String COLUMN_IP = "ipAddress";
+    public static final String COLUMN_TYPE = "type";
+    public static final String COLUMN_HASH_VALUE = "hashValue";
 
     /**
      * Used as a default hash value for URIS, will be replaced by real hash value as soon as it has been computed.
@@ -227,7 +227,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
-            LOGGER.info("hi matze " + uri.getData(Constants.URI_HASH_KEY));
             r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
                 update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
         }

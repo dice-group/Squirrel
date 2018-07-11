@@ -1,8 +1,23 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import com.rethinkdb.RethinkDB;
+import com.rethinkdb.net.Cursor;
+import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.RethinkDBMockTest;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.model.RDBConnector;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.List;
 
 
 public class RDBKnownUriFilterTest {
@@ -11,21 +26,20 @@ public class RDBKnownUriFilterTest {
     private RDBKnownUriFilter filter;
 
     /**
-     * For functionality regarding the starting of rethinkdb container
-     * TODO references - MERGE :\
+     * For functionality regarding the starting of rethinkdb container.
      */
-    private RethinkDBMockTest rethinkDBMockTest;
+    private RethinkDBBasedTest rethinkDBMockTest;
 
-    /*
+
     @Before
-    public void setUp() throws IOException, InterruptedException {
+    public void setUp() throws Exception {
         r = RethinkDB.r;
         connector = new RDBConnector(RethinkDBMockTest.DB_HOST_NAME, RethinkDBMockTest.DB_PORT);
         filter = new RDBKnownUriFilter(connector, r, false);
 
         // to get rethinkdb container running
-        rethinkDBMockTest = new RethinkDBMockTest();
-        rethinkDBMockTest.setUp();
+        rethinkDBMockTest = new RethinkDBBasedTest();
+        rethinkDBMockTest.setUpRDB();
     }
 
     @Test
@@ -83,8 +97,8 @@ public class RDBKnownUriFilterTest {
     }
 
     @After
-    public void tearDown() throws IOException {
-        rethinkDBMockTest.tearDown();
+    public void tearDown() throws Exception {
+        rethinkDBMockTest.tearDownRDB();
     }
-    */
+
 }

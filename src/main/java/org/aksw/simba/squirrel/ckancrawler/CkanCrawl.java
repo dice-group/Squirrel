@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.ckancrawler;
 
 import com.rabbitmq.client.*;
+
 import java.io.IOException;
 
 
@@ -8,13 +9,12 @@ import java.io.IOException;
  * The starting point for CKAN Crawler
  *
  * @author Varun Maitreya Eranki
- *
  */
 
 public class CkanCrawl {
 
     //Sends a message to python end via rabbitMQueue CKAN
-    public static String send(String s) throws Exception{
+    public static String send(String s) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
@@ -31,7 +31,7 @@ public class CkanCrawl {
     }
 
     //Receives a message from python end via rabbitMQueue CKAN2
-    public static String recieve() throws Exception{
+    public static String recieve() throws Exception {
         String bytes = new String("empty");
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -54,8 +54,7 @@ public class CkanCrawl {
             //start a consumer for CKAN2 queue
             channel.basicConsume("ckan2", true, consumer);
             //TODO:MESSAGE FROM handleDelivery SHOULD BE RECEIVED AND RETURNED TO WORKERIMPL
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
         }
         return bytes;
     }
