@@ -6,22 +6,23 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import org.aksw.simba.squirrel.configurator.RDBConfiguration;
+import org.aksw.simba.squirrel.configurator.MongoConfiguration;
 import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.MongoDBKnowUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.MongoRegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
-import org.aksw.simba.squirrel.queue.RDBQueue;
+import org.aksw.simba.squirrel.queue.MongoDBQueue;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
@@ -54,22 +55,22 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         super.init();
         serializer = new GzipJavaUriSerializer();
 
-        RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
+        MongoConfiguration rdbConfiguration = MongoConfiguration.getMDBConfiguration();
         if(rdbConfiguration != null) {
-            String rdbHostName = rdbConfiguration.getRDBHostName();
-            Integer rdbPort = rdbConfiguration.getRDBPort();
-            queue = new RDBQueue(rdbHostName, rdbPort,serializer);
-            ((RDBQueue) queue).open();
+            String rdbHostName = rdbConfiguration.getMDBHostName();
+            Integer rdbPort = rdbConfiguration.getMDBPort();
+            queue = new MongoDBQueue(rdbHostName, rdbPort,serializer);
+            ((MongoDBQueue) queue).open();
             
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if(whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = new RegexBasedWhiteListFilter(rdbConfiguration.getRDBHostName(),
-                    rdbConfiguration.getRDBPort(), whitelistFile);
+                knownUriFilter = new MongoRegexBasedWhiteListFilter(rdbConfiguration.getMDBHostName(),
+                    rdbConfiguration.getMDBPort(), whitelistFile);
                 knownUriFilter.open();
             }else {
-            	knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort);
-                ((RDBKnownUriFilter) knownUriFilter).open();	
+            	knownUriFilter = new MongoRegexBasedWhiteListFilter(rdbHostName, rdbPort);
+                ((MongoDBKnowUriFilter) knownUriFilter).open();	
             }
         } else {
             LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");

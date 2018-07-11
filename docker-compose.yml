@@ -18,6 +18,8 @@ services:
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - RDB_HOST_NAME=rethinkdb
       - RDB_PORT=28015
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro

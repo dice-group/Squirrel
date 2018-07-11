@@ -96,8 +96,6 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		 for(String collection: mongoDB.listCollectionNames()) {
 			 if(collection.toLowerCase().equals(COLLECTION_NAME.toLowerCase())) {
 				return true; 
-			 }else {
-				return false;
 			 }
 		 }
 		 return false;
@@ -160,9 +158,8 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     		
     		try {
 	    		for(Document document : setUris) {
-	    			listUris.add(new CrawleableUri(
-	    					new URI(serializer.deserialize( ((Binary) document.get("uri")).getData()))
-	    					));
+
+	    			listUris.add( serializer.deserialize( ((Binary) document.get("uri")).getData()) );
 	    		}
     		}catch (Exception e) {
     			LOGGER.error("Error while retrieving uri from MongoDBQueue",e);
@@ -172,6 +169,22 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 
 	        return listUris;
 	}
+	
+	 private List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
+	        List<CrawleableUri> resultUris = new ArrayList<CrawleableUri>();
+	        
+	        
+
+	        for (Object uriString : uris) {
+	        	try {
+	            resultUris.add( serializer.deserialize((byte[]) uriString ));
+	        	}catch (Exception e) {
+	        		LOGGER.error("Couldn't deserialize uri", e);
+				}
+	        }
+
+	        return resultUris;
+	    }
 	
 	public boolean queueContainsIpAddressTypeKey(List<?> ipAddressTypeKey) {
 		
