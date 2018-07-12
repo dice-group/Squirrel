@@ -140,7 +140,8 @@ public class QueryGenerator {
             stringBuilder.append(node.getBlankNodeLabel());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
-            stringBuilder.append(node.getLiteral());
+            //Should possibly be further improved
+            stringBuilder.append(node.getLiteral().getLexicalForm().replace("\n", "").replace("\"", "'"));
             stringBuilder.append("\"");
             if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
                 stringBuilder.append("@");
