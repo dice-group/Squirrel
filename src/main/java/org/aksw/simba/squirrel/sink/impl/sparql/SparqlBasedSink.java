@@ -144,7 +144,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
         String sparqlEndpoint;
         if (uri.equals(metaDataGraphUri)) {
             stringQuery = QueryGenerator.getInstance().getAddQuery(tripleList);
-            sparqlEndpoint=updateMetaDataUri;
+            sparqlEndpoint = updateMetaDataUri;
         } else {
             stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
             sparqlEndpoint = updateDatasetURI;
@@ -156,11 +156,11 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
             try {
                 proc.execute();
             } catch (Exception e) {
-                LOGGER.error("Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( [" + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]");
+                LOGGER.error("Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( [" + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]", e);
             }
         } catch (QueryException e) {
             LOGGER.error(stringQuery);
-            LOGGER.error("Query could not be parsed, no data will be written to the sink; " + e);
+            LOGGER.error("Query could not be parsed, no data will be written to the sink", e);
         }
     }
 
