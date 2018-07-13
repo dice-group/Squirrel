@@ -2,4 +2,3 @@ https://www.europeandataportal.eu/data/en/dataset?q=&page=1
 https://www.europeandataportal.eu/data/en/dataset?q=&page=10
 https://www.europeandataportal.eu/data/en/dataset?q=&page=100
 https://www.mcloud.de/web/guest/suche/-/results/search/0
-https://demo.ckan.org/
