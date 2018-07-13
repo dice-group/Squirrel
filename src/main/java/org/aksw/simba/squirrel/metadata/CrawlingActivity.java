@@ -1,34 +1,19 @@
 package org.aksw.simba.squirrel.metadata;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Node;
-import org.aksw.simba.squirrel.components.WorkerComponent;
-import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.UriType;
+import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.Date;
+
 
 /**
  * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
@@ -100,8 +85,9 @@ public class CrawlingActivity {
         if (sink instanceof SparqlBasedSink) {
             graphId = ((SparqlBasedSink) sink).getGraphId(uri);
             hostedOn = ((SparqlBasedSink) sink).getUpdateDatasetURI();
+            id = "crawlingActivity_" + graphId;
         }
-        id = "crawlingActivity_" + graphId;
+        else { id = "crawlingActivity_" + UUID.randomUUID();}
         this.sink = sink;
     }
 
@@ -130,65 +116,51 @@ public class CrawlingActivity {
         }
     }
 
+    public LocalDateTime getLocalDateTime() {
+        return LocalDateTime.now();
+    }
+
+    public LocalDateTime getdateStarted()
+    {
+        return dateStarted;
+    }
+    public LocalDateTime getDateEnded()
+    {
+        return dateEnded;
+    }
+
     /**
-     *
-     * @return unique Id
+     *@return unique Id
      */
 
     public String getId() {
         return id;
     }
 
-
-
-    private Map<String,Object> addStep()
+    public List<String> getclasses()
     {
-        int count = 1;
-        if (worker instanceof WorkerImpl) {
-            List<Field> list = listAllFields(worker);
-
-            for (Field field : list)
+        List<String> k = new ArrayList<>();
+        for (Object object :Object.class.getClasses()) {
+            if(object instanceof CrawleableUri && !object.equals(CrawleableUri.class))
             {
-                String l = "step" + count++;
-                uri.addData(l,field.getClass().getSimpleName());
+
+                k.add(object.getClass().getSimpleName());
             }
 
-
         }
-        return uri.getData();
-    }
-
-    private List<Field> listAllFields(Object k)
-    {
-        List<Field> fields = new ArrayList<>();
-        Class tmpclass = k.getClass();
-        while(tmpclass!=null)
-        {
-            fields.addAll(Arrays.asList(tmpclass.getDeclaredFields()));
-        }
-        return fields;
-
+        return k;
     }
 
     public String getHadPlan()
     {
         ArrayList<String> list = new ArrayList<>();
-        for(Object o: addStep().values())
+        for(String o: getclasses())
         {
             list.add(o.toString());
 
         }
         return list.toString();
     }
-
-
-    public LocalDateTime getLocalDateTime()
-    {
-
-        LocalDateTime formatter = LocalDateTime.now();
-        return formatter;
-    }
-
 
 
     public CrawleableUri getCrawleableUri()
@@ -216,34 +188,11 @@ public class CrawlingActivity {
         return state;
     }
 
-    public URI getUrl (String o)
+    public String geturl (String o)
     {
-            try {
-                URL Domain = new URL("http://www.example.org/");
-                URL url = new URL(Domain + o);
+        String uri = "http://www.example.org/" + o;
+        return uri;
 
-                return getUri(url);
-
-            } catch (MalformedURLException e) {
-                 LOGGER.info("MalformedURLException" + e);
-                e.printStackTrace();
-                 return null;
-
-            }
-    }
-
-    public URI getUri(URL u)
-    {
-       try
-       {
-           return URI.create(u.toString());
-       }
-       catch (IllegalArgumentException x)
-       {
-           LOGGER.error("IllegalArgumentException"+x);
-            x.printStackTrace();
-            return null;
-       }
     }
 
     public String getHostedOn() {
