@@ -120,7 +120,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
             }
             String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
-            sink = new SparqlBasedSink(httpPrefix + "update", httpPrefix + "query");
+            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
 
             if ((rdbHostName != null) && (rdbPort > 0)) {
                 RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
