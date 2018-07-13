@@ -30,6 +30,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.gridfs.GridFS;
 
 @SuppressWarnings("deprecation")
 public class MongoDBQueue extends AbstractIpAddressBasedQueue {
