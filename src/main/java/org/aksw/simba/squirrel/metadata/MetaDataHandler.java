@@ -3,9 +3,11 @@ package org.aksw.simba.squirrel.metadata;
 
 import org.aksw.jena_sparql_api.mapper.annotation.RdfType;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
@@ -27,21 +29,20 @@ import java.util.UUID;
 
 public class MetaDataHandler {
 
-    private static final String GRAPH_NAME_FOR_METADATA = "MetaData";
-    private CrawleableUri dummyUri;
     private Sink sink;
+    private CrawleableUri defaultGraphUri;
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataHandler.class);
 
 
     public MetaDataHandler(String updateDatasetURI, String queryDatasetURI) {
         sink = new SparqlBasedSink(updateDatasetURI, queryDatasetURI);
         try {
-            dummyUri = new CrawleableUri(new URI("MetaData:DummyUri"));
-            dummyUri.addData(CrawleableUri.UUID_KEY, GRAPH_NAME_FOR_METADATA);
+            defaultGraphUri = new CrawleableUri(new URI(SparqlBasedSink.DEFAULT_GRAPH_STRING));
+            defaultGraphUri.addData(CrawleableUri.UUID_KEY, SparqlBasedSink.DEFAULT_GRAPH_STRING);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            LOGGER.error("Error while constructing uri " + SparqlBasedSink.DEFAULT_GRAPH_STRING);
         }
     }
 
@@ -72,13 +73,26 @@ public class MetaDataHandler {
         lstTriples.add(new Triple(crawling,RDF.type.asNode(),Prov.Entity.asNode()));
         lstTriples.add(new Triple(crawling,Sq.steps.asNode(),NodeFactory.createLiteral(crawlingActivity.getHadPlan())));
 
-        sink.openSinkForUri(dummyUri);
+        sink.openSinkForUri(defaultGraphUri);
         for (Triple triple : lstTriples) {
-            sink.addTriple(dummyUri, triple);
+            sink.addTriple(defaultGraphUri, triple);
         }
-        sink.closeSinkForUri(dummyUri);
-        LOGGER.info("MetaData successfully added for crawling activity: " + crawlingActivity.getId());
+        sink.closeSinkForUri(defaultGraphUri);
     }
+
+    /*
+    public int getNumberOfTriplesForGraph(CrawleableUri dummyUri) {
+        QueryExecution q = QueryExecutionFactory.sparqlService(strContentDatasetUriQuery,
+            QueryGenerator.getInstance().getSelectAllQuery(dummyUri));
+        ResultSet results = q.execSelect();
+        int sum = 0;
+        while (results.hasNext()) {
+            results.next();
+            sum++;
+        }
+        return sum;
+    }
+    */
 
 
 }

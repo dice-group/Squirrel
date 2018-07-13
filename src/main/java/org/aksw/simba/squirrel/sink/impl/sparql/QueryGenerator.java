@@ -19,6 +19,8 @@ public class QueryGenerator {
      * The instance of the class QueryGenerator.
      */
     private static final QueryGenerator instance = new QueryGenerator();
+
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
     private QueryGenerator() {
@@ -34,16 +36,38 @@ public class QueryGenerator {
     }
 
     /**
+     * Return an Add Query for the default uri and its triples.
+     *
+     * @param listBufferedTriples the given list of triples.
+     * @return The generated query.
+     */
+    public String getAddQuery(ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+        return getAddQuery(null, listBufferedTriples, true);
+    }
+
+    /**
      * Return an Add Query for the given uri and its triples.
      *
-     * @param graphId                 the graph id where the triples are stored.
+     * @param graphId             the graph id where the triples are stored.
      * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
     public String getAddQuery(String graphId, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+        return getAddQuery(graphId, listBufferedTriples, false);
+    }
+
+    /**
+     * Return an Add Query for the given uri or default graph and its triples.
+     *
+     * @param graphId                 the graph id where the triples are stored.
+     * @param listBufferedTriples the given list of triples.
+     * @param defaultGraph Identify if query is for the default graph.
+     * @return The generated query.
+     */
+    public String getAddQuery(String graphId, ConcurrentLinkedQueue<Triple> listBufferedTriples, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { ");
-        if (graphId != null) {
+        if (!defaultGraph) {
             stringBuilder.append("Graph <");
             stringBuilder.append(graphId);
             stringBuilder.append("> { ");
@@ -54,7 +78,7 @@ public class QueryGenerator {
             stringBuilder.append(formatNodeToString(triple.getObject()));
             stringBuilder.append(". ");
         }
-        if (graphId != null) {
+        if (!defaultGraph) {
             stringBuilder.append("} ");
         }
         stringBuilder.append("}");
@@ -62,52 +86,47 @@ public class QueryGenerator {
     }
 
     /**
-     * Return a select all query for a given uri.
-     *
-     * @param uri The given uri.
-     * @return The generated query.
+     * Return a select query for the default graph.
+     * It will return all triples contained in the default graph.
+     * @return All triples contained in the default graph.
      */
-    @SuppressWarnings("unused")
-    public Query getSelectAllQuery(CrawleableUri uri) {
-        return getSelectQuery(uri, null, true);
+    public Query getSelectQuery() {
+        return getSelectQuery(null, true);
     }
 
     /**
-     * Return a select query for a given uri and triple.
+     * Return a select query for the given graphID or default graph.
+     * It will return all triples contained in the graph.
      *
-     * @param uri    The given uri.
-     * @param triple The given triple.
-     * @return The generated query.
+     * @param graphID      The id of the graph from which you want to select.
+     * @param defaultGraph Identify if query is for the default graph
+     * @return All triples contained in the graph.
      */
-    @SuppressWarnings("unused")
-    public Query getSelectQuery(CrawleableUri uri, Triple triple) {
-        return getSelectQuery(uri, triple, false);
-    }
-
-    /**
-     * Return a select query for the given uri and triple.
-     *
-     * @param uri        The given uri.
-     * @param triple     The given triple.
-     * @param bSelectAll Indicates whether the query should be a select all query or not.
-     * @return
-     */
-    public Query getSelectQuery(CrawleableUri uri, Triple triple, boolean bSelectAll) {
+    public Query getSelectQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { GRAPH <");
-        stringBuilder.append(uri.getUri());
-        stringBuilder.append("> { ");
-        if (bSelectAll) {
-            stringBuilder.append("?subject ?predicate ?object ");
-        } else {
-            stringBuilder.append(formatNodeToString(triple.getSubject()));
-            stringBuilder.append(formatNodeToString(triple.getSubject()));
-            stringBuilder.append(formatNodeToString(triple.getSubject()));
-//            stringBuilder.append(". ");
+        stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { ");
+        if (!defaultGraph) {
+            stringBuilder.append("GRAPH <");
+            stringBuilder.append(graphID);
+            stringBuilder.append("> { ");
         }
-        stringBuilder.append("} } ");
+        stringBuilder.append("?subject ?predicate ?object ");
+        if (!defaultGraph) {
+            stringBuilder.append("} ");
+        }
+        stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
+    }
+
+    /**
+     * Return a select query for the given graphID.
+     * It will return all triples contained in the graph.
+     * @param graphID The id of the graph from which you want to select.
+     * @return All triples contained in the graph.
+     */
+    public Query getSelectQuery(String graphID) {
+        return getSelectQuery(graphID, false);
     }
 
     public static String formatNodeToString(Node node) {
@@ -121,12 +140,13 @@ public class QueryGenerator {
             stringBuilder.append(node.getBlankNodeLabel());
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
-            stringBuilder.append(node.getLiteral());
+            //Should possibly be further improved
+            stringBuilder.append(node.getLiteral().getLexicalForm().replace("\n", "").replace("\"", "'"));
             stringBuilder.append("\"");
             if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
                 stringBuilder.append("@");
                 stringBuilder.append(node.getLiteralLanguage());
-            }else if (node.getLiteralDatatype() != null) {
+            } else if (node.getLiteralDatatype() != null) {
                 stringBuilder.append("^^");
                 stringBuilder.append("<");
                 stringBuilder.append(node.getLiteralDatatype().getURI());

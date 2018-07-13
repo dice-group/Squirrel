@@ -3,38 +3,39 @@
     <div class="col-sm-5 main">
       <div class="row placeholders">
         <div class="col-xs-12 placeholder">
-          <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200" alt="Generic placeholder thumbnail">
+          <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200"
+               alt="Generic placeholder thumbnail">
           <h4>Frontier Observer</h4>
         </div>
       </div>
 
-      <table class="table">  
+      <table class="table">
         <tbody>
-          <tr>
-            <td>Number of pending URIs</td>
-            <td>
-              <a><b>{{pendingURIs}}</b></a>
-            </td>
-          </tr>
-          <tr>
-            <td>Number of crawled URIs</td>
-            <td>
-              <a><b>{{countOfCrawledURIs}}</b></a>
-            </td>
-          </tr>         
-          <tr>
-            <td>Number of workers</td>
-            <td>
-              <a><b>{{countOfWorker}}</b></a>
-            </td>
-          </tr>
-          <tr>
-            <td>Number of dead workers</td>
-            <td>
-              <a><b>{{countOfDeadWorker}}</b></a>
-            </td>
-          </tr>
-        </tbody> 
+        <tr>
+          <td>Number of pending URIs</td>
+          <td>
+            <a><b>{{pendingURIs}}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of crawled URIs</td>
+          <td>
+            <a><b>{{countOfCrawledURIs}}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of workers</td>
+          <td>
+            <a><b>{{countOfWorker}}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of dead workers</td>
+          <td>
+            <a><b>{{countOfDeadWorker}}</b></a>
+          </td>
+        </tr>
+        </tbody>
       </table>
 
       <div class="checkbox">
@@ -49,10 +50,11 @@
         <div class="panel panel-default panel-sidemenu">
           <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
-              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
+                 aria-controls="collapseOne">
                 <b style="color: #337ab7">PendingURIs</b>
               </a>
-            </h4>            
+            </h4>
           </div>
           <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
             <div class="panel-body">
@@ -67,7 +69,8 @@
         <div class="panel panel-default panel-sidemenu">
           <div class="panel-heading" role="tab" id="headingTwo">
             <h4 class="panel-title">
-              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                 aria-expanded="false" aria-controls="collapseTwo">
                 <b style="color: #337ab7">NextCrawledURIs</b>
               </a>
             </h4>
@@ -78,69 +81,72 @@
                 <li>
                   <a><b>{{ncURIS}}</b></a>
                 </li>
-                </ul>              
+              </ul>
             </div>
           </div>
         </div>
         <div class="panel panel-default panel-sidemenu">
           <div class="panel-heading" role="tab" id="headingThree">
             <h4 class="panel-title">
-              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                 aria-expanded="false" aria-controls="collapseThree">
                 <b style="color: #337ab7">CrawledURIs</b>
               </a>
             </h4>
           </div>
           <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="panel-body">
-                <b class="ng-binding">I’m sorry,there are no Crawled URIs ;'(.</b>
+              <b class="ng-binding">I’m sorry,there are no Crawled URIs ;'(.</b>
             </div>
-          </div><br>
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <td><b style="color: #337ab7">TotalUrls</b></td>
-                        <td>
-                            <a><b>{{totalUrls}}</b></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b style="color: #337ab7">RuntimeInSeconds</b></td>
-                        <td>
-                            <a><b>{{runtimeInSeconds}}</b></a>
-                        </td>
-                    </tr>
+          </div>
+          <br>
+          <table class="table">
+            <tbody>
+            <tr>
+              <td><b style="color: #337ab7">TotalUrls</b></td>
+              <td>
+                <a><b>{{totalUrls}}</b></a>
+              </td>
+            </tr>
+            <tr>
+              <td><b style="color: #337ab7">RuntimeInSeconds</b></td>
+              <td>
+                <a><b>{{runtimeInSeconds}}</b></a>
+              </td>
+            </tr>
 
-                    <tr>
-                        <td><b style="color: #337ab7">ReadTime</b></td>
-                        <td>
-                            <a><b>{{readTime}}</b></a>
-                        </td>
-                    </tr>
+            <tr>
+              <td><b style="color: #337ab7">ReadTime</b></td>
+              <td>
+                <a><b>{{readTime}}</b></a>
+              </td>
+            </tr>
 
-                    <tr>
-                        <td><b style="color: #337ab7">WriteTime</b></td>
-                        <td>
-                            <a><b>{{writeTime}}</b></a>
-                        </td>
-                    </tr>
+            <tr>
+              <td><b style="color: #337ab7">WriteTime</b></td>
+              <td>
+                <a><b>{{writeTime}}</b></a>
+              </td>
+            </tr>
 
-                    <tr>
-                        <td><b style="color: #337ab7">IpStringListMap</b></td>
-                        <td>
-                            <a><b>{{ipStringListMap}}</b></a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <tr>
+              <td><b style="color: #337ab7">IpStringListMap</b></td>
+              <td>
+                <a><b>{{ipStringListMap}}</b></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
 
-            <md-slider-container>
-                <label><b style="color: #337ab7">History Slider</b></label>
-                <md-slider min="0" max="100" round="0" ng-change="onSliderChange()"  ng-model="slider" aria-label="red" id="red-slider" class="md-warn">
-                </md-slider>
-                    <!--<md-input-container>-->
-                        <!--<lable>{{inputValue}}</lable>-->
-                    <!--</md-input-container>-->
-            </md-slider-container>
+          <md-slider-container>
+            <label><b style="color: #337ab7">History Slider</b></label>
+            <md-slider min="0" max="100" round="0" ng-change="onSliderChange()" ng-model="slider" aria-label="red"
+                       id="red-slider" class="md-warn">
+            </md-slider>
+            <!--<md-input-container>-->
+            <!--<lable>{{inputValue}}</lable>-->
+            <!--</md-input-container>-->
+          </md-slider-container>
 
         </div>
       </div>

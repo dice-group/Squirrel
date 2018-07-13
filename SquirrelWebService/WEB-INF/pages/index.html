@@ -11,7 +11,9 @@
     <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
     <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
     <link href="/pages/css/app.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
 
+    <script src="/pages/js/_json_utils.js"></script>
     <script>
       $( function() {
         $( "#slider" ).slider({
@@ -53,45 +55,20 @@
             $( "#countOfCrawledURIs" ).html(data.countOfCrawledURIs);
             $( "#countOfWorker" ).html(data.countOfWorker);
             $( "#countOfDeadWorker" ).html(data.countOfDeadWorker);
-            $( "#runtimeInSeconds" ).html(data.runtimeInSeconds);
-            $( "#pURIs" ).html(JSONElementToString(data.pendingURIs));
+            $("#runtime").html(IntToTime(data.runtimeInSeconds));
+            $("#pURIs").html(JSONElementToString(data.pendingURIs.slice(0, 5)));
+            if(data.pendingURIs.length > 5) {
+              $( "#pURIs" ).append( "<a target='_blank' href='/pages/pending-uris.html'>See More...</a>" );
+            }
             $( "#mURIs" ).html(JSONElementToString(data.ipStringListMap));
-            $( "#ncURIs" ).html(JSONElementToString(data.nextCrawledURIs));
+            $("#ncURIs").html(JSONElementToString(data.nextCrawledURIs.slice(0, 5)));
+            if (data.pendingURIs.length > 5) {
+              $("#ncURIs").append("And ").append(data.nextCrawledURIs.length - 5).append(" more...");
+            }
           }).fail(function () {
             alert("AJAX request to \"" + uri + "\" failed :(");
           });
         }
-      }
-
-      function JSONElementToString(obj) {
-        if (obj.length == 0) {
-          return "Nothing to show...";
-        }
-        if (obj instanceof Array) {
-          return JSONArrayToString(obj);
-        }
-        if (obj instanceof Object) {
-          var ret = "";
-          Object.keys(obj).forEach(function (value) {
-            ret += "<h6>" + value + "</h6>";
-            ret += JSONElementToString(obj[value]);
-          });
-          return ret;
-        }
-
-        return "Failed to convert " + obj;
-      }
-
-      function JSONArrayToString(obj) {
-        var ret = "<ul>";
-        obj.forEach(function (value) {
-          if (value instanceof Array) {
-            ret += JSONArrayToString(value);
-          } else {
-            ret += "<li>" + value + "</li>";
-          }
-        });
-        return ret + "</ul>";
       }
 
       update(false);
@@ -120,19 +97,20 @@
           <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200" alt="Nice picture"><br>
           <table width="100%">
             <tr>
-              <td width="50%">Number of pending URIs</td><td width="50%" align="right"><span id="pendingURIs">load...</span></td>
+              <td width="50%"><p>Number of pending URIs</p></td><td width="50%" align="right"><span id="pendingURIs">load...</span></td>
             </tr>
             <tr>
-              <td width="50%">Number of crawled URIs</td><td width="50%" align="right"><span id="countOfCrawledURIs">load...</span></td>
+              <td width="50%"><p>Number of crawled URIs</p></td><td width="50%" align="right"><span id="countOfCrawledURIs">load...</span></td>
             </tr>
             <tr>
-              <td width="50%">Number of workers</td><td width="50%" align="right"><span id="countOfWorker">load...</span></td>
+              <td width="50%"><p>Number of workers</p></td><td width="50%" align="right"><span id="countOfWorker">load...</span></td>
             </tr>
             <tr>
-              <td width="50%">Number of dead workers</td><td width="50%" align="right"><span id="countOfDeadWorker">load...</span></td>
+              <td width="50%"><p>Number of dead workers</p></td><td width="50%" align="right"><span id="countOfDeadWorker">load...</span></td>
             </tr>
             <tr>
-              <td width="50%">RuntimeInSeconds</td><td width="50%" align="right"><span id="runtimeInSeconds">load...</span></td>
+              <td width="50%"><p>Runtime</p></td>
+              <td width="50%" align="right"><span id="runtime">load...</span></td>
             </tr>
           </table>
           Crawl through the history <i>(right: auto update to the current status)</i>: <div id="slider"></div>
@@ -147,10 +125,9 @@
             <div id="ncURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
           </div>
 
-          <div>
             <input id="urlInput" type="text">
 
-            <input type="button" id="pushURI" value="Add URI to the pending URI list">
+          <input type="button" id="pushURI" style="font-family: Sigmar One; font-size: 12px" value="Add URI to the pending URI list">
 
             <script>
               $("#pushURI").on("click", function () {

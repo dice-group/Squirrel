@@ -70,7 +70,6 @@ public interface Frontier extends Closeable {
      */
     int getNumberOfPendingUris();
 
-
     /**
      * Indicates whether this frontier does recrawling.
      *

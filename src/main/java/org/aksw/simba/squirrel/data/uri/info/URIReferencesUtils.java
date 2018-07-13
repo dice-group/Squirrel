@@ -4,7 +4,10 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Common helper methods for implementations of {@link URIReferences}
@@ -36,17 +39,13 @@ class URIReferencesUtils {
      * @return the merged result. Is not {@code null}.
      */
     List<String> mergeLists(List<String> originList, List<CrawleableUri> newList) {
-        final List<String> retList = (originList == null) ? new ArrayList<>(newList.size()) : originList;
-        if (newList == null || newList.isEmpty()) {
-            return retList;
-        }
-        newList.forEach(foundUri -> {
-            String convertedURI = convertURI(foundUri);
-            if (!retList.contains(convertedURI)) {
-                retList.add(convertedURI);
-            }
-        });
-        return retList;
+        originList = (originList == null) ? Collections.emptyList() : originList;
+        List<String> newListStrings = (newList == null) ? Collections.emptyList() : newList.stream().map(this::convertURI).collect(Collectors.toList());
+        HashSet<String> ret = new HashSet<>((originList.size() >= newListStrings.size()) ? originList : newListStrings);
+
+        ret.addAll(((originList.size() >= newListStrings.size()) ? newListStrings : originList));
+
+        return new ArrayList<>(ret);
     }
 
     /**

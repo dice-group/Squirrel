@@ -1,13 +1,13 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
-import org.aksw.simba.squirrel.components.FrontierComponent;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
+import org.apache.commons.collections.list.TransformedList;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -18,15 +18,18 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SparqlBasedSink implements Sink {
+public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
      */
     private static final int SENDING_INTERVAL_BUFFERED_TRIPLES = 100;
+    /**
+     * Identifier for storing data in the default graph.
+     */
+    public static final String DEFAULT_GRAPH_STRING = "Default:Graph";
     /**
      * The URI of the DB in which updates can be performed.
      */
@@ -34,6 +37,7 @@ public class SparqlBasedSink implements Sink {
     /**
      * The URI of the DB in which querys can be performed.
      */
+    @SuppressWarnings("unused")
     private String queryDatasetURI;
     /**
      * The data structure (map) in which the triples are buffered.
@@ -55,6 +59,11 @@ public class SparqlBasedSink implements Sink {
     }
 
 
+    @SuppressWarnings("unused")
+    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix) {
+        updateDatasetURI = "http://" + host + ":" + port + "/" + updateAppendix;
+        queryDatasetURI = "http://" + host + ":" + port + "/" + queryAppendix;
+    }
 
     public void addMetadata() {
         throw new UnsupportedOperationException();
@@ -72,6 +81,29 @@ public class SparqlBasedSink implements Sink {
         if (mapBufferedTriples.get(uri).size() >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
             sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
         }
+    }
+
+    @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        Query selectQuery = null;
+        if (getGraphId(uri).equals(DEFAULT_GRAPH_STRING)) {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery();
+        } else {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery((String) uri.getData(CrawleableUri.UUID_KEY));
+        }
+
+        QueryExecution qe = QueryExecutionFactory.sparqlService(queryDatasetURI, selectQuery);
+        ResultSet rs = qe.execSelect();
+        List<Triple> triplesFound = new ArrayList<>();
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode subject = sol.get("subject");
+            RDFNode predicate = sol.get("predicate");
+            RDFNode object = sol.get("object");
+            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+        }
+        qe.close();
+        return triplesFound;
     }
 
     @Override
@@ -93,15 +125,23 @@ public class SparqlBasedSink implements Sink {
 
     /**
      * Method to send all buffered triples to the database
-     * @param uri
-     * @param tripleList
+     * @param uri the crawled {@link CrawleableUri}
+     * @param tripleList the list of {@link Triple}s regarding that uri
      */
     private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
-        String query = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
-        LOGGER.info("Forward this query to the SPARQL (" + updateDatasetURI + "): " + ((query.length() > 500) ? query.substring(0, 500) + "..." : query));
-        UpdateRequest request = UpdateFactory.create(query);
+        String stringQuery = null;
+        if (getGraphId(uri).equals(DEFAULT_GRAPH_STRING)) {
+            stringQuery = QueryGenerator.getInstance().getAddQuery(tripleList);
+        } else {
+            stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
+        }
+        UpdateRequest request = UpdateFactory.create(stringQuery);
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, updateDatasetURI);
-        proc.execute();
+        try {
+            proc.execute();
+        } catch (Exception e) {
+            LOGGER.error("Exception: Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( [" + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]");
+        }
     }
 
     @Override
@@ -117,5 +157,9 @@ public class SparqlBasedSink implements Sink {
      */
     public String getGraphId(CrawleableUri uri) {
         return (String) uri.getData(CrawleableUri.UUID_KEY);
+    }
+
+    public String getUpdateDatasetURI() {
+        return updateDatasetURI;
     }
 }

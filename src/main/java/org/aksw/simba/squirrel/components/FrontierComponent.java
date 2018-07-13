@@ -5,7 +5,6 @@ import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.configurator.WebConfiguration;
 import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
@@ -49,10 +48,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
 
-    private static final String SEED_FILE_KEY = "SEED_FILE";
     public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     public static final String RDB_PORT_KEY = "RDB_PORT";
-    private static final String COMMUNICATION_WITH_WEBSERVICE = "COMMUNICATION_WITH_WEBSERVICE";
     public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
 
     protected IpAddressBasedQueue queue;
@@ -66,7 +63,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
 
-    private final long startRunTime = System.currentTimeMillis();
+    public static final boolean RECRAWLING_ACTIVE = true;
+
 
     @Override
     public void init() throws Exception {
@@ -74,14 +72,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        if(rdbConfiguration != null) {
+        if (rdbConfiguration != null) {
             String rdbHostName = rdbConfiguration.getRDBHostName();
             Integer rdbPort = rdbConfiguration.getRDBPort();
             queue = new RDBQueue(rdbHostName, rdbPort, serializer);
             queue.open();
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
-            if(whiteListConfiguration != null) {
+            if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
                 knownUriFilter = new RegexBasedWhiteListFilter(rdbHostName,
                     rdbPort, doRecrawling, whitelistFile);

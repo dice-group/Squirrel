@@ -15,6 +15,7 @@ public abstract class HTMLReader {
 
     /**
      * Reads a given file and converts it to a String using {@link BufferedReader}
+     *
      * @param filename the path and name of the (HTML) file, e.g. {@code ./WEB-INF/pages/index.html}
      * @return the content of the file (without line brakes)
      */

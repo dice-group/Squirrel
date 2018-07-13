@@ -9,6 +9,15 @@ services:
   #  dns: 8.8.8.8
   #  command: nc -l 50070
 
+  ##configure ckan to open port of python end point
+  #ckan:
+  #  image: python:latest
+  #  container_name: ckan
+  #  networks:
+  #    - squirrel:latest
+  #  command: python rabbitrecieve.py
+  #  ports:
+
   frontier:
     image: squirrel:latest
     container_name: frontier
@@ -32,13 +41,13 @@ services:
     ports:
       - "8080:8080"
 
-  sparqlHost:
+  sparqlhost:
       image: stain/jena-fuseki
-      container_name: sparqlHost
+      container_name: sparqlhost
       ports:
         - "3030:3030"
       volumes:
-        - ./data/sparqlHost/sparqlHost_data:/fuseki
+        - ./data/sparqlhost/sparqlhost_data:/fuseki
       environment:
         - ADMIN_PASSWORD=pw123
         - JVM_ARGS=-Xmx2g
@@ -68,12 +77,19 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlhost
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
+      #-CKAN_PORT=
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        #- ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker2:
@@ -84,12 +100,19 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlhost
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
+      #-CKAN_PORT=
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        #- ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
 
   worker3:
@@ -100,10 +123,33 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - SPARQL_HOST_NAME=sparqlhost
+      #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_NAME=sparqlHost
       - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=true
+      - RDB_HOST_NAME=rethinkdb
+      - RDB_PORT=28015
+      #-CKAN_PORT=
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
+        #- ./whitelist/ckanwhitelist.txt:/var/squirrel/ckanwhitelist.txt:ro
     command: java -cp squirrel.jar org.aksw.simba.squirrel.components.WorkerComponentStarter
+
+  deduplicator:
+    image: squirrel
+    container_name: deduplicator
+    environment:
+      DEDUPLICATION_ACTIVE: "true"
+      HOBBIT_RABBIT_HOST: rabbit
+      OUTPUT_FOLDER: /var/squirrel/data
+      RDB_HOST_NAME: rethinkdb
+      RDB_PORT: 28015
+      SPARQL_HOST_NAME: sparqlhost
+      SPARQL_HOST_PORT: 3030
+      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+    volumes:
+        - ./scenarios/1/deduplicator:/var/squirrel/data
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent

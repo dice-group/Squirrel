@@ -7,9 +7,14 @@ import com.rabbitmq.client.Channel;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.info.URIReferences;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.apache.commons.io.IOUtils;
+import org.hobbit.core.rabbit.DataSender;
+import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitQueueFactory;
+import org.hobbit.core.rabbit.RabbitQueueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +24,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
@@ -33,10 +37,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private KnownUriFilter knownUriFilter;
     private URIReferences uriReferences;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
-    private final static String WEB_QUEUE_GRAPH_NAME = "squirrel.web.in.graph";
     private RabbitQueueFactory factory;
     private Channel webQueue = null;
+    private DataSender sender;
     private boolean run;
+
+    private Serializer serializer = new GzipJavaUriSerializer();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierSenderToWebservice.class);
 
@@ -64,15 +70,18 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      */
     private boolean init() {
         //Build rabbit queue to the web
-        if (establishChannel(5)) {
-            LOGGER.debug("Created successfully " + webQueue);
-        } else {
+        try {
+            sender = DataSenderImpl.builder().queue(new RabbitQueueFactoryImpl(factory.getConnection()), WEB_QUEUE_GENERAL_NAME).build();
+            LOGGER.debug("Created successfully the sender " + sender);
+        } catch (IOException e) {
             LOGGER.error("Finally ERROR while creating queue" + WEB_QUEUE_GENERAL_NAME + ". Returning false.");
             return false;
         }
         return true;
     }
 
+    @Deprecated
+    @SuppressWarnings("unused")
     private boolean establishChannel(int triesLeft) {
         try {
             webQueue = factory.createChannel();
@@ -112,17 +121,16 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
         try {
             while (run) {
                 SquirrelWebObject newObject = generateSquirrelWebObject();
+                if (uriReferences != null) {
+                    VisualisationGraph graph = generateVisualisationGraph();
+                    newObject.setGraph(graph);
+                    LOGGER.info("Added a new crawled graph to the SquirrelWebObject " + newObject + " with " + graph.getNodes().length + " nodes and " + graph.getEdges().length + " edges!");
+                }
                 if (!newObject.equals(lastSentObject)) {
-                    webQueue.basicPublish("", WEB_QUEUE_GENERAL_NAME, null, newObject.convertToByteStream());
+                    sender.sendData(serializer.serialize(newObject));
+                    //webQueue.basicPublish("", WEB_QUEUE_GENERAL_NAME, null, serializer.serialize(newObject));
                     LOGGER.info("Putted a new SquirrelWebObject into the queue " + WEB_QUEUE_GENERAL_NAME);
                     lastSentObject = newObject;
-
-                    if (uriReferences != null) {
-                        // if something changed in general, then probably the crawled graph, too
-                        VisualisationGraph graph = generateVisualisationGraph();
-                        webQueue.basicPublish("", WEB_QUEUE_GRAPH_NAME, null, graph.convertToByteStream());
-                        LOGGER.info("Putted a new crawled graph into the queue " + WEB_QUEUE_GRAPH_NAME + " with " + graph.getNodes().length + " nodes and " + graph.getEdges().length + " edges!");
-                    }
                 }
                 Thread.sleep(100);
             }
@@ -206,6 +214,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
             counter++;
         }
 
+        graph.optimizeArrays();
         return graph;
     }
 
@@ -232,11 +241,12 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      */
     @Override
     public void close() throws IOException {
-        webQueue.queueDelete(WEB_QUEUE_GENERAL_NAME);
-        try {
-            webQueue.close();
-        } catch (TimeoutException e) {
-            LOGGER.debug("Failed to close the [" + webQueue + "]-Channel in " + Thread.currentThread().getName(), e);
-        }
+        sender.close();
+//        webQueue.queueDelete(WEB_QUEUE_GENERAL_NAME);
+//        try {
+//            webQueue.close();
+//        } catch (TimeoutException e) {
+//            LOGGER.debug("Failed to close the [" + webQueue + "]-Channel in " + Thread.currentThread().getName(), e);
+//        }
     }
 }

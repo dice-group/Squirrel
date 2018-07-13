@@ -15,7 +15,7 @@ Squirrel searches and collects Linked Data
 
 1. ``mvn clean package shade:shade -U -DskipTests``
 1. if you have a new version of squirrel, e.g. version 0.3.0, you **can** execute``mvn install:install-file -DgroupId=org.aksw.simba -DartifactId=squirrel -Dpackaging=jar -Dversion=0.3.0 -Dfile="target\original-squirrel.jar" -DgeneratePom=true -DlocalRepositoryPath=repository``
-1. If you want to use the Web-Components, have a look to the Depencies in this file
+1. If you want to use the Web-Components, have a look to the Dependencies in this file
 1. ``docker build -t squirrel .``
 1. execute a `.yml` file with ``docker-compose -f <file> up``/ ``down``
 
@@ -39,7 +39,7 @@ Until yet, the necessary datasets in the database are not created automatically.
 2. Enter *localhost:3030* in your browser's address line
 3. Go to *manage datasets*
 4. Click *add new dataset*
-5. For *Dataset name* paste *ContentSet*
+5. For *Dataset name* paste *contentset*
 6. For *Dataset type* select *Persistent – dataset will persist across Fuseki restarts*
 7. Go to step 4 again and do the same, **but this time with *"Metadata"* as *"Dataset name"***
 

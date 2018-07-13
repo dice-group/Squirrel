@@ -7,12 +7,13 @@ import java.io.ObjectInputStream;
 public abstract class VisualisationHelper {
     /**
      * converts a byte stream into a {@link VisualisationGraph}. If there are any exceptions, the methods tries to handle them
+     *
      * @param bytes the byte stream
      * @return a {@link VisualisationGraph}, that was in further times converted into a byte stream
      */
     public static VisualisationGraph convertToObject(byte[] bytes) {
-        try(ByteArrayInputStream b = new ByteArrayInputStream(bytes)){
-            try(ObjectInputStream o = new ObjectInputStream(b)){
+        try (ByteArrayInputStream b = new ByteArrayInputStream(bytes)) {
+            try (ObjectInputStream o = new ObjectInputStream(b)) {
                 return (VisualisationGraph) o.readObject();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

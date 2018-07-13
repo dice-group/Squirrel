@@ -10,32 +10,32 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 
 @Configuration
-public class WorkerComponentConfig extends AbstractComponent{
+public class WorkerComponentConfig extends AbstractComponent {
 
-	 public WorkerComponentConfig() throws Exception {
-		 super.init();
-	}
+    public WorkerComponentConfig() throws Exception {
+        super.init();
+    }
 
-	@Bean(name="sender")
-	public DataSender sender() throws IllegalStateException, IOException {
-		DataSender sender = DataSenderImpl.builder()
-	            .queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
-	            .build();
+    @Bean(name = "sender")
+    public DataSender sender() throws IllegalStateException, IOException {
+        DataSender sender = DataSenderImpl.builder()
+            .queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+            .build();
 
-		return sender;
-	}
+        return sender;
+    }
 
-	@Bean(name="client")
-	public RabbitRpcClient client() throws IOException {
-		RabbitRpcClient client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-                FrontierComponent.FRONTIER_QUEUE_NAME);
-		return client;
-	}
+    @Bean(name = "client")
+    public RabbitRpcClient client() throws IOException {
+        RabbitRpcClient client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
+            FrontierComponent.FRONTIER_QUEUE_NAME);
+        return client;
+    }
 
-	@Override
-	public void run() throws Exception {
-		// TODO Auto-generated method stub
+    @Override
+    public void run() throws Exception {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

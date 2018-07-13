@@ -6,6 +6,8 @@ import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
 import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.configurator.CkanWhiteListConfiguration;
+import org.aksw.simba.squirrel.ckancrawler.CkanCrawl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
@@ -19,6 +21,7 @@ import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
@@ -30,11 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -47,6 +48,8 @@ public class WorkerImpl implements Worker, Closeable {
 
     private static final long DEFAULT_WAITING_TIME = 10000;
     private static final int MAX_URIS_PER_MESSAGE = 20;
+    public static final boolean ENABLE_CKAN_CRAWLER_FORWARDING = false;
+    private static final String CKAN_WHITELIST_FILE = "CKAN_WHITELIST_FILE";
 
     protected Frontier frontier;
     protected Sink sink;
@@ -112,8 +115,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new FTPFetcher());
+            // new SparqlBasedFetcher(),
+            new HTTPFetcher(), new FTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
@@ -145,47 +148,96 @@ public class WorkerImpl implements Worker, Closeable {
         }
     }
 
+    /* Reads all CKAN URLs for determining CKAN URLs from URIs */
+    public List<String> ckanwhitelist() {
+
+        List<String> ckanlist = Arrays.asList("https://demo.ckan.org", "http://open.canada.ca/data/en/", "http://datahub.io/");
+        //This block can be used to feed list of CKANURLs for comparision
+        //In case of using this, please create ckanwhitelist.txt in whitelist folder under root
+        //Also enable volumes and environment for each worker in docker-compose-sparql-web.yml
+        /*
+        List<String> list = new ArrayList<String>();
+        try {
+            CkanWhiteListConfiguration ckanwhiteListConfiguration = CkanWhiteListConfiguration.getCkanWhiteListConfiguration();
+            if (ckanwhiteListConfiguration != null) {
+                Scanner s = new Scanner(new File(ckanwhiteListConfiguration.getCkanWhiteListURI()));
+                while (s.hasNext()) {
+                    list.add(s.next());
+                }
+
+                s.close();
+            }
+        }catch (FileNotFoundException e){
+            LOGGER.error("ckanwhitlelist file missing.",e);
+        }
+        */
+        return ckanlist;
+    }
+
+    /* converting data from CkanCrawl to URI format <key,value> */
+    public static CrawleableUri ckandata(String r) throws Exception {
+        //String a = "https://demo.ckan.org";
+        CrawleableUri uri = new CrawleableUri(new URI(r));
+        //TODO: RECEIVED DATA FROM CKAN CRAWL SHOULD BE CONVERTED INTO URIs AND FED TO FRONTIER
+        uri.addData(Constants.URI_TYPE_KEY, Constants.URI_TYPE_VALUE_DUMP);
+        return uri;
+    }
+
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
-            uri.addData(CrawleableUri.UUID_KEY, "graph:"+ UUID.randomUUID().toString());
+            uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
             CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
             if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
                 crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    uriMap.put(uri, performCrawling(uri));
-                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    //CKAN Crawler is disabled by default
+                    if (ENABLE_CKAN_CRAWLER_FORWARDING) {
+                        String s = uri.getUri().toString();
+                        LOGGER.info("the uri is ", s);
+                        List<String> uriList = ckanwhitelist();
+                        if (uriList.contains(s)) {
+                            //CKAN Component is called to communicate URL to CKANCrawler
+                            CkanCrawl.send(s);
+                            String r = CkanCrawl.recieve();
+                            CrawleableUri ckanUri = ckandata(r);
+                            //EXPECTING A LIST OF URIs
+                            //TODO:CHANGE DATATYPE AND HANDLE DATA TO SEND TO FRONTIER.
+                        }
+                    } else {
+                        uriMap.put(uri, performCrawling(uri));
+                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
+                    }
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
-                            + "\". It will be ignored.", e);
+                        + "\". It will be ignored.", e);
                     crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
                 }
             }
             crawlingActivity.finishActivity();
-            if (metaDataHandler!=null) {
+            if (metaDataHandler != null && sink instanceof TripleBasedSink) {
                 metaDataHandler.addMetadata(crawlingActivity);
             }
+            // classify URIs
+            Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
+            while (uriMapEnumeration.hasMoreElements()) {
+                uriMapEnumeration.nextElement().forEach(URI -> uriProcessor.recognizeUriType(URI));
+            }
+            frontier.crawlingDone(uriMap);
         }
-        // classify URIs
-        Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
-        while (uriMapEnumeration.hasMoreElements()) {
-            uriMapEnumeration.nextElement().forEach(uri -> uriProcessor.recognizeUriType(uri));
-        }
-        frontier.crawlingDone(uriMap);
     }
-
     @Override
     public List<CrawleableUri> performCrawling(CrawleableUri uri) {
         // check robots.txt
         List<CrawleableUri> ret = new ArrayList<>();
 
-    	uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis() );
-    	LOGGER.warn(uri.getUri().toString());
+        uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis());
+        LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
         //CrawlingActivity crawlingActivity = new CrawlingActivity(uri,this,sink);
         //timeStampLastUriFetched = crawlingActivity.getDateEnded().getTime();
@@ -193,7 +245,7 @@ public class WorkerImpl implements Worker, Closeable {
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
                 long delay = timeStampLastUriFetched
-                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                    - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
                 if (delay > 0) {
                     Thread.sleep(delay);
                 }
@@ -208,43 +260,43 @@ public class WorkerImpl implements Worker, Closeable {
             File fetched = null;
 
             try {
-            	fetched = fetcher.fetch(uri);
+                fetched = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
             }
 
             List<File> fetchedFiles = new ArrayList<>();
-            if(fetched != null && fetched.isDirectory()) {
-            	fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+            if (fetched != null && fetched.isDirectory()) {
+                fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
             } else {
-            	fetchedFiles.add(fetched);
+                fetchedFiles.add(fetched);
             }
 
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList;
 
 
-            for(File data: fetchedFiles){
-	            if (data != null) {
-	                fileList = fm.decompressFile(data);
-	                for (File file : fileList) {
-	                    try {
-	                        // open the sink only if a fetcher has been found
-	                        sink.openSinkForUri(uri);
-	                        collector.openSinkForUri(uri);
-	                        Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-	                        sink.closeSinkForUri(uri);
+            for (File data : fetchedFiles) {
+                if (data != null) {
+                    fileList = fm.decompressFile(data);
+                    for (File file : fileList) {
+                        try {
+                            // open the sink only if a fetcher has been found
+                            sink.openSinkForUri(uri);
+                            collector.openSinkForUri(uri);
+                            Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                            sink.closeSinkForUri(uri);
                             ret.addAll(sendNewUris(resultUris));
-	                        collector.closeSinkForUri(uri);
-	                    } catch (Exception e) {
-	                        // We don't want to handle the exception. Just make sure that sink and collector
-	                        // do not handle this uri anymore.
-	                        sink.closeSinkForUri(uri);
-	                        collector.closeSinkForUri(uri);
-	                        throw e;
-	                    }
-	                }
-	            }
+                            collector.closeSinkForUri(uri);
+                        } catch (Exception e) {
+                            // We don't want to handle the exception. Just make sure that sink and collector
+                            // do not handle this uri anymore.
+                            sink.closeSinkForUri(uri);
+                            collector.closeSinkForUri(uri);
+                            throw e;
+                        }
+                    }
+                }
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);

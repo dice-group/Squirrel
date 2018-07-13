@@ -15,7 +15,7 @@ public class SeedConfiguration extends Configuration {
 
     public static SeedConfiguration getSeedConfiguration() {
         String seedFile = getEnvSeedFile();
-        if(seedFile != null) {
+        if (seedFile != null) {
             LOGGER.info("{} found, will use seed file to initialize frontier...", SEED_FILE_KEY);
             return new SeedConfiguration(seedFile);
         } else {

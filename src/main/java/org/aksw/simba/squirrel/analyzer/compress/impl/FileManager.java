@@ -10,45 +10,44 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileManager{
+public class FileManager {
 
-	 private static final Logger LOGGER = LoggerFactory.getLogger(FileManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileManager.class);
 
-	public List<File> decompressFile(File inputFile) {
+    public List<File> decompressFile(File inputFile) {
 
-		List<File> file = new ArrayList<File>();
+        List<File> file = new ArrayList<File>();
 
-		try {
-			String mime_type = detectMimeType(inputFile);
-			if(MimeTypeEnum.TAR.mime_type().equals(mime_type)) {
-					return new TarDecompressor().decompress(inputFile);
-			}else if(MimeTypeEnum.TAR_GZ.mime_type().equals(mime_type)) {
-					return new GzDecompressor().decompress(inputFile);
-			} else if(MimeTypeEnum.ZIP.mime_type().equals(mime_type)) {
-					return new ZipDecompressor().decompress(inputFile);
-			}else if(MimeTypeEnum.F7Z.mime_type().equals(mime_type)) {
-					return new SevenZipDecompressor().decompress(inputFile);
-			}else if(MimeTypeEnum.BZ2.mime_type().equals(mime_type)) {
-					return new BzipDecompressor().decompress(inputFile);
-			}else {
-				file.add(inputFile);
-				return file;
-			}
-		}catch(IOException e) {
-			LOGGER.error("Exception while Decompressing Data. Skipping...", e);
-			return file;
-		}
-	}
+        try {
+            String mime_type = detectMimeType(inputFile);
+            if (MimeTypeEnum.TAR.mime_type().equals(mime_type)) {
+                return new TarDecompressor().decompress(inputFile);
+            } else if (MimeTypeEnum.TAR_GZ.mime_type().equals(mime_type)) {
+                return new GzDecompressor().decompress(inputFile);
+            } else if (MimeTypeEnum.ZIP.mime_type().equals(mime_type)) {
+                return new ZipDecompressor().decompress(inputFile);
+            } else if (MimeTypeEnum.F7Z.mime_type().equals(mime_type)) {
+                return new SevenZipDecompressor().decompress(inputFile);
+            } else if (MimeTypeEnum.BZ2.mime_type().equals(mime_type)) {
+                return new BzipDecompressor().decompress(inputFile);
+            } else {
+                file.add(inputFile);
+                return file;
+            }
+        } catch (IOException e) {
+            LOGGER.error("Exception while Decompressing Data. Skipping...", e);
+            return file;
+        }
+    }
 
 
-	private String detectMimeType(File file) throws IOException{
-			Tika tika = new Tika();
+    private String detectMimeType(File file) throws IOException {
+        Tika tika = new Tika();
 
-            String mediaType = tika.detect(file);
-            return mediaType;
+        String mediaType = tika.detect(file);
+        return mediaType;
 
-	}
-
+    }
 
 
 }

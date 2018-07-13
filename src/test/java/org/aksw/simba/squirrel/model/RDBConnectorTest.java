@@ -96,7 +96,7 @@ public class RDBConnectorTest extends RethinkDBBasedTest {
         assert(cursor.hasNext());
         HashMap crawleableUri = (HashMap) cursor.next();
         long retrievedTimestamp = (long) crawleableUri.get("timestamp");
-        assert((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
+        assert ((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
         cursor.close();
     }
 

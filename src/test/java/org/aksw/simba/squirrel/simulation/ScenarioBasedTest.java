@@ -126,8 +126,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
     @Test
     public void test() throws IOException {
 
-    	FileSystemXmlApplicationContext  context =
-    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
+        FileSystemXmlApplicationContext context =
+            new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
 
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
@@ -137,8 +137,8 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
         WorkerImpl worker = new WorkerImpl(frontier, sink, null,
-                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-                null, false);
+            new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
+            null, false);
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -155,7 +155,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
             }
             Assert.assertTrue("The worker crashed", t.isAlive());
         } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
-                                                           // save.
+        // save.
         worker.setTerminateFlag(true);
         try {
             t.join();

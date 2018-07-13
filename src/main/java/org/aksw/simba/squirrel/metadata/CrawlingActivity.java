@@ -6,7 +6,6 @@ import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.TripleBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -29,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.Date;
 
 /**
  * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
@@ -61,7 +61,7 @@ public class CrawlingActivity {
     /**
      * The graph where the uri is stored.
      */
-    private String graphId;
+    private String graphId = null;
 
     /**
      * The crawling state of the uri.
@@ -78,29 +78,28 @@ public class CrawlingActivity {
      */
     private int numTriples;
 
+    private String hostedOn = null;
+
     /**
      * The sink used for the activity.
      */
-    private TripleBasedSink sink;
-    /**
-     * date format for start_date and end_date
-     */
-    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private Sink sink;
 
     /**
      * Constructor
      *
-     * @param uri
-     * @param worker
-     * @param sink
+     * @param uri    the URI, which was crawled
+     * @param worker the {@link Worker}, that crawled the URI
+     * @param sink   the {@link Sink}, that was used to store the downloaded content from the URI
      */
-    public CrawlingActivity(CrawleableUri uri, Worker worker, TripleBasedSink sink) {
+    public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
         this.worker = worker;
         this.dateStarted = getLocalDateTime();
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         if (sink instanceof SparqlBasedSink) {
             graphId = ((SparqlBasedSink) sink).getGraphId(uri);
+            hostedOn = ((SparqlBasedSink) sink).getUpdateDatasetURI();
         }
         id = "crawlingActivity_" + graphId;
         this.sink = sink;
@@ -141,15 +140,6 @@ public class CrawlingActivity {
     }
 
 
-    public String getHost() {
-        try {
-            WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
-            String httpPrefix = "http://localhost:" + workerConfiguration.getSqarqlPort() + "/";
-            return httpPrefix;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     private Map<String,Object> addStep()
     {
@@ -256,5 +246,8 @@ public class CrawlingActivity {
        }
     }
 
+    public String getHostedOn() {
+        return hostedOn;
+    }
 }
 

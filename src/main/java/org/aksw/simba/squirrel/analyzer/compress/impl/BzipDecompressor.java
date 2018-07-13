@@ -9,36 +9,36 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class BzipDecompressor extends TarDecompressor implements Decompressor{
+public class BzipDecompressor extends TarDecompressor implements Decompressor {
 
-	protected BzipDecompressor() throws IOException {
-		super();
-	}
+    protected BzipDecompressor() throws IOException {
+        super();
+    }
 
-	@Override
-	public List<File> decompress(File inputFile) throws IOException {
+    @Override
+    public List<File> decompress(File inputFile) throws IOException {
 
-		File outputFile = createOutputFile();
+        File outputFile = createOutputFile();
 
-		InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
-		BufferedInputStream in = new BufferedInputStream(fin);
-		OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
-		BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
-		final byte[] buffer = new byte[1000];
-		int n = 0;
-		while (-1 != (n = bzIn.read(buffer))) {
-		    out.write(buffer, 0, n);
-		}
-		out.close();
-		bzIn.close();
+        InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
+        BufferedInputStream in = new BufferedInputStream(fin);
+        OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
+        BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
+        final byte[] buffer = new byte[1000];
+        int n = 0;
+        while (-1 != (n = bzIn.read(buffer))) {
+            out.write(buffer, 0, n);
+        }
+        out.close();
+        bzIn.close();
 
-		File tempoutputFile = new File(outputFile + ".tar");
+        File tempoutputFile = new File(outputFile + ".tar");
 
-		if(tempoutputFile.exists() && tempoutputFile.isFile()) {
-			return new TarDecompressor().decompress(tempoutputFile);
-		}
+        if (tempoutputFile.exists() && tempoutputFile.isFile()) {
+            return new TarDecompressor().decompress(tempoutputFile);
+        }
 
-		return TempPathUtils.searchPath4Files(outputFile);
-	}
+        return TempPathUtils.searchPath4Files(outputFile);
+    }
 
 }

@@ -169,11 +169,11 @@ public class RDBURIReferences implements URIReferences, Closeable {
      */
     public Iterator<AbstractMap.SimpleEntry<String, List<String>>> walkThroughCrawledGraph(int offset, boolean latest, boolean onlyCrawledUris) {
         long entryCount = r.db(DATABASE_NAME).table(TABLE_NAME).count().run(connector.connection);
-        if (entryCount < offset) {
+        if (entryCount <= offset) {
             if (latest) {
-                LOGGER.debug("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + "), so we'll return an iterator over the whole graph from the beginning!");
+                LOGGER.debug("Your offset (" + offset + ") is higher or equal than the number of entries (" + entryCount + "), so we'll return an iterator over the whole graph from the beginning!");
             } else {
-                LOGGER.warn("Your offset (" + offset + ") is higher than the number of entries (" + entryCount + ")! Return an empty iterator...");
+                LOGGER.warn("Your offset (" + offset + ") is higher or equal than the number of entries (" + entryCount + ")! Return an empty iterator...");
                 return Collections.emptyIterator();
             }
         }
@@ -183,6 +183,11 @@ public class RDBURIReferences implements URIReferences, Closeable {
     }
 }
 
+/**
+ * The Iterator regarding {@link RDBURIReferences}.walkThroughCrawledGraph
+ *
+ * @author Pilipp Heinisch
+ */
 class URIReferencesIterator implements Iterator<AbstractMap.SimpleEntry<String, List<String>>> {
     private final Logger LOGGER = LoggerFactory.getLogger(org.aksw.simba.squirrel.data.uri.info.URIReferencesIterator.class);
 
@@ -193,6 +198,13 @@ class URIReferencesIterator implements Iterator<AbstractMap.SimpleEntry<String, 
 
     private Cursor cursor;
 
+    /**
+     * Creates an iterator
+     *
+     * @param connector       the connector to the RethinkDB (because the iterator will crawl over the data table {@link RDBURIReferences}.TABLE_NAME
+     * @param offset          the number of data table lines, that should be skipped (crawled URIs). If the offset is 0 or below, no lines wil be skipped
+     * @param onlyCrawledUris for each crawled URI there is a list with URIs, that were found by crawling that URI. If that parameter is {@code true}, only the already crawled URIs in these lists will be returned
+     */
     URIReferencesIterator(RDBConnector connector, long offset, boolean onlyCrawledUris) {
         if (offset <= 0) {
             cursor = r.db(RDBURIReferences.DATABASE_NAME).table(RDBURIReferences.TABLE_NAME).orderBy().optArg("index", r.asc("id")).run(connector.connection);

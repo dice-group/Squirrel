@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @RequestMapping(value = {"/","/home"}, produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(value = {"/", "/home"}, produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
     public String index() {
         return "<head>" +
-                "<title>Philipp and Waleed presents</title>" +
-                "</head>" +
-                "<body>" +
-                "<h1>Welcome :)</h1>" +
-                "</body>";
+            "<title>Philipp and Waleed presents</title>" +
+            "</head>" +
+            "<body>" +
+            "<h1>Welcome :)</h1>" +
+            "</body>";
     }
 }

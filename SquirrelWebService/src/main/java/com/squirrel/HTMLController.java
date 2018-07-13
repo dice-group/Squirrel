@@ -5,7 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -16,6 +15,7 @@ import java.util.Optional;
 
 /**
  * A simple HTML page generator/ connector
+ *
  * @author Philipp Heinisch
  */
 @RestController
@@ -24,7 +24,7 @@ public class HTMLController {
     /**
      * @return a HOME-page (just an HTML entry point)
      */
-    @RequestMapping(value = {"/","/home"}, produces = "text/html")
+    @RequestMapping(value = {"/", "/home"}, produces = "text/html")
     public String index() {
         return HTMLReader.getText("./WEB-INF/pages/index.html");
     }
@@ -52,9 +52,9 @@ public class HTMLController {
         File filePath = new File(path.substring(0, path.lastIndexOf('/')));
 
         if (filePath.isDirectory()) {
-            final String name = path.substring(path.lastIndexOf('/')+1, path.length());
+            final String name = path.substring(path.lastIndexOf('/') + 1, path.length());
             Optional<File> searchedFile = Arrays.stream(filePath.listFiles()).filter(f -> f.getName().startsWith(name)).findFirst();
-            if(searchedFile.isPresent()) {
+            if (searchedFile.isPresent()) {
                 return HTMLReader.getText(searchedFile.get().getAbsolutePath());
             }
             return HTMLReader.getHTMLErrorPage("The path " + path + " is  not existing!");

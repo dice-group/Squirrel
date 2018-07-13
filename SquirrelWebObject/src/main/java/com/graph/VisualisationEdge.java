@@ -1,6 +1,7 @@
 package com.graph;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class VisualisationEdge implements Serializable {
 
@@ -23,15 +24,21 @@ public class VisualisationEdge implements Serializable {
         weight++;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getSource() { return source.getId(); }
+    public String getSource() {
+        return source.getId();
+    }
 
     public VisualisationNode getSourceNode() {
         return source;
     }
 
-    public String getTarget() { return target.getId(); }
+    public String getTarget() {
+        return target.getId();
+    }
 
     public VisualisationNode getTargetNode() {
         return target;
@@ -40,5 +47,20 @@ public class VisualisationEdge implements Serializable {
     @Override
     public String toString() {
         return source + " -> " + target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VisualisationEdge)) return false;
+        VisualisationEdge that = (VisualisationEdge) o;
+        return weight == that.weight &&
+            Objects.equals(getSource(), that.getSource()) &&
+            Objects.equals(getTarget(), that.getTarget());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSource(), getTarget());
     }
 }

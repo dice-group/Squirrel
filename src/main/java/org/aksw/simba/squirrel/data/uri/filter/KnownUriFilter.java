@@ -1,7 +1,6 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 
 import java.util.List;
 
