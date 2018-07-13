@@ -110,7 +110,7 @@ public class CrawlingActivity {
         model.add(activity, MetaDataVocabulary.startedAtTime, model.createTypedLiteral(getDateStarted()));
         model.add(activity, MetaDataVocabulary.endedAtTime, model.createTypedLiteral(getDateEnded()));
         model.add(activity, MetaDataVocabulary.wasAssociatedWith, model.createTypedLiteral(getWorker().getId()));
-        if (getSink() instanceof TripleBasedSink) {
+        if (getSink() instanceof SparqlBasedSink) {
             model.add(activity, MetaDataVocabulary.hostedOn, model.createTypedLiteral(getHostedOn()));
         }
         model.add(resultGraph, MetaDataVocabulary.wasGeneratedBy, activity);
