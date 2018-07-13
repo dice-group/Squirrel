@@ -16,6 +16,7 @@ public class HDTAnalyzer implements Analyzer{
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		 try {
 			HDT hdt = HDTManager.loadHDT(data.getAbsolutePath(), null);
+						
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

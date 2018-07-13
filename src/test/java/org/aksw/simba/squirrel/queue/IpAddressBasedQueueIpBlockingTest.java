@@ -163,7 +163,7 @@ public class IpAddressBasedQueueIpBlockingTest {
                 // request URI and set it inside the RegularUriConsumer
                 List<CrawleableUri> uris = testClassInstance.queue.getNextUris();
                 Assert.assertNotNull("Shouldn't get null.", uris);
-                Assert.assertNotSame("Shouldn't get an empty list.", 0, uris.size());
+                Assert.assertNotEquals("Shouldn't get an empty list.", 0, uris.size());
                 regConsumer.blockedAddress = uris.get(0).getIpAddress();
                 // sleep for a long time
                 Thread.sleep(IP_BLOCKING_DURATION);
@@ -219,9 +219,9 @@ public class IpAddressBasedQueueIpBlockingTest {
                 while (!longDelayThreadIsDead) {
                     uris = testClassInstance.queue.getNextUris();
                     Assert.assertNotNull("Shouldn't get null.", uris);
-                    Assert.assertEquals("Shouldn't get an empty list.", 0, uris.size());
+                    Assert.assertNotEquals("Shouldn't get an empty list.", 0, uris.size());
                     for (CrawleableUri uri : uris) {
-                        Assert.assertNotSame("The retrieved URI should not have the IP blocked by another thread.",
+                        Assert.assertNotEquals("The retrieved URI should not have the IP blocked by another thread.",
                                 blockedAddress, uri.getIpAddress());
                     }
                     testClassInstance.queue.markIpAddressAsAccessible(uris.get(0).getIpAddress());

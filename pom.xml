@@ -136,11 +136,18 @@
         </dependency>
         
 		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
+		
 		<dependency>
 		    <groupId>org.rdfhdt</groupId>
 		    <artifactId>hdt-java-package</artifactId>
 		    <version>1.1</version>
 		    <type>pom</type>
+		    <exclusions>
+		        <exclusion>
+		          <groupId>junit</groupId> <!-- Exclude Project-D from Project-B -->
+		          <artifactId>junit-dep</artifactId>
+		        </exclusion>
+		      </exclusions>
 		</dependency>
         
 				 
@@ -231,7 +238,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            
+            <scope>test</scope>
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
