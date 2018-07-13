@@ -22,13 +22,12 @@
     <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
         <constructor-arg index="0" ref="workerComponent"/>
         <constructor-arg index="1" ref="sparqlStoreSinkBean"/>
-        <constructor-arg index="2" ref="metaDataHandler"/>
-        <constructor-arg index="3" ref="robotsManagerBean"/>
-        <constructor-arg index="4" ref="serializerBean"/>
-        <constructor-arg index="5" ref="uriCollectorBean"/>
-        <constructor-arg index="6" value="2000"/>
-        <constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log"/><!-- Logging -->
-        <constructor-arg index="8" value="true"/><!-- sendAleveMessages -->
+        <constructor-arg index="2" ref="robotsManagerBean"/>
+        <constructor-arg index="3" ref="serializerBean"/>
+        <constructor-arg index="4" ref="uriCollectorBean"/>
+        <constructor-arg index="5" value="2000"/>
+        <constructor-arg index="6" value="#{systemEnvironment['OUTPUT_FOLDER']}/log"/><!-- Logging -->
+        <constructor-arg index="7" value="true"/><!-- sendAleveMessages -->
     </bean>
 
     <!-- Output folder for FileBasedSink -->
@@ -46,6 +45,10 @@
                          value="contentset/update"/>
         <constructor-arg name="queryAppendix"
                          value="contentset/query"/>
+        <constructor-arg name="updateMetaDataAppendix"
+                         value="MetaData/update"/>
+        <constructor-arg name="queryMetaDataAppendix"
+                         value="MetaData/query"/>
     </bean>
 
     <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector">
@@ -76,11 +79,4 @@
         <constructor-arg index="1" value=""/>
         <constructor-arg index="2" value=""/>
     </bean>
-    <bean id="metaDataHandler" class="org.aksw.simba.squirrel.metadata.MetaDataHandler">
-        <constructor-arg index="0"
-                         value="#{'http://' + systemEnvironment['SPARQL_HOST_NAME'] + ':' + systemEnvironment['SPARQL_HOST_PORT'] + '/MetaData/update'}"/>
-        <constructor-arg index="1"
-                         value="#{'http://' + systemEnvironment['SPARQL_HOST_NAME'] + ':' + systemEnvironment['SPARQL_HOST_PORT'] + '/MetaData/update'}"/>
-    </bean>
-
 </beans>

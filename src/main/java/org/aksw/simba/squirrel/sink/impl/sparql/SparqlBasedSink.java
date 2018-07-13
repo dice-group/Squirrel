@@ -77,7 +77,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
         updateDatasetURI = prefix + updateAppendix;
         queryDatasetURI = prefix + queryAppendix;
         updateMetaDataUri = prefix + updateMetaDataAppendix;
-        queryMetaDataUri = prefix + queryAppendix;
+        queryMetaDataUri = prefix + queryMetaDataAppendix;
     }
 
     @Override
