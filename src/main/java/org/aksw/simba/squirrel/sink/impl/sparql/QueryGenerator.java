@@ -141,10 +141,7 @@ public class QueryGenerator {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
             stringBuilder.append("<");
-            //Otherwise the worker will
-            if (node.getURI().contains(" ")) {
-
-            }
+            //Should possibly be further improved
             stringBuilder.append(node.getURI().replace(" ", ""));
             stringBuilder.append(">");
         } else if (node.isBlank()) {

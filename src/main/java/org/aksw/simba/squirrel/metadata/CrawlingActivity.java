@@ -89,6 +89,9 @@ public class CrawlingActivity {
         this.state = state;
     }
 
+    /**
+     * Finish the crawling activity and send data to sink
+     */
     public void finishActivity() {
         dateEnded = new Date();
         prepareDataAndSendToSink();

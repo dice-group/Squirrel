@@ -5,6 +5,9 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
+/**
+ * This class contains all necessary Resources and Property for the metadata
+ */
 public class MetaDataVocabulary {
     public static final String baseProv = "http://www.w3.org/ns/prov#";
     public static final String baseSq = "http://w3id.org/squirrel/vocab#";
