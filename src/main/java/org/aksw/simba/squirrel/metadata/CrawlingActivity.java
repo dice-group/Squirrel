@@ -6,8 +6,12 @@ import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
@@ -16,7 +20,7 @@ import java.util.*;
 
 
 /**
- * Representation of Crawling activity. A crawling activity is started by a single worker. So, it contains a bunch of Uris
+ * Representation of Crawling activity. A crawling activity is started by a single worker, and sends this data to the sink. So, it contains a bunch of Uris
  * and some meta data, like timestamps for the start and end of the crawling activity.
  */
 public class CrawlingActivity {
@@ -58,10 +62,6 @@ public class CrawlingActivity {
      */
     private Worker worker;
 
-    /**
-     * Number of triples crawled by this activity.
-     */
-    private int numTriples;
 
     private String hostedOn = null;
 
@@ -95,26 +95,38 @@ public class CrawlingActivity {
         this.state = state;
     }
 
+    /**
+     * Finish the crawling activity and send data to sink
+     */
     public void finishActivity() {
-        countTriples();
         dateEnded = getLocalDateTime();
+        prepareDataAndSendToSink();
 
     }
 
     /**
-     * count the triples of the activity.
+     * Prepare the metadata and send it to the sink.
      */
-    private void countTriples() {
-        int sum = 0;
-        if (sink instanceof SparqlBasedSink) {
+    public void prepareDataAndSendToSink() {
+        Model model = ModelFactory.createDefaultModel();
+        Resource activity = ResourceFactory.createResource(getId());
+        Resource resultGraph = ResourceFactory.createResource(getGraphId());
+        Resource crawledUri = ResourceFactory.createResource(getCrawleableUri().getUri().toString());
 
-            //sum += ((SparqlBasedSink) sink).getNumberOfTriplesForGraph(uri);
-
-            numTriples = sum;
-        } else {
-            numTriples = -1;
+        model.add(activity, MetaDataVocabulary.status, model.createTypedLiteral(getState().toString()));
+        model.add(activity, MetaDataVocabulary.startedAtTime, model.createTypedLiteral(getDateStarted()));
+        model.add(activity, MetaDataVocabulary.endedAtTime, model.createTypedLiteral(getDateEnded()));
+        model.add(activity, MetaDataVocabulary.wasAssociatedWith, model.createTypedLiteral(getWorker().getId()));
+        if (getSink() instanceof TripleBasedSink) {
+            model.add(activity, MetaDataVocabulary.hostedOn, model.createTypedLiteral(getHostedOn()));
         }
+        model.add(resultGraph, MetaDataVocabulary.wasGeneratedBy, activity);
+        model.add(resultGraph, MetaDataVocabulary.uriName, crawledUri);
+
+        getSink().addMetaData(model);
+
     }
+
 
     public LocalDateTime getLocalDateTime() {
         return LocalDateTime.now();
@@ -174,9 +186,6 @@ public class CrawlingActivity {
 
     }
 
-    public int getNumTriples() {
-        return numTriples;
-    }
 
     public Worker getWorker() {
         return worker;
@@ -197,6 +206,10 @@ public class CrawlingActivity {
 
     public String getHostedOn() {
         return hostedOn;
+    }
+
+    public Sink getSink() {
+        return sink;
     }
 }
 

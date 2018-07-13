@@ -18,7 +18,6 @@ import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.metadata.CrawlingActivity;
-import org.aksw.simba.squirrel.metadata.MetaDataHandler;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
@@ -53,7 +52,6 @@ public class WorkerImpl implements Worker, Closeable {
 
     protected Frontier frontier;
     protected Sink sink;
-    protected MetaDataHandler metaDataHandler;
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
@@ -79,7 +77,6 @@ public class WorkerImpl implements Worker, Closeable {
      *            send new URIs to.
      * @param sink
      *            Sink used by this worker to store crawled data.
-     * @param metaDataHandler Handler used by this worker to store meta data.
      * @param manager
      *            RobotsManager for handling robots.txt files.
      * @param serializer
@@ -93,11 +90,10 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink, MetaDataHandler metaDataHandler, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
                       UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
-        this.metaDataHandler = metaDataHandler;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;
@@ -189,7 +185,7 @@ public class WorkerImpl implements Worker, Closeable {
         Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
             // calculate uuid for graph
-            uri.addData(CrawleableUri.UUID_KEY, "graph:" + UUID.randomUUID().toString());
+            uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
             CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
             if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
@@ -220,9 +216,7 @@ public class WorkerImpl implements Worker, Closeable {
                 }
             }
             crawlingActivity.finishActivity();
-            if (metaDataHandler != null && sink instanceof TripleBasedSink) {
-                metaDataHandler.addMetadata(crawlingActivity);
-            }
+
             // classify URIs
             Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
             while (uriMapEnumeration.hasMoreElements()) {

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * This class is used to provides templates for basic SPARQL commands needed in this project.
+ * This class is used to provides querys for basic SPARQL commands needed in this project.
  */
 public class QueryGenerator {
 
@@ -129,19 +129,33 @@ public class QueryGenerator {
         return getSelectQuery(graphID, false);
     }
 
+    /**
+     * Formats the node for a query
+     *
+     * @param node The node which should formated
+     * @return a robust representation of the node
+     * <p>
+     * Note: Should be updated in relation to the robustness of parsing.
+     */
     public static String formatNodeToString(Node node) {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
             stringBuilder.append("<");
-            stringBuilder.append(node.getURI());
+            //Should possibly be further improved
+            stringBuilder.append(node.getURI().replace(" ", ""));
             stringBuilder.append(">");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");
-            stringBuilder.append(node.getBlankNodeLabel());
+            //Should possibly be further improved
+            String label = node.getBlankNodeId().getLabelString().replace(":", "");
+            if (label.startsWith("-")) {
+                label = label.substring(1);
+            }
+            stringBuilder.append(label);
         } else if (node.isLiteral()) {
             stringBuilder.append("\"");
             //Should possibly be further improved
-            stringBuilder.append(node.getLiteral().getLexicalForm().replace("\n", "").replace("\"", "'"));
+            stringBuilder.append(node.getLiteral().getLexicalForm().replace("\n", "").replace("\"", "'").replace("\r", ""));
             stringBuilder.append("\"");
             if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
                 stringBuilder.append("@");

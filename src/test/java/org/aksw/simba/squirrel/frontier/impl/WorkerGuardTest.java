@@ -53,7 +53,7 @@ public class WorkerGuardTest {
         Serializer serializer = new GzipJavaUriSerializer();
         Sink sink = new FileBasedSink(new File(outputFolder), true);
         UriCollector collector = SqlBasedUriCollector.create(serializer);
-        worker = new WorkerImpl(null, sink, null, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
+        worker = new WorkerImpl(null, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),
             serializer, collector, 2000, outputFolder + File.separator + "log", true);
 
         workerComponent.setWorker(worker);

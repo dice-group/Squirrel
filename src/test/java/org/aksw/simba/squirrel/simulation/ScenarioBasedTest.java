@@ -136,7 +136,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         InMemorySink sink = new InMemorySink();
         Serializer serializer = new GzipJavaUriSerializer();
         UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
-        WorkerImpl worker = new WorkerImpl(frontier, sink, null,
+        WorkerImpl worker = new WorkerImpl(frontier, sink,
             new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
             null, false);
 
