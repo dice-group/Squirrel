@@ -9,9 +9,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * This class represents a URI and additional meta data that is helpful for
@@ -36,6 +34,7 @@ import java.util.TreeMap;
 public class CrawleableUri implements Serializable {
 
     public static final String UUID_KEY = "UUID";
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrawleableUri.class);
@@ -43,6 +42,7 @@ public class CrawleableUri implements Serializable {
     private static final String CHARSET_NAME = "UTF-8";
     private static final Charset ENCODING_CHARSET = Charset.forName(CHARSET_NAME);
     private static final int URI_START_INDEX = 5;
+
 
     private long timestampNextCrawl;
 
@@ -109,7 +109,53 @@ public class CrawleableUri implements Serializable {
         return new CrawleableUri(uri, ipAddress, UriType.values()[typeId]);
     }
 
-    private final URI uri;
+    public List<String> invokedClass (String ClassBinName)
+    {
+        List<String> k = new ArrayList<>();
+        try{
+            ClassLoader classLoader = this.getClass().getClassLoader();
+            Class loadedClass = classLoader.loadClass(ClassBinName);
+
+            for (Class c:loadedClass.getClasses()) {
+
+                k.add(c.getSimpleName());
+            }
+        }
+
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return k;
+
+    }
+
+        public static String getCallerClassName() {
+            StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
+            String callerClassName = null;
+            for (int i = 1; i < stElements.length; i++) {
+                StackTraceElement ste = stElements[i];
+                if (!ste.getClassName().equals(CrawleableUri.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") != 0) {
+                    if (callerClassName == null) {
+                        callerClassName = ste.getClassName();
+                    } else if (!callerClassName.equals(ste.getClassName())) {
+                        return ste.getClassName();
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
+
+
+    private  URI uri;
+
 
     private InetAddress ipAddress;
     @Deprecated
@@ -120,6 +166,7 @@ public class CrawleableUri implements Serializable {
     public CrawleableUri(URI uri) {
         this(uri, null);
     }
+
 
     public CrawleableUri(URI uri, InetAddress ipAddress) {
         this.uri = uri;
@@ -132,7 +179,6 @@ public class CrawleableUri implements Serializable {
         this.ipAddress = ipAddress;
         this.type = type;
     }
-
     public InetAddress getIpAddress() {
         return ipAddress;
     }
