@@ -1,14 +1,14 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-
 /**
  * This {@link UriFilter} checks whether the given URI has a known scheme.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -28,12 +28,12 @@ public class SchemeBasedUriFilter implements UriFilter {
      * Constructor using the {@link #DEFAULT_SCHEMES}.
      */
     public SchemeBasedUriFilter() {
-        this(new HashSet<String>(Arrays.asList(DEFAULT_SCHEMES)));
+        this(new HashSet<>(Arrays.asList(DEFAULT_SCHEMES)));
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param schemes
      *            the schemes that are accepted by this filter.
      */

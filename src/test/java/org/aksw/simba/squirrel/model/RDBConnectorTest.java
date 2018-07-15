@@ -1,10 +1,6 @@
 package org.aksw.simba.squirrel.model;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.ast.Map;
-import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Connection;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.RethinkDBBasedTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -15,9 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -102,7 +96,7 @@ public class RDBConnectorTest extends RethinkDBBasedTest {
         assert(cursor.hasNext());
         HashMap crawleableUri = (HashMap) cursor.next();
         long retrievedTimestamp = (long) crawleableUri.get("timestamp");
-        assert((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
+        assert ((System.currentTimeMillis() - retrievedTimestamp) > invalidationTime);
         cursor.close();
     }
 

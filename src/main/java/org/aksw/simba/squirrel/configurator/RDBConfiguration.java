@@ -3,8 +3,6 @@ package org.aksw.simba.squirrel.configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public class RDBConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBConfiguration.class);
 
@@ -22,7 +20,7 @@ public class RDBConfiguration extends Configuration {
     public static RDBConfiguration getRDBConfiguration() {
         String RDBHostName = getEnvRDBHostName();
         Integer RDBPort = getEnvRDBPort();
-        if(RDBHostName != null && RDBPort != null) {
+        if (RDBHostName != null && RDBPort != null) {
             return new RDBConfiguration(RDBHostName, RDBPort);
         } else {
             return null;

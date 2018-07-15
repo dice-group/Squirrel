@@ -62,7 +62,7 @@ public class UriUtils {
         return builder.toString();
     }
 
-    public static boolean isStringMatchRegexs(String string, String[] regexs) {
+    public static boolean isStringMatchRegexps(String string, String[] regexs) {
         for (String regex : regexs) {
             if (string.matches(regex)) {
                 return true;
@@ -70,7 +70,7 @@ public class UriUtils {
         }
         return false;
     }
-    
+
     public static String getDomainName(String url) throws URISyntaxException {
         URI uri = new URI(url);
         String domain = uri.getHost();

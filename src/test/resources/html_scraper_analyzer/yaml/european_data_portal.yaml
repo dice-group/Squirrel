@@ -1,0 +1,18 @@
+file_descriptor:
+ check:
+  domain: europeandataportal.eu
+ search-result-page:
+  regex: data/en/dataset?q=
+  resources: 
+    "http://sindice.com/vocab/search#link": .dataset-item .dataset-heading-wrapper h3 a
+    "http://www.w3.org/ns/ldp#pageSequence": .pagination li:not(.disabled) a 
+ detail-page:
+  regex: data/en/dataset/
+  resources: 
+    "http://www.w3.org/2000/01/rdf-schema#label": .embedded-content p
+    "http://open.vocab.org/terms/origin": tr:contains(Harvested from) .dataset-details
+    "http://purl.org/dc/terms/created": tr:contains(Created) .dataset-details
+    "http://dbpedia.org/ontology/dateLastUpdated": tr:contains(Last Updated) .dataset-details
+    "http://purl.org/dsnotify/vocab/eventset/sourceDataset": tr:contains(Source):eq(1) td a
+    "http://xmlns.com/foaf/0.1/Organization": tr:contains(Publisher) li:contains(Resource) a
+    "http://schema.org/downloadUrl": .btn-group a:has(.icon-external-link)
