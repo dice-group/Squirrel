@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Squirrel</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+</head>
+<body bgcolor="#d3d3d3">
+<table width="100%" cellpadding="8px">
+  <tr>
+  <tr>
+    <td class="nopadding" colspan="2">
+      <div class="topnav">
+        <a href="/pages/index.html">Home</a> |
+        <a href="/pages/graph.html">Crawled Graph</a> |
+        <a href="/pages/templates/fact-check.html">Fact Check</a> |
+        <a href="/pages/templates/crawler.html">Crawler</a> |
+        <a class="active" href="/pages/templates/squirrel.html">Squirrel</a> |
+        <a href="/pages/templates/about.html">About Us</a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div class="jumbotron">
+  <div class="big-image squirrel-img"></div>
+</div>
+
+<div class="container">
+  <div class="markdown-body">
+    <h1><a id="user-content-squirrel" class="anchor" href="#squirrel" aria-hidden="true"></a>SQUIRREL</h1>
+
+    <p>
+      <a href="https://philippheinisch.de/img/PG/squirrel_components_updated.pdf">SQUIRREL updated (20.11.2017)</a>
+      is our link-data-crawler. We should develop him.
+    </p>
+
+    <hr>
+
+    <h2>
+      <a id="user-content-overview-from-20102017" class="anchor" href="#overview-from-20102017" aria-hidden="true">
+        <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+      </a>
+      Overview (from 20.10.2017)
+    </h2>
+
+    <p>
+      <img
+        src="https://camo.githubusercontent.com/28901993f99557d4a96587704aa2697ff314ae78/68747470733a2f2f7777772e7068696c6970706865696e697363682e64652f696d672f50472f436f6d706f6e656e74735f535155495252454c2e706466"
+        alt="Overview about SQUIRREL from 20.10.2017"
+        data-canonical-src="https://www.philippheinisch.de/img/PG/Components_SQUIRREL.pdf">
+    </p>
+
+    <h3>
+      <a id="user-content-datauri" class="anchor" href="#datauri" aria-hidden="true"></a>
+      data.uri
+    </h3>
+
+    <p>
+      The "links" of the Linked-data. All belong to CrawableUri's and they have a specific byte pattern (maybe contains
+      IP
+      adresses). There are 3 types:
+    </p>
+
+    <h4>
+      <a id="user-content-dereferenceable" class="anchor" href="#dereferenceable" aria-hidden="true"></a>
+      DEREFERENCEABLE
+    </h4>
+
+    <p>You have a URI, take a URI and send a request</p>
+
+    <p>
+      =&gt; E.g.: <a href="http://w.de/Berlin">http://w.de/Berlin</a> -&gt; DEREFERENCEABLE: means you can open them, to
+      get to know information about Berlin <strong>(answer is expected as RDF)</strong>
+    </p>
+
+    <h4>
+      <a id="user-content-sparql" class="anchor" href="#sparql" aria-hidden="true"></a>
+      SPARQL
+    </h4>
+
+    <p>URI endpoint - here you can ask the endpoint with SPARQL questions to "download" the conent.</p>
+
+    <h4>
+      <a id="user-content-dump" class="anchor" href="#dump" aria-hidden="true"></a>
+      DUMP</h4>
+    <p>URI is a dump file</p>
+    <h3>
+      <a id="user-content-fetcher" class="anchor" href="#fetcher" aria-hidden="true"></a>Fetcher</h3>
+    <p>Strong component between Workers and sink.</p>
+    <p>Fetches triples from a dump, FTP or with SPARQL in put it into the sink</p>
+    <h3>
+      <a id="user-content-frontier" class="anchor" href="#frontier" aria-hidden="true"></a>Frontier</h3>
+    <p>A Frontier is a central class of the crawler managing a queue of URIs that should be crawled in the future =&gt;
+      Worker.
+      This includes to give access to the queue in terms of</p>
+    <ol>
+      <li>getting the next URIs to crawl</li>
+      <li>adding new URIs to the queue</li>
+    </ol>
+    <p>Note that the Frontier has the ability to check whether a URI should be crawled and, thus, should be added to the
+      queue
+      or not. For example, a Frontier might not add a URI that has already been crawled.</p>
+    <h4>
+      <a id="user-content-rdbconnector--rethinkdb" class="anchor" href="#rdbconnector--rethinkdb"
+         aria-hidden="true"></a>RDBConnector =&gt; rethinkDB</h4>
+    <p>Stores the (pending) URIs
+      <del>Queue:
+        <code>RDBQueue extends AbstractIpAddressBasedQueue</code>
+      </del>
+    </p>
+    <p>Contains to tables:</p>
+    <ul>
+      <li>Table 1: Pending-URIs-Queue: Dictionary&lt;ipAdress, hashMap&gt;</li>
+      <li>Table 2: List of URIs already known/ used= crawled by Frontier [Set]</li>
+    </ul>
+    <p>
+      <em>Note: if we want, we can use something other for the URI-storing-task!</em>
+    </p>
+    <h4>
+      <a id="user-content-queue" class="anchor" href="#queue" aria-hidden="true"></a>Queue</h4>
+    <h5>
+      <a id="user-content-uriqueue" class="anchor" href="#uriqueue" aria-hidden="true"></a>URIQueue</h5>
+    <p>managing the URIs that should be crawled next.</p>
+    <p>
+      <del>Until yet it seems there is no implementation for that. Michael?</del>
+    </p>
+    <h6>
+      <a id="user-content-ipaddressbasedqueue" class="anchor" href="#ipaddressbasedqueue" aria-hidden="true"></a>IpAddressBasedQueue
+    </h6>
+    <p>This extension of the {@link UriQueue} interface defines additional methods enabling the queue to manage the
+      retrieving
+      of chunks of URIs based on IP addresses. If a chunk is returned by this queue, the IP addresses are marked as
+      blocked.
+      No other chunk will contain URIs of these IP addresses until the method {@link
+      #markIpAddressAsAccessible(InetAddress)}
+      is called to free the IP address.</p>
+    <h3>
+      <a id="user-content-rabbit" class="anchor" href="#rabbit" aria-hidden="true"></a>Rabbit</h3>
+    <p>
+      <img
+        src="https://camo.githubusercontent.com/fc681bad86446ce992c3a6db8bb8d2f63e934189/687474703a2f2f7777772e7261626269746d712e636f6d2f696d672f5261626269744d512d6c6f676f2e737667"
+        alt="RabbitMQ logo" data-canonical-src="http://www.rabbitmq.com/img/RabbitMQ-logo.svg">
+    </p>
+    <p>Rabbit is a communication
+      <a href="../Docker">container</a>, that reminds on the internet. With the rabbitMQ, you can send and receive
+      <strong>Java objects</strong> or JSON objects. The principle behind is the producer-consumer-principle in
+      combination with
+      queues. There can be different queues, each queue is like an own separate sub-container.</p>
+    <ul>
+      <li>Producer: class-object/ container, that's produce data. It adds the data a certain queue as byte streams.</li>
+      <li>Consumer: class-object/ container, that's consumes data. It observes a certain queue and whenever there is
+        something
+        in it, it gets and removed it from the front of the queue to the end, byte stream by byte stream
+      </li>
+    </ul>
+    <p>To get an idea how to use the rabiitMQ, read this
+      <a href="http://www.rabbitmq.com/tutorials/tutorial-one-java.html">toturial</a>. Notice, that there is already a
+      rabbitMQ-container:</p>
+    <div class="highlight highlight-source-java" style="text-align: justify">
+      <pre><span class="pl-c"><span class="pl-c">//</span>Build rabbit queue to the web (producer)</span>
+      <span class="pl-smi">ConnectionFactory</span> factory <span class="pl-k">=</span> <span
+          class="pl-k">new</span> <span class="pl-smi">ConnectionFactory</span>();
+      factory<span class="pl-k">.</span>setHost(<span class="pl-s"><span class="pl-pds">"</span>rabbit<span
+          class="pl-pds">"</span></span>);
+      factory<span class="pl-k">.</span>setUsername(<span class="pl-s"><span class="pl-pds">"</span>guest<span
+          class="pl-pds">"</span></span>);<br>
+      factory<span class="pl-k">.</span>setPassword(<span class="pl-s"><span class="pl-pds">"</span>guest<span
+          class="pl-pds">"</span></span>);
+      <span class="pl-smi">Connection</span> connection <span class="pl-k">=</span> factory<span class="pl-k">.</span>newConnection();
+      webqueuechannel <span class="pl-k">=</span> connection<span class="pl-k">.</span>createChannel();<br>
+      webqueuechannel<span class="pl-k">.</span>queueDeclare(<span class="pl-c1">WEB_QUEUE_NAME</span>, <span
+          class="pl-c1">false</span>, <span class="pl-c1">false</span>, <span class="pl-c1">false</span>, <span
+          class="pl-c1">null</span>);</pre>
+    </div>
+    <p>If you want to have a closer look at the queues while there is a
+      <code>docker compose</code> running, just visit this
+      <a href="http://localhost:15672/">link</a>. Password and Username is
+      <code>guest</code>.</p>
+    <h4>
+      <a id="user-content-rabbit-in-squirrel" class="anchor" href="#rabbit-in-squirrel" aria-hidden="true"></a>Rabbit in
+      SQUIRREL</h4>
+    <p>The rabbit is used for following communications:</p>
+    <ul>
+      <li>Frontier --&gt; Web-Service</li>
+      <li>Frontier --&gt; Worker</li>
+    </ul>
+    <p>Further classes:</p>
+    <ul>
+      <li>
+        <del>
+          <code>RabbitMQHelper</code>: A simple helper class that manages the translation from Java objects into JSON
+          byte arrays and back.
+        </del>
+        <em>Now
+          <a
+            href="http://openbook.rheinwerk-verlag.de/javainsel9/javainsel_17_010.htm#mj4cfaf8e1986ce009185bb267467eb491">serialized</a>
+          Java objects are sent instead of JSON, but it's still a byte array</em>
+      </li>
+    </ul>
+    <h5>
+      <a id="user-content-msgs" class="anchor" href="#msgs" aria-hidden="true"></a>msgs</h5>
+    <p>Contains UriSet, UriSetRequest and CrawlingResult</p>
+    <h3>
+      <a id="user-content-robots" class="anchor" href="#robots" aria-hidden="true"></a>Robots</h3>
+    <p>Has nothing to to do with Bots (Crawlers), but with the
+      <a href="en.wikipedia.org/wiki/Robots_exclusion_standard">robots.txt</a> file on a Server, that should be read
+      from the Crawler =&gt; Worker.</p>
+    <h3>
+      <a id="user-content-sink" class="anchor" href="#sink" aria-hidden="true"></a>Sink</h3>
+    <p>work with the Triple store!</p>
+    <ul>
+      <li>stores the resources in a Map with an underlying Model</li>
+      <li>has a
+        <code>closedSinks</code> list: Set of URIs for which the sink has already been closed.
+      </li>
+    </ul>
+    <h3>
+      <a id="user-content-worker" class="anchor" href="#worker" aria-hidden="true"></a>Worker</h3>
+    <p>2 main methods:</p>
+    <ul>
+      <li>
+        <code>crawl(List&lt;CrawleableUri&gt; URIs)</code>: Crawls the given URIs and sends URIs that have been found
+        while crawling to the frontier.
+      </li>
+      <li>
+        <code>performCrawling(CrawleableUri uri, List&lt;CrawleableUri&gt; newUris)</code>: Crawls the given URI and
+        adds new URIs that have been found while crawling to the given list of new URIs.
+      </li>
+    </ul>
+    <hr>
+    <h2>
+      <a id="user-content-more-detailed-look-to-the-components-and-their-relationships" class="anchor"
+         href="#more-detailed-look-to-the-components-and-their-relationships"
+         aria-hidden="true"></a>More detailed look to the components and their relationships</h2>
+    <h3>
+      <a id="user-content-frontier-1" class="anchor" href="#frontier-1" aria-hidden="true"></a>Frontier</h3>
+    <p>The frontier now keeps track of all currently working workers and recognizes if some worker is dead. What might
+      be strange
+      in the code: There is an interface called 'Frontier' which is implemented by both the classes 'FrontierImpl' and
+      'WorkerComponent'.
+      So, the WorkerComponent is also a frontier for the worker.</p>
+    <p>
+      <img
+        src="https://camo.githubusercontent.com/ba9e686d0caa855df53c99bbb7c89eee93eae19e/68747470733a2f2f7068696c6970706865696e697363682e64652f696d672f50472f756d6c5f576f726b657246726f6e746965722e706e67"
+        alt="" data-canonical-src="https://philippheinisch.de/img/PG/uml_WorkerFrontier.png">
+    </p>
+    <h4>
+      <a id="user-content-worker-1" class="anchor" href="#worker-1" aria-hidden="true"></a>Worker</h4>
+    <p>
+      <em>restructuring...</em>
+    </p>
+    <ul>
+      <li>each Worker is
+        <em>process</em>, that runs on a different (virtual) machines
+        <strong>
+          <em>(see Docker-Container)</em>
+        </strong> as the Crawler itself
+        <ul>
+          <li>contains e.g. 2 Threads, one Crawlerthread and one Observer-"I'm alive"-Thread</li>
+        </ul>
+      </li>
+      <li>the Frontier has not (and should not) have a List of all Workers, but each Worker has a reference to the
+        Frontier
+        <ul>
+          <li>we have not to handle connection errors (not implement ISO-OSI new)</li>
+        </ul>
+      </li>
+      <li>the Frontier provides URI packets. Each packet has a set of URIs - all have the same IP-address as reference
+        (consider
+        the
+        <em>robots.txt</em>). The Frontier assign each free Worker exact one packets - if the Work is done, the Worker
+        is free
+        again
+        <ul>
+          <li>TODO: Workers may take a long time to finish one packet - don't work with Timeouts, but with: "I'm
+            alive!"
+          </li>
+          <li>direct note from the conversation:
+            <em>"what we are doing is our front end has a queue has packages of URI, each URI has an IP. IP is blocked
+              until
+              its completely handled by the worker.</em>
+            <em>what happens if worker dies suddenly? that means frontier needs to handle that worker has died and has
+              to reassign
+              the IP knowing worker is dead."</em>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <h3>
+      <a id="user-content-sink-1" class="anchor" href="#sink-1" aria-hidden="true"></a>Sink</h3>
+    <p>
+      <em>pending...</em>
+    </p>
+    <ul>
+      <li>
+        <a href="www.w3.org/standards/semanticweb/data.html">General linked data</a>
+      </li>
+    </ul>
+    <h4>
+      <a id="user-content-triple-store-sink" class="anchor" href="#triple-store-sink" aria-hidden="true"></a>Triple-store
+      sink</h4>
+    <p>The key is RDF!</p>
+    <hr>
+    <p>Triple store = RDF store = linked data store</p>
+    <ul>
+      <li>TODO: define the Metadata, e.g. upb.com/gr has been crawled on 16.10.2017 17:06.
+        <ul>
+          <li>
+            <a href="www.dublincore.org/documents/dcmi-terms/">Cublin Core Metadata Initiative Terms (or just
+              DCTerms)</a> gives a lot of general properties that could be used
+            to store meta data about crawled resources. I am not sure whether one of them is useful but you might want
+            to
+            have a look.
+          </li>
+          <li>
+            <a href="www.w3.org/2001/XMLSchema#">XSD</a> is used for expressing literals, e.g., date/time values, e.g:
+            <code>"42"^^xsd:integer</code>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <hr>
+    <p>
+      <strong>USE</strong> Triple-Store, not implement it new… and the choice of the Triple-Store-DB is:
+      <a href="http://docs.openlinksw.com/virtuoso/rdfandsparql.html">Virtuoso</a>
+    </p>
+
+  </div>
+</div>
+
+</body>
+</html>

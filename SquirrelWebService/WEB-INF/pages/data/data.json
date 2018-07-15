@@ -1,0 +1,171 @@
+{
+  "nodes": [
+    {
+      "id": "n0",
+      "uri": "http://NodeA/resources/resource1",
+      "ip": "NodeA/172.18.0.6",
+      "x": 0,
+      "y": 6,
+      "size": 3,
+      "color": "#ffc800",
+      "label": "http://NodeA/resources/resource1"
+    },
+    {
+      "id": "n1",
+      "uri": "http://NodeB/resources/resource3",
+      "ip": "NodeB/172.18.0.7",
+      "x": 1,
+      "y": 4,
+      "size": 3,
+      "color": "#00ff00",
+      "label": "http://NodeB/resources/resource3"
+    },
+    {
+      "id": "n3",
+      "uri": "http://NodeC/resources/resource3",
+      "ip": "NodeC/172.18.0.9",
+      "x": 3,
+      "y": 6,
+      "size": 3,
+      "color": "#808080",
+      "label": "http://NodeC/resources/resource3"
+    },
+    {
+      "id": "n4",
+      "uri": "http://NodeB/resources/resource2",
+      "ip": "NodeB/172.18.0.7",
+      "x": 4,
+      "y": 1,
+      "size": 3,
+      "color": "#00ff00",
+      "label": "http://NodeB/resources/resource2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e2",
+      "source": "n0",
+      "target": "n1",
+      "targetNode": {
+        "id": "n1",
+        "uri": "http://NodeB/resources/resource3",
+        "ip": "NodeB/172.18.0.7",
+        "x": 1,
+        "y": 4,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource3"
+      },
+      "sourceNode": {
+        "id": "n0",
+        "uri": "http://NodeA/resources/resource1",
+        "ip": "NodeA/172.18.0.6",
+        "x": 0,
+        "y": 6,
+        "size": 3,
+        "color": "#ffc800",
+        "label": "http://NodeA/resources/resource1"
+      }
+    },
+    {
+      "id": "e5",
+      "source": "n1",
+      "target": "n4",
+      "targetNode": {
+        "id": "n4",
+        "uri": "http://NodeB/resources/resource2",
+        "ip": "NodeB/172.18.0.7",
+        "x": 4,
+        "y": 1,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource2"
+      },
+      "sourceNode": {
+        "id": "n1",
+        "uri": "http://NodeB/resources/resource3",
+        "ip": "NodeB/172.18.0.7",
+        "x": 1,
+        "y": 4,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource3"
+      }
+    },
+    {
+      "id": "e6",
+      "source": "n4",
+      "target": "n3",
+      "targetNode": {
+        "id": "n3",
+        "uri": "http://NodeC/resources/resource3",
+        "ip": "NodeC/172.18.0.9",
+        "x": 3,
+        "y": 6,
+        "size": 3,
+        "color": "#808080",
+        "label": "http://NodeC/resources/resource3"
+      },
+      "sourceNode": {
+        "id": "n4",
+        "uri": "http://NodeB/resources/resource2",
+        "ip": "NodeB/172.18.0.7",
+        "x": 4,
+        "y": 1,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource2"
+      }
+    },
+    {
+      "id": "e7",
+      "source": "n4",
+      "target": "n3",
+      "targetNode": {
+        "id": "n3",
+        "uri": "http://NodeC/resources/resource3",
+        "ip": "NodeC/172.18.0.9",
+        "x": 3,
+        "y": 6,
+        "size": 3,
+        "color": "#808080",
+        "label": "http://NodeC/resources/resource3"
+      },
+      "sourceNode": {
+        "id": "n4",
+        "uri": "http://NodeB/resources/resource2",
+        "ip": "NodeB/172.18.0.7",
+        "x": 4,
+        "y": 1,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource2"
+      }
+    },
+    {
+      "id": "e8",
+      "source": "n1",
+      "target": "n4",
+      "targetNode": {
+        "id": "n4",
+        "uri": "http://NodeB/resources/resource2",
+        "ip": "NodeB/172.18.0.7",
+        "x": 4,
+        "y": 1,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource2"
+      },
+      "sourceNode": {
+        "id": "n1",
+        "uri": "http://NodeB/resources/resource3",
+        "ip": "NodeB/172.18.0.7",
+        "x": 1,
+        "y": 4,
+        "size": 3,
+        "color": "#00ff00",
+        "label": "http://NodeB/resources/resource3"
+      }
+    }
+  ]
+}
