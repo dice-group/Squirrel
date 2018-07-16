@@ -72,22 +72,6 @@ public class RDFAnalyzer implements Analyzer {
             		}
             		
             	}
-            	
-//                InputStream is = new FileInputStream(data);
-//                lang = RDFLanguages.contentTypeToLang(tika.detect(is));
-//                try {
-//                	RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
-//                }catch(Exception e) {
-//                	if(Lang.NTRIPLES.equals(lang)) {
-//	                	LOGGER.warn("Could not parse file as N-Triples. Trying N-Quads...");
-//	                	RDFDataMgr.parse(filtered, data.getAbsolutePath(), Lang.N3);
-//	                } else 
-//	                {
-//	                	throw e;
-//	                }   	
-//                }finally {
-//					is.close();
-//				}
             }
             
             
