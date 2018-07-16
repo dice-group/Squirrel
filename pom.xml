@@ -259,12 +259,12 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
                 <configuration>
-                    <!-- filter all the META-INF files of other artifacts -->
+                     --><!-- filter all the META-INF files of other artifacts --><!--
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -292,6 +292,33 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>0.9.6</version>
+                <configuration>
+                    <!-- <from>
+                        <image>openjdk:alpine</image>
+                    </from> -->
+                    <to>
+                        <image>dicegroup/squirrel-base:${project.version}</image>
+                    </to>
+                    <container>
+                        <mainClass>org.hobbit.core.run.ComponentStarter</mainClass>
+                        <args>
+                            <arg>org.aksw.simba.squirrel.components.FrontierComponent</arg>
+                        </args>
+                    </container>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>dockerBuild</goal>
                         </goals>
                     </execution>
                 </executions>
