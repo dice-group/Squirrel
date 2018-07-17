@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.analyzer.impl.HDTAnalyzer;
 import org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -25,6 +26,7 @@ public class SimpleOrderedAnalyzerManager implements Analyzer{
 	
 	private static final String RDF = "RDF";
 	private static final String HTML = "HTML";
+	private static final String HDT = "HDT";
 	
 	
 	private Map<String, Analyzer> analyzers;
@@ -34,6 +36,7 @@ public class SimpleOrderedAnalyzerManager implements Analyzer{
 		analyzers = new HashMap<String, Analyzer>();
 		analyzers.put(RDF, new RDFAnalyzer(uriCollector));
 		analyzers.put(HTML, new HTMLScraperAnalyzer(uriCollector));
+		analyzers.put(HDT, new HDTAnalyzer(uriCollector));
 	}
 	
 
@@ -51,6 +54,8 @@ public class SimpleOrderedAnalyzerManager implements Analyzer{
 			String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
 			if( (contentType != null && contentType.equals("text/html")) || mimeType.equals("text/html")) {
 				iterator =  analyzers.get(HTML).analyze(curi, data, sink);
+			}else if(contentType.equals("application/octet-stream") || mimeType.equals("application/octet-stream")) {
+				iterator =  analyzers.get(HDT).analyze(curi, data, sink);
 			}else {
 				iterator =  analyzers.get(RDF).analyze(curi, data, sink);
 			}
