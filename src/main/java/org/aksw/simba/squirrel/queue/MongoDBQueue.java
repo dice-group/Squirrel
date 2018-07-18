@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -40,6 +41,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     private Serializer serializer;
     private final String DB_NAME ="squirrel";
     private final String COLLECTION_NAME = "queue";
+    private final String COLLECTION_URIS = "uris";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBQueue.class);
 
@@ -68,7 +70,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		MongoDBQueue queue = new MongoDBQueue(host, port);
 		queue.open();
 		
-		URI uri = new URI("https://g1.globo.com/politica");
+		URI uri = new URI("https://g1.globo.com/saude");
 		CrawleableUri curi = new CrawleableUri(uri);
 		curi.setIpAddress(InetAddress.getByName(uri.getHost()));
 		
@@ -79,6 +81,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	@Override
 	public void close() {
 		mongoDB.getCollection(COLLECTION_NAME).drop();
+		mongoDB.getCollection(COLLECTION_URIS).drop();
 		client.close();
 	}
 
@@ -87,8 +90,11 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		mongoDB = client.getDatabase(DB_NAME);
 		if(!queueTableExists()) {
 			mongoDB.createCollection(COLLECTION_NAME);
+			mongoDB.createCollection(COLLECTION_URIS);
 			MongoCollection<Document> mongoCollection =  mongoDB.getCollection(COLLECTION_NAME);
+			MongoCollection<Document> mongoCollectionUris =  mongoDB.getCollection(COLLECTION_URIS);
 			mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("ipAddress"), Indexes.ascending("type")));
+			mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("ipAddress"),Indexes.ascending("type")));
 		}
 
 	}
@@ -106,7 +112,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	protected void addToQueue(CrawleableUri uri) {
 		 List<?> ipAddressTypeKey = getIpAddressTypeKey(uri);
 	        // if URI exists update the uris list
-	        if(queueContainsIpAddressTypeKey(ipAddressTypeKey)) {
+	        if(queueContainsIpAddressTypeKey(uri,ipAddressTypeKey)) {
 	            LOGGER.debug("TypeKey is in the queue already");
 	            addCrawleableUri(uri, ipAddressTypeKey);
 	        } else {
@@ -148,20 +154,18 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 
 	@Override
 	protected List<CrawleableUri> getUris(IpUriTypePair pair) {
-	        
-	        Document doc = mongoDB.getCollection(COLLECTION_NAME).find(new Document("ipAddress", pair.ip.getHostAddress().toString())
-    				.append("type", pair.type.toString())).first();
+		
+		Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(new Document("ipAddress", pair.ip.getHostAddress().toString())
+				.append("type", pair.type.toString())).iterator();
     		
-    		@SuppressWarnings("unchecked")
-			Set<Document> setUris = new LinkedHashSet<Document>((ArrayList <Document>) doc.get("uris"));
     		
     		List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
     		
     		try {
-	    		for(Document document : setUris) {
+    			while(uriDocs.hasNext()) {
+    				listUris.add( serializer.deserialize( ((Binary) uriDocs.next().get("uri")).getData()) );
+    			}
 
-	    			listUris.add( serializer.deserialize( ((Binary) document.get("uri")).getData()) );
-	    		}
     		}catch (Exception e) {
     			LOGGER.error("Error while retrieving uri from MongoDBQueue",e);
 			}
@@ -171,23 +175,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	        return listUris;
 	}
 	
-	 private List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
-	        List<CrawleableUri> resultUris = new ArrayList<CrawleableUri>();
-	        
-	        
-
-	        for (Object uriString : uris) {
-	        	try {
-	            resultUris.add( serializer.deserialize((byte[]) uriString ));
-	        	}catch (Exception e) {
-	        		LOGGER.error("Couldn't deserialize uri", e);
-				}
-	        }
-
-	        return resultUris;
-	    }
-	
-	public boolean queueContainsIpAddressTypeKey(List<?> ipAddressTypeKey) {
+	public boolean queueContainsIpAddressTypeKey(CrawleableUri curi ,List<?> ipAddressTypeKey) {
 		
 		Iterator<Document>  iterator = mongoDB.getCollection(COLLECTION_NAME).find(new Document("ipAddress", ipAddressTypeKey.get(0)).
 				append("type", ipAddressTypeKey.get(1))).iterator();
@@ -200,31 +188,19 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		
     }
 	
-    @SuppressWarnings("unchecked")
 	public void addCrawleableUri(CrawleableUri uri, List<?> ipAddressTypeKey) {
 
     	try {
     		
     		byte [] suri = serializer.serialize(uri);
     		
-    		Document doc = mongoDB.getCollection(COLLECTION_NAME).find(new Document("ipAddress", ipAddressTypeKey.get(0))
-    				.append("type", ipAddressTypeKey.get(1))).first();
+    		Document doc = mongoDB.getCollection(COLLECTION_URIS).find(new Document("ipAddress", ipAddressTypeKey.get(0))
+    				.append("type", ipAddressTypeKey.get(1)).append("uri", new Binary(suri)) ).first();
     		
-    		Set<Document> setUris = new LinkedHashSet<Document>((ArrayList <Document>) doc.get("uris"));
+    		if(doc == null) {
+    			mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
+    		}
     		
-    		
-    		Document docUri = new Document();
-    		docUri.put("_id", uri.getUri().hashCode());
-    		docUri.put("uri", new Binary(suri));
-    		
-    		setUris.add(docUri);
-    		
-    		doc.put("uris", setUris);
-    		
-    		mongoDB.getCollection(COLLECTION_NAME).updateOne(new Document("ipAddress",ipAddressTypeKey.get(0).toString()).append("type",ipAddressTypeKey.get(1)),
-    				set("uris", setUris));
-    		
-    		LOGGER.debug("Inserted existing UriTypePair");
 
     	} catch (Exception e) {
 			LOGGER.error("Error while adding uri to MongoDBQueue",e);
@@ -233,12 +209,13 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	
     public void addCrawleableUri(CrawleableUri uri) {
     
-    		mongoDB.getCollection(COLLECTION_NAME).insertOne(crawleableUriToMongoDocument(uri));
+    	mongoDB.getCollection(COLLECTION_NAME).insertOne(crawleableUriToMongoDocument(uri)[0]);
+    	mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
     	  
     	  LOGGER.debug("Inserted new UriTypePair");
     }
     
-public Document crawleableUriToMongoDocument(CrawleableUri uri) {
+    public Document[] crawleableUriToMongoDocument(CrawleableUri uri) {
     	
     	byte[] suri = null;
     	
@@ -253,16 +230,22 @@ public Document crawleableUriToMongoDocument(CrawleableUri uri) {
         InetAddress ipAddress = uri.getIpAddress();
         UriType uriType = uri.getType();
         
-        Document doc = new Document();
-        doc.put("_id", uri.getUri().hashCode());
-        doc.put("uri", new Binary(suri));
+        Document docUri = new Document();
+        docUri.put("_id", uri.getUri().hashCode());
+        docUri.put("ipAddress", ipAddress.getHostAddress());
+        docUri.put("type", uriType.toString());
+        docUri.put("uri", new Binary(suri));
         
-        Set<Document> set = new LinkedHashSet<Document>();
-        set.add(doc);
+        Document docIp = new Document();
+        docIp.put("ipAddress", ipAddress.getHostAddress());
+        docIp.put("type", uriType.toString());
         
-        return new Document("uris", set)
-        		.append("type", uriType.toString())
-        		.append("ipAddress", ipAddress.getHostAddress());
+        Document[] docs = new Document[2];
+        docs[0] = docIp; 
+        docs[1] = docUri; 
+
+        
+        return docs;
         
     }
     

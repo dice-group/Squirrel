@@ -18,14 +18,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("rawtypes")
-public class MongoDBQueueTest extends MongoDBBasedTest {
+public class MongoDBQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private MongoDBQueue mongodbQueue;
 
     @Before
     public void setUp() throws Exception {
-        mongodbQueue = new MongoDBQueue("localhost", 58027);
+    	mongodbQueue = new MongoDBQueue("localhost", 58027);
+    	
+//    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -76,9 +78,9 @@ public class MongoDBQueueTest extends MongoDBBasedTest {
     public void queueContainsIpAddressTypeKey() throws Exception {
         mongodbQueue.open();
         List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(0));
-        assertFalse(mongodbQueue.queueContainsIpAddressTypeKey(iatKey));
+        assertFalse(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
         mongodbQueue.addToQueue(uris.get(0));
-        assertTrue(mongodbQueue.queueContainsIpAddressTypeKey(iatKey));
+        assertTrue(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
         mongodbQueue.close();
     }
 
