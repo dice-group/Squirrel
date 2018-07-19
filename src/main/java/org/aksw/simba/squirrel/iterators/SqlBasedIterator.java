@@ -74,6 +74,12 @@ public class SqlBasedIterator implements Iterator<byte[]> {
                     consumed = false;
                 }
             }
+            
+            if(!hasNext) {
+            	rs.close();
+            	ps.close();
+            }
+            
             return hasNext;
         } catch (SQLException e) {
             LOGGER.error("Exception while iterating over the results. Returning null.", e);

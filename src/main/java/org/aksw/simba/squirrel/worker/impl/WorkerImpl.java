@@ -49,8 +49,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
-    @Autowired
-    protected SparqlBasedFetcher sparqlBasedFetcher;
+
     protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
@@ -178,7 +177,7 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (InterruptedException e) {
                 LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
             }
-            LOGGER.debug("I start crawling {} now...", uri);
+            LOGGER.warn("I start crawling {} now...", uri);
 
             
             FileManager fm = new FileManager();
