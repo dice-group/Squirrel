@@ -17,8 +17,8 @@ public class SqlBasedIterator implements Iterator<byte[]> {
     protected boolean consumed = true;
     protected boolean hasNext = true;
     private int start = 0;
-    private int next = 5;
-    private int page = 5;
+    private int next = 100;
+    private int page = 100;
 
     public SqlBasedIterator(PreparedStatement ps) {
         this.ps = ps;
