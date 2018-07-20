@@ -60,6 +60,7 @@ public class SimpleUriCollector implements UriCollector {
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
+    	total_uris = 0;
         urisOfUris.remove(uri.getUri().toString());
     }
 
