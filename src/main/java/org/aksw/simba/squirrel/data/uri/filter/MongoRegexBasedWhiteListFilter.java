@@ -13,17 +13,17 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
+public class MongoRegexBasedWhiteListFilter extends MongoDBKnowUriFilter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MongoRegexBasedWhiteListFilter.class);
 
 	private Set<String> whiteList;
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port) {
+	public MongoRegexBasedWhiteListFilter(String hostname, Integer port) {
 		super(hostname, port);
 	}
 
-	public RegexBasedWhiteListFilter(String hostname, Integer port, File whitelistfile) {
+	public MongoRegexBasedWhiteListFilter(String hostname, Integer port, File whitelistfile) {
 		super(hostname, port);
 		try {
 			whiteList = loadWhiteList(whitelistfile);
@@ -34,7 +34,11 @@ public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
-		if (super.isUriGood(uri) && whiteList != null && whiteList.size() > 0) {
+		if(super.isUriGood(uri) && (whiteList == null || whiteList.isEmpty())) {
+			return true;
+		}
+		
+		else if (super.isUriGood(uri) && whiteList != null && !whiteList.isEmpty()) {
 
 			for (String s : whiteList) {
 

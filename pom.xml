@@ -135,6 +135,21 @@
             <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
         
+		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
+		
+		<dependency>
+		    <groupId>org.rdfhdt</groupId>
+		    <artifactId>hdt-java-package</artifactId>
+		    <version>1.1</version>
+		    <type>pom</type>
+		    <exclusions>
+		        <exclusion>
+		          <groupId>junit</groupId> <!-- Exclude Project-D from Project-B -->
+		          <artifactId>junit-dep</artifactId>
+		        </exclusion>
+		      </exclusions>
+		</dependency>
+        
 				 
 
         <!-- HTTP Requests -->
@@ -179,6 +194,13 @@
             <version>20140107</version>
         </dependency>
         <!-- End JSON processing -->
+        
+        <!-- MongoDBDriver -->
+        <dependency>
+	        <groupId>org.mongodb</groupId>
+	        <artifactId>mongodb-driver</artifactId>
+	        <version>3.6.4</version>
+	    </dependency>
 
         <!-- RethinkDB client -->
         <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
