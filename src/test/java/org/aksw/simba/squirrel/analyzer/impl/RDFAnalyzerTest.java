@@ -56,6 +56,8 @@ public class RDFAnalyzerTest {
 			analyzer.analyze(curi, file, sink);
 			
 			Assert.assertEquals(expected_genders_en, ((SimpleUriCollector) this.collector).getSize());
+			sink.closeSinkForUri(curi);
+			collector.closeSinkForUri(curi);
 			
 		}
 	}
@@ -78,11 +80,11 @@ public class RDFAnalyzerTest {
 			analyzer = new RDFAnalyzer(collector);
 			analyzer.analyze(curi, file, sink);
 			
-			sink.closeSinkForUri(curi);
-			collector.closeSinkForUri(curi);
+			
 			
 			Assert.assertEquals(minimum_expected_new_york, ((SimpleUriCollector) this.collector).getSize());
-			
+			sink.closeSinkForUri(curi);
+			collector.closeSinkForUri(curi);
 		}
 		
 	}
