@@ -7,3 +7,5 @@ Squirrel searches and collects Linked Data
   $ docker-compose build
   $ docker-compose up
 ```
+
+![Squirrel logo](https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png)

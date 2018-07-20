@@ -1,23 +1,24 @@
 package org.aksw.simba.squirrel.queue;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Cursor;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.UnknownHostException;
-import java.util.*;
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
 
 @SuppressWarnings("rawtypes")
 public class RDBQueue extends AbstractIpAddressBasedQueue {
