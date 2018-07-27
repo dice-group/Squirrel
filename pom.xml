@@ -41,6 +41,17 @@
             <version>1.2</version>
         </dependency>
 
+		<dependency>
+    		<groupId>net.rootdev</groupId>
+    		<artifactId>java-rdfa</artifactId>
+    		<version>0.4.2</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.github.mautini</groupId>
+    		<artifactId>schemaorg-java</artifactId>
+    		<version>1.0.1</version>
+    	</dependency>
+	
         <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>

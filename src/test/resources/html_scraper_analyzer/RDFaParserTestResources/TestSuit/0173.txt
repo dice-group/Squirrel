@@ -1,0 +1,7 @@
+<head> 
+   <title>Test 0173</title> 
+   <base href="http://example.org/"/> 
+</head> 
+<body xml:lang="en" prefix="ex: http://example.org/terms#"> 
+   <p property="ex:prop" xml:lang="">Just a plain literal.</p> 
+</body>

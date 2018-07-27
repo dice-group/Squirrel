@@ -1,0 +1,10 @@
+<head>
+      <title>Test 0071</title>
+   </head>
+   <body prefix="cc: http://creativecommons.org/ns#">
+      <p>This page is under a Creative Commons
+         <a rel="cc:license"
+            href="http://creativecommons.org/licenses/by-nd/3.0/">
+          Attribution-No Derivatives 3.0 license</a>.
+      </p>
+   </body>

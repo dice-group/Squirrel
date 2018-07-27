@@ -1,0 +1,8 @@
+<head>
+      <title>Test 0070</title>
+   </head>
+   <body prefix="xhv: http://www.w3.org/1999/xhtml/vocab#">
+      <p>The previous test was
+         <span about="" rel="xhv:prev" resource="0069.xhtml">Test 0069</span>.
+      </p>
+   </body>
