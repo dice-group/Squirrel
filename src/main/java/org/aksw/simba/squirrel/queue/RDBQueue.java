@@ -116,39 +116,6 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return r.array(str_1, str_2);
     }
 
-//    private String parseBytesToString(CrawleableUri uri) {
-//    	byte[] suri = null;
-//    	try {
-//			suri = serializer.serialize(uri);
-//			StringBuilder s = new StringBuilder();
-//
-//			for (int i = 0; i < suri.length; i++) {
-//				s.append(suri[i]);
-//				if(i != suri.length-1);
-//					s.append(",");
-//			}
-//			return s.toString();
-//		} catch (IOException e) {
-//			LOGGER.error("Error while adding uri to RDBQueue",e);
-//			return null;
-//		}
-//    }
-
-//    private CrawleableUri parseStringToCuri(String uri) {
-//    	String[] suri = uri.split(",");
-//    	byte[] buri = new byte[suri.length];
-//
-//    	for (int i = 0; i < buri.length; i++) {
-//    		buri[i] = Byte.parseByte(suri[i]);
-//		}
-//
-//    	try {
-//			return serializer.deserialize(buri);
-//		} catch (IOException e) {
-//			return null;
-//		}
-//    }
-
     public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey) {
 
     	try {

@@ -356,7 +356,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                         insertStmt.execute();
                     } catch (Exception e) {
 //                    	if(!e.getMessage().substring(0, e.getMessage().indexOf(":")).equals("integrity constraint violation"))
-                    	LOGGER.error("URI already exists in the table. It will be ignored.", e);
+//                    	LOGGER.warn("URI already exists in the table. It will be ignored.", e);
                     }
                 }
                 insertStmt.getConnection().commit();

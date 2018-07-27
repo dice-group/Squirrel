@@ -19,7 +19,6 @@ import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
-import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
@@ -30,7 +29,6 @@ import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -49,8 +47,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
-    @Autowired
-    protected SparqlBasedFetcher sparqlBasedFetcher;
+
     protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
@@ -178,7 +175,7 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (InterruptedException e) {
                 LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
             }
-            LOGGER.debug("I start crawling {} now...", uri);
+            LOGGER.warn("I start crawling {} now...", uri);
 
             
             FileManager fm = new FileManager();
