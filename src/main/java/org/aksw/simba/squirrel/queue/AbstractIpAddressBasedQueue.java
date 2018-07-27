@@ -54,9 +54,9 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
             LOGGER.error("Interrupted while waiting for mutex. Throwing exception.", e);
             throw new IllegalStateException("Interrupted while waiting for mutex.", e);
         }
+        IpUriTypePair pair;
         try {
             Iterator<IpUriTypePair> iterator = getIterator();
-            IpUriTypePair pair;
             do {
                 if (!iterator.hasNext()) {
                     return null;
@@ -64,10 +64,10 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                 pair = iterator.next();
             } while (blockedIps.contains(pair.ip));
             blockedIps.add(pair.ip);
-            return getUris(pair);
         } finally {
             queueMutex.release();
         }
+        return getUris(pair);
     }
 
     protected abstract Iterator<IpUriTypePair> getIterator();
