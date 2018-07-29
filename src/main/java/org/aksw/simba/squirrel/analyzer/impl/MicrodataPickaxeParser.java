@@ -48,6 +48,7 @@ public class MicrodataPickaxeParser implements Analyzer {
 		}
 		catch (Exception e) {
 			// TODO: handle exception
+			System.out.println(e);
 		}
 		return null;
 	}
