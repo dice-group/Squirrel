@@ -37,7 +37,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.google.common.io.Files;
 
-public class MicroformatParserTest {
+public class MicroformatParserTest extends RDFParserTest {
 
 	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
 	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\MicrodataParserTestResources\\TestSuit\\";
@@ -91,7 +91,8 @@ public class MicroformatParserTest {
 		analyzer.analyze(curi, test, sink);
 		
 		List<byte[]> tdp = sink.getCrawledUnstructuredData().get(pathcontext);
-		String decodedtest = new String(tdp.get(0), "UTF-8");
+		String decodedtest = "";
+		if(tdp != null) decodedtest= new String(tdp.get(0), "UTF-8");
 		//if(!decodedtest.equals(""))decodedtest = decodedtest.substring(0, decodedtest.length()-1);
 		
 		Model decodedmodel = createModelFromN3Strings(decodedtest);
@@ -173,118 +174,6 @@ public class MicroformatParserTest {
 		System.out.println(macror);
 		System.out.println("Micro Recall");
 		System.out.println(micror);
-//		System.out.println("True positive rate (TPR), Recall");
-//		System.out.println(truepositiv[0]/(truepositiv[0]+falsenegativ[0]));
-//		System.out.println("Post predictive value (PPV), Precision");
-//		System.out.println(truepositiv[0]/(truepositiv[0]+falsepositiv[0]));
-	}
-	
-	public static double sumdoublearray(double[] array) {
-		double sum = 0;
-		for (double element : array) {
-	        sum += element;
-	    }
-		return sum;
-	}
-	
-	public Model createModelFromN3Strings(String content) {
-		
-	    Model model = null;
-		try {
-			model = ModelFactory.createDefaultModel()
-			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "N-TRIPLES");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return model;
-	}
-	
-	public Model createModelFromTurtle(String content) {
-		Model model = null;
-		try {
-			model = ModelFactory.createDefaultModel()
-			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "TURTLE");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    //System.out.println("model size: " + model.size());
-	    return model;
-	}
-	
-	private void printModel(Model model) {
-		// list the statements in the Model
-		StmtIterator iter = model.listStatements();
 
-		// print out the predicate, subject and object of each statement
-		while (iter.hasNext()) {
-		    Statement stmt      = iter.nextStatement();  // get next statement
-		    Resource  subject   = stmt.getSubject();     // get the subject
-		    Property  predicate = stmt.getPredicate();   // get the predicate
-		    RDFNode   object    = stmt.getObject();      // get the object
-
-		    System.out.print(subject.toString());
-		    System.out.print(" " + predicate.toString() + " ");
-		    if (object instanceof Resource) {
-		       System.out.print(object.toString());
-		    } else {
-		        // object is a literal
-		        System.out.print(" \"" + object.toString() + "\"");
-		    }
-		    System.out.println(" .");
-		} 
 	}
-	
-    /**
-     * Collects statements that can be found in model A but not in model B. If A
-     * and B are seen as sets of statements, this method returns the difference
-     * A\B.
-     *
-     * @param modelA
-     *            the model that should be fully contained inside model B.
-     * @param modelB
-     *            the model that should fully contain model A.
-     * @return the difference A\B which is empty if A is a subset of B
-     */
-    public static Set<Statement> getMissingStatements(Model modelA, Model modelB) {
-        Set<Statement> statements = new HashSet<>();
-        StmtIterator iterator = modelA.listStatements();
-        Statement s;
-        while (iterator.hasNext()) {
-            s = iterator.next();
-            if (!modelContainsStatement(modelB, s)) {
-                statements.add(s);
-            }
-        }
-        return statements;
-    }
-    
-    /**
-     * Checks whether the given statement can be found in the given model. If
-     * the given statement contains blank nodes (= Anon nodes) they are replaced
-     * by variables.
-     *
-     * @param model
-     *            the model that might contain the given statement
-     * @param s
-     *            the statement which could be contained in the given model
-     * @return <code>true</code> if the statement can be found in the model,
-     *         <code>false</code> otherwise
-     */
-    public static boolean modelContainsStatement(Model model, Statement s) {
-        Resource subject = s.getSubject();
-        RDFNode object = s.getObject();
-        if (subject.isAnon()) {
-            if (object.isAnon()) {
-                return model.contains(null, s.getPredicate(), (RDFNode) null);
-            } else {
-                return model.contains(null, s.getPredicate(), object);
-            }
-        } else {
-            if (object.isAnon()) {
-                return model.contains(subject, s.getPredicate(), (RDFNode) null);
-            } else {
-                return model.contains(subject, s.getPredicate(), object);
-            }
-        }
-    }  
 }

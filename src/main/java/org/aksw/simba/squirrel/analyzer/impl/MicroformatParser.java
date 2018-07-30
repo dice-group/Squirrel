@@ -22,7 +22,7 @@ public class MicroformatParser implements Analyzer {
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		
-		String[] formats = new String[] {"html-mf-geo", "html-mf-hcalendar"};
+		String[] formats = new String[] {"html-mf-adr","html-mf-geo", "html-mf-hcalendar","html-mf-hcard","html-mf-hlisting","html-mf-hrecipe","html-mf-hresume","html-mf-hreview","html-mf-hreview-aggregate","html-mf-license","html-mf-species","html-mf-xfn"};
 		ModifiableConfiguration modifiableConf = DefaultConfiguration.copy();
 		String oldPropertyValue = modifiableConf.setProperty("any23.extraction.context.iri", curi.getUri().toString());	
 		Any23 runner = new Any23(modifiableConf,formats);
