@@ -11,7 +11,6 @@ Squirrel searches and collects Linked Data
   $ docker-compose up
 ```
 
-<<<<<<< HEAD
 ![Squirrel logo](https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png)
 =======
 ### ... or do it manually
@@ -56,4 +55,3 @@ If you want to run the squirrel with the **Webservice**, take care that you have
 1. ``mvn clean package`` _(only necessary if you want to compile each subproject (module) for itself)_
 1. (``SquirrelWebObject\install.bat``)
 1. ``SquirrelWebService\buildImage.bat``
->>>>>>> 976234e6508211023e3c908af5be6112fc01315e
