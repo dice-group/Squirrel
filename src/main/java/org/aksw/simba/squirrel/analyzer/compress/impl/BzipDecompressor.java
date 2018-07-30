@@ -1,48 +1,44 @@
 package org.aksw.simba.squirrel.analyzer.compress.impl;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 import org.aksw.simba.squirrel.analyzer.compress.Decompressor;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
-public class BzipDecompressor extends TarDecompressor implements Decompressor{
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
-	protected BzipDecompressor() throws IOException {
-		super();
-	}
+public class BzipDecompressor extends TarDecompressor implements Decompressor {
 
-	@Override
-	public List<File> decompress(File inputFile) throws IOException {
-		
-		File outputFile = createOutputFile();
-		
-		InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
-		BufferedInputStream in = new BufferedInputStream(fin);
-		OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
-		BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
-		final byte[] buffer = new byte[1000];
-		int n = 0;
-		while (-1 != (n = bzIn.read(buffer))) {
-		    out.write(buffer, 0, n);
-		}
-		out.close();
-		bzIn.close();
-		
-		File tempoutputFile = new File(outputFile + ".tar");
-		
-		if(tempoutputFile.exists() && tempoutputFile.isFile()) {
-			return new TarDecompressor().decompress(tempoutputFile);
-		}
-		
-		return TempPathUtils.searchPath4Files(outputFile);
-	}
+    protected BzipDecompressor() throws IOException {
+        super();
+    }
+
+    @Override
+    public List<File> decompress(File inputFile) throws IOException {
+
+        File outputFile = createOutputFile();
+
+        InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
+        BufferedInputStream in = new BufferedInputStream(fin);
+        OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
+        BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
+        final byte[] buffer = new byte[1000];
+        int n = 0;
+        while (-1 != (n = bzIn.read(buffer))) {
+            out.write(buffer, 0, n);
+        }
+        out.close();
+        bzIn.close();
+
+        File tempoutputFile = new File(outputFile + ".tar");
+
+        if (tempoutputFile.exists() && tempoutputFile.isFile()) {
+            return new TarDecompressor().decompress(tempoutputFile);
+        }
+
+        return TempPathUtils.searchPath4Files(outputFile);
+    }
 
 }

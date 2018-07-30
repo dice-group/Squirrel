@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Dashboard</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/pages/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="/pages/css/app.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+              aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/pages/templates/fact-check.html">Fact Checking</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="_index.html">Home</a></li>
+        <li><a href="/pages/templates/crawler.html">Crawler</a></li>
+        <li><a href="/pages/templates/squirrel.html">Squirrel</a></li>
+        <li><a href="/pages/templates/about.html">About Us</a></li>
+        <li><a href="#">Help</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+
+
+    <div class="col-sm-6 col-sm-offset-6 col-md-6 col-sm-offset-6 main">
+      <div class="row placeholders">
+        <div class="col-xs-12 placeholder">
+          <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200"
+               alt="Generic placeholder thumbnail">
+          <h4>Frontier Observer</h4>
+        </div>
+      </div>
+
+      <table class="table">
+        <tbody>
+        <tr>
+          <td>Number of pending URIs</td>
+          <td>
+            <a><b>${numberPendingURIs}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of crawled URIs</td>
+          <td>
+            <a><b>${numberCrawledURIs}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of workers</td>
+          <td>
+            <a><b>${numberWorker}</b></a>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of dead workers</td>
+          <td>
+            <a><b>${numberDeadWorker}</b></a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col-sm-6 col-md-6 sidebar">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default panel-sidemenu">
+          <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                 aria-expanded="true" aria-controls="collapseOne">
+                <b style="color: #337ab7">PendingURIs</b>
+              </a>
+            </h4>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+              ${pendingURIs}
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default panel-sidemenu">
+          <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                 href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <b style="color: #337ab7">NextCrawledURIs</b>
+              </a>
+            </h4>
+          </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+              ${nextCrawledURIs}
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default panel-sidemenu">
+          <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+              <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                 href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <b style="color: #337ab7">IP-URI-Map</b>
+              </a>
+            </h4>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+               aria-labelledby="headingThree">
+            <div class="panel-body">
+              ${IPURImap}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+
+</html>

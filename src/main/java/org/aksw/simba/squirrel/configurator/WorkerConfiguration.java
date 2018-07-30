@@ -14,8 +14,9 @@ public class WorkerConfiguration extends Configuration {
     }
 
     public static WorkerConfiguration getWorkerConfiguration() throws Exception {
-        String outputFolder = getEnvOutputFolder();
-        if(outputFolder != null) {
+
+        String outputFolder = getEnv(OUTPUT_FOLDER_KEY, LOGGER);
+        if (outputFolder != null) {
             LOGGER.info("The worker will use " + OUTPUT_FOLDER_KEY + " as an output folder.");
             return new WorkerConfiguration(outputFolder);
         } else {

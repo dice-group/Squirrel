@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel;
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.gen.exc.ReqlDriverError;
 import com.rethinkdb.net.Connection;
-import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -14,10 +13,13 @@ public class RethinkDBBasedTest {
     protected static Connection connection;
     protected static RethinkDB r = RethinkDB.r;
 
+    public static final String DB_HOST_NAME = "localhost";
+    public static final int DB_PORT = 58015;
+
     @BeforeClass
     public static void setUpRDB() throws Exception {
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-            + "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
+            + "-p " + DB_PORT + ":28015 -p 58887:8080 -d rethinkdb:2.3.5";
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s = null;
@@ -35,7 +37,7 @@ public class RethinkDBBasedTest {
         int retryCount = 0;
         while (true) {
             try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
+                connection = r.connection().hostname(DB_HOST_NAME).port(DB_PORT).connect();
                 break;
             } catch (ReqlDriverError error) {
                 System.out.println("Could not connect, retrying");
@@ -49,10 +51,10 @@ public class RethinkDBBasedTest {
 
     @AfterClass
     public static void tearDownRDB() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
+        String rethinkDockerStopCommand = "docker container stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
+        String rethinkDockerRmCommand = "docker container rm squirrel-test-rethinkdb";
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
         p.waitFor();
     }

@@ -1,24 +1,12 @@
 package org.aksw.simba.squirrel.components;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.aksw.simba.squirrel.configurator.SimpleHTTPServerConfiguration;
 import org.aksw.simba.squirrel.simulation.CrawleableResource;
 import org.aksw.simba.squirrel.simulation.CrawleableResourceContainer;
 import org.aksw.simba.squirrel.simulation.DumpResource;
 import org.aksw.simba.squirrel.simulation.StringResource;
 import org.apache.commons.io.IOUtils;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.hobbit.core.components.Component;
 import org.simpleframework.http.core.Container;
@@ -28,6 +16,13 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleHttpServerComponent implements Component {
 

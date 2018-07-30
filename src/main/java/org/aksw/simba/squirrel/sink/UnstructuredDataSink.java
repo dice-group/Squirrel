@@ -1,15 +1,15 @@
 package org.aksw.simba.squirrel.sink;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 /**
  * A sink that can handle unstructured data.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -18,7 +18,7 @@ public interface UnstructuredDataSink extends SinkBase {
 
     /**
      * Stores the given data for the given URI.
-     * 
+     *
      * @param uri
      *            the URI for which the data should be stored
      * @param data
@@ -30,7 +30,7 @@ public interface UnstructuredDataSink extends SinkBase {
 
     /**
      * Stores the given data for the given URI.
-     * 
+     *
      * @param uri
      *            the URI for which the data should be stored
      * @param data
@@ -42,7 +42,7 @@ public interface UnstructuredDataSink extends SinkBase {
 
     /**
      * Stores the data from the given stream for the given URI.
-     * 
+     *
      * @param uri
      *            the URI for which the data should be stored
      * @param stream
