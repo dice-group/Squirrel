@@ -77,6 +77,32 @@ public abstract class RDFParserTest {
 	    return model;
 	}
 	
+	public static Model createModelFromJSONLD(String content) {
+		Model model = null;
+		try {
+			model = ModelFactory.createDefaultModel()
+			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "JSON-LD");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    //System.out.println("model size: " + model.size());
+	    return model;
+	}
+	
+	public static Model createModelFromRDFJSON(String content) {
+		Model model = null;
+		try {
+			model = ModelFactory.createDefaultModel()
+			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "RDF/JSON");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    //System.out.println("model size: " + model.size());
+	    return model;
+	}
+	
+	
+	
 	protected static void printModel(Model model) {
 		StmtIterator iter = model.listStatements();
 
