@@ -40,7 +40,9 @@ import com.google.common.io.Files;
 public class MicroformatParserTest extends RDFParserTest {
 
 	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
-	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\MicrodataParserTestResources\\TestSuit\\";
+	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\MicroformatParserTestResources\\microformats-v2\\";
+	private static String adr = "h-adr\\";
+	private static String card= "h-card\\";
 	
 	private static Analyzer analyzer;
 	private CrawleableUri curi;
@@ -66,7 +68,8 @@ public class MicroformatParserTest extends RDFParserTest {
     @Parameters(name = "{index},{0},{1}")
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
-        	{ pathextensiontestsuit+"0055.htm",pathextensiontestsuit+"0055.ttl" },
+        	{ pathextensiontestsuit+adr+"geo.html",pathextensiontestsuit+adr+"geo.json" },
+        	{ pathextensiontestsuit+card+"hcard.html",pathextensiontestsuit+card+"hcard.json" },
         };
         return Arrays.asList(data);
     }
@@ -95,6 +98,7 @@ public class MicroformatParserTest extends RDFParserTest {
 		if(tdp != null) decodedtest= new String(tdp.get(0), "UTF-8");
 		//if(!decodedtest.equals(""))decodedtest = decodedtest.substring(0, decodedtest.length()-1);
 		
+		System.out.println(decodedtest);
 		Model decodedmodel = createModelFromN3Strings(decodedtest);
 		System.out.print("created decodemodel ");
 				
@@ -109,8 +113,9 @@ public class MicroformatParserTest extends RDFParserTest {
 		    while ((line = br.readLine()) != null) {
 		       correctresult+= line+"\n";
 		    }
-		}			
-		Model correctmodel = createModelFromTurtle(correctresult);
+		}		
+		System.out.println(correctresult);
+		Model correctmodel = createModelFromJSONLD(correctresult);
 		System.out.print("created correctmodel ");
 			
 		//System.out.println(turtleresult);
@@ -130,7 +135,7 @@ public class MicroformatParserTest extends RDFParserTest {
 		truepositiv[index]+=correctmodel.size()-falsenegativ[index];
 		System.out.println();
 		
-		if(falsenegativ[index] != 0) {
+		//if(falsenegativ[index] != 0) {
 			System.out.println("DecodedModel");
 			printModel(decodedmodel);
 			System.out.println("CorrectModel");
@@ -145,7 +150,7 @@ public class MicroformatParserTest extends RDFParserTest {
 				System.out.println(statement.toString());
 			}
 			System.out.println();
-		}
+		//}
 		assertEquals(0.0,falsenegativ[index],0.0);
 	}
 	

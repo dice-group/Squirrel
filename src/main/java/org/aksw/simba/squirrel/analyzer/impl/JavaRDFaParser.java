@@ -30,6 +30,7 @@ import org.xml.sax.XMLReader;
 
 import net.rootdev.javardfa.ParserFactory;
 import net.rootdev.javardfa.ParserFactory.Format;
+import net.rootdev.javardfa.jena.JenaStatementSink;
 import net.rootdev.javardfa.Setting;
 import net.rootdev.javardfa.StatementSink;
 
@@ -41,7 +42,7 @@ public class JavaRDFaParser implements Analyzer {
 //		try {
 //			String hf = "0001.html";
 //			Model m = ModelFactory.createDefaultModel();
-//	        StatementSink statesink = new StatementSink(m);
+//	        StatementSink statesink = new JenaStatementSink(m);
 //	        XMLReader parser = ParserFactory.createReaderForFormat(statesink, Format.XHTML, Setting.OnePointOne);
 //	        try {
 //				parser.parse(hf);
@@ -54,13 +55,5 @@ public class JavaRDFaParser implements Analyzer {
 //			e.printStackTrace();
 //		}
 		return null;
-		}
-//	Try something like this:
-//		String syntax = "RDF/XML-ABBREV"; // also try "N-TRIPLE" and "TURTLE"
-//		StringWriter out = new StringWriter();
-//		model.write(out, syntax);
-//		String result = out.toString();
-//		This uses Jena's built-in writers that can already output RDF graphs in the various supported RDF syntaxes, such as RDF/XML and Turtle and N-Triples. If you just want to dump to System.out, then it's even easier:
-//		model.write(System.out, "RDF/XML-ABBREV");
-	
+		}	
 }
