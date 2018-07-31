@@ -1,15 +1,15 @@
 package org.aksw.simba.squirrel.collect;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SimpleUriCollector implements UriCollector {
 
@@ -53,22 +53,21 @@ public class SimpleUriCollector implements UriCollector {
             LOGGER.error("Error while trying to collect URI \"" + newUri + "\". It will be ignored.", e);
         }
     }
-    
+
     public long getSize() {
-    	return total_uris;
+        return total_uris;
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-    	total_uris = 0;
         urisOfUris.remove(uri.getUri().toString());
     }
 
 	@Override
 	public long getSize(CrawleableUri uri) {
-		return total_uris;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-
-
 }
+

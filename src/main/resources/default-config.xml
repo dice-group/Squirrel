@@ -17,5 +17,8 @@
         <context:component-scan base-package="org.aksw.simba.squirrel" />
         
 
-        
+
+    <context:component-scan base-package="org.aksw.simba.squirrel"/>
+
+
 </beans>

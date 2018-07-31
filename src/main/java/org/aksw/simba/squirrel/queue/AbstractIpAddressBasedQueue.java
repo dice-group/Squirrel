@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -26,7 +25,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIpAddressBasedQueue.class);
 
     private Semaphore queueMutex = new Semaphore(1);
-    private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
+    private Set<InetAddress> blockedIps = new HashSet<>();
 
 
     @Override

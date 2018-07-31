@@ -15,7 +15,7 @@ public class RobotsManagerConfiguration extends Configuration {
 
     public static RobotsManagerConfiguration getRobotsManagerConfiguration() throws Exception {
         Long minDelay = getEnvMinDelay();
-        if(minDelay != null) {
+        if (minDelay != null) {
             LOGGER.info("RobotsManager will use " + MIN_DELAY_KEY + " as minimum delay parameter.");
             return new RobotsManagerConfiguration(minDelay);
         } else {

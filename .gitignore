@@ -5,7 +5,7 @@ target
 .project
 .settings
 .idea
-squirrel.iml
+*.iml
 /deployment/data
 /deployment/scenarios/1/worker1
 scenarios/1/worker*

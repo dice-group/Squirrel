@@ -1,11 +1,5 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
@@ -23,6 +17,13 @@ import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class RDFAnalyzer implements Analyzer {
@@ -57,7 +58,7 @@ public class RDFAnalyzer implements Analyzer {
             Lang lang = null;
             String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
             StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
-            if (contentType != null ) {
+            if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
                 RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
             } else {
@@ -72,6 +73,7 @@ public class RDFAnalyzer implements Analyzer {
             		}
             		
             	}
+
             }
             
             
@@ -97,13 +99,13 @@ public class RDFAnalyzer implements Analyzer {
 
         @Override
         public void triple(Triple triple) {
-        	sink.addTriple(curi, triple);
+            sink.addTriple(curi, triple);
             collector.addTriple(curi, triple);
         }
         
         @Override
         public void quad(Quad quad) {
-        	sink.addTriple(curi, quad.asTriple());
+            sink.addTriple(curi, quad.asTriple());
             collector.addTriple(curi, quad.asTriple());
         }
 

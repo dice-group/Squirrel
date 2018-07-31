@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.collect;
 
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
+
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.iterators.SqlBasedIterator;
@@ -28,6 +30,15 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
@@ -45,7 +56,9 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
     protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ?";
+
 //    protected static final String COUNT_URIS_QUERY = "SELECT COUNT(*) AS TOTAL FROM ? where uri = ?";
+
     protected static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(1024), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     protected static final String DROP_TABLE_QUERY = "DROP TABLE ";
     protected static final String INSERT_URI_QUERY_PART_1 = " INSERT INTO ";
@@ -141,7 +154,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
                 } catch (SQLException e) {
                     LOGGER.error("Exception while querying URIs from database({}). Returning empty Iterator.",
-                            e.getMessage());
+                        e.getMessage());
                 }
             }
         } else {
@@ -204,9 +217,14 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
             LOGGER.info("Should close \"{}\" but it is not known. It will be ignored.", uri.getUri().toString());
         }
     }
-    
+
+
+    public long getSize() {
+        return total_uris;
+    }
+
     public long getSize(CrawleableUri uri) {
-    	long totalUris = 0;
+        long totalUris = 0;
         String uriString = uri.getUri().toString();
         if (knownUris.containsKey(uriString)) {
             UriTableStatus table = knownUris.get(uriString);
@@ -357,13 +375,17 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
                     } catch (Exception e) {
 //                    	if(!e.getMessage().substring(0, e.getMessage().indexOf(":")).equals("integrity constraint violation"))
 //                    	LOGGER.warn("URI already exists in the table. It will be ignored.", e);
+
+                        LOGGER.debug("Error while inserting URI (java.sql.SQLIntegrityConstraintViolationException is ok)", e);
+
                     }
                 }
                 insertStmt.getConnection().commit();
             } catch (BatchUpdateException e) {
-                 LOGGER.error("URI already exists in the table. It will be ignored.", e);
+//                 LOGGER.debug("URI already exists in the table. It will be ignored.", e);
+
             } catch (Exception e) {
-                LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
+//                LOGGER.error("Error while inserting a batch of URIs. They will be ignored.", e);
             }
             buffer.clear();
         }
