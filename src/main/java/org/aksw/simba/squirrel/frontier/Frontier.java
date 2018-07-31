@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.frontier;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
+import java.io.Closeable;
+import java.util.Dictionary;
 import java.util.List;
 
 /**
@@ -15,13 +17,13 @@ import java.util.List;
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
-public interface Frontier {
+public interface Frontier extends Closeable {
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
      * if URIs are received from the Frontier using this method, the Frontier
      * should be notified if the crawling of these URIs is done using the
-     * {@link #crawlingDone(List, List)} method.
+     * {@link #crawlingDone(Dictionary)} method.
      *
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
@@ -41,10 +43,10 @@ public interface Frontier {
      * Adds the given list of URIs to the {@link Frontier}. It is like calling
      * {@link #addNewUri(CrawleableUri)} with every single URI.
      *
-     * @param uris
+     * @param newUris
      *            the URIs that should be added to the {@link Frontier}
      */
-    void addNewUris(List<CrawleableUri> uris);
+    void addNewUris(List<CrawleableUri> newUris);
 
     /**
      * This method should be called after a list of URIs have been requested
@@ -52,20 +54,26 @@ public interface Frontier {
      * finished. Internally, the {@link Frontier} marks the URIs as crawled and
      * adds the new URIs using the {@link #addNewUris(List)} method.
      *
-     * @param crawledUris
-     *            the URIs that have been crawled
-     * @param newUris
-     *            the URIs that should be added to the {@link Frontier}
+     * @param uriMap
+     *            the URIs that should be added to the {@link Frontier}. Constructed as follows:
+     *            - key: the crawled URI
+     *            - value: the list of URIs, that was added because of the key-URI
      */
-    void crawlingDone(List<CrawleableUri> crawledUris, List<CrawleableUri> newUris);
+    void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
-     * Frontier using {@link Frontier#getNextUris()} and havn't been marked as
-     * crawled using {@link Frontier#crawlingDone(List, List)}.
+     * Frontier using {@link Frontier#getNextUris()} and have not been marked as
+     * crawled using {@link Frontier#crawlingDone(Dictionary)}.
      *
      * @return the number of pending URIs.
      */
     int getNumberOfPendingUris();
 
+    /**
+     * Indicates whether this frontier does recrawling.
+     *
+     * @return True iff recrawling is active.
+     */
+    boolean doesRecrawling();
 }

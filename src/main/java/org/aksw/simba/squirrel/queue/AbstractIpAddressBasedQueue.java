@@ -21,7 +21,8 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIpAddressBasedQueue.class);
 
     private Semaphore queueMutex = new Semaphore(1);
-    private Set<InetAddress> blockedIps = new HashSet<InetAddress>();
+    private Set<InetAddress> blockedIps = new HashSet<>();
+
 
     @Override
     public void addUri(CrawleableUri uri) {
@@ -78,7 +79,7 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
     public int getNumberOfBlockedIps() {
         return blockedIps.size();
     }
-
     @Override
     public abstract Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
+
 }

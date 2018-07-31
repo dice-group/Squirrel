@@ -4,14 +4,16 @@ import com.rethinkdb.RethinkDB;
 import com.rethinkdb.model.MapObject;
 import com.rethinkdb.net.Cursor;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
+import org.aksw.simba.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.aksw.simba.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -21,8 +23,15 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
 
     protected RDBConnector connector;
     private RethinkDB r = RethinkDB.r;
+    private Serializer serializer;
 
     public RDBQueue(String hostname, Integer port) {
+        this.serializer = new SnappyJavaUriSerializer();
+        connector = new RDBConnector(hostname, port);
+    }
+
+    public RDBQueue(String hostname, Integer port, Serializer serializer) {
+        this.serializer = serializer;
         connector = new RDBConnector(hostname, port);
     }
 
@@ -81,18 +90,12 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     public boolean queueContainsIpAddressTypeKey(List ipAddressTypeKey) {
-        Cursor cursor = r.db("squirrel")
+        return !((boolean) r.db("squirrel")
             .table("queue")
             .getAll(ipAddressTypeKey)
             .optArg("index", "ipAddressType")
-            .run(connector.connection);
-        if(cursor.hasNext()) {
-            cursor.close();
-            return true;
-        } else {
-            cursor.close();
-            return false;
-        }
+            .isEmpty()
+            .run(connector.connection));
     }
 
     @SuppressWarnings("unchecked")
@@ -104,40 +107,85 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return r.array(str_1, str_2);
     }
 
+//    private String parseBytesToString(CrawleableUri uri) {
+//    	byte[] suri = null;
+//    	try {
+//			suri = serializer.serialize(uri);
+//			StringBuilder s = new StringBuilder();
+//
+//			for (int i = 0; i < suri.length; i++) {
+//				s.append(suri[i]);
+//                if (i < suri.length - 1)
+//					s.append(",");
+//			}
+//			return s.toString();
+//		} catch (IOException e) {
+//			LOGGER.error("Error while adding uri to RDBQueue",e);
+//			return null;
+//		}
+//    }
+//
+//    private CrawleableUri parseStringToCuri(String uri) {
+//    	String[] suri = uri.split(",");
+//    	byte[] buri = new byte[suri.length];
+//
+//    	for (int i = 0; i < buri.length; i++) {
+//    		buri[i] = Byte.parseByte(suri[i]);
+//		}
+//
+//    	try {
+//			return serializer.deserialize(buri);
+//		} catch (IOException e) {
+//			return null;
+//		}
+//    }
+
     public void addCrawleableUri(CrawleableUri uri, List ipAddressTypeKey) {
-        r.db("squirrel")
+
+        try {
+            byte[] suri = serializer.serialize(uri);
+            r.db("squirrel")
                 .table("queue")
                 .getAll(ipAddressTypeKey)
                 .optArg("index", "ipAddressType")
-                .update(queueItem -> r.hashMap("uris", queueItem.g("uris").append(uri.getUri().toString())))
+                .update(queueItem -> r.hashMap("uris", queueItem.g("uris").append(r.binary((suri)))))
                 .run(connector.connection);
-        LOGGER.debug("Inserted existing UriTypePair");
+            LOGGER.debug("Inserted existing UriTypePair");
+        } catch (Exception e) {
+            LOGGER.error("Error while adding uri to RDBQueue", e);
+        }
     }
 
     public void addCrawleableUri(CrawleableUri uri) {
         r.db("squirrel")
-                .table("queue")
-                .insert(crawleableUriToRDBHashMap(uri))
-                .run(connector.connection);
+            .table("queue")
+            .insert(crawleableUriToRDBHashMap(uri))
+            .run(connector.connection);
         LOGGER.debug("Inserted new UriTypePair");
     }
 
     public MapObject crawleableUriToRDBHashMap(CrawleableUri uri) {
+        byte[] suri = null;
+        try {
+            suri = serializer.serialize(uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         InetAddress ipAddress = uri.getIpAddress();
-        URI uriPath = uri.getUri();
         UriType uriType = uri.getType();
-        return r.hashMap("uris", r.array(uriPath.toString()))
-                .with("ipAddress", ipAddress.getHostAddress())
-                .with("type", uriType.toString());
+        return r.hashMap("uris", r.array(r.binary((suri))))
+            .with("ipAddress", ipAddress.getHostAddress())
+            .with("type", uriType.toString());
     }
 
     @Override
     protected Iterator<IpUriTypePair> getIterator() {
         Cursor cursor = r.db("squirrel")
-                .table("queue")
-                .orderBy()
-                .optArg("index", "ipAddressType")
-                .run(connector.connection);
+            .table("queue")
+            .orderBy()
+            .optArg("index", "ipAddressType")
+            .run(connector.connection);
         Iterator<IpUriTypePair> ipUriTypePairIterator = new Iterator<IpUriTypePair>() {
             @Override
             public boolean hasNext() {
@@ -167,28 +215,41 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
 
         List ipAddressTypeKey = packTuple(pair.ip.getHostAddress(), pair.type.toString());
         Cursor cursor = r.db("squirrel")
-                .table("queue")
-                .getAll(ipAddressTypeKey)
-                .optArg("index", "ipAddressType")
-                .run(connector.connection);
+            .table("queue")
+            .getAll(ipAddressTypeKey)
+            .optArg("index", "ipAddressType")
+            .run(connector.connection);
 
         if (cursor.hasNext()) {
             //remove all URIs for the pair
             HashMap result = (HashMap) cursor.next();
             ArrayList uriStringList = (ArrayList) result.get("uris");
             LOGGER.debug("query result {}",result.toString());
-            UriType type = UriType.valueOf(result.get("type").toString());
-            uris = UriUtils.createCrawleableUriList(uriStringList, type);
+            uris = createCrawleableUriList(uriStringList);
             //remove from the queue
             r.db("squirrel")
-                    .table("queue")
-                    .getAll(ipAddressTypeKey)
-                    .optArg("index", "ipAddressType")
-                    .delete()
-                    .run(connector.connection);
+                .table("queue")
+                .getAll(ipAddressTypeKey)
+                .optArg("index", "ipAddressType")
+                .delete()
+                .run(connector.connection);
         }
         // return the URIs
         return uris;
+    }
+
+    private List<CrawleableUri> createCrawleableUriList(ArrayList uris) {
+        List<CrawleableUri> resultUris = new ArrayList<>();
+
+        for (Object uriString : uris) {
+            try {
+                resultUris.add(serializer.deserialize((byte[]) uriString));
+            } catch (Exception e) {
+                LOGGER.error("Couldn't deserialize uri", e);
+            }
+        }
+
+        return resultUris;
     }
 
     @Override
@@ -206,7 +267,27 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                 HashMap row = (HashMap) cursor.next();
                 LOGGER.trace("Go through the result. Next entry contains " + row.size() + " elements: " + row);
                 try {
-                    return new AbstractMap.SimpleEntry<>(InetAddress.getByName(row.get("ipAddress").toString()), UriUtils.createCrawleableUriList((ArrayList) row.get("uris")));
+                    String baseURI = row.get("ipAddress").toString();
+                    InetAddress key = null;
+                    try {
+                        key = InetAddress.getByName(baseURI);
+                    } catch (Exception e) {
+                        LOGGER.error("Can't parse the address " + baseURI, e);
+                    }
+                    key = (key == null) ? InetAddress.getLocalHost() : key;
+                    Object uriField = row.get("uris");
+                    List<CrawleableUri> value;
+                    CrawleableUriFactoryImpl factory = new CrawleableUriFactoryImpl();
+                    if (uriField instanceof List) {
+                        value = createCrawleableUriList((ArrayList) uriField);
+                    } else if (uriField instanceof String) {
+                        value = Collections.singletonList(factory.create((String) uriField));
+                    } else {
+                        LOGGER.error("Was not able to read the field from the RDBQueue \"uris\"");
+                        value = Collections.EMPTY_LIST;
+                    }
+
+                    return new AbstractMap.SimpleEntry<>(key, value);
                 } catch (UnknownHostException e) {
                     LOGGER.error("Error while parsing the data from the RDBQueue into an HashMap", e);
                     return null;
