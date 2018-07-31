@@ -94,3 +94,4 @@ services:
      volumes:
           - ./data/deduplicator:/var/squirrel/data
      command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent
+

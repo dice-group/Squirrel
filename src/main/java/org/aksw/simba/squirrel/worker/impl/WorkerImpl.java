@@ -160,7 +160,6 @@ public class WorkerImpl implements Worker, Closeable {
                 while (s.hasNext()) {
                     list.add(s.next());
                 }
-
                 s.close();
             }
         }catch (FileNotFoundException e){

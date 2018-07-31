@@ -1,0 +1,14 @@
+
+module my-rethinkdb 1.0;
+
+require {
+	type user_home_t;
+	type container_t;
+	class dir { add_name write };
+}
+
+#============= container_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow container_t user_home_t:dir write;
+allow container_t user_home_t:dir add_name;

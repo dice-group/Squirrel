@@ -11,6 +11,8 @@ Squirrel searches and collects Linked Data
   $ docker-compose up
 ```
 
+![Squirrel logo](https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png)
+=======
 ### ... or do it manually
 
 1. ``mvn clean package shade:shade -U -DskipTests``

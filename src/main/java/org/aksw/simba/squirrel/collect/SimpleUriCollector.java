@@ -63,4 +63,11 @@ public class SimpleUriCollector implements UriCollector {
         urisOfUris.remove(uri.getUri().toString());
     }
 
+	@Override
+	public long getSize(CrawleableUri uri) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
+

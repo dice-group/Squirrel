@@ -13,21 +13,21 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegexBasedWhiteListFilter extends RDBKnownUriFilter {
+public class RDBRegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDBRegexBasedWhiteListFilter.class);
 
     private Set<String> whiteList;
 
-    public RegexBasedWhiteListFilter(String hostname, Integer port) {
+    public RDBRegexBasedWhiteListFilter(String hostname, Integer port) {
         super(hostname, port);
     }
 
-    public RegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
+    public RDBRegexBasedWhiteListFilter(String hostname, Integer port, File whiteListFile) {
         this(hostname, port, false, whiteListFile);
     }
 
-    public RegexBasedWhiteListFilter(String hostname, Integer port, boolean frontierDoesRecrawling, File whiteListFile) {
+    public RDBRegexBasedWhiteListFilter(String hostname, Integer port, boolean frontierDoesRecrawling, File whiteListFile) {
         super(hostname, port, frontierDoesRecrawling);
         try {
             whiteList = loadWhiteList(whiteListFile);

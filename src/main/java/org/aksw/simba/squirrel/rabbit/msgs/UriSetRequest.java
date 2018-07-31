@@ -4,43 +4,10 @@ import java.io.Serializable;
 
 public class UriSetRequest implements Serializable {
 
+    // No content until now. The request could contain some additional values,
+    // e.g., types of URIs that can be crawled.
+    
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The id of the {@link org.aksw.simba.squirrel.worker.Worker} that sent this request.
-     */
-    private int idOfWorker;
-
-    /**
-     * Indicates whether the worker (see {@link #idOfWorker}) sends {@link org.aksw.simba.squirrel.worker.impl.AliveMessage}.
-     */
-    private boolean workerSendsAliveMessages;
-
-    /**
-     * Standard constructor setting just default values.
-     */
-    public UriSetRequest() {
-        this(-1, false);
-    }
-
-    /**
-     * Parametrized Constructor.
-     *
-     * @param idOfWorker
-     * @param workerSendsAliveMessages
-     */
-    public UriSetRequest(int idOfWorker, boolean workerSendsAliveMessages) {
-        this.idOfWorker = idOfWorker;
-        this.workerSendsAliveMessages = workerSendsAliveMessages;
-    }
-
-    public int getIdOfWorker() {
-        return idOfWorker;
-    }
-
-    public boolean workerSendsAliveMessages() {
-        return workerSendsAliveMessages;
-    }
 
     @Override
     public int hashCode() {
@@ -53,6 +20,8 @@ public class UriSetRequest implements Serializable {
             return true;
         if (obj == null)
             return false;
-        return getClass() == obj.getClass();
+        if (getClass() != obj.getClass())
+            return false;
+        return true;
     }
 }

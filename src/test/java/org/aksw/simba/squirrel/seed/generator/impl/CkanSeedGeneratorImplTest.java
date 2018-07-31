@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.seed.generator.impl;
 
 import junit.framework.TestCase;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
@@ -8,6 +9,8 @@ import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created by ivan on 04.03.16.
@@ -19,7 +22,7 @@ public class CkanSeedGeneratorImplTest extends TestCase {
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new InMemoryKnownUriFilter(), queue);
+        frontier = new FrontierImpl(new InMemoryKnownUriFilter(-1), queue);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

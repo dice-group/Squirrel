@@ -28,7 +28,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
 
     /**
      * Returns a newly created {@link Builder}.
-     *
+     * 
      * @return a new {@link Builder} instance
      */
     public static Builder builder() {
@@ -67,7 +67,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
                 String correlationId = delivery.getProperties().getCorrelationId();
                 if ((replyTo != null) && (correlationId != null)) {
                     ((RespondingDataHandler) getDataHandler()).handleData(delivery.getBody(), responseHandler, replyTo,
-                        correlationId);
+                            correlationId);
                 } else {
                     getDataHandler().handleData(delivery.getBody());
                 }
@@ -83,12 +83,12 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         private RabbitQueueFactory responseFactory = null;
 
         public Builder() {
-        }
+        };
 
         /**
          * Sets the handler that is called if data is incoming. <b>Note</b> that a
          * {@link RespondingDataHandler} is expected.
-         *
+         * 
          * @param dataHandler
          *            the RespondingDataHandler instance that is called if data is
          *            incoming
@@ -109,7 +109,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
          * which responses should be sent. Note that if this information is not
          * provided, the {@link RPCServer} instance is still working but might have
          * performance problems or might get stuck.
-         *
+         * 
          * @param factory
          *            the queue factory used to connect to
          * @return this builder instance
@@ -122,7 +122,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         /**
          * Sets the maximum number of incoming messages that are processed in parallel.
          * Additional messages have to wait in the queue.
-         *
+         * 
          * @param maxParallelProcessedMsgs
          *            the maximum number of incoming messages that are processed in
          *            parallel
@@ -136,7 +136,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         /**
          * Builds the {@link DataReceiverImpl} instance with the previously given
          * information.
-         *
+         * 
          * @return The newly created DataReceiver instance
          * @throws IllegalStateException
          *             if the dataHandler is missing or if neither a queue nor the

@@ -320,4 +320,3 @@ public class FrontierImpl implements Frontier {
         return queue;
     }
 }
-

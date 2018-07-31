@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.aksw.simba</groupId>
     <artifactId>squirrel</artifactId>
-    <version>0.3.0</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Squirrel</name>
 
@@ -16,7 +16,7 @@
     </properties>
 
     <repositories>
-        <!-- Let's use a local repository for the local libraries of this
+        <!-- Let's use a local repository for the local libraries of this 
             project -->
         <repository>
             <id>local repository</id>
@@ -58,68 +58,68 @@
             <artifactId>jzmq</artifactId>
             <version>3.0.1</version>
         </dependency>
-
+        
         <!--compress commons-->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.7</version>
-        </dependency>
-
-
-        <!-- Jackason databind and Jackson’s YAML extension  -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
-
-
-        <!-- Content detect utility tool -->
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>1.17</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.11.2</version>
-        </dependency>
-
-        <!-- Spring Context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.0.6.RELEASE</version>
-        </dependency>
-
-        <!-- Spring JDBC -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.0.6.RELEASE</version>
-        </dependency>
-
-        <!-- Spring JDBC -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>5.0.6.RELEASE</version>
-        </dependency>
-
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-compress</artifactId>
+		    <version>1.7</version>
+		</dependency>
+		
+		
+		<!-- Jackason databind and Jackson’s YAML extension  -->
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.dataformat</groupId>
+		        <artifactId>jackson-dataformat-yaml</artifactId>
+		        <version>2.3.0</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.core</groupId>
+		        <artifactId>jackson-databind</artifactId>
+		        <version>2.2.3</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>org.apache.commons</groupId>
+		        <artifactId>commons-lang3</artifactId>
+		        <version>3.4</version>
+		    </dependency>
+		
+		
+		<!-- Content detect utility tool -->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>1.17</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <version>1.11.2</version>
+		</dependency>
+		
+		<!-- Spring Context -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-context</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+		
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-jdbc</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+		
+		<!-- Spring JDBC -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-test</artifactId>
+		  <version>5.0.6.RELEASE</version>
+		</dependency>
+		        
 
         <!-- crawler commons -->
         <dependency>
@@ -134,13 +134,23 @@
             <artifactId>jena-sparql-api-core</artifactId>
             <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-rdfconnection -->
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-rdfconnection</artifactId>
-            <version>3.6.0</version>
-        </dependency>
+        
+		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
+		
+		<dependency>
+		    <groupId>org.rdfhdt</groupId>
+		    <artifactId>hdt-java-package</artifactId>
+		    <version>1.1</version>
+		    <type>pom</type>
+		    <exclusions>
+		        <exclusion>
+		          <groupId>junit</groupId> <!-- Exclude Project-D from Project-B -->
+		          <artifactId>junit-dep</artifactId>
+		        </exclusion>
+		      </exclusions>
+		</dependency>
+        
+				 
 
         <!-- HTTP Requests -->
         <dependency>
@@ -184,6 +194,13 @@
             <version>20140107</version>
         </dependency>
         <!-- End JSON processing -->
+        
+        <!-- MongoDBDriver -->
+        <dependency>
+	        <groupId>org.mongodb</groupId>
+	        <artifactId>mongodb-driver</artifactId>
+	        <version>3.6.4</version>
+	    </dependency>
 
         <!-- RethinkDB client -->
         <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
@@ -193,39 +210,26 @@
             <version>2.3.3</version>
         </dependency>
         <!-- End RethinkDB client -->
-
-        <!-- Rabbit MQ: client library -->
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>4.3.0</version>
-        </dependency>
-
+        
         <!-- HSQLDB (used inside of workers to store URIs)-->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.2</version>
         </dependency>
-
-        <!-- We use the simpleframework to use local HTTP servers for our
+        
+        <!-- We use the simpleframework to use local HTTP servers for our 
             JUnit tests and test scenarios -->
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>
             <version>5.1.6</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>1.1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.aksw.simba.squirrel</groupId>
-            <artifactId>SquirrelWebObject</artifactId>
-            <version>0.5.0</version>
         </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -302,7 +306,7 @@
                             </manifestEntries>
                         </transformer>
                         <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                     </transformers>
                 </configuration>
                 <executions>
@@ -318,18 +322,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>2.10.1</version>
                 <configuration>
-                    <failOnError>false</failOnError>
-                    <footer>University of Paderborn</footer>
-                    <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
-                    <nodeprecated>true</nodeprecated>
-                    <nohelp>true</nohelp>
-                    <quiet>true</quiet>
-                    <reportOutputDirectory>${project.build.directory}/javadoc/_html</reportOutputDirectory>
                     <show>private</show>
-                    <skip>true</skip>
-                    <windowtitle>Documentation about squirrels from computer scientists</windowtitle>
+                    <nohelp>true</nohelp>
+                    <failOnError>false</failOnError>
                 </configuration>
                 <executions>
                     <execution>

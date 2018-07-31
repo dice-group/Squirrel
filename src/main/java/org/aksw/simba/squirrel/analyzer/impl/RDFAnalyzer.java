@@ -12,6 +12,11 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.jena.sparql.core.Quad;
+
+import org.apache.tika.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,15 +25,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class RDFAnalyzer implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private UriCollector collector;
-
+    
     private List<Lang> listLangs = new ArrayList<Lang>();
-
-
+    
+    
 
     public RDFAnalyzer(UriCollector collector) {
         this.collector = collector;
@@ -46,6 +52,7 @@ public class RDFAnalyzer implements Analyzer {
 
     @Override
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
+        FileInputStream fin = null;
         try {
             // First, try to get the language of the data
             Lang lang = null;
@@ -55,40 +62,26 @@ public class RDFAnalyzer implements Analyzer {
                 lang = RDFLanguages.contentTypeToLang(contentType);
                 RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
             } else {
-                for (Lang l : listLangs) {
-                    try {
-                        System.out.println(data.getAbsolutePath());
-                        RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
-                        break;
-                    } catch (Exception e) {
+            	for(Lang l : listLangs) {
+            		try {
+            			System.out.println(data.getAbsolutePath());
+            			RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+            			break;
+            		}catch(Exception e) {
+            			
+            			LOGGER.warn("Could not parse file as " + l.getName());
+            		}
+            		
+            	}
 
-                        LOGGER.warn("Could not parse file as " + l.getName());
-                    }
-
-                }
-
-//                InputStream is = new FileInputStream(data);
-//                lang = RDFLanguages.contentTypeToLang(tika.detect(is));
-//                try {
-//                	RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
-//                }catch(Exception e) {
-//                	if(Lang.NTRIPLES.equals(lang)) {
-//	                	LOGGER.warn("Could not parse file as N-Triples. Trying N-Quads...");
-//	                	RDFDataMgr.parse(filtered, data.getAbsolutePath(), Lang.N3);
-//	                } else
-//	                {
-//	                	throw e;
-//	                }
-//                }finally {
-//					is.close();
-//				}
             }
-
-
+            
+            
         } catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting. ", e);
+        } finally {
+            IOUtils.closeQuietly(fin);
         }
-
         return collector.getUris(curi);
     }
 
@@ -109,7 +102,7 @@ public class RDFAnalyzer implements Analyzer {
             sink.addTriple(curi, triple);
             collector.addTriple(curi, triple);
         }
-
+        
         @Override
         public void quad(Quad quad) {
             sink.addTriple(curi, quad.asTriple());

@@ -17,8 +17,8 @@ public class SqlBasedIterator implements Iterator<byte[]> {
     protected boolean consumed = true;
     protected boolean hasNext = true;
     private int start = 0;
-    private int next = 5;
-    private int page = 5;
+    private int next = 100;
+    private int page = 100;
 
     public SqlBasedIterator(PreparedStatement ps) {
         this.ps = ps;
@@ -31,6 +31,7 @@ public class SqlBasedIterator implements Iterator<byte[]> {
             LOGGER.error("Exception while iterating over the results. Returning false.", e);
         }
     }
+    
 
     @Override
     public boolean hasNext() {
@@ -73,6 +74,12 @@ public class SqlBasedIterator implements Iterator<byte[]> {
                     consumed = false;
                 }
             }
+            
+            if(!hasNext) {
+            	rs.close();
+            	ps.close();
+            }
+            
             return hasNext;
         } catch (SQLException e) {
             LOGGER.error("Exception while iterating over the results. Returning null.", e);

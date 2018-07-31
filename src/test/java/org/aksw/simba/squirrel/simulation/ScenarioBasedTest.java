@@ -1,21 +1,19 @@
 package org.aksw.simba.squirrel.simulation;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
-import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
-import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
 import org.aksw.simba.squirrel.data.uri.UriType;
-import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-import org.aksw.simba.squirrel.queue.InMemoryQueue;
-import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.utils.TempFileHelper;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
@@ -32,14 +30,6 @@ import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
@@ -125,20 +115,18 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     @Test
     public void test() throws IOException {
-
-        FileSystemXmlApplicationContext context =
-            new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
-
+    	
+    	FileSystemXmlApplicationContext  context =
+    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
+    	
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
-        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(true), new InMemoryQueue());
-        InMemorySink sink = new InMemorySink();
-        Serializer serializer = new GzipJavaUriSerializer();
-        UriCollector collector = SqlBasedUriCollector.create(serializer, tempDir.getAbsolutePath());
-        WorkerImpl worker = new WorkerImpl(frontier, sink,
-            new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, collector, 100,
-            null, false);
+        Frontier frontier = (Frontier) context.getBean("frontierBean");
+        InMemorySink sink = (InMemorySink) context.getBean("sinkBean");
+//        Serializer serializer = (Serializer) context.getBean("serializerBean");
+//        UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
+        WorkerImpl worker =(WorkerImpl) context.getBean("workerBean");
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -155,7 +143,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
             }
             Assert.assertTrue("The worker crashed", t.isAlive());
         } while ((frontier.getNumberOfPendingUris() > 0)); // Testing it in this way is tricky since it is not thread
-        // save.
+                                                           // save.
         worker.setTerminateFlag(true);
         try {
             t.join();

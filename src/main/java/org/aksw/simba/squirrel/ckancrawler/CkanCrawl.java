@@ -1,8 +1,11 @@
 package org.aksw.simba.squirrel.ckancrawler;
 
-import com.rabbitmq.client.*;
-
 import java.io.IOException;
+import java.nio.channels.Channel;
+import java.sql.Connection;
+import java.util.function.Consumer;
+
+import com.rabbitmq.client.*;
 
 
 /**
