@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.jena.rdf.model.Model;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -48,10 +50,19 @@ public class MicroformatMF2JParser implements Analyzer {
 		    .setIncludeRelUrls(true);
 		//Map<String,Object> parsed = parser.parse(microdata5, new URI("https://kylewm.com"));
 		Map<String,Object> parsed = parser.parse(file,URI.create(curi.getUri().toString()));
-		for (Entry<String, Object> string : parsed.entrySet()) {
-		System.out.println(string.getKey() +" = "+string.getValue());
-		}	
+//		for (Entry<String, Object> string : parsed.entrySet()) {
+//		System.out.println(string.getKey() +" = "+string.getValue());
+//		}
+		String json = parsed.toString();
+		json = json.substring(1);
+		json = "{\r\n" + 
+				"\"@context\": {\"@vocab\": \"http://www.w3.org/2006/vcard/ns#\"},\n"+json;
+		Model model = RDFParserTest.createModelFromJSONLD(json);
+		String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
+		StringWriter out = new StringWriter();
+		model.write(out, syntax);
+		String result = out.toString();	
+		sink.addData(curi, result);
 		return null;
 	}
-
 }
