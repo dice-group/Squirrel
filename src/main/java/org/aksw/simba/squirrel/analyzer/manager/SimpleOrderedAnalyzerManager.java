@@ -7,7 +7,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer;
+import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
+import org.aksw.simba.squirrel.collect.UriCollector;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimpleOrderedAnalyzerManager implements Analyzer {
 
