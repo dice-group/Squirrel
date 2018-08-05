@@ -11,11 +11,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -26,6 +29,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.junit.AfterClass;
@@ -56,7 +60,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	@BeforeClass
 	public static void initialization () throws URISyntaxException {
 		sink = new InMemorySink();
-		analyzer = new MicroformatMF2JParser();
+		analyzer = new MicroformatParser();
 	}
 	
 	@Parameter(0)
@@ -78,25 +82,25 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"geo\\"+"hidden.html", pathextensionv1+"geo\\"+"hidden.json" },
         	{pathextensionv1+"geo\\"+"simpleproperties.html", pathextensionv1+"geo\\"+"simpleproperties.json" },
         	{pathextensionv1+"geo\\"+"valuetitleclass.html", pathextensionv1+"geo\\"+"valuetitleclass.json" },
-//        	{pathextensionv1+"hcalendar\\"+"ampm.html", pathextensionv1+"hcalendar\\"+"ampm.json" },
-//        	{pathextensionv1+"hcalendar\\"+"attendees.html", pathextensionv1+"hcalendar\\"+"attendees.json" },
-//        	{pathextensionv1+"hcalendar\\"+"combining.html", pathextensionv1+"hcalendar\\"+"combining.json" },
-//        	{pathextensionv1+"hcalendar\\"+"concatenate.html", pathextensionv1+"hcalendar\\"+"concatenate.json" },
-//        	{pathextensionv1+"hcalendar\\"+"time.html", pathextensionv1+"hcalendar\\"+"time.json" },
+        	{pathextensionv1+"hcalendar\\"+"ampm.html", pathextensionv1+"hcalendar\\"+"ampm.json" },
+        	{pathextensionv1+"hcalendar\\"+"attendees.html", pathextensionv1+"hcalendar\\"+"attendees.json" },
+        	{pathextensionv1+"hcalendar\\"+"combining.html", pathextensionv1+"hcalendar\\"+"combining.json" },
+        	{pathextensionv1+"hcalendar\\"+"concatenate.html", pathextensionv1+"hcalendar\\"+"concatenate.json" },
+        	{pathextensionv1+"hcalendar\\"+"time.html", pathextensionv1+"hcalendar\\"+"time.json" },
         	{pathextensionv1+"hcard\\"+"email.html", pathextensionv1+"hcard\\"+"email.json" },
         	{pathextensionv1+"hcard\\"+"format.html", pathextensionv1+"hcard\\"+"format.json" },
-        	/*{pathextensionv1+"hcard\\"+"hyperlinkedphoto.html", pathextensionv1+"hcard\\"+"hyperlinkedphoto.json" },
+        	{pathextensionv1+"hcard\\"+"hyperlinkedphoto.html", pathextensionv1+"hcard\\"+"hyperlinkedphoto.json" },
         	{pathextensionv1+"hcard\\"+"justahyperlink.html", pathextensionv1+"hcard\\"+"justahyperlink.json" },
         	{pathextensionv1+"hcard\\"+"justaname.html", pathextensionv1+"hcard\\"+"justaname.json" },
         	{pathextensionv1+"hcard\\"+"multiple.html", pathextensionv1+"hcard\\"+"multiple.json" },
         	{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
         	{pathextensionv1+"hcard\\"+"single.html", pathextensionv1+"hcard\\"+"single.json" },
-//        	{pathextensionv1+"hentry\\"+"summarycontent.html", pathextensionv1+"hentry\\"+"summarycontent.json" },
-//        	{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
-//        	{pathextensionv1+"hnews\\"+"all.html", pathextensionv1+"hnews\\"+"all.json" },
-//        	{pathextensionv1+"hnews\\"+"minimum.html", pathextensionv1+"hnews\\"+"minimum.json" },
-//        	{pathextensionv1+"hproduct\\"+"aggregate.html", pathextensionv1+"hproduct\\"+"aggregate.json" },
-//        	{pathextensionv1+"hproduct\\"+"simpleproperties.html", pathextensionv1+"hproduct\\"+"simpleproperties.json" },
+        	{pathextensionv1+"hentry\\"+"summarycontent.html", pathextensionv1+"hentry\\"+"summarycontent.json" },
+        	{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
+        	{pathextensionv1+"hnews\\"+"all.html", pathextensionv1+"hnews\\"+"all.json" },
+        	{pathextensionv1+"hnews\\"+"minimum.html", pathextensionv1+"hnews\\"+"minimum.json" },
+        	{pathextensionv1+"hproduct\\"+"aggregate.html", pathextensionv1+"hproduct\\"+"aggregate.json" },
+        	{pathextensionv1+"hproduct\\"+"simpleproperties.html", pathextensionv1+"hproduct\\"+"simpleproperties.json" },
         	{pathextensionv1+"hresume\\"+"affiliation.html", pathextensionv1+"hresume\\"+"affiliation.json" },
         	{pathextensionv1+"hresume\\"+"contact.html", pathextensionv1+"hresume\\"+"contact.json" },
         	{pathextensionv1+"hresume\\"+"education.html", pathextensionv1+"hresume\\"+"education.json" },
@@ -104,15 +108,16 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hresume\\"+"work.html", pathextensionv1+"hresume\\"+"work.json" },
         	{pathextensionv1+"hreview\\"+"item.html", pathextensionv1+"hreview\\"+"item.json" },
         	{pathextensionv1+"hreview\\"+"vcard.html", pathextensionv1+"hreview\\"+"vcard.json" },
-//        	{pathextensionv1+"hreview-aggregate\\"+"hcard.html", pathextensionv1+"hreview-aggregate\\"+"hcard.json" },
-//        	{pathextensionv1+"hreview-aggregate\\"+"justahyperlink.html", pathextensionv1+"hreview-aggregate\\"+"justahyperlink.json" },
-//        	{pathextensionv1+"hreview-aggregate\\"+"vevent.html", pathextensionv1+"hreview-aggregate\\"+"vevent.json" },
+        	{pathextensionv1+"hreview-aggregate\\"+"hcard.html", pathextensionv1+"hreview-aggregate\\"+"hcard.json" },
+        	{pathextensionv1+"hreview-aggregate\\"+"justahyperlink.html", pathextensionv1+"hreview-aggregate\\"+"justahyperlink.json" },
+        	{pathextensionv1+"hreview-aggregate\\"+"vevent.html", pathextensionv1+"hreview-aggregate\\"+"vevent.json" },
         	{pathextensionv1+"includes\\"+"hcarditemref.html", pathextensionv1+"includes\\"+"hcarditemref.json" },
         	{pathextensionv1+"includes\\"+"heventitemref.html", pathextensionv1+"includes\\"+"heventitemref.json" },
         	{pathextensionv1+"includes\\"+"hyperlink.html", pathextensionv1+"includes\\"+"hyperlink.json" },
         	{pathextensionv1+"includes\\"+"object.html", pathextensionv1+"includes\\"+"object.json" },
         	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },
-        	{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
+        	//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
+        	/*{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
         	{pathextensionv2+"h-adr\\"+"geourl.html", pathextensionv2+"h-adr\\"+"geourl.json" },
         	{pathextensionv2+"h-adr\\"+"justaname.html", pathextensionv2+"h-adr\\"+"justaname.json" },
         	{pathextensionv2+"h-adr\\"+"lettercase.html", pathextensionv2+"h-adr\\"+"lettercase.json" },
@@ -132,14 +137,14 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv2+"h-card\\"+"p-property.html", pathextensionv2+"h-card\\"+"p-property.json" },
         	{pathextensionv2+"h-card\\"+"relativeurls.html", pathextensionv2+"h-card\\"+"relativeurls.json" },
         	{pathextensionv2+"h-card\\"+"relativeurlsempty.html", pathextensionv2+"h-card\\"+"relativeurlsempty.json" },
-//        	{pathextensionv2+"h-entry\\"+"encoding.html", pathextensionv2+"h-entry\\"+"encoding.json" },
-//        	{pathextensionv2+"h-entry\\"+"impliedvalue-nested.html", pathextensionv2+"h-entry\\"+"impliedvalue-nested.json" },
-//        	{pathextensionv2+"h-entry\\"+"justahyperlink.html", pathextensionv2+"h-entry\\"+"justahyperlink.json" },
-//        	{pathextensionv2+"h-entry\\"+"justaname.html", pathextensionv2+"h-entry\\"+"justaname.json" },
-//        	{pathextensionv2+"h-entry\\"+"scriptstyletags.html", pathextensionv2+"h-entry\\"+"scriptstyletags.json" },
-//        	{pathextensionv2+"h-entry\\"+"summarycontent.html", pathextensionv2+"h-entry\\"+"summarycontent.json" },
-//        	{pathextensionv2+"h-entry\\"+"u-property.html", pathextensionv2+"h-entry\\"+"u-property.json" },
-//        	{pathextensionv2+"h-entry\\"+"urlincontent.html", pathextensionv2+"h-entry\\"+"urlincontent.json" },
+        	{pathextensionv2+"h-entry\\"+"encoding.html", pathextensionv2+"h-entry\\"+"encoding.json" },
+        	{pathextensionv2+"h-entry\\"+"impliedvalue-nested.html", pathextensionv2+"h-entry\\"+"impliedvalue-nested.json" },
+        	{pathextensionv2+"h-entry\\"+"justahyperlink.html", pathextensionv2+"h-entry\\"+"justahyperlink.json" },
+        	{pathextensionv2+"h-entry\\"+"justaname.html", pathextensionv2+"h-entry\\"+"justaname.json" },
+        	{pathextensionv2+"h-entry\\"+"scriptstyletags.html", pathextensionv2+"h-entry\\"+"scriptstyletags.json" },
+        	{pathextensionv2+"h-entry\\"+"summarycontent.html", pathextensionv2+"h-entry\\"+"summarycontent.json" },
+        	{pathextensionv2+"h-entry\\"+"u-property.html", pathextensionv2+"h-entry\\"+"u-property.json" },
+        	{pathextensionv2+"h-entry\\"+"urlincontent.html", pathextensionv2+"h-entry\\"+"urlincontent.json" },
         	{pathextensionv2+"h-event\\"+"ampm.html", pathextensionv2+"h-event\\"+"ampm.json" },
         	{pathextensionv2+"h-event\\"+"attendees.html", pathextensionv2+"h-event\\"+"attendees.json" },
         	{pathextensionv2+"h-event\\"+"combining.html", pathextensionv2+"h-event\\"+"combining.json" },
@@ -149,20 +154,20 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv2+"h-event\\"+"justahyperlink.html", pathextensionv2+"h-event\\"+"justahyperlink.json" },
         	{pathextensionv2+"h-event\\"+"justaname.html", pathextensionv2+"h-event\\"+"justaname.json" },
         	{pathextensionv2+"h-event\\"+"time.html", pathextensionv2+"h-event\\"+"time.json" },
-//        	{pathextensionv2+"h-feed\\"+"implied-title.html", pathextensionv2+"h-feed\\"+"implied-title.json" },
-//        	{pathextensionv2+"h-feed\\"+"simple.html", pathextensionv2+"h-feed\\"+"simple.json" },
+        	{pathextensionv2+"h-feed\\"+"implied-title.html", pathextensionv2+"h-feed\\"+"implied-title.json" },
+        	{pathextensionv2+"h-feed\\"+"simple.html", pathextensionv2+"h-feed\\"+"simple.json" },
         	{pathextensionv2+"h-geo\\"+"abbrpattern.html", pathextensionv2+"h-geo\\"+"abbrpattern.json" },
         	{pathextensionv2+"h-geo\\"+"altitude.html", pathextensionv2+"h-geo\\"+"altitude.json" },
         	{pathextensionv2+"h-geo\\"+"hidden.html", pathextensionv2+"h-geo\\"+"hidden.json" },
         	{pathextensionv2+"h-geo\\"+"justaname.html", pathextensionv2+"h-geo\\"+"justaname.json" },
         	{pathextensionv2+"h-geo\\"+"simpleproperties.html", pathextensionv2+"h-geo\\"+"simpleproperties.json" },
         	{pathextensionv2+"h-geo\\"+"valuetitleclass.html", pathextensionv2+"h-geo\\"+"valuetitleclass.json" },
-//        	{pathextensionv2+"h-product\\"+"aggregate.html", pathextensionv2+"h-product\\"+"aggregate.json" },
-//        	{pathextensionv2+"h-product\\"+"justahyperlink.html", pathextensionv2+"h-product\\"+"justahyperlink.json" },
-//        	{pathextensionv2+"h-product\\"+"justaname.html", pathextensionv2+"h-product\\"+"justaname.json" },
-//        	{pathextensionv2+"h-product\\"+"simpleproperties.html", pathextensionv2+"h-product\\"+"simpleproperties.json" },
-//        	{pathextensionv2+"h-recipe\\"+"all.html", pathextensionv2+"h-recipe\\"+"all.json" },
-//        	{pathextensionv2+"h-recipe\\"+"minimum.html", pathextensionv2+"h-recipe\\"+"minimum.json" },
+        	{pathextensionv2+"h-product\\"+"aggregate.html", pathextensionv2+"h-product\\"+"aggregate.json" },
+        	{pathextensionv2+"h-product\\"+"justahyperlink.html", pathextensionv2+"h-product\\"+"justahyperlink.json" },
+        	{pathextensionv2+"h-product\\"+"justaname.html", pathextensionv2+"h-product\\"+"justaname.json" },
+        	{pathextensionv2+"h-product\\"+"simpleproperties.html", pathextensionv2+"h-product\\"+"simpleproperties.json" },
+        	{pathextensionv2+"h-recipe\\"+"all.html", pathextensionv2+"h-recipe\\"+"all.json" },
+        	{pathextensionv2+"h-recipe\\"+"minimum.html", pathextensionv2+"h-recipe\\"+"minimum.json" },
         	{pathextensionv2+"h-resume\\"+"affiliation.html", pathextensionv2+"h-resume\\"+"affiliation.json" },
         	{pathextensionv2+"h-resume\\"+"contact.html", pathextensionv2+"h-resume\\"+"contact.json" },
         	{pathextensionv2+"h-resume\\"+"education.html", pathextensionv2+"h-resume\\"+"education.json" },
@@ -174,17 +179,17 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv2+"h-review\\"+"item.html", pathextensionv2+"h-review\\"+"item.json" },
         	{pathextensionv2+"h-review\\"+"justaname.html", pathextensionv2+"h-review\\"+"justaname.json" },
         	{pathextensionv2+"h-review\\"+"photo.html", pathextensionv2+"h-review\\"+"photo.json" },
-        	{pathextensionv2+"h-review\\"+"vcard.html", pathextensionv2+"h-review\\"+"vcard.json" },
-//        	{pathextensionv2+"h-review-aggregate\\"+"hevent.html", pathextensionv2+"h-review-aggregate\\"+"hevent.json" },
-//        	{pathextensionv2+"h-review-aggregate\\"+"justahyperlink.html", pathextensionv2+"h-review-aggregate\\"+"justahyperlink.json" },
-//        	{pathextensionv2+"h-review-aggregate\\"+"simpleproperties.html", pathextensionv2+"h-review-aggregate\\"+"simpleproperties.json" },
-//        	{pathextensionv2+"rel\\"+"duplicate-rels.html", pathextensionv2+"rel\\"+"duplicate-rels.json" },
-        	{pathextensionv2+"rel\\"+"license.html", pathextensionv2+"rel\\"+"license.json" },
-//        	{pathextensionv2+"rel\\"+"nofollow.html", pathextensionv2+"rel\\"+"nofollow.json" },
-//        	{pathextensionv2+"rel\\"+"rel-urls.html", pathextensionv2+"rel\\"+"rel-urls.json" },
-//        	{pathextensionv2+"rel\\"+"varying-text-duplicate-rels.html", pathextensionv2+"rel\\"+"varying-text-duplicate-rels.json" },
-//        	{pathextensionv2+"rel\\"+"xfn-all.html", pathextensionv2+"rel\\"+"xfn-all.json" },
-//        	{pathextensionv2+"rel\\"+"xfn-elsewhere.html", pathextensionv2+"rel\\"+"xfn-elsewhere.json" },*/
+        	{pathextensionv2+"h-review\\"+"vcard.html", pathextensionv2+"h-review\\"+"vcard.json" }, //Any23 ausnahme
+        	{pathextensionv2+"h-review-aggregate\\"+"hevent.html", pathextensionv2+"h-review-aggregate\\"+"hevent.json" },
+        	{pathextensionv2+"h-review-aggregate\\"+"justahyperlink.html", pathextensionv2+"h-review-aggregate\\"+"justahyperlink.json" },
+        	{pathextensionv2+"h-review-aggregate\\"+"simpleproperties.html", pathextensionv2+"h-review-aggregate\\"+"simpleproperties.json" },
+        	{pathextensionv2+"rel\\"+"duplicate-rels.html", pathextensionv2+"rel\\"+"duplicate-rels.json" },
+        	{pathextensionv2+"rel\\"+"license.html", pathextensionv2+"rel\\"+"license.json" }, //Any23 ausnahme
+        	{pathextensionv2+"rel\\"+"nofollow.html", pathextensionv2+"rel\\"+"nofollow.json" },
+        	{pathextensionv2+"rel\\"+"rel-urls.html", pathextensionv2+"rel\\"+"rel-urls.json" },
+        	{pathextensionv2+"rel\\"+"varying-text-duplicate-rels.html", pathextensionv2+"rel\\"+"varying-text-duplicate-rels.json" },
+        	{pathextensionv2+"rel\\"+"xfn-all.html", pathextensionv2+"rel\\"+"xfn-all.json" }, //Any23 ausnahme
+        	{pathextensionv2+"rel\\"+"xfn-elsewhere.html", pathextensionv2+"rel\\"+"xfn-elsewhere.json" }, //Any23 ausnahme*/
         	
         };
         return Arrays.asList(data);
@@ -224,8 +229,9 @@ public class MicroformatParserTest extends RDFParserTest {
 //	    correctresult = correctresult.substring(1,correctresult.length()-1);
 		String correctresult = fileToString(result);	
 		correctresult = addContextToJSON(correctresult);
-		correctresult = replaceVocab(correctresult);
+		correctresult = replaceVocab(correctresult);	
 		Model correctmodel = createModelFromJSONLD(correctresult);
+		replacePropertieVocabs(correctmodel);
 		System.out.print("created correctmodel ");
 			
 		//System.out.println(turtleresult);
@@ -245,7 +251,7 @@ public class MicroformatParserTest extends RDFParserTest {
 		truepositiv[index]+=correctmodel.size()-falsenegativ[index];
 		System.out.println();
 		
-		//if(falsenegativ[index] != 0) {
+		if(falsenegativ[index] != 0) {
 			System.out.println("DecodedModel");
 			printModel(decodedmodel);
 			System.out.println("CorrectModel");
@@ -260,7 +266,7 @@ public class MicroformatParserTest extends RDFParserTest {
 				System.out.println(statement.toString());
 			}
 			System.out.println();
-		//}
+		}
 		assertEquals(0.0,falsenegativ[index],0.0);
 	}
 	
@@ -303,15 +309,55 @@ public class MicroformatParserTest extends RDFParserTest {
 		return data;
 	}
 	
-	private static String addContextToJSON(String data) {
+	public static String addContextToJSON(String data) {
 		data = data.substring(1);
 		data = "{\r\n" + 
 				"\"@context\": {\"@vocab\": \"http://www.dummy.org/\"},\n"+data;
 		return data;
 	}
 	
-	private static String replaceVocab(String data) {
+	public static String replaceVocab(String data) {
 		return data.replace("http://www.dummy.org/", "http://www.w3.org/2006/vcard/ns#");
+	}
+	
+	public static void replacePropertieVocabs(Model model) {
+		List<Statement> oldstatements = new ArrayList<Statement>();
+		List<Statement> newstatements = new ArrayList<Statement>();
+		StmtIterator iter = model.listStatements();
+		while (iter.hasNext()) {
+			Statement stmt      = iter.nextStatement();  //statement
+		    Resource  subject   = stmt.getSubject();     //subject
+		    Property  predicate = stmt.getPredicate();   //predicate
+		    RDFNode   object    = stmt.getObject();      //object
+		    String data = predicate.toString();
+		    if(subjectReplace(data)) {
+		    	
+				data = data.replace("http://www.w3.org/2006/vcard/ns#count", "http://purl.org/stuff/revagg#count");
+				data = data.replace("http://www.w3.org/2006/vcard/ns#average", "http://purl.org/stuff/revagg#average");
+				data = data.replace("http://www.w3.org/2006/vcard/ns#best", "http://purl.org/stuff/revagg#best");
+				data = data.replace("http://www.w3.org/2006/vcard/ns#rating", "http://purl.org/stuff/rev#rating");
+				
+		    	Property newpredicate = ResourceFactory.createProperty(data);
+		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, object);
+		    	oldstatements.add(stmt);
+		    	newstatements.add(newstmt);
+		    }
+		}
+		for (Statement statement : oldstatements) {
+			model.remove(statement);			
+		}
+		for (Statement statement : newstatements) {
+			model.add(statement);
+		}
+	}
+	
+	private static boolean subjectReplace(String data) {
+		boolean replace =false;
+		if(data.contains("http://www.w3.org/2006/vcard/ns#count")) replace = true;
+		if(data.contains("http://www.w3.org/2006/vcard/ns#average")) replace = true;
+		if(data.contains("http://www.w3.org/2006/vcard/ns#best")) replace = true;
+		if(data.contains("http://www.w3.org/2006/vcard/ns#rating")) replace = true;
+		return replace;
 	}
 	
 }

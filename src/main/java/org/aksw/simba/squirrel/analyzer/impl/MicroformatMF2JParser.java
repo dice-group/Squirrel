@@ -53,10 +53,10 @@ public class MicroformatMF2JParser implements Analyzer {
 //		for (Entry<String, Object> string : parsed.entrySet()) {
 //		System.out.println(string.getKey() +" = "+string.getValue());
 //		}
-		String json = parsed.toString();
-		json = json.substring(1);
-		json = "{\r\n" + 
-				"\"@context\": {\"@vocab\": \"http://www.w3.org/2006/vcard/ns#\"},\n"+json;
+		
+		String json = MicroformatParserTest.addContextToJSON(parsed.toString());
+		json = MicroformatParserTest.replaceVocab(json);
+		
 		Model model = RDFParserTest.createModelFromJSONLD(json);
 		String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
 		StringWriter out = new StringWriter();
