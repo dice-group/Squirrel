@@ -76,11 +76,11 @@ public class RDFaParserTest extends RDFParserTest {
 	public static void initialization () throws URISyntaxException {
 		sink = new InMemorySink();
 		analyzer = new RDFaParser();	//Der ausgewählte Parser
-		for(int i = 0;i < truepositiv.length;i++) {
-			truepositiv[i] = 0;
-			falsenegativ[i] = 0;
-			falsepositiv[i] = 0;
-		}
+//		for(int i = 0;i < truepositiv.length;i++) {
+//			truepositiv[i] = 0;
+//			falsenegativ[i] = 0;
+//			falsepositiv[i] = 0;
+//		}
 	}
 	
 	@Parameter(0)

@@ -58,7 +58,7 @@ import com.google.common.io.Files;
 @RunWith(Parameterized.class)
 public class MicrodataParserTest extends RDFParserTest {
 	
-	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
+	private static String context = "http://w3c.github.io/test-suite/test-cases/microdata/";
 	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\MicrodataParserTestResources\\TestSuit\\";
 	
 	private static Analyzer analyzer;
