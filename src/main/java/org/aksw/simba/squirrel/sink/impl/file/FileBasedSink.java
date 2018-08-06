@@ -49,6 +49,12 @@ public class FileBasedSink implements Sink {
         this.useCompression = useCompression;
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
+    
+    public FileBasedSink(File outputDirectory) {
+    	this.outputDirectory = outputDirectory;
+    	this.useCompression = false;
+        openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
+	}
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

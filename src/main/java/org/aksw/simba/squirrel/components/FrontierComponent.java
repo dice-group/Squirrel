@@ -15,7 +15,6 @@ import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.MongoRegexBasedWhiteListFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
@@ -55,18 +54,18 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         super.init();
         serializer = new GzipJavaUriSerializer();
 
-        MongoConfiguration rdbConfiguration = MongoConfiguration.getMDBConfiguration();
-        if(rdbConfiguration != null) {
-            String rdbHostName = rdbConfiguration.getMDBHostName();
-            Integer rdbPort = rdbConfiguration.getMDBPort();
+        MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+        if(mongoConfiguration != null) {
+            String rdbHostName = mongoConfiguration.getMDBHostName();
+            Integer rdbPort = mongoConfiguration.getMDBPort();
             queue = new MongoDBQueue(rdbHostName, rdbPort,serializer);
             ((MongoDBQueue) queue).open();
             
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if(whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = new MongoRegexBasedWhiteListFilter(rdbConfiguration.getMDBHostName(),
-                    rdbConfiguration.getMDBPort(), whitelistFile);
+                knownUriFilter = new MongoRegexBasedWhiteListFilter(mongoConfiguration.getMDBHostName(),
+                		mongoConfiguration.getMDBPort(), whitelistFile);
                 knownUriFilter.open();
             }else {
             	knownUriFilter = new MongoRegexBasedWhiteListFilter(rdbHostName, rdbPort);
