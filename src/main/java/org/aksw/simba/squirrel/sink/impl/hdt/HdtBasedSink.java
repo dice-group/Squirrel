@@ -3,14 +3,10 @@ package org.aksw.simba.squirrel.sink.impl.hdt;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
-import org.apache.commons.collections15.MapUtils;
 import org.apache.jena.graph.Triple;
 import org.rdfhdt.hdt.enums.RDFNotation;
 import org.rdfhdt.hdt.hdt.HDT;
