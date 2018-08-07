@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
@@ -38,14 +39,21 @@ public class JavaRDFaParser implements Analyzer {
 
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-//		Model model = ModelFactory.createDefaultModel();
 //		try {
-//			String hf = "0001.html";
 //			Model m = ModelFactory.createDefaultModel();
-//	        StatementSink statesink = new JenaStatementSink(m);
+//			
+//	        StatementSink statesink = new org.aksw.simba.squirrel.analyzer.impl.JenaStatementSink(m);
+//	        //statesink.setBase(curi.getUri().toString());
 //	        XMLReader parser = ParserFactory.createReaderForFormat(statesink, Format.XHTML, Setting.OnePointOne);
+//	        //parser.setProperty(JAXPConstants.JAXP_SCHEMA_SOURCE, curi.getUri().toString());
 //	        try {
-//				parser.parse(hf);
+//				parser.parse(data.getAbsolutePath());
+//				String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
+//				StringWriter out = new StringWriter();
+//				m.write(out, syntax,curi.getUri().toString());
+//				String result = out.toString();
+//				result = replaceBaseUri(result,curi.getUri().toString(),data.getPath());
+//				sink.addData(curi, result);
 //			} catch (IOException e) {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
@@ -56,4 +64,15 @@ public class JavaRDFaParser implements Analyzer {
 //		}
 		return null;
 		}	
+	
+	private String replaceBaseUri(String result,String base,String oldbase) {
+		oldbase = "file:///"+oldbase.replace("\\", "/");
+		oldbase = oldbase.substring(0, oldbase.lastIndexOf("/"));
+		base = base.substring(0, base.lastIndexOf("/"));
+		result = result.replace(oldbase, base);
+		//System.out.println(result);
+		//System.out.println(base);
+		//System.out.println(oldbase);
+		return result;
+	}	
 }
