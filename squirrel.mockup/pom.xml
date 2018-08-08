@@ -12,6 +12,10 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>org.dice-research</groupId>
+            <artifactId>squirrel.api</artifactId>
+        </dependency>
         <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>

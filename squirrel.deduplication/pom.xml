@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.dice-research</groupId>
+            <artifactId>squirrel.api</artifactId>
+        </dependency>
+        <!-- JUnit -->
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
