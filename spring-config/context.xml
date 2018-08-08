@@ -42,10 +42,16 @@
         	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
         </bean>
          
-        <!-- File Based Sink implementation -->
+        <!-- File Based Sink implementation 
         <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.file.FileBasedSink">
         	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
         	<constructor-arg name="useCompression" value="true"/>
+        </bean>
+        -->
+        
+        <!-- HDT File Based Sink implementation -->
+        <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.hdt.HdtBasedSink">
+        	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
         </bean>
         
         <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SimpleUriCollector" >

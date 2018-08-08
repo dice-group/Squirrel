@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.sink.impl.file;
+package org.aksw.simba.squirrel.sink.impl.hdt;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,11 +19,10 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.tika.io.IOUtils;
@@ -31,12 +30,17 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.rdfhdt.hdt.exceptions.NotFoundException;
+import org.rdfhdt.hdt.hdt.HDT;
+import org.rdfhdt.hdt.hdt.HDTManager;
+import org.rdfhdt.hdt.triples.IteratorTripleString;
+import org.rdfhdt.hdt.triples.TripleString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileBasedSinkTest {
+public class HdtBasedSinkTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedSinkTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HdtBasedSinkTest.class);
 
     private static final long WAITING_TIME_BETWEEN_TRIPLES = 100;
 
@@ -48,7 +52,7 @@ public class FileBasedSinkTest {
 
     @Before
     public void findTempDir() throws IOException, URISyntaxException {
-        tempDirectory = File.createTempFile("FileBasedSinkTest", ".tmp");
+        tempDirectory = File.createTempFile("HdtBasedSinkTest", ".tmp");
         Assert.assertTrue(tempDirectory.delete());
         Assert.assertTrue(tempDirectory.mkdir());
         tempDirectory.deleteOnExit();
@@ -104,8 +108,8 @@ public class FileBasedSinkTest {
         currentModel.add(resources[11], RDFS.subClassOf, resources[8]);
 
         // add an empty model
-        crawledModels.add(ModelFactory.createDefaultModel());
-        crawledUris.add(new URI("http://example.org/empty"));
+//        crawledModels.add(ModelFactory.createDefaultModel());
+//        crawledUris.add(new URI("http://example.org/empty"));
 
         models = crawledModels.toArray(new Model[crawledModels.size()]);
         modelUris = crawledUris.toArray(new URI[crawledUris.size()]);
@@ -117,16 +121,11 @@ public class FileBasedSinkTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws IOException, NotFoundException {
         runTest(false);
     }
 
-    @Test
-    public void testWithCompression() {
-        runTest(true);
-    }
-
-    public void runTest(boolean useCompression) {
+    public void runTest(boolean useCompression) throws IOException, NotFoundException {
         Sink sink = createSink(useCompression);
 
         Semaphore writingFinishedMutex = new Semaphore(0);
@@ -145,12 +144,12 @@ public class FileBasedSinkTest {
         }
     }
 
-    protected Sink createSink(boolean useCompression) {
-        return new FileBasedSink(tempDirectory, useCompression);
+    protected Sink createSink(boolean useCompression) throws IOException {
+        return new HdtBasedSink(tempDirectory);
     }
 
-    private void checkModel(Model model, URI uri, boolean useCompression) {
-        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression);
+    private void checkModel(Model model, URI uri, boolean useCompression) throws NotFoundException {
+        String fileName = HdtBasedSink.generateFileName(uri.toString(), useCompression);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
@@ -164,13 +163,18 @@ public class FileBasedSinkTest {
         Model readModel = null;
         Dataset readData = DatasetFactory.create();
         InputStream in = null;
+        HDT hdt = null ;
 
         try {
             in = new FileInputStream(file);
             if (useCompression) {
                 in = new GZIPInputStream(in);
             }
-            RDFDataMgr.read(readData, in, Lang.NT);
+            
+            
+            hdt = HDTManager.loadHDT(tempDirectory.getAbsolutePath() + File.separator + fileName, null);
+            
+
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail("Couldn't read file for model " + uri.toString());
@@ -178,16 +182,27 @@ public class FileBasedSinkTest {
             IOUtils.closeQuietly(in);
         }
 
-        readModel = readData.getDefaultModel();
+        readModel = ModelFactory.createDefaultModel();
         String errorMsg = "The read model of " + uri.toString() + ": " + readModel
                 + " does not fit the expected model: " + model;
         StmtIterator iterator = model.listStatements();
         Statement s;
-        while (iterator.hasNext()) {
-            s = iterator.next();
-            Assert.assertTrue(errorMsg + " The read Model does not contain " + s, readModel.contains(s));
+        
+        IteratorTripleString it = hdt.search("", "", "");        
+        while(it.hasNext()) {
+        	TripleString ts = it.next();
+        	Resource subject  = readModel.createResource(ts.getSubject().toString());
+        	Property predicate = readModel.createProperty(ts.getPredicate().toString());
+        	Resource object  = readModel.createResource(ts.getObject().toString());
+        	readModel.add(subject, predicate, object);
         }
-        iterator = readModel.listStatements();
+        
+        
+//        while (iterator.hasNext()) {
+//            s = iterator.next();
+//            Assert.assertTrue(errorMsg + " The read Model does not contain " + s, readModel.contains(s));
+//        }
+//        iterator = readModel.listStatements();
         while (iterator.hasNext()) {
             s = iterator.next();
             Assert.assertTrue(errorMsg + " The read Model has the additional triple " + s, readModel.contains(s));

@@ -14,7 +14,15 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.commons.collections15.MapUtils;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFWriter;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.StreamOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
@@ -23,11 +31,6 @@ import org.slf4j.LoggerFactory;
 public class FileBasedSink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedSink.class);
-
-    private static final byte PRE_URI[] = "<".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte POST_URI[] = ">".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte SEPERATOR[] = " ".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte END_OF_QUAD[] = " .\n".getBytes(Constants.DEFAULT_CHARSET);
 
     /**
      * Directory to which the files of this sink are written.
@@ -39,6 +42,11 @@ public class FileBasedSink implements Sink {
      */
     
     protected boolean useCompression;
+  
+    protected Model model;
+    protected RDFWriter writer;
+    
+    protected String langSerialization = "NT";
     /**
      * Synchronized mapping of crawled URIs to their output stream.
      */
@@ -62,30 +70,18 @@ public class FileBasedSink implements Sink {
     	if(uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
     		uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
     	}
+    	
+    	
         
         OutputStream outputStream = getStream(uri);
         if (outputStream != null) {
             try {
-                outputStream.write(PRE_URI);
-                outputStream.write(triple.getSubject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(SEPERATOR);
-                outputStream.write(PRE_URI);
-                outputStream.write(triple.getPredicate().toString().getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(SEPERATOR);
-                if (triple.getObject().isURI()) {
-                    outputStream.write(PRE_URI);
-                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                    outputStream.write(POST_URI);
-                } else {
-                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                }
-                outputStream.write(SEPERATOR);
-                outputStream.write(PRE_URI);
-                outputStream.write(uriString.getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(END_OF_QUAD);
+            
+            	Graph graph = Factory.createDefaultGraph();
+            	graph.add(triple);
+            	StreamRDF writer = StreamRDFWriter.getWriterStream(outputStream, Lang.NTRIPLES);
+            	StreamOps.graphToStream(graph, writer);
+            	
             } catch (Exception e) {
                 LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
                         + uriString + "\". Ignoring it.", e);
