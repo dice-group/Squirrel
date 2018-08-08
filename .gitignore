@@ -10,6 +10,7 @@ target
 /deployment/scenarios/1/worker1
 scenarios/1/worker*
 /dependency-reduced-pom.xml
+*/dependency-reduced-pom.xml
 /foundUris.lck
 /foundUris.properties
 /foundUris.script
