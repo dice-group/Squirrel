@@ -12,10 +12,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.DoubleStream;
 
@@ -68,19 +72,14 @@ public class RDFaParserTest extends RDFParserTest {
 	private CrawleableUri curi;
 	private static InMemorySink sink;
 	ClassLoader classLoader = getClass().getClassLoader();
-	static double[] truepositiv = new double[data().size()];
-	static double[] falsenegativ = new double[data().size()];
-	static double[] falsepositiv = new double[data().size()];
+	public static Map<String, List<Double>> testresults = new HashMap<String,List<Double>>();
+	
+//	static double[] truepositiv = new double[data().size()];
+//	static double[] falsenegativ = new double[data().size()];
+//	static double[] falsepositiv = new double[data().size()];
 	
 	@BeforeClass
 	public static void initialization () throws URISyntaxException {
-		sink = new InMemorySink();
-		analyzer = new RDFaParser();	//Der ausgewählte Parser
-//		for(int i = 0;i < truepositiv.length;i++) {
-//			truepositiv[i] = 0;
-//			falsenegativ[i] = 0;
-//			falsepositiv[i] = 0;
-//		}
 	}
 	
 	@Parameter(0)
@@ -1001,11 +1000,14 @@ public class RDFaParserTest extends RDFParserTest {
     
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
+		sink = new InMemorySink();
+		analyzer = new RDFaParser();
 		
 		String strindex = test.getMethodName();
-		strindex = strindex.substring(11, strindex.indexOf(","));
-		int index = Integer.parseInt(strindex);		
+//		strindex = strindex.substring(11, strindex.indexOf(","));
+//		int index = Integer.parseInt(strindex);		
 		//curi = new CrawleableUri(new URI("rdfaParserTest"));
+		
 		URL test_url = ClassLoader.getSystemResource(testData);
 		File test = new File(test_url.toURI());
 		URL result_url = ClassLoader.getSystemResource(resultData);
@@ -1032,28 +1034,31 @@ public class RDFaParserTest extends RDFParserTest {
 				
 //		String correctresult = Files.readLines(result, Charset.forName("utf-8")).toString().replaceAll(", " ,"\n");
 //	    correctresult = correctresult.substring(1,correctresult.length()-1);
-		String correctresult = "";
-		try (BufferedReader br = new BufferedReader(new FileReader(result))) {
-		    String line;
-		    while ((line = br.readLine()) != null) {
-		       correctresult+= line+"\n";
-		    }
-		}			
+		String correctresult = fileToString(result);		
 		Model correctmodel = createModelFromTurtle(correctresult);
 		System.out.print("created correctmodel ");
 		
+		List<Double> results = new ArrayList<Double>();
+		double fn = 0;
+		double fp = 0;
+		double tp = 0;
 		Set<Statement> missingstatements = getMissingStatements(correctmodel, decodedmodel);
 		for (Statement statement : missingstatements) {
-			//System.out.println(statement.toString());
-			falsenegativ[index]++;
+//			falsenegativ[index]++;
+			fn++;
 		}
 		System.out.println();
 		Set<Statement> morestatements = getMissingStatements(decodedmodel, correctmodel);
 		for (Statement statement : morestatements) {
-			falsepositiv[index]++;
-			//System.out.println(statement.toString());
+//			falsepositiv[index]++;
+			fp++;
 		}
-		truepositiv[index]+=correctmodel.size()-falsenegativ[index];
+//		truepositiv[index]+=correctmodel.size()-falsenegativ[index];
+		tp= correctmodel.size()-fn;
+		results.add(tp);
+		results.add(fp);
+		results.add(fn);			
+		testresults.put(strindex,results);		
 		System.out.println();
 		
 		//String filepath = getFilePath(decodedtest);
@@ -1066,7 +1071,7 @@ public class RDFaParserTest extends RDFParserTest {
 		
 		//assertEquals(decodedtest,correctresult);
 		
-		if(falsenegativ[index] != 0) {
+		if(fn != 0) {
 			System.out.println("DecodedModel");
 			printModel(decodedmodel);
 			System.out.println("CorrectModel");
@@ -1082,25 +1087,45 @@ public class RDFaParserTest extends RDFParserTest {
 			}
 			System.out.println();
 		}
-		assertEquals(0.0,falsenegativ[index],0.0);
+//		assertEquals(0.0,falsenegativ[index],0.0);
+		assertEquals(0.0,fn,0.0);
 	}
 	
 	@AfterClass
 	public static void binaryclassifiers() throws URISyntaxException {
-		double[] p = new double[data().size()];
-		double[] r = new double[data().size()];
-		for(int i = 0;i<p.length;i++) {
-			if((truepositiv[i]+falsepositiv[i]) != 0)p[i] = truepositiv[i]/(truepositiv[i]+falsepositiv[i]);
-			else p[i] = 0;
-			if((truepositiv[i]+falsenegativ[i]) != 0)r[i] = truepositiv[i]/(truepositiv[i]+falsenegativ[i]);
-			else r[i] = 0;
+		double[] p = new double[testresults.size()];
+		double[] r = new double[testresults.size()];
+		double fpsum = 0;
+		double fnsum = 0;
+		int index = 0;
+		Iterator ite = testresults.entrySet().iterator();
+		while(ite.hasNext()) {
+			Map.Entry pair = (Map.Entry)ite.next();
+			List<Double> tmp = (List<Double>)pair.getValue();
+			double tp = tmp.get(0);
+			double fp = tmp.get(1);
+			double fn = tmp.get(2);
+			fpsum+=fp;
+			fnsum+=fn;
+			if((tp+fp) != 0)p[index] = tp/(tp+fp);
+			else p[index] = 0;
+			if((tp+fp) != 0)r[index] = tp/(tp+fn);
+			else r[index] = 0;
+			index++;
 		}
+		
+//		for(int i = 0;i<p.length;i++) {
+//			if((truepositiv[i]+falsepositiv[i]) != 0)p[i] = truepositiv[i]/(truepositiv[i]+falsepositiv[i]);
+//			else p[i] = 0;
+//			if((truepositiv[i]+falsenegativ[i]) != 0)r[i] = truepositiv[i]/(truepositiv[i]+falsenegativ[i]);
+//			else r[i] = 0;
+//		}
 		double psum = sumdoublearray(p);
 		double rsum = sumdoublearray(r);
 		double macrop = (1.0/p.length)*psum;
 		double macror = (1.0/r.length)*rsum;
-		double microp = (psum/(psum+sumdoublearray(falsepositiv)));
-		double micror = (psum/(psum+sumdoublearray(falsenegativ)));
+		double microp = (psum/(psum+fpsum));
+		double micror = (psum/(psum+fnsum));
 		
 		System.out.println("Macro Precision");
 		System.out.println(macrop);

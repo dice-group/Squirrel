@@ -1,5 +1,9 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -100,8 +104,6 @@ public abstract class RDFParserTest {
 	    //System.out.println("model size: " + model.size());
 	    return model;
 	}
-	
-	
 	
 	protected static void printModel(Model model) {
 		StmtIterator iter = model.listStatements();
@@ -211,6 +213,17 @@ public abstract class RDFParserTest {
             }
         }
     }
+	
+	protected static String fileToString(File file) throws FileNotFoundException, IOException {
+		String data = "";
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		       data+= line+"\n";
+		    }
+		}	
+		return data;
+	}
 	
 	protected static String getFilePath(String content) {
 		String filepath = "";
