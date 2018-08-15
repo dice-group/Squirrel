@@ -10,7 +10,7 @@ import java.util.List;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
-import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
+import org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -79,7 +79,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier,Sink sink, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier,Sink sink, Analyzer analyzer, RobotsManager manager, Serializer serializer,
             UriCollector collector, long waitingTime, String logDir) {
         this.frontier = frontier;
         this.sink = sink;
@@ -102,7 +102,7 @@ public class WorkerImpl implements Worker, Closeable {
                 // new SparqlBasedFetcher(),
                 new HTTPFetcher(), new FTPFetcher());
         
-        analyzer = new SimpleOrderedAnalyzerManager(collector);
+        this.analyzer = analyzer;
     }
 
     @Override
@@ -231,18 +231,22 @@ public class WorkerImpl implements Worker, Closeable {
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> uris = new ArrayList<CrawleableUri>(10);
         CrawleableUri uri;
-        while (uriIterator.hasNext()) {
-            try {
-                uri = serializer.deserialize(uriIterator.next());
-                uriProcessor.recognizeUriType(uri);
-                uris.add(uri);
-                if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(uris);
-                    uris.clear();
+        if(uriIterator != null) {
+        	while (uriIterator.hasNext()) {
+                try {
+                    uri = serializer.deserialize(uriIterator.next());
+                    uriProcessor.recognizeUriType(uri);
+                    uris.add(uri);
+                    if ((uris.size() >= MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                        frontier.addNewUris(uris);
+                        uris.clear();
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
                 }
-            } catch (Exception e) {
-                LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
-            }
+            }	
+        }else {
+            LOGGER.error("List of URI's is empty because iterator is null");
         }
         frontier.addNewUris(uris);
     }

@@ -146,4 +146,7 @@ public class FileBasedSink implements Sink {
     public static String generateFileName(String uri, boolean useCompression) {
         return UriUtils.generateFileName(uri, useCompression);
     }
+    
+    
+    
 }

@@ -12,4 +12,6 @@ public interface Analyzer {
 	
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink);
 	
+	public boolean isElegible(CrawleableUri curi, File data);
+	
 }

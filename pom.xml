@@ -137,6 +137,7 @@
         
 		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
 		
+		
 		<dependency>
 		    <groupId>org.rdfhdt</groupId>
 		    <artifactId>hdt-java-package</artifactId>
@@ -150,6 +151,19 @@
 		      </exclusions>
 		</dependency>
         
+        <dependency>
+		   <groupId>org.rdfhdt</groupId>
+		   <artifactId>hdt-jena</artifactId>
+		   <version>1.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.rdfhdt</groupId>
+		    <artifactId>hdt-api</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		
+		
 				 
 
         <!-- HTTP Requests -->

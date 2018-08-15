@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,12 +20,10 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.jena.sparql.core.Quad;
-
+import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 public class RDFAnalyzer implements Analyzer {
 
@@ -108,5 +108,33 @@ public class RDFAnalyzer implements Analyzer {
         }
 
     }
+
+	@Override
+	public boolean isElegible(CrawleableUri curi, File data) {
+		Tika tika = new Tika();
+		boolean isElegible = false;
+		InputStream is = null;
+		try {
+			is = new FileInputStream(data);
+			String mimeType = tika.detect(is);
+			String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+			if(contentType.equals("application/rdf+xml") || mimeType.equals("application/rdf+xml") ||
+					contentType.equals("text/plain") || mimeType.equals("text/plain")
+					||contentType.equals("application/x-turtle") || mimeType.equals("application/x-turtle")) {
+				 isElegible = true;
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("An error was found when trying to analyze ",e);
+		}finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				LOGGER.error("Was not possible to close File Input Stream in RDFAnalyzer",e);
+			}
+		}
+		
+		return isElegible;
+	}
 
 }
