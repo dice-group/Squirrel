@@ -13,6 +13,13 @@ import org.aksw.simba.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * Class responsible for managing analyzers injected by the Spring Context
+ * 
+ * @author gsjunior sjunior@mail.uni-paderborn.de
+ *
+ */
 public class SimpleAnalyzerManager implements Analyzer{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAnalyzerManager.class);
@@ -21,6 +28,14 @@ public class SimpleAnalyzerManager implements Analyzer{
 	
 	
 	
+	/**
+	 * Receives the array of String injected by Spring
+	 * and crates new instances of classes that implements the Analyzer
+	 * interface
+	 * 
+	 * @param uriCollector The collector used to create a new Analyzer
+	 * @param analyzers Array of Strings, containing the full class name used to create a new instance of an Analyzer
+	 */
 	public SimpleAnalyzerManager(UriCollector uriCollector,String... analyzers) {
 		this.analyzers = new HashMap<String, Analyzer>();
 		for(String analyzer: analyzers) {
@@ -46,7 +61,17 @@ public class SimpleAnalyzerManager implements Analyzer{
 		}
 		
 	}
-
+	
+	/**
+	 * 
+	 * It iterates over all the Analyzers created and added to the
+	 * analyzers map and check if they are eligible to be executed by
+	 * invoking isEligible().
+	 * 
+	 * @curi the Crawleable uri that will be analyzed
+	 * @data the File that will be analyzed
+	 * @sink the Sink where the found data will be stored
+	 */
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		
@@ -65,7 +90,7 @@ public class SimpleAnalyzerManager implements Analyzer{
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
