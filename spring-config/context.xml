@@ -34,7 +34,7 @@
         	<constructor-arg index="3" ref="robotsManagerBean" />
         	<constructor-arg index="4" ref="serializerBean" />
         	<constructor-arg index="5" ref="uriCollectorBean" />
-        	<constructor-arg index="6" value="20000" />
+        	<constructor-arg index="6" value="2000" />
         	<constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
         </bean> 
         
