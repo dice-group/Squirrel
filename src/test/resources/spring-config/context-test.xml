@@ -41,7 +41,7 @@
          	
         
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
-        	<constructor-arg index="0" ref="workerComponent" />
+        	<constructor-arg index="0" ref="frontierBean" />
         	<constructor-arg index="1" ref="sinkBean" />
         	<constructor-arg index="2" ref="analyzerBean" />
         	<constructor-arg index="3" ref="robotsManagerBean" />
