@@ -46,10 +46,12 @@ import org.junit.rules.TestName;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Multiset.Entry;
 import com.google.common.io.Files;
 
 import junit.framework.TestResult;
+import rdfa.parse;
 
 public class MicroformatParserTest extends RDFParserTest {
 
@@ -100,9 +102,9 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hcard\\"+"format.html", pathextensionv1+"hcard\\"+"format.json" },
         	{pathextensionv1+"hcard\\"+"hyperlinkedphoto.html", pathextensionv1+"hcard\\"+"hyperlinkedphoto.json" },
         	{pathextensionv1+"hcard\\"+"justahyperlink.html", pathextensionv1+"hcard\\"+"justahyperlink.json" },
-        	{pathextensionv1+"hcard\\"+"justaname.html", pathextensionv1+"hcard\\"+"justaname.json" },
+        	/*{pathextensionv1+"hcard\\"+"justaname.html", pathextensionv1+"hcard\\"+"justaname.json" },
         	{pathextensionv1+"hcard\\"+"multiple.html", pathextensionv1+"hcard\\"+"multiple.json" },
-        	/*{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
+        	{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
         	{pathextensionv1+"hcard\\"+"single.html", pathextensionv1+"hcard\\"+"single.json" },
         	{pathextensionv1+"hentry\\"+"summarycontent.html", pathextensionv1+"hentry\\"+"summarycontent.json" },
         	{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
@@ -208,6 +210,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
 		analyzer = new MicroformatParser();
+		boolean pastprocess = true; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -243,7 +246,7 @@ public class MicroformatParserTest extends RDFParserTest {
 		correctresult = addContextToJSON(correctresult);
 		correctresult = replaceVocab(correctresult);	
 		Model correctmodel = createModelFromJSONLD(correctresult);
-		replacePropertieVocabs(correctmodel);
+		if(pastprocess)replacePropertieVocabs(correctmodel);
 		System.out.print("created correctmodel ");
 			
 		//System.out.println(turtleresult);
@@ -349,6 +352,17 @@ public class MicroformatParserTest extends RDFParserTest {
 		return data.replace("http://www.dummy.org/", "http://www.w3.org/2006/vcard/ns#");
 	}
 	
+	//Jeder Eintrag muss ein Leerzeichen am Ende haben um ihn eindeutig zu machen
+	private static Map<String,String> replaceEntries = new HashMap<String,String>(){
+		{
+			put("http://www.w3.org/2006/vcard/ns#count ", "http://purl.org/stuff/revagg#count ");
+			put("http://www.w3.org/2006/vcard/ns#average ", "http://purl.org/stuff/revagg#average ");
+			put("http://www.w3.org/2006/vcard/ns#best ", "http://purl.org/stuff/revagg#best ");
+			put("http://www.w3.org/2006/vcard/ns#rating ", "http://purl.org/stuff/rev#rating ");
+			put("http://purl.org/stuff/revagg#country-name ", "http://www.w3.org/2006/vcard/ns#country-name ");
+		}
+	};
+	
 	public static void replacePropertieVocabs(Model model) {
 		List<Statement> oldstatements = new ArrayList<Statement>();
 		List<Statement> newstatements = new ArrayList<Statement>();
@@ -358,14 +372,23 @@ public class MicroformatParserTest extends RDFParserTest {
 		    Resource  subject   = stmt.getSubject();     //subject
 		    Property  predicate = stmt.getPredicate();   //predicate
 		    RDFNode   object    = stmt.getObject();      //object
-		    String data = predicate.toString();
+		    String data = predicate.toString()+" ";		//Ein Leerzeichen am Ende das Property eindeutig zu machen
 		    if(subjectReplace(data)) {
 		    	
-				data = data.replace("http://www.w3.org/2006/vcard/ns#count", "http://purl.org/stuff/revagg#count");
-				data = data.replace("http://www.w3.org/2006/vcard/ns#average", "http://purl.org/stuff/revagg#average");
-				data = data.replace("http://www.w3.org/2006/vcard/ns#best", "http://purl.org/stuff/revagg#best");
-				data = data.replace("http://www.w3.org/2006/vcard/ns#rating", "http://purl.org/stuff/rev#rating");
+		    	Iterator ite = replaceEntries.entrySet().iterator();
+				while(ite.hasNext()) {
+					Map.Entry pair = (Map.Entry)ite.next();
+					String oldvalue = pair.getKey().toString();
+					String newvalue = pair.getValue().toString();
+					data = data.replace(oldvalue, newvalue);
+				}
+//				data = data.replace("http://www.w3.org/2006/vcard/ns#count", "http://purl.org/stuff/revagg#count");
+//				data = data.replace("http://www.w3.org/2006/vcard/ns#average", "http://purl.org/stuff/revagg#average");
+//				data = data.replace("http://www.w3.org/2006/vcard/ns#best", "http://purl.org/stuff/revagg#best");
+//				data = data.replace("http://www.w3.org/2006/vcard/ns#rating", "http://purl.org/stuff/rev#rating");
+//				data = data.replace("http://purl.org/stuff/revagg#country-name", "http://www.w3.org/2006/vcard/ns#country-name");
 				
+				data = data.substring(0, data.length()-2); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
 		    	Property newpredicate = ResourceFactory.createProperty(data);
 		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, object);
 		    	oldstatements.add(stmt);
@@ -381,11 +404,29 @@ public class MicroformatParserTest extends RDFParserTest {
 	}
 	
 	private static boolean subjectReplace(String data) {
-		boolean replace =false;
-		if(data.contains("http://www.w3.org/2006/vcard/ns#count")) replace = true;
-		if(data.contains("http://www.w3.org/2006/vcard/ns#average")) replace = true;
-		if(data.contains("http://www.w3.org/2006/vcard/ns#best")) replace = true;
-		if(data.contains("http://www.w3.org/2006/vcard/ns#rating")) replace = true;
+		boolean replace =false;		
+		Iterator ite = replaceEntries.entrySet().iterator();
+		while(ite.hasNext()) {
+			Map.Entry pair = (Map.Entry)ite.next();
+			String statement = pair.getKey().toString();
+			if(data.contains(statement)) {
+				replace = true;
+			}
+			
+		}	
+//		String[] toreplace = new String[] {"http://www.w3.org/2006/vcard/ns#count",
+//				"http://www.w3.org/2006/vcard/ns#average",
+//				"http://www.w3.org/2006/vcard/ns#best",
+//				"http://www.w3.org/2006/vcard/ns#rating",
+//				"http://purl.org/stuff/revagg#country-name"};
+//		for (String string : toreplace) {
+//			if(data.contains(string) )replace = true;
+//		}
+		//if(data.contains("http://www.w3.org/2006/vcard/ns#count")) replace = true;
+		//if(data.contains("http://www.w3.org/2006/vcard/ns#average")) replace = true;
+		//if(data.contains("http://www.w3.org/2006/vcard/ns#best")) replace = true;
+		//if(data.contains("http://www.w3.org/2006/vcard/ns#rating")) replace = true;
+		//if(data.contains("http://purl.org/stuff/revagg#country-name")) replace = true;
 		return replace;
 	}
 	
