@@ -55,7 +55,7 @@ import rdfa.parse;
 
 public class MicroformatParserTest extends RDFParserTest {
 
-	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
+	private static String context = "http://example.com/";
 	private static String pathextensionmixed = "\\html_scraper_analyzer\\MicroformatParserTestResources\\microformats-mixed\\";
 	private static String pathextensionv1 = "\\html_scraper_analyzer\\MicroformatParserTestResources\\microformats-v1\\";
 	private static String pathextensionv2 = "\\html_scraper_analyzer\\MicroformatParserTestResources\\microformats-v2\\";
@@ -102,7 +102,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hcard\\"+"format.html", pathextensionv1+"hcard\\"+"format.json" },
         	{pathextensionv1+"hcard\\"+"hyperlinkedphoto.html", pathextensionv1+"hcard\\"+"hyperlinkedphoto.json" },
         	{pathextensionv1+"hcard\\"+"justahyperlink.html", pathextensionv1+"hcard\\"+"justahyperlink.json" },
-        	/*{pathextensionv1+"hcard\\"+"justaname.html", pathextensionv1+"hcard\\"+"justaname.json" },
+        	{pathextensionv1+"hcard\\"+"justaname.html", pathextensionv1+"hcard\\"+"justaname.json" },
         	{pathextensionv1+"hcard\\"+"multiple.html", pathextensionv1+"hcard\\"+"multiple.json" },
         	{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
         	{pathextensionv1+"hcard\\"+"single.html", pathextensionv1+"hcard\\"+"single.json" },
@@ -117,7 +117,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hresume\\"+"education.html", pathextensionv1+"hresume\\"+"education.json" },
         	{pathextensionv1+"hresume\\"+"skill.html", pathextensionv1+"hresume\\"+"skill.json" },
         	{pathextensionv1+"hresume\\"+"work.html", pathextensionv1+"hresume\\"+"work.json" },
-        	{pathextensionv1+"hreview\\"+"item.html", pathextensionv1+"hreview\\"+"item.json" },
+            {pathextensionv1+"hreview\\"+"item.html", pathextensionv1+"hreview\\"+"item.json" },
         	{pathextensionv1+"hreview\\"+"vcard.html", pathextensionv1+"hreview\\"+"vcard.json" },
         	{pathextensionv1+"hreview-aggregate\\"+"hcard.html", pathextensionv1+"hreview-aggregate\\"+"hcard.json" },
         	{pathextensionv1+"hreview-aggregate\\"+"justahyperlink.html", pathextensionv1+"hreview-aggregate\\"+"justahyperlink.json" },
@@ -126,7 +126,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"includes\\"+"heventitemref.html", pathextensionv1+"includes\\"+"heventitemref.json" },
         	{pathextensionv1+"includes\\"+"hyperlink.html", pathextensionv1+"includes\\"+"hyperlink.json" },
         	{pathextensionv1+"includes\\"+"object.html", pathextensionv1+"includes\\"+"object.json" },
-        	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },
+        	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },//*/
         	//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
         	{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
         	{pathextensionv2+"h-adr\\"+"geourl.html", pathextensionv2+"h-adr\\"+"geourl.json" },
@@ -388,7 +388,7 @@ public class MicroformatParserTest extends RDFParserTest {
 //				data = data.replace("http://www.w3.org/2006/vcard/ns#rating", "http://purl.org/stuff/rev#rating");
 //				data = data.replace("http://purl.org/stuff/revagg#country-name", "http://www.w3.org/2006/vcard/ns#country-name");
 				
-				data = data.substring(0, data.length()-2); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
+				data = data.substring(0, data.length()-1); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
 		    	Property newpredicate = ResourceFactory.createProperty(data);
 		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, object);
 		    	oldstatements.add(stmt);

@@ -56,7 +56,7 @@ public class MicroformatMF2JParser implements Analyzer {
 		
 		String json = MicroformatParserTest.addContextToJSON(parsed.toString());
 		json = MicroformatParserTest.replaceVocab(json);
-		
+		//System.out.println(json);
 		Model model = RDFParserTest.createModelFromJSONLD(json);
 		String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
 		StringWriter out = new StringWriter();
