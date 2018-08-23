@@ -29,6 +29,7 @@ import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -37,6 +38,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -107,7 +110,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
         	{pathextensionv1+"hcard\\"+"single.html", pathextensionv1+"hcard\\"+"single.json" },
         	{pathextensionv1+"hentry\\"+"summarycontent.html", pathextensionv1+"hentry\\"+"summarycontent.json" },
-        	{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
+        	/*{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
         	{pathextensionv1+"hnews\\"+"all.html", pathextensionv1+"hnews\\"+"all.json" },
         	{pathextensionv1+"hnews\\"+"minimum.html", pathextensionv1+"hnews\\"+"minimum.json" },
         	{pathextensionv1+"hproduct\\"+"aggregate.html", pathextensionv1+"hproduct\\"+"aggregate.json" },
@@ -128,7 +131,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"includes\\"+"object.html", pathextensionv1+"includes\\"+"object.json" },
         	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },//*/
         	//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
-        	{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
+        	/*{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
         	{pathextensionv2+"h-adr\\"+"geourl.html", pathextensionv2+"h-adr\\"+"geourl.json" },
         	{pathextensionv2+"h-adr\\"+"justaname.html", pathextensionv2+"h-adr\\"+"justaname.json" },
         	{pathextensionv2+"h-adr\\"+"lettercase.html", pathextensionv2+"h-adr\\"+"lettercase.json" },
@@ -344,12 +347,12 @@ public class MicroformatParserTest extends RDFParserTest {
 	public static String addContextToJSON(String data) {
 		data = data.substring(1);
 		data = "{\r\n" + 
-				"\"@context\": {\"@vocab\": \"http://www.dummy.org/\"},\n"+data;
+				"\"@context\": {\"@vocab\": \"http://www.dummy.org/#\"},\n"+data;
 		return data;
 	}
 	
 	public static String replaceVocab(String data) {
-		return data.replace("http://www.dummy.org/", "http://www.w3.org/2006/vcard/ns#");
+		return data.replace("http://www.dummy.org/#", "http://www.w3.org/2006/vcard/ns#");
 	}
 	
 	//Jeder Eintrag muss ein Leerzeichen am Ende haben um ihn eindeutig zu machen
@@ -360,10 +363,16 @@ public class MicroformatParserTest extends RDFParserTest {
 			put("http://www.w3.org/2006/vcard/ns#best ", "http://purl.org/stuff/revagg#best ");
 			put("http://www.w3.org/2006/vcard/ns#rating ", "http://purl.org/stuff/rev#rating ");
 			put("http://purl.org/stuff/revagg#country-name ", "http://www.w3.org/2006/vcard/ns#country-name ");
+			put("http://www.w3.org/2006/vcard/ns#type ", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type ");
+			put("http://www.w3.org/2006/vcard/ns#location ", "http://www.w3.org/2002/12/cal/icaltzd#location ");
+			put("http://www.w3.org/2006/vcard/ns#start ", "http://www.w3.org/2002/12/cal/icaltzd#dtstart ");
+			put("http://www.w3.org/2006/vcard/ns#end ", "http://www.w3.org/2002/12/cal/icaltzd#dtend ");
+			put("http://www.w3.org/2006/vcard/ns#url ", "http://www.w3.org/2002/12/cal/icaltzd#url ");
+			put("http://www.w3.org/2006/vcard/ns#org ", "http://www.w3.org/2006/vcard/ns#organization-name ");
 		}
 	};
 	
-	public static void replacePropertieVocabs(Model model) {
+	public static void replacePropertieVocabs(Model model) {	
 		List<Statement> oldstatements = new ArrayList<Statement>();
 		List<Statement> newstatements = new ArrayList<Statement>();
 		StmtIterator iter = model.listStatements();
@@ -381,16 +390,24 @@ public class MicroformatParserTest extends RDFParserTest {
 					String oldvalue = pair.getKey().toString();
 					String newvalue = pair.getValue().toString();
 					data = data.replace(oldvalue, newvalue);
-				}
-//				data = data.replace("http://www.w3.org/2006/vcard/ns#count", "http://purl.org/stuff/revagg#count");
-//				data = data.replace("http://www.w3.org/2006/vcard/ns#average", "http://purl.org/stuff/revagg#average");
-//				data = data.replace("http://www.w3.org/2006/vcard/ns#best", "http://purl.org/stuff/revagg#best");
-//				data = data.replace("http://www.w3.org/2006/vcard/ns#rating", "http://purl.org/stuff/rev#rating");
-//				data = data.replace("http://purl.org/stuff/revagg#country-name", "http://www.w3.org/2006/vcard/ns#country-name");
-				
-				data = data.substring(0, data.length()-1); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
+				}				
+					    	
+//		    	RDFNode newobject = null;
+//		    	if(data.contains("#url ")) {
+//		    		newobject = ResourceFactory.createProperty(object.toString());
+//		    	}else newobject = object;
+		    	
+		    	data = data.substring(0, data.length()-1); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
 		    	Property newpredicate = ResourceFactory.createProperty(data);
+		    	
 		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, object);
+		    	oldstatements.add(stmt);
+		    	newstatements.add(newstmt);
+		    }
+		    if(data.contains("#email ")) {
+		    	//RDFNode newobject = ResourceFactory.createStringLiteral(object.toString());
+		    	RDFNode newobject = ResourceFactory.createProperty(object.toString());
+		    	Statement newstmt = ResourceFactory.createStatement(subject, predicate, newobject);
 		    	oldstatements.add(stmt);
 		    	newstatements.add(newstmt);
 		    }
@@ -411,22 +428,8 @@ public class MicroformatParserTest extends RDFParserTest {
 			String statement = pair.getKey().toString();
 			if(data.contains(statement)) {
 				replace = true;
-			}
-			
+			}		
 		}	
-//		String[] toreplace = new String[] {"http://www.w3.org/2006/vcard/ns#count",
-//				"http://www.w3.org/2006/vcard/ns#average",
-//				"http://www.w3.org/2006/vcard/ns#best",
-//				"http://www.w3.org/2006/vcard/ns#rating",
-//				"http://purl.org/stuff/revagg#country-name"};
-//		for (String string : toreplace) {
-//			if(data.contains(string) )replace = true;
-//		}
-		//if(data.contains("http://www.w3.org/2006/vcard/ns#count")) replace = true;
-		//if(data.contains("http://www.w3.org/2006/vcard/ns#average")) replace = true;
-		//if(data.contains("http://www.w3.org/2006/vcard/ns#best")) replace = true;
-		//if(data.contains("http://www.w3.org/2006/vcard/ns#rating")) replace = true;
-		//if(data.contains("http://purl.org/stuff/revagg#country-name")) replace = true;
 		return replace;
 	}
 	
