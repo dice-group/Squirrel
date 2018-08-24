@@ -110,7 +110,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"hcard\\"+"name.html", pathextensionv1+"hcard\\"+"name.json" },
         	{pathextensionv1+"hcard\\"+"single.html", pathextensionv1+"hcard\\"+"single.json" },
         	{pathextensionv1+"hentry\\"+"summarycontent.html", pathextensionv1+"hentry\\"+"summarycontent.json" },
-        	/*{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
+        	{pathextensionv1+"hfeed\\"+"simple.html", pathextensionv1+"hfeed\\"+"simple.json" },
         	{pathextensionv1+"hnews\\"+"all.html", pathextensionv1+"hnews\\"+"all.json" },
         	{pathextensionv1+"hnews\\"+"minimum.html", pathextensionv1+"hnews\\"+"minimum.json" },
         	{pathextensionv1+"hproduct\\"+"aggregate.html", pathextensionv1+"hproduct\\"+"aggregate.json" },
@@ -130,7 +130,7 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"includes\\"+"hyperlink.html", pathextensionv1+"includes\\"+"hyperlink.json" },
         	{pathextensionv1+"includes\\"+"object.html", pathextensionv1+"includes\\"+"object.json" },
         	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },//*/
-        	//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
+        	/*//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
         	/*{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
         	{pathextensionv2+"h-adr\\"+"geourl.html", pathextensionv2+"h-adr\\"+"geourl.json" },
         	{pathextensionv2+"h-adr\\"+"justaname.html", pathextensionv2+"h-adr\\"+"justaname.json" },
@@ -369,6 +369,12 @@ public class MicroformatParserTest extends RDFParserTest {
 			put("http://www.w3.org/2006/vcard/ns#end ", "http://www.w3.org/2002/12/cal/icaltzd#dtend ");
 			put("http://www.w3.org/2006/vcard/ns#url ", "http://www.w3.org/2002/12/cal/icaltzd#url ");
 			put("http://www.w3.org/2006/vcard/ns#org ", "http://www.w3.org/2006/vcard/ns#organization-name ");
+			put("http://www.w3.org/2006/vcard/ns#affiliation ", "http://ramonantonio.net/doac/0.1/#affiliation "); //http://ramonantonio.net/doac/0.1/# nicht gefunden!
+			put("http://www.w3.org/2006/vcard/ns#summary ", "http://ramonantonio.net/doac/0.1/#summary ");
+			put("http://www.w3.org/2006/vcard/ns#education ", "http://ramonantonio.net/doac/0.1/#education ");
+			put("http://www.w3.org/2006/vcard/ns#experience ", "http://ramonantonio.net/doac/0.1/#experience ");
+			put("http://www.w3.org/2006/vcard/ns#job-title ","http://ramonantonio.net/doac/0.1/#title ");// job-title schema unbekannt.
+			put("http://www.w3.org/2006/vcard/ns#license ", "http://www.w3.org/1999/xhtml/vocab#license ");
 		}
 	};
 	
@@ -404,7 +410,7 @@ public class MicroformatParserTest extends RDFParserTest {
 		    	oldstatements.add(stmt);
 		    	newstatements.add(newstmt);
 		    }
-		    if(data.contains("#email ")) {
+		    if(data.contains("#email ") || data.contains("#photo ")) {
 		    	//RDFNode newobject = ResourceFactory.createStringLiteral(object.toString());
 		    	RDFNode newobject = ResourceFactory.createProperty(object.toString());
 		    	Statement newstmt = ResourceFactory.createStatement(subject, predicate, newobject);
