@@ -23,12 +23,15 @@ import java.util.Set;
 
 import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
+import org.aksw.jena_sparql_api.sparql.ext.datatypes.RDFDatatypeDate;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -38,6 +41,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.sdb.store.DatabaseType;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
@@ -356,7 +360,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	}
 	
 	//Jeder Eintrag muss ein Leerzeichen am Ende haben um ihn eindeutig zu machen
-	private static Map<String,String> replaceEntries = new HashMap<String,String>(){
+	private static Map<String,String> replacePredicates = new HashMap<String,String>(){
 		{
 			put("http://www.w3.org/2006/vcard/ns#count ", "http://purl.org/stuff/revagg#count ");
 			put("http://www.w3.org/2006/vcard/ns#average ", "http://purl.org/stuff/revagg#average ");
@@ -378,6 +382,21 @@ public class MicroformatParserTest extends RDFParserTest {
 		}
 	};
 	
+	private static Map<String,String> replaceObjects = new HashMap<String,String>(){{
+		put("h-card", "http://www.w3.org/2006/vcard/ns#VCard");
+		put("h-adr", "http://www.w3.org/2006/vcard/ns#Address");
+		//put("\"h-event\" ", "http://www.w3.org/2002/12/cal/icaltzd#vcalendar  ");
+		put("h-event", "http://www.w3.org/2002/12/cal/icaltzd#Vevent");
+		//put("\"h-resume\" ", "");
+		put("h-geo", "http://www.w3.org/2006/vcard/ns#Location");
+		//put("\"h-entry\" ", "");
+		//put("\"h-product\" ", "");
+		put("h-review", "http://purl.org/stuff/rev#Review");
+		//put("\"h-item\" ", "");
+		put("h-review-aggregate", "http://purl.org/stuff/revagg#ReviewAggregate");
+	 }
+	};
+	
 	public static void replacePropertieVocabs(Model model) {	
 		List<Statement> oldstatements = new ArrayList<Statement>();
 		List<Statement> newstatements = new ArrayList<Statement>();
@@ -387,30 +406,39 @@ public class MicroformatParserTest extends RDFParserTest {
 		    Resource  subject   = stmt.getSubject();     //subject
 		    Property  predicate = stmt.getPredicate();   //predicate
 		    RDFNode   object    = stmt.getObject();      //object
-		    String data = predicate.toString()+" ";		//Ein Leerzeichen am Ende das Property eindeutig zu machen
-		    if(subjectReplace(data)) {
+		    String predicatestr = predicate.toString()+" ";		//Ein Leerzeichen am Ende das Property eindeutig zu machen
+		    String objectstr = object.toString();
+		    if(subjectReplace(predicatestr)) {
 		    	
-		    	Iterator ite = replaceEntries.entrySet().iterator();
+		    	Iterator ite = replacePredicates.entrySet().iterator();
 				while(ite.hasNext()) {
 					Map.Entry pair = (Map.Entry)ite.next();
 					String oldvalue = pair.getKey().toString();
 					String newvalue = pair.getValue().toString();
-					data = data.replace(oldvalue, newvalue);
+					predicatestr = predicatestr.replace(oldvalue, newvalue);
 				}				
-					    	
-//		    	RDFNode newobject = null;
-//		    	if(data.contains("#url ")) {
-//		    		newobject = ResourceFactory.createProperty(object.toString());
-//		    	}else newobject = object;
+				
+				RDFNode newobject = null;
+				if(predicatestr.contains("#type ")) {
+					Iterator ite2 = replaceObjects.entrySet().iterator();
+					while(ite2.hasNext()) {
+						Map.Entry pair = (Map.Entry)ite2.next();
+						String oldvalue = pair.getKey().toString();
+						String newvalue = pair.getValue().toString();
+						objectstr = objectstr.replace(oldvalue, newvalue);
+					}
+			    	newobject = ResourceFactory.createProperty(objectstr);
+			    	System.out.println(objectstr);
+				} else newobject = object;
 		    	
-		    	data = data.substring(0, data.length()-1); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
-		    	Property newpredicate = ResourceFactory.createProperty(data);
+				predicatestr = predicatestr.substring(0, predicatestr.length()-1); //Entfernt das Leerzeichen wieder was den Einträgen hinzugefügt wurde
+		    	Property newpredicate = ResourceFactory.createProperty(predicatestr);
 		    	
-		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, object);
+		    	Statement newstmt = ResourceFactory.createStatement(subject, newpredicate, newobject);
 		    	oldstatements.add(stmt);
 		    	newstatements.add(newstmt);
 		    }
-		    if(data.contains("#email ") || data.contains("#photo ")) {
+		    if(predicatestr.contains("#email ") || predicatestr.contains("#photo ")) {
 		    	//RDFNode newobject = ResourceFactory.createStringLiteral(object.toString());
 		    	RDFNode newobject = ResourceFactory.createProperty(object.toString());
 		    	Statement newstmt = ResourceFactory.createStatement(subject, predicate, newobject);
@@ -428,7 +456,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	
 	private static boolean subjectReplace(String data) {
 		boolean replace =false;		
-		Iterator ite = replaceEntries.entrySet().iterator();
+		Iterator ite = replacePredicates.entrySet().iterator();
 		while(ite.hasNext()) {
 			Map.Entry pair = (Map.Entry)ite.next();
 			String statement = pair.getKey().toString();
