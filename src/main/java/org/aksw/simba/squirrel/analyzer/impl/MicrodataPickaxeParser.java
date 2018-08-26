@@ -32,6 +32,7 @@ public class MicrodataPickaxeParser implements Analyzer {
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		Scraper scraper = new Scraper();
 		try {
+			String result = "";
 			List<Thing> thingList = scraper.extract(data);
 			for (Thing things : thingList) {			
 				JsonLdSerializer serializer = new JsonLdSerializer(true /* setPrettyPrinting */);
@@ -41,10 +42,9 @@ public class MicrodataPickaxeParser implements Analyzer {
 				String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
 				StringWriter out = new StringWriter();
 				model.write(out, syntax);
-				String result = out.toString();			
-				
-				sink.addData(curi, result);
+				result += out.toString();	
 			}
+			sink.addData(curi, result);
 		}
 		catch (Exception e) {
 			// TODO: handle exception
