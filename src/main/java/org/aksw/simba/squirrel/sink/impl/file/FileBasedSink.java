@@ -42,6 +42,11 @@ public class FileBasedSink implements Sink {
     /**
      * Flag whether a compression algorithm should be used.
      */
+    
+    /**
+     * outputstream for Metadata
+     */
+    protected FileOutputStream out = null;
         
     protected boolean useCompression;
   
@@ -73,17 +78,20 @@ public class FileBasedSink implements Sink {
     	metaDataOutputDirectory.mkdirs();
     	
     	CrawleableUri curi = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
-    	FileOutputStream out;
+    	
 		try {
+			if(out == null) {
 			out = new FileOutputStream(File.separator + metaDataOutputDirectory.getAbsolutePath() + File.separator  + UriUtils.generateFileName(curi.getUri().toString(), false));
-	    	RDFDataMgr.write(out, model, Lang.RDFXML);
-
-		} catch (FileNotFoundException e) {
+			}
+			StreamRDFWriter.write(out, model.getGraph(), Lang.NT);
+			out.flush();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error when storing metadata: " + e);
 		}
     	
     }
+	
     
 
     @Override

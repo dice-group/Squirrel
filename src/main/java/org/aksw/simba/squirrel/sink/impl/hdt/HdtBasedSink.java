@@ -92,7 +92,7 @@ public class HdtBasedSink extends FileBasedSink {
 			out.flush();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error when storing metadata: " + e);
 		}
     	
     }
