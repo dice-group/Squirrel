@@ -1,6 +1,8 @@
 package org.aksw.simba.squirrel.sink.impl.hdt;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,9 +10,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.rdfhdt.hdt.enums.RDFNotation;
 import org.rdfhdt.hdt.hdt.HDT;
 import org.rdfhdt.hdt.hdt.HDTManager;
@@ -41,6 +49,11 @@ public class HdtBasedSink extends FileBasedSink {
      * input type for parsing the file
      */
     protected String inputType = "ntriples";
+    
+    /**
+     * outputstream for Metadata
+     */
+    protected FileOutputStream out = null;
 
 	/**
 	 * Creates a temp file for the FileBasedsink storage
@@ -62,6 +75,28 @@ public class HdtBasedSink extends FileBasedSink {
 	public void openSinkForUri(CrawleableUri uri) {
 		super.openSinkForUri(uri);
 	}
+	
+	@Override
+    public void addMetaData(Model model) {
+    	
+    	File metaDataOutputDirectory = new File(File.separator +outputDirectory.getAbsolutePath() + File.separator + "Metadata");
+    	metaDataOutputDirectory.mkdirs();
+    	
+    	CrawleableUri curi = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
+    	
+		try {
+			if(out == null) {
+			out = new FileOutputStream(File.separator + metaDataOutputDirectory.getAbsolutePath() + File.separator  + UriUtils.generateFileName(curi.getUri().toString(), false));
+			}
+			StreamRDFWriter.write(out, model.getGraph(), Lang.NT);
+			out.flush();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+	
 
 	/**
 	 * Recovers the temp file generated and parse it to hdt

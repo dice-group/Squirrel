@@ -1,6 +1,7 @@
 package org.aksw.simba.squirrel.sink.impl.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFWriter;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.system.StreamOps;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWriter;
@@ -40,7 +42,7 @@ public class FileBasedSink implements Sink {
     /**
      * Flag whether a compression algorithm should be used.
      */
-    
+        
     protected boolean useCompression;
   
     protected Model model;
@@ -63,6 +65,26 @@ public class FileBasedSink implements Sink {
     	this.useCompression = false;
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
 	}
+    
+    @Override
+    public void addMetaData(Model model) {
+    	
+    	File metaDataOutputDirectory = new File(File.separator +outputDirectory.getAbsolutePath() + File.separator + "Metadata");
+    	metaDataOutputDirectory.mkdirs();
+    	
+    	CrawleableUri curi = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
+    	FileOutputStream out;
+		try {
+			out = new FileOutputStream(File.separator + metaDataOutputDirectory.getAbsolutePath() + File.separator  + UriUtils.generateFileName(curi.getUri().toString(), false));
+	    	RDFDataMgr.write(out, model, Lang.RDFXML);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {

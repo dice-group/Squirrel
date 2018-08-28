@@ -26,4 +26,11 @@ public interface Worker extends Runnable {
      *            list.
      */
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris);
+    
+    
+    /**
+     * Gives the unique id of the worker.
+     * @return The id of the worker.
+     */
+    public int getId();
 }

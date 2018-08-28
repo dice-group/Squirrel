@@ -1,8 +1,10 @@
 package org.aksw.simba.squirrel.analyzer.manager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 public class SimpleAnalyzerManager implements Analyzer{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAnalyzerManager.class);
+	public static final String LIST_ANALYZERS = "LIST_ANALYZERS";
 	
 	private Map<String, Analyzer> analyzers;
 	
@@ -79,6 +82,16 @@ public class SimpleAnalyzerManager implements Analyzer{
 		
 		for(Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
 			if(analyzerEntry.getValue().isElegible(curi, data)) {
+				if(curi.getData().containsKey(LIST_ANALYZERS)) {
+					@SuppressWarnings("unchecked")
+					List<String> analyzers = (List<String>) curi.getData().get(LIST_ANALYZERS);
+					analyzers.add(analyzerEntry.getValue().getClass().getName());
+					curi.addData(LIST_ANALYZERS, analyzers);
+				}else {
+					List<String> analyzers = new ArrayList<String>();
+					analyzers.add(analyzerEntry.getValue().getClass().getName());
+					curi.addData(LIST_ANALYZERS, analyzers);
+				}
 				return analyzerEntry.getValue().analyze(curi, data, sink);
 			}
 		}

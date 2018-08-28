@@ -3,6 +3,8 @@ package org.aksw.simba.squirrel.worker.impl;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +12,6 @@ import java.util.List;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.compress.impl.FileManager;
-import org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -20,6 +21,8 @@ import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity.CrawlingURIState;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -55,6 +58,9 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime;
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
+    private final int id = (int) Math.floor(Math.random() * 100000);
+    
+    private CrawlingActivity crawlingActivity;
 
 
 
@@ -160,6 +166,11 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void performCrawling(CrawleableUri uri, List<CrawleableUri> newUris) {
+    	
+    	
+    	uri.addData(CrawleableUri.UUID_KEY, this.id);
+    	crawlingActivity = new CrawlingActivity(uri, this, sink);
+    	
         // check robots.txt
     	LOGGER.warn("Now working on: " + uri.getUri().toString());
 
@@ -217,11 +228,17 @@ public class WorkerImpl implements Worker, Closeable {
 	                        // do not handle this uri anymore.
 	                        sink.closeSinkForUri(uri);
 	                        collector.closeSinkForUri(uri);
+	                        
+	                        crawlingActivity.setState(CrawlingURIState.FAILED);
+	                        crawlingActivity.finishActivity();
 	                        throw e;
 	                    }
 	                }
 	            }
             }
+            crawlingActivity.setState(CrawlingURIState.SUCCESSFUL);
+            crawlingActivity.finishActivity();
+            
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
         }
@@ -264,5 +281,10 @@ public class WorkerImpl implements Worker, Closeable {
     public static void main(String[] args) {
 
     }
+
+	@Override
+	public int getId() {
+		return this.id;
+	}
 
 }
