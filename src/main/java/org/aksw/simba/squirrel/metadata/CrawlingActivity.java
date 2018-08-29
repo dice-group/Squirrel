@@ -9,6 +9,7 @@ import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.sink.Sink;
 //import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 //import org.aksw.simba.squirrel.sink.tripleBased.TripleBasedSink;
@@ -131,13 +132,17 @@ public class CrawlingActivity {
 //        }
         model.add(resultGraph, MetaDataVocabulary.wasGeneratedBy, activity);
         model.add(resultGraph, MetaDataVocabulary.uriName, crawledUri);
+        model.add(resultGraph, MetaDataVocabulary.collectedUris, model.createTypedLiteral( Integer.parseInt(getCrawleableUri().getData().get("uris_count").toString()) ));
+        
         
         List<String> analyzers = (List<String>) uri.getData().get(SimpleAnalyzerManager.LIST_ANALYZERS);
         
+        
         for(String analyzer : analyzers) {
-        	model.add(plan, MetaDataVocabulary.rdfs_comment, analyzer);
+        	model.add(plan, MetaDataVocabulary.rdfs_comment, model.createLiteral(analyzer));
         }
 
+        model.add(plan, MetaDataVocabulary.rdfs_comment, model.createLiteral(uri.getData().get(SimpleOrderedFetcherManager.FETCHER).toString()));
         getSink().addMetaData(model);
 
     }

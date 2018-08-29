@@ -32,6 +32,7 @@ public class MetaDataVocabulary {
     public static final Property numberOfTriples = model.createProperty(baseSq + "numberOfTriples");
     public static final Property hostedOn = model.createProperty(baseSq + "hostedOn");
     public static final Property uriName = model.createProperty(baseSq + "uriName");
+    public static final Property collectedUris = model.createProperty(baseSq + "collectedUris");
 
     public static final Property rdfs_comment = model.createProperty(rdfs + "comment");
     

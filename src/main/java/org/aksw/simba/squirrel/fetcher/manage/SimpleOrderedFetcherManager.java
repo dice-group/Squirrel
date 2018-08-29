@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SimpleOrderedFetcherManager implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FTPFetcher.class);
+    public static final String FETCHER = "fetcher";
 
     private Fetcher[] fetchers;
 
@@ -45,6 +46,11 @@ public class SimpleOrderedFetcherManager implements Fetcher {
         int fetcherId = 0;
         while ((resultFile == null) && (fetcherId < fetchers.length)) {
             resultFile = fetchers[fetcherId].fetch(uri);
+            
+            if(resultFile != null) {
+            	uri.addData(FETCHER, fetchers[fetcherId].getClass().getName());
+            }
+            
             ++fetcherId;
         }
         return resultFile;

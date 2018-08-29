@@ -174,6 +174,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         boolean modelsAreEqual = true;
         while (iterator.hasNext()) {
             statement = iterator.next();
+            System.out.println(statement);
             if (!carwledModel.contains(statement)) {
                 LOGGER.error("The crawled model of \"" + resourceName + "\" does not contain the expected statement "
                         + statement.toString());
@@ -183,6 +184,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         iterator = carwledModel.listStatements();
         while (iterator.hasNext()) {
             statement = iterator.next();
+            System.out.println(statement);
             if (!expModel.contains(statement)) {
                 LOGGER.error("The crawled model of \"" + resourceName + "\" contains the unexpected statement "
                         + statement.toString());
