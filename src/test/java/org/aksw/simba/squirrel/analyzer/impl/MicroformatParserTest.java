@@ -134,8 +134,8 @@ public class MicroformatParserTest extends RDFParserTest {
         	{pathextensionv1+"includes\\"+"hyperlink.html", pathextensionv1+"includes\\"+"hyperlink.json" },
         	{pathextensionv1+"includes\\"+"object.html", pathextensionv1+"includes\\"+"object.json" },
         	{pathextensionv1+"includes\\"+"table.html", pathextensionv1+"includes\\"+"table.json" },//*/
-        	/*//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
-        	/*{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
+        	//Any23 kann nur bis Microformats-v1 die Modelle höherer Version sind leer
+        	{pathextensionv2+"h-adr\\"+"geo.html", pathextensionv2+"h-adr\\"+"geo.json" },
         	{pathextensionv2+"h-adr\\"+"geourl.html", pathextensionv2+"h-adr\\"+"geourl.json" },
         	{pathextensionv2+"h-adr\\"+"justaname.html", pathextensionv2+"h-adr\\"+"justaname.json" },
         	{pathextensionv2+"h-adr\\"+"lettercase.html", pathextensionv2+"h-adr\\"+"lettercase.json" },
@@ -216,8 +216,8 @@ public class MicroformatParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicroformatParser();
-		boolean pastprocess = true; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
+		analyzer = new MicroformatMF2JParser();
+		boolean pastprocess = false; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -306,6 +306,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	public static void binaryclassifiers() throws URISyntaxException {
 		double[] p = new double[testresults.size()];
 		double[] r = new double[testresults.size()];
+		double tpsum = 0;
 		double fpsum = 0;
 		double fnsum = 0;
 		int index = 0;
@@ -316,6 +317,7 @@ public class MicroformatParserTest extends RDFParserTest {
 			double tp = tmp.get(0);
 			double fp = tmp.get(1);
 			double fn = tmp.get(2);
+			tpsum+=tp;
 			fpsum+=fp;
 			fnsum+=fn;
 			if((tp+fp) != 0)p[index] = tp/(tp+fp);
@@ -335,8 +337,11 @@ public class MicroformatParserTest extends RDFParserTest {
 		double rsum = sumdoublearray(r);
 		double macrop = (1.0/p.length)*psum;
 		double macror = (1.0/r.length)*rsum;
-		double microp = (psum/(psum+fpsum));
-		double micror = (psum/(psum+fnsum));
+//		double microp = (psum/(psum+fpsum));
+//		double micror = (psum/(psum+fnsum));
+		double microp = (tpsum/(tpsum+fpsum));
+		double micror = (tpsum/(tpsum+fnsum));
+		
 		
 		System.out.println("Macro Precision");
 		System.out.println(macrop);

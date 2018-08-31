@@ -1001,7 +1001,7 @@ public class RDFaParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new RDFaParser();
+		analyzer = new RDFaSemarglParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -1095,6 +1095,7 @@ public class RDFaParserTest extends RDFParserTest {
 	public static void binaryclassifiers() throws URISyntaxException {
 		double[] p = new double[testresults.size()];
 		double[] r = new double[testresults.size()];
+		double tpsum = 0;
 		double fpsum = 0;
 		double fnsum = 0;
 		int index = 0;
@@ -1105,6 +1106,7 @@ public class RDFaParserTest extends RDFParserTest {
 			double tp = tmp.get(0);
 			double fp = tmp.get(1);
 			double fn = tmp.get(2);
+			tpsum+=tp;
 			fpsum+=fp;
 			fnsum+=fn;
 			if((tp+fp) != 0)p[index] = tp/(tp+fp);
@@ -1124,8 +1126,11 @@ public class RDFaParserTest extends RDFParserTest {
 		double rsum = sumdoublearray(r);
 		double macrop = (1.0/p.length)*psum;
 		double macror = (1.0/r.length)*rsum;
-		double microp = (psum/(psum+fpsum));
-		double micror = (psum/(psum+fnsum));
+//		double microp = (psum/(psum+fpsum));
+//		double micror = (psum/(psum+fnsum));
+		double microp = (tpsum/(tpsum+fpsum));
+		double micror = (tpsum/(tpsum+fnsum));
+		
 		
 		System.out.println("Macro Precision");
 		System.out.println(macrop);

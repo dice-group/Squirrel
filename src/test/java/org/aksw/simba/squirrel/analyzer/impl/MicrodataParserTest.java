@@ -56,7 +56,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.fasterxml.jackson.annotation.JsonFormat.Value;
 import com.google.common.io.Files;
+import com.rethinkdb.gen.ast.ForEach;
 
 @RunWith(Parameterized.class)
 public class MicrodataParserTest extends RDFParserTest {
@@ -170,7 +172,7 @@ public class MicrodataParserTest extends RDFParserTest {
         	{ pathextensiontestsuit+"sdo_eg_md_27.htm",pathextensiontestsuit+"sdo_eg_md_27.ttl" },
         	{ pathextensiontestsuit+"sdo_eg_md_28.htm",pathextensiontestsuit+"sdo_eg_md_28.ttl" },
         	{ pathextensiontestsuit+"sdo_eg_md_29.htm",pathextensiontestsuit+"sdo_eg_md_29.ttl" },
-        	{ pathextensiontestsuit+"sdo_eg_md_30.htm",pathextensiontestsuit+"sdo_eg_md_30.ttl" },
+        	{ pathextensiontestsuit+"sdo_eg_md_30.htm",pathextensiontestsuit+"sdo_eg_md_30.ttl" },//*/
         };
         return Arrays.asList(data);
     }
@@ -178,7 +180,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicrodataParser();
+		analyzer = new MicrodataPickaxeParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -199,7 +201,7 @@ public class MicrodataParserTest extends RDFParserTest {
 		
 		List<byte[]> tdp = sink.getCrawledUnstructuredData().get(pathcontext);
 		String decodedtest = "";
-		if(tdp != null) decodedtest= new String(tdp.get(0), "UTF-8");
+ 		if(tdp != null) decodedtest= new String(tdp.get(0), "UTF-8");
 		//if(!decodedtest.equals(""))decodedtest = decodedtest.substring(0, decodedtest.length()-1);
 		
 		Model decodedmodel = createModelFromN3Strings(decodedtest);
@@ -265,6 +267,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	public static void binaryclassifiers() throws URISyntaxException {
 		double[] p = new double[testresults.size()];
 		double[] r = new double[testresults.size()];
+		double tpsum = 0;
 		double fpsum = 0;
 		double fnsum = 0;
 		int index = 0;
@@ -275,6 +278,7 @@ public class MicrodataParserTest extends RDFParserTest {
 			double tp = tmp.get(0);
 			double fp = tmp.get(1);
 			double fn = tmp.get(2);
+			tpsum+=tp;
 			fpsum+=fp;
 			fnsum+=fn;
 			if((tp+fp) != 0)p[index] = tp/(tp+fp);
@@ -294,8 +298,11 @@ public class MicrodataParserTest extends RDFParserTest {
 		double rsum = sumdoublearray(r);
 		double macrop = (1.0/p.length)*psum;
 		double macror = (1.0/r.length)*rsum;
-		double microp = (psum/(psum+fpsum));
-		double micror = (psum/(psum+fnsum));
+//		double microp = (psum/(psum+fpsum));
+//		double micror = (psum/(psum+fnsum));
+		double microp = (tpsum/(tpsum+fpsum));
+		double micror = (tpsum/(tpsum+fnsum));
+		
 		
 		System.out.println("Macro Precision");
 		System.out.println(macrop);
