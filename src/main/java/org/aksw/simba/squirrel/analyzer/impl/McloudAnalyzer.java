@@ -74,15 +74,15 @@ public class McloudAnalyzer implements Analyzer
     private final String selectTitle = "div.content > h3";
     private final String selectDescription = "div.content > p";
     private final String selectDownloadEntry = "div.download-list-row";
-    private final String selectDownloadUrl = "div.row > div.small-22 > a[href]";
-    private final String selectDownloadType = "div.row > div.small-2 > span.filetype";
+    private final String selectDownloadUrl = "div.row > div.small-20 > a[href]";
+    private final String selectDownloadType = "div.row > div.small-4 > span.filetype";
     private final String selectProvider = "div.detail-card > h5:contains(Bereitgestellt durch) + p > span.tag-date > a[href]";
     private final String selectCategories = "div.tag-theme > span.tag-theme-text";
     private final String selectLicense = "div.detail-card > h5:contains(Nutzungsbedingung) + p > a[href]";
-    private final String selectDatasetDate = "div.detail-card > h5:contains(Aktualität d. Datensatzbeschreibung) + p > span.tag-date";
-    private final String selectDistributionDate = "div.detail-card > h5:contains(Aktualität) + p > span.tag-date";
+    private final String selectDatasetDate = "div.detail-card > h5:contains(Aktualität der Datensatzbeschreibung) + p > span.tag-date";
+    private final String selectDistributionDate = "div.detail-card > h5:contains(Aktualität der Daten) + p > span.tag-date";
     private final String attrHref = "href";
-
+    
     private UriCollector collector;
 
     public McloudAnalyzer(UriCollector collector)
