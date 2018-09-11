@@ -56,6 +56,11 @@
     		<artifactId>semargl-rdfa</artifactId>
     		<version>0.7</version>
 		</dependency>
+		<dependency>
+  			<groupId>com.kylewm</groupId>
+  			<artifactId>mf2j</artifactId>
+  			<version>0.0.4</version>
+		</dependency>
 	
         <dependency>
             <groupId>org.hobbit</groupId>
