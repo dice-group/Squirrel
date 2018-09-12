@@ -22,6 +22,7 @@ import net.rootdev.javardfa.StatementSink;
 
 public class MicrodataPickaxeParser implements Analyzer {
 
+	//Dependencies für den JsonLDSerializer von google/schemaorg-java
 //	  <dependency>
 //    <groupId>com.github.mautini</groupId>
 //    <artifactId>schemaorg-java</artifactId>

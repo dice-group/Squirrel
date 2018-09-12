@@ -29,7 +29,7 @@ public class RDFaSemarglParser implements Analyzer {
 			
 		StreamProcessor sp = new StreamProcessor(
 			RdfaParser.connect(NTriplesSerializer.connect(outputSink)));
-		sp.setProperty(RdfaParser.RDFA_VERSION_PROPERTY, RDFa.VERSION_11);			
+		sp.setProperty(RdfaParser.RDFA_VERSION_PROPERTY, RDFa.VERSION_11);
 
 		ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
 		outputSink.connect(outputstream);
