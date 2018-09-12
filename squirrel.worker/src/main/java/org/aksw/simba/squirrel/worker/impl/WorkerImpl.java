@@ -7,10 +7,10 @@ import org.aksw.simba.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.configurator.CkanWhiteListConfiguration;
-import org.aksw.simba.squirrel.ckancrawler.CkanCrawl;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.ckan.py.MicroServiceBasedCkanFetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
@@ -198,8 +198,8 @@ public class WorkerImpl implements Worker, Closeable {
                         List<String> uriList = ckanwhitelist();
                         if (uriList.contains(s)) {
                             //CKAN Component is called to communicate URL to CKANCrawler
-                            CkanCrawl.send(s);
-                            String r = CkanCrawl.recieve();
+                            MicroServiceBasedCkanFetcher.send(s);
+                            String r = MicroServiceBasedCkanFetcher.recieve();
                             CrawleableUri ckanUri = ckandata(r);
                             //EXPECTING A LIST OF URIs
                             //TODO:CHANGE DATATYPE AND HANDLE DATA TO SEND TO FRONTIER.
