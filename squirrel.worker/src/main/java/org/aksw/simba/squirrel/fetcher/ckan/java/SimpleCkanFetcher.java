@@ -17,9 +17,7 @@ import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import eu.trentorise.opendata.jackan.CkanClient;
@@ -38,6 +36,7 @@ public class SimpleCkanFetcher implements Fetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleCkanFetcher.class);
 
     public static final String CKAN_API_URI_TYPE_VALUE = "CKAN_API";
+    public static final String CKAN_JSON_OBJECT_MIME_TYPE = "ckan/json";
     public static final byte NEWLINE_CHAR = '\n';
     
     protected boolean checkForUriType = true;
@@ -70,6 +69,8 @@ public class SimpleCkanFetcher implements Fetcher {
                     fetchDataset(client, dataset, out);
                     out.write(NEWLINE_CHAR);
                 }
+                // If we reached this point, we should add a flag that the file contains CKAN JSON
+                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 return dataFile;
             } catch(CkanException e) {
                 LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null. Exception: " + e.getMessage());

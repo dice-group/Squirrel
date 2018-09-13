@@ -28,8 +28,6 @@ public class HDTAnalyzer implements Analyzer{
 
     private UriCollector collector;
     
-   
-    
     public HDTAnalyzer(UriCollector collector) {
     	this.collector = collector;
 	}
