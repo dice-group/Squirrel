@@ -63,7 +63,7 @@ import com.rethinkdb.gen.ast.ForEach;
 @RunWith(Parameterized.class)
 public class MicrodataParserTest extends RDFParserTest {
 	
-	private static String context = "http://w3c.github.io/test-suite/test-cases/microdata/";
+	private static String context = "http://w3c.github.io/microdata-rdf/tests/";
 	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\MicrodataParserTestResources\\TestSuit\\";
 	
 	private static Analyzer analyzer;
@@ -180,7 +180,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicrodataPickaxeParser();
+		analyzer = new MicrodataParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
