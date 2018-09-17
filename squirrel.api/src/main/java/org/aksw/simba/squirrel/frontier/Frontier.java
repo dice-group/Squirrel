@@ -3,8 +3,8 @@ package org.aksw.simba.squirrel.frontier;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 import java.io.Closeable;
-import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A Frontier is a central class of the crawler managing a queue of URIs that
@@ -54,17 +54,14 @@ public interface Frontier extends Closeable {
      * finished. Internally, the {@link Frontier} marks the URIs as crawled and
      * adds the new URIs using the {@link #addNewUris(List)} method.
      *
-     * @param uriMap
-     *            the URIs that should be added to the {@link Frontier}. Constructed as follows:
-     *            - key: the crawled URI
-     *            - value: the list of URIs, that was added because of the key-URI
+     * @param uris crawled URIs
      */
-    void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap);
+    void crawlingDone(List<CrawleableUri> uris);
 
     /**
      * (optional) Returns the number of URIs that have been requested from the
      * Frontier using {@link Frontier#getNextUris()} and have not been marked as
-     * crawled using {@link Frontier#crawlingDone(Dictionary)}.
+     * crawled using {@link Frontier#crawlingDone(Map)}.
      *
      * @return the number of pending URIs.
      */

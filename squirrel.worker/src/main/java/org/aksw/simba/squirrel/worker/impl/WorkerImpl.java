@@ -5,12 +5,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
@@ -21,13 +17,11 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
-import org.aksw.simba.squirrel.fetcher.ckan.py.MicroServiceBasedCkanFetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -184,49 +178,24 @@ public class WorkerImpl implements Worker, Closeable {
     @Override
     public void crawl(List<CrawleableUri> uris) {
         // perform work
-        Dictionary<CrawleableUri, List<CrawleableUri>> uriMap = new Hashtable<>(uris.size(), 1);
         for (CrawleableUri uri : uris) {
-            // calculate uuid for graph
-            uri.addData(CrawleableUri.UUID_KEY, UUID.randomUUID().toString());
-            CrawlingActivity crawlingActivity = new CrawlingActivity(uri, this, sink);
-            if (uri.getUri() == null) {
+            if (uri == null) {
+                LOGGER.error("Got null as CrawleableUri object. It will be ignored.");
+            } else if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
-                crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
             } else {
                 try {
-                    //CKAN Crawler is disabled by default
-                    if (ENABLE_CKAN_CRAWLER_FORWARDING) {
-                        String s = uri.getUri().toString();
-                        LOGGER.info("the uri is ", s);
-                        List<String> uriList = ckanwhitelist();
-                        if (uriList.contains(s)) {
-                            //CKAN Component is called to communicate URL to CKANCrawler
-                            MicroServiceBasedCkanFetcher.send(s);
-                            String r = MicroServiceBasedCkanFetcher.recieve();
-                            CrawleableUri ckanUri = ckandata(r);
-                            //EXPECTING A LIST OF URIs
-                            //TODO:CHANGE DATATYPE AND HANDLE DATA TO SEND TO FRONTIER.
-                        }
-                    } else {
-                        uriMap.put(uri, performCrawling(uri));
-                        crawlingActivity.setState(CrawlingActivity.CrawlingURIState.SUCCESSFUL);
-                    }
+                    performCrawling(uri);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
-                        + "\". It will be ignored.", e);
-                    crawlingActivity.setState(CrawlingActivity.CrawlingURIState.FAILED);
+                            + "\". It will be ignored.", e);
                 }
             }
-            crawlingActivity.finishActivity();
-
-            // classify URIs
-            Enumeration<List<CrawleableUri>> uriMapEnumeration = uriMap.elements();
-            while (uriMapEnumeration.hasMoreElements()) {
-                uriMapEnumeration.nextElement().forEach(URI -> uriProcessor.recognizeUriType(URI));
-            }
-            frontier.crawlingDone(uriMap);
         }
+        // send results to the Frontier
+        frontier.crawlingDone(uris);
     }
+    
     @Override
     public List<CrawleableUri> performCrawling(CrawleableUri uri) {
         // check robots.txt

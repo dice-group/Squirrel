@@ -3,7 +3,6 @@ package org.aksw.simba.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -183,10 +182,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
                 LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                        ((CrawlingResult) deserializedData).uriMap.size());
-                frontier.crawlingDone(crawlingResult.uriMap);
+                        crawlingResult.uris.size());
+                frontier.crawlingDone(crawlingResult.uris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker,
-                        Collections.list(crawlingResult.uriMap.keys()));
+                        crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
                 int idReceived = message.getIdOfWorker();

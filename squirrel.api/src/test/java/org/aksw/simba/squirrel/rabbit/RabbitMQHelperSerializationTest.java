@@ -37,10 +37,7 @@ public class RabbitMQHelperSerializationTest {
         testConfigs.add(new Object[] { new CrawlingResult(
                 Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"))) });
         testConfigs.add(new Object[] { new CrawlingResult(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")), null) });
-        testConfigs.add(new Object[] { new CrawlingResult(
-                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2")),
-                Arrays.asList(factory.create("http://example.org/99"), factory.create("http://example.org/45"),
+                Arrays.asList(factory.create("http://example.org/1"), factory.create("http://example.org/2"), factory.create("http://example.org/99"), factory.create("http://example.org/45"),
                         factory.create("http://example.org/12"), factory.create("http://example.org/3"))) });
         testConfigs.add(new Object[] { new UriSet(null) });
 

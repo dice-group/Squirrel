@@ -185,24 +185,23 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     }
 
     @Override
-    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
+    public void crawlingDone(List<CrawleableUri> uris) {
         try {
-            Hashtable<CrawleableUri, List<CrawleableUri>> uriMapHashtable;
-            if (uriMap instanceof Hashtable) {
-                uriMapHashtable = (Hashtable<CrawleableUri, List<CrawleableUri>>) uriMap;
-            } else {
-                uriMapHashtable = new Hashtable<>(uriMap.size(), 1);
-                Enumeration<CrawleableUri> keys = uriMap.keys();
-                while (keys.hasMoreElements()) {
-                    CrawleableUri key = keys.nextElement();
-                    uriMapHashtable.put(key, uriMap.get(key));
-                }
-            }
-            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uriMapHashtable, worker.getId())));
+//            Hashtable<CrawleableUri, List<CrawleableUri>> uriMapHashtable;
+//            if (uriMap instanceof Hashtable) {
+//                uriMapHashtable = (Hashtable<CrawleableUri, List<CrawleableUri>>) uriMap;
+//            } else {
+//                uriMapHashtable = new Hashtable<>(uriMap.size(), 1);
+//                Enumeration<CrawleableUri> keys = uriMap.keys();
+//                while (keys.hasMoreElements()) {
+//                    CrawleableUri key = keys.nextElement();
+//                    uriMapHashtable.put(key, uriMap.get(key));
+//                }
+//            }
+            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uris, worker.getId())));
 
             if (deduplicationActive) {
-                UriSet uriSet = new UriSet();
-                uriSet.uris = Collections.list(uriMapHashtable.keys());
+                UriSet uriSet = new UriSet(uris);
                 senderDeduplicator.sendData(serializer.serialize(uriSet));
             }
         } catch (Exception e) {

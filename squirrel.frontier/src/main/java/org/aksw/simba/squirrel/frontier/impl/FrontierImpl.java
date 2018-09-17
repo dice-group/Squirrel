@@ -238,31 +238,28 @@ public class FrontierImpl implements Frontier {
     }
 
     @Override
-    public void crawlingDone(Dictionary<CrawleableUri, List<CrawleableUri>> uriMap) {
-        LOGGER.info("One worker finished his work and crawled " + uriMap.size() + " URIs.");
+    public void crawlingDone(List<CrawleableUri> uris) {
+        LOGGER.info("One worker finished his work and crawled " + uris.size() + " URIs.");
 
-        List<CrawleableUri> crawledUris = Collections.list(uriMap.keys());
 
-        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
-        Enumeration<CrawleableUri> newUrisEnumeration = uriMap.keys();
-        while (newUrisEnumeration.hasMoreElements()) {
-            CrawleableUri uri = newUrisEnumeration.nextElement();
-            newUris.addAll(uriMap.get(uri));
-            knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
-            if (uriReferences != null) {
-                uriReferences.add(uri, uriMap.get(uri));
-            }
-        }
+//        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+//        for (CrawleableUri uri : uriMap.keySet()) {
+//            newUris.addAll(uriMap.get(uri));
+//            knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
+//            if (uriReferences != null) {
+//                uriReferences.add(uri, uriMap.get(uri));
+//            }
+//        }
 
-        // If there is a graph logger, log the data
-        if (graphLogger != null) {
-            graphLogger.log(crawledUris, newUris);
-        }
+//        // If there is a graph logger, log the data
+//        if (graphLogger != null) {
+//            graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
+//        }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<>();
             InetAddress ip;
-            for (CrawleableUri uri : crawledUris) {
+            for (CrawleableUri uri : uris) {
                 ip = uri.getIpAddress();
                 if (ip != null) {
                     ips.add(ip);
@@ -271,7 +268,7 @@ public class FrontierImpl implements Frontier {
             ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
         }
         // send list of crawled URIs to the knownUriFilter
-        for (CrawleableUri uri : crawledUris) {
+        for (CrawleableUri uri : uris) {
             Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
             // If a recrawling is defined, check whether we can directly add it back to the queue
             if ((recrawlOn != null) && (recrawlOn < System.currentTimeMillis())) {
@@ -281,9 +278,6 @@ public class FrontierImpl implements Frontier {
                 addNewUri(recrawlUri);
             }
         }
-
-        // Add the new URIs to the Frontier
-        addNewUris(newUris);
     }
 
     @Override

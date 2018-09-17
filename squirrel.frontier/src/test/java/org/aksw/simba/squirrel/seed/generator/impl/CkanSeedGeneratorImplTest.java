@@ -13,6 +13,8 @@ import org.junit.Test;
 import java.util.List;
 
 /**
+ * TODO Has to be reworked.
+ * 
  * Created by ivan on 04.03.16.
  */
 public class CkanSeedGeneratorImplTest extends TestCase {
@@ -22,7 +24,7 @@ public class CkanSeedGeneratorImplTest extends TestCase {
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new InMemoryKnownUriFilter(-1), queue);
+        frontier = new FrontierImpl(new InMemoryKnownUriFilter(false, -1), queue);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

@@ -9,7 +9,10 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -121,18 +124,13 @@ public class FrontierImplTest {
     @Test
     public void crawlingDone() throws Exception {
         List<CrawleableUri> crawledUris = new ArrayList<>();
+        Map<CrawleableUri,List<CrawleableUri>> map = new HashMap<CrawleableUri,List<CrawleableUri>>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"),
                 InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"),
                 InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
-        crawledUris.add(uri_1);
-        crawledUris.add(uri_2);
 
-        List<CrawleableUri> newUris = new ArrayList<>();
-        CrawleableUri uri_3 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);
-        newUris.add(uri_3);
-        frontier.crawlingDone(crawledUris, newUris);
-        assertTrue("uri_3 has just been added", frontier.knownUriFilter.isUriGood(uri_3));
+        frontier.crawlingDone(crawledUris);
         assertFalse("uri_1 has been already crawled", frontier.knownUriFilter.isUriGood(uri_1));
     }
 
@@ -176,7 +174,7 @@ public class FrontierImplTest {
             }
         }
 
-        frontier.crawlingDone(nextUris, new ArrayList<>());
+        frontier.crawlingDone(uris);
 
         nextUris = frontier.getNextUris();
         Assert.assertNotNull(nextUris);
