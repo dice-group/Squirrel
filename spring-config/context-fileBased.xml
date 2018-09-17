@@ -10,9 +10,9 @@
             directory. The located property files are parsed and their values can
             then be used within application context files in the form of
             ${propertyKey}.
-    -->
+    
 
-    <import resource="classpath:default-config.xml"/>
+    <import resource="classpath:default-config.xml"/>-->
 
     <!--
         <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>

@@ -1,1 +1,1 @@
-http://dbpedia.org/resource/New_York
+https://demo.ckan.org

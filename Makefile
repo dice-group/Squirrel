@@ -1,13 +1,12 @@
 default: build
 
 build:
-
 	docker-compose -f docker-compose-sparql.yml down
-	mvn clean package -U -DskipTests -Dmaven.javadoc.skip=true
+	mvn clean install -U -DskipTests -Dmaven.javadoc.skip=true
 	
 dockerize: build
-	docker build -t squirrel .
-
+	docker build -f Dockerfile.frontier -t squirrel.frontier .
+	docker build -f Dockerfile.worker -t squirrel.worker .
 
 start: dockerize
 	docker-compose -f docker-compose-sparql.yml up
