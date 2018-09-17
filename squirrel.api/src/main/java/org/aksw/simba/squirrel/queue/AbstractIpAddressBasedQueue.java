@@ -10,7 +10,6 @@ import java.util.concurrent.Semaphore;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This abstract class manages two important aspects of an IpAddressBasedQueue.

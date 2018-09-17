@@ -29,22 +29,17 @@
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
         </dependency>
-        <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq) -->
-        <dependency>
-            <groupId>org.zeromq</groupId>
-            <artifactId>jeromq</artifactId>
-        </dependency>
-        <!-- Java binding for 0MQ (http://www.zeromq.org) -->
-        <dependency>
-            <groupId>org.zeromq</groupId>
-            <artifactId>jzmq</artifactId>
-        </dependency>
         
         <!--compress commons-->
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-compress</artifactId>
 		</dependency>
+        <!--commons IO-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 		
 		
 		<!-- Jackason databind and Jackson’s YAML extension  -->
@@ -66,35 +61,30 @@
 		<dependency>
 		    <groupId>org.apache.tika</groupId>
 		    <artifactId>tika-core</artifactId>
-		    <version>1.17</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
 		    <groupId>org.jsoup</groupId>
 		    <artifactId>jsoup</artifactId>
-		    <version>1.11.2</version>
 		</dependency>
 		
 		<!-- Spring Context -->
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-context</artifactId>
-		  <version>5.0.6.RELEASE</version>
 		</dependency>
 		
 		<!-- Spring JDBC -->
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-jdbc</artifactId>
-		  <version>5.0.6.RELEASE</version>
 		</dependency>
 		
 		<!-- Spring JDBC -->
 		<dependency>
 		  <groupId>org.springframework</groupId>
 		  <artifactId>spring-test</artifactId>
-		  <version>5.0.6.RELEASE</version>
 		</dependency>
 		        
 
@@ -102,14 +92,12 @@
         <dependency>
             <groupId>com.github.crawler-commons</groupId>
             <artifactId>crawler-commons</artifactId>
-            <version>0.7-SNAPSHOT</version>
         </dependency>
 
         <!-- jena-sparql-api -->
         <dependency>
             <groupId>org.aksw.jena-sparql-api</groupId>
             <artifactId>jena-sparql-api-core</artifactId>
-            <version>3.1.0-2-SNAPSHOT</version>
         </dependency>
         
 		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
@@ -117,7 +105,6 @@
 		<dependency>
 		    <groupId>org.rdfhdt</groupId>
 		    <artifactId>hdt-java-package</artifactId>
-		    <version>1.1</version>
 		    <type>pom</type>
 		    <exclusions>
 		        <exclusion>
@@ -133,12 +120,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.4</version>
         </dependency>
         <!-- End HTTP Requests -->
 
@@ -146,14 +131,12 @@
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
-            <version>3.6</version>
         </dependency>
 
         <!-- Zip archives -->
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
-            <version>1.3.2</version>
         </dependency>
         <!-- End Zip archives -->
 
@@ -161,14 +144,12 @@
         <dependency>
             <groupId>com.carrotsearch</groupId>
             <artifactId>hppc</artifactId>
-            <version>0.5.3</version>
         </dependency>
 
         <!-- JSON processing -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20140107</version>
         </dependency>
         <!-- End JSON processing -->
         
@@ -176,7 +157,6 @@
         <dependency>
 	        <groupId>org.mongodb</groupId>
 	        <artifactId>mongodb-driver</artifactId>
-	        <version>3.6.4</version>
 	    </dependency>
 
         <!-- RethinkDB client -->
@@ -184,7 +164,6 @@
         <dependency>
             <groupId>com.rethinkdb</groupId>
             <artifactId>rethinkdb-driver</artifactId>
-            <version>2.3.3</version>
         </dependency>
         <!-- End RethinkDB client -->
         
@@ -192,7 +171,6 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.3.2</version>
         </dependency>
         
         <!-- We use the simpleframework to use local HTTP servers for our 
@@ -200,13 +178,11 @@
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>
-            <version>5.1.6</version>
         </dependency>
         
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
-            <version>1.1.4</version>
         </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -214,7 +190,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -224,133 +199,25 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-version}</version>
         </dependency>
         <!-- log4j binding -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>apache-log4j-extras</artifactId>
-            <version>1.2.17</version>
+            <scope>test</scope>
         </dependency>
         <!-- make Logging with java.util.Logging possible -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <version>${slf4j-version}</version>
+            <scope>test</scope>
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
     </dependencies>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <!-- filter all the META-INF files of other artifacts -->
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                    <transformers>
-                        <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <manifestEntries>
-                                <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
-                            </manifestEntries>
-                        </transformer>
-                        <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                    </transformers>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Javadoc plugin for generating documentation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.1</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                    <failOnError>false</failOnError>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Source plugin for creating source file jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- License management plugin -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.11</version>
-                <configuration>
-                    <header>com/mycila/maven/plugin/license/templates/GPL-3.txt</header>
-                    <properties>
-                        <owner>Semantic Data Management Unit (InfAI)</owner>
-                        <email>ngonga@informatik.uni-leipzig.de</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>**/LICENSE</exclude>
-                        <exclude>Makefile</exclude>
-                        <exclude>Dockerfile</exclude>
-                        <exclude>*.sh</exclude>
-                        <exclude>**/logstash.conf</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

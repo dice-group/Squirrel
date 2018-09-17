@@ -1,10 +1,17 @@
 package org.aksw.simba.squirrel.components;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Semaphore;
+
 import org.aksw.simba.squirrel.Constants;
-import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
-import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
@@ -17,7 +24,6 @@ import org.aksw.simba.squirrel.deduplication.hashing.impl.SimpleTripleHashFuncti
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
 import org.aksw.simba.squirrel.rabbit.ResponseHandler;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
-import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.apache.jena.graph.Triple;
 import org.hobbit.core.components.AbstractComponent;
@@ -25,10 +31,6 @@ import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.Semaphore;
 
 /**
  * This component is responsible for deduplication.
@@ -97,23 +99,25 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             }
             String sparqlHostName = null;
             String sparqlHostPort = null;
-            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
-                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
-                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
-                    sparqlHostPort = env.get(WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
-                } else {
-                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
-                }
-            } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
-            }
-            String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
-            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
-
-            if ((rdbHostName != null) && (rdbPort > 0)) {
-                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
-                uriHashCustodian = knownUriFilter;
-            }
+//            FIXME Fix the following code
+//            
+//            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
+//                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
+//                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
+//                    sparqlHostPort = env.get(WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+//                } else {
+//                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+//                }
+//            } else {
+//                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
+//            }
+//            String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
+//            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
+//
+//            if ((rdbHostName != null) && (rdbPort > 0)) {
+//                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
+//                uriHashCustodian = knownUriFilter;
+//            }
 
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
 
@@ -153,10 +157,10 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      * @param uris
      */
     private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
-
-        if (uriHashCustodian instanceof RDBKnownUriFilter) {
-            ((RDBKnownUriFilter) uriHashCustodian).openConnector();
-        }
+//  FIXME fix this part!
+//        if (uriHashCustodian instanceof RDBKnownUriFilter) {
+//            ((RDBKnownUriFilter) uriHashCustodian).openConnector();
+//        }
 
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : uris) {
@@ -185,8 +189,12 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     @Override
     public void close() {
         receiver.closeWhenFinished();
-        if (uriHashCustodian instanceof KnownUriFilter) {
-            ((KnownUriFilter) uriHashCustodian).close();
+        if (uriHashCustodian instanceof Closeable) {
+            try {
+                ((Closeable) uriHashCustodian).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel;
+package org.aksw.simba.squirrel.simulation;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -2,13 +2,14 @@ package org.aksw.simba.squirrel.sink.impl.mem;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.*;
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +152,7 @@ public class InMemorySink implements Sink {
     @Override
     public void addData(CrawleableUri uri, InputStream stream) {
         try {
-            addData(uri, StreamUtils.getBytes(stream));
+            addData(uri, IOUtils.toByteArray(stream));
         } catch (IOException e) {
             LOGGER.error("Error while reading data from stream. The data won't be stored.", e);
         }

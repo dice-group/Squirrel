@@ -39,4 +39,7 @@ public interface Worker extends Runnable {
      * @return True iff the worker sends alive messages.
      */
     boolean sendsAliveMessages();
+
+    public void setTerminateFlag(boolean terminateFlag);
+    
 }

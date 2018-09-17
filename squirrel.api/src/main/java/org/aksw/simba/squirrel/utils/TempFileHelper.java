@@ -3,9 +3,6 @@ package org.aksw.simba.squirrel.utils;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Ignore;
-
-@Ignore
 public class TempFileHelper {
 
     /**

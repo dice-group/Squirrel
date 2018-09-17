@@ -4,9 +4,9 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
+import org.aksw.simba.squirrel.simulation.AbstractServerMockUsingTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

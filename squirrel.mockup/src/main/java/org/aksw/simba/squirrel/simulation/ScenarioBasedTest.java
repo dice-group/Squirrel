@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.simulation;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -8,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.aksw.simba.squirrel.AbstractServerMockUsingTest;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory;
 import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
@@ -16,7 +16,7 @@ import org.aksw.simba.squirrel.data.uri.UriType;
 import org.aksw.simba.squirrel.frontier.Frontier;
 import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.utils.TempFileHelper;
-import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
+import org.aksw.simba.squirrel.worker.Worker;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -115,18 +115,18 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     @Test
     public void test() throws IOException {
-    	
-    	FileSystemXmlApplicationContext  context =
-    			new FileSystemXmlApplicationContext("src/test/resources/spring-config/context-test.xml");
-    	
+
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
+                "src/test/resources/spring-config/context-test.xml");
+
         File tempDir = TempFileHelper.getTempDir("uris", ".db");
         tempDir.deleteOnExit();
 
         Frontier frontier = (Frontier) context.getBean("frontierBean");
         InMemorySink sink = (InMemorySink) context.getBean("sinkBean");
-//        Serializer serializer = (Serializer) context.getBean("serializerBean");
-//        UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
-        WorkerImpl worker =(WorkerImpl) context.getBean("workerBean");
+        // Serializer serializer = (Serializer) context.getBean("serializerBean");
+        // UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
+        Worker worker = (Worker) context.getBean("workerBean");
 
         for (int i = 0; i < seeds.length; ++i) {
             frontier.addNewUri(seeds[i]);
@@ -150,7 +150,9 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         } catch (InterruptedException e) {
             Assert.fail(e.getMessage());
         }
-        worker.close();
+        if (worker instanceof Closeable) {
+            ((Closeable) worker).close();
+        }
 
         // compare the expected results with those found inside the sink
         boolean success = true;
