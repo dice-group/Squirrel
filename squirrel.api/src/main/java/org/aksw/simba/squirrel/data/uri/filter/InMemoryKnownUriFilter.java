@@ -1,11 +1,10 @@
 package org.aksw.simba.squirrel.data.uri.filter;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
@@ -22,22 +21,24 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
      * Indicates whether the {@link org.aksw.simba.squirrel.frontier.Frontier} using this filter does recrawling.
      */
     private boolean frontierDoesRecrawling;
+    protected long defaultRecrawlTime;
 
     /**
      * Constructor.
      *
      * @param frontierDoesRecrawling Value for {@link #frontierDoesRecrawling}.
      */
-    public InMemoryKnownUriFilter(boolean frontierDoesRecrawling) {
+    public InMemoryKnownUriFilter(boolean frontierDoesRecrawling, long defaultRecrawlTime) {
         uris = new Hashtable<>();
         this.frontierDoesRecrawling = frontierDoesRecrawling;
+        this.defaultRecrawlTime = defaultRecrawlTime;
     }
 
     /**
      * Constructor.
      */
     public InMemoryKnownUriFilter() {
-        this(false);
+        this(false, 0L);
     }
 
     /**
@@ -75,29 +76,20 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     }
 
     @Override
-    public void open() {
-    }
-
-    @Override
     public List<CrawleableUri> getOutdatedUris() {
         // get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
 
         List<CrawleableUri> urisToRecrawl = new ArrayList<>();
-        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
 
         for (CrawleableUri uri : uris.keySet()) {
             if (uris.get(uri).nextCrawlTimestamp < System.currentTimeMillis() &&
-                (!uris.get(uri).crawlingInProcess || uris.get(uri).lastCrawlTimestamp < System.currentTimeMillis() - generalRecrawlTime * 3)) {
+                (!uris.get(uri).crawlingInProcess || uris.get(uri).lastCrawlTimestamp < System.currentTimeMillis() - defaultRecrawlTime * 3)) {
                 urisToRecrawl.add(uri);
                 uris.get(uri).crawlingInProcess = true;
             }
         }
         return urisToRecrawl;
-    }
-
-    @Override
-    public void close() {
     }
 
     @Override

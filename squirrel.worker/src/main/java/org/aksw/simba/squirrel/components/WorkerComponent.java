@@ -2,13 +2,14 @@ package org.aksw.simba.squirrel.components;
 
 import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
+
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
 import org.aksw.simba.squirrel.configurator.WorkerConfiguration;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.aksw.simba.squirrel.frontier.Frontier;
-import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
 import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
@@ -16,8 +17,8 @@ import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.worker.AliveMessage;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.aksw.simba.squirrel.worker.impl.AliveMessage;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
 import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
@@ -75,22 +76,22 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
         Map<String, String> env = System.getenv();
-        if (env.containsKey(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY)) {
-            deduplicationActive = Boolean.parseBoolean(env.get(DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY));
+        if (env.containsKey(Constants.DEDUPLICATION_ACTIVE_KEY)) {
+            deduplicationActive = Boolean.parseBoolean(env.get(Constants.DEDUPLICATION_ACTIVE_KEY));
         } else {
-            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", DeduplicatorComponent.DEDUPLICATION_ACTIVE_KEY);
-            deduplicationActive = DeduplicatorComponent.DEFAULT_DEDUPLICATION_ACTIVE;
+            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", Constants.DEDUPLICATION_ACTIVE_KEY);
+            deduplicationActive = Constants.DEFAULT_DEDUPLICATION_ACTIVE;
         }
 
-        senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+        senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME)
             .build();
 
         if (deduplicationActive) {
-            senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, DeduplicatorComponent.DEDUPLICATOR_QUEUE_NAME)
+            senderDeduplicator = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.DEDUPLICATOR_QUEUE_NAME)
                 .build();
         }
         clientFrontier = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
+                Constants.FRONTIER_QUEUE_NAME);
 
         if (worker.sendsAliveMessages()) {
             timerAliveMessages.schedule(new TimerTask() {
@@ -102,7 +103,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                         LOGGER.warn(e.toString());
                     }
                 }
-            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
+//            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
+            }, 0, TimeUnit.SECONDS.toMillis(20) / 2);
 
         }
         LOGGER.info("Worker initialized.");
@@ -125,8 +127,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         serializer = new GzipJavaUriSerializer();
 
         worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME).build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), FrontierComponent.FRONTIER_QUEUE_NAME);
+        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME).build();
+        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), Constants.FRONTIER_QUEUE_NAME);
     }
 
     @Override

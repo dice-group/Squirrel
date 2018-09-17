@@ -1,5 +1,6 @@
 package org.aksw.simba.squirrel.components;
 
+import org.aksw.simba.squirrel.Constants;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.rabbit.DataSender;
 import org.hobbit.core.rabbit.DataSenderImpl;
@@ -19,7 +20,7 @@ public class WorkerComponentConfig extends AbstractComponent {
     @Bean(name = "sender")
     public DataSender sender() throws IllegalStateException, IOException {
         DataSender sender = DataSenderImpl.builder()
-            .queue(outgoingDataQueuefactory, FrontierComponent.FRONTIER_QUEUE_NAME)
+            .queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME)
             .build();
 
         return sender;
@@ -28,7 +29,7 @@ public class WorkerComponentConfig extends AbstractComponent {
     @Bean(name = "client")
     public RabbitRpcClient client() throws IOException {
         RabbitRpcClient client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-            FrontierComponent.FRONTIER_QUEUE_NAME);
+                Constants.FRONTIER_QUEUE_NAME);
         return client;
     }
 

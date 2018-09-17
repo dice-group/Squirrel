@@ -252,7 +252,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         return resultUris;
     }
 
-    @Override
+//    @Override
     public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator() {
         return new Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>>() {
             private Cursor cursor = r.db("squirrel").table("queue").orderBy().optArg("index", "ipAddressType").run(connector.connection);

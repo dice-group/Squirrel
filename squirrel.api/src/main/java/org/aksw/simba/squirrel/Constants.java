@@ -50,6 +50,21 @@ public class Constants {
     public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create("http://squirrel.dice-research.org/vocab#metadata");
 
     //////////////////////////////////////////////////
+    // Component constants
+    //////////////////////////////////////////////////
+    
+    public static final String DEDUPLICATION_ACTIVE_KEY = "DEDUPLICATION_ACTIVE";
+
+    public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
+    
+    public static final String RDB_PORT_KEY = "RDB_PORT";
+
+    public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = false;
+
+    public static final String DEDUPLICATOR_QUEUE_NAME = "squirrel.deduplicator";
+    public static final String FRONTIER_QUEUE_NAME = "squirrel.frontier";
+
+    //////////////////////////////////////////////////
     // General constants
     //////////////////////////////////////////////////
 

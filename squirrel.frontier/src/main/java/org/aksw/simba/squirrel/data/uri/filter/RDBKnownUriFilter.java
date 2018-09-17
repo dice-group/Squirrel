@@ -170,18 +170,19 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
         try {
-            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
+            // FIXME Fix this implementation
+//            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
                 r.db(DATABASE_NAME)
                     .table(TABLE_NAME)
                     .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
                     .run(connector.connection);
-            } else {
-                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
-                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
-                row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
-                row.update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
-                row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
-            }
+//            } else {
+//                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
+//                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));
+//                row.update(r.hashMap(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp));
+//                row.update(r.hashMap(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE));
+//                row.update(r.hashMap((COLUMN_TIMESTAMP_NEXT_CRAWL), nextCrawlTimestamp)).run(connector.connection);
+//            }
             LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
         } catch (Exception e) {
             LOGGER.error("Failed to add the URI \"" + uri.toString() + "\" to the known uri filter list", e);

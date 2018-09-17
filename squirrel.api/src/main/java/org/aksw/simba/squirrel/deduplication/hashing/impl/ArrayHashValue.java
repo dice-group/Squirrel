@@ -7,6 +7,11 @@ import org.aksw.simba.squirrel.deduplication.hashing.HashValue;
  */
 public class ArrayHashValue implements HashValue {
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * The Array of HashValues.
      */
     private Integer[] hashValues;

@@ -30,16 +30,6 @@ public interface KnownUriFilter extends UriFilter {
     void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
 
     /**
-     * Close RDB connection, destroy the database.
-     */
-    void close();
-
-    /**
-     * Open RDB connection, init the database.
-     */
-    void open();
-
-    /**
      * Returns all {@link CrawleableUri}s which have to be recrawled. This means their time to next crawl has passed.
      *
      * @return The outdated {@link CrawleableUri}s.

@@ -42,25 +42,13 @@ import java.util.concurrent.Semaphore;
  */
 public class DeduplicatorComponent extends AbstractComponent implements RespondingDataHandler {
 
-    public static final String DEDUPLICATOR_QUEUE_NAME = "squirrel.deduplicator";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
-
-    /**
-     * default value for {@link #deduplicationActive}
-     */
-    public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = true;
 
     /**
      * Indicates whether deduplication is active. If it is not active, this component will not do anything. Also,
      * no processing of hash values will be done.
      */
-    private static boolean deduplicationActive;
-
-    /**
-     * Key for the environments variable for {@link #deduplicationActive}
-     */
-    public static final String DEDUPLICATION_ACTIVE_KEY = "DEDUPLICATION_ACTIVE";
+    private boolean deduplicationActive;
 
     /**
      * A queue for uris which have to be processed (hash values have to computed for them).
@@ -88,24 +76,24 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     public void init() throws Exception {
         super.init();
         Map<String, String> env = System.getenv();
-        if (env.containsKey(DEDUPLICATION_ACTIVE_KEY)) {
-            deduplicationActive = Boolean.parseBoolean(env.get(DEDUPLICATION_ACTIVE_KEY));
+        if (env.containsKey(Constants.DEDUPLICATION_ACTIVE_KEY)) {
+            deduplicationActive = Boolean.parseBoolean(env.get(Constants.DEDUPLICATION_ACTIVE_KEY));
         } else {
-            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", DEDUPLICATION_ACTIVE_KEY);
-            deduplicationActive = DEFAULT_DEDUPLICATION_ACTIVE;
+            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", Constants.DEDUPLICATION_ACTIVE_KEY);
+            deduplicationActive = Constants.DEFAULT_DEDUPLICATION_ACTIVE;
         }
         if (deduplicationActive) {
             String rdbHostName = null;
             int rdbPort = -1;
-            if (env.containsKey(FrontierComponent.RDB_HOST_NAME_KEY)) {
-                rdbHostName = env.get(FrontierComponent.RDB_HOST_NAME_KEY);
-                if (env.containsKey(FrontierComponent.RDB_PORT_KEY)) {
-                    rdbPort = Integer.parseInt(env.get(FrontierComponent.RDB_PORT_KEY));
+            if (env.containsKey(Constants.RDB_HOST_NAME_KEY)) {
+                rdbHostName = env.get(Constants.RDB_HOST_NAME_KEY);
+                if (env.containsKey(Constants.RDB_PORT_KEY)) {
+                    rdbPort = Integer.parseInt(env.get(Constants.RDB_PORT_KEY));
                 } else {
-                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_PORT_KEY);
+                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_PORT_KEY);
                 }
             } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", FrontierComponent.RDB_HOST_NAME_KEY);
+                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
             }
             String sparqlHostName = null;
             String sparqlHostPort = null;
@@ -129,11 +117,10 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
 
-
             serializer = new GzipJavaUriSerializer();
 
             try {
-                RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(DEDUPLICATOR_QUEUE_NAME);
+                RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.DEDUPLICATOR_QUEUE_NAME);
                 receiver = DataReceiverImpl.builder().dataHandler(this)
                     .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
             } catch (IOException e) {

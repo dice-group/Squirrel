@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
-import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
 import org.aksw.simba.squirrel.vocab.DCAT;
 import org.aksw.simba.squirrel.vocab.VCard;
 import org.apache.jena.datatypes.RDFDatatype;
