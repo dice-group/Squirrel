@@ -1071,7 +1071,7 @@ public class RDFaParserTest extends RDFParserTest {
 		
 		//assertEquals(decodedtest,correctresult);
 		
-		if(fn != 0) {
+		//if(fn != 0) {
 			System.out.println("DecodedModel");
 			printModel(decodedmodel);
 			System.out.println("CorrectModel");
@@ -1086,7 +1086,7 @@ public class RDFaParserTest extends RDFParserTest {
 				System.out.println(statement.toString());
 			}
 			System.out.println();
-		}
+		//}
 //		assertEquals(0.0,falsenegativ[index],0.0);
 		assertEquals(0.0,fn,0.0);
 	}
@@ -1111,7 +1111,7 @@ public class RDFaParserTest extends RDFParserTest {
 			fnsum+=fn;
 			if((tp+fp) != 0)p[index] = tp/(tp+fp);
 			else p[index] = 0;
-			if((tp+fp) != 0)r[index] = tp/(tp+fn);
+			if((tp+fn) != 0)r[index] = tp/(tp+fn);
 			else r[index] = 0;
 			index++;
 		}
