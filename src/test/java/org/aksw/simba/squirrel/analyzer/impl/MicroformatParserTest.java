@@ -354,6 +354,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	}
 	
 	public static String addContextToJSON(String data) {
+		data = data.trim();
 		data = data.substring(1);
 		data = "{\r\n" + 
 				"\"@context\": {\"@vocab\": \"http://www.dummy.org/#\"},\n"+data;
