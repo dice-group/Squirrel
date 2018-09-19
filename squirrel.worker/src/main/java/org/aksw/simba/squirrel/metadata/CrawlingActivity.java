@@ -10,6 +10,7 @@ import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.vocab.PROV_O;
 import org.aksw.simba.squirrel.vocab.Squirrel;
 import org.aksw.simba.squirrel.worker.Worker;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -50,7 +51,7 @@ public class CrawlingActivity {
     /**
      * The graph where the uri is stored.
      */
-    private String graphId = null;
+    private String graphUri = null;
 
     /**
      * The crawling state of the uri.
@@ -58,37 +59,28 @@ public class CrawlingActivity {
     private CrawlingURIState state;
 
     /**
-     * The worker that has been assigned the activity.
+     * URI of the worker assigned carrying out this activity.
      */
-    private Worker worker;
-
-    private String hostedOn = null;
-
-    /**
-     * The sink used for the activity.
-     */
-    private Sink sink;
+    private String workerUri;
+    
+    private long numberOfTriples = 0;
 
     private List<String> steps = new ArrayList<String>();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param uri
      *            the URI, which was crawled
-     * @param worker
-     *            the {@link Worker}, that crawled the URI
-     * @param sink
-     *            the {@link Sink}, that was used to store the downloaded content
-     *            from the URI
+     * @param workerUri
+     *            URI of the {@link Worker} that crawled the URI
      */
-    public CrawlingActivity(CrawleableUri uri, Worker worker, Sink sink) {
-        this.worker = worker;
+    public CrawlingActivity(CrawleableUri uri, String workerUri) {
+        this.workerUri = workerUri;
         this.dateStarted = Calendar.getInstance();
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         activityUri = Constants.DEFAULT_ACTIVITY_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
-        this.sink = sink;
     }
 
     public void setState(CrawlingURIState state) {
@@ -114,10 +106,15 @@ public class CrawlingActivity {
         model.add(activity, RDF.type, PROV_O.Activity);
         Resource crawledUri = model.createResource(getCrawleableUri().getUri().toString());
         model.add(activity, Squirrel.crawled, crawledUri);
+        if (getCrawleableUri().getIpAddress() != null) {
+            Resource ip = model.createResource("ip:" + getCrawleableUri().getIpAddress().getHostAddress());
+            model.add(activity, Squirrel.uriHostedOn, ip);
+        }
 
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
+        model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
 
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);
@@ -127,14 +124,11 @@ public class CrawlingActivity {
         model.add(activity, PROV_O.hadPlan, plan);
         model.add(plan, RDFS.comment, model.createTypedLiteral(getStepsAsString()));
 
-        if (getWorker() != null) {
-            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(getWorker().getUri()));
+        if (workerUri != null) {
+            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));
         }
-        if (getHostedOn() != null) {
-            model.add(activity, Squirrel.hostedOn, model.createTypedLiteral(getHostedOn()));
-        }
-        if (getGraphId() != null) {
-            Resource resultGraph = model.createResource(getGraphId());
+        if (graphUri != null) {
+            Resource resultGraph = model.createResource(graphUri);
             model.add(resultGraph, PROV_O.wasGeneratedBy, activity);
             model.add(resultGraph, Squirrel.resultGraphOf, crawledUri);
         }
@@ -151,12 +145,14 @@ public class CrawlingActivity {
         return builder.toString();
     }
 
-    public Worker getWorker() {
-        return worker;
-    }
-
     public enum CrawlingURIState {
         SUCCESSFUL, UNKNOWN, FAILED;
+
+        public final String uri;
+
+        private CrawlingURIState() {
+            this.uri = Constants.DEFAULT_STATUS_URI_PREFIX + StringUtils.capitalize(this.name().toLowerCase());
+        }
     }
 
     public CrawlingURIState getState() {
@@ -167,15 +163,27 @@ public class CrawlingActivity {
         return uri;
     }
 
-    public String getGraphId() {
-        return graphId;
+    public CrawleableUri getUri() {
+        return uri;
     }
-
-    public String getHostedOn() {
-        return hostedOn;
+    
+    public void addStep(Class<?> clazz, String...actions) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(clazz.getName());
+        if((actions != null) && (actions.length > 0)) {
+            builder.append(" [");
+            for (int i = 0; i < actions.length; i++) {
+                if(i > 0) {
+                    builder.append(", ");
+                }
+                builder.append(actions[i]);
+            }
+            builder.append(']');
+        }
+        steps.add(builder.toString());
     }
-
-    public Sink getSink() {
-        return sink;
+    
+    public void setNumberOfTriples(long numberOfTriples) {
+        this.numberOfTriples = numberOfTriples;
     }
 }

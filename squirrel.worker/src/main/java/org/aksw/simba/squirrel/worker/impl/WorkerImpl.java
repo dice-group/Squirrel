@@ -24,6 +24,8 @@ import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
 import org.aksw.simba.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.aksw.simba.squirrel.frontier.Frontier;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity.CrawlingURIState;
 import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
@@ -207,12 +209,10 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void performCrawling(CrawleableUri uri) {
-        // check robots.txt
-
-        uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis());
+        CrawlingActivity activity = new CrawlingActivity(uri, getUri());
+        uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         LOGGER.warn(uri.getUri().toString());
-        Integer count = 0;
-        // TODO: find out the timestamp from the uri, not yet clear how to do that
+        // check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
                 long delay = timeStampLastUriFetched
@@ -225,15 +225,14 @@ public class WorkerImpl implements Worker, Closeable {
             }
             LOGGER.debug("I start crawling {} now...", uri);
 
-            FileManager fm = new FileManager();
-
             File fetched = null;
-
             try {
                 fetched = fetcher.fetch(uri);
             } catch (Exception e) {
                 LOGGER.error("Exception while Fetching Data. Skipping...", e);
+                activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
             }
+            timeStampLastUriFetched = System.currentTimeMillis();
 
             List<File> fetchedFiles = new ArrayList<>();
             if (fetched != null && fetched.isDirectory()) {
@@ -242,35 +241,48 @@ public class WorkerImpl implements Worker, Closeable {
                 fetchedFiles.add(fetched);
             }
 
-            timeStampLastUriFetched = System.currentTimeMillis();
-            List<File> fileList;
-
-            for (File data : fetchedFiles) {
-                if (data != null) {
-                    fileList = fm.decompressFile(data);
-                    for (File file : fileList) {
-                        try {
-                            // open the sink only if a fetcher has been found
-                            sink.openSinkForUri(uri);
-                            collector.openSinkForUri(uri);
-                            Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-                            sink.closeSinkForUri(uri);
-                            sendNewUris(resultUris);
-                            collector.closeSinkForUri(uri);
-                        } catch (Exception e) {
-                            // We don't want to handle the exception. Just make sure that sink and collector
-                            // do not handle this uri anymore.
-                            sink.closeSinkForUri(uri);
-                            collector.closeSinkForUri(uri);
-                            throw e;
+            // If there is at least one file
+            if (fetchedFiles.size() > 0) {
+                FileManager fm = new FileManager();
+                List<File> fileList;
+                try {
+                    // open the sink only if a fetcher has been found
+                    sink.openSinkForUri(uri);
+                    collector.openSinkForUri(uri);
+                    // Go over all files and analyze them
+                    for (File data : fetchedFiles) {
+                        if (data != null) {
+                            fileList = fm.decompressFile(data);
+                            for (File file : fileList) {
+                                Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                                sendNewUris(resultUris);
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    activity.addStep(getClass(), "Unhandled exception while Fetching Data. " + e.getMessage());
+                    activity.setState(CrawlingURIState.FAILED);
+                    activity.finishActivity(sink);
+                    throw e;
+                } finally {
+                    // We don't want to handle any exception. Just make sure that sink and collector
+                    // do not handle this uri anymore.
+                    sink.closeSinkForUri(uri);
+                    collector.closeSinkForUri(uri);
                 }
+                // If we reach this point, the crawling was successful
+                activity.setState(CrawlingURIState.SUCCESSFUL);
+            } else {
+                // There are no files
+                activity.addStep(getClass(), "No files for analysis available.");
+                activity.setState(CrawlingURIState.FAILED);
             }
         } else {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
+            activity.addStep(manager.getClass(), "Decided to reject this URI.");
         }
-        LOGGER.debug("Fetched {} triples", count);
+        activity.finishActivity(sink);
+        // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
         // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs

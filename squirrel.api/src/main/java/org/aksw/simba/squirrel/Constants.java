@@ -1,10 +1,10 @@
 package org.aksw.simba.squirrel;
 
-import org.apache.commons.io.Charsets;
-import org.apache.http.HttpHeaders;
-
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.http.HttpHeaders;
 
 /**
  * This class contains constant values of the Squirrel project.
@@ -34,6 +34,7 @@ public class Constants {
     public static final String URI_HTTP_ACCEPT_CHARSET_HEADER = "http-" + HttpHeaders.ACCEPT_CHARSET;
 
     public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
+    public static final String URI_CRAWLING_ACTIVITY = "activity";
 
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
@@ -52,6 +53,7 @@ public class Constants {
     public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create(SQUIRREL_URI_PREFIX + "/metadata");
     public static final URI DEFAULT_ACTIVITY_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/activity#");
     public static final URI DEFAULT_RESULT_GRAPH_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/graph#");
+    public static final URI DEFAULT_STATUS_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/status#");
     public static final URI DEFAULT_WORKER_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/worker#");
 
     //////////////////////////////////////////////////
@@ -73,5 +75,5 @@ public class Constants {
     // General constants
     //////////////////////////////////////////////////
 
-    public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 }
