@@ -9,7 +9,7 @@ public class UriSetRequest implements Serializable {
     /**
      * The id of the {@link org.aksw.simba.squirrel.worker.Worker} that sent this request.
      */
-    private int idOfWorker;
+    private String idOfWorker;
 
     /**
      * Indicates whether the worker (see {@link #idOfWorker}) sends {@link org.aksw.simba.squirrel.worker.impl.AliveMessage}.
@@ -20,7 +20,7 @@ public class UriSetRequest implements Serializable {
      * Standard constructor setting just default values.
      */
     public UriSetRequest() {
-        this(-1, false);
+        this(null, false);
     }
 
     /**
@@ -29,12 +29,12 @@ public class UriSetRequest implements Serializable {
      * @param idOfWorker
      * @param workerSendsAliveMessages
      */
-    public UriSetRequest(int idOfWorker, boolean workerSendsAliveMessages) {
+    public UriSetRequest(String idOfWorker, boolean workerSendsAliveMessages) {
         this.idOfWorker = idOfWorker;
         this.workerSendsAliveMessages = workerSendsAliveMessages;
     }
 
-    public int getIdOfWorker() {
+    public String getIdOfWorker() {
         return idOfWorker;
     }
 

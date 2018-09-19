@@ -1,7 +1,12 @@
 package org.aksw.simba.squirrel.components;
 
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.collect.SqlBasedUriCollector;
@@ -17,24 +22,23 @@ import org.aksw.simba.squirrel.robots.RobotsManagerImpl;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.impl.file.FileBasedSink;
 import org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink;
+import org.aksw.simba.squirrel.utils.Closer;
 import org.aksw.simba.squirrel.worker.AliveMessage;
 import org.aksw.simba.squirrel.worker.Worker;
 import org.aksw.simba.squirrel.worker.impl.WorkerImpl;
-import org.apache.commons.io.IOUtils;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.rabbit.DataSender;
 import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitRpcClient;
+import org.hobbit.utils.EnvVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import crawlercommons.fetcher.http.SimpleHttpFetcher;
+import crawlercommons.fetcher.http.UserAgent;
 
 @Component
 @Qualifier("workerComponent")
@@ -47,7 +51,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     /**
      * Indicates whether deduplication is active. If it is not active, this component will send data to the deduplicator.
      */
-    private static boolean deduplicationActive;
+    private boolean deduplicationActive;
 
     @Qualifier("workerBean")
     @Autowired
@@ -75,13 +79,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         }
         uriSetRequest = serializer.serialize(new UriSetRequest());
 
-        Map<String, String> env = System.getenv();
-        if (env.containsKey(Constants.DEDUPLICATION_ACTIVE_KEY)) {
-            deduplicationActive = Boolean.parseBoolean(env.get(Constants.DEDUPLICATION_ACTIVE_KEY));
-        } else {
-            LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", Constants.DEDUPLICATION_ACTIVE_KEY);
-            deduplicationActive = Constants.DEFAULT_DEDUPLICATION_ACTIVE;
-        }
+        deduplicationActive = EnvVariables.getBoolean(Constants.DEDUPLICATION_ACTIVE_KEY, Constants.DEFAULT_DEDUPLICATION_ACTIVE, LOGGER);
 
         senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME)
             .build();
@@ -98,11 +96,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                 @Override
                 public void run() {
                     try {
-                        senderFrontier.sendData(serializer.serialize(new AliveMessage(worker.getId())));
+                        senderFrontier.sendData(serializer.serialize(new AliveMessage(worker.getUri())));
                     } catch (IOException e) {
                         LOGGER.warn(e.toString());
                     }
                 }
+                // TODO Fix this
 //            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
             }, 0, TimeUnit.SECONDS.toMillis(20) / 2);
 
@@ -138,11 +137,9 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(senderFrontier);
-        if (deduplicationActive) {
-            IOUtils.closeQuietly(senderDeduplicator);
-        }
-        IOUtils.closeQuietly(clientFrontier);
+        Closer.close(senderFrontier, LOGGER);
+        Closer.close(senderDeduplicator, LOGGER);
+        Closer.close(clientFrontier, LOGGER);
         timerAliveMessages.cancel();
         super.close();
     }
@@ -198,7 +195,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 //                    uriMapHashtable.put(key, uriMap.get(key));
 //                }
 //            }
-            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uris, worker.getId())));
+            senderFrontier.sendData(serializer.serialize(new CrawlingResult(uris, worker.getUri())));
 
             if (deduplicationActive) {
                 UriSet uriSet = new UriSet(uris);

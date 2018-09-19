@@ -188,7 +188,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
-                int idReceived = message.getIdOfWorker();
+                String idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
             } else {
@@ -227,7 +227,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
     }
 
-    public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+    public void informFrontierAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign) {
         if (frontier instanceof ExtendedFrontier) {
             ((ExtendedFrontier) frontier).informAboutDeadWorker(idOfWorker, lstUrisToReassign);
         }

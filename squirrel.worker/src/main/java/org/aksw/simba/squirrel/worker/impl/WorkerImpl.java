@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
@@ -17,6 +18,7 @@ import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.fetcher.ckan.java.SimpleCkanFetcher;
 import org.aksw.simba.squirrel.fetcher.ftp.FTPFetcher;
 import org.aksw.simba.squirrel.fetcher.http.HTTPFetcher;
 import org.aksw.simba.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
@@ -71,7 +73,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long waitingTime;
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
-    private final int id = (int) Math.floor(Math.random() * 100000);
+    private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
     private boolean sendAliveMessages;
 
     /**
@@ -117,7 +119,7 @@ public class WorkerImpl implements Worker, Closeable {
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
                 // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new FTPFetcher());
+                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
@@ -273,7 +275,7 @@ public class WorkerImpl implements Worker, Closeable {
 
         // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs
         // because of too much nodes)
-//        return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
+        // return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
@@ -285,8 +287,8 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public String getUri() {
+        return uri;
     }
 
     @Override

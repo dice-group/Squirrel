@@ -36,6 +36,7 @@ public class Constants {
     public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
 
     public static final String URI_HASH_KEY = "HashValue";
+    public static final String UUID_KEY = "UUID";
 
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms
@@ -47,7 +48,11 @@ public class Constants {
     // URIs
     //////////////////////////////////////////////////
 
-    public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create("http://squirrel.dice-research.org/vocab#metadata");
+    public static final String SQUIRREL_URI_PREFIX = "http://w3id.org/squirrel";
+    public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create(SQUIRREL_URI_PREFIX + "/metadata");
+    public static final URI DEFAULT_ACTIVITY_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/activity#");
+    public static final URI DEFAULT_RESULT_GRAPH_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/graph#");
+    public static final URI DEFAULT_WORKER_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/worker#");
 
     //////////////////////////////////////////////////
     // Component constants

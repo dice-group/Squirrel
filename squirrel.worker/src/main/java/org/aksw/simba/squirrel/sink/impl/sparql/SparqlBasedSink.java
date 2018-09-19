@@ -99,7 +99,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
         if (uri.equals(metaDataGraphUri)) {
             selectQuery = QueryGenerator.getInstance().getSelectQuery();
         } else {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery((String) uri.getData(CrawleableUri.UUID_KEY));
+            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
         }
 
         QueryExecution qe = QueryExecutionFactory.sparqlService(queryDatasetURI, selectQuery);
@@ -188,7 +188,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
      * @return The id of the graph.
      */
     public String getGraphId(CrawleableUri uri) {
-        return "graph:" + uri.getData(CrawleableUri.UUID_KEY);
+        return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
     }
 
     public String getUpdateDatasetURI() {

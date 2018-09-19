@@ -29,8 +29,7 @@ public class DCAT {
     }
     
     public static final Resource Dataset = resource("Dataset");
-    public static final Property Distribution = property("Distribution");
-    public static final Resource Bag = resource("Distribution");
+    public static final Resource Distribution = property("Distribution");
 
     public static final Property accessURL = property("accessURL");
     public static final Property byteSize = property("byteSize");

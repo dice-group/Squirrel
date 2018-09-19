@@ -10,15 +10,15 @@ public class CrawlingResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public final List<CrawleableUri> uris;
-    public final int idOfWorker;
+    public final String idOfWorker;
 
-    public CrawlingResult(List<CrawleableUri> uris, int idOfWorker) {
+    public CrawlingResult(List<CrawleableUri> uris, String idOfWorker) {
         this.uris = uris;
         this.idOfWorker = idOfWorker;
     }
 
     public CrawlingResult(List<CrawleableUri> uris) {
-        this(uris, -1);
+        this(uris, null);
     }
 
     @Override
