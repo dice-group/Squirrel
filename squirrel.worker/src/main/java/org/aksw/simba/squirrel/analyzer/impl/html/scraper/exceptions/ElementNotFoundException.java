@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions;
+package org.aksw.simba.squirrel.analyzer.impl.html.scraper.exceptions;
 
 public class ElementNotFoundException extends Exception {
 

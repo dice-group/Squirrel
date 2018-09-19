@@ -1,4 +1,4 @@
-package org.aksw.simba.squirrel.analyzer.htmlscraper;
+package org.aksw.simba.squirrel.analyzer.impl.html.scraper;
 
 public class YamlFileAtributes {
 

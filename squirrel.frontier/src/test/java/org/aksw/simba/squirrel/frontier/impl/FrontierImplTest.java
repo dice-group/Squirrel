@@ -139,8 +139,11 @@ public class FrontierImplTest {
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();
-
-        assertEquals("Number of pending URIs should be 1", 1, numberOfPendingUris);
+        assertEquals(1, numberOfPendingUris);
+        
+        nextUris = frontier.getNextUris();
+        numberOfPendingUris = frontier.getNumberOfPendingUris();
+        assertEquals(2, numberOfPendingUris);
     }
 
     /*

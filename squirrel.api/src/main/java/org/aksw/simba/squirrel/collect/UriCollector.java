@@ -30,15 +30,9 @@ public interface UriCollector extends SinkBase {
      *            The triple that has been collected.
      */
     public default void addTriple(CrawleableUri uri, Triple triple) {
-        Node nodes[] = new Node[] { triple.getSubject(), triple.getPredicate(), triple.getObject() };
-        for (int i = 0; i < nodes.length; i++) {
-            if (nodes[i].isURI()) {
-                try {
-                    addNewUri(uri, new CrawleableUri(URI.create(nodes[i].getURI())));
-                } catch (IllegalArgumentException e) {
-                }
-            }
-        }
+        addNewUri(uri, triple.getSubject());
+        addNewUri(uri, triple.getPredicate());
+        addNewUri(uri, triple.getObject());
     }
 
     /**
@@ -50,6 +44,36 @@ public interface UriCollector extends SinkBase {
      *            The new URI that has been collected.
      */
     public void addNewUri(CrawleableUri uri, CrawleableUri newUri);
+
+    /**
+     * Adds the given new URI to the list of URIs collected for the given URI.
+     * 
+     * @param uri
+     *            The URI from which the given new URI has been collected.
+     * @param newUri
+     *            The new URI that has been collected.
+     */
+    public default void addNewUri(CrawleableUri uri, Node newUri) {
+        if (newUri.isURI()) {
+            addNewUri(uri, newUri.getURI());
+        }
+    }
+
+    /**
+     * Adds the given new URI to the list of URIs collected for the given URI.
+     * 
+     * @param uri
+     *            The URI from which the given new URI has been collected.
+     * @param newUri
+     *            The new URI that has been collected.
+     */
+    public default void addNewUri(CrawleableUri uri, String newUri) {
+        try {
+            addNewUri(uri, new CrawleableUri(URI.create(newUri)));
+        } catch (IllegalArgumentException e) {
+            // will be ignored
+        }
+    }
 
     /**
      * Returns a list of serialized {@link CrawleableUri} instances that have been

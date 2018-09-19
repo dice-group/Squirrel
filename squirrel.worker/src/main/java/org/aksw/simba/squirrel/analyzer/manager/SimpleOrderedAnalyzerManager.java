@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer;
 import org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer;
+import org.aksw.simba.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;

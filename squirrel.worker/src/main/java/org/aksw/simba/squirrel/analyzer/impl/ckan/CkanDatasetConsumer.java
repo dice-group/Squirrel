@@ -42,12 +42,14 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
     protected Sink sink;
     protected UriCollector collector;
     protected CrawleableUri curi;
+    protected String curiString;
 
     public CkanDatasetConsumer(Sink sink, UriCollector collector, CrawleableUri curi) {
         super();
         this.sink = sink;
         this.collector = collector;
         this.curi = curi;
+        this.curiString = curi.getUri().toString();
     }
 
     /**
@@ -134,7 +136,7 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
     }
 
     protected void storeResource(Resource datasetRes, CkanResource ckanResource) {
-        String uri = curi.getUri().toString();
+        String uri = curiString;
         if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
             uri += "/";
         }
@@ -229,7 +231,7 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         }
         // If the URI is not well formed, create an artificial URI
         if (!URI.isWellFormedAddress(uri)) {
-            uri = curi.getUri().toString();
+            uri = curiString;
             if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
                 uri += "/";
             }
@@ -241,7 +243,14 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
     protected void store(Resource s, Property p, RDFNode o) {
         Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
         sink.addTriple(curi, t);
-        collector.addTriple(curi, t);
+        // We already know most of the Resources, so make sure that they are not part of
+        // our current dataset
+        if (!s.getURI().startsWith(curiString)) {
+            collector.addNewUri(curi, s.getURI());
+        }
+        if (o.isURIResource() && (!s.getURI().startsWith(curiString))) {
+            collector.addNewUri(curi, t.getObject());
+        }
     }
-    
+
 }

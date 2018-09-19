@@ -1,12 +1,12 @@
 package org.aksw.simba.squirrel.components;
 
-import org.apache.commons.io.IOUtils;
+import java.io.File;
+
+import org.aksw.simba.squirrel.utils.Closer;
 import org.hobbit.core.components.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import java.io.File;
 
 public class WorkerComponentStarter {
 
@@ -34,7 +34,6 @@ public class WorkerComponentStarter {
         addShutdownHook();
         boolean success = true;
         try {
-
             context = new FileSystemXmlApplicationContext(File.separator + System.getenv("CONTEXT_CONFIG_FILE"));
             component = (Component) context.getBean("workerComponent");
             // initialize the component
@@ -56,7 +55,7 @@ public class WorkerComponentStarter {
 
     private static synchronized void closeComponent() {
         if (closed == false) {
-            IOUtils.closeQuietly(component);
+            Closer.close(component, LOGGER);
             closed = true;
             context.close();
         }

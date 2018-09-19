@@ -1,7 +1,6 @@
-package org.aksw.simba.squirrel.analyzer.impl;
+package org.aksw.simba.squirrel.analyzer.impl.html.scraper;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.analyzer.htmlscraper.HtmlScraper;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;

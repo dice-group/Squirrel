@@ -233,7 +233,7 @@ public class FrontierImpl implements Frontier {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only " + schemeUriFilter.getSchemes() + ". Will not added!");
             }
         } else {
-            LOGGER.info("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not added!");
+            LOGGER.info("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }
     }
 

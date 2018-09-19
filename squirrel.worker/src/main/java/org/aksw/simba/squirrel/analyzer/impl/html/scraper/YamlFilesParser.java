@@ -1,8 +1,9 @@
-package org.aksw.simba.squirrel.analyzer.htmlscraper;
+package org.aksw.simba.squirrel.analyzer.impl.html.scraper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions.ElementNotFoundException;
+
+import org.aksw.simba.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.aksw.simba.squirrel.configurator.HtmlScraperConfiguration;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.apache.commons.io.FilenameUtils;

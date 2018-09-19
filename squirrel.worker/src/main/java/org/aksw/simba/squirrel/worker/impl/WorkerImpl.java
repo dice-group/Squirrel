@@ -26,9 +26,9 @@ import org.aksw.simba.squirrel.robots.RobotsManager;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.uri.processing.UriProcessor;
 import org.aksw.simba.squirrel.uri.processing.UriProcessorInterface;
+import org.aksw.simba.squirrel.utils.Closer;
 import org.aksw.simba.squirrel.utils.TempPathUtils;
 import org.aksw.simba.squirrel.worker.Worker;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +42,19 @@ public class WorkerImpl implements Worker, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkerImpl.class);
 
+    /**
+     * TODO what was this attribute for?
+     */
+    @SuppressWarnings("unused")
+    @Deprecated
     private static final long DEFAULT_WAITING_TIME = 10000;
     private static final int MAX_URIS_PER_MESSAGE = 20;
     public static final boolean ENABLE_CKAN_CRAWLER_FORWARDING = false;
+    /**
+     * TODO what was this attribute for?
+     */
+    @SuppressWarnings("unused")
+    @Deprecated
     private static final String CKAN_WHITELIST_FILE = "CKAN_WHITELIST_FILE";
 
     protected Frontier frontier;
@@ -63,8 +73,6 @@ public class WorkerImpl implements Worker, Closeable {
     protected boolean terminateFlag;
     private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
-
-
 
     /**
      * Constructor.
@@ -88,7 +96,7 @@ public class WorkerImpl implements Worker, Closeable {
      *            {@code null} if no log should be written).
      */
     public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
-                      UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
+            UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
         this.manager = manager;
@@ -108,8 +116,8 @@ public class WorkerImpl implements Worker, Closeable {
         }
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
-            // new SparqlBasedFetcher(),
-            new HTTPFetcher(), new FTPFetcher());
+                // new SparqlBasedFetcher(),
+                new HTTPFetcher(), new FTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
@@ -137,40 +145,39 @@ public class WorkerImpl implements Worker, Closeable {
         } catch (Exception e) {
             LOGGER.error("Got a severe exception. Aborting.", e);
         } finally {
-            IOUtils.closeQuietly(this);
+            Closer.close(this, LOGGER);
         }
     }
 
     /* Reads all CKAN URLs for determining CKAN URLs from URIs */
+    @Deprecated
     public List<String> ckanwhitelist() {
 
-        List<String> ckanlist = Arrays.asList("https://demo.ckan.org", "http://open.canada.ca/data/en/", "http://datahub.io/");
-        //This block can be used to feed list of CKANURLs for comparision
-        //In case of using this, please create ckanwhitelist.txt in whitelist folder under root
-        //Also enable volumes and environment for each worker in docker-compose-sparql-web.yml
+        List<String> ckanlist = Arrays.asList("https://demo.ckan.org", "http://open.canada.ca/data/en/",
+                "http://datahub.io/");
+        // This block can be used to feed list of CKANURLs for comparision
+        // In case of using this, please create ckanwhitelist.txt in whitelist folder
+        // under root
+        // Also enable volumes and environment for each worker in
+        // docker-compose-sparql-web.yml
         /*
-        List<String> list = new ArrayList<String>();
-        try {
-            CkanWhiteListConfiguration ckanwhiteListConfiguration = CkanWhiteListConfiguration.getCkanWhiteListConfiguration();
-            if (ckanwhiteListConfiguration != null) {
-                Scanner s = new Scanner(new File(ckanwhiteListConfiguration.getCkanWhiteListURI()));
-                while (s.hasNext()) {
-                    list.add(s.next());
-                }
-                s.close();
-            }
-        }catch (FileNotFoundException e){
-            LOGGER.error("ckanwhitlelist file missing.",e);
-        }
-        */
+         * List<String> list = new ArrayList<String>(); try { CkanWhiteListConfiguration
+         * ckanwhiteListConfiguration =
+         * CkanWhiteListConfiguration.getCkanWhiteListConfiguration(); if
+         * (ckanwhiteListConfiguration != null) { Scanner s = new Scanner(new
+         * File(ckanwhiteListConfiguration.getCkanWhiteListURI())); while (s.hasNext())
+         * { list.add(s.next()); } s.close(); } }catch (FileNotFoundException e){
+         * LOGGER.error("ckanwhitlelist file missing.",e); }
+         */
         return ckanlist;
     }
 
     /* converting data from CkanCrawl to URI format <key,value> */
     public static CrawleableUri ckandata(String r) throws Exception {
-        //String a = "https://demo.ckan.org";
+        // String a = "https://demo.ckan.org";
         CrawleableUri uri = new CrawleableUri(new URI(r));
-        //TODO: RECEIVED DATA FROM CKAN CRAWL SHOULD BE CONVERTED INTO URIs AND FED TO FRONTIER
+        // TODO: RECEIVED DATA FROM CKAN CRAWL SHOULD BE CONVERTED INTO URIs AND FED TO
+        // FRONTIER
         uri.addData(Constants.URI_TYPE_KEY, Constants.URI_TYPE_VALUE_DUMP);
         return uri;
     }
@@ -195,20 +202,19 @@ public class WorkerImpl implements Worker, Closeable {
         // send results to the Frontier
         frontier.crawlingDone(uris);
     }
-    
+
     @Override
-    public List<CrawleableUri> performCrawling(CrawleableUri uri) {
+    public void performCrawling(CrawleableUri uri) {
         // check robots.txt
-        List<CrawleableUri> ret = new ArrayList<>();
 
         uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, uri.getUri().toString() + "_" + System.currentTimeMillis());
         LOGGER.warn(uri.getUri().toString());
         Integer count = 0;
-        //TODO: find out the timestamp from the uri, not yet clear how to do that
+        // TODO: find out the timestamp from the uri, not yet clear how to do that
         if (manager.isUriCrawlable(uri.getUri())) {
             try {
                 long delay = timeStampLastUriFetched
-                    - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
                 if (delay > 0) {
                     Thread.sleep(delay);
                 }
@@ -216,7 +222,6 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
             }
             LOGGER.debug("I start crawling {} now...", uri);
-
 
             FileManager fm = new FileManager();
 
@@ -238,7 +243,6 @@ public class WorkerImpl implements Worker, Closeable {
             timeStampLastUriFetched = System.currentTimeMillis();
             List<File> fileList;
 
-
             for (File data : fetchedFiles) {
                 if (data != null) {
                     fileList = fm.decompressFile(data);
@@ -249,7 +253,7 @@ public class WorkerImpl implements Worker, Closeable {
                             collector.openSinkForUri(uri);
                             Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                             sink.closeSinkForUri(uri);
-                            ret.addAll(sendNewUris(resultUris));
+                            sendNewUris(resultUris);
                             collector.closeSinkForUri(uri);
                         } catch (Exception e) {
                             // We don't want to handle the exception. Just make sure that sink and collector
@@ -267,15 +271,17 @@ public class WorkerImpl implements Worker, Closeable {
         LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
-        //TODO (this is only a unsatisfying quick fix to avoid unreadable graphs because of too much nodes)
-        return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
+        // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs
+        // because of too much nodes)
+//        return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;
     }
 
     private void setSpecificRecrawlTime(CrawleableUri uri) {
-        //TODO: implement special cases
+        // TODO: implement special cases
 
-        //else set every time to default
-//        uri.setTimestampNextCrawl(System.currentTimeMillis() + FrontierImpl.getGeneralRecrawlTime());
+        // else set every time to default
+        // uri.setTimestampNextCrawl(System.currentTimeMillis() +
+        // FrontierImpl.getGeneralRecrawlTime());
     }
 
     @Override
@@ -288,7 +294,13 @@ public class WorkerImpl implements Worker, Closeable {
         return sendAliveMessages;
     }
 
-    public List<CrawleableUri> sendNewUris(Iterator<byte[]> uriIterator) {
+    /**
+     * Sends the given URIs to the frontier.
+     * 
+     * @param uriIterator
+     *            an iterator used to iterate over all new URIs
+     */
+    public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
         CrawleableUri newUri;
         int packageCount = 0;
@@ -298,7 +310,8 @@ public class WorkerImpl implements Worker, Closeable {
                 uriProcessor.recognizeUriType(newUri);
                 newUris.add(newUri);
                 if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    frontier.addNewUris(new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
+                    frontier.addNewUris(
+                            new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
                     packageCount++;
                 }
             } catch (Exception e) {
@@ -306,14 +319,12 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         frontier.addNewUris(newUris);
-
-        return newUris;
     }
 
     @Override
     public void close() {
-        IOUtils.closeQuietly(fetcher);
-        IOUtils.closeQuietly(sink);
+        Closer.close(fetcher, LOGGER);
+        Closer.close(sink, LOGGER);
     }
 
     public void setTerminateFlag(boolean terminateFlag) {

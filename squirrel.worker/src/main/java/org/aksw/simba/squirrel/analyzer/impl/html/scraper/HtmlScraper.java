@@ -1,6 +1,6 @@
-package org.aksw.simba.squirrel.analyzer.htmlscraper;
+package org.aksw.simba.squirrel.analyzer.impl.html.scraper;
 
-import org.aksw.simba.squirrel.analyzer.htmlscraper.exceptions.ElementNotFoundException;
+import org.aksw.simba.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;

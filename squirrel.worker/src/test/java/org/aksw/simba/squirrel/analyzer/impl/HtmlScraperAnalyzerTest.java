@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.analyzer.htmlscraper.HtmlScraper;
+import org.aksw.simba.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer;
+import org.aksw.simba.squirrel.analyzer.impl.html.scraper.HtmlScraper;
 import org.aksw.simba.squirrel.collect.SimpleUriCollector;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
