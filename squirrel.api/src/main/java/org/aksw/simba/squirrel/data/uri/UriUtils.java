@@ -46,7 +46,16 @@ public class UriUtils {
         return new ArrayList<CrawleableUri>();
     }
 
+    /**
+     * 
+     * @deprecated use {@link #generateFileName(String, String)} instead.
+     */
+    @Deprecated
     public static String generateFileName(String uri, boolean useCompression) {
+        return generateFileName(uri, useCompression ? "gz" : null);
+    }
+
+    public static String generateFileName(String uri, String fileEnding) {
         StringBuilder builder = new StringBuilder(uri.length() + 10);
         char chars[] = uri.toCharArray();
         for (int i = 0; i < chars.length; ++i) {
@@ -56,8 +65,9 @@ public class UriUtils {
                 builder.append('_');
             }
         }
-        if (useCompression) {
-            builder.append(".gz");
+        if (fileEnding != null) {
+            builder.append(".");
+            builder.append(fileEnding);
         }
         return builder.toString();
     }

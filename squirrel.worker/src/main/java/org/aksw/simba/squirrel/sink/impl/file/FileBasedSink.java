@@ -1,29 +1,44 @@
 package org.aksw.simba.squirrel.sink.impl.file;
 
-import org.aksw.simba.squirrel.Constants;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.data.uri.UriUtils;
-import org.aksw.simba.squirrel.sink.Sink;
-import org.apache.commons.collections15.MapUtils;
-import org.apache.jena.graph.Triple;
-import org.apache.log4j.lf5.util.StreamUtils;
-import org.apache.tika.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
+
+import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.data.uri.UriUtils;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
+import org.aksw.simba.squirrel.sink.Sink;
+import org.aksw.simba.squirrel.utils.Closer;
+import org.apache.commons.collections15.MapUtils;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.StreamOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
+import org.apache.log4j.lf5.util.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileBasedSink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedSink.class);
 
-    private static final byte PRE_URI[] = "<".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte POST_URI[] = ">".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte SEPERATOR[] = " ".getBytes(Constants.DEFAULT_CHARSET);
-    private static final byte END_OF_QUAD[] = " .\n".getBytes(Constants.DEFAULT_CHARSET);
+    // private static final byte PRE_URI[] =
+    // "<".getBytes(Constants.DEFAULT_CHARSET);
+    // private static final byte POST_URI[] =
+    // ">".getBytes(Constants.DEFAULT_CHARSET);
+    // private static final byte SEPERATOR[] = "
+    // ".getBytes(Constants.DEFAULT_CHARSET);
+    // private static final byte END_OF_QUAD[] = "
+    // .\n".getBytes(Constants.DEFAULT_CHARSET);
+    public static final Lang DEFAULT_OUTPUT_LANG = Lang.TURTLE; 
 
     /**
      * Directory to which the files of this sink are written.
@@ -38,60 +53,40 @@ public class FileBasedSink implements Sink {
     /**
      * Synchronized mapping of crawled URIs to their output stream.
      */
-    protected Map<String, OutputStream> streamMapping = MapUtils.synchronizedMap(new HashMap<String, OutputStream>());
+    protected Map<String, StreamStatus> streamMapping = MapUtils.synchronizedMap(new HashMap<String, StreamStatus>());
+
+    protected Lang outputLang;
 
     public FileBasedSink(File outputDirectory, boolean useCompression) {
+        this(outputDirectory, DEFAULT_OUTPUT_LANG, useCompression);
+    }
+
+    public FileBasedSink(File outputDirectory, Lang outputLang, boolean useCompression) {
         this.outputDirectory = outputDirectory;
+        this.outputLang = outputLang;
         this.useCompression = useCompression;
         openSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-        String uriString = uri.getUri().toString();
-        if (uri.getData().containsKey(Constants.URI_CRAWLING_ACTIVITY_URI)) {
-            uriString = (String) uri.getData().get(Constants.URI_CRAWLING_ACTIVITY_URI);
-        }
-
-        OutputStream outputStream = getStream(uri);
-        if (outputStream != null) {
-            try {
-                outputStream.write(PRE_URI);
-                outputStream.write(triple.getSubject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(SEPERATOR);
-                outputStream.write(PRE_URI);
-                outputStream.write(triple.getPredicate().toString().getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(SEPERATOR);
-                if (triple.getObject().isURI()) {
-                    outputStream.write(PRE_URI);
-                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                    outputStream.write(POST_URI);
-                } else {
-                    outputStream.write(triple.getObject().toString().getBytes(Constants.DEFAULT_CHARSET));
-                }
-                outputStream.write(SEPERATOR);
-                outputStream.write(PRE_URI);
-                outputStream.write(uriString.getBytes(Constants.DEFAULT_CHARSET));
-                outputStream.write(POST_URI);
-                outputStream.write(END_OF_QUAD);
-            } catch (Exception e) {
-                LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
-                        + uriString + "\". Ignoring it.", e);
-            }
+        StreamStatus status = getStream(uri);
+        try {
+            status.getTripleOutputStream().triple(triple);
+            status.increaseTripleCount();
+        } catch (Exception e) {
+            LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
+                    + uri.getUri().toString() + "\". Ignoring it.", e);
         }
     }
 
     @Override
-    public void addData(CrawleableUri uri, InputStream stream) {
-        OutputStream outputStream = getStream(uri);
-        if (outputStream != null) {
-            try {
-                StreamUtils.copy(stream, outputStream);
-            } catch (Exception e) {
-                LOGGER.error("Exception while writing unstructed data to file.", e);
-            }
+    public void addData(CrawleableUri uri, InputStream is) {
+        StreamStatus stream = getStream(uri);
+        try {
+            StreamUtils.copy(is, stream.getDataOutputStream());
+        } catch (Exception e) {
+            LOGGER.error("Exception while writing unstructed data to file.", e);
         }
     }
 
@@ -101,27 +96,19 @@ public class FileBasedSink implements Sink {
         streamMapping.put(uri.getUri().toString(), null);
     }
 
-    private OutputStream getStream(CrawleableUri uri) {
+    private StreamStatus getStream(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
         if (streamMapping.containsKey(uriString)) {
-            OutputStream outputStream = streamMapping.get(uriString);
-            if (outputStream == null) {
-                try {
-                    outputStream = new FileOutputStream(outputDirectory.getAbsolutePath() + File.separator
-                            + generateFileName(uriString, useCompression));
-                    if (useCompression) {
-                        outputStream = new GZIPOutputStream(outputStream);
-                    }
-                    streamMapping.put(uriString, outputStream);
-                } catch (IOException e) {
-                    LOGGER.error("Exception while trying to open file for \"" + uriString + "\" to use as sink.", e);
-                }
+            StreamStatus stream = streamMapping.get(uriString);
+            if (stream == null) {
+                stream = new StreamStatus(uriString, outputDirectory, outputLang, useCompression);
+                streamMapping.put(uriString, stream);
             }
-            return outputStream;
+            return stream;
         } else {
             LOGGER.error(
-                "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
-                uri.getUri().toString());
+                    "A stream for {} was requested but openSinkForUri hasn't been called before. It will be ignored.",
+                    uri.getUri().toString());
             return null;
         }
     }
@@ -129,15 +116,89 @@ public class FileBasedSink implements Sink {
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
         String uriString = uri.getUri().toString();
+        StreamStatus status = null;
         if (streamMapping.containsKey(uriString)) {
-            IOUtils.closeQuietly(streamMapping.get(uriString));
-            streamMapping.remove(uriString);
+            Closer.close(streamMapping.get(uriString));
+            status = streamMapping.remove(uriString);
         } else {
             LOGGER.error("Should close the sink for the URI \"" + uriString + "\" but couldn't find it.");
         }
+        CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
+        if ((activity != null) && (status != null)) {
+            activity.setNumberOfTriples(status.tripleCount);
+        }
     }
 
-    public static String generateFileName(String uri, boolean useCompression) {
-        return UriUtils.generateFileName(uri, useCompression);
+    public static String generateFileName(String uri, Lang outputLang, boolean useCompression) {
+        String fileEnding = null;
+        if (outputLang != null) {
+            fileEnding = outputLang.getFileExtensions().get(0);
+        }
+        if(useCompression) {
+            if(fileEnding == null) {
+                fileEnding = "gz";
+            } else {
+                fileEnding += ".gz";
+            }
+        }
+        return UriUtils.generateFileName(uri, fileEnding);
+    }
+
+    protected static class StreamStatus implements Closeable {
+        public int tripleCount = 0;
+        protected String uriString;
+        protected File outputDirectory;
+        protected boolean useCompression;
+        protected Lang outputLang;
+        protected StreamRDF tripleStream;
+        protected OutputStream tripleOutputStream;
+        protected OutputStream dataOutputStream;
+
+        public StreamStatus(String uriString, File outputDirectory, Lang outputLang, boolean useCompression) {
+            this.uriString = uriString;
+            this.outputDirectory = outputDirectory;
+            this.outputLang = outputLang;
+            this.useCompression = useCompression;
+        }
+
+        public synchronized StreamRDF getTripleOutputStream() throws IOException {
+            if (tripleOutputStream == null) {
+                tripleOutputStream = createStream(null, true);
+                tripleStream = StreamRDFWriter.getWriterStream(tripleOutputStream, outputLang);
+//                tripleStream.start();
+            }
+            return tripleStream;
+        }
+
+        public synchronized OutputStream getDataOutputStream() throws IOException {
+            if (dataOutputStream == null) {
+                dataOutputStream = createStream(".dat", false);
+            }
+            return dataOutputStream;
+        }
+
+        protected OutputStream createStream(String postFix, boolean isRdfFile) throws IOException {
+            String uriString = this.uriString;
+            if (postFix != null) {
+                uriString += postFix;
+            }
+            OutputStream outputStream = new FileOutputStream(outputDirectory.getAbsolutePath() + File.separator
+                    + generateFileName(uriString, (isRdfFile ? outputLang : null), useCompression));
+            if (useCompression) {
+                outputStream = new GZIPOutputStream(outputStream);
+            }
+            return outputStream;
+        }
+
+        public void increaseTripleCount() {
+            ++tripleCount;
+        }
+
+        @Override
+        public void close() throws IOException {
+            tripleStream.finish();
+            Closer.close(tripleOutputStream, LOGGER);
+            Closer.close(dataOutputStream, LOGGER);
+        }
     }
 }

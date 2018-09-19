@@ -15,9 +15,7 @@ public class FileManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileManager.class);
 
     public List<File> decompressFile(File inputFile) {
-
         List<File> file = new ArrayList<File>();
-
         try {
             String mime_type = detectMimeType(inputFile);
             if (MimeTypeEnum.TAR.mime_type().equals(mime_type)) {

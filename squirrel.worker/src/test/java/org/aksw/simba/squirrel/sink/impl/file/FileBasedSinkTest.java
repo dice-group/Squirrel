@@ -22,7 +22,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -52,6 +51,7 @@ public class FileBasedSinkTest {
         Assert.assertTrue(tempDirectory.delete());
         Assert.assertTrue(tempDirectory.mkdir());
         tempDirectory.deleteOnExit();
+        LOGGER.info("Using " + tempDirectory.getAbsolutePath());
 
         List<Model> crawledModels = new ArrayList<Model>();
         List<URI> crawledUris = new ArrayList<URI>();
@@ -146,11 +146,11 @@ public class FileBasedSinkTest {
     }
 
     protected Sink createSink(boolean useCompression) {
-        return new FileBasedSink(tempDirectory, useCompression);
+        return new FileBasedSink(tempDirectory, FileBasedSink.DEFAULT_OUTPUT_LANG, useCompression);
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) {
-        String fileName = FileBasedSink.generateFileName(uri.toString(), useCompression);
+        String fileName = FileBasedSink.generateFileName(uri.toString(), FileBasedSink.DEFAULT_OUTPUT_LANG, useCompression);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
@@ -161,16 +161,14 @@ public class FileBasedSinkTest {
                     file.exists());
         }
 
-        Model readModel = null;
-        Dataset readData = DatasetFactory.create();
+        Model readModel = ModelFactory.createDefaultModel();
         InputStream in = null;
-
         try {
             in = new FileInputStream(file);
             if (useCompression) {
                 in = new GZIPInputStream(in);
             }
-            RDFDataMgr.read(readData, in, Lang.NQ);
+            RDFDataMgr.read(readModel, in, FileBasedSink.DEFAULT_OUTPUT_LANG);
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail("Couldn't read file for model " + uri.toString());
@@ -178,7 +176,6 @@ public class FileBasedSinkTest {
             IOUtils.closeQuietly(in);
         }
 
-        readModel = readData.getNamedModel(uri.toString());
         String errorMsg = "The read model of " + uri.toString() + ": " + readModel
                 + " does not fit the expected model: " + model;
         StmtIterator iterator = model.listStatements();
