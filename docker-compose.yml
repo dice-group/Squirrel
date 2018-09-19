@@ -25,8 +25,8 @@ services:
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
-      - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
+      - ./whitelist/ckanwhitelist.txt:/var/squirrel/whitelist.txt:ro
+#    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.FrontierComponent
 
   rethinkdb:
     image: rethinkdb:2.3.5

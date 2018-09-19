@@ -4,7 +4,7 @@ build:
 	docker-compose -f docker-compose-sparql.yml down
 	mvn clean install -U -DskipTests -Dmaven.javadoc.skip=true
 	
-dockerize: build
+dockerize:
 	docker build -f Dockerfile.frontier -t squirrel.frontier .
 	docker build -f Dockerfile.worker -t squirrel.worker .
 
