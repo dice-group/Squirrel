@@ -8,6 +8,7 @@
     <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2017</inceptionYear>
+    <name>Squirrel</name>
 
     <!-- LICENSE -->
     <licenses>
@@ -43,7 +44,6 @@
     </modules>
 
     <properties>
-        <project.local.repo.url>file://${project.basedir}/repository</project.local.repo.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -51,12 +51,6 @@
     </properties>
 
     <repositories>
-        <!-- Let's use a local repository for the local libraries of this 
-            project -->
-        <repository>
-            <id>local repository</id>
-            <url>${project.local.repo.url}</url>
-        </repository>
         <repository>
             <id>maven.aksw.internal</id>
             <name>AKSW Internal Release Repository</name>
@@ -109,18 +103,12 @@
                 <artifactId>core</artifactId>
                 <version>1.0.12</version>
             </dependency>
-            <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq)
-            <dependency>
-                <groupId>org.zeromq</groupId>
-                <artifactId>jeromq</artifactId>
-                <version>0.3.4</version>
-            </dependency> -->
+            <!-- JeroMQ Pure Java implementation of libzmq (https://github.com/zeromq/jeromq) 
+                <dependency> <groupId>org.zeromq</groupId> <artifactId>jeromq</artifactId> 
+                <version>0.3.4</version> </dependency> -->
             <!-- Java binding for 0MQ (http://www.zeromq.org) -->
-            <!-- <dependency>
-                <groupId>org.zeromq</groupId>
-                <artifactId>jzmq</artifactId>
-                <version>3.0.1</version>
-            </dependency> -->
+            <!-- <dependency> <groupId>org.zeromq</groupId> <artifactId>jzmq</artifactId> 
+                <version>3.0.1</version> </dependency> -->
 
             <!--compress commons -->
             <dependency>
@@ -188,7 +176,7 @@
             <dependency>
                 <groupId>com.github.crawler-commons</groupId>
                 <artifactId>crawler-commons</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>0.7</version>
             </dependency>
 
             <!-- jena-sparql-api -->

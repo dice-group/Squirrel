@@ -1,10 +1,21 @@
 package org.aksw.simba.squirrel.fetcher.http;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -25,11 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 @Component
 @Order(value = 1)
 @Qualifier("httpFetcher")
@@ -37,19 +43,17 @@ public class HTTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPFetcher.class);
 
-    private static final String USER_AGENT = "Squirrel";
-
     public static final String HTTP_RESPONSE_HEADER_PREFIX = "http-response-";
 
     protected static final Set<String> ACCEPTED_SCHEMES = new HashSet<String>(Arrays.asList("http", "https"));
 
     protected String acceptHeader = "application/rdf+xml";
-    protected String acceptCharset = Charsets.UTF_8.name();
+    protected String acceptCharset = StandardCharsets.UTF_8.name();
     protected CloseableHttpClient client;
     protected File dataDirectory = FileUtils.getTempDirectory();
 
     public HTTPFetcher() {
-        this(USER_AGENT);
+        this(Constants.DEFAULT_USER_AGENT);
     }
 
     public HTTPFetcher(String userAgent) {

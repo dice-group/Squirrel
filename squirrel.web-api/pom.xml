@@ -10,6 +10,7 @@
     </parent>
     <artifactId>squirrel.web-api</artifactId>
     <packaging>jar</packaging>
+    <name>Squirrel Web API</name>
 
     <dependencies>
         <dependency>

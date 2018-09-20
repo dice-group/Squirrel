@@ -10,6 +10,7 @@
     </parent>
     <artifactId>squirrel.mockup</artifactId>
     <packaging>jar</packaging>
+    <name>Squirrel Mockup</name>
 
     <dependencies>
         <dependency>

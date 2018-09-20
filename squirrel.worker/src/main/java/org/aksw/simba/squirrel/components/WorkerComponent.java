@@ -104,7 +104,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                 // TODO Fix this
 //            }, 0, TimeUnit.SECONDS.toMillis(WorkerGuard.TIME_WORKER_DEAD) / 2);
             }, 0, TimeUnit.SECONDS.toMillis(20) / 2);
-
         }
         LOGGER.info("Worker initialized.");
 
@@ -125,7 +124,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
         serializer = new GzipJavaUriSerializer();
 
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME).build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), Constants.FRONTIER_QUEUE_NAME);
     }

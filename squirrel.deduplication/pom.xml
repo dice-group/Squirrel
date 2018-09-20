@@ -10,6 +10,7 @@
     </parent>
     <artifactId>squirrel.deduplication</artifactId>
     <packaging>jar</packaging>
+    <name>Squirrel Deduplication</name>
 
     <dependencies>
         <dependency>

@@ -30,11 +30,12 @@ public class Squirrel {
     }
 
     public static final Resource ResultGraph = resource("ResultGraph");
+    public static final Resource ResultFile = resource("ResultFile");
 
     public static final Property approxNumberOfTriples = property("approxNumberOfTriples");
     public static final Property crawled = property("crawled");
     public static final Property uriHostedOn = property("uriHostedOn");
     public static final Property status = property("status");
-    public static final Property resultGraphOf = property("resultGraphOf");
+    public static final Property containsDataOf = property("containsDataOf");
     
 }

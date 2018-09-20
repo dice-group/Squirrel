@@ -12,10 +12,6 @@
     <packaging>jar</packaging>
     <name>Squirrel Frontier</name>
 
-    <properties>
-        <project.local.repo.url>file://${project.parent.basedir}/repository</project.local.repo.url>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.dice-research</groupId>
