@@ -1,14 +1,13 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import java.util.Collection;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This class is used to provides querys for basic SPARQL commands needed in this project.
@@ -41,7 +40,7 @@ public class QueryGenerator {
      * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
-    public String getAddQuery(ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+    public String getAddQuery(Collection<Triple> listBufferedTriples) {
         return getAddQuery(null, listBufferedTriples, true);
     }
 
@@ -52,7 +51,7 @@ public class QueryGenerator {
      * @param listBufferedTriples the given list of triples.
      * @return The generated query.
      */
-    public String getAddQuery(String graphId, ConcurrentLinkedQueue<Triple> listBufferedTriples) {
+    public String getAddQuery(String graphId, Collection<Triple> listBufferedTriples) {
         return getAddQuery(graphId, listBufferedTriples, false);
     }
 
@@ -64,7 +63,7 @@ public class QueryGenerator {
      * @param defaultGraph Identify if query is for the default graph.
      * @return The generated query.
      */
-    public String getAddQuery(String graphId, ConcurrentLinkedQueue<Triple> listBufferedTriples, boolean defaultGraph) {
+    public String getAddQuery(String graphId, Collection<Triple> listBufferedTriples, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("INSERT DATA { ");
         if (!defaultGraph) {

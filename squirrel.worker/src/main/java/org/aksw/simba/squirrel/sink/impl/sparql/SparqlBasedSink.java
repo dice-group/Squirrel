@@ -1,11 +1,26 @@
 package org.aksw.simba.squirrel.sink.impl.sparql;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.metadata.CrawlingActivity;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.aksw.simba.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
+import org.aksw.simba.squirrel.vocab.Squirrel;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -16,20 +31,15 @@ import org.apache.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
 public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
     /**
-     * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
+     * Interval that specifies how many triples are to be buffered at once until
+     * they are sent to the DB.
      */
     private static final int SENDING_INTERVAL_BUFFERED_TRIPLES = 500;
 
@@ -54,7 +64,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * The data structure (map) in which the triples are buffered.
      */
-    private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
+    private Map<CrawleableUri, GraphStatus> mapBufferedTriples = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Uri for the MetaData graph, will be stored in the default graph
@@ -64,14 +74,21 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Constructor of SparqlBasedSink.
      *
-     * @param host                   The host name of the sink.
-     * @param port                   The port of the sink.
-     * @param updateAppendix         The update appendix for the content data
-     * @param queryAppendix          The query appendix for the content data
-     * @param updateMetaDataAppendix The update appendix for the meta data
-     * @param queryMetaDataAppendix  The query appendix for the meta data
+     * @param host
+     *            The host name of the sink.
+     * @param port
+     *            The port of the sink.
+     * @param updateAppendix
+     *            The update appendix for the content data
+     * @param queryAppendix
+     *            The query appendix for the content data
+     * @param updateMetaDataAppendix
+     *            The update appendix for the meta data
+     * @param queryMetaDataAppendix
+     *            The query appendix for the meta data
      */
-    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix, String updateMetaDataAppendix, String queryMetaDataAppendix) {
+    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix,
+            String updateMetaDataAppendix, String queryMetaDataAppendix) {
         String prefix = "http://" + host + ":" + port + "/";
         updateDatasetURI = prefix + updateAppendix;
         queryDatasetURI = prefix + queryAppendix;
@@ -85,11 +102,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
             LOGGER.info("Sink has not been opened for the uri, sink will be opened");
             openSinkForUri(uri);
         }
-        mapBufferedTriples.get(uri).add(triple);
-
-        if (mapBufferedTriples.get(uri).size() >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
-            sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
-        }
+        mapBufferedTriples.get(uri).addTriple(this, uri, triple);
     }
 
     @Override
@@ -117,7 +130,7 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-        mapBufferedTriples.put(uri, new ConcurrentLinkedQueue<>());
+        mapBufferedTriples.put(uri, new GraphStatus());
     }
 
     @Override
@@ -126,8 +139,12 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
             LOGGER.info("Try to close Sink for an uri, without open it before. Do nothing.");
             return;
         }
-        if (!mapBufferedTriples.get(uri).isEmpty()) {
-            sendAllTriplesToDB(uri, mapBufferedTriples.get(uri));
+        GraphStatus status = mapBufferedTriples.get(uri);
+        status.sendTriples(this, uri);
+        CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
+        if(activity != null) {
+            activity.setNumberOfTriples(status.getNumberOfTriples());
+            activity.addOutputResource(getGraphId(uri), Squirrel.ResultGraph);
         }
         mapBufferedTriples.remove(uri);
     }
@@ -135,10 +152,12 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Method to send all buffered triples to the database
      *
-     * @param uri        the crawled {@link CrawleableUri}
-     * @param tripleList the list of {@link Triple}s regarding that uri
+     * @param uri
+     *            the crawled {@link CrawleableUri}
+     * @param tripleList
+     *            the list of {@link Triple}s regarding that uri
      */
-    private void sendAllTriplesToDB(CrawleableUri uri, ConcurrentLinkedQueue<Triple> tripleList) {
+    private void sendAllTriplesToDB(CrawleableUri uri, Collection<Triple> tripleList) {
         String stringQuery = null;
         String sparqlEndpoint;
         if (uri.equals(metaDataGraphUri)) {
@@ -155,7 +174,10 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
             try {
                 proc.execute();
             } catch (Exception e) {
-                LOGGER.error("Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( [" + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]", e);
+                LOGGER.error(
+                        "Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( ["
+                                + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]",
+                        e);
             }
         } catch (QueryException e) {
             LOGGER.error(stringQuery);
@@ -183,7 +205,8 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
     /**
      * Get the id of the graph in which the given uri is stored.
      *
-     * @param uri The given uri.
+     * @param uri
+     *            The given uri.
      * @return The id of the graph.
      */
     public String getGraphId(CrawleableUri uri) {
@@ -192,5 +215,27 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
 
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
+    }
+
+    protected static class GraphStatus {
+        protected List<Triple> buffer = new ArrayList<>(SENDING_INTERVAL_BUFFERED_TRIPLES);
+        protected long numberOfTriples = 0;
+        
+        public synchronized void addTriple(SparqlBasedSink sink, CrawleableUri uri, Triple triple) {
+            buffer.add(triple);
+            if (buffer.size() >= SENDING_INTERVAL_BUFFERED_TRIPLES) {
+                sendTriples(sink, uri);
+            }
+        }
+        
+        public void sendTriples(SparqlBasedSink sink, CrawleableUri uri) {
+            sink.sendAllTriplesToDB(uri, buffer);
+            numberOfTriples += buffer.size();
+            buffer.clear();
+        }
+        
+        public long getNumberOfTriples() {
+            return numberOfTriples;
+        }
     }
 }
