@@ -10,6 +10,7 @@ import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
@@ -61,25 +62,22 @@ public class RDFAnalyzer implements Analyzer {
             } else {
             	for(Lang l : listLangs) {
             		try {
-            			System.out.println(data.getAbsolutePath());
             			RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
             			break;
-            		}catch(Exception e) {
-            			
+            		} catch(Exception e) {
             			LOGGER.warn("Could not parse file as " + l.getName());
             		}
-            		
             	}
-
             }
-            
-            
+            ActivityUtil.addStep(curi, getClass());
+            return collector.getUris(curi);
         } catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting. ", e);
+            ActivityUtil.addStep(curi, getClass(), e.getMessage());
+            return null;
         } finally {
             IOUtils.closeQuietly(fin);
         }
-        return collector.getUris(curi);
     }
 
     protected class FilterSinkRDF extends StreamRDFBase {

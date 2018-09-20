@@ -285,6 +285,9 @@ public class WorkerImpl implements Worker, Closeable {
         // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
+        // Remove the activity since we don't want to send it back to the Frontier
+        uri.getData().remove(Constants.URI_CRAWLING_ACTIVITY);
+
         // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs
         // because of too much nodes)
         // return (ret.size() > 25) ? new ArrayList<>(ret.subList(0, 25)) : ret;

@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * A sink which stores the data in different graphs in a sparql based db.
  */
 public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
     /**
      * Interval that specifies how many triples are to be buffered at once until they are sent to the DB.
      */
@@ -53,9 +55,6 @@ public class SparqlBasedSink implements AdvancedTripleBasedSink, Sink {
      * The data structure (map) in which the triples are buffered.
      */
     private ConcurrentHashMap<CrawleableUri, ConcurrentLinkedQueue<Triple>> mapBufferedTriples = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
     /**
      * Uri for the MetaData graph, will be stored in the default graph

@@ -1,18 +1,5 @@
 package org.aksw.simba.squirrel.fetcher.ftp;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.fetcher.Fetcher;
-import org.aksw.simba.squirrel.fetcher.dump.DumpFetcher;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,9 +10,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.aksw.simba.squirrel.data.uri.CrawleableUri;
+import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
+import org.aksw.simba.squirrel.utils.Closer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
 /**
- * TODO Update this class by removing its dependency regarding the deprecated
- * {@link DumpFetcher} class.
+ * A simple fetcher using the FTP protocol.
  *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
@@ -54,6 +53,7 @@ public class FTPFetcher implements Fetcher {
             dataFile = File.createTempFile("fetched_", "", dataDirectory);
         } catch (IOException e) {
             LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         }
         return requestData(uri, dataFile);
@@ -92,15 +92,17 @@ public class FTPFetcher implements Fetcher {
 
         } catch (Exception e) {
             LOGGER.error("Exception while trying to download (" + uri.getUri().toString() + "). Returning null.", e);
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         } finally {
-            IOUtils.closeQuietly(output);
+            Closer.close(output);
             try {
                 client.logout();
                 client.disconnect();
             } catch (IOException e) {
             }
         }
+        ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
 

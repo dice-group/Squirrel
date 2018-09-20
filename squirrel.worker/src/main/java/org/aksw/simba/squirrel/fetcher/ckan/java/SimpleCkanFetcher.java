@@ -12,6 +12,7 @@ import java.util.List;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
@@ -71,12 +72,15 @@ public class SimpleCkanFetcher implements Fetcher {
                 }
                 // If we reached this point, we should add a flag that the file contains CKAN JSON
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
+                ActivityUtil.addStep(uri, getClass());
                 return dataFile;
             } catch(CkanException e) {
                 LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null. Exception: " + e.getMessage());
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } catch (IOException e) {
                 LOGGER.error("Error while writing result file. Returning null.", e);
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } finally {
                 IOUtils.closeQuietly(out);

@@ -7,6 +7,7 @@ import org.aksw.jena_sparql_api.pagination.core.QueryExecutionFactoryPaginated;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
@@ -70,6 +71,7 @@ public class SparqlBasedFetcher implements Fetcher {
             // If this should have worked, print a message, otherwise silently return null
             if (shouldBeSparql) {
                 LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
             }
             return null;
         } finally {
@@ -81,6 +83,7 @@ public class SparqlBasedFetcher implements Fetcher {
                 qef.close();
             }
         }
+        ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
 

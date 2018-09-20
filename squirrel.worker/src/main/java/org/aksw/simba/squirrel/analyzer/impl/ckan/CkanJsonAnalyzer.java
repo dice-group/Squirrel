@@ -13,6 +13,7 @@ import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.ckan.java.SimpleCkanFetcher;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,10 +54,12 @@ public class CkanJsonAnalyzer implements Analyzer {
                 CkanDatasetConsumer consumer = new CkanDatasetConsumer(sink, collector, curi);
                 lines.map(s -> parseDataset(s)).forEach(consumer);
                 sink.closeSinkForUri(curi);
+                ActivityUtil.addStep(curi, getClass());
                 return collector.getUris(curi);
             } catch (IOException e) {
                 LOGGER.error("Error while reading JSON data from file. Returning empty iterator.", e);
-                Collections.emptyIterator();
+                ActivityUtil.addStep(curi, getClass(), e.getMessage());
+                return Collections.emptyIterator();
             } finally {
                 lines.close();
             }

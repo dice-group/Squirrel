@@ -15,6 +15,7 @@ import java.util.Set;
 import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.fetcher.Fetcher;
+import org.aksw.simba.squirrel.metadata.ActivityUtil;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
@@ -84,17 +85,21 @@ public class HTTPFetcher implements Fetcher {
         } catch (ClientProtocolException e) {
             LOGGER.debug("HTTP Exception while requesting uri \"{}\". Returning null. Exception: {}", uri,
                 e.getMessage());
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         } catch (FileNotFoundException e) {
             LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         } catch (IOException e) {
             LOGGER.error("Couldn't fetched data. Returning null.", e);
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         }
+        ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
-
+    
     protected File requestData(CrawleableUri uri, File outputFile)
         throws ClientProtocolException, FileNotFoundException, IOException {
         HttpGet request = null;
