@@ -66,4 +66,9 @@ public class SimpleOrderedAnalyzerManager implements Analyzer {
         }
         return iterator;
     }
+    
+    @Override
+    public boolean isElegible(CrawleableUri curi, File data) {
+        return true;
+    }
 }

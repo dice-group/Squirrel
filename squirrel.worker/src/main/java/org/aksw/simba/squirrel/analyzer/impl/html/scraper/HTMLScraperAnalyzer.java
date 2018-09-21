@@ -1,16 +1,20 @@
 package org.aksw.simba.squirrel.analyzer.impl.html.scraper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
+
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Triple;
+import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 
 public class HTMLScraperAnalyzer implements Analyzer {
 
@@ -45,5 +49,21 @@ public class HTMLScraperAnalyzer implements Analyzer {
         return null;
     }
 
-
+    // @Override
+    public boolean isElegible(CrawleableUri curi, File data) {
+        String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+        if ((contentType != null && contentType.equals("text/html"))) {
+            return true;
+        }
+        Tika tika = new Tika();
+        try (InputStream is = new FileInputStream(data)) {
+            String mimeType = tika.detect(is);
+            if (mimeType.equals("text/html")) {
+                return false;
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error was found when trying to analyze ", e);
+        }
+        return false;
+    }
 }

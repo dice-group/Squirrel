@@ -53,6 +53,10 @@ public class WorkerImpl implements Worker, Closeable {
     @Deprecated
     private static final long DEFAULT_WAITING_TIME = 10000;
     private static final int MAX_URIS_PER_MESSAGE = 20;
+    /**
+     * TODO what was this attribute for?
+     */
+    @Deprecated
     public static final boolean ENABLE_CKAN_CRAWLER_FORWARDING = false;
     /**
      * TODO what was this attribute for?
@@ -154,6 +158,7 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     /* Reads all CKAN URLs for determining CKAN URLs from URIs */
+    // TODO check whether this method can be removed
     @Deprecated
     public List<String> ckanwhitelist() {
 
@@ -177,6 +182,8 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     /* converting data from CkanCrawl to URI format <key,value> */
+    // TODO check whether this method can be removed
+    @Deprecated
     public static CrawleableUri ckandata(String r) throws Exception {
         // String a = "https://demo.ckan.org";
         CrawleableUri uri = new CrawleableUri(new URI(r));
@@ -209,11 +216,14 @@ public class WorkerImpl implements Worker, Closeable {
 
     @Override
     public void performCrawling(CrawleableUri uri) {
+        // Create the activity object for this URI
+        uri.addData(Constants.UUID_KEY, UUID.randomUUID().toString());
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
-        LOGGER.warn(uri.getUri().toString());
-        // check robots.txt
+        
+        // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
+            // Make sure that there is a delay between the fetching of two URIs 
             try {
                 long delay = timeStampLastUriFetched
                         - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
@@ -223,8 +233,9 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (InterruptedException e) {
                 LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
             }
+            
+            // Fetch the URI content
             LOGGER.debug("I start crawling {} now...", uri);
-
             File fetched = null;
             try {
                 fetched = fetcher.fetch(uri);
@@ -233,7 +244,6 @@ public class WorkerImpl implements Worker, Closeable {
                 activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
             }
             timeStampLastUriFetched = System.currentTimeMillis();
-
             List<File> fetchedFiles = new ArrayList<>();
             if (fetched != null && fetched.isDirectory()) {
                 fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));

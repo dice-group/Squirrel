@@ -30,22 +30,42 @@
         <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
         	<constructor-arg index="1" ref="sinkBean" />
-        	<constructor-arg index="2" ref="robotsManagerBean" />
-        	<constructor-arg index="3" ref="serializerBean" />
-        	<constructor-arg index="4" ref="uriCollectorBean" />
-        	<constructor-arg index="5" value="20000" />
-        	<constructor-arg index="6" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
+        	<constructor-arg index="2" ref="analyzerBean" />
+        	<constructor-arg index="3" ref="robotsManagerBean" />
+        	<constructor-arg index="4" ref="serializerBean" />
+        	<constructor-arg index="5" ref="uriCollectorBean" />
+        	<constructor-arg index="6" value="2000" />
+        	<constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
         </bean> 
+        
+        <bean id="analyzerBean" class="org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager">
+        	<constructor-arg index="0" ref="uriCollectorBean" />
+        	<constructor-arg index="1" >
+        		<array value-type="java.lang.String">
+				  <value>org.aksw.simba.squirrel.analyzer.impl.HDTAnalyzer</value>
+				  <value>org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer</value>
+				  <value>org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer</value>
+				</array>
+        	</constructor-arg>
+        </bean>
+        
+       	
          
         <!-- Output folder for FileBasedSink -->
         <bean id="outputFolderBean" class="java.io.File">
         	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
         </bean>
          
-        <!-- File Based Sink implementation -->
+        <!-- File Based Sink implementation 
         <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.file.FileBasedSink">
         	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
         	<constructor-arg name="useCompression" value="true"/>
+        </bean>
+        -->
+        
+        <!-- HDT File Based Sink implementation -->
+        <bean id="sinkBean" class="org.aksw.simba.squirrel.sink.impl.hdt.HdtBasedSink">
+        	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
         </bean>
         
         <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SimpleUriCollector" >

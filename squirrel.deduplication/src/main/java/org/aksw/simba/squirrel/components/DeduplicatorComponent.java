@@ -138,7 +138,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         for (CrawleableUri nextUri : uris) {
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
-            nextUri.putData(Constants.URI_HASH_KEY, value);
+            nextUri.addData(Constants.URI_HASH_KEY, value);
         }
 
         compareNewUrisWithOldUris(uris);

@@ -2,9 +2,6 @@ package org.aksw.simba.squirrel.queue;
 
 
 
-import static com.mongodb.client.model.Updates.set;
-
-import static com.mongodb.client.model.Filters.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
@@ -12,9 +9,7 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriType;
@@ -26,12 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.gridfs.GridFS;
 
 @SuppressWarnings("deprecation")
 public class MongoDBQueue extends AbstractIpAddressBasedQueue {

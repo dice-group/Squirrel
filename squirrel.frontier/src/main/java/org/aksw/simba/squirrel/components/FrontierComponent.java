@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.aksw.simba.squirrel.Constants;
+import org.aksw.simba.squirrel.configurator.MongoConfiguration;
 import org.aksw.simba.squirrel.configurator.RDBConfiguration;
 import org.aksw.simba.squirrel.configurator.SeedConfiguration;
 import org.aksw.simba.squirrel.configurator.WhiteListConfiguration;
@@ -14,6 +15,7 @@ import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.data.uri.UriUtils;
 import org.aksw.simba.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.KnownUriFilter;
+import org.aksw.simba.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.aksw.simba.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.aksw.simba.squirrel.data.uri.info.URIReferences;
@@ -26,6 +28,7 @@ import org.aksw.simba.squirrel.frontier.impl.FrontierImpl;
 import org.aksw.simba.squirrel.frontier.impl.WorkerGuard;
 import org.aksw.simba.squirrel.queue.InMemoryQueue;
 import org.aksw.simba.squirrel.queue.IpAddressBasedQueue;
+import org.aksw.simba.squirrel.queue.MongoDBQueue;
 import org.aksw.simba.squirrel.queue.RDBQueue;
 import org.aksw.simba.squirrel.rabbit.RPCServer;
 import org.aksw.simba.squirrel.rabbit.RespondingDataHandler;
@@ -63,16 +66,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void init() throws Exception {
         super.init();
         serializer = new GzipJavaUriSerializer();
-        RDBConfiguration rdbConfiguration = RDBConfiguration.getRDBConfiguration();
-        // WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        if (rdbConfiguration != null) {
-            String rdbHostName = rdbConfiguration.getRDBHostName();
-            Integer rdbPort = rdbConfiguration.getRDBPort();
-            queue = new RDBQueue(rdbHostName, rdbPort, serializer);
-            queue.open();
+        MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+        if(mongoConfiguration != null) {
+            String dbHostName = mongoConfiguration.getMDBHostName();
+            Integer dbPort = mongoConfiguration.getMDBPort();
+            queue = new MongoDBQueue(dbHostName, dbPort,serializer);
+            ((MongoDBQueue) queue).open();
 
-            knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, doRecrawling);
-            ((RDBKnownUriFilter)knownUriFilter).open();
+            knownUriFilter = new MongoDBKnowUriFilter(dbHostName, dbPort);
+            ((MongoDBKnowUriFilter)knownUriFilter).open();
             
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {

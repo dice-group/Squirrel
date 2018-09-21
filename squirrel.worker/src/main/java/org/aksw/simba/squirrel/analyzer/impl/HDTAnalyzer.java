@@ -1,11 +1,14 @@
 package org.aksw.simba.squirrel.analyzer.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
+import org.aksw.simba.squirrel.Constants;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.collect.UriCollector;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
@@ -14,6 +17,7 @@ import org.aksw.simba.squirrel.sink.Sink;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.tika.Tika;
 import org.rdfhdt.hdt.hdt.HDT;
 import org.rdfhdt.hdt.hdt.HDTManager;
 import org.rdfhdt.hdt.triples.IteratorTripleString;
@@ -63,4 +67,19 @@ public class HDTAnalyzer implements Analyzer {
         }
     }
 
+    // @Override
+    public boolean isElegible(CrawleableUri curi, File data) {
+        String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+        if ((contentType != null) && contentType.equals("application/octet-stream")) {
+            return true;
+        }
+        try (InputStream is = new FileInputStream(data)) {
+            Tika tika = new Tika();
+            String mimeType = tika.detect(is);
+            return mimeType.equals("application/octet-stream");
+        } catch (Exception e) {
+            LOGGER.error("An error was found when trying to analyze ", e);
+        }
+        return false;
+    }
 }

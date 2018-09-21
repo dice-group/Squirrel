@@ -218,7 +218,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
                     }
                 }
             }
-            newUri.putData(Constants.URI_HASH_KEY, hashValue);
+            newUri.addData(Constants.URI_HASH_KEY, hashValue);
             urisToReturn.add(newUri);
         }
         cursor.close();

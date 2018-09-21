@@ -84,6 +84,7 @@ public class CrawlingActivity {
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         activityUri = Constants.DEFAULT_ACTIVITY_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
+        uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, activityUri);
     }
 
     public void setState(CrawlingURIState state) {

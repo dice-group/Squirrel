@@ -76,4 +76,9 @@ public class CkanJsonAnalyzer implements Analyzer {
         }
     }
 
+    @Override
+    public boolean isElegible(CrawleableUri curi, File data) {
+        // Make sure that the file contains the CKAN JSON objects we are expecting
+        return SimpleCkanFetcher.CKAN_API_URI_TYPE_VALUE.equals(curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY));
+    }
 }

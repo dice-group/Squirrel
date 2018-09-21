@@ -2,6 +2,8 @@ package org.aksw.simba.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,20 +21,18 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class RDFAnalyzer implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private UriCollector collector;
-    
+
     private List<Lang> listLangs = new ArrayList<Lang>();
-    
-    
 
     public RDFAnalyzer(UriCollector collector) {
         this.collector = collector;
@@ -60,14 +60,14 @@ public class RDFAnalyzer implements Analyzer {
                 lang = RDFLanguages.contentTypeToLang(contentType);
                 RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
             } else {
-            	for(Lang l : listLangs) {
-            		try {
-            			RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
-            			break;
-            		} catch(Exception e) {
-            			LOGGER.warn("Could not parse file as " + l.getName());
-            		}
-            	}
+                for (Lang l : listLangs) {
+                    try {
+                        RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+                        break;
+                    } catch (Exception e) {
+                        LOGGER.warn("Could not parse file as " + l.getName());
+                    }
+                }
             }
             ActivityUtil.addStep(curi, getClass());
             return collector.getUris(curi);
@@ -97,13 +97,37 @@ public class RDFAnalyzer implements Analyzer {
             sink.addTriple(curi, triple);
             collector.addTriple(curi, triple);
         }
-        
+
         @Override
         public void quad(Quad quad) {
             sink.addTriple(curi, quad.asTriple());
             collector.addTriple(curi, quad.asTriple());
         }
 
+    }
+
+//    @Override
+    public boolean isElegible(CrawleableUri curi, File data) {
+        Tika tika = new Tika();
+        // Check the content type first
+        String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+        if ((contentType != null) && (contentType.equals("application/rdf+xml") || contentType.equals("text/plain")
+                || contentType.equals("application/x-turtle"))) {
+            return true;
+        }
+        // Try to get the tika mime type
+        // TODO it might be better to do that once and add it to the URIs data
+        try (InputStream is = new FileInputStream(data)) {
+            String mimeType = tika.detect(is);
+            if (mimeType.equals("application/rdf+xml") || mimeType.equals("text/plain")
+                    || mimeType.equals("application/x-turtle")) {
+                return true;
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("An error was found when trying to analyze ", e);
+        }
+        return false;
     }
 
 }

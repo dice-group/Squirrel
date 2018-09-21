@@ -17,19 +17,6 @@ import java.util.TreeMap;
  * This class represents a URI and additional meta data that is helpful for
  * crawling it.
  *
- * <p>
- * <b>Serialization</b> - objects of this class can be serialized to byte
- * arrays. These arrays are organized as follows.<br>
- * <code>bytes[0] = </code>ordinal number of the {@link #type}, we use
- * {@link UriType#UNKNOWN} if the attribute is null.<br>
- * <code>bytes[1 to 4] = </code>length <code>uLength</code>of the URI in bytes.
- * <br>
- * <code>bytes[{@value #URI_START_INDEX} to (uLength+4)] = </code> URI in bytes
- * with {@link #CHARSET_NAME}={@value #CHARSET_NAME} as charset.<br>
- * If <code>(bytes.length > (uLength + {@value #URI_START_INDEX}))</code> then
- * the remaining bytes are the {@link #ipAddress}.
- * </p>
- *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -42,8 +29,6 @@ public class CrawleableUri implements Serializable {
     private static final String CHARSET_NAME = "UTF-8";
     private static final Charset ENCODING_CHARSET = Charset.forName(CHARSET_NAME);
     private static final int URI_START_INDEX = 5;
-
-    private long timestampNextCrawl;
 
     /**
      * Creates a CrawleableUri object from the given byte array.
@@ -115,6 +100,7 @@ public class CrawleableUri implements Serializable {
     private UriType type = UriType.UNKNOWN;
 
     private Map<String, Object> data = new TreeMap<>();
+    private long timestampNextCrawl;
 
     public CrawleableUri(URI uri) {
         this(uri, null);
@@ -174,10 +160,6 @@ public class CrawleableUri implements Serializable {
         this.data = data;
     }
 
-    public void putData(String key, Object value) {
-        data.put(key, value);
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -208,6 +190,7 @@ public class CrawleableUri implements Serializable {
      * @return
      * @deprecated Use the JSON serialization instead.
      */
+    @Deprecated
     public ByteBuffer toByteBuffer() {
         byte uriBytes[] = uri.toString().getBytes(ENCODING_CHARSET);
         int bytesLength = 6 + uriBytes.length;
@@ -234,6 +217,7 @@ public class CrawleableUri implements Serializable {
      * @return
      * @deprecated Use the JSON serialization instead.
      */
+    @Deprecated
     public byte[] toByteArray() {
         return toByteBuffer().array();
     }
