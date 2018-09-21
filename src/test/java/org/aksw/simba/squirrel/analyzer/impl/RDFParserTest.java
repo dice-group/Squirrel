@@ -57,6 +57,11 @@ public abstract class RDFParserTest {
 		return items.split(",");
 	}
 	
+	/**
+	 * Creates a Model of N-Triples
+	 * @param content the data in N-Triples
+	 * @return the model
+	 */
 	public static Model createModelFromN3Strings(String content) {
 		
 	    Model model = null;
@@ -69,6 +74,11 @@ public abstract class RDFParserTest {
 		return model;
 	}
 	
+	/**
+	 * Creates a Model of Turtle
+	 * @param content the data in Turtle
+	 * @return the model
+	 */
 	public static Model createModelFromTurtle(String content) {
 		Model model = null;
 		try {
@@ -81,6 +91,11 @@ public abstract class RDFParserTest {
 	    return model;
 	}
 	
+	/**
+	 * Creates a Model from JSON-LD
+	 * @param content the data in JSON-LD
+	 * @return the model
+	 */
 	public static Model createModelFromJSONLD(String content) {
 		Model model = null;
 		try {

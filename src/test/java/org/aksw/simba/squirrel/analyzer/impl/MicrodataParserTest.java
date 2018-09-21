@@ -180,7 +180,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicrodataParser();
+		analyzer = new MicrodataPickaxeParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -259,7 +259,6 @@ public class MicrodataParserTest extends RDFParserTest {
 			}
 			System.out.println();
 		}
-		//assertEquals(0.0,falsenegativ[index],0.0);
 		assertEquals(0.0,fn,0.0);
 	}
 	

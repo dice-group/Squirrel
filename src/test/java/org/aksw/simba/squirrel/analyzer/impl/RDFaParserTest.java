@@ -1001,7 +1001,7 @@ public class RDFaParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new RDFaParser();
+		analyzer = new RDFaSemarglParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));

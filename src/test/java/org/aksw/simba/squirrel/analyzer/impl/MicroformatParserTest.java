@@ -298,7 +298,6 @@ public class MicroformatParserTest extends RDFParserTest {
 			}
 			System.out.println();
 		}
-//		assertEquals(0.0,falsenegativ[index],0.0);
 		assertEquals(0.0,fn,0.0);
 	}
 	

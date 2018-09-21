@@ -54,8 +54,8 @@ public class MicroformatMF2JParser implements Analyzer {
 //		System.out.println(string.getKey() +" = "+string.getValue());
 //		}
 		
-		String json = MicroformatParserTest.addContextToJSON(parsed.toString());
-		json = MicroformatParserTest.replaceVocab(json);
+		String json = addContextToJSON(parsed.toString());
+		json = replaceVocab(json);
 		//System.out.println(json);
 		Model model = RDFParserTest.createModelFromJSONLD(json);
 		String syntax = "N-TRIPLE";
@@ -65,4 +65,17 @@ public class MicroformatMF2JParser implements Analyzer {
 		sink.addData(curi, result);
 		return null;
 	}
+	
+	public static String addContextToJSON(String data) {
+		data = data.trim();
+		data = data.substring(1);
+		data = "{\r\n" + 
+				"\"@context\": {\"@vocab\": \"http://www.dummy.org/#\"},\n"+data;
+		return data;
+	}
+	
+	public static String replaceVocab(String data) {
+		return data.replace("http://www.dummy.org/#", "http://www.w3.org/2006/vcard/ns#");
+	}
+	
 }

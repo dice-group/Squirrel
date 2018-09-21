@@ -39,7 +39,7 @@ public class MicrodataPickaxeParser implements Analyzer {
 				JsonLdSerializer serializer = new JsonLdSerializer(true /* setPrettyPrinting */);
 				String jsonLdStr = serializer.serialize(things);
 						    
-				Model model = RDFParserTest.createModelFromJSONLD(jsonLdStr);
+				Model model = createModelFromJSONLD(jsonLdStr);
 				String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
 				StringWriter out = new StringWriter();
 				model.write(out, syntax);
@@ -52,5 +52,23 @@ public class MicrodataPickaxeParser implements Analyzer {
 			System.out.println(e);
 		}
 		return null;
-	}	
+	}
+	
+	/**
+	 * Creates a Model from JSON-LD
+	 * @param content the data in JSON-LD
+	 * @return the model
+	 */
+	public static Model createModelFromJSONLD(String content) {
+		Model model = null;
+		try {
+			model = ModelFactory.createDefaultModel()
+			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "JSON-LD");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    //System.out.println("model size: " + model.size());
+	    return model;
+	}
+	
 }
