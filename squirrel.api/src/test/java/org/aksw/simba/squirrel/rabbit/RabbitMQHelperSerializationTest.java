@@ -6,10 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.aksw.simba.squirrel.rabbit.msgs.CrawlingResult;
-import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
-import org.aksw.simba.squirrel.rabbit.msgs.UriSetRequest;
+import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.dice_research.squirrel.rabbit.RabbitMQHelper;
+import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
+import org.dice_research.squirrel.rabbit.msgs.UriSet;
+import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

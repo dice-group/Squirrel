@@ -15,11 +15,13 @@ import java.util.Collection;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.aksw.simba.squirrel.Constants;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.data.uri.serialize.gson.GsonUriSerializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.gson.GsonUriSerializer;
+import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

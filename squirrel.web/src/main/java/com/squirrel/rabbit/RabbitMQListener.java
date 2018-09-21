@@ -5,11 +5,12 @@ import com.graph.VisualisationGraph;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import org.aksw.simba.squirrel.data.uri.CrawleableUriFactoryImpl;
-import org.aksw.simba.squirrel.data.uri.serialize.Serializer;
-import org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.aksw.simba.squirrel.rabbit.msgs.UriSet;
+
 import org.apache.commons.io.IOUtils;
+import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.hobbit.core.rabbit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
