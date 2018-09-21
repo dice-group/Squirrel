@@ -327,30 +327,29 @@ public class MicroformatParserTest extends RDFParserTest {
 			index++;
 		}
 		
-//		for(int i = 0;i<p.length;i++) {
-//			if((truepositiv[i]+falsepositiv[i]) != 0)p[i] = truepositiv[i]/(truepositiv[i]+falsepositiv[i]);
-//			else p[i] = 0;
-//			if((truepositiv[i]+falsenegativ[i]) != 0)r[i] = truepositiv[i]/(truepositiv[i]+falsenegativ[i]);
-//			else r[i] = 0;
-//		}
 		double psum = sumdoublearray(p);
 		double rsum = sumdoublearray(r);
 		double macrop = (1.0/p.length)*psum;
 		double macror = (1.0/r.length)*rsum;
-//		double microp = (psum/(psum+fpsum));
-//		double micror = (psum/(psum+fnsum));
 		double microp = (tpsum/(tpsum+fpsum));
 		double micror = (tpsum/(tpsum+fnsum));
 		
+		double macrofscore = 2 / ( (1/macrop) + (1/macror) );
+		double microfscore = 2 / ( (1/microp) + (1/micror) );
 		
+		System.out.println("Macro F-Score");
+		System.out.println(macrofscore);
+		System.out.println("Micro F-Score");
+		System.out.println(microfscore);
+		System.out.println();
 		System.out.println("Macro Precision");
 		System.out.println(macrop);
-		System.out.println("Micro Precision");
-		System.out.println(microp);
 		System.out.println("Macro Recall");
 		System.out.println(macror);
+		System.out.println("Micro Precision");
+		System.out.println(microp);
 		System.out.println("Micro Recall");
-		System.out.println(micror);
+		System.out.println(micror);	
 	}
 	
 	public static String addContextToJSON(String data) {
