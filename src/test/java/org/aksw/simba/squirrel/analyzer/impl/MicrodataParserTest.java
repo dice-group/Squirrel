@@ -264,8 +264,9 @@ public class MicrodataParserTest extends RDFParserTest {
 	
 	@AfterClass
 	public static void binaryclassifiers() throws URISyntaxException {
-		double[] p = new double[testresults.size()];
-		double[] r = new double[testresults.size()];
+		double[] pre = new double[testresults.size()]; //The Array for the Precision of each test
+		double[] rec = new double[testresults.size()]; //The Array for the Recall of each test
+		double[] fsc = new double[testresults.size()]; //The Array for the F1 score of each test
 		double tpsum = 0;
 		double fpsum = 0;
 		double fnsum = 0;
@@ -273,28 +274,34 @@ public class MicrodataParserTest extends RDFParserTest {
 		Iterator ite = testresults.entrySet().iterator();
 		while(ite.hasNext()) {
 			Map.Entry pair = (Map.Entry)ite.next();
-			List<Double> tmp = (List<Double>)pair.getValue();
+			List<Double> tmp = (List<Double>)pair.getValue();	// The Values have the order TruePositiv, FalsePositiv, FalseNegativ
 			double tp = tmp.get(0);
 			double fp = tmp.get(1);
 			double fn = tmp.get(2);
 			tpsum+=tp;
 			fpsum+=fp;
 			fnsum+=fn;
-			if((tp+fp) != 0)p[index] = tp/(tp+fp);
-			else p[index] = 0;
-			if((tp+fn) != 0)r[index] = tp/(tp+fn);
-			else r[index] = 0;
+			if((tp+fp) != 0)pre[index] = tp/(tp+fp);
+			else pre[index] = 0;
+			if((tp+fn) != 0)rec[index] = tp/(tp+fn);
+			else rec[index] = 0;
+			if(pre[index] != 0 && rec[index] != 0)fsc[index]= 2 / ( (1/pre[index] ) + (1/rec[index] ) );
+			else fsc[index] = 0;
 			index++;
 		}
 		
-		double psum = sumdoublearray(p);
-		double rsum = sumdoublearray(r);
-		double macrop = (1.0/p.length)*psum;
-		double macror = (1.0/r.length)*rsum;
+		//double psum = sumdoublearray(pre);
+		//double rsum = sumdoublearray(rec);
+		double fsum = sumdoublearray(fsc);
+		
+		//double macrop = (1.0/pre.length)*psum;
+		//double macror = (1.0/rec.length)*rsum;
+		
 		double microp = (tpsum/(tpsum+fpsum));
 		double micror = (tpsum/(tpsum+fnsum));
 		
-		double macrofscore = 2 / ( (1/macrop) + (1/macror) );
+		double macrofscore = (1.0/fsc.length)*fsum;
+		//double macrofscore = 2 / ( (1/macrop) + (1/macror) );
 		double microfscore = 2 / ( (1/microp) + (1/micror) );
 		
 		System.out.println("Macro F-Score");
@@ -302,13 +309,14 @@ public class MicrodataParserTest extends RDFParserTest {
 		System.out.println("Micro F-Score");
 		System.out.println(microfscore);
 		System.out.println();
-		System.out.println("Macro Precision");
-		System.out.println(macrop);
-		System.out.println("Macro Recall");
-		System.out.println(macror);
+//		System.out.println("Macro Precision");
+//		System.out.println(macrop);
+//		System.out.println("Macro Recall");
+//		System.out.println(macror);
 		System.out.println("Micro Precision");
 		System.out.println(microp);
 		System.out.println("Micro Recall");
-		System.out.println(micror);	
+		System.out.println(micror);		
 	}
+		
 }
