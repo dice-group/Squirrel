@@ -20,7 +20,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.aksw.simba.squirrel.analyzer.Analyzer;
 import org.aksw.simba.squirrel.data.uri.CrawleableUri;
 import org.aksw.simba.squirrel.sink.Sink;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -57,7 +59,7 @@ public class MicroformatMF2JParser implements Analyzer {
 		String json = addContextToJSON(parsed.toString());
 		json = replaceVocab(json);
 		//System.out.println(json);
-		Model model = RDFParserTest.createModelFromJSONLD(json);
+		Model model = createModelFromJSONLD(json);
 		String syntax = "N-TRIPLE";
 		StringWriter out = new StringWriter();
 		model.write(out, syntax);
@@ -76,6 +78,23 @@ public class MicroformatMF2JParser implements Analyzer {
 	
 	public static String replaceVocab(String data) {
 		return data.replace("http://www.dummy.org/#", "http://www.w3.org/2006/vcard/ns#");
+	}
+	
+	/**
+	 * Creates a Model from JSON-LD
+	 * @param content the data in JSON-LD
+	 * @return the model
+	 */
+	public static Model createModelFromJSONLD(String content) {
+		Model model = null;
+		try {
+			model = ModelFactory.createDefaultModel()
+			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "JSON-LD");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    //System.out.println("model size: " + model.size());
+	    return model;
 	}
 	
 }
