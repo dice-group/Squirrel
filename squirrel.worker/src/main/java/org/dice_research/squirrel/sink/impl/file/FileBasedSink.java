@@ -122,7 +122,7 @@ public class FileBasedSink implements Sink {
         }
     }
 
-    public static String generateFileName(String uri, Lang outputLang, boolean useCompression) {
+    public static String generateFileName(CrawleableUri uri, Lang outputLang, boolean useCompression) {
         String fileEnding = null;
         if (outputLang != null) {
             fileEnding = outputLang.getFileExtensions().get(0);
@@ -178,7 +178,7 @@ public class FileBasedSink implements Sink {
                 uriString += postFix;
             }
             File file = new File(outputDirectory.getAbsolutePath() + File.separator
-                    + generateFileName(uriString, (isRdfFile ? outputLang : null), useCompression));
+                    + generateFileName(uri, (isRdfFile ? outputLang : null), useCompression));
             OutputStream outputStream = new FileOutputStream(file);
             if (useCompression) {
                 outputStream = new GZIPOutputStream(outputStream);

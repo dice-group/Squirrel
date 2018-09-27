@@ -103,10 +103,11 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
             UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
+        this.analyzer = analyzer;
         this.manager = manager;
         this.serializer = serializer;
         this.waitingTime = waitingTime;

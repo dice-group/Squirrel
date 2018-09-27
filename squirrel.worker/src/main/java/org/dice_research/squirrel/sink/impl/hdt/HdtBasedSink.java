@@ -102,7 +102,7 @@ public class HdtBasedSink extends FileBasedSink {
 	@Override
 	public void closeSinkForUri(CrawleableUri uri) {
 		String  rdfInput = super.outputDirectory.getAbsolutePath() + File.separator
-                + generateFileName(uri.getUri().toString(), null, false);
+                + generateFileName(uri, null, false);
 		
 		super.closeSinkForUri(uri);
 		
@@ -162,7 +162,7 @@ public class HdtBasedSink extends FileBasedSink {
 	   );
 				// Save generated HDT to a file
 				hdt.saveToHDT(outputDirectory.getAbsolutePath() + File.separator
-		                + generateFileName(uri.getUri().toString(), null, false), null);
+		                + generateFileName(uri, null, false), null);
 			
 				File file = new File(rdfInput);
 				file.delete();

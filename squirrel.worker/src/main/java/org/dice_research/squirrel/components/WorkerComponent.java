@@ -124,7 +124,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
         serializer = new GzipJavaUriSerializer();
 
-        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+//        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
         sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME).build();
         client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), Constants.FRONTIER_QUEUE_NAME);
     }

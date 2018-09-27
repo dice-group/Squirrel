@@ -23,6 +23,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.impl.file.FileBasedSink;
 import org.junit.After;
@@ -149,7 +150,7 @@ public class FileBasedSinkTest {
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) {
-        String fileName = FileBasedSink.generateFileName(uri.toString(), FileBasedSink.DEFAULT_OUTPUT_LANG, useCompression);
+    	String fileName = UriUtils.generateFileName(uri.toString(), useCompression);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
