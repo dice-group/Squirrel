@@ -96,10 +96,16 @@ public class HtmlScraper {
      * @throws MalformedURLException 
      */
     
-    private Set<Triple> createResources(String resource, Object obj, Document doc) throws MalformedURLException{
+    private Set<Triple> createResources(String resource, Object obj, Document doc,String uri) throws MalformedURLException{
     	 Set<Triple> listTriples = new LinkedHashSet<Triple>();
     	
-    	 Node s = NodeFactory.createURI(resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")")));
+    	 
+    	 String res = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
+    	 
+    	 if (res.contains("$uri")) {
+    		 res = uri;
+    	 }
+    	 
     	 
     	 LinkedHashMap<String,Object>resourcesList = new LinkedHashMap<String,Object> ();
     	 
@@ -108,7 +114,7 @@ public class HtmlScraper {
     	 }
          
          for(Entry<String,Object> entry: resourcesList.entrySet()) {
-        	 createPredicateValues(entry.getKey(),entry.getValue(),doc, resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")")));
+        	 listTriples.addAll(createPredicateValues(entry.getKey(),entry.getValue(),doc, res));
          }
     	 
     	
@@ -150,8 +156,15 @@ public class HtmlScraper {
              try {
              	
              	if(resource.startsWith("o")) {
-                 	Element el = new Element(Tag.valueOf(resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"))),"");
-                 	el.text(resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")")));
+             		
+             		String val = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
+             		
+             		if (val.contains("$uri")) {
+             			val = uri;
+             		}
+             		
+                 	Element el = new Element(Tag.valueOf(val),"");
+                 	el.text(val);
                  	Element[] arrayElements = new Element[1];
                  	arrayElements[0] = el;
                  	elements = new Elements(arrayElements); 
@@ -195,7 +208,6 @@ public class HtmlScraper {
                  }
 
                  Triple triple = new Triple(s, p, objectNode);
-                 System.out.println(triple);
                  listTriples.add(triple);
              }
 
@@ -219,7 +231,7 @@ public class HtmlScraper {
             resourcesList.clear();
             
             if(entry.getKey().startsWith("s")) {
-            	listTriples.addAll(createResources(entry.getKey(), entry.getValue() ,doc));
+            	listTriples.addAll(createResources(entry.getKey(), entry.getValue() ,doc,uri));
             }else {
             	listTriples.addAll( createPredicateValues(entry.getKey(),entry.getValue(),doc,uri) );
             }
