@@ -1,1 +1,1 @@
-https://mcloud.de/web/guest/suche/-/results/searchAction?_mcloudsearchportlet_query=&_mcloudsearchportlet_sort=latest
+https://mcloud.de/web/guest/suche/-/results/search/0?_mcloudsearchportlet_sort=latest
