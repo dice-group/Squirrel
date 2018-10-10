@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.queue.RDBQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -76,7 +75,7 @@ public class FrontierImplTest {
         queue = new RDBQueue("localhost", 58015);
         // filter.purge();
         // queue.purge();
-        frontier = new FrontierImpl(filter, queue);
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));

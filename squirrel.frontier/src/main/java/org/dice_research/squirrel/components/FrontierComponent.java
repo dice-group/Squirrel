@@ -3,13 +3,13 @@ package org.dice_research.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.configurator.RDBConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -17,9 +17,9 @@ import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
-import org.dice_research.squirrel.data.uri.filter.RDBKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
+import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
@@ -30,7 +30,6 @@ import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.MongoDBQueue;
-import org.dice_research.squirrel.queue.RDBQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
 import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
@@ -94,7 +93,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(knownUriFilter, uriReferences, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -222,7 +221,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     protected void processSeedFile(String seedFile) {
         try {
-            List<String> lines = FileUtils.readLines(new File(seedFile));
+            List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
