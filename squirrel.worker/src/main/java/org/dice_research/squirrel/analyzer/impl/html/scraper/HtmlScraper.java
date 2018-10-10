@@ -1,8 +1,22 @@
 package org.dice_research.squirrel.analyzer.impl.html.scraper;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
@@ -12,12 +26,6 @@ import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
 
 
 /**
@@ -51,9 +59,18 @@ public class HtmlScraper {
 
         List<Triple> listTriples = new ArrayList<Triple>();
 
-        YamlFile yamlFile = yamlFiles.get(UriUtils.getDomainName(uri));
+        YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
+        
+        
+        
+        if((boolean) yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("ignore-request") && uri.contains("?")) {
+
+        	uri = uri.substring(0, uri.indexOf("?"));
+
+        }
+        
         if (yamlFile != null) {
-            yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
+//            yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
 
             for (Entry<String, Map<String, Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
                 for (Entry<String, Object> cfg : entry.getValue().entrySet()) {
@@ -101,11 +118,15 @@ public class HtmlScraper {
     	
     	 
     	 String res = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
+    	 String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
     	 
     	 if (res.contains("$uri")) {
-    		 res = uri;
+    		 res = res.replaceAll("\\$uri", uri);
     	 }
     	 
+    	 if (res.contains("$label")) {
+    		 res = res.replaceAll("\\$label", label);
+  		}
     	 
     	 LinkedHashMap<String,Object>resourcesList = new LinkedHashMap<String,Object> ();
     	 
@@ -134,6 +155,9 @@ public class HtmlScraper {
      * @throws MalformedURLException 
      */
     private Set<Triple> createPredicateValues(String pr, Object list,Document doc, String uri) throws MalformedURLException{
+    	
+    	Model model = ModelFactory.createDefaultModel();
+    	
     	Set<Triple> listTriples = new LinkedHashSet<Triple>();
     	
     	 Node s = NodeFactory.createURI(uri);
@@ -158,9 +182,15 @@ public class HtmlScraper {
              	if(resource.startsWith("o")) {
              		
              		String val = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
+             		String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
              		
              		if (val.contains("$uri")) {
-             			val = uri;
+             			val = val.replaceAll("\\$uri", uri);
+             		}
+
+             		
+             		if (val.contains("$label")) {
+             			val = val.replaceAll("\\$label", label);
              		}
              		
                  	Element el = new Element(Tag.valueOf(val),"");

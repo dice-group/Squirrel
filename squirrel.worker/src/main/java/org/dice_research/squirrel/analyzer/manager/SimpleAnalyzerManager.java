@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,9 @@ public class SimpleAnalyzerManager implements Analyzer{
 					analyzers.add(analyzerEntry.getValue().getClass().getName());
 					curi.addData(LIST_ANALYZERS, analyzers);
 				}
+				
+				ActivityUtil.addStep(curi, analyzerEntry.getValue().getClass());
+				
 				return analyzerEntry.getValue().analyze(curi, data, sink);
 			}
 		}

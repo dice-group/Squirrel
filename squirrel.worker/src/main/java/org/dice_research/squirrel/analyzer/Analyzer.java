@@ -7,6 +7,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
 
 public interface Analyzer {
+	
+	
 
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink);
 

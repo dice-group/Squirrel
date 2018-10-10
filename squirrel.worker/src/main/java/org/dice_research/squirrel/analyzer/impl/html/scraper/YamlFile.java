@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * @author gsjunior
  */
-public class YamlFile {
+public class YamlFile implements Cloneable {
 
     protected YamlFile() {
 
@@ -20,6 +20,12 @@ public class YamlFile {
 
     public void setSearch(Map<String, Map<String, Object>> file_descriptor) {
         this.file_descriptor = file_descriptor;
+    }
+    
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+    	// TODO Auto-generated method stub
+    	return super.clone();
     }
 
 

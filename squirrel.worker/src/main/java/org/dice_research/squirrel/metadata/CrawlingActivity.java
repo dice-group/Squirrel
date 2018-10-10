@@ -106,6 +106,7 @@ public class CrawlingActivity {
      */
     public Model prepareMetadataModel() {
         Model model = ModelFactory.createDefaultModel();
+        
         Resource activity = model.createResource(activityUri);
         model.add(activity, RDF.type, PROV_O.Activity);
         Resource crawledUri = model.createResource(getCrawleableUri().getUri().toString());
@@ -114,7 +115,7 @@ public class CrawlingActivity {
             Resource ip = model.createResource("ip:" + getCrawleableUri().getIpAddress().getHostAddress());
             model.add(activity, Squirrel.uriHostedOn, ip);
         }
-
+       
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
