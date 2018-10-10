@@ -8,7 +8,6 @@ import java.util.List;
 import org.bson.Document;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

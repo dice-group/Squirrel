@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.collections15.MapUtils;
@@ -22,6 +23,7 @@ import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.utils.Closer;
+import org.dice_research.squirrel.vocab.Prefixes;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,18 +37,18 @@ public class FileBasedSink implements Sink {
     /**
      * Directory to which the files of this sink are written.
      */
-
     protected File outputDirectory;
     /**
      * Flag whether a compression algorithm should be used.
      */
-
     protected boolean useCompression;
     /**
      * Synchronized mapping of crawled URIs to their output stream.
      */
     protected Map<String, StreamStatus> streamMapping = MapUtils.synchronizedMap(new HashMap<String, StreamStatus>());
-
+    /**
+     * Language used for the output files.
+     */
     protected Lang outputLang;
 
     public FileBasedSink(File outputDirectory, boolean useCompression) {
@@ -160,6 +162,10 @@ public class FileBasedSink implements Sink {
             if (tripleOutputStream == null) {
                 tripleOutputStream = createStream(null, true);
                 tripleStream = StreamRDFWriter.getWriterStream(tripleOutputStream, outputLang);
+                // Define prefixes the stream should use
+                for(Entry<String, String> prefix : Prefixes.PREFIX_TO_URI.entrySet()) {
+                    tripleStream.prefix(prefix.getKey(), prefix.getValue());
+                }
                 tripleCount = 0;
             }
             return tripleStream;
@@ -173,10 +179,6 @@ public class FileBasedSink implements Sink {
         }
 
         protected OutputStream createStream(String postFix, boolean isRdfFile) throws IOException {
-            String uriString = this.uriString;
-            if (postFix != null) {
-                uriString += postFix;
-            }
             File file = new File(outputDirectory.getAbsolutePath() + File.separator
                     + generateFileName(uri, (isRdfFile ? outputLang : null), useCompression));
             OutputStream outputStream = new FileOutputStream(file);

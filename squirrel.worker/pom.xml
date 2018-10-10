@@ -23,6 +23,11 @@
             <artifactId>jackan</artifactId>
             <version>0.4.2</version>
         </dependency>
+        <!-- Microformats parser -->
+        <dependency>
+            <groupId>com.kylewm</groupId>
+            <artifactId>mf2j</artifactId>
+        </dependency>
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- JUnit -->

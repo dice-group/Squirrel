@@ -4,6 +4,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
+import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
@@ -19,6 +20,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
     /**
      * Constructor.
      *
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into a normal form
      * @param knownUriFilter     {@link UriFilter} used to identify URIs that already have been
      *                           crawled.
      * @param queue              {@link UriQueue} used to manage the URIs that should be
@@ -29,27 +31,29 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param uriHashCustodian   used to access and write hash values for uris.
      */
     @SuppressWarnings("unused")
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
                                 long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        super(knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
+        super(normalizer, knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
     }
 
     /**
      * Constructor.
      *
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into a normal form
      * @param knownUriFilter   {@link UriFilter} used to identify URIs that already have been
      *                         crawled.
      * @param queue            {@link UriQueue} used to manage the URIs that should be
      *                         crawled.
      * @param doesRecrawling   used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
-        super(knownUriFilter, queue, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
+        super(normalizer, knownUriFilter, queue, doesRecrawling);
     }
 
     /**
      * Constructor.
      *
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into a normal form
      * @param knownUriFilter {@link UriFilter} used to identify URIs that already have been
      *                       crawled.
      * @param uriReferences  {@link URIReferences} used to manage URI references
@@ -57,8 +61,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling) {
-        super(knownUriFilter, uriReferences, queue, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling) {
+        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling);
     }
 
     @Override

@@ -1,14 +1,19 @@
 package org.dice_research.squirrel.data.uri.filter;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.ast.ReqlExpr;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Cursor;
+import java.io.Closeable;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.deduplication.hashing.impl.ArrayHashValue;
@@ -17,12 +22,9 @@ import org.dice_research.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.*;
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
 
 /**
  * Created by ivan on 8/18/16.
