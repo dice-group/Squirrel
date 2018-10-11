@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -213,7 +214,7 @@ public class HtmlScraper {
              } catch (Exception e) {
                  LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
              }
-
+             Map<String, Set<String>> mapTriples = new HashMap<String,Set<String>>();
              for (int i = 0; i < elements.size(); i++) {
                  if (elements.get(i).hasAttr("href")) {
                      if (!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
@@ -236,9 +237,11 @@ public class HtmlScraper {
                          objectNode = NodeFactory.createURI(elements.get(i).text());
                      }
                  }
+           
+                	 Triple triple = new Triple(s, p, objectNode);
+                     listTriples.add(triple);
+                 
 
-                 Triple triple = new Triple(s, p, objectNode);
-                 listTriples.add(triple);
              }
 
          }
@@ -249,26 +252,43 @@ public class HtmlScraper {
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
         Document doc = Jsoup.parse(htmlFile, "UTF-8");
 
-        Node s = NodeFactory.createURI(uri);
-
-        Set<Triple> listTriples = new LinkedHashSet<Triple>();
+        Set<Triple> triples = new LinkedHashSet<Triple>();
 
 
         List<String> resourcesList = new ArrayList<String>();
-        Node objectNode = null;
+
         for (Entry<String, Object> entry :
             resources.entrySet()) {
             resourcesList.clear();
             
-            if(entry.getKey().startsWith("s")) {
-            	listTriples.addAll(createResources(entry.getKey(), entry.getValue() ,doc,uri));
-            }else {
-            	listTriples.addAll( createPredicateValues(entry.getKey(),entry.getValue(),doc,uri) );
+            
+            if(entry.getValue() instanceof Map<?,?>) {
+            	Stack<Node> stackNode = new Stack<Node>();
+            	stackNode.push(NodeFactory.createURI(entry.getKey()));
+            	
+            	scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode);
             }
 
         }
 
-        return listTriples;
+        return triples;
+    }
+    
+    private Set<Triple> scrapeTree(Map<String, Object > mapEntry,Set<Triple> triples, Stack<Node> stackNode){
+    	for(Entry<String,Object> entry: mapEntry.entrySet()) {
+    		if(entry.getValue() instanceof Map<?,?>) {
+    				Node node = NodeFactory.createURI(entry.getKey());
+        			stackNode.push(node);
+                   triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
+            }else if(entry.getValue() instanceof String) {
+            	Node p = NodeFactory.createURI(entry.getKey());
+    			Node o = NodeFactory.createLiteral((String) entry.getValue());
+    			Triple t = new Triple(stackNode.peek(),p,o);
+    			triples.add(t);
+            }
+    	}
+    	stackNode.pop();
+    	return triples;
     }
 
 
