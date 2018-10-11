@@ -290,6 +290,8 @@ public class FrontierImpl implements Frontier {
                 CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
                 recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
                 addNewUri(recrawlUri);
+            }else {
+            	knownUriFilter.add(uri,System.currentTimeMillis());
             }
         }
     }

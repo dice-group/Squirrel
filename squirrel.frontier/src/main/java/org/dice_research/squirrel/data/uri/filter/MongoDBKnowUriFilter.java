@@ -23,9 +23,9 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     private MongoClient client;
     private MongoDatabase mongoDB;
-    private final String DB_NAME = "squirrel";
+    public static final String DB_NAME = "squirrel";
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; // in miiliseconds
-    private final String COLLECTION_NAME = "knownurifilter";
+    public static final String COLLECTION_NAME = "knownurifilter";
 
     public MongoDBKnowUriFilter(String hostName, Integer port) {
         client = new MongoClient(hostName, port);

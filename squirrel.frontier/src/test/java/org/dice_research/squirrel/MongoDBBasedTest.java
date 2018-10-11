@@ -6,7 +6,16 @@ import java.io.InputStreamReader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
 public class MongoDBBasedTest {
+	
+	public static final String DB_HOST_NAME = "localhost";
+    public static final int DB_PORT = 58027;
+    
+    protected static  MongoClient client;
+	protected static  MongoDatabase mongoDB;
 
     @BeforeClass
     public static void setUpRDB() throws Exception {
@@ -24,16 +33,18 @@ public class MongoDBBasedTest {
         while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
+        
+        client = new MongoClient(DB_HOST_NAME,DB_PORT);
 
     }
 
     @AfterClass
     public static void tearDownRDB() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-mongodb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
+        String mongoDockerStopCommand = "docker stop squirrel-test-mongodb";
+        Process p = Runtime.getRuntime().exec(mongoDockerStopCommand);
         p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-mongodb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
+        String mongoDockerRmCommand = "docker rm squirrel-test-mongodb";
+        p = Runtime.getRuntime().exec(mongoDockerRmCommand);
         p.waitFor();
     }
 }
