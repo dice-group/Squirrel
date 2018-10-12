@@ -216,8 +216,8 @@ public class MicroformatParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicroformatMF2JParser();
-		boolean pastprocess = false; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
+		analyzer = new MicroformatParser();
+		boolean pastprocess = true; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -377,7 +377,7 @@ public class MicroformatParserTest extends RDFParserTest {
 			put("http://www.w3.org/2006/vcard/ns#average ", "http://purl.org/stuff/revagg#average ");
 			put("http://www.w3.org/2006/vcard/ns#best ", "http://purl.org/stuff/revagg#best ");
 			put("http://www.w3.org/2006/vcard/ns#rating ", "http://purl.org/stuff/rev#rating ");
-			put("http://purl.org/stuff/revagg#country-name ", "http://www.w3.org/2006/vcard/ns#country-name ");
+			//put("http://purl.org/stuff/revagg#country-name ", "http://www.w3.org/2006/vcard/ns#country-name "); //Unter dem http://www.w3.org/2006/vcard/ns# nutzlos
 			put("http://www.w3.org/2006/vcard/ns#type ", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type ");
 			put("http://www.w3.org/2006/vcard/ns#location ", "http://www.w3.org/2002/12/cal/icaltzd#location ");
 			put("http://www.w3.org/2006/vcard/ns#start ", "http://www.w3.org/2002/12/cal/icaltzd#dtstart ");
