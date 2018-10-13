@@ -17,64 +17,49 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.filter.RDBKnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
-import org.dice_research.squirrel.queue.RDBQueue;
+import org.dice_research.squirrel.queue.MongoDBQueue;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.net.Connection;
 
 public class FrontierImplTest {
 
-    RethinkDB r;
-    Connection connection;
-    FrontierImpl frontier;
-    RDBQueue queue;
-    RDBKnownUriFilter filter;
-    List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+
+    static FrontierImpl frontier;
+    static MongoDBQueue queue;
+    static MongoDBKnowUriFilter filter;
+    static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-                + "-p 58015:28015 -p 58887:8080 -d rethinkdb:2.3.5";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-        // read any errors from the attempted command
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
-
-        r = RethinkDB.r;
-        int retryCount = 0;
-        while (true) {
-            try {
-                connection = r.connection().hostname("localhost").port(58015).connect();
-                break;
-            } catch (ReqlDriverError error) {
-                System.out.println("Could not connect, retrying");
-                retryCount++;
-                if (retryCount > 10)
-                    break;
-                Thread.sleep(5000);
+    	String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb-frontierimpl "
+                + "-p 58027:27017 -p 58887:8080 -d mongo:4.0.0";
+            Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String s = null;
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
             }
-        }
+            // read any errors from the attempted command
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
 
-        filter = new RDBKnownUriFilter("localhost", 58015);
-        queue = new RDBQueue("localhost", 58015);
-        // filter.purge();
-        // queue.purge();
+
+
+        filter = new MongoDBKnowUriFilter("localhost", 58027);
+        queue = new MongoDBQueue("localhost", 58027);
+         filter.open();
+         queue.open();
         frontier = new FrontierImpl(new NormalizerImpl(), filter, queue);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
@@ -129,6 +114,12 @@ public class FrontierImplTest {
                 InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"),
                 InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+        
+        crawledUris.add(uri_1);
+        crawledUris.add(uri_2);
+        
+//        frontier.addNewUris(crawledUris);
+//        filter.add(uri_1, 100);
 
         frontier.crawlingDone(crawledUris);
         assertFalse("uri_1 has been already crawled", frontier.knownUriFilter.isUriGood(uri_1));
@@ -141,9 +132,8 @@ public class FrontierImplTest {
         int numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(1, numberOfPendingUris);
         
-        nextUris = frontier.getNextUris();
         numberOfPendingUris = frontier.getNumberOfPendingUris();
-        assertEquals(2, numberOfPendingUris);
+        assertEquals(2, nextUris.size());
     }
 
     /*
@@ -178,6 +168,9 @@ public class FrontierImplTest {
         }
 
         frontier.crawlingDone(uris);
+        
+        uris.add(uri_1);
+        uris.add(uri_2);
 
         nextUris = frontier.getNextUris();
         Assert.assertNotNull(nextUris);
@@ -188,10 +181,12 @@ public class FrontierImplTest {
 
     @After
     public void tearDown() throws Exception {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
+    	filter.purge();
+    	queue.purge();
+        String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
+        String rethinkDockerRmCommand = "docker rm squirrel-test-frontierimpl";
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
         p.waitFor();
     }
