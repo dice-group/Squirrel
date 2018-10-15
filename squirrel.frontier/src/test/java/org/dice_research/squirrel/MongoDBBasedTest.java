@@ -19,9 +19,9 @@ public class MongoDBBasedTest {
 
     @BeforeClass
     public static void setUpRDB() throws Exception {
-        String rethinkDockerExecCmd = "docker run --name squirrel-test-mongodb "
+        String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb "
             + "-p 58027:27017 -p 58887:8080 -d mongo:4.0.0";
-        Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
+        Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s = null;
         while ((s = stdInput.readLine()) != null) {

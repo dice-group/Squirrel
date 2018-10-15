@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -41,7 +43,11 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBQueue.class);
 
 	public MongoDBQueue(String hostName, Integer port) {
-		client = new MongoClient(hostName,port);
+		MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
+    	builder.maxConnectionIdleTime(60000);
+    	MongoClientOptions opts = builder.build();
+    	
+        client = new MongoClient(new ServerAddress(hostName, port),opts);
 		serializer = new SnappyJavaUriSerializer();
 	}
 	
@@ -52,6 +58,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	
 	public void purge() {
         mongoDB.getCollection(COLLECTION_NAME).drop();
+        mongoDB.getCollection(COLLECTION_URIS).drop();
     }
 	
 	 public long length() {
@@ -166,6 +173,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 			}
     		
     		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+//    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
 
 	        return listUris;
 	}

@@ -37,6 +37,10 @@ public class HtmlScraper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlScraper.class);
 
     private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
+    
+    private String uri;
+    private String label;
+    private Document doc;
 
 
     public HtmlScraper(File file) {
@@ -204,6 +208,8 @@ public class HtmlScraper {
 	                    
 	                    
 	                    
+	                    
+	                    
 	                    if (elements.isEmpty()) {
 	                        throw new ElementNotFoundException("Element (" + pr + " -> " + resource + ")"
 	                            + " not found. Check selector syntax");
@@ -250,12 +256,15 @@ public class HtmlScraper {
     }
 
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
-        Document doc = Jsoup.parse(htmlFile, "UTF-8");
+        this.doc = Jsoup.parse(htmlFile, "UTF-8");
 
         Set<Triple> triples = new LinkedHashSet<Triple>();
 
 
         List<String> resourcesList = new ArrayList<String>();
+        
+        this.uri = uri;
+        this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
@@ -264,7 +273,7 @@ public class HtmlScraper {
             
             if(entry.getValue() instanceof Map<?,?>) {
             	Stack<Node> stackNode = new Stack<Node>();
-            	stackNode.push(NodeFactory.createURI(entry.getKey()));
+            	stackNode.push(NodeFactory.createURI(replaceCommands(entry.getKey())));
             	
             	scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode);
             }
@@ -274,21 +283,127 @@ public class HtmlScraper {
         return triples;
     }
     
-    private Set<Triple> scrapeTree(Map<String, Object > mapEntry,Set<Triple> triples, Stack<Node> stackNode){
+    private String replaceCommands(String s) {
+    	
+    	if (s.contains("$uri")) {
+ 			s = s.replaceAll("\\$uri", uri);
+ 		}
+
+ 		
+ 		if (s.contains("$label")) {
+ 			s = s.replaceAll("\\$label", label);
+ 		}
+    	
+    	return s;
+    }
+    
+    /**
+     * 
+     * 
+     * 
+     * @param mapEntry
+     * @param triples
+     * @param stackNode
+     * @return
+     * @throws MalformedURLException
+     */
+    private Set<Triple> scrapeTree(Map<String, Object > mapEntry,Set<Triple> triples, Stack<Node> stackNode) throws MalformedURLException{
     	for(Entry<String,Object> entry: mapEntry.entrySet()) {
     		if(entry.getValue() instanceof Map<?,?>) {
-    				Node node = NodeFactory.createURI(entry.getKey());
+    				Node node = NodeFactory.createURI(replaceCommands(entry.getKey()));
         			stackNode.push(node);
                    triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
             }else if(entry.getValue() instanceof String) {
+            	
             	Node p = NodeFactory.createURI(entry.getKey());
-    			Node o = NodeFactory.createLiteral((String) entry.getValue());
+    			Node o = jsoupQuery((String) entry.getValue());
+    			if (o == null) {
+    				LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
+    				continue;
+    			}
     			Triple t = new Triple(stackNode.peek(),p,o);
     			triples.add(t);
+    			
             }
     	}
     	stackNode.pop();
     	return triples;
+    }
+    
+    /**
+     * 
+     * @param cssQuery
+     * @return
+     * @throws MalformedURLException
+     */
+    private Node jsoupQuery(String cssQuery) throws MalformedURLException {
+    	Elements elements = null;
+    	
+    	 try {
+          	
+          	if(cssQuery.startsWith("l")) {
+          		
+          		String val = cssQuery.substring(cssQuery.indexOf("(")+1,cssQuery.lastIndexOf(")"));
+          		String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+          		
+          		if (val.contains("$uri")) {
+          			val = val.replaceAll("\\$uri", uri);
+          		}
+
+          		
+          		if (val.contains("$label")) {
+          			val = val.replaceAll("\\$label", label);
+          		}
+          		
+              	Element el = new Element(Tag.valueOf(val),"");
+              	el.text(val);
+              	Element[] arrayElements = new Element[1];
+              	arrayElements[0] = el;
+              	elements = new Elements(arrayElements); 
+              }else {
+	                    elements = doc.select(cssQuery);
+
+	                    if (elements.isEmpty()) {
+	                        throw new ElementNotFoundException("Element (" + cssQuery + ")"
+	                            + " not found. Check selector syntax");
+	                    }
+              }
+             
+              
+          } catch (Exception e) {
+              LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
+          }
+    	 
+    	 Node objectNode = null;
+    	 
+    	 for (int i = 0; i < elements.size(); i++) {
+             if (elements.get(i).hasAttr("href")) {
+                 if (!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
+                     URL url = new URL(uri);
+                     String path = elements.get(i).attr("href");
+                     String base = url.getProtocol() + "://" + url.getHost() + path;
+                     objectNode = NodeFactory.createURI(base);
+                 } else {
+                     objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+                 }
+             } else {
+                 boolean uriFlag = true;
+                 try {
+                     new URL(elements.get(i).text());
+                 } catch (MalformedURLException e) {
+                     uriFlag = false;
+                     objectNode = NodeFactory.createLiteral(elements.get(i).text());
+                 }
+                 if (uriFlag) {
+                     objectNode = NodeFactory.createURI(elements.get(i).text());
+                 }
+             }
+                    
+
+         }
+    	 
+    	 return objectNode;
+    	
     }
 
 

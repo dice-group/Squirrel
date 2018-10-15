@@ -3,6 +3,7 @@ package org.dice_research.squirrel.data.uri.filter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.Document;
@@ -12,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -28,7 +32,11 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public static final String COLLECTION_NAME = "knownurifilter";
 
     public MongoDBKnowUriFilter(String hostName, Integer port) {
-        client = new MongoClient(hostName, port);
+    	MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
+    	builder.maxConnectionIdleTime(60000);
+    	MongoClientOptions opts = builder.build();
+    	
+        client = new MongoClient(new ServerAddress(hostName, port),opts);
     }
 
     @Override
@@ -102,6 +110,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
         // TODO Add recrawling support
         add(uri, System.currentTimeMillis());
+    }
+    
+    public void purge() {
+    	mongoDB.getCollection(COLLECTION_NAME).drop();
     }
 
     @Override
