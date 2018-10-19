@@ -1,16 +1,16 @@
 file_descriptor:
  check:
   domain: europeandataportal.eu
+  ignore-request: false
  search-result-page:
-  regex:
-   - dataset?q
+  regex: dataset?q=
   resources: 
    "$uri":
     "http://sindice.com/vocab/search#link": .dataset-list h3 a
  download_page:
   regex: dataset/
   resources:
-   "s($uri)":
+   "$uri":
     "http://purl.org/dc/terms/title": .secondary section .heading:eq(0)
     "http://purl.org/dc/terms/description": .notes p
     "http://purl.org/dc/terms/distribution": l(http://www.aksw.org/dice/squirrel/distribution_$label)

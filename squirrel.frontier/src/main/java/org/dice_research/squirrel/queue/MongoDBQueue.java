@@ -44,7 +44,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 
 	public MongoDBQueue(String hostName, Integer port) {
 		MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
-    	builder.maxConnectionIdleTime(60000);
+    	builder.maxConnectionIdleTime(60000000);
     	MongoClientOptions opts = builder.build();
     	
         client = new MongoClient(new ServerAddress(hostName, port),opts);

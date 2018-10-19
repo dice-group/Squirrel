@@ -4,6 +4,8 @@ import org.dice_research.squirrel.components.FrontierComponent;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.worker.AliveMessage;
 import org.dice_research.squirrel.worker.WorkerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class WorkerGuard {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkerGuard.class);
+	
     /**
      * A map from {@link org.dice_research.squirrel.worker.Worker} id to {@link WorkerInfo} containing information about the
      * {@link org.dice_research.squirrel.worker.Worker}.
@@ -120,9 +124,9 @@ public class WorkerGuard {
      */
     public void removeUrisForWorker(String idOfWorker, List<CrawleableUri> lstUrisToRemove) {
         if (!mapWorkerInfo.containsKey(idOfWorker)) {
-            throw new IllegalArgumentException("Illegal call. Worker with id " + idOfWorker + " should be contained in the info map.");
+        	LOGGER.warn("Illegal call. Worker with id " + idOfWorker + " should be contained in the info map.");
         }
-        if (mapWorkerInfo.get(idOfWorker).getUrisCrawling() == null || mapWorkerInfo.get(idOfWorker).getUrisCrawling().size() == 0) {
+        if (mapWorkerInfo.get(idOfWorker) != null && mapWorkerInfo.get(idOfWorker).getUrisCrawling() == null || mapWorkerInfo.get(idOfWorker).getUrisCrawling().size() == 0) {
             return;
         }
         mapWorkerInfo.get(idOfWorker).getUrisCrawling().removeAll(lstUrisToRemove);

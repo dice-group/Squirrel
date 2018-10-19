@@ -5,19 +5,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.tdb.store.Hash;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
@@ -37,6 +38,8 @@ public class HtmlScraper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlScraper.class);
 
     private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
+    
+    private LinkedHashSet<String> listIterableObjects;
     
     private String uri;
     private String label;
@@ -63,6 +66,7 @@ public class HtmlScraper {
     public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
 
         List<Triple> listTriples = new ArrayList<Triple>();
+        listIterableObjects = new LinkedHashSet<String>();
 
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
         
@@ -89,7 +93,7 @@ public class HtmlScraper {
                     }
 
                     for (String regex : regexList) {
-                        if (cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase())) {
+                        if (cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase()) ) {
                             @SuppressWarnings("unchecked")
                             Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
                             listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, uri));
@@ -101,159 +105,93 @@ public class HtmlScraper {
             }
 
         }
+        
+        if(!listTriples.isEmpty() && !listIterableObjects.isEmpty()) {
+        	listTriples = updateRelationship(listTriples);
+        }
 
         return listTriples;
     }
     
-    
     /**
-     * 
-     * Creates S,P,O using
-     * s = The user defined S in the yaml file
-     * p = the key defined in the yaml file
-     * o = the value defined in the yaml file
-     * 
-     * @author gsjunior
-     * 
-     * @throws MalformedURLException 
+     * Update the triples with nested objects
+     * @param listTriples
+     * @return
      */
-    
-    private Set<Triple> createResources(String resource, Object obj, Document doc,String uri) throws MalformedURLException{
-    	 Set<Triple> listTriples = new LinkedHashSet<Triple>();
+    private List<Triple> updateRelationship(List<Triple> listTriples) {
     	
-    	 
-    	 String res = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
-    	 String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
-    	 
-    	 if (res.contains("$uri")) {
-    		 res = res.replaceAll("\\$uri", uri);
-    	 }
-    	 
-    	 if (res.contains("$label")) {
-    		 res = res.replaceAll("\\$label", label);
-  		}
-    	 
-    	 LinkedHashMap<String,Object>resourcesList = new LinkedHashMap<String,Object> ();
-    	 
-    	 if(obj instanceof LinkedHashMap) {
-    		 resourcesList = (LinkedHashMap<String, Object>) obj;
-    	 }
-         
-         for(Entry<String,Object> entry: resourcesList.entrySet()) {
-        	 listTriples.addAll(createPredicateValues(entry.getKey(),entry.getValue(),doc, res));
-         }
-    	 
     	
-    	 return listTriples;
+    	Map<String,Set<Triple>> updatedTriples = new HashMap<String, Set<Triple>>();
+    	
+    	for(String o: listIterableObjects) {
+    		Set<Triple> staticNodes = new LinkedHashSet<>();
+    		Set<Triple> iterableNodes = new LinkedHashSet<>();
+    		for(Triple t : listTriples) {
+    			if(t.getSubject().toString().equals(o))  {
+    				
+    				if(t.getPredicate().toString().endsWith("*")) {
+    					iterableNodes.add(t);
+    				}else {
+    					staticNodes.add(t);
+    				}
+    			}
+    		}
+    		
+    		int cont = 0;
+    		for(Triple tt: iterableNodes) {
+    			
+    			Set<Triple> newTriples = new LinkedHashSet<Triple>();
+    			if(updatedTriples.containsKey(o)) {
+    				newTriples = updatedTriples.get(o);
+    			}
+    			
+    			Node s = new NodeFactory().createURI(tt.getSubject().toString()+"_" + cont);
+    			Node p = new NodeFactory().createURI(tt.getPredicate().toString().substring(0, tt.getPredicate().toString().length()-1));
+    		
+    			newTriples.add(new Triple(s,p,tt.getObject()));
+    			
+    			for(Triple t : staticNodes) {
+    				newTriples.add(new Triple(s,t.getPredicate(),t.getObject()));
+    			}
+    			updatedTriples.put(o, newTriples);
+    			cont++;
+    		}
+    		
+    		
+    		
+    		System.out.println();
+    	}
+    	
+    	
+//    	for(Entry<String,Set<Triple>> entry: updatedTriples.entrySet()) {
+//    		System.out.println(entry.getKey());
+//    		for(Triple t: entry.getValue()) {
+//    			System.out.println(" -- " + t);
+//    		}
+//    	}
+    	
+    	List<Triple> updatedList = new ArrayList<>();
+		
+		for(Triple t : listTriples) {
+			if(updatedTriples.containsKey(t.getObject().toString())) {
+				
+				for(Triple ut: updatedTriples.get(t.getObject().toString())) {
+					Triple newT = new Triple(t.getSubject(),t.getPredicate(),ut.getSubject());
+					if(!updatedList.contains(newT))
+						updatedList.add(newT);
+						updatedList.add(ut);
+				}
+				
+			}else if(!updatedTriples.containsKey(t.getSubject().toString())){
+				updatedList.add(t);
+			}
+		}
+		
+	
+    	
+    	return updatedList;
     }
-    
-    /**
-     * 
-     * Creates S,P,O using
-     * s = The url of the page crawled
-     * p = the key defined in the yaml file
-     * o = the value defined in the yaml file
-     * 
-     * @author gsjunior
-     * 
-
-     * @throws MalformedURLException 
-     */
-    private Set<Triple> createPredicateValues(String pr, Object list,Document doc, String uri) throws MalformedURLException{
-    	
-    	Model model = ModelFactory.createDefaultModel();
-    	
-    	Set<Triple> listTriples = new LinkedHashSet<Triple>();
-    	
-    	 Node s = NodeFactory.createURI(uri);
-    	 Node p = NodeFactory.createURI(pr);
-    	 
-
-    	 List<String> resourcesList = new ArrayList<String>();
-    	 
-         if (list instanceof List<?> && ((ArrayList<String>) list).size() > 1) {
-             resourcesList = (ArrayList<String>) list;
-         } else {
-             resourcesList.add(list.toString());
-         }
-
-         for (String resource : resourcesList) {
-        	 Node objectNode = null;
-         	
-             Elements elements = null;
-
-             try {
-             	
-             	if(resource.startsWith("o")) {
-             		
-             		String val = resource.substring(resource.indexOf("(")+1,resource.lastIndexOf(")"));
-             		String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
-             		
-             		if (val.contains("$uri")) {
-             			val = val.replaceAll("\\$uri", uri);
-             		}
-
-             		
-             		if (val.contains("$label")) {
-             			val = val.replaceAll("\\$label", label);
-             		}
-             		
-                 	Element el = new Element(Tag.valueOf(val),"");
-                 	el.text(val);
-                 	Element[] arrayElements = new Element[1];
-                 	arrayElements[0] = el;
-                 	elements = new Elements(arrayElements); 
-                 }else {
-	                    elements = doc.select(resource);
-	                    
-	                    
-	                    
-	                    
-	                    
-	                    if (elements.isEmpty()) {
-	                        throw new ElementNotFoundException("Element (" + pr + " -> " + resource + ")"
-	                            + " not found. Check selector syntax");
-	                    }
-                 }
-                
-                 
-             } catch (Exception e) {
-                 LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
-             }
-             Map<String, Set<String>> mapTriples = new HashMap<String,Set<String>>();
-             for (int i = 0; i < elements.size(); i++) {
-                 if (elements.get(i).hasAttr("href")) {
-                     if (!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
-                         URL url = new URL(uri);
-                         String path = elements.get(i).attr("href");
-                         String base = url.getProtocol() + "://" + url.getHost() + path;
-                         objectNode = NodeFactory.createURI(base);
-                     } else {
-                         objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
-                     }
-                 } else {
-                     boolean uriFlag = true;
-                     try {
-                         URL url = new URL(elements.get(i).text());
-                     } catch (MalformedURLException e) {
-                         uriFlag = false;
-                         objectNode = NodeFactory.createLiteral(elements.get(i).text());
-                     }
-                     if (uriFlag) {
-                         objectNode = NodeFactory.createURI(elements.get(i).text());
-                     }
-                 }
-           
-                	 Triple triple = new Triple(s, p, objectNode);
-                     listTriples.add(triple);
-                 
-
-             }
-
-         }
-    	
-    	return listTriples;
-    }
+       
 
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
@@ -316,13 +254,15 @@ public class HtmlScraper {
             }else if(entry.getValue() instanceof String) {
             	
             	Node p = NodeFactory.createURI(entry.getKey());
-    			Node o = jsoupQuery((String) entry.getValue());
-    			if (o == null) {
+    			List<Node> o = jsoupQuery((String) entry.getValue());
+    			if (o.isEmpty()) {
     				LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
     				continue;
     			}
-    			Triple t = new Triple(stackNode.peek(),p,o);
-    			triples.add(t);
+    			for(Node n : o) {
+    				Triple t = new Triple(stackNode.peek(),p,n);
+        			triples.add(t);
+    			}
     			
             }
     	}
@@ -336,8 +276,10 @@ public class HtmlScraper {
      * @return
      * @throws MalformedURLException
      */
-    private Node jsoupQuery(String cssQuery) throws MalformedURLException {
+    private List<Node> jsoupQuery(String cssQuery) throws MalformedURLException {
     	Elements elements = null;
+    	
+    	List<Node> listNodes = new ArrayList<Node>();
     	
     	 try {
           	
@@ -374,7 +316,6 @@ public class HtmlScraper {
               LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
           }
     	 
-    	 Node objectNode = null;
     	 
     	 for (int i = 0; i < elements.size(); i++) {
              if (elements.get(i).hasAttr("href")) {
@@ -382,27 +323,36 @@ public class HtmlScraper {
                      URL url = new URL(uri);
                      String path = elements.get(i).attr("href");
                      String base = url.getProtocol() + "://" + url.getHost() + path;
-                     objectNode = NodeFactory.createURI(base);
+                     listNodes.add(NodeFactory.createURI(base));
                  } else {
-                     objectNode = NodeFactory.createURI(elements.get(i).attr("abs:href"));
+                	 listNodes.add(NodeFactory.createURI(elements.get(i).attr("abs:href")));
                  }
              } else {
                  boolean uriFlag = true;
+                 
+                 String qText = elements.get(i).text();
+                 
+                 if(elements.get(i).text().endsWith("*")) {
+                	 qText = qText.substring(0,qText.length()-1);
+                	 listIterableObjects.add(qText);
+                 }
+                 
                  try {
-                     new URL(elements.get(i).text());
+                     new URL(qText);
                  } catch (MalformedURLException e) {
                      uriFlag = false;
-                     objectNode = NodeFactory.createLiteral(elements.get(i).text());
+                     listNodes.add(NodeFactory.createLiteral(qText));
                  }
                  if (uriFlag) {
-                     objectNode = NodeFactory.createURI(elements.get(i).text());
+                	 listNodes.add(NodeFactory.createURI(qText));
                  }
+                 
              }
                     
 
          }
     	 
-    	 return objectNode;
+    	 return listNodes;
     	
     }
 
