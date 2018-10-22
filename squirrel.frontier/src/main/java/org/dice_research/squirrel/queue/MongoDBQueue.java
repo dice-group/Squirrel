@@ -43,11 +43,10 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBQueue.class);
 
 	public MongoDBQueue(String hostName, Integer port) {
-		MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
-    	builder.maxConnectionIdleTime(60000000);
-    	MongoClientOptions opts = builder.build();
+		
+
     	
-        client = new MongoClient(new ServerAddress(hostName, port),opts);
+        client = new MongoClient(hostName, port);
 		serializer = new SnappyJavaUriSerializer();
 	}
 	

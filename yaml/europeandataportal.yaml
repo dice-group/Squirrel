@@ -17,7 +17,7 @@ file_descriptor:
     "http://purl.org/dc/terms/issued": table tr:contains(Created) td
     "http://purl.org/dc/terms/theme": l(http://www.aksw.org/dice/squirrel/theme_$label)
     "http://purl.org/dc/terms/publisher": l(http://www.aksw.org/dice/squirrel/agent_$label)
-    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": l(https://www.w3.org/ns/dcat#Dataset)
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": l(http://www.w3.org/ns/dcat#Dataset)
 
     "http://www.aksw.org/dice/squirrel/agent_$label":
      "http://xmlns.com/foaf/0.1/name": .additional-info table tr:contains(Identifier) td
