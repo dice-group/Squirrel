@@ -1,2 +1,6 @@
 https://mcloud.de/web/guest/suche/-/results/search/0
 https://www.europeandataportal.eu/data/en/dataset?q=&page=1
+https://portal.opengeoedu.de
+https://opendatainception.io
+https://dataportals.org/search
+
