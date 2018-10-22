@@ -39,6 +39,15 @@ public class FrontierImplTest {
 
     @Before
     public void setUp() throws Exception {
+    	
+    	String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
+        Process ps = Runtime.getRuntime().exec(rethinkDockerStopCommand);
+        ps.waitFor();
+        String rethinkDockerRmCommand = "docker rm squirrel-test-frontierimpl";
+        ps = Runtime.getRuntime().exec(rethinkDockerRmCommand);
+        ps.waitFor();
+    	
+    	
     	String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb-frontierimpl "
                 + "-p 58027:27017 -p 58887:8080 -d mongo:4.0.0";
             Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
@@ -60,7 +69,7 @@ public class FrontierImplTest {
         queue = new MongoDBQueue("localhost", 58027);
          filter.open();
          queue.open();
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue);
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
@@ -139,7 +148,7 @@ public class FrontierImplTest {
     /*
      * see https://github.com/dice-group/Squirrel/issues/47
      */
-    @Test
+    //@Test
     public void simlpeRecrawling() throws Exception {
         // Add the URIs to the frontier
         List<CrawleableUri> uris = new ArrayList<>();
