@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+            This will automatically locate any and all property files you have
+            within your classpath, provided they fall under the META-INF
+            directory. The located property files are parsed and their values can
+            then be used within application context files in the form of
+            ${propertyKey}.
+    -->
+
+    <import resource="classpath:default-config.xml"/>
+
+    <!--
+        <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
+
+     -->
+
+    <bean id="workerBean" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl">
+        <constructor-arg index="0" ref="workerComponent"/>
+        <constructor-arg index="1" ref="sparqlStoreSinkBean"/>
+        <constructor-arg index="2" ref="robotsManagerBean"/>
+        <constructor-arg index="3" ref="serializerBean"/>
+        <constructor-arg index="4" ref="uriCollectorBean"/>
+        <constructor-arg index="5" value="2000"/>
+        <constructor-arg index="6" value="#{systemEnvironment['OUTPUT_FOLDER']}/log"/><!-- Logging -->
+        <constructor-arg index="7" value="true"/><!-- sendAleveMessages -->
+    </bean>
+
+    <!-- Output folder for FileBasedSink -->
+    <bean id="outputFolderBean" class="java.io.File">
+        <constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}"/>
+    </bean>
+
+    <!-- Triple Store (JENA) Sink implementation -->
+    <bean id="sparqlStoreSinkBean" class="org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink">
+        <constructor-arg name="host"
+                         value="#{systemEnvironment['SPARQL_HOST_NAME']}"/>
+        <constructor-arg name="port"
+                         value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
+        <constructor-arg name="updateAppendix"
+                         value="contentset/update"/>
+        <constructor-arg name="queryAppendix"
+                         value="contentset/query"/>
+        <constructor-arg name="updateMetaDataAppendix"
+                         value="MetaData/update"/>
+        <constructor-arg name="queryMetaDataAppendix"
+                         value="MetaData/query"/>
+
+    </bean>
+
+    <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector">
+        <constructor-arg index="0" ref="datasourceConnection"/>
+        <constructor-arg index="1" ref="serializerBean"/>
+    </bean>
+
+    <bean id="serializerBean" class="org.aksw.simba.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
+
+    <bean id="datasourceConnection" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.jdbc.JDBCDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:foundUris"/>
+        <property name="username" value="SA"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <bean id="robotsManagerBean" class="org.aksw.simba.squirrel.robots.RobotsManagerImpl">
+        <constructor-arg index="0" ref="simpleHttpFetcherBean"/>
+        <property name="defaultMinWaitingTime" value="100"/>
+    </bean>
+
+    <bean id="simpleHttpFetcherBean" class="crawlercommons.fetcher.http.SimpleHttpFetcher">
+        <constructor-arg index="0" ref="userAgentBean"/>
+    </bean>
+
+    <bean id="userAgentBean" class="crawlercommons.fetcher.http.UserAgent">
+        <constructor-arg index="0" value="Test"/>
+        <constructor-arg index="1" value=""/>
+        <constructor-arg index="2" value=""/>
+    </bean>
+
+</beans>

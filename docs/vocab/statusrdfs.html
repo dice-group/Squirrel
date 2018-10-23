@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <<title>Squirrel Ontology- status</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+div.b {
+    border: 4px solid #4CAF50;
+    border-radius: 8px;
+	background-color: #ccffee;
+}
+</style>
+</head>
+<body style="background-color:#ffffe6;">
+<div class="container">
+  <h3>Squirrel Ontology</h3>
+  <ul class="nav nav-tabs">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="hostedOn.html">sq:hostedOn</a></li>
+    <li><a href="numberoftriples.html">sq:numberOfTriples</a></li>
+    <li class="active"><a href="statusrdfs.html">sq:status</a></li>
+	<li><a href="uriname.html">sq:uriName</a></li>
+  </ul>
+  <br>
+<div class="b" style="font-family:verdana;">
+<p>@prefix rdf:&nbsp; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .<br>@prefix rdfs:&nbsp; &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .<br>@prefix xsd:&nbsp; &lt;http://www.w3.org/2001/XMLSchema#&gt; .<br>@prefix :&nbsp; &lt;https://www.w3id.org/squirrel/vocab#&gt; .</p>
+    
+<p>:status<br>&nbsp;&nbsp;&nbsp;rdfs:range  xsd:boolean;<br>&nbsp;&nbsp;&nbsp;rdfs:domain crawlingActivity;<br>&nbsp;&nbsp;&nbsp;rdfs:label  "status";<br>&nbsp;&nbsp;&nbsp;rdfs:comment "Successfull or unsuccessfull"&nbsp;.</p>
+</div>
+</div>
+</body>
+</html>
