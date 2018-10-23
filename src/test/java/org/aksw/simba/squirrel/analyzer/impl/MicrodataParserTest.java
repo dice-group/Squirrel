@@ -290,12 +290,12 @@ public class MicrodataParserTest extends RDFParserTest {
 			index++;
 		}
 		
-		//double psum = sumdoublearray(pre);
-		//double rsum = sumdoublearray(rec);
+		double psum = sumdoublearray(pre);
+		double rsum = sumdoublearray(rec);
 		double fsum = sumdoublearray(fsc);
 		
-		//double macrop = (1.0/pre.length)*psum;
-		//double macror = (1.0/rec.length)*rsum;
+		double macrop = (1.0/pre.length)*psum;
+		double macror = (1.0/rec.length)*rsum;
 		
 		double microp = (tpsum/(tpsum+fpsum));
 		double micror = (tpsum/(tpsum+fnsum));
@@ -309,10 +309,10 @@ public class MicrodataParserTest extends RDFParserTest {
 		System.out.println("Micro F-Score");
 		System.out.println(microfscore);
 		System.out.println();
-//		System.out.println("Macro Precision");
-//		System.out.println(macrop);
-//		System.out.println("Macro Recall");
-//		System.out.println(macror);
+		System.out.println("Macro Precision");
+		System.out.println(macrop);
+		System.out.println("Macro Recall");
+		System.out.println(macror);
 		System.out.println("Micro Precision");
 		System.out.println(microp);
 		System.out.println("Micro Recall");
