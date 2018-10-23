@@ -1,6 +1,7 @@
 file_descriptor:
  check:
   domain: govdata.de
+  ignore-request: true
  search-result-page:
   regex: searchresult
   resources:

@@ -21,8 +21,12 @@ import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+
+// Ignore for the release
+@Ignore
 public class HtmlScraperAnalyzerTest {
 	
 	private File configurationFile;

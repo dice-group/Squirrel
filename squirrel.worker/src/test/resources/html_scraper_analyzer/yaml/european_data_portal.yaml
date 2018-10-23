@@ -1,6 +1,7 @@
 file_descriptor:
  check:
   domain: europeandataportal.eu
+  ignore-request: true
  search-result-page:
   regex: data/en/dataset?q=
   resources: 
