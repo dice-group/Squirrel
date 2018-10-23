@@ -18,7 +18,7 @@ public class MongoDBBasedTest {
 	protected static  MongoDatabase mongoDB;
 
     @BeforeClass
-    public static void setUpRDB() throws Exception {
+    public static void setUpMDB() throws Exception {
         String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb "
             + "-p 58027:27017 -p 58886:8080 -d mongo:4.0.0";
         Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
@@ -39,7 +39,7 @@ public class MongoDBBasedTest {
     }
 
     @AfterClass
-    public static void tearDownRDB() throws Exception {
+    public static void tearDownMDB() throws Exception {
         String mongoDockerStopCommand = "docker stop squirrel-test-mongodb";
         Process p = Runtime.getRuntime().exec(mongoDockerStopCommand);
         p.waitFor();

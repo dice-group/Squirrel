@@ -62,13 +62,10 @@ public class RethinkDBBasedTest {
     @AfterClass
     public static void tearDownRDB() throws Exception {
         
-
-    	
-    	
         String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
+        String rethinkDockerRmCommand = "docker rm -f squirrel-test-rethinkdb";
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
         p.waitFor();
     }

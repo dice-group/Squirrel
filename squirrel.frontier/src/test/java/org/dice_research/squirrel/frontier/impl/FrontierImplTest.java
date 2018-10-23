@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
@@ -40,30 +41,8 @@ public class FrontierImplTest {
     @Before
     public void setUp() throws Exception {
     	
-    	String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
-        Process ps = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        ps.waitFor();
-        String rethinkDockerRmCommand = "docker rm squirrel-test-frontierimpl";
-        ps = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        ps.waitFor();
     	
-    	
-    	String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb-frontierimpl "
-                + "-p 58027:27017 -p 58884:8080 -d mongo:4.0.0";
-            Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String s = null;
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
-            }
-            // read any errors from the attempted command
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            System.out.println("Here is the standard error of the command (if any):\n");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-            }
-
-
+        MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
         queue = new MongoDBQueue("localhost", 58027);

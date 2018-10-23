@@ -171,7 +171,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     			LOGGER.error("Error while retrieving uri from MongoDBQueue",e);
 			}
     		
-    		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+//    		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
 //    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
 
 	        return listUris;

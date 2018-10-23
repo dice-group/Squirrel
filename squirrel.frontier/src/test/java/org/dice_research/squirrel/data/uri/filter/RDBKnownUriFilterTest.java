@@ -22,15 +22,10 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 
-public class RDBKnownUriFilterTest {
+public class RDBKnownUriFilterTest extends RethinkDBBasedTest {
     private RethinkDB r;
     private RDBConnector connector;
     private RDBKnownUriFilter filter;
-
-    /**
-     * For functionality regarding the starting of rethinkdb container.
-     */
-    private RethinkDBBasedTest rethinkDBMockTest;
 
 
     @Before
@@ -39,9 +34,6 @@ public class RDBKnownUriFilterTest {
         connector = new RDBConnector(RethinkDBMockTest.DB_HOST_NAME, RethinkDBMockTest.DB_PORT);
         filter = new RDBKnownUriFilter(connector, r, false);
 
-        // to get rethinkdb container running
-        rethinkDBMockTest = new RethinkDBBasedTest();
-        rethinkDBMockTest.setUpRDB();
     }
 
     @Test
@@ -96,11 +88,6 @@ public class RDBKnownUriFilterTest {
         Assert.assertEquals(uri1, uris.get(0));
 
         cursor.close();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        rethinkDBMockTest.tearDownRDB();
     }
 
 }
