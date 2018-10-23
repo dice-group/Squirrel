@@ -39,7 +39,7 @@ public class MicrodataPickaxeParser implements Analyzer {
 				JsonLdSerializer serializer = new JsonLdSerializer(true /* setPrettyPrinting */);
 				String jsonLdStr = serializer.serialize(things);
 						    
-				Model model = createModelFromJSONLD(jsonLdStr);
+				Model model = createModelFromJSONLD(jsonLdStr,curi);
 				String syntax = "N-TRIPLE"; //"N-TRIPLE" and "TURTLE"
 				StringWriter out = new StringWriter();
 				model.write(out, syntax);
@@ -59,11 +59,11 @@ public class MicrodataPickaxeParser implements Analyzer {
 	 * @param content the data in JSON-LD
 	 * @return the model
 	 */
-	public static Model createModelFromJSONLD(String content) {
+	public static Model createModelFromJSONLD(String content, CrawleableUri curi) {
 		Model model = null;
 		try {
 			model = ModelFactory.createDefaultModel()
-			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "JSON-LD");
+			        .read(IOUtils.toInputStream(content, "UTF-8"), curi.getUri().toString(), "JSON-LD");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
