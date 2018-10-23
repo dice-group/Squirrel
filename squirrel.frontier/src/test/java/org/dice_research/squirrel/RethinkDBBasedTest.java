@@ -20,7 +20,7 @@ public class RethinkDBBasedTest {
     public static void setUpRDB() throws Exception {
     	
     	String rdbStopAll = "docker stop $(docker ps -a -q)";
-    	String rdbRemoveAll = "docker stop $(docker ps -a -q)";
+    	String rdbRemoveAll = "docker rm $(docker ps -a -q)";
     	
     	Process x = Runtime.getRuntime().exec(rdbStopAll);
     	x.waitFor();
