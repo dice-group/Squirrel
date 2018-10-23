@@ -22,7 +22,7 @@ public class RethinkDBBasedTest {
     	tearDownRDB();
     	
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
-            + "-p " + DB_PORT + ":28015 -p 58887:8080 -d rethinkdb:2.3.5";
+            + "-p " + DB_PORT + ":28015 -p 58884:8080 -d rethinkdb:2.3.5";
         Process p = Runtime.getRuntime().exec(rethinkDockerExecCmd);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String s = null;

@@ -49,7 +49,7 @@ public class FrontierImplTest {
     	
     	
     	String mongoDockerExecCmd = "docker run --name squirrel-test-mongodb-frontierimpl "
-                + "-p 58027:27017 -p 58887:8080 -d mongo:4.0.0";
+                + "-p 58027:27017 -p 58884:8080 -d mongo:4.0.0";
             Process p = Runtime.getRuntime().exec(mongoDockerExecCmd);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String s = null;
