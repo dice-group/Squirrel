@@ -19,7 +19,14 @@ public class RethinkDBBasedTest {
     @BeforeClass
     public static void setUpRDB() throws Exception {
     	
-    	tearDownRDB();
+    	String rdbStopAll = "docker stop $(docker ps -a -q)";
+    	String rdbRemoveAll = "docker stop $(docker ps -a -q)";
+    	
+    	Process x = Runtime.getRuntime().exec(rdbStopAll);
+    	x.waitFor();
+    	
+    	x = Runtime.getRuntime().exec(rdbRemoveAll);
+    	x.waitFor();
     	
         String rethinkDockerExecCmd = "docker run --name squirrel-test-rethinkdb "
             + "-p " + DB_PORT + ":28015 -p 58884:8080 -d rethinkdb:2.3.5";
@@ -54,10 +61,14 @@ public class RethinkDBBasedTest {
 
     @AfterClass
     public static void tearDownRDB() throws Exception {
-        String rethinkDockerStopCommand = "docker container stop squirrel-test-rethinkdb";
+        
+
+    	
+    	
+        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
-        String rethinkDockerRmCommand = "docker container rm squirrel-test-rethinkdb";
+        String rethinkDockerRmCommand = "docker rm squirrel-test-rethinkdb";
         p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
         p.waitFor();
     }
