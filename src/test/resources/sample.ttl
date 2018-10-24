@@ -1,0 +1,6 @@
+@prefix ns0: <http://dbpedia.org/property/> .
+@prefix ns1: <http://dbpedia.org/ontology/> .
+
+<http://dbpedia.org/resource/Amartya_Sen> ns0:residence <http://dbpedia.org/resource/New_York> .
+<http://dbpedia.org/resource/George_Westinghouse> ns1:birthPlace <http://dbpedia.org/resource/New_York> .
+<http://dbpedia.org/resource/Theodore_Roosevelt> ns1:birthPlace <http://dbpedia.org/resource/New_York> .

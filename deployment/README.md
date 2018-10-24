@@ -1,5 +1,9 @@
 # Deployment instructions
 
+**This deployment folder is deprecated. Please use the `docker-compose.yml` from the root directory!**
+
+---
+
 SSH into server and clone this repo:
 ```
 ssh akswnc5.aksw.uni-leipzig.de
