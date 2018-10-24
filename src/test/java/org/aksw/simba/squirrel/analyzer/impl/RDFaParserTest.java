@@ -321,7 +321,7 @@ public class RDFaParserTest extends RDFParserTest {
         	{ pathextensionsuit+pathextensionhtml5+"0106.html",pathextensionsuit+pathextensionhtml5+"0106.ttl" },
         	{ pathextensionsuit+pathextensionhtml5+"0107.html",pathextensionsuit+pathextensionhtml5+"0107.ttl" },
         	{ pathextensionsuit+pathextensionhtml5+"0110.html",pathextensionsuit+pathextensionhtml5+"0110.ttl" },
-        	{ pathextensionsuit+pathextensionhtml5+"0111.html",pathextensionsuit+pathextensionhtml5+"0112.ttl" },
+        	{ pathextensionsuit+pathextensionhtml5+"0111.html",pathextensionsuit+pathextensionhtml5+"0111.ttl" },
         	{ pathextensionsuit+pathextensionhtml5+"0112.html",pathextensionsuit+pathextensionhtml5+"0112.ttl" },
         	{ pathextensionsuit+pathextensionhtml5+"0115.html",pathextensionsuit+pathextensionhtml5+"0115.ttl" },
         	{ pathextensionsuit+pathextensionhtml5+"0117.html",pathextensionsuit+pathextensionhtml5+"0117.ttl" },
@@ -564,7 +564,7 @@ public class RDFaParserTest extends RDFParserTest {
         	{ pathextensionsuit+pathextensionxhtml1+"0107.xhtml",pathextensionsuit+pathextensionxhtml1+"0107.ttl" },
         	{ pathextensionsuit+pathextensionxhtml1+"0108.xhtml",pathextensionsuit+pathextensionxhtml1+"0108.ttl" },
         	{ pathextensionsuit+pathextensionxhtml1+"0110.xhtml",pathextensionsuit+pathextensionxhtml1+"0110.ttl" },
-        	{ pathextensionsuit+pathextensionxhtml1+"0111.xhtml",pathextensionsuit+pathextensionxhtml1+"0112.ttl" },
+        	{ pathextensionsuit+pathextensionxhtml1+"0111.xhtml",pathextensionsuit+pathextensionxhtml1+"0111.ttl" },
         	{ pathextensionsuit+pathextensionxhtml1+"0112.xhtml",pathextensionsuit+pathextensionxhtml1+"0112.ttl" },
         	{ pathextensionsuit+pathextensionxhtml1+"0113.xhtml",pathextensionsuit+pathextensionxhtml1+"0113.ttl" },
         	{ pathextensionsuit+pathextensionxhtml1+"0114.xhtml",pathextensionsuit+pathextensionxhtml1+"0114.ttl" },
@@ -729,7 +729,7 @@ public class RDFaParserTest extends RDFParserTest {
         	{ pathextensionsuit+pathextensionxhtml5+"0106.xhtml",pathextensionsuit+pathextensionxhtml5+"0106.ttl" },
         	{ pathextensionsuit+pathextensionxhtml5+"0107.xhtml",pathextensionsuit+pathextensionxhtml5+"0107.ttl" },
         	{ pathextensionsuit+pathextensionxhtml5+"0110.xhtml",pathextensionsuit+pathextensionxhtml5+"0110.ttl" },
-        	{ pathextensionsuit+pathextensionxhtml5+"0111.xhtml",pathextensionsuit+pathextensionxhtml5+"0112.ttl" },
+        	{ pathextensionsuit+pathextensionxhtml5+"0111.xhtml",pathextensionsuit+pathextensionxhtml5+"0111.ttl" },
         	{ pathextensionsuit+pathextensionxhtml5+"0112.xhtml",pathextensionsuit+pathextensionxhtml5+"0112.ttl" },
         	{ pathextensionsuit+pathextensionxhtml5+"0115.xhtml",pathextensionsuit+pathextensionxhtml5+"0115.ttl" },
         	{ pathextensionsuit+pathextensionxhtml5+"0117.xhtml",pathextensionsuit+pathextensionxhtml5+"0117.ttl" },
@@ -1007,6 +1007,7 @@ public class RDFaParserTest extends RDFParserTest {
 //		strindex = strindex.substring(11, strindex.indexOf(","));
 //		int index = Integer.parseInt(strindex);		
 		//curi = new CrawleableUri(new URI("rdfaParserTest"));
+		System.out.println(strindex);
 		
 		URL test_url = ClassLoader.getSystemResource(testData);
 		File test = new File(test_url.toURI());
@@ -1019,7 +1020,7 @@ public class RDFaParserTest extends RDFParserTest {
 		curi = new CrawleableUri(new URI(pathcontext));
 		
 		analyzer.analyze(curi, test, sink);
-		System.out.print("Analyze ok ");
+		//System.out.print("Analyze ok ");
 		
 		List<byte[]> tdp = sink.getCrawledUnstructuredData().get(pathcontext);
 		String decodedtest = "";
@@ -1027,7 +1028,7 @@ public class RDFaParserTest extends RDFParserTest {
 		//if(!decodedtest.equals(""))decodedtest = decodedtest.substring(0, decodedtest.length()-1);
 		
 		Model decodedmodel = createModelFromN3Strings(decodedtest);
-		System.out.print("created decodemodel ");
+		//System.out.print("created decodemodel ");
 		
 		//System.out.println(decodedtest);
 		//System.out.println();
@@ -1036,7 +1037,7 @@ public class RDFaParserTest extends RDFParserTest {
 //	    correctresult = correctresult.substring(1,correctresult.length()-1);
 		String correctresult = fileToString(result);		
 		Model correctmodel = createModelFromTurtle(correctresult);
-		System.out.print("created correctmodel ");
+		//System.out.print("created correctmodel ");
 		
 		List<Double> results = new ArrayList<Double>();
 		double fn = 0;
@@ -1047,7 +1048,7 @@ public class RDFaParserTest extends RDFParserTest {
 //			falsenegativ[index]++;
 			fn++;
 		}
-		System.out.println();
+		//System.out.println();
 		Set<Statement> morestatements = getMissingStatements(decodedmodel, correctmodel);
 		for (Statement statement : morestatements) {
 //			falsepositiv[index]++;
@@ -1059,7 +1060,7 @@ public class RDFaParserTest extends RDFParserTest {
 		results.add(fp);
 		results.add(fn);			
 		testresults.put(strindex,results);		
-		System.out.println();
+		//System.out.println();
 		
 		//String filepath = getFilePath(decodedtest);
 		//String path = getpath(filepath);
