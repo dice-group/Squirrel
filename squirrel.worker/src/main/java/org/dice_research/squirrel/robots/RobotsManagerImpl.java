@@ -17,7 +17,7 @@ public class RobotsManagerImpl implements RobotsManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(RobotsManagerImpl.class);
 
     private static final String ROBOTS_FILE_NAME = "/robots.txt";
-    private static final long DEFAULT_MIN_WAITING_TIME = 100;
+    private static final long DEFAULT_MIN_WAITING_TIME = 10000;
 
     private long defaultMinWaitingTime = DEFAULT_MIN_WAITING_TIME;
     private BaseHttpFetcher fetcher;
