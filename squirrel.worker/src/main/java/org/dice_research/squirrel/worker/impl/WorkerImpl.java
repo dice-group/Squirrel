@@ -126,7 +126,7 @@ public class WorkerImpl implements Worker, Closeable {
         this.collector = collector;
         fetcher = new SimpleOrderedFetcherManager(
                 // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher());
+                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher(), new SparqlBasedFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
