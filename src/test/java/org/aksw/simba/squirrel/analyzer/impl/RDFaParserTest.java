@@ -453,6 +453,7 @@ public class RDFaParserTest extends RDFParserTest {
         	{ pathextensionsuit+pathextensionhtml5invalid+"0234.html",pathextensionsuit+pathextensionhtml5invalid+"0234.ttl" },
         	{ pathextensionsuit+pathextensionhtml5invalid+"0258.html",pathextensionsuit+pathextensionhtml5invalid+"0258.ttl" },
         	{ pathextensionsuit+pathextensionhtml5invalid+"0280.html",pathextensionsuit+pathextensionhtml5invalid+"0280.ttl" },
+        	{ pathextensionsuit+pathextensionhtml5invalid+"0285.html",pathextensionsuit+pathextensionhtml5invalid+"0285.ttl" },
         	{ pathextensionsuit+pathextensionhtml5invalid+"0295.html",pathextensionsuit+pathextensionhtml5invalid+"0295.ttl" },
         	{ pathextensionsuit+pathextensionhtml5invalid+"0303.html",pathextensionsuit+pathextensionhtml5invalid+"0303.ttl" },
         	{ pathextensionsuit+pathextensionhtml5invalid+"0319.html",pathextensionsuit+pathextensionhtml5invalid+"0319.ttl" },
