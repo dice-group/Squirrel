@@ -68,7 +68,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         if (cursor.hasNext()) {
             LOGGER.debug("URI {} is not good", uri.toString());
             Document doc = cursor.next();
-            Long timestampRetrieved = Long.parseLong(doc.get("timestamp").toString());
+            Long timestampRetrieved = Long.parseLong(doc.get(COLUMN_TIMESTAMP_LAST_CRAWL).toString());
             cursor.close();
             if ((System.currentTimeMillis() - timestampRetrieved) < recrawlEveryWeek) {
                 return false;
