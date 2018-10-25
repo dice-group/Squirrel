@@ -50,7 +50,7 @@ public class MongoDBKnownUriFilterTest {
     public void setUp() throws Exception {
 
         
-        filter = new MongoDBKnowUriFilter(MongoDBBasedTest.DB_HOST_NAME,MongoDBBasedTest.DB_PORT);
+        filter = new MongoDBKnowUriFilter(MongoDBBasedTest.DB_HOST_NAME,27017);
         filter.open();
         MongoDBBasedTest.tearDownMDB();
         MongoDBBasedTest.setUpMDB();
