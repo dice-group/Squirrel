@@ -169,17 +169,15 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     				Document doc = uriDocs.next();
     				
     				listUris.add( serializer.deserialize( ((Binary) doc.get("uri")).getData()) );
-    				
-    	    		mongoDB.getCollection(COLLECTION_URIS).deleteOne(new Document("_id",doc.get("_id")));
 
-//    	    		mongoDB.getCollection(COLLECTION_URIS).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
-//    	    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
     			}
 
     		}catch (Exception e) {
     			LOGGER.error("Error while retrieving uri from MongoDBQueue",e);
 			}
     		
+    		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
 
 
 	        return listUris;
