@@ -1,6 +1,9 @@
 https://mcloud.de/web/guest/suche/-/results/search/0
 https://www.europeandataportal.eu/data/en/dataset?q=&page=1
-https://portal.opengeoedu.de
-https://opendatainception.io
-https://dataportals.org/search
-
+https:/www.govdata.de/ckan/catalog/catalog.rdf
+https://dbpedia.org/resource/New_York
+https://dbpedia.org/resource/Moscow
+https://lod-cloud.net/rdf/dbtune-classical?format=rdf
+https://lod-cloud.net/rdf/bioportal-canco?format=rdf
+http://nxp.dydra.com/nxp/public-data.ttl
+http://aseg.cs.concordia.ca/ontologies/2010/11/socon.rdf
