@@ -70,8 +70,6 @@ public class WorkerImpl implements Worker, Closeable {
     protected UriCollector collector;
     protected Analyzer analyzer;
     protected RobotsManager manager;
-    @Autowired
-    protected SparqlBasedFetcher sparqlBasedFetcher;
     protected Fetcher fetcher;
     protected UriProcessorInterface uriProcessor = new UriProcessor();
     protected Serializer serializer;
@@ -80,6 +78,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
+    private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
     /**
