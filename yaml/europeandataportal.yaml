@@ -14,7 +14,7 @@ file_descriptor:
    "http://mcloud.projekt-opal.de/dataset_$label":
     "http://purl.org/dc/terms/title": .secondary section .heading:eq(0)
     "http://purl.org/dc/terms/description": .notes p
-    "http://purl.org/dc/terms/distribution": l(http://mcloud.projekt-opal.de/distribution_$label)
+    "http://purl.org/dc/terms/distribution": l(http://mcloud.projekt-opal.de/distribution_$label*)
     "http://purl.org/dc/terms/issued": table tr:contains(Created) td
     "http://purl.org/dc/terms/theme": l(http://mcloud.projekt-opal.de/theme_$label)
     "http://purl.org/dc/terms/publisher": l(http://mcloud.projekt-opal.de/agent_$label)
