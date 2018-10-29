@@ -29,8 +29,8 @@ file_descriptor:
      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": l(http://www.w3.org/2004/02/skos/core#Concept)
 
     "http://mcloud.projekt-opal.de/distribution_$label": 
-     "http://www.w3.org/ns/dcat#downloadURL": .resource-item:not(:contains(wfs)):not(:contains(wms)):not(:contains(FTP)) [title*=go to resource]
-     "http://www.w3.org/ns/dcat#accessURL": .resource-item:contains(wms),a:contains(wfs),a:contains(FTP) [title*=go to resource]
+     "http://www.w3.org/ns/dcat#downloadURL*": .resource-item:not(:contains(wfs)):not(:contains(wms)):not(:contains(FTP)) [title*=go to resource]
+     "http://www.w3.org/ns/dcat#accessURL*": .resource-item:contains(wms),a:contains(wfs),a:contains(FTP) [title*=go to resource]
      "http://purl.org/dc/terms/license": .license p a:not([rel])
      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": l(http://www.w3.org/ns/dcat#Distribution)
 
