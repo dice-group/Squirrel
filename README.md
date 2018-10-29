@@ -4,7 +4,7 @@
 Squirrel is a crawler for the linked web. It provides several tools to search and collect data
 from the heterogeneous content of the linked web.
 
-![Squirrel logo](https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png=248x244)
+![Squirrel logo](https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png =248x244)
 
 ## Build notes
 You can build the project with a simple ***mvn clean install***
