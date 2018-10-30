@@ -1,10 +1,10 @@
 # Squirrel - Crawler of linked data.
 
-<img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
-
 ## Introduction
 Squirrel is a crawler for the linked web. It provides several tools to search and collect data
 from the heterogeneous content of the linked web.
+
+<img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
 
 
 ## Build notes
