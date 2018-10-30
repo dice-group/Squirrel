@@ -39,12 +39,12 @@ public class RobotsManagerImplTest extends AbstractServerMockUsingTest {
                 { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/revision/"), false, 2000 },
                 { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test"), true, 2000 },
                 { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test/history"), false, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/resource/Berlin"), true, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/page/Berlin"), true, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/includes/Berlin"), false, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/INSTALL.txt"), false, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/admin/pwd.txt"), false, 2000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/?q=admin/"), false, 2000 } });
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/resource/Berlin"), true, 10000 },
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/page/Berlin"), true, 10000 },
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/includes/Berlin"), false, 10000 },
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/INSTALL.txt"), false, 10000 },
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/admin/pwd.txt"), false, 10000 },
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/?q=admin/"), false, 10000 } });
     }
 
     private URI uri;
