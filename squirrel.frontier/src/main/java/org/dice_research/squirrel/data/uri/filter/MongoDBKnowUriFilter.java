@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.deduplication.hashing.HashValue;
+import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 
-public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable {
+public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
 
@@ -46,6 +49,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public static final String COLUMN_IP = "ipAddress";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_HASH_VALUE = "hashValue";
+    /**
+     * Used as a default hash value for URIS, will be replaced by real hash value as soon as it has been computed.
+     */
+    private static final String DUMMY_HASH_VALUE = "dummyValue";
 
     public MongoDBKnowUriFilter(String hostName, Integer port) {
     
@@ -61,7 +68,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         if (cursor.hasNext()) {
             LOGGER.debug("URI {} is not good", uri.toString());
             Document doc = cursor.next();
-            Long timestampRetrieved = Long.parseLong(doc.get("timestamp").toString());
+            Long timestampRetrieved = Long.parseLong(doc.get(COLUMN_TIMESTAMP_LAST_CRAWL).toString());
             cursor.close();
             if ((System.currentTimeMillis() - timestampRetrieved) < recrawlEveryWeek) {
                 return false;
@@ -77,10 +84,8 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     }
 
     @Override
-    public void add(CrawleableUri uri, long timestamp) {
-        mongoDB.getCollection(COLLECTION_NAME)
-                .insertOne(crawleableUriToMongoDocument(uri).append("timestamp", timestamp));
-        LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+    public void add(CrawleableUri uri, long nextCrawlTimestamp) {
+    	add(uri, System.currentTimeMillis(), nextCrawlTimestamp);
     }
 
     public Document crawleableUriToMongoDocument(CrawleableUri uri) {
@@ -122,9 +127,24 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-        // TODO Add recrawling support
-        add(uri, System.currentTimeMillis());
+    	 mongoDB.getCollection(COLLECTION_NAME)
+         .insertOne(crawleableUriToMongoDocument(uri)
+        		 .append(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp)
+        		 .append(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
+        		 .append(COLUMN_CRAWLING_IN_PROCESS, false)
+        		 .append(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE)
+        		 );
+    	 LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
+    
+    @Override
+    public void addHashValuesForUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+//            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
+//                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
+        }
+    }
+    
     
     public void purge() {
     	mongoDB.getCollection(COLLECTION_NAME).drop();
@@ -135,42 +155,44 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     	// get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
     	
-    	 long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+    	long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
 
     	Bson filter = Filters.and(Filters.eq("COLUMN_TIMESTAMP_NEXT_CRAWL", System.currentTimeMillis()),
     			Filters.or(
 	    			Filters.eq("COLUMN_CRAWLING_IN_PROCESS", false),
 	    			Filters.eq("COLUMN_TIMESTAMP_LAST_CRAWL", System.currentTimeMillis() - generalRecrawlTime * 3)
     			));
-    	
-       
-        
-        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_NAME).find(filter).iterator();
-        
-        
 
-//        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
-//        while (uriDocs.hasNext()) {
-//            try {
-//                Document doc = uriDocs.next();
-//                String ipString = (String) row.get(COLUMN_IP);
-//                if (ipString.contains("/")) {
-//                    ipString = ipString.split("/")[1];
-//                }
-//                urisToRecrawl.add(new CrawleableUri(new URI((String) row.get(COLUMN_URI)), InetAddress.getByName(ipString)));
-//            } catch (URISyntaxException | UnknownHostException e) {
-//                LOGGER.warn(e.toString());
-//            }
-//        }
-//
-//        // mark that the uris are in process now
-//        for (CrawleableUri uri : urisToRecrawl) {
-//            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-//                update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, true)).run(connector.connection);
-//        }
-//
+        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_NAME).find(filter).iterator();
+
+        List<CrawleableUri> urisToRecrawl = new ArrayList<>();
+        while (uriDocs.hasNext()) {
+            try {
+                Document doc = uriDocs.next();
+                String ipString = (String) doc.get(COLUMN_IP);
+                if (ipString.contains("/")) {
+                    ipString = ipString.split("/")[1];
+                }
+                urisToRecrawl.add(new CrawleableUri(new URI((String) doc.get(COLUMN_URI)), InetAddress.getByName(ipString)));
+            } catch (URISyntaxException | UnknownHostException e) {
+                LOGGER.warn(e.toString());
+            }
+        }
+
+        // mark that the uris are in process now
+        for (CrawleableUri uri : urisToRecrawl) {
+        	
+        	BasicDBObject newDocument = new BasicDBObject();
+        	newDocument.append("$set", new BasicDBObject().append(COLUMN_CRAWLING_IN_PROCESS, true));
+        	
+        	BasicDBObject searchQuery = new BasicDBObject().append(COLUMN_URI,  uri.getUri().toString());
+        	
+        	 mongoDB.getCollection(COLLECTION_NAME).updateMany(searchQuery, newDocument);
+        	
+        }
+
 //        cursor.close();
-        return null;
+        return urisToRecrawl;
     }
 
     @Override
@@ -178,5 +200,11 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         // TODO Auto-generated method stub
         return 0;
     }
+
+	@Override
+	public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

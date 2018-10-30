@@ -35,10 +35,10 @@ public class RobotsManagerImplTest extends AbstractServerMockUsingTest {
 
     @Parameters
     public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[][] { { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/test"), true, 10000 },
-                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/revision/"), false, 10000 },
-                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test"), true, 10000 },
-                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test/history"), false, 10000 },
+        return Arrays.asList(new Object[][] { { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/test"), true, 2000 },
+                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/revision/"), false, 2000 },
+                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test"), true, 2000 },
+                { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/dataset/test/history"), false, 2000 },
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/resource/Berlin"), true, 10000 },
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/page/Berlin"), true, 10000 },
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/includes/Berlin"), false, 10000 },

@@ -77,7 +77,10 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
             initWithoutSpring();
         }
-        uriSetRequest = serializer.serialize(new UriSetRequest());
+        
+       UriSetRequest uriSetReq = new UriSetRequest(worker.getUri(),false);
+        
+        uriSetRequest = serializer.serialize(uriSetReq);
 
         deduplicationActive = EnvVariables.getBoolean(Constants.DEDUPLICATION_ACTIVE_KEY, Constants.DEFAULT_DEDUPLICATION_ACTIVE, LOGGER);
 
@@ -195,6 +198,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 //                }
 //            }
             senderFrontier.sendData(serializer.serialize(new CrawlingResult(uris, worker.getUri())));
+            
 
             if (deduplicationActive) {
                 UriSet uriSet = new UriSet(uris);
