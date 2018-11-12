@@ -1,0 +1,8 @@
+<head>
+		<title>Test 0046</title>    
+  </head>
+  <body prefix="foaf: http://xmlns.com/foaf/0.1/">
+  	<div rel="foaf:maker" typeof="foaf:Document">
+	    <p property="foaf:name">John Doe</p>
+   	</div>
+  </body>

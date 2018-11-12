@@ -1,0 +1,8 @@
+<<>> <http://www.w3.org/1999/xhtml/vocab#index> <|/#>;
+<<>> <http://www.w3.org/1999/xhtml/vocab#next> <|/0115.xhtml>;
+<<>> <http://www.w3.org/1999/xhtml/vocab#up> <|/>;
+<<>> <http://creativecommons.org/ns#attributionURL> <|/>;
+<<>> <http://rdfa.info/vocabs/rdfa-test#cornerCase1> <|/>;
+<<>> <http://rdfa.info/vocabs/rdfa-test#cornerCase3> <|/...>;
+<<>> <http://rdfa.info/vocabs/rdfa-test#cornerCase4> <|/0114.xhtml?foo=bar../baz>;
+<<>> <http://rdfa.info/vocabs/rdfa-test#cornerCase5> <|/.../.htaccess>.

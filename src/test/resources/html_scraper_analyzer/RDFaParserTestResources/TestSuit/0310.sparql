@@ -1,0 +1,3 @@
+<<>> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.example.com/roles/somerole> .
+<<>> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#someOtherRole> .
+<<>> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.example.com/alternate/role> .

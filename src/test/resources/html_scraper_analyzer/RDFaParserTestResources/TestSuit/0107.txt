@@ -1,0 +1,6 @@
+<head>
+	<title>Test 0107</title>
+  </head>
+  <body prefix="ex: http://example.org/">
+  	  <div rel="next"></div>
+  </body>

@@ -1,0 +1,5 @@
+<<>> <http://xmlns.com/foaf/0.1/primaryTopic> <<>#bbq> .
+<<>> <http://purl.org/dc/terms/creator> "Jo" .
+<<>#bbq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/12/cal/ical#Vevent> .
+<<>#bbq> <http://www.w3.org/2002/12/cal/ical#summary> "one last summer barbecue" .
+<<>#bbq> <http://www.w3.org/2002/12/cal/ical#dtstart> "2015-09-16T16:00:00-05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
