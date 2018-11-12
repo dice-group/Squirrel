@@ -12,7 +12,7 @@ public class UriSetRequest implements Serializable {
     private String idOfWorker;
 
     /**
-     * Indicates whether the worker (see {@link #idOfWorker}) sends {@link org.aksw.simba.squirrel.worker.impl.AliveMessage}.
+     * Indicates whether the worker (see {@link #idOfWorker}) sends {@link org.dice_research.squirrel.worker.impl.AliveMessage}.
      */
     private boolean workerSendsAliveMessages;
 

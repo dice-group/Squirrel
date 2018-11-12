@@ -43,13 +43,13 @@ These are the components of Squirrel that can be customized:
 #### Analyzer
 Analyses the fetched data and extract triples from it. Note: the analyzer implementations are managed by the `SimpleAnalyzerManager`. Any implementations should be passed in the constructor of this class, like the example below:
 ```xml
-<bean id="analyzerBean" class="org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager">
+<bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
         <constructor-arg index="0" ref="uriCollectorBean" />
         <constructor-arg index="1" >
         	<array value-type="java.lang.String">
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HDTAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer</value>
+			  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
+			  <value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
+			  <value>org.dice_research.squirrel.analyzer.impl.HTMLScraperAnalyzer</value>
 		</array>
        	</constructor-arg>
 </bean>

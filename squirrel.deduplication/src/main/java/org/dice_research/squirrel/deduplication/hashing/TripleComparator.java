@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * A component for comparing two sets of triples and telling whether they are equal.
- * The idea is that this could be done by the {@link org.aksw.simba.squirrel.sink.impl.sparql.SparqlBasedSink} efficiently.
+ * The idea is that this could be done by the {@link org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink} efficiently.
  */
 public interface TripleComparator {
 
