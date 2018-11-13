@@ -2,52 +2,27 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
-import org.apache.any23.Any23;
-import org.apache.any23.source.DocumentSource;
-import org.apache.any23.source.StringDocumentSource;
-import org.apache.any23.writer.NTriplesWriter;
-import org.apache.any23.writer.TripleHandler;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.net.smtp.SMTP;
-import org.apache.jena.datatypes.BaseDatatype;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.update.UpdateAction;
-import org.dice_research.squirrel.analyzer.impl.MicrodataPickaxeParser;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
+//import org.dice_research.squirrel.analyzer.impl.MicrodataPickaxeParser;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,10 +31,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import com.fasterxml.jackson.annotation.JsonFormat.Value;
-import com.google.common.io.Files;
-import com.rethinkdb.gen.ast.ForEach;
 
 @RunWith(Parameterized.class)
 public class MicrodataParserTest extends RDFParserTest {
@@ -181,7 +152,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicrodataPickaxeParser();
+//		analyzer = new MicrodataPickaxeParser();
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));

@@ -7,9 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Iterator;
 
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.Sink;
 import org.semarglproject.rdf.NTriplesSerializer;
 import org.semarglproject.rdf.ParseException;
 import org.semarglproject.rdf.rdfa.RdfaParser;
@@ -49,5 +49,11 @@ public class RDFaSemarglParser implements Analyzer {
 			e.printStackTrace();
 		}		
 		return null;
+	}
+
+	@Override
+	public boolean isElegible(CrawleableUri curi, File data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.Sink;
 import org.apache.any23.Any23;
 import org.apache.any23.configuration.DefaultConfiguration;
 import org.apache.any23.configuration.ModifiableConfiguration;
@@ -40,6 +40,12 @@ public class MicrodataParser implements Analyzer {
 			e.printStackTrace();
 		}    
 		return null;
+	}
+
+	@Override
+	public boolean isElegible(CrawleableUri curi, File data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -24,9 +24,9 @@ import java.util.Set;
 import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import org.aksw.jena_sparql_api.sparql.ext.datatypes.RDFDatatypeDate;
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;

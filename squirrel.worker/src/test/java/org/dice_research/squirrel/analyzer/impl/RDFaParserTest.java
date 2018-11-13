@@ -24,10 +24,10 @@ import java.util.Set;
 import java.util.stream.DoubleStream;
 
 import org.aksw.commons.util.jdbc.Index;
-import org.aksw.simba.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.analyzer.Analyzer;
 
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.impl.mem.InMemorySink;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

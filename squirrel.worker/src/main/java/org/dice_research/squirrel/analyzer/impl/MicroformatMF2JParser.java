@@ -17,9 +17,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.Sink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -95,6 +95,12 @@ public class MicroformatMF2JParser implements Analyzer {
 		}
 	    //System.out.println("model size: " + model.size());
 	    return model;
+	}
+
+	@Override
+	public boolean isElegible(CrawleableUri curi, File data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

@@ -23,11 +23,36 @@
             <artifactId>jackan</artifactId>
             <version>0.4.2</version>
         </dependency>
-        <!-- Microformats parser -->
-        <dependency>
-            <groupId>com.kylewm</groupId>
-            <artifactId>mf2j</artifactId>
-        </dependency>
+<!-- Microformats parser -->
+
+			<dependency>
+				<groupId>net.rootdev</groupId>
+				<artifactId>java-rdfa</artifactId>
+				<version>0.4.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.mautini</groupId>
+				<artifactId>schemaorg-java</artifactId>
+				<version>1.0.1</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.semarglproject</groupId>
+				<artifactId>semargl-rdfa</artifactId>
+				<version>0.7</version>
+			</dependency>
+			<dependency>
+				<groupId>com.kylewm</groupId>
+				<artifactId>mf2j</artifactId>
+				<version>0.0.4</version>
+			</dependency>
+
+			<dependency>
+			    <groupId>org.apache.any23</groupId>
+			    <artifactId>apache-any23-core</artifactId>
+			    <version>2.2</version>
+			</dependency>
+			
 
         <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- JUnit -->

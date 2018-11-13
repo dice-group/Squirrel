@@ -13,9 +13,9 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
-import org.aksw.simba.squirrel.analyzer.Analyzer;
-import org.aksw.simba.squirrel.data.uri.CrawleableUri;
-import org.aksw.simba.squirrel.sink.Sink;
+import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.Sink;
 import org.apache.jena.graph.Factory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -74,5 +74,11 @@ public class JavaRDFaParser implements Analyzer {
 		//System.out.println(base);
 		//System.out.println(oldbase);
 		return result;
+	}
+
+	@Override
+	public boolean isElegible(CrawleableUri curi, File data) {
+		// TODO Auto-generated method stub
+		return false;
 	}	
 }
