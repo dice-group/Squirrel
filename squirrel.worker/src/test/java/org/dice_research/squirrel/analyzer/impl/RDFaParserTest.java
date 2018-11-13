@@ -2,72 +2,50 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.DoubleStream;
 
-import org.aksw.commons.util.jdbc.Index;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Statement;
 import org.dice_research.squirrel.analyzer.Analyzer;
-
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
-import org.apache.commons.io.IOUtils;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.riot.thrift.Thift2Binding;
-import org.apache.jena.sparql.function.library.namespace;
-import org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.google.common.io.Files;
-
 @RunWith(Parameterized.class)
 public class RDFaParserTest extends RDFParserTest {
 	
 	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
-	private static String pathextension = "\\html_scraper_analyzer\\RDFaParserTestResources\\";
-	private static String pathextensiontestsuit = "\\html_scraper_analyzer\\RDFaParserTestResources\\TestSuit\\";
-	private static String pathextensionsuit = "\\html_scraper_analyzer\\RDFaParserTestResources\\rdfa1.1\\";
-	private static String pathextensionhtml4 = "html4\\";
-	private static String pathextensionhtml5 = "html5\\";
-	private static String pathextensionhtml5invalid = "html5-invalid\\";
-	private static String pathextensionsvg = "svg\\";
-	private static String pathextensionxhtml1 = "xhtml1\\";
-	private static String pathextensionxhtml5 = "xhtml5\\";
-	private static String pathextensionxhtml5invalid = "xhtml5-invalid\\";
-	private static String pathextensionxml = "xml\\";
+	private static String pathextension = "html_scraper_analyzer\\RDFaParserTestResources\\";
+	private static String pathextensiontestsuit = "html_scraper_analyzer\\RDFaParserTestResources\\TestSuit\\";
+	private static String pathextensionsuit = "html_scraper_analyzer/RDFaParserTestResources/rdfa1.1/";
+	private static String pathextensionhtml4 = "html4/";
+	private static String pathextensionhtml5 = "html5/";
+	private static String pathextensionhtml5invalid = "html5-invalid/";
+	private static String pathextensionsvg = "svg/";
+	private static String pathextensionxhtml1 = "xhtml1/";
+	private static String pathextensionxhtml5 = "xhtml5/";
+	private static String pathextensionxhtml5invalid = "xhtml5-invalid/";
+	private static String pathextensionxml = "xml/";
 	
 	private static Analyzer analyzer;
 	private CrawleableUri curi;
@@ -1011,13 +989,18 @@ public class RDFaParserTest extends RDFParserTest {
 		//curi = new CrawleableUri(new URI("rdfaParserTest"));
 		System.out.println(strindex);
 		
-		URL test_url = ClassLoader.getSystemResource(testData);
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		
+		
+		
+		URL test_url = classLoader.getResource(testData);
 		File test = new File(test_url.toURI());
-		URL result_url = ClassLoader.getSystemResource(resultData);
+		URL result_url = classLoader.getResource(resultData);
 		File result = new File(result_url.toURI());
 		
-		String pathcontext = testData.substring(0,testData.lastIndexOf('\\'));
-		pathcontext = context+pathcontext.substring(pathcontext.lastIndexOf('\\')+1,pathcontext.length())+"/"+testData.substring(testData.lastIndexOf('\\')+1,testData.length());
+		String pathcontext = testData.substring(0,testData.lastIndexOf('/'));
+		pathcontext = context+pathcontext.substring(pathcontext.lastIndexOf('/')+1,pathcontext.length())+"/"+testData.substring(testData.lastIndexOf('/')+1,testData.length());
 		//System.out.println(pathcontext);
 		curi = new CrawleableUri(new URI(pathcontext));
 		
@@ -1135,19 +1118,6 @@ public class RDFaParserTest extends RDFParserTest {
 		//double macrofscore = 2 / ( (1/macrop) + (1/macror) );
 		double microfscore = 2 / ( (1/microp) + (1/micror) );
 		
-		System.out.println("Macro F-Score");
-		System.out.println(macrofscore);
-		System.out.println("Micro F-Score");
-		System.out.println(microfscore);
-		System.out.println();
-		System.out.println("Macro Precision");
-		System.out.println(macrop);
-		System.out.println("Macro Recall");
-		System.out.println(macror);
-		System.out.println("Micro Precision");
-		System.out.println(microp);
-		System.out.println("Micro Recall");
-		System.out.println(micror);		
 	}
 	
 }
