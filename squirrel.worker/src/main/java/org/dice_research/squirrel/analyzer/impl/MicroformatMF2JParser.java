@@ -1,9 +1,9 @@
 package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,27 +11,41 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.dice_research.squirrel.analyzer.Analyzer;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.sink.Sink;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.tika.Tika;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
+import org.dice_research.squirrel.analyzer.commons.FilterSinkRDF;
+import org.dice_research.squirrel.collect.UriCollector;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.Sink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.kylewm.mf2j.Mf2Parser;
 
-import tdb.tools.dumpbpt;
+/**
+ * 
+ * MF2JParser for Microformats
+ * 
+ * @author Meyer1995
+ *
+ */
 
-public class MicroformatMF2JParser implements Analyzer {
+public class MicroformatMF2JParser extends AbstractAnalyzer {
+	
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MicroformatMF2JParser.class);
+
+	public MicroformatMF2JParser(UriCollector collector) {
+		super(collector);
+	}
 
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
@@ -44,8 +58,8 @@ public class MicroformatMF2JParser implements Analyzer {
 			     file+= line+"\n";
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Exception while analyzing. Aborting. ", e);
+
 		}
 		Mf2Parser parser = new Mf2Parser()
 		    .setIncludeAlternates(true)
@@ -63,9 +77,13 @@ public class MicroformatMF2JParser implements Analyzer {
 		String syntax = "N-TRIPLE";
 		StringWriter out = new StringWriter();
 		model.write(out, syntax);
-		String result = out.toString();	
-		sink.addData(curi, result);
-		return null;
+		String result = out.toString();
+		
+		StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
+		RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);
+		
+
+		return collector.getUris(curi);
 	}
 	
 	public static String addContextToJSON(String data) {
@@ -91,7 +109,7 @@ public class MicroformatMF2JParser implements Analyzer {
 			model = ModelFactory.createDefaultModel()
 			        .read(IOUtils.toInputStream(content, "UTF-8"), null, "JSON-LD");
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception while analyzing. Aborting. ", e);
 		}
 	    //System.out.println("model size: " + model.size());
 	    return model;
@@ -99,8 +117,20 @@ public class MicroformatMF2JParser implements Analyzer {
 
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
-		// TODO Auto-generated method stub
-		return false;
+		String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+        if ((contentType != null && contentType.equals("text/html"))) {
+            return true;
+        }
+        Tika tika = new Tika();
+        try (InputStream is = new FileInputStream(data)) {
+            String mimeType = tika.detect(is);
+            if (mimeType.equals("text/html")) {
+                return false;
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error was found when verify eligibility", e);
+        }
+        return false;
 	}
 	
 }

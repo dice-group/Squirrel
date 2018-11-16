@@ -19,7 +19,10 @@ import java.util.Set;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
 import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.collect.SimpleUriCollector;
+import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,7 +52,9 @@ public class RDFaParserTest extends RDFParserTest {
 	private static String pathextensionxhtml5invalid = "xhtml5-invalid/";
 	private static String pathextensionxml = "xml/";
 	
-	private static Analyzer analyzer;
+	private static Analyzer analyzer1;
+	private static Analyzer analyzer2;
+	private UriCollector collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 	private CrawleableUri curi;
 	private static InMemorySink sink;
 	ClassLoader classLoader = getClass().getClassLoader();
@@ -983,7 +988,8 @@ public class RDFaParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new RDFaSemarglParser();
+		analyzer1 = new RDFaSemarglParser(collector);
+//		analyzer2 = new RDFaParser(collector);
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));
@@ -1005,8 +1011,14 @@ public class RDFaParserTest extends RDFParserTest {
 		pathcontext = context+pathcontext.substring(pathcontext.lastIndexOf('/')+1,pathcontext.length())+"/"+testData.substring(testData.lastIndexOf('/')+1,testData.length());
 		//System.out.println(pathcontext);
 		curi = new CrawleableUri(new URI(pathcontext));
+		collector.openSinkForUri(curi);
+		sink.openSinkForUri(curi);
 		
-		analyzer.analyze(curi, test, sink);
+		analyzer1.analyze(curi, test, sink);
+//		analyzer2.analyze(curi, test, sink);
+
+		collector.closeSinkForUri(curi);
+		sink.closeSinkForUri(curi);
 		//System.out.print("Analyze ok ");
 		
 		List<byte[]> tdp = sink.getCrawledUnstructuredData().get(pathcontext);

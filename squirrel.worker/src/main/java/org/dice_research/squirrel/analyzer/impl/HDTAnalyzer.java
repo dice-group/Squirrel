@@ -13,6 +13,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -25,13 +26,14 @@ import org.rdfhdt.hdt.triples.TripleString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HDTAnalyzer implements Analyzer {
+public class HDTAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HDTAnalyzer.class);
 
     private UriCollector collector;
 
     public HDTAnalyzer(UriCollector collector) {
+    	super(collector);
         this.collector = collector;
     }
 
