@@ -68,7 +68,7 @@ public class RDFaSemarglParser extends AbstractAnalyzer {
 			 RDFDataMgr.parse(filtered, new ByteArrayInputStream(outputstream.toString("UTF-8").getBytes()), Lang.NTRIPLES);
 			
 		} catch (ParseException | UnsupportedEncodingException e) {
-			LOGGER.error("Exception while analyzing. Aborting. ", e);
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
 		}		
 		
 		return collector.getUris(curi);

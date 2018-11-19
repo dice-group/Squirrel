@@ -68,7 +68,7 @@ public class MicrodataParser extends AbstractAnalyzer {
 			RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);
 			
 		} catch (IOException | ExtractionException | TripleHandlerException  e) {
-			LOGGER.error("Exception while analyzing. Aborting. ", e);
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
 		}    
 		return collector.getUris(curi);
 	}

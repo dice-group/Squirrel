@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,7 +26,9 @@ import org.dice_research.squirrel.worker.Worker;
  * Uris and some meta data, like timestamps for the start and end of the
  * crawling activity.
  */
-public class CrawlingActivity {
+public class CrawlingActivity implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
     // /**
     // * The logger.

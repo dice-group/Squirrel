@@ -58,7 +58,7 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 			     file+= line+"\n";
 			}
 		} catch (IOException e) {
-			LOGGER.error("Exception while analyzing. Aborting. ", e);
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
 
 		}
 		Mf2Parser parser = new Mf2Parser()
@@ -79,8 +79,12 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 		model.write(out, syntax);
 		String result = out.toString();
 		
-		StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
-		RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);
+		try {
+			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
+			RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);	
+		}catch (Exception e) {
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
+		}
 		
 
 		return collector.getUris(curi);
