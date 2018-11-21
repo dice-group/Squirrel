@@ -1,0 +1,9 @@
+<head>
+	<title>Test 0108</title>
+  </head>
+  <body prefix="ex: http://example.org/">
+    <p about="http://example.org/node" property="ex:property"
+       datatype="" xml:lang="el">ελληνικό
+άσπρο   διάστημα
+</p>
+  </body>

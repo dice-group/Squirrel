@@ -1,0 +1,10 @@
+<head>
+      <title>Test 0120</title>
+   </head>
+   <body prefix="dc: http://purl.org/dc/elements/1.1/ example: http://example.org/">
+      <p about="[:]">
+	         The
+	         <span property="dc:title">The XHTML Vocabulary Document</span>
+	         is the default prefix for XHTML+RDFa 1.0.
+	      </p>
+   </body>

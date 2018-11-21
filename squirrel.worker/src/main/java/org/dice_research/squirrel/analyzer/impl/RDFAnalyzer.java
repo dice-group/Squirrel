@@ -2,23 +2,20 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFBase;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
+import org.dice_research.squirrel.analyzer.commons.FilterSinkRDF;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.ActivityUtil;
@@ -26,16 +23,23 @@ import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RDFAnalyzer implements Analyzer {
+/**
+ * 
+ * Analyzer to parse RDF lang types
+ * 
+ * 
+ * 
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
+ */
+
+public class RDFAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
-
-    private UriCollector collector;
 
     private List<Lang> listLangs = new ArrayList<Lang>();
 
     public RDFAnalyzer(UriCollector collector) {
-        this.collector = collector;
+    	super(collector);
         listLangs.add(Lang.NT);
         listLangs.add(Lang.NQUADS);
         listLangs.add(Lang.RDFJSON);
@@ -78,32 +82,6 @@ public class RDFAnalyzer implements Analyzer {
         } finally {
             IOUtils.closeQuietly(fin);
         }
-    }
-
-    protected class FilterSinkRDF extends StreamRDFBase {
-
-        private CrawleableUri curi;
-        private Sink sink;
-        private UriCollector collector;
-
-        public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector) {
-            this.curi = curi;
-            this.sink = sink;
-            this.collector = collector;
-        }
-
-        @Override
-        public void triple(Triple triple) {
-            sink.addTriple(curi, triple);
-            collector.addTriple(curi, triple);
-        }
-
-        @Override
-        public void quad(Quad quad) {
-            sink.addTriple(curi, quad.asTriple());
-            collector.addTriple(curi, quad.asTriple());
-        }
-
     }
 
 //    @Override

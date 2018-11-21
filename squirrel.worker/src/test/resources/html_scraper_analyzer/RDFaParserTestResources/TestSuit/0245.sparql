@@ -1,0 +1,2 @@
+<file:/F:/Timo/Studium/Semester%206/Abschlussarbeit/Projekt/target/test-classes/html_scraper_analyzer/RDFaParserTestResources/TestSuit/0245.txt> <http://www.w3.org/ns/rdfa#usesVocabulary> <http://rdfa.info/vocabs/rdfa-test#> .
+_:n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://rdfa.info/vocabs/rdfa-test#BaseClass> .

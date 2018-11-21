@@ -1,0 +1,3 @@
+_:n0 <http://xmlns.com/foaf/0.1/name> "Manu Sporny" .
+_:n0 <http://xmlns.com/foaf/0.1/knows> _:n1 .
+_:n1 <http://xmlns.com/foaf/0.1/name> "Ralph Swick" .

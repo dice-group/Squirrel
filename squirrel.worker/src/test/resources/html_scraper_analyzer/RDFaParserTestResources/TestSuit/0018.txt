@@ -1,0 +1,11 @@
+<head>
+	<title>Test 0018</title>
+  </head>
+  <body prefix="dc: http://purl.org/dc/elements/1.1/">>
+  	<p>
+	  This photo was taken by
+	  <a about="photo1.jpg" rel="http://purl.org/dc/elements/1.1/creator"
+		 href="http://www.blogger.com/profile/1109404">Mark Birbeck</a>.
+	</p>	 
+  </body>
+

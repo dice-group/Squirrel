@@ -1,0 +1,2 @@
+<<>> <http://www.w3.org/ns/rdfa#usesVocabulary> <http://rdfa.info/vocabs/rdfa-test#> .
+<<>> <http://rdfa.info/vocabs/rdfa-test#subProp> <http://rdfa.info/vocabs/rdfa-test#subProp> .

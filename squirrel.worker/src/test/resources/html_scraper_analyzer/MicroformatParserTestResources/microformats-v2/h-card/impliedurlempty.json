@@ -1,0 +1,43 @@
+{
+    "items": [{
+        "type": ["h-card"],
+        "properties": {
+            "name": ["Jane Doe"],
+            "url": ["http://example.com/"]
+        }
+    },
+    {
+        "type": ["h-card"],
+        "properties": {
+            "name": ["Jane Doe"],
+            "url": ["http://example.com/"]
+        }
+    },
+    {
+        "type": ["h-card"],
+        "properties": {
+            "name": ["Jane Doe"],
+            "url": ["http://example.com/"]
+        }
+    },
+    {
+        "type": ["h-card"],
+        "properties": {
+            "name": ["Jane Doe"],
+            "url": ["http://example.com/"]
+        }
+    },
+    {
+        "type": ["h-card"],
+        "properties": {},
+        "children": [{
+            "type": ["h-card"],
+            "properties": {
+                "name": ["Jane Doe"],
+                "url": ["http://example.com/"]
+            }
+        }]
+    }],
+    "rels": {},
+    "rel-urls": {}
+}

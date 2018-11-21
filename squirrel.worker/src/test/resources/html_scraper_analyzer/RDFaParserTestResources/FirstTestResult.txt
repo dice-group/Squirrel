@@ -1,0 +1,5 @@
+<http://dbpedia.org/resource/Albert_Einstein> <http://xmlns.com/foaf/0.1/name> "Albert Einstein" .
+<http://dbpedia.org/resource/Albert_Einstein> <dbp:dateOfBirth> "1879-03-14"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://dbpedia.org/resource/Albert_Einstein> <dbp:birthPlace> <http://dbpedia.org/resource/German_Empire> .
+<http://dbpedia.org/resource/German_Empire> <dbp:conventionalLongName> "the German Empire" .
+<http://dbpedia.org/resource/German_Empire> <dbp-owl:capital> <http://dbpedia.org/resource/Berlin> .
