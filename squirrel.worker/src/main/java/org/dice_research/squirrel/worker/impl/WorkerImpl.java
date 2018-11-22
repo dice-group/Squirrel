@@ -35,7 +35,6 @@ import org.dice_research.squirrel.utils.TempPathUtils;
 import org.dice_research.squirrel.worker.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -220,6 +219,7 @@ public class WorkerImpl implements Worker, Closeable {
         uri.addData(Constants.UUID_KEY, UUID.randomUUID().toString());
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
+        try {
         
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
@@ -295,8 +295,10 @@ public class WorkerImpl implements Worker, Closeable {
         // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
-        // Remove the activity since we don't want to send it back to the Frontier
-        uri.getData().remove(Constants.URI_CRAWLING_ACTIVITY);
+        } finally {
+            // Remove the activity since we don't want to send it back to the Frontier
+            uri.getData().remove(Constants.URI_CRAWLING_ACTIVITY);
+        }
 
         // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs
         // because of too much nodes)
