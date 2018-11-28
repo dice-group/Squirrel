@@ -18,11 +18,6 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.fetcher.Fetcher;
-import org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher;
-import org.dice_research.squirrel.fetcher.ftp.FTPFetcher;
-import org.dice_research.squirrel.fetcher.http.HTTPFetcher;
-import org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
-import org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.metadata.CrawlingActivity.CrawlingURIState;
@@ -77,7 +72,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
-    private final int id = (int) Math.floor(Math.random() * 100000);
+//    private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
     /**
@@ -101,10 +96,11 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier,Fetcher fetcher, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
             UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
+        this.fetcher = fetcher;
         this.analyzer = analyzer;
         this.manager = manager;
         this.serializer = serializer;
@@ -122,9 +118,9 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         this.collector = collector;
-        fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher(), new SparqlBasedFetcher());
+//        fetcher = new SimpleOrderedFetcherManager(
+//                // new SparqlBasedFetcher(),
+//        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }

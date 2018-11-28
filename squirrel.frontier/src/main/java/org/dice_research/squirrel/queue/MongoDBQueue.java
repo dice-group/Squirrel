@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoWriteException;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -211,14 +212,24 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     		
 
     	} catch (Exception e) {
-			LOGGER.error("Error while adding uri to MongoDBQueue",e);
+    		if(e instanceof MongoWriteException)
+    			LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
+    		else
+    			LOGGER.error("Error while adding uri to MongoDBQueue",e);
 		}
     }
 	
     public void addCrawleableUri(CrawleableUri uri) {
-    
+    	
+    	try {
     	mongoDB.getCollection(COLLECTION_NAME).insertOne(crawleableUriToMongoDocument(uri)[0]);
     	mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
+    	}catch (Exception e) {
+    		if(e instanceof MongoWriteException)
+    			LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
+    		else
+    			LOGGER.error("Error while adding uri to MongoDBQueue",e);
+		}
     	  
     	  LOGGER.debug("Inserted new UriTypePair");
     }

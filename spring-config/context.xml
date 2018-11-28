@@ -32,14 +32,15 @@
         
         <bean id="workerBean" class="org.dice_research.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
-        	<constructor-arg index="1" ref="sinkBean" />
-        	<constructor-arg index="2" ref="analyzerBean" />
-        	<constructor-arg index="3" ref="robotsManagerBean" />
-        	<constructor-arg index="4" ref="serializerBean" />
-        	<constructor-arg index="5" ref="uriCollectorBean" />
-        	<constructor-arg index="6" value="2000" />
-        	<constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
-            <constructor-arg index="8" value="false" /><!-- Logging -->
+        	<constructor-arg index="1" ref="fetcherBean" />
+        	<constructor-arg index="2" ref="sinkBean" />
+        	<constructor-arg index="3" ref="analyzerBean" />
+        	<constructor-arg index="4" ref="robotsManagerBean" />
+        	<constructor-arg index="5" ref="serializerBean" />
+        	<constructor-arg index="6" ref="uriCollectorBean" />
+        	<constructor-arg index="7" value="2000" />
+        	<constructor-arg index="8" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
+            <constructor-arg index="9" value="false" /><!-- Logging -->
         </bean> 
         
         <bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
@@ -56,8 +57,20 @@
         	</constructor-arg>
         </bean>
         
-       	
-         
+        <bean id="fetcherBean" class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
+        	<constructor-arg>
+        		<list>
+        			<ref bean="httpFetcherBean" />
+        			<ref bean="ftpFetcherBean" />
+        		</list>
+        	</constructor-arg>
+        </bean>
+        
+        <bean id="httpFetcherBean" class="org.dice_research.squirrel.fetcher.http.HTTPFetcher" />
+        <bean id="ftpFetcherBean" class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
+        <bean id="sparqlFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher" />
+        
+        
         <!-- Output folder for FileBasedSink -->
         <bean id="outputFolderBean" class="java.io.File">
         	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />

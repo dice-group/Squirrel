@@ -92,6 +92,7 @@ public class SparqlBasedFetcher implements Fetcher {
         qef = new QueryExecutionFactoryHttp(uri);
         qef = new QueryExecutionFactoryDelay(qef, DELAY);
         try {
+        	LOGGER.info("Starting to Query uri:" + uri);
             return new QueryExecutionFactoryPaginated(qef, 100);
         } catch (Exception e) {
             LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
