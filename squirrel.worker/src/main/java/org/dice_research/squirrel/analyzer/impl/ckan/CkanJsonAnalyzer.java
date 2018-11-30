@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -30,7 +31,7 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-public class CkanJsonAnalyzer implements Analyzer {
+public class CkanJsonAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CkanJsonAnalyzer.class);
 
@@ -38,6 +39,7 @@ public class CkanJsonAnalyzer implements Analyzer {
     protected ObjectMapper mapper;
 
     public CkanJsonAnalyzer(UriCollector collector) {
+    	super(collector);
         this.collector = collector;
         mapper = new ObjectMapper();
         mapper.registerModule(new JackanModule());

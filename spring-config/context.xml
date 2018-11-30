@@ -47,11 +47,14 @@
         	<constructor-arg index="0" ref="uriCollectorBean" />
         	<constructor-arg index="1" >
         		<array value-type="java.lang.String">
+        		<!--  
+     			  <value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value> 
+				  -->
 				  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
 				</array>
         	</constructor-arg>
@@ -60,8 +63,13 @@
         <bean id="fetcherBean" class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
         	<constructor-arg>
         		<list>
+        		 
         			<ref bean="httpFetcherBean" />
+        		<!-- 
         			<ref bean="ftpFetcherBean" />
+        			<ref bean="sparqlFetcherBean" />
+        		 
+        			<ref bean="ckanFetcherBean" />-->
         		</list>
         	</constructor-arg>
         </bean>
@@ -69,6 +77,7 @@
         <bean id="httpFetcherBean" class="org.dice_research.squirrel.fetcher.http.HTTPFetcher" />
         <bean id="ftpFetcherBean" class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
         <bean id="sparqlFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher" />
+        <bean id="ckanFetcherBean" class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />
         
         
         <!-- Output folder for FileBasedSink -->
