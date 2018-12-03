@@ -1,0 +1,7 @@
+<head about="" xml:lang="fr">
+  	<title xml:lang="en">Test 0013</title>
+  	<meta about="http://example.org/node" property="http://example.org/property" content="chat" />
+  </head>
+  <body>
+  	<p></p>
+  </body>

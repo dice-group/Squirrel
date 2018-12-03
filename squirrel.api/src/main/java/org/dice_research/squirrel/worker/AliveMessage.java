@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /** @author Philip Frerk
  * A simple message format for the {@link org.dice_research.squirrel.worker.Worker}
- * to the {@link org.aksw.simba.squirrel.components.FrontierComponent} that he is still alive.
+ * to the {@link org.dice_research.squirrel.components.FrontierComponent} that he is still alive.
  * The {@link org.dice_research.squirrel.worker.Worker} identifies himself by the {@link #idOfWorker}.
  */
 public class AliveMessage implements Serializable {

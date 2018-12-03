@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //ignore for the release
-@Ignore
+
 public class HdtBasedSinkTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HdtBasedSinkTest.class);
@@ -152,7 +152,7 @@ public class HdtBasedSinkTest {
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) throws NotFoundException {
-    	String fileName = UriUtils.generateFileName(uri.toString(), useCompression);
+    	String fileName = UriUtils.generateFileName(new CrawleableUri(uri), "").substring(0,UriUtils.generateFileName(new CrawleableUri(uri), "").length()-1);
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()

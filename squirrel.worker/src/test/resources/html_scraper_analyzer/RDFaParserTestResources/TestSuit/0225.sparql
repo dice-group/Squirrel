@@ -1,0 +1,6 @@
+_:n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Foo" .
+_:n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<|/foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:n0 .
+_:n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Bar" .
+_:n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<|/foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:n1 .

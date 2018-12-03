@@ -1,0 +1,9 @@
+      {"foaf": "http://xmlns.com/foaf/0.1/"}
+  <head>
+		<title>Test 0050</title>    
+  </head>
+  <body prefix="foaf: http://xmlns.com/foaf/0.1/">
+  	<div typeof="foaf:Person">
+	    <p property="foaf:name">John Doe</p>
+   	</div>
+  </body>

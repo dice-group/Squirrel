@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Class responsible for managing analyzers injected by the Spring Context
  * 
- * @author gsjunior sjunior@mail.uni-paderborn.de
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
  *
  */
 public class SimpleAnalyzerManager implements Analyzer{
@@ -45,12 +46,11 @@ public class SimpleAnalyzerManager implements Analyzer{
 		for(String analyzer: analyzers) {
 			try {
 				Class<?> cls = Class.forName(analyzer);
-					if(Analyzer.class.isAssignableFrom(cls)) {
+					if(AbstractAnalyzer.class.isAssignableFrom(cls)) {
 						Analyzer a = (Analyzer) Class.forName(cls.getName()).getConstructor(UriCollector.class).newInstance(uriCollector);
 						this.analyzers.put(cls.getName(), a);
 					}else {
-						LOGGER.error("The class " + cls.getName() + " does not implement the Analyzer interface");
-
+						LOGGER.error("The class " + cls.getName() + " does not extends the AbstractAnalyzer class");
 					}
 		
 			} catch (ClassNotFoundException e) {
@@ -96,7 +96,7 @@ public class SimpleAnalyzerManager implements Analyzer{
 				
 				ActivityUtil.addStep(curi, analyzerEntry.getValue().getClass());
 				
-				return analyzerEntry.getValue().analyze(curi, data, sink);
+				iterator = analyzerEntry.getValue().analyze(curi, data, sink);
 			}
 		}
 		return iterator;

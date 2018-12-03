@@ -9,14 +9,14 @@ import java.util.List;
 import org.apache.jena.graph.Triple;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.analyzer.Analyzer;
+import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HTMLScraperAnalyzer implements Analyzer {
+public class HTMLScraperAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTMLScraperAnalyzer.class);
 
@@ -24,11 +24,13 @@ public class HTMLScraperAnalyzer implements Analyzer {
     private HtmlScraper htmlScraper = new HtmlScraper();
 
     public HTMLScraperAnalyzer(UriCollector collector, HtmlScraper htmlScraper) {
+    	super(collector);
         this.collector = collector;
         this.htmlScraper = htmlScraper;
     }
 
     public HTMLScraperAnalyzer(UriCollector collector) {
+    	super(collector);
         this.collector = collector;
     }
 
@@ -43,8 +45,7 @@ public class HTMLScraperAnalyzer implements Analyzer {
             return collector.getUris(curi);
 
         } catch (Exception e) {
-            LOGGER.error("Exception while analyzing. Aborting. ", e);
-            LOGGER.error(e.getMessage(), e);
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
         }
         return null;
     }

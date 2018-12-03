@@ -150,7 +150,12 @@ public class FileBasedSinkTest {
     }
 
     private void checkModel(Model model, URI uri, boolean useCompression) {
-    	String fileName = UriUtils.generateFileName(uri.toString(), useCompression);
+//    	String fileName = !useCompression ? UriUtils.generateFileName(uri.toString(), useCompression) + ".ttl"
+//    			: UriUtils.generateFileName(uri.toString(), useCompression);
+    	
+    	String fileName = UriUtils.generateFileName(new CrawleableUri(uri), useCompression ? "ttl.gz" : "ttl");
+    	
+    	
         File file = new File(tempDirectory.getAbsolutePath() + File.separator + fileName);
         if (model.size() == 0) {
             Assert.assertFalse("found a file " + file.getAbsolutePath() + " while the model of " + uri.toString()
