@@ -1,0 +1,4 @@
+  <head>
+    <title>Test 0236</title>
+  </head>
+  <body which is not closed should generate a processor error

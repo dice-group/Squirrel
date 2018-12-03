@@ -1,0 +1,7 @@
+<<>> <http://www.example.org/inlist> <|/res> .
+_:n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Bar" .
+_:n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<|/res> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:n0 .
+_:n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Foo" .
+_:n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<<>> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:n1 .

@@ -4,18 +4,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.system.StreamRDFWriter;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.sink.impl.file.FileBasedSink;
 import org.rdfhdt.hdt.enums.RDFNotation;
 import org.rdfhdt.hdt.hdt.HDT;
@@ -59,7 +58,8 @@ public class HdtBasedSink extends FileBasedSink {
 	 * @throws IOException
 	 */
     public HdtBasedSink(File outputDirectory) throws IOException {
-    	super(Files.createTempDirectory("hdt_" + System.nanoTime()).toFile(), false);
+
+    	super(Files.createDirectory(new File(outputDirectory + "_hdt").toPath()).toFile(),Lang.NT, false);
 		this.outputDirectory = outputDirectory;
 	}
 
@@ -73,26 +73,26 @@ public class HdtBasedSink extends FileBasedSink {
 		super.openSinkForUri(uri);
 	}
 	
-	@Override
-    public void addMetaData(Model model) {
-    	
-    	File metaDataOutputDirectory = new File(File.separator +outputDirectory.getAbsolutePath() + File.separator + "Metadata");
-    	metaDataOutputDirectory.mkdirs();
-    	
-    	CrawleableUri curi = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
-    	
-		try {
-			if(out == null) {
-			out = new FileOutputStream(File.separator + metaDataOutputDirectory.getAbsolutePath() + File.separator  + UriUtils.generateFileName(curi.getUri().toString(), false));
-			}
-			StreamRDFWriter.write(out, model.getGraph(), Lang.NT);
-			out.flush();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			LOGGER.error("Error when storing metadata: " + e);
-		}
-    	
-    }
+//	@Override
+//    public void addMetaData(Model model) {
+//    	
+//    	File metaDataOutputDirectory = new File(File.separator +outputDirectory.getAbsolutePath() + File.separator + "Metadata");
+//    	metaDataOutputDirectory.mkdirs();
+//    	
+//    	CrawleableUri curi = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
+//    	
+//		try {
+//			if(out == null) {
+//			out = new FileOutputStream(File.separator + metaDataOutputDirectory.getAbsolutePath() + File.separator  + UriUtils.generateFileName(curi.getUri().toString(), false));
+//			}
+//			StreamRDFWriter.write(out, model.getGraph(), Lang.NT);
+//			out.flush();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			LOGGER.error("Error when storing metadata: " + e);
+//		}
+//    	
+//    }
 	
 	/**
 	 * Recovers the temp file generated and parse it to hdt
@@ -102,7 +102,7 @@ public class HdtBasedSink extends FileBasedSink {
 	@Override
 	public void closeSinkForUri(CrawleableUri uri) {
 		String  rdfInput = super.outputDirectory.getAbsolutePath() + File.separator
-                + generateFileName(uri, null, false);
+                + generateFileName(uri, Lang.NT, false);
 		
 		super.closeSinkForUri(uri);
 		

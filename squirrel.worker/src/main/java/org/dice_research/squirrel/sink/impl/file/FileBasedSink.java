@@ -54,7 +54,7 @@ public class FileBasedSink implements Sink {
     public FileBasedSink(File outputDirectory, boolean useCompression) {
         this(outputDirectory, DEFAULT_OUTPUT_LANG, useCompression);
     }
-
+    
     public FileBasedSink(File outputDirectory, Lang outputLang, boolean useCompression) {
         this.outputDirectory = outputDirectory;
         this.outputLang = outputLang;

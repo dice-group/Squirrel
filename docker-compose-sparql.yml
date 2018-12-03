@@ -14,8 +14,8 @@ services:
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
-      - SEED_FILE=/var/squirrel/seeds.txt
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+      - SEED_FILE=/var/squirrel/seeds.txt
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - COMMUNICATION_WITH_WEBSERVICE=false

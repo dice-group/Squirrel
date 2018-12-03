@@ -1,0 +1,7 @@
+<head>
+   <title>Test 0262</title>
+</head>
+<body prefix="dc: http://purl.org/dc/elements/1.1/">
+   <p>This photo was taken by <span class="author" about="photo1.jpg" property="    dc:creator
+">Mark Birbeck</span>.</p>
+</body>

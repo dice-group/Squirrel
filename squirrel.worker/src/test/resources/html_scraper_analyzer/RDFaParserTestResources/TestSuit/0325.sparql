@@ -1,0 +1,4 @@
+<http://example.org/> <http://www.w3.org/ns/rdfa#usesVocabulary> <http://schema.org/> .
+_:n1 <http://schema.org/name> "Amanda" .
+<http://example.org/#foo> <http://schema.org/refers-to> _:n1 .
+<http://example.org/#bar> <http://schema.org/refers-to> _:n1 .

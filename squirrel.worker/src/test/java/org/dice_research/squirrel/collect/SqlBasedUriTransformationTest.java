@@ -19,7 +19,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests
- * {@link SqlBasedUriCollector#getTableName(org.aksw.simba.squirrel.data.uri.CrawleableUri)}.
+ * {@link SqlBasedUriCollector#getTableName(org.dice_research.squirrel.data.uri.CrawleableUri)}.
  * 
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *

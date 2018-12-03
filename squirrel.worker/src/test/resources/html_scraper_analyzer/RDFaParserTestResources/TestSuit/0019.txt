@@ -1,0 +1,7 @@
+<head>
+	<title>Test 0019</title>
+  </head>
+  <body prefix="foaf: http://xmlns.com/foaf/0.1/">
+    <div about="mailto:manu.sporny@digitalbazaar.com"
+      rel="foaf:knows" href="mailto:michael.hausenblas@joanneum.at"></div>
+  </body>

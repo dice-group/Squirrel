@@ -9,7 +9,6 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.collect.SqlBasedUriCollector;
 import org.dice_research.squirrel.configurator.WorkerConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -18,14 +17,12 @@ import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
-import org.dice_research.squirrel.robots.RobotsManagerImpl;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.impl.file.FileBasedSink;
 import org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.dice_research.squirrel.utils.Closer;
 import org.dice_research.squirrel.worker.AliveMessage;
 import org.dice_research.squirrel.worker.Worker;
-import org.dice_research.squirrel.worker.impl.WorkerImpl;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.rabbit.DataSender;
 import org.hobbit.core.rabbit.DataSenderImpl;
@@ -36,9 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import crawlercommons.fetcher.http.SimpleHttpFetcher;
-import crawlercommons.fetcher.http.UserAgent;
 
 @Component
 @Qualifier("workerComponent")
@@ -77,7 +71,10 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
             LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
             initWithoutSpring();
         }
-        uriSetRequest = serializer.serialize(new UriSetRequest());
+        
+       UriSetRequest uriSetReq = new UriSetRequest(worker.getUri(),false);
+        
+        uriSetRequest = serializer.serialize(uriSetReq);
 
         deduplicationActive = EnvVariables.getBoolean(Constants.DEDUPLICATION_ACTIVE_KEY, Constants.DEFAULT_DEDUPLICATION_ACTIVE, LOGGER);
 
@@ -195,6 +192,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 //                }
 //            }
             senderFrontier.sendData(serializer.serialize(new CrawlingResult(uris, worker.getUri())));
+            
 
             if (deduplicationActive) {
                 UriSet uriSet = new UriSet(uris);

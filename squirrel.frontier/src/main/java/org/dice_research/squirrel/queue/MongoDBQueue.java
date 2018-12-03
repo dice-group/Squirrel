@@ -28,6 +28,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.DropIndexOptions;
 import com.mongodb.client.model.Indexes;
 
 @SuppressWarnings("deprecation")
@@ -164,15 +165,20 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
     		
     		try {
     			while(uriDocs.hasNext()) {
-    				listUris.add( serializer.deserialize( ((Binary) uriDocs.next().get("uri")).getData()) );
+    				
+    				Document doc = uriDocs.next();
+    				
+    				listUris.add( serializer.deserialize( ((Binary) doc.get("uri")).getData()) );
+
     			}
 
     		}catch (Exception e) {
     			LOGGER.error("Error while retrieving uri from MongoDBQueue",e);
 			}
     		
-//    		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
-//    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+    		mongoDB.getCollection(COLLECTION_NAME).deleteOne(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+    		mongoDB.getCollection(COLLECTION_URIS).deleteMany(new Document("ipAddress",pair.ip.getHostAddress()).append("type", pair.type.toString()));
+
 
 	        return listUris;
 	}

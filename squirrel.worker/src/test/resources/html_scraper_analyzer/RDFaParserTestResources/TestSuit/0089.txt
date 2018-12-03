@@ -1,0 +1,8 @@
+<head>
+      <title>Test 0089</title>
+   </head>
+   <body prefix="foaf: http://xmlns.com/foaf/0.1/">
+      <div>
+      	<img src="http://example.org/example.png" typeof="foaf:Image" alt="example image" />
+      </div>
+   </body>

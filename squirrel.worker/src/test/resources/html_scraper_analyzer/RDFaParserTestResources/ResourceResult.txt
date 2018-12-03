@@ -1,0 +1,1 @@
+<http://www.example.com/candp.xhtml#q1> <http://purl.org/dc/terms/source> <urn:ISBN:0140449132> .
