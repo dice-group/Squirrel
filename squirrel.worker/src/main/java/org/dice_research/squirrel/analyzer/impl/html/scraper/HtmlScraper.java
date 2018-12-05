@@ -15,6 +15,7 @@ import java.util.Stack;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
@@ -44,7 +45,8 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
-    private Map<String,List<Triple>> resourcesMap = new HashMap<String,List<Triple>>();
+    private Map<String,List<Triple>> staticMap = new HashMap<String,List<Triple>>();
+    private Map<String,List<Triple>> selectedMap = new HashMap<String,List<Triple>>();
 
 
     public HtmlScraper(File file) {
@@ -73,11 +75,15 @@ public class HtmlScraper {
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
         
         
-        
+        this.uri = uri;
+	     if(uri.contains("?")) {
+	      this.label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+	     }else {
+	      this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+	     }
         if((boolean) yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("ignore-request") && uri.contains("?")) {
-
-        	uri = uri.substring(0, uri.indexOf("?"));
-
+        	label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+        	this.uri = uri.substring(0, uri.indexOf("?"));
         }
         
         if (yamlFile != null) {
@@ -96,7 +102,7 @@ public class HtmlScraper {
         					Triple t = new Triple(s, p, o);
         					listTriple.add(t);
         				}
-        				resourcesMap.put(entry.getKey().toLowerCase(), listTriple);
+        				staticMap.put(entry.getKey().toLowerCase(), listTriple);
         			}
         		}
         		
@@ -226,8 +232,12 @@ public class HtmlScraper {
 
         List<String> resourcesList = new ArrayList<String>();
         
-        this.uri = uri;
-        this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+
+//        if(uri.contains("?")) {
+//         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+//        }else {
+//         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+//        }
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
@@ -243,8 +253,8 @@ public class HtmlScraper {
 
         }
         
-        if(!resourcesMap.isEmpty()) {
-        	for(Entry<String,List<Triple>> entry : resourcesMap.entrySet()) {
+        if(!selectedMap.isEmpty()) {
+        	for(Entry<String,List<Triple>> entry : selectedMap.entrySet()) {
         		triples.addAll(entry.getValue());
         	}
         }
@@ -284,7 +294,7 @@ public class HtmlScraper {
                    triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
             }else if(entry.getValue() instanceof String) {
             	
-            	Node p = NodeFactory.createURI(entry.getKey());
+            	Node p = ResourceFactory.createResource(entry.getKey()).asNode();
     			List<Node> o = jsoupQuery((String) entry.getValue());
     			if (o.isEmpty()) {
     				LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
@@ -320,7 +330,7 @@ public class HtmlScraper {
           	if(cssQuery.startsWith("l(")) {
           		
           		String val = cssQuery.substring(cssQuery.indexOf("(")+1,cssQuery.lastIndexOf(")"));
-          		String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+//          		String label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
           		
           		if (val.contains("$uri")) {
           			val = val.replaceAll("\\$uri", uri);
@@ -367,7 +377,8 @@ public class HtmlScraper {
                 	 listNodes.add(NodeFactory.createURI(elements.get(i).attr("abs:href")));
                  }
              }else if(useResource) {
-            	 listNodes.add(resourcesMap.get(elements.get(i).text().toLowerCase()).get(0).getSubject());
+            	 listNodes.add(staticMap.get(elements.get(i).text().toLowerCase()).get(0).getSubject());
+            	 selectedMap.put(elements.get(i).text().toLowerCase(), staticMap.get(elements.get(i).text().toLowerCase()));
              } else {
                  boolean uriFlag = true;
                  
