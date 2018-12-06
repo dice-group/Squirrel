@@ -97,8 +97,16 @@ public class HtmlScraper {
         				Node s = NodeFactory.createURI(typesEntry.getKey());
         				List<Triple> listTriple = new ArrayList<Triple>();
         				for(Entry<String,Object> valuesEntry: ((HashMap<String, Object>) typesEntry.getValue()).entrySet()) {
-        					Node o = NodeFactory.createURI(valuesEntry.getValue().toString());
+        					Node o;
         					Node p = NodeFactory.createURI(valuesEntry.getKey());
+        					
+        					try {
+        	                     new URL(valuesEntry.getValue().toString());
+        	                     o = NodeFactory.createURI(valuesEntry.getValue().toString());
+        	                 } catch (MalformedURLException e) {
+        	                	 o = NodeFactory.createLiteral(valuesEntry.getValue().toString());
+        	                 }
+        	              
         					Triple t = new Triple(s, p, o);
         					listTriple.add(t);
         				}
