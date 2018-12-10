@@ -5,6 +5,10 @@ file_descriptor:
  search-result-page:
   regex: searchresult
   resources:
+      "javascript":
+          button:
+              id: searchresults-more-btn
+              action: click
  
  download_page:
   regex: details
@@ -13,10 +17,7 @@ file_descriptor:
       - .resource-list li dd a[id^=resource]
       - ul li:contains(RDF) a
       "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
-      "javascript":
-        button:
-            id: searchresults-more-btn
-            action: click
+
 
 
 
