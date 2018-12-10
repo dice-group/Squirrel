@@ -1,8 +1,11 @@
 package org.dice_research.squirrel.analyzer.impl.html.scraper;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -14,6 +17,10 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HTMLParser;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -195,6 +202,16 @@ public class HtmlScraper {
 
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
+        Map<String, Object> jsResources = null;
+        for(Entry<String, Object> resEntry: resources.entrySet()){
+            if (resEntry.getKey().equals("javascript")){
+                 jsResources = (Map<String, Object>) resEntry.getValue();
+                resources.remove(resEntry.getKey());
+                break;
+            }
+        }
+        if (jsResources != null)
+            handleJavaScript(jsResources, htmlFile, uri);
 
         Set<Triple> triples = new LinkedHashSet<Triple>();
 
@@ -219,6 +236,29 @@ public class HtmlScraper {
         }
 
         return triples;
+    }
+
+    private void handleJavaScript(Map<String, Object> resources, File htmlFile, String uri){
+        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        try {
+            String htmlString = new String(Files.readAllBytes(Paths.get(htmlFile.getPath())));
+            StringWebResponse tmpResponse = new StringWebResponse(htmlString, new URL(uri));
+            HtmlPage htmlPage = HTMLParser.parseHtml(tmpResponse, webClient.getCurrentWindow());
+            DomElement btn = htmlPage.getElementById("searchresults-more-btn");
+            HtmlPage page = btn.click();
+            HtmlPage tmpPage = null;
+            System.out.println(page.getBody().asXml());
+            webClient.waitForBackgroundJavaScript(100); //TODO
+            int i = 0;
+            while (tmpPage == null || !tmpPage.asText().contentEquals(page.asText())) {
+                page = tmpPage;
+                tmpPage = btn.click();
+                webClient.waitForBackgroundJavaScript(100); //TODO
+            }
+        } catch (IOException e) {
+            LOGGER.error("An error occurred when trying to scrape Java script, ", e);
+        }
     }
     
     private String replaceCommands(String s) {
