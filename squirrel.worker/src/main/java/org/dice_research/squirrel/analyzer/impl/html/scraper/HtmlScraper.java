@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HTMLParser;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
@@ -204,7 +205,7 @@ public class HtmlScraper {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
         Map<String, Object> jsResources = null;
         for(Entry<String, Object> resEntry: resources.entrySet()){
-            if (resEntry.getKey().equals("javascript")){
+            if (resEntry.getKey().equals(YamlFileAtributes.JAVASCRIPT)){
                  jsResources = (Map<String, Object>) resEntry.getValue();
                 resources.remove(resEntry.getKey());
                 break;
@@ -239,25 +240,39 @@ public class HtmlScraper {
     }
 
     private void handleJavaScript(Map<String, Object> resources, File htmlFile, String uri){
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        try {
-            String htmlString = new String(Files.readAllBytes(Paths.get(htmlFile.getPath())));
-            StringWebResponse tmpResponse = new StringWebResponse(htmlString, new URL(uri));
-            HtmlPage htmlPage = HTMLParser.parseHtml(tmpResponse, webClient.getCurrentWindow());
-            DomElement btn = htmlPage.getElementById("searchresults-more-btn");
-            HtmlPage page = btn.click();
-            HtmlPage tmpPage = null;
-            System.out.println(page.getBody().asXml());
-            webClient.waitForBackgroundJavaScript(100); //TODO
-            int i = 0;
-            while (tmpPage == null || !tmpPage.asText().contentEquals(page.asText())) {
-                page = tmpPage;
-                tmpPage = btn.click();
-                webClient.waitForBackgroundJavaScript(100); //TODO
+        String id = null, action = null, disable_id = null;
+        for(Entry<String, Object> jsEntry: resources.entrySet()){
+            if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
+                Map<String, Object> btnEntry = (Map<String, Object>) jsEntry.getValue();
+                for (Entry<String, Object> btnEntries: btnEntry.entrySet()){
+                    if (btnEntries.getKey().equals(YamlFileAtributes.ACTION))
+                        action = btnEntries.getValue().toString();
+                    if (btnEntries.getKey().equals(YamlFileAtributes.ID))
+                        id = btnEntries.getValue().toString();
+                    if (btnEntries.getKey().equals(YamlFileAtributes.DISABLE_ID))
+                        disable_id = btnEntries.getValue().toString();
+                }
             }
-        } catch (IOException e) {
-            LOGGER.error("An error occurred when trying to scrape Java script, ", e);
+        }
+        if (id != null && action != null && disable_id != null) {
+            WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+            webClient.getOptions().setJavaScriptEnabled(true);
+            webClient.getOptions().setThrowExceptionOnScriptError(true);
+            webClient.getOptions().setCssEnabled(false);
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            try{
+                HtmlPage htmlPage = webClient.getPage(uri);
+                HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
+                DomElement disabledElement = htmlPage.getElementById(disable_id);
+                do {
+                    htmlPage = btn.click();
+                } while (!disabledElement.getStyleMap().containsKey("display") ||
+                    (disabledElement.getStyleMap().containsKey("display") &&
+                        !disabledElement.getStyleMap().get("display").getValue().equals("none")));
+                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+            } catch (Exception e) {
+                LOGGER.error("An error occurred when trying to scrape Java script, ", e);
+            }
         }
     }
     

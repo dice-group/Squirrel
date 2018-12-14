@@ -9,7 +9,8 @@ file_descriptor:
           button:
               id: searchresults-more-btn
               action: click
- 
+              disable_id: searchresults-more-block
+
  download_page:
   regex: details
   resources:
