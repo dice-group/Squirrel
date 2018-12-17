@@ -256,12 +256,17 @@ public class WorkerImpl implements Worker, Closeable {
                     sink.openSinkForUri(uri);
                     collector.openSinkForUri(uri);
                     // Go over all files and analyze them
+                    
                     for (File data : fetchedFiles) {
                         if (data != null) {
                             fileList = fm.decompressFile(data);
+                            LOGGER.info("Found " + fileList + " files after decompression ");
+                            int cont = 1;
                             for (File file : fileList) {
+                            	LOGGER.info("Analyzing file " + fileList + " of " + cont);
                                 Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                                 sendNewUris(resultUris);
+                                cont++;
                             }
                         }
                     }
