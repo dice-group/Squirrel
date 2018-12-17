@@ -263,7 +263,7 @@ public class WorkerImpl implements Worker, Closeable {
                             LOGGER.info("Found " + fileList + " files after decompression ");
                             int cont = 1;
                             for (File file : fileList) {
-                            	LOGGER.info("Analyzing file " + fileList + " of " + cont);
+                            	LOGGER.info("Analyzing file " + cont + " of " + fileList.size());
                                 Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                                 sendNewUris(resultUris);
                                 cont++;
