@@ -3,51 +3,50 @@ package org.dice_research.squirrel.fetcher.sparql;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.aksw.jena_sparql_api.pagination.core.QueryExecutionFactoryPaginated;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.tika.io.IOUtils;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
- * 
- * Sparql Fetcher to fetch <http://www.w3.org/ns/dcat#Dataset>
- * 
- * @author Geraldo Junior gsjunior@mail.uni-paderborn.de
+ * A simple {@link Fetcher} for SPARQL that tries to get DataSets from a SPARQL
+ * endpoint using the query {@value #DATA_SET_QUERY}.
+ *
+ * @author Geraldo de Souza Jr (gsjunior@uni-paderborn.de)
  *
  */
-
+@Component
 public class SparqlDatasetFetcher implements Fetcher {
 
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SparqlDatasetFetcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlDatasetFetcher.class);
 
     /**
      * The delay that the system will have between sending two queries.
      */
-    private int DELAY = 2000;
 
-    protected File dataDirectory = FileUtils.getTempDirectory();
-    protected int page_size = 1000;
-    protected int begin = 0;
-    
-    protected String dataSetQuery = "select ?s where {?s a <http://www.w3.org/ns/dcat#Dataset>.}  OFFSET :begin LIMIT :lim" ;
-    
+    protected String dataSetQuery = "select ?s where {?s a <http://www.w3.org/ns/dcat#Dataset>.} " ;
     protected String graphQuery = 
 			"construct { ?s ?p ?o. " + 
 			"?o ?p2 ?o2. } " + 
@@ -58,76 +57,82 @@ public class SparqlDatasetFetcher implements Fetcher {
 			"} " + 
 			"}";
     
-    public SparqlDatasetFetcher() {
-    }
-    
-    public SparqlDatasetFetcher(int DELAY) {
-    	this();
-    	this.DELAY = DELAY;
-    }
-    
-    
-    public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
-		  CrawleableUri curi = new CrawleableUri(new URI("https://www.europeandataportal.eu/sparql"));
-		  
-		  new SparqlDatasetFetcher(1000).fetch(curi);
 
-	}
+
+    protected int delay;
+    protected int limit = 0;
+    protected File dataDirectory = FileUtils.getTempDirectory();
     
+    public SparqlDatasetFetcher() {
+    	
+    }
+    
+    
+    public SparqlDatasetFetcher(int delay, int begin, int limit) {
+    	this.delay = delay;
+    	dataSetQuery += "OFFSET " + begin;
+    	this.limit = limit;
+    	
+    }
+    
+    public SparqlDatasetFetcher(int delay){
+    	this.delay = delay;
+    }
+
     @Override
     public File fetch(CrawleableUri uri) {
-    	File dataFile = null;
+        // Check whether we can be sure that it is a SPARQL endpoint
+        boolean shouldBeSparql = Constants.URI_TYPE_VALUE_SPARQL.equals(uri.getData(Constants.URI_TYPE_KEY));
+        QueryExecutionFactory qef = null;
+        QueryExecution execution = null;
+        File dataFile = null;
     	ZipOutputStream out = null;
-    	try {
-            dataFile = File.createTempFile("fetched_", "", dataDirectory);
-            out = new ZipOutputStream(new FileOutputStream(dataFile));
-        } catch (IOException e) {
-            LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
-            return null;
-        }
-    	
-      String service = uri.getUri().toString();
-      boolean goon = true;
-      
-      while(goon) {
-    	
-	      String pageQuery = this.dataSetQuery.replaceAll("\\:begin", String.valueOf(begin)).replaceAll("\\:lim", String.valueOf(page_size));
-	      
-	      LOGGER.info("Fetching from " + begin + " to " + (begin*page_size + page_size));
-	
-		  Query query = QueryFactory.create(pageQuery) ;
-		  
-		  QueryExecution qexecDataSet = QueryExecutionFactory.sparqlService(service, query);
-		    ResultSet resultsDataSet = qexecDataSet.execSelect() ;
-		    
-		    if(!resultsDataSet.hasNext()) {
-		    	break;
-		    }
-		    
-		    for ( ; resultsDataSet.hasNext() ; )
-		    {
-		      QuerySolution soln = resultsDataSet.nextSolution() ;
-		      String dataSetResource = soln.get("s").toString() ;       // Get a result variable by name.
+        try {
+            // Create query execution instance
+            qef = initQueryExecution(uri.getUri().toString());
+            // create temporary file
+            try {
+                dataFile = File.createTempFile("fetched_", "", dataDirectory);
+                out = new ZipOutputStream(new FileOutputStream(dataFile));
+            } catch (IOException e) {
+                LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
+                return null;
+            }
+            
+            execution = qef.createQueryExecution(dataSetQuery);
+            ResultSet resultSet = execution.execSelect();
+            
+            int i = 0;
+            
+            while(resultSet.hasNext()) {
+            	
+            	 if(limit != 0 && i>limit) {
+            		 LOGGER.info("LIMIT REACHED, STOPING EXECUTION");
+            		 execution.close();
+            		 break;
+            	 }
+                 	
+            	
+              QuerySolution soln = resultSet.nextSolution() ;
+  		      String dataSetResource = soln.get("s").toString() ;       // Get a result variable by name.
+  		      LOGGER.info("- Now Fetching - " + i + ": " + dataSetResource);
+           
+		      Query query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">")) ;
 		      
-		      LOGGER.info("- Now Fetching: " + dataSetResource);
-		      query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">")) ;
-		      
-		      
-		      //TODO implement fault security check
 		      
 			  boolean tryAgain = true;
 			  
 		      while(tryAgain) {
 		    	  
 		    	try {
-		  			Thread.sleep(DELAY);
+		  			Thread.sleep(delay);
 		  		} catch (InterruptedException e) {
 		  			LOGGER.error("An error occurred when fetching URI: " + uri.getUri().toString()
 		  					,e);
 		  		}
 		      
 		      try {	      
-		      QueryExecution qexecGraph = QueryExecutionFactory.sparqlService(service, query);
+		      QueryExecution qexecGraph = org.apache.jena.query.QueryExecutionFactory.createServiceRequest(uri.getUri().toString(), query);
 		    	  
 		    	  Iterator<Triple> triples = qexecGraph.execConstructTriples();
 		    	  
@@ -136,14 +141,14 @@ public class SparqlDatasetFetcher implements Fetcher {
 		    	  out.putNextEntry(ze);
 		    	  RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
 		    	  tryAgain = false;
-		    	  entry.delete();
 		    	  out.flush();
 		    	  out.closeEntry();
+		    	  entry.delete();
+		    	  i++;
 		      }catch(QueryExceptionHTTP e) {
 		    	  
 		    	  if(e.getResponseCode() == 404 || e.getResponseCode() == 500) {
 		    		 tryAgain = true; 
-		    		 System.out.println("Error while fetching " +dataSetResource + ". Trying again...");
 		    		 LOGGER.info("Error while fetching " +dataSetResource + ". Trying again...");
 		    	  }
 		  
@@ -151,22 +156,46 @@ public class SparqlDatasetFetcher implements Fetcher {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		      	}
-		      }
-	
-		    }
-		    begin = begin + page_size;
-      }
-	  
-	try {
-		out.close();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-     return dataFile;
+		      }        
+            }
+            
+            
+//            RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
+        } catch (Throwable e) {
+            // If this should have worked, print a message, otherwise silently return null
+            if (shouldBeSparql) {
+                LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
+            }
+            return null;
+        } finally {
+            IOUtils.closeQuietly(out);
+            if (execution != null) {
+                execution.close();
+            }
+            if (qef != null) {
+                qef.close();
+            }
+        }
+        ActivityUtil.addStep(uri, getClass());
+        return dataFile;
     }
 
+    protected QueryExecutionFactory initQueryExecution(String uri) throws ClassNotFoundException, SQLException {
+        QueryExecutionFactory qef;
+        qef = new QueryExecutionFactoryHttp(uri);
+        qef = new QueryExecutionFactoryDelay(qef, delay);
+        try {
+        	LOGGER.info("Starting to Query uri:" + uri);
+            return new QueryExecutionFactoryPaginated(qef, 2000);
+        } catch (Exception e) {
+            LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
+                    e.getLocalizedMessage());
+            return qef;
+        }
+    }
 
+    @Override
     public void close() throws IOException {
         // nothing to do
     }
@@ -191,5 +220,4 @@ public class SparqlDatasetFetcher implements Fetcher {
     }
 
 
-	
 }

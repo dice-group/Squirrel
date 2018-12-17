@@ -58,7 +58,9 @@ public class SimpleCkanFetcher implements Fetcher {
     @Override
     public File fetch(CrawleableUri uri) {
         // If this is a CKAN API URI or we do not check it at all
+    	LOGGER.info("Starting Ckanfetcher...");
         if(!checkForUriType || CKAN_API_URI_TYPE_VALUE.equals(uri.getData(Constants.URI_TYPE_KEY))) {
+        	LOGGER.info("Fetching " + uri.getUri().toString());
             CkanClient client = null;
             OutputStream out = null;
             try {
