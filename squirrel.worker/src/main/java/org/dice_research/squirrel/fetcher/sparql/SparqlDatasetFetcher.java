@@ -1,12 +1,12 @@
 package org.dice_research.squirrel.fetcher.sparql;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
@@ -86,14 +86,14 @@ public class SparqlDatasetFetcher implements Fetcher {
         QueryExecutionFactory qef = null;
         QueryExecution execution = null;
         File dataFile = null;
-    	ZipOutputStream out = null;
+        OutputStream out = null;
         try {
             // Create query execution instance
             qef = initQueryExecution(uri.getUri().toString());
             // create temporary file
             try {
-                dataFile = File.createTempFile("fetched_", "", dataDirectory);
-                out = new ZipOutputStream(new FileOutputStream(dataFile));
+            	dataFile = File.createTempFile("fetched_", "", dataDirectory);
+                out = new BufferedOutputStream(new FileOutputStream(dataFile));
             } catch (IOException e) {
                 LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
                 return null;
@@ -136,14 +136,9 @@ public class SparqlDatasetFetcher implements Fetcher {
 		    	  
 		    	  Iterator<Triple> triples = qexecGraph.execConstructTriples();
 		    	  
-		    	  File entry = File.createTempFile("entry_", "", dataDirectory);
-		    	  ZipEntry ze= new ZipEntry(entry.getAbsolutePath());
-		    	  out.putNextEntry(ze);
 		    	  RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
 		    	  tryAgain = false;
-		    	  out.flush();
-		    	  out.closeEntry();
-		    	  entry.delete();
+
 		    	  i++;
 		      }catch(QueryExceptionHTTP e) {
 		    	  
@@ -152,9 +147,6 @@ public class SparqlDatasetFetcher implements Fetcher {
 		    		 LOGGER.info("Error while fetching " +dataSetResource + ". Trying again...");
 		    	  }
 		  
-		      } catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 		      	}
 		      }        
             }
