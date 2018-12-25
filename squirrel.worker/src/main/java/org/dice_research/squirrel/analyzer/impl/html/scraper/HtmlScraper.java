@@ -27,7 +27,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.tdb.store.Hash;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -239,7 +241,7 @@ public class HtmlScraper {
         return triples;
     }
 
-    private void handleJavaScript(Map<String, Object> resources, File htmlFile, String uri){
+    private void handleJavaScript(Map<String, Object> resources, File htmlFile, CrawleableUri uri){
         String id = null, action = null, disable_id = null;
         for(Entry<String, Object> jsEntry: resources.entrySet()){
             if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
@@ -260,6 +262,14 @@ public class HtmlScraper {
             webClient.getOptions().setThrowExceptionOnScriptError(true);
             webClient.getOptions().setCssEnabled(false);
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
+
+            int timeout = (int) uri.getData(Constants.URI_IMEOUT_KEY);
+            webClient.getOptions().setTimeout(timeout);
+            //webClient.setJavaScriptTimeout();
+
+
+
             try{
                 HtmlPage htmlPage = webClient.getPage(uri);
                 HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
