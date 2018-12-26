@@ -1,5 +1,4 @@
 package org.dice_research.squirrel.analyzer.mime;
-
 /**
  * Transition in finite state machine.
  */

@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.analyzer.impl;
 
+
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.dice_research.squirrel.analyzer.mime.MimeTypeDetector;
@@ -14,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-
 
 @RunWith(Parameterized.class)
 public class MimeTypeDetectorTest {
@@ -43,8 +43,13 @@ public class MimeTypeDetectorTest {
     @Parameterized.Parameters
     public static Collection filesToTest() {
         return Arrays.asList(new Object[][]{
-            {"rdf_analyzer/new_york/new_york_rdf", RDFLanguages.RDFXML},
-            {"sample.ttl", RDFLanguages.TURTLE}
+            {"rdf_analyzer/new_york/RDFXML", RDFLanguages.RDFXML},
+            {"Sample_Files/Test_File_1", RDFLanguages.RDFXML},
+            {"Sample_Files/Test_File_2", RDFLanguages.RDFNULL},
+            {"rdf_analyzer/new_york/new_york_turtle", RDFLanguages.TURTLE},
+            {"Sample_Files/sample.nt", RDFLanguages.NTRIPLES},
+            {"rdf_analyzer/new_york/new_york_rdfjson", RDFLanguages.RDFJSON},
+            {"rdf_analyzer/new_york/new_york_jsonld", RDFLanguages.JSONLD}
         });
     }
 
