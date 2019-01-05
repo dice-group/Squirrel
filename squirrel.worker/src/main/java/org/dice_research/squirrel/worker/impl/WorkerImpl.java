@@ -220,7 +220,7 @@ public class WorkerImpl implements Worker, Closeable {
         uri.addData(Constants.UUID_KEY, UUID.randomUUID().toString());
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
-        uri.addData(Constants.URI_IMEOUT_KEY, manager.getMinWaitingTime(uri.getUri()));
+        uri.addData(Constants.URI_TIMEOUT_KEY, manager.getMinWaitingTime(uri.getUri()));
         
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {

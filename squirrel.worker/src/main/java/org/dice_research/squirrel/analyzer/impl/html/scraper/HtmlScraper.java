@@ -241,7 +241,7 @@ public class HtmlScraper {
         return triples;
     }
 
-    private void handleJavaScript(Map<String, Object> resources, File htmlFile, CrawleableUri uri){
+    private void handleJavaScript(Map<String, Object> resources, File htmlFile, String uri){
         String id = null, action = null, disable_id = null;
         for(Entry<String, Object> jsEntry: resources.entrySet()){
             if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
@@ -264,10 +264,10 @@ public class HtmlScraper {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
 
-            int timeout = (int) uri.getData(Constants.URI_IMEOUT_KEY);
-            webClient.getOptions().setTimeout(timeout);
+            //int timeout = (int) uri.getData(Constants.URI_TIMEOUT_KEY);
+            //webClient.getOptions().setTimeout();
             //webClient.setJavaScriptTimeout();
-
+            //Possible function to consider Thread.sleep();webClient.waitForBackgroundJavaScript(1000);
 
 
             try{
