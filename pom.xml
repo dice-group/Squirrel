@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.dice-research</groupId>
 	<artifactId>squirrel</artifactId>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.3.0</version>
 	<packaging>pom</packaging>
 	<inceptionYear>2017</inceptionYear>
 	<name>Squirrel</name>
