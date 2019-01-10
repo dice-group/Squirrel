@@ -13,5 +13,5 @@ public interface ExtendedFrontier extends Frontier {
      * @param lstUrisToReassign A list of {@link CrawleableUri} that should have been handeled by the
      *                          dead worker, but was not due to his sudden death.
      */
-    void informAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign);
+    void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign);
 }

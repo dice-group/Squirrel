@@ -38,7 +38,6 @@
 		<module>squirrel.frontier</module>
 		<module>squirrel.mockup</module>
 		<module>squirrel.web</module>
-		<module>squirrel.web-api</module>
 		<module>squirrel.worker</module>
 	</modules>
 

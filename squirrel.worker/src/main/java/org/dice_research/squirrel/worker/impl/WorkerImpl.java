@@ -72,7 +72,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
-//    private final int id = (int) Math.floor(Math.random() * 100000);
+    private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
     /**
@@ -360,5 +360,10 @@ public class WorkerImpl implements Worker, Closeable {
     public void setTerminateFlag(boolean terminateFlag) {
         this.terminateFlag = terminateFlag;
     }
+
+	@Override
+	public int getId() {
+		return this.id;
+	}
 
 }

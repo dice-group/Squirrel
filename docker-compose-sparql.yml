@@ -130,8 +130,8 @@ services:
       DEDUPLICATION_ACTIVE: "true"
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
-      RDB_HOST_NAME: rethinkdb
-      RDB_PORT: 28015
+      MDB_HOST_NAME: mongodb
+      MDB_PORT: 27017
       SPARQL_HOST_NAME: sparqlhost
       SPARQL_HOST_PORT: 3030
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
