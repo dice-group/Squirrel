@@ -1,10 +1,14 @@
-
 package org.dice_research.squirrel.analyzer.mime;
 
 import org.apache.jena.riot.RDFLanguages;
 
 import java.util.ArrayList;
 
+/**
+ * Building different finite state machines.
+ *
+ * @author Abhishek Hassan Chandrashekar (abhihc@mail.uni-paderborn.de).
+ */
 public class FiniteStateMachineFactory {
 
     static public FiniteStateMachine create(String mimeType) {
@@ -31,8 +35,6 @@ public class FiniteStateMachineFactory {
     /**
      * Builds a finite state machine to validate a simple
      * RDFXML file
-     *
-     * @return
      */
     private FiniteStateMachine buildRDFXMLStateMachine() {
 
@@ -50,8 +52,6 @@ public class FiniteStateMachineFactory {
     /**
      * Builds a finite state machine to validate a simple
      * NTRIPLES file
-     *
-     * @return
      */
 
     private FiniteStateMachine buildNTriplesStateMachine() {
@@ -70,8 +70,6 @@ public class FiniteStateMachineFactory {
     /**
      * Builds a finite state machine to validate a simple
      * TURTLE file
-     *
-     * @return
      */
     private FiniteStateMachine buildTurtleStateMachine() {
 
@@ -91,8 +89,6 @@ public class FiniteStateMachineFactory {
     /**
      * Builds a finite state machine to validate a simple
      * RDFJSON file
-     *
-     * @return
      */
 
     private FiniteStateMachine buildRDFJSONStateMachine() {
@@ -112,8 +108,6 @@ public class FiniteStateMachineFactory {
     /**
      * Builds a finite state machine to validate a simple
      * JSONLD file
-     *
-     * @return
      */
 
     private FiniteStateMachine buildJSONLDStateMachine() {

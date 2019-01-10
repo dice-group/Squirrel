@@ -16,7 +16,7 @@ public interface FiniteStateMachine {
     void switchState(final String c);
 
     /**
-     * Is the current state a final one?
+     * Is the current state a error state?
      *
      * @return true or false.
      */

@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.analyzer.mime;
 
-
 import org.apache.jena.riot.Lang;
 import org.dice_research.squirrel.analyzer.impl.RDFAnalyzer;
 import org.slf4j.Logger;
@@ -14,7 +13,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+/**
+ * Standard implementation of the {@link TypeDetector} interface.
+ *
+ * @author Abhishek Hassan Chandrashekar (abhihc@mail.uni-paderborn.de).
+ */
 public class MimeTypeDetector implements TypeDetector {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     protected List<Lang> mimeTypes = new ArrayList<>();
@@ -39,7 +44,7 @@ public class MimeTypeDetector implements TypeDetector {
             nextchar:
             while (inputStream.available() > 0 && machinesList.size() > 1) {
                 current = (char) inputStream.read();
-
+                // Preconditions checked for the file.
                 if (Character.isWhitespace(current)) {
                     continue nextchar;
                 } else if (current == '#') {

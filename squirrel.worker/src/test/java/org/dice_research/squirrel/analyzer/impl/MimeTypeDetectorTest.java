@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.analyzer.impl;
 
-
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.dice_research.squirrel.analyzer.mime.MimeTypeDetector;
@@ -16,6 +15,12 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test
+ * {@link MimeTypeDetector#detectMimeType(File)}}.
+ *
+ * @author Abhishek Hassan Chandrashekar (abhihc@mail.uni-paderborn.de)
+ */
 @RunWith(Parameterized.class)
 public class MimeTypeDetectorTest {
 

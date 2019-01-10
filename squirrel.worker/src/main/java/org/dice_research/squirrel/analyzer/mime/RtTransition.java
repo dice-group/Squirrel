@@ -1,4 +1,5 @@
 package org.dice_research.squirrel.analyzer.mime;
+
 /**
  * Transition in finite state machine.
  */
@@ -8,8 +9,6 @@ public final class RtTransition implements Transition {
     private State next;
 
     /**
-     * Ctor.
-     *
      * @param rule Rule that a character has to meet
      *             in order to get to the next state.
      * @param next Next state.
