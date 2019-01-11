@@ -14,7 +14,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
-import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.ActivityUtil;
@@ -25,6 +24,15 @@ import org.rdfhdt.hdt.triples.IteratorTripleString;
 import org.rdfhdt.hdt.triples.TripleString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * 
+ * Analyzer to parse HDTAnalyzer types
+ * 
+ * 
+ * 
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
+ */
 
 public class HDTAnalyzer extends AbstractAnalyzer {
 

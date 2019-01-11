@@ -18,11 +18,6 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.fetcher.Fetcher;
-import org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher;
-import org.dice_research.squirrel.fetcher.ftp.FTPFetcher;
-import org.dice_research.squirrel.fetcher.http.HTTPFetcher;
-import org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager;
-import org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.metadata.CrawlingActivity.CrawlingURIState;
@@ -35,7 +30,6 @@ import org.dice_research.squirrel.utils.TempPathUtils;
 import org.dice_research.squirrel.worker.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Worker} interface.
@@ -102,10 +96,11 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
+    public WorkerImpl(Frontier frontier,Fetcher fetcher, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
             UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
+        this.fetcher = fetcher;
         this.analyzer = analyzer;
         this.manager = manager;
         this.serializer = serializer;
@@ -123,9 +118,9 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         this.collector = collector;
-        fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher(), new SparqlBasedFetcher());
+//        fetcher = new SimpleOrderedFetcherManager(
+//                // new SparqlBasedFetcher(),
+//        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
 
         analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
@@ -220,6 +215,7 @@ public class WorkerImpl implements Worker, Closeable {
         uri.addData(Constants.UUID_KEY, UUID.randomUUID().toString());
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
+        try {
         
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
@@ -260,12 +256,17 @@ public class WorkerImpl implements Worker, Closeable {
                     sink.openSinkForUri(uri);
                     collector.openSinkForUri(uri);
                     // Go over all files and analyze them
+                    
                     for (File data : fetchedFiles) {
                         if (data != null) {
                             fileList = fm.decompressFile(data);
+                            LOGGER.info("Found " + fileList + " files after decompression ");
+                            int cont = 1;
                             for (File file : fileList) {
+                            	LOGGER.info("Analyzing file " + cont + " of " + fileList.size());
                                 Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                                 sendNewUris(resultUris);
+                                cont++;
                             }
                         }
                     }
@@ -295,8 +296,10 @@ public class WorkerImpl implements Worker, Closeable {
         // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 
-        // Remove the activity since we don't want to send it back to the Frontier
-        uri.getData().remove(Constants.URI_CRAWLING_ACTIVITY);
+        } finally {
+            // Remove the activity since we don't want to send it back to the Frontier
+            uri.getData().remove(Constants.URI_CRAWLING_ACTIVITY);
+        }
 
         // TODO (this is only a unsatisfying quick fix to avoid unreadable graphs
         // because of too much nodes)
@@ -357,5 +360,10 @@ public class WorkerImpl implements Worker, Closeable {
     public void setTerminateFlag(boolean terminateFlag) {
         this.terminateFlag = terminateFlag;
     }
+
+	@Override
+	public int getId() {
+		return this.id;
+	}
 
 }

@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "Building Squirrel..."
+cd squirrel.web-api
+mvn clean install
+cd ..
+mvn clean install -DskipTests
+clear
+echo "Creating Frontier image..."
+docker build -f Dockerfile.frontier -t squirrel.frontier .
+echo "Creating Worker image..."
+docker build -f Dockerfile.worker -t squirrel.worker .
+echo "Creating Web image..."
+docker build -f Dockerfile.web -t squirrel.web .
+clear
+echo "Finished"
