@@ -73,7 +73,7 @@ services:
       - "5672:5672"
 
   worker1:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -95,7 +95,7 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker2:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker2
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -117,7 +117,7 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker3:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker3
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
