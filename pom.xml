@@ -34,10 +34,10 @@
 	<!-- MODULES -->
 	<modules>
 		<module>squirrel.api</module>
+		<module>squirrel.web</module>
 		<module>squirrel.deduplication</module>
 		<module>squirrel.frontier</module>
 		<module>squirrel.mockup</module>
-		<module>squirrel.web</module>
 		<module>squirrel.worker</module>
 	</modules>
 
