@@ -123,7 +123,7 @@ public class HtmlScraperAnalyzerTest {
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/mcloud/mcloud_detail.html");
 		
 		 List<Triple> listTriples = new ArrayList<Triple>();
-		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
+		 listTriples.addAll(scraper.scrape(curi, fetchedFile));
 		
 		 Assert.assertEquals(expectedTriplesMcloudDetail, listTriples);	
 		
@@ -135,7 +135,7 @@ public class HtmlScraperAnalyzerTest {
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/mcloud/mcloud_resultpage.html");
 		
 		 List<Triple> listTriples = new ArrayList<Triple>();
-		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
+		 listTriples.addAll(scraper.scrape(curi, fetchedFile));
 		
 		 Assert.assertEquals(expectedTriplesMcloudResultPage, listTriples);	
 	}
@@ -146,7 +146,7 @@ public class HtmlScraperAnalyzerTest {
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");
 		
 		 List<Triple> listTriples = new ArrayList<Triple>();
-		 listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
+		 listTriples.addAll(scraper.scrape(curi, fetchedFile));
 		 
 		 
 	}
@@ -156,7 +156,7 @@ public class HtmlScraperAnalyzerTest {
         CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/suchen/-/searchresult/q/Patienten/s/relevance_desc"));
         fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_patienten.html");
         List<Triple> listTriples = new ArrayList<Triple>();
-        listTriples.addAll(scraper.scrape(curi.getUri().toString(), fetchedFile));
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
 	
 	public void testAnalyzer() throws URISyntaxException {

@@ -268,7 +268,7 @@ public class HtmlScraper {
             try{
 
                Object timeout = curi.getData(Constants.URI_TIMEOUT_KEY);
-                if (timeout == null) { System.out.print("key fail ,"+ timeout);}
+                if (timeout == null) { System.out.print("key transfer value fail ,"+ timeout);}
             } catch (Exception e) {
                 LOGGER.error("An error occurred when retrieving the Key, ", e);
             }
