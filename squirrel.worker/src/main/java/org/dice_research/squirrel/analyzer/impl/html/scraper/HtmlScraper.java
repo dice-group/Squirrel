@@ -73,11 +73,11 @@ public class HtmlScraper {
 
     }
 
-    public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
+    public List<Triple> scrape(CrawleableUri curi, File filetToScrape) throws Exception {
 
         List<Triple> listTriples = new ArrayList<Triple>();
         listIterableObjects = new LinkedHashSet<String>();
-
+        uri= curi.getUri().toString();
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
         
         
@@ -106,7 +106,7 @@ public class HtmlScraper {
                         if (cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase()) ) {
                             @SuppressWarnings("unchecked")
                             Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
-                            listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, uri));
+                            listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, curi));
                             break;
                         }
                     }
@@ -203,7 +203,7 @@ public class HtmlScraper {
     }
        
 
-    private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
+    private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, CrawleableUri curi) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
         Map<String, Object> jsResources = null;
         for(Entry<String, Object> resEntry: resources.entrySet()){
@@ -214,8 +214,9 @@ public class HtmlScraper {
             }
         }
         if (jsResources != null)
-            handleJavaScript(jsResources, htmlFile, uri);
+            handleJavaScript(jsResources, htmlFile, curi);
 
+        uri= curi.getUri().toString();
         Set<Triple> triples = new LinkedHashSet<Triple>();
 
 
@@ -241,7 +242,7 @@ public class HtmlScraper {
         return triples;
     }
 
-    private void handleJavaScript(Map<String, Object> resources, File htmlFile, String uri){
+    private void handleJavaScript(Map<String, Object> resources, File htmlFile, CrawleableUri curi){
         String id = null, action = null, disable_id = null;
         for(Entry<String, Object> jsEntry: resources.entrySet()){
             if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
@@ -264,12 +265,16 @@ public class HtmlScraper {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
 
-            //int timeout = (int) uri.getData(Constants.URI_TIMEOUT_KEY);
-            //webClient.getOptions().setTimeout();
-            //webClient.setJavaScriptTimeout();
-            //Possible function to consider Thread.sleep();webClient.waitForBackgroundJavaScript(1000);
+            try{
+
+               Object timeout = curi.getData(Constants.URI_TIMEOUT_KEY);
+                if (timeout == null) { System.out.print("key fail ,"+ timeout);}
+            } catch (Exception e) {
+                LOGGER.error("An error occurred when retrieving the Key, ", e);
+            }
 
 
+            uri= curi.getUri().toString();
             try{
                 HtmlPage htmlPage = webClient.getPage(uri);
                 HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
