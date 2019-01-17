@@ -24,21 +24,11 @@ import javax.sql.DataSource;
 import org.apache.http.annotation.NotThreadSafe;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.iterators.SqlBasedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.*;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
@@ -47,7 +37,7 @@ import java.util.regex.Pattern;
  * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
- * @NotThreadSafe because the prepared statement objects used internally are not
+ * NotThreadSafe because the prepared statement objects used internally are not
  *                stateless.
  */
 @NotThreadSafe
