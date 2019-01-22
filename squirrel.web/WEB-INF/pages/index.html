@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fact Checking :: Crawler :: Home</title>
+    <script src="/pages/js/jquery-3.3.1.min.js"></script>
+    <script src="/pages/js/jquery-ui.min.js"></script>
+    <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="/pages/css/app.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Sigmar+One' rel='stylesheet' type='text/css'>
+
+    <script src="/pages/js/_json_utils.js"></script>
+    <script>
+      $( function() {
+        $( "#slider" ).slider({
+          min: 0,
+          max: 100,
+          value: 100
+        });
+      } );
+
+      $( function() {
+        $( "#slider" ).slider({
+          change: function( event, ui ) { update(true); }
+        });
+      } );
+
+      $( function() {
+        $( "#accordion" ).accordion({
+          heightStyle: "content",
+          animate: "swing",
+          collapsible: true,
+          active: false
+        });
+      } );
+
+      function update(forceUpdate) {
+        if (forceUpdate || $( "#slider" ).slider( "value" ) === 100) {
+          var uri;
+          if ($( "#slider" ).length === 0 ||  $( "#slider" ).slider( "value" ) === 100) {
+            uri = "/observer";
+          } else {
+            uri = "/observer?id=" + $( "#slider" ).slider( "value" ) + "&percent=true";
+          }
+          $.ajax({
+            url: uri,
+            dataType: "json",
+            method: "GET"
+          }).done(function (data) {
+            $( "#pendingURIs" ).html(data.countOfPendingURIs);
+            $( "#countOfCrawledURIs" ).html(data.countOfCrawledURIs);
+            $( "#countOfWorker" ).html(data.countOfWorker);
+            $( "#countOfDeadWorker" ).html(data.countOfDeadWorker);
+            $("#runtime").html(IntToTime(data.runtimeInSeconds));
+            $("#pURIs").html(JSONElementToString(data.pendingURIs.slice(0, 5)));
+            if(data.pendingURIs.length > 5) {
+              $( "#pURIs" ).append( "<a target='_blank' href='/pages/pending-uris.html'>See More...</a>" );
+            }
+            $( "#mURIs" ).html(JSONElementToString(data.ipStringListMap));
+            $("#ncURIs").html(JSONElementToString(data.nextCrawledURIs.slice(0, 5)));
+            if (data.pendingURIs.length > 5) {
+              $("#ncURIs").append("And ").append(data.nextCrawledURIs.length - 5).append(" more...");
+            }
+          }).fail(function () {
+            alert("AJAX request to \"" + uri + "\" failed :(");
+          });
+        }
+      }
+
+      update(false);
+      setInterval(function () {
+        update(false)
+      }, 5000);
+    </script>
+  </head>
+
+  <body bgcolor="#d3d3d3">
+     <table width="100%" cellpadding="8px">
+      <tr>
+        <td class="nopadding" colspan="2">
+          <div class="topnav">
+            <a class="active" href="/pages/index.html">Home</a> |
+            <a href="/pages/graph.html">Crawled Graph</a> |
+            <a href="/pages/templates/fact-check.html">Fact Check</a> |
+            <a href="/pages/templates/crawler.html">Crawler</a> |
+            <a href="/pages/templates/squirrel.html">Squirrel</a> |
+            <a href="/pages/templates/about.html">About Us</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" width="50%">
+          <img src="https://philippheinisch.de/img/PG/web_img/1.png" width="200" height="200" alt="Nice picture"><br>
+          <table width="100%">
+            <tr>
+              <td width="50%"><p>Number of pending URIs</p></td><td width="50%" align="right"><span id="pendingURIs">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%"><p>Number of crawled URIs</p></td><td width="50%" align="right"><span id="countOfCrawledURIs">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%"><p>Number of workers</p></td><td width="50%" align="right"><span id="countOfWorker">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%"><p>Number of dead workers</p></td><td width="50%" align="right"><span id="countOfDeadWorker">load...</span></td>
+            </tr>
+            <tr>
+              <td width="50%"><p>Runtime</p></td>
+              <td width="50%" align="right"><span id="runtime">load...</span></td>
+            </tr>
+          </table>
+          Crawl through the history <i>(right: auto update to the current status)</i>: <div id="slider"></div>
+        </td>
+        <td width="50%">
+          <div id="accordion">
+            <h3>Pending URIs: pure</h3>
+            <div id="pURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+            <h3>Pending URIs: IP --> URI</h3>
+            <div id="mURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+            <h3>URIs, that will be crawled next</h3>
+            <div id="ncURIs">Wait a few seconds, we load the content for you... if this message is not replaced after some time, the reason for that is maybe a disabled JavaScript in your browser...</div>
+          </div>
+
+            <input id="urlInput" type="text">
+
+          <input type="button" id="pushURI" style="font-family: Sigmar One; font-size: 12px" value="Add URI to the pending URI list">
+
+            <script>
+              $("#pushURI").on("click", function () {
+                $.ajax({
+                  url: "/observer/push",
+                  data: {uri: $("#urlInput").val()},
+                  dataType: "text",
+                  method: "POST"
+                }).done(function (data) {
+                  alert(data);
+                }).fail(function () {
+                  alert("AJAX request to \"/observer/push\" failed :(");
+                });
+              });
+            </script>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

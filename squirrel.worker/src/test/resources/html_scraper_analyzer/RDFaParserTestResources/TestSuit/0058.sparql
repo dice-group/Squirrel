@@ -1,0 +1,6 @@
+_:n1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+_:n0 <http://xmlns.com/foaf/0.1/name> _:n1 .
+<http://www.example.org/#ben> <http://xmlns.com/foaf/0.1/knows> _:n0 .
+_:n2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+_:n0 <http://xmlns.com/foaf/0.1/name> _:n2 .
+<http://www.example.org/#ben> <http://xmlns.com/foaf/0.1/knows> _:n0 .

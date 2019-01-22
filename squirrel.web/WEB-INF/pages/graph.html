@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fact Checking :: Crawler :: Graph</title>
+  <script src="/pages/js/jquery-3.3.1.min.js"></script>
+  <script src="/pages/js/jquery-ui.min.js"></script>
+  <link href="/pages/css/jquery-ui.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.structure.min.css" rel="stylesheet">
+  <link href="/pages/css/jquery-ui.theme.min.css" rel="stylesheet">
+  <link href="/pages/css/app.css" rel="stylesheet">
+  <style type="text/css">
+    #graphContainer {
+      width: auto;
+      height: 400px;
+    }
+  </style>
+  <script src="/pages/js/sigma.min.js"></script>
+  <script src="/pages/js/sigma.parsers.json.min.js"></script>
+  <script>
+    /*$.ajax({
+      url: "/observer/crawledGraph",
+      dataType: "json",
+      method: "GET"
+    }).done(function (data) {
+      sigma.parsers.json(data, {
+        container: 'graphContainer',
+        settings: {
+          defaultNodeColor: 'red'
+        }
+      });
+    }).fail(function () {
+      alert("AJAX request to \"" + uri + "\" failed :( Please reload the page to see the graph (maybe)...");
+    }); */
+    sigma.parsers.json("/observer/crawledGraph", {
+      container: "graphContainer",
+      settings: {
+        defaultNodeColor: "red",
+        minArrowSize: 1,
+        labelSize: "proportional",
+        labelThreshold: 6,
+        edgeHoverSizeRatio: 2,
+        edgeHoverExtremities: true,
+        doubleClickEnabled: false,
+        skipErrors: true,
+        animationsTime: 400
+      }
+    });
+  </script>
+</head>
+
+<body bgcolor="#d3d3d3">
+<table width="100%" cellpadding="8px">
+  <tr>
+    <td class="nopadding" colspan="2">
+      <div class="topnav">
+        <a href="/pages/index.html">Home</a> |
+        <a class="active" href="/pages/graph.html">Crawled Graph</a> |
+        <a href="/pages/templates/fact-check.html">Fact Check</a> |
+        <a href="/pages/templates/crawler.html">Crawler</a> |
+        <a href="/pages/templates/squirrel.html">Squirrel</a> |
+        <a href="/pages/templates/about.html">About Us</a>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h1>Crawled Graph</h1>
+      <p>Here you can see the graph of the crawled URIs. In the left you can find the most earliest crawled node in the
+        data snip.</p>
+      <div id="graphContainer"></div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
