@@ -1,6 +1,11 @@
 package org.dice_research.squirrel.queue;
 
 import java.net.InetAddress;
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * This extension of the {@link UriQueue} interface defines additional methods
@@ -29,4 +34,10 @@ public interface IpAddressBasedQueue extends UriQueue {
      * @return the number of IP addresses that are currently blocked.
      */
     public int getNumberOfBlockedIps();
+    /**
+     * Goes through the queue und collects all IP-address with their URIs
+     *
+     * @return a IP-address-iterator with the list of uris for each IP-address
+     */
+    Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
 }

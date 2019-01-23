@@ -45,7 +45,7 @@ public class HTMLScraperAnalyzer extends AbstractAnalyzer {
             return collector.getUris(curi);
 
         } catch (Exception e) {
-			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName(),e);
         }
         return null;
     }

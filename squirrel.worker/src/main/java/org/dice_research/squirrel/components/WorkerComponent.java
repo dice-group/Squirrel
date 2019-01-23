@@ -67,12 +67,8 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     @Override
     public void init() throws Exception {
         super.init();
-        if (worker == null || sender == null || client == null || serializer == null) {
-            LOGGER.warn("The SPRING-config autowire service was not (totally) working. We must do the instantiation in the WorkerComponent!");
-            initWithoutSpring();
-        }
         
-       UriSetRequest uriSetReq = new UriSetRequest(worker.getUri(),false);
+       UriSetRequest uriSetReq = new UriSetRequest(worker.getId(),false);
         
         uriSetRequest = serializer.serialize(uriSetReq);
 
@@ -93,7 +89,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
                 @Override
                 public void run() {
                     try {
-                        senderFrontier.sendData(serializer.serialize(new AliveMessage(worker.getUri())));
+                        senderFrontier.sendData(serializer.serialize(new AliveMessage((worker.getId()))));
                     } catch (IOException e) {
                         LOGGER.warn(e.toString());
                     }
@@ -106,25 +102,25 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     }
 
-    private void initWithoutSpring() throws Exception {
-        super.init();
-
-        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
-
-        Sink sink;
-        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
-            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
-        } else {
-            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
-            sink = new SparqlBasedSink(workerConfiguration.getSparqlHost().toString(), workerConfiguration.getSqarqlPort().toString(), "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
-        }
-
-        serializer = new GzipJavaUriSerializer();
-
-//        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
-        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME).build();
-        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), Constants.FRONTIER_QUEUE_NAME);
-    }
+//    private void initWithoutSpring() throws Exception {
+//        super.init();
+//
+//        WorkerConfiguration workerConfiguration = WorkerConfiguration.getWorkerConfiguration();
+//
+//        Sink sink;
+//        if (workerConfiguration.getSparqlHost() == null || workerConfiguration.getSqarqlPort() == null) {
+//            sink = new FileBasedSink(new File(workerConfiguration.getOutputFolder()), true);
+//        } else {
+//            String httpPrefix = "http://" + workerConfiguration.getSparqlHost() + ":" + workerConfiguration.getSqarqlPort() + "/";
+//            sink = new SparqlBasedSink(workerConfiguration.getSparqlHost().toString(), workerConfiguration.getSqarqlPort().toString(), "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
+//        }
+//
+//        serializer = new GzipJavaUriSerializer();
+//
+////        worker = new WorkerImpl(this, sink, new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", ""))), serializer, SqlBasedUriCollector.create(serializer), 2000, workerConfiguration.getOutputFolder() + File.separator + "log", true);
+//        sender = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME).build();
+//        client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(), Constants.FRONTIER_QUEUE_NAME);
+//    }
 
     @Override
     public void run() {
