@@ -13,14 +13,13 @@ public interface FiniteStateMachine {
      * @param c Char.
      * @return A new finite state machine with the new state.
      */
-    FiniteStateMachine switchState(final String c);
+    void switchState(final String c);
 
     /**
-     * Is the current state a final one?
+     * Is the current state a error state?
      *
      * @return true or false.
      */
-    boolean canStop();
 
     boolean isError();
 

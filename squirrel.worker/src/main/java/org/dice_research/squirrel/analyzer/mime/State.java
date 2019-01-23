@@ -1,5 +1,7 @@
 package org.dice_research.squirrel.analyzer.mime;
 
+import java.util.NoSuchElementException;
+
 /**
  * State. Part of a finite state machine.
  */
@@ -21,7 +23,7 @@ public interface State {
      * @return State.
      * @throws IllegalStateException if the char is not accepted.
      */
-    State transit(final String c);
+    State transit(final String c) throws NoSuchElementException;
 
     /**
      * Can the automaton stop on this state?
