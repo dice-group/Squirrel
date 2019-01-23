@@ -41,8 +41,9 @@ public class MimeTypeDetectorTest {
         classLoader = getClass().getClassLoader();
     }
 
-    public Lang validate(String fileName) {
-        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+
+    private Lang validate(String fileName) throws NullPointerException {
+        File file = new File(classLoader.getResource(fileName).getFile());
         return typeDetector.detectMimeType(file);
     }
 
