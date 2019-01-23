@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.sql.DataSource;
-
 import org.apache.http.annotation.NotThreadSafe;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -60,58 +58,48 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
     private static final int DEFAULT_BUFFER_SIZE = 30;
     private static final Pattern TABLE_NAME_GENERATE_REGEX = Pattern.compile("[^0-9a-zA-Z]*");
     private long total_uris = 0;
-    
-    
-
-    public static SqlBasedUriCollector create(Serializer serializer) {
-        return create(serializer, "foundUris");
-    }
-
-    public static SqlBasedUriCollector create(Serializer serializer, String dbPath) {
-        SqlBasedUriCollector collector = null;
-        try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace(System.out);
-        }
-        Statement s = null;
-        try {
-            Connection dbConnection = DriverManager.getConnection("jdbc:hsqldb:mem:" + dbPath, "SA", "");
-            // PreparedStatement createTableStmt =
-            // dbConnection.prepareStatement(CREATE_TABLE_QUERY);
-            // PreparedStatement dropTableStmt =
-            // dbConnection.prepareStatement(DROP_TABLE_QUERY);
-            // PreparedStatement insertStmt =
-            // dbConnection.prepareStatement(INSERT_URI_QUERY);
-            collector = new SqlBasedUriCollector(dbConnection,
-                    /* createTableStmt, dropTableStmt, insertStmt, */ serializer);
-        } catch (Exception e) {
-            LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
-        } finally {
-            try {
-                if (s != null) {
-                    s.close();
-                }
-            } catch (SQLException e) {
-            }
-        }
-        return collector;
-    }
-
     protected Connection dbConnection;
     protected Serializer serializer;
     protected int bufferSize = DEFAULT_BUFFER_SIZE;
     protected Map<String, UriTableStatus> knownUris = new HashMap<>();
-
-    public SqlBasedUriCollector(DataSource dataSource, Serializer serializer) throws SQLException {
-        this.dbConnection = dataSource.getConnection();
-        this.serializer = serializer;
-    }
     
-    public SqlBasedUriCollector(Connection dbConnection, Serializer serializer) throws SQLException {
-        this.dbConnection = dbConnection;
+
+
+
+    public void create(String dbPath) {
+    	
+	        try {
+	            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+	        } catch (ClassNotFoundException e) {
+	            e.printStackTrace(System.out);
+	        }
+	        Statement s = null;
+	        try {
+	        	
+	        		this.dbConnection = DriverManager.getConnection("jdbc:hsqldb:file:" + dbPath + "-"+Math.floor(Math.random() * 100000), "SA", "");
+	        	
+	        } catch (Exception e) {
+	            LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
+	        } finally {
+	            try {
+	                if (s != null) {
+	                    s.close();
+	                }
+	            } catch (SQLException e) {
+	            	 LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
+	            }
+	        }
+    	
+    }
+
+    
+
+    public SqlBasedUriCollector(Serializer serializer,String dbPath) throws SQLException {
+        create(dbPath);
         this.serializer = serializer;
     }
+
+    
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
