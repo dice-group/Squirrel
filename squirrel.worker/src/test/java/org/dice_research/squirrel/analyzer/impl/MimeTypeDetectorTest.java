@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
@@ -41,7 +42,7 @@ public class MimeTypeDetectorTest {
     }
 
     public Lang validate(String fileName) {
-        File file = new File(classLoader.getResource(fileName).getFile());
+        File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
         return typeDetector.detectMimeType(file);
     }
 
