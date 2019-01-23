@@ -43,16 +43,18 @@ public class MimeTypeDetectorTest {
     }
 
     private Lang validate(String fileName) {
-        if(fileName == null)
+        if(fileName == null) {
             return RDFLanguages.RDFNULL;
+        }
         else {
             URL url = classLoader.getResource(fileName);
             if(url != null) {
                 File file = new File(url.getFile());
                 return typeDetector.detectMimeType(file);
             }
-            else
+            else {
                 return RDFLanguages.RDFNULL;
+            }
         }
     }
 
@@ -60,7 +62,6 @@ public class MimeTypeDetectorTest {
     public static Collection filesToTest() {
         return Arrays.asList(new Object[][]{
             {"rdf_analyzer/new_york/RDFXML", RDFLanguages.RDFXML},
-            {"Sample_Files/Test_File_1", RDFLanguages.RDFXML},
             {"Sample_Files/Test_File_2", RDFLanguages.RDFNULL},
             {"rdf_analyzer/new_york/new_york_turtle", RDFLanguages.TURTLE},
             {"Sample_Files/sample.nt", RDFLanguages.NTRIPLES},
