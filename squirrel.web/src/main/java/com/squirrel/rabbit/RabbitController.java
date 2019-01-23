@@ -29,7 +29,7 @@ public class RabbitController {
     public SquirrelWebObject observeFrontier(@RequestParam(value = "id", defaultValue = "n/a") String property, @RequestParam(value = "percent", defaultValue = "false") String percent) {
         SquirrelWebObject o;
         try {
-            int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property) / 100f) * Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
+        	int id = Boolean.parseBoolean(percent) ? (int) ((Integer.parseInt(property) / 100f) * Application.listenerThread.countSquirrelWebObjects()) : Integer.parseInt(property);
             o = Application.listenerThread.getSquirrel(id);
         } catch (NumberFormatException e) {
             o = Application.listenerThread.getSquirrel();

@@ -40,7 +40,7 @@ public class SimpleCkanFetcher implements Fetcher {
     public static final String CKAN_JSON_OBJECT_MIME_TYPE = "ckan/json";
     public static final byte NEWLINE_CHAR = '\n';
     
-    protected boolean checkForUriType = true;
+    protected boolean checkForUriType = false;
     protected File dataDirectory = FileUtils.getTempDirectory();
     protected ObjectMapper mapper;
     
@@ -58,7 +58,9 @@ public class SimpleCkanFetcher implements Fetcher {
     @Override
     public File fetch(CrawleableUri uri) {
         // If this is a CKAN API URI or we do not check it at all
+    	LOGGER.info("Starting Ckanfetcher...");
         if(!checkForUriType || CKAN_API_URI_TYPE_VALUE.equals(uri.getData(Constants.URI_TYPE_KEY))) {
+        	LOGGER.info("Fetching " + uri.getUri().toString());
             CkanClient client = null;
             OutputStream out = null;
             try {
@@ -73,6 +75,7 @@ public class SimpleCkanFetcher implements Fetcher {
                 // If we reached this point, we should add a flag that the file contains CKAN JSON
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 ActivityUtil.addStep(uri, getClass());
+                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY,"CKAN_API");
                 return dataFile;
             } catch(CkanException e) {
                 LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null. Exception: " + e.getMessage());
