@@ -6,8 +6,9 @@
     <parent>
         <groupId>org.dice-research</groupId>
         <artifactId>squirrel</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
+    
     <artifactId>squirrel.web-api</artifactId>
     <packaging>jar</packaging>
     <name>Squirrel Web API</name>

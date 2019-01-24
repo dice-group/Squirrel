@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
+import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
@@ -26,6 +27,7 @@ import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
@@ -66,6 +68,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         super.init();
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+        WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
         if(mongoConfiguration != null) {
             String dbHostName = mongoConfiguration.getMDBHostName();
             Integer dbPort = mongoConfiguration.getMDBPort();
@@ -106,22 +109,22 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         LOGGER.info("Frontier initialized.");
 
-//        if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
-//            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-//                    workerGuard, queue, knownUriFilter, uriReferences);
-//            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
-//                    + webConfiguration.isVisualizationOfCrawledGraphEnabled());
-//            Thread senderThread = new Thread(sender);
-//            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
-//            senderThread.start();
-//            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state "
-//                    + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
-//        } else {
-//            LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to "
-//                    + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
-//                    + webConfiguration.isVisualizationOfCrawledGraphEnabled()
-//                    + ". No WebServiceSenderThread will be started!");
-//        }
+        if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
+                    workerGuard, queue, knownUriFilter, uriReferences);
+            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
+                    + webConfiguration.isVisualizationOfCrawledGraphEnabled());
+            Thread senderThread = new Thread(sender);
+            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
+            senderThread.start();
+            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state "
+                    + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
+        } else {
+            LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to "
+                    + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
+                    + webConfiguration.isVisualizationOfCrawledGraphEnabled()
+                    + ". No WebServiceSenderThread will be started!");
+        }
     }
 
     @Override
@@ -189,7 +192,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
-                String idReceived = message.getIdOfWorker();
+                int idReceived = message.getIdOfWorker();
                 LOGGER.trace("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
             } else {
@@ -228,7 +231,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
     }
 
-    public void informFrontierAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+    public void informFrontierAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
         if (frontier instanceof ExtendedFrontier) {
             ((ExtendedFrontier) frontier).informAboutDeadWorker(idOfWorker, lstUrisToReassign);
         }

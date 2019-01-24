@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.dice-research</groupId>
 	<artifactId>squirrel</artifactId>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.3.0</version>
 	<packaging>pom</packaging>
 	<inceptionYear>2017</inceptionYear>
 	<name>Squirrel</name>
@@ -33,12 +33,12 @@
 
 	<!-- MODULES -->
 	<modules>
+		<module>squirrel.web-api</module>
+		<module>squirrel.web</module>
 		<module>squirrel.api</module>
 		<module>squirrel.deduplication</module>
 		<module>squirrel.frontier</module>
 		<module>squirrel.mockup</module>
-		<module>squirrel.web</module>
-		<module>squirrel.web-api</module>
 		<module>squirrel.worker</module>
 	</modules>
 
