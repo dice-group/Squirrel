@@ -66,7 +66,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
     }
 
     @Override
-    public void informAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
         if (queue instanceof IpAddressBasedQueue) {
             IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
 

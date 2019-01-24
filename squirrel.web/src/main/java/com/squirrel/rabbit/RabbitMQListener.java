@@ -1,28 +1,33 @@
 package com.squirrel.rabbit;
 
-import com.SquirrelWebObject;
-import com.graph.VisualisationGraph;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-
-import org.apache.commons.io.IOUtils;
-import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
-import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.dice_research.squirrel.rabbit.msgs.UriSet;
-import org.hobbit.core.rabbit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.validation.constraints.NotNull;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeoutException;
+
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.io.IOUtils;
+import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.dice_research.squirrel.rabbit.msgs.UriSet;
+import org.hobbit.core.rabbit.DataHandler;
+import org.hobbit.core.rabbit.DataReceiver;
+import org.hobbit.core.rabbit.DataReceiverImpl;
+import org.hobbit.core.rabbit.RabbitQueueFactory;
+import org.hobbit.core.rabbit.RabbitQueueFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.SquirrelWebObject;
+import com.graph.VisualisationGraph;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 /**
  * The interface between the RabbitMQ and the Web-Service
@@ -76,7 +81,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
         try {
             channel.queueDeclare(queueName, false, false, false, null);
         } catch (IOException e) {
-            logger.error("I have a connection to " + connection.getClientProvidedName() + " with the channel number " + channel.getChannelNumber() + ", but I was not able to declare a queue :(", e);
+//            logger.error("I have a connection to " + connection.getClientProvidedName() + " with the channel number " + channel.getChannelNumber() + ", but I was not able to declare a queue :(", e);
             return false;
         }
         logger.info("Queue declaration succeeded with the name " + queueName + " [" + channel.getChannelNumber() + "]");
@@ -91,13 +96,15 @@ public class RabbitMQListener implements Runnable, DataHandler {
      * @return {@code true}, if the connection to the RabbitMQ was established, otherwise {@code false}
      */
     private boolean rabbitConnect(int triesLeft) {
+    	String host = System.getenv("HOST") == null ? "localhost" : System.getenv("HOST");
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbit");
+        factory.setHost(host);
         factory.setUsername("guest");
         factory.setPassword("guest");
         connection = null;
         try {
             connection = factory.newConnection();
+            connection.getClientProperties();
             channel = connection.createChannel();
         } catch (IOException e) {
             if (triesLeft > 0) {
@@ -129,7 +136,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
             }
         }
 
-        logger.info("Connection to rabbit succeeded: " + factory.getHost() + " - " + connection.getClientProvidedName() + " [" + connection.getId() + "]");
+        logger.info("Connection to rabbit succeeded: " + factory.getHost());
         return true;
     }
 

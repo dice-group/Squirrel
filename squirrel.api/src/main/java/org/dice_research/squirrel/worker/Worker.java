@@ -38,6 +38,12 @@ public interface Worker extends Runnable {
      * @return True iff the worker sends alive messages.
      */
     boolean sendsAliveMessages();
+    
+    /**
+     * Gives the unique id of the worker.
+     * @return The id of the worker.
+     */
+    int getId();
 
     public void setTerminateFlag(boolean terminateFlag);
 

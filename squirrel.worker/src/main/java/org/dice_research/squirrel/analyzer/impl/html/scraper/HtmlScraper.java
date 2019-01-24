@@ -11,14 +11,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.tdb.store.Hash;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
@@ -31,6 +28,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ * 
+ * HTMLScraper to extract triples from HTML Data based in
+ * pre configured yaml files.
+ * 
  * @author gsjunior
  */
 public class HtmlScraper {
@@ -44,6 +45,8 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
+    private Map<String,List<Triple>> staticMap = new HashMap<String,List<Triple>>();
+    private Map<String,List<Triple>> selectedMap = new HashMap<String,List<Triple>>();
 
 
     public HtmlScraper(File file) {
@@ -63,7 +66,8 @@ public class HtmlScraper {
 
     }
 
-    public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
+    @SuppressWarnings("unchecked")
+	public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
 
         List<Triple> listTriples = new ArrayList<Triple>();
         listIterableObjects = new LinkedHashSet<String>();
@@ -71,15 +75,50 @@ public class HtmlScraper {
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
         
         
-        
+        this.uri = uri;
+	     if(uri.contains("?")) {
+	      this.label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+	     }else {
+	      this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+	     }
         if((boolean) yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("ignore-request") && uri.contains("?")) {
-
-        	uri = uri.substring(0, uri.indexOf("?"));
-
+        	label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+        	this.uri = uri.substring(0, uri.indexOf("?"));
         }
         
         if (yamlFile != null) {
 //            yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
+        	
+        	if(yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("static-resources")!= null) {
+        		
+        		for(Entry<String,Object> entry: ((HashMap<String, Object>)  yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK)
+        		.get("static-resources")).entrySet()) {
+        			for(Entry<String,Object> typesEntry: ((HashMap<String, Object>) entry.getValue()).entrySet() ) {
+        				Node s = NodeFactory.createURI(typesEntry.getKey());
+        				List<Triple> listTriple = new ArrayList<Triple>();
+        				for(Entry<String,Object> valuesEntry: ((HashMap<String, Object>) typesEntry.getValue()).entrySet()) {
+        					Node o;
+        					Node p = NodeFactory.createURI(valuesEntry.getKey());
+        					
+        					try {
+        	                     new URL(valuesEntry.getValue().toString());
+        	                     o = NodeFactory.createURI(valuesEntry.getValue().toString());
+        	                 } catch (MalformedURLException e) {
+        	                	 o = NodeFactory.createLiteral(valuesEntry.getValue().toString());
+        	                 }
+        	              
+        					Triple t = new Triple(s, p, o);
+        					listTriple.add(t);
+        				}
+        				staticMap.put(entry.getKey().toLowerCase(), listTriple);
+        			}
+        		}
+        		
+//        		for(Object entry : yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("static-resources")) {
+//      			
+//        		}
+        	}
+        	 
 
             for (Entry<String, Map<String, Object>> entry : yamlFile.getFile_descriptor().entrySet()) {
                 for (Entry<String, Object> cfg : entry.getValue().entrySet()) {
@@ -201,8 +240,12 @@ public class HtmlScraper {
 
         List<String> resourcesList = new ArrayList<String>();
         
-        this.uri = uri;
-        this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+
+//        if(uri.contains("?")) {
+//         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
+//        }else {
+//         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+//        }
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
@@ -216,6 +259,12 @@ public class HtmlScraper {
             	scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode);
             }
 
+        }
+        
+        if(!selectedMap.isEmpty()) {
+        	for(Entry<String,List<Triple>> entry : selectedMap.entrySet()) {
+        		triples.addAll(entry.getValue());
+        	}
         }
 
         return triples;
@@ -253,7 +302,7 @@ public class HtmlScraper {
                    triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
             }else if(entry.getValue() instanceof String) {
             	
-            	Node p = NodeFactory.createURI(entry.getKey());
+            	Node p = ResourceFactory.createResource(entry.getKey()).asNode();
     			List<Node> o = jsoupQuery((String) entry.getValue());
     			if (o.isEmpty()) {
     				LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
@@ -281,12 +330,15 @@ public class HtmlScraper {
     	
     	List<Node> listNodes = new ArrayList<Node>();
     	
+    	@SuppressWarnings("unused")
+		boolean useResource = false;
+    	
     	 try {
           	
-          	if(cssQuery.startsWith("l")) {
+          	if(cssQuery.startsWith("l(")) {
           		
           		String val = cssQuery.substring(cssQuery.indexOf("(")+1,cssQuery.lastIndexOf(")"));
-          		String label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+//          		String label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
           		
           		if (val.contains("$uri")) {
           			val = val.replaceAll("\\$uri", uri);
@@ -303,7 +355,12 @@ public class HtmlScraper {
               	arrayElements[0] = el;
               	elements = new Elements(arrayElements); 
               }else {
-	                    elements = doc.select(cssQuery);
+            	  
+            	  if(cssQuery.startsWith("res(")) {
+            		  useResource = true;
+            		  cssQuery = cssQuery.substring(cssQuery.indexOf("(")+1, cssQuery.lastIndexOf(")") );
+            	  }
+            	  elements = doc.select(cssQuery);
 
 	                    if (elements.isEmpty()) {
 	                        throw new ElementNotFoundException("Element (" + cssQuery + ")"
@@ -324,9 +381,12 @@ public class HtmlScraper {
                      String path = elements.get(i).attr("href");
                      String base = url.getProtocol() + "://" + url.getHost() + path;
                      listNodes.add(NodeFactory.createURI(base));
-                 } else {
+                 }else {
                 	 listNodes.add(NodeFactory.createURI(elements.get(i).attr("abs:href")));
                  }
+             }else if(useResource) {
+            	 listNodes.add(staticMap.get(elements.get(i).text().toLowerCase()).get(0).getSubject());
+            	 selectedMap.put(elements.get(i).text().toLowerCase(), staticMap.get(elements.get(i).text().toLowerCase()));
              } else {
                  boolean uriFlag = true;
                  

@@ -1,0 +1,16 @@
+{
+  "@graph" : [ {
+    "@id" : "http://dbpedia.org/resource/101st_Rescue_Squadron",
+    "country" : "http://dbpedia.org/resource/New_York"
+  }, {
+    "@id" : "http://dbpedia.org/resource/102d_Rescue_Squadron",
+    "country" : "http://dbpedia.org/resource/New_York"
+  }, {
+    "@id" : "http://dbpedia.org/resource/103d_Rescue_Squadron",
+    "country" : "http://dbpedia.org/resource/New_York"
+  }, {
+    "@id" : "http://dbpedia.org/resource/105th_Airlift_Wing",
+    "country" : "http://dbpedia.org/resource/New_York"
+  }
+  ]
+  }
