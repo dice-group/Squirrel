@@ -24,6 +24,14 @@ public class MimeTypeDetector implements TypeDetector {
 
     protected List<Lang> mimeTypes = new ArrayList<>();
 
+    /**
+     * The finite state machines are built.
+     * Precondtions to the files are checked.
+     * Each element in the file is passed one after the
+     * other to the built finite state machines until the check is complete.
+     *
+     */
+
     public Lang detectMimeType(File data) {
 
         LinkedList<FiniteStateMachine> machinesList = new LinkedList<FiniteStateMachine>();
@@ -79,6 +87,10 @@ public class MimeTypeDetector implements TypeDetector {
         return detectedMimeType;
     }
 
+    /**
+     * Adding all the mime types to a list
+     *
+     */
     private void setMimeTypes(Lang... types) {
         for (Lang type : types)
             mimeTypes.add(type);

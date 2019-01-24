@@ -43,16 +43,14 @@ public class MimeTypeDetectorTest {
     }
 
     private Lang validate(String fileName) {
-        if(fileName == null) {
+        if (fileName == null) {
             return RDFLanguages.RDFNULL;
-        }
-        else {
+        } else {
             URL url = classLoader.getResource(fileName);
-            if(url != null) {
+            if (url != null) {
                 File file = new File(url.getFile());
                 return typeDetector.detectMimeType(file);
-            }
-            else {
+            } else {
                 return RDFLanguages.RDFNULL;
             }
         }
@@ -61,13 +59,13 @@ public class MimeTypeDetectorTest {
     @Parameterized.Parameters
     public static Collection filesToTest() {
         return Arrays.asList(new Object[][]{
-            {"rdf_analyzer/new_york/RDFXML", RDFLanguages.RDFXML},
+            {"Sample_Files/sample_RDFXML", RDFLanguages.RDFXML},
+            {"Sample_Files/Test_File_1", RDFLanguages.RDFNULL},
             {"Sample_Files/Test_File_2", RDFLanguages.RDFNULL},
-            {"rdf_analyzer/new_york/new_york_turtle", RDFLanguages.TURTLE},
+            {"Sample_Files/sample_ttl", RDFLanguages.TURTLE},
             {"Sample_Files/sample.nt", RDFLanguages.NTRIPLES},
-            {"rdf_analyzer/new_york/new_york_rdfjson", RDFLanguages.RDFJSON},
-            {"rdf_analyzer/new_york/new_york_jsonld", RDFLanguages.JSONLD},
-            {null, RDFLanguages.RDFNULL}
+            {"Sample_Files/sample_rdfjson", RDFLanguages.RDFJSON},
+            {"Sample_Files/sample_jsonld", RDFLanguages.JSONLD}
         });
     }
 
