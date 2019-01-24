@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/aop
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/aop
                             http://www.springframework.org/schema/aop/spring-aop.xsd
                             http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -13,118 +13,146 @@
                             http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
-          <context:component-scan base-package="org.dice_research.squirrel" />
+	<context:component-scan base-package="org.dice_research.squirrel" />
 
-        <!--
-                This will automatically locate any and all property files you have
-                within your classpath, provided they fall under the META-INF
-                directory. The located property files are parsed and their values can
-                then be used within application context files in the form of
-                ${propertyKey}.
-        -->
-        
+	<!--
+            This will automatically locate any and all property files you have
+            within your classpath, provided they fall under the META-INF
+            directory. The located property files are parsed and their values can
+            then be used within application context files in the form of
+            ${propertyKey}.
+    -->
 
-        
-        <!-- 
-        	<bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
-        
-         -->
-        
-        <bean id="workerBean" class="org.dice_research.squirrel.worker.impl.WorkerImpl">
-        	<constructor-arg index="0" ref="workerComponent" />
-        	<constructor-arg index="1" ref="sinkBean" />
-        	<constructor-arg index="2" ref="analyzerBean" />
-        	<constructor-arg index="3" ref="robotsManagerBean" />
-        	<constructor-arg index="4" ref="serializerBean" />
-        	<constructor-arg index="5" ref="uriCollectorBean" />
-        	<constructor-arg index="6" value="2000" />
-        	<constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
-            <constructor-arg index="8" value="false" /><!-- Logging -->
-        </bean> 
-        
-        <bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
-        	<constructor-arg index="0" ref="uriCollectorBean" />
-        	<constructor-arg index="1" >
-        		<array value-type="java.lang.String">
-				  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value> 
-				  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
-				</array>
-        	</constructor-arg>
-        </bean>
-        
-       	
-         
-        <!-- Output folder for FileBasedSink -->
-        <bean id="outputFolderBean" class="java.io.File">
-        	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
-        </bean>
-         
-        <!-- File Based Sink implementation-->
-        <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.file.FileBasedSink">
-        	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
-        	<constructor-arg name="useCompression" value="true"/>
-        </bean>
 
-        
-        <!-- HDT File Based Sink implementation 
-        <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink">
-        	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
-        </bean>
-	-->
 
-	<!-- Triple Store (JENA) Sink implementation
-	    <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink">
+	<!--
+        <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean>
+
+     -->
+
+	<bean id="workerBean" class="org.dice_research.squirrel.worker.impl.WorkerImpl">
+		<constructor-arg index="0" ref="workerComponent" />
+		<constructor-arg index="1" ref="fetcherBean" />
+		<constructor-arg index="2" ref="sinkBean" />
+		<constructor-arg index="3" ref="analyzerBean" />
+		<constructor-arg index="4" ref="robotsManagerBean" />
+		<constructor-arg index="5" ref="serializerBean" />
+		<constructor-arg index="6" ref="uriCollectorBean" />
+		<constructor-arg index="7" value="2000" />
+		<constructor-arg index="8" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
+		<constructor-arg index="9" value="false" /><!-- Logging -->
+	</bean>
+
+	<bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
+		<constructor-arg index="0" ref="uriCollectorBean" />
+		<constructor-arg index="1" >
+			<array value-type="java.lang.String">
+				<value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
+				<value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
+				<value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
+				<value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value>
+				<value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
+				<value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
+				<value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
+			</array>
+		</constructor-arg>
+	</bean>
+
+	<bean id="fetcherBean" class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
+		<constructor-arg>
+			<list>
+
+				<ref bean="httpFetcherBean" />
+				<ref bean="ftpFetcherBean" />
+				<ref bean="ckanFetcherBean" />
+				<ref bean="sparqlDatasetFetcherBean" />
+				<ref bean="sparqlFetcherBean" />
+
+
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="httpFetcherBean" class="org.dice_research.squirrel.fetcher.http.HTTPFetcher" />
+	<bean id="ftpFetcherBean" class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
+	<bean id="sparqlFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher" />
+	<bean id="sparqlDatasetFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
+		<constructor-arg index="0" value="20"></constructor-arg>
+		<constructor-arg index="1" value="800000"></constructor-arg>
+		<constructor-arg index="2" value="100000"></constructor-arg>
+	</bean>
+	<bean id="ckanFetcherBean" class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />
+
+
+
+	<!-- Output folder for FileBasedSink -->
+	<bean id="outputFolderBean" class="java.io.File">
+		<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
+	</bean>
+
+	<!-- File Based Sink implementation
+    <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.file.FileBasedSink">
+        <constructor-arg name="outputDirectory" ref="outputFolderBean" />
+        <constructor-arg name="useCompression" value="false"/>
+    </bean>
+    -->
+
+	<!-- HDT File Based Sink implementation
+    <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink">
+        <constructor-arg name="outputDirectory" ref="outputFolderBean" />
+    </bean>
+-->
+
+	<!-- Triple Store (JENA) Sink implementation  -->
+	<bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink">
 		<constructor-arg name="host"
-		                 value="#{systemEnvironment['SPARQL_HOST_NAME']}"/>
+						 value="#{systemEnvironment['SPARQL_HOST_NAME']}"/>
 		<constructor-arg name="port"
-		                 value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
+						 value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
 		<constructor-arg name="updateAppendix"
-		                 value="contentset/update"/>
+						 value="europeandataportal/update"/>
 		<constructor-arg name="queryAppendix"
-		                 value="contentset/query"/>
+						 value="europeandataportal/query"/>
 		<constructor-arg name="updateMetaDataAppendix"
-		                 value="MetaData/update"/>
+						 value="MetaData/update"/>
 		<constructor-arg name="queryMetaDataAppendix"
-		                 value="MetaData/query"/>
+						 value="MetaData/query"/>
 
-	    </bean>-->
-        
-        <bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SimpleUriCollector" >
-        	<constructor-arg index="0" ref="serializerBean" />
+	</bean>
+
+
+	<bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SimpleUriCollector" >
+		<constructor-arg index="0" ref="serializerBean" />
+	</bean>
+
+	<!--
+        <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
+            <constructor-arg index="0" ref="datasourceConnection" />
+            <constructor-arg index="1" ref="serializerBean" />
         </bean>
-        
-        <!--  
-	        <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
-	        	<constructor-arg index="0" ref="datasourceConnection" />
-	        	<constructor-arg index="1" ref="serializerBean" />
-	        </bean>
-        -->
-        <bean id="serializerBean" class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
-        
-        <bean id="datasourceConnection" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
-        	<property name="driverClassName" value="org.hsqldb.jdbc.JDBCDriver" />
-        	<property name="url" value="jdbc:hsqldb:mem:foundUris" />
-        	<property name="username" value="SA" />
-        	<property name="password" value="" />
-        </bean>
-        
-        <bean id="robotsManagerBean" class="org.dice_research.squirrel.robots.RobotsManagerImpl">
-        	<constructor-arg index="0" ref="simpleHttpFetcherBean" />
-        	<property name="defaultMinWaitingTime" value="100"></property>
-        </bean>
-    
-    <bean id="simpleHttpFetcherBean" class="crawlercommons.fetcher.http.SimpleHttpFetcher" >
-        	<constructor-arg index="0" ref="userAgentBean" />
-        </bean>
-        
-        <bean id="userAgentBean" class="crawlercommons.fetcher.http.UserAgent" >
-        	<constructor-arg index="0" value="Test" />
-        	<constructor-arg index="1" value="" />
-        	<constructor-arg index="2" value="" />
-        </bean>
-        
+    -->
+	<bean id="serializerBean" class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
+
+	<bean id="datasourceConnection" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+		<property name="driverClassName" value="org.hsqldb.jdbc.JDBCDriver" />
+		<property name="url" value="jdbc:hsqldb:mem:foundUris" />
+		<property name="username" value="SA" />
+		<property name="password" value="" />
+	</bean>
+
+	<bean id="robotsManagerBean" class="org.dice_research.squirrel.robots.RobotsManagerImpl">
+		<constructor-arg index="0" ref="simpleHttpFetcherBean" />
+		<property name="defaultMinWaitingTime" value="100"></property>
+	</bean>
+
+	<bean id="simpleHttpFetcherBean" class="crawlercommons.fetcher.http.SimpleHttpFetcher" >
+		<constructor-arg index="0" ref="userAgentBean" />
+	</bean>
+
+	<bean id="userAgentBean" class="crawlercommons.fetcher.http.UserAgent" >
+		<constructor-arg index="0" value="Test" />
+		<constructor-arg index="1" value="" />
+		<constructor-arg index="2" value="" />
+	</bean>
+
 </beans>

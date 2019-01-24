@@ -32,32 +32,59 @@
         
         <bean id="workerBean" class="org.dice_research.squirrel.worker.impl.WorkerImpl">
         	<constructor-arg index="0" ref="workerComponent" />
-        	<constructor-arg index="1" ref="sinkBean" />
-        	<constructor-arg index="2" ref="analyzerBean" />
-        	<constructor-arg index="3" ref="robotsManagerBean" />
-        	<constructor-arg index="4" ref="serializerBean" />
-        	<constructor-arg index="5" ref="uriCollectorBean" />
-        	<constructor-arg index="6" value="2000" />
-        	<constructor-arg index="7" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
-            <constructor-arg index="8" value="false" /><!-- Logging -->
+        	<constructor-arg index="1" ref="fetcherBean" />
+        	<constructor-arg index="2" ref="sinkBean" />
+        	<constructor-arg index="3" ref="analyzerBean" />
+        	<constructor-arg index="4" ref="robotsManagerBean" />
+        	<constructor-arg index="5" ref="serializerBean" />
+        	<constructor-arg index="6" ref="uriCollectorBean" />
+        	<constructor-arg index="7" value="2000" />
+        	<constructor-arg index="8" value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
+            <constructor-arg index="9" value="false" /><!-- Logging -->
         </bean> 
         
         <bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
         	<constructor-arg index="0" ref="uriCollectorBean" />
         	<constructor-arg index="1" >
         		<array value-type="java.lang.String">
-				  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
+				  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
+        		  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
+				  <value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value>  
+        		  <value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
-				  <value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value> 
-				  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
+     			  <value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value> 
 				</array>
         	</constructor-arg>
         </bean>
         
-       	
-         
+        <bean id="fetcherBean" class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
+        	<constructor-arg>
+        		<list>
+
+        		 	<ref bean="httpFetcherBean" />
+        			<ref bean="ftpFetcherBean" />
+        			<ref bean="ckanFetcherBean" />
+        			<ref bean="sparqlDatasetFetcherBean" />
+           			<ref bean="sparqlFetcherBean" />
+        			
+        			
+        		</list>
+        	</constructor-arg>
+        </bean>
+        
+        <bean id="httpFetcherBean" class="org.dice_research.squirrel.fetcher.http.HTTPFetcher" />
+        <bean id="ftpFetcherBean" class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
+        <bean id="sparqlFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher" />
+        <bean id="sparqlDatasetFetcherBean" class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
+       		 <constructor-arg index="0" value="20"></constructor-arg>
+       		 <constructor-arg index="1" value="800000"></constructor-arg>
+       		 <constructor-arg index="2" value="100000"></constructor-arg>
+        </bean>
+        <bean id="ckanFetcherBean" class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />
+        
+        
+        
         <!-- Output folder for FileBasedSink -->
         <bean id="outputFolderBean" class="java.io.File">
         	<constructor-arg index="0" value="#{systemEnvironment['OUTPUT_FOLDER']}" />
@@ -66,7 +93,7 @@
         <!-- File Based Sink implementation -->
         <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.file.FileBasedSink">
         	<constructor-arg name="outputDirectory" ref="outputFolderBean" />
-        	<constructor-arg name="useCompression" value="true"/>
+        	<constructor-arg name="useCompression" value="false"/>
         </bean>
         
         
@@ -83,9 +110,9 @@
 		<constructor-arg name="port"
 		                 value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
 		<constructor-arg name="updateAppendix"
-		                 value="contentset/update"/>
+		                 value="europeandataportal/update"/>
 		<constructor-arg name="queryAppendix"
-		                 value="contentset/query"/>
+		                 value="europeandataportal/query"/>
 		<constructor-arg name="updateMetaDataAppendix"
 		                 value="MetaData/update"/>
 		<constructor-arg name="queryMetaDataAppendix"

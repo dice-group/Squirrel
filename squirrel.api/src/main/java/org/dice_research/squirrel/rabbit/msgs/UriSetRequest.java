@@ -9,7 +9,7 @@ public class UriSetRequest implements Serializable {
     /**
      * The id of the {@link org.dice_research.squirrel.worker.Worker} that sent this request.
      */
-    private String idOfWorker;
+    private int idOfWorker;
 
     /**
      * Indicates whether the worker (see {@link #idOfWorker}) sends {@link org.dice_research.squirrel.worker.impl.AliveMessage}.
@@ -20,7 +20,7 @@ public class UriSetRequest implements Serializable {
      * Standard constructor setting just default values.
      */
     public UriSetRequest() {
-        this(null, false);
+        this(0, false);
     }
 
     /**
@@ -29,12 +29,12 @@ public class UriSetRequest implements Serializable {
      * @param idOfWorker
      * @param workerSendsAliveMessages
      */
-    public UriSetRequest(String idOfWorker, boolean workerSendsAliveMessages) {
+    public UriSetRequest(int idOfWorker, boolean workerSendsAliveMessages) {
         this.idOfWorker = idOfWorker;
         this.workerSendsAliveMessages = workerSendsAliveMessages;
     }
 
-    public String getIdOfWorker() {
+    public int getIdOfWorker() {
         return idOfWorker;
     }
 

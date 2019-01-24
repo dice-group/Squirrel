@@ -3,7 +3,7 @@ FROM openjdk:8u151-jdk
 RUN apt-get update && apt-get install -y netcat
 
 COPY ./squirrel.worker/target/squirrel.worker.jar /data/squirrel/squirrel.jar
-COPY ./spring-config/default-config.xml /data/squirrel/default-config.xml
+COPY ./spring-config /data/squirrel/spring-config
 WORKDIR /data/squirrel
 
 #ADD entrypoint.sh /entrypoint.sh

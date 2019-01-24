@@ -1,5 +1,7 @@
 package org.dice_research.squirrel.queue;
 
+import java.net.InetAddress;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 public class InMemoryQueue extends AbstractIpAddressBasedQueue {
 
     protected SortedMap<IpUriTypePair, List<CrawleableUri>> queue;
+    private static final int LIMITFORITERATOR = 50;
 
     public InMemoryQueue() {
         queue = new TreeMap<IpUriTypePair, List<CrawleableUri>>();
@@ -53,6 +56,11 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
 
     @Override
     public void close() {
+    }
+    
+    @Override
+    public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator() {
+        return queue.entrySet().stream().limit(LIMITFORITERATOR).map(e -> new AbstractMap.SimpleEntry<>(e.getKey().ip, e.getValue())).iterator();
     }
 
 }

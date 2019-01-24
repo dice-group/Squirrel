@@ -38,7 +38,7 @@ public class SparqlBasedFetcher implements Fetcher {
     /**
      * The delay that the system will have between sending two queries.
      */
-    private static final int DELAY = 5000;
+    private static final int DELAY = 1000;
 
     private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o {?s ?p ?o}";
 
@@ -92,7 +92,8 @@ public class SparqlBasedFetcher implements Fetcher {
         qef = new QueryExecutionFactoryHttp(uri);
         qef = new QueryExecutionFactoryDelay(qef, DELAY);
         try {
-            return new QueryExecutionFactoryPaginated(qef, 100);
+        	LOGGER.info("Starting to Query uri:" + uri);
+            return new QueryExecutionFactoryPaginated(qef, 1000);
         } catch (Exception e) {
             LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
                     e.getLocalizedMessage());
