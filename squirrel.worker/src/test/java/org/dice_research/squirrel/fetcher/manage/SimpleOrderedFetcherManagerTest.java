@@ -22,9 +22,9 @@ public class SimpleOrderedFetcherManagerTest {
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
         File resultFile = manager.fetch(uri);
-        assertEquals(true,dummyTest1.isPostFlag()); // 1st fetcher has been called
-        assertNotNull(dummyTest1.getResult()); // checks that the result of first fetcher is not null i.e. result!=null
-        assertEquals(false, dummyTest2.isPostFlag());// checks that the 2nd fetcher has not been called as the result of first fetcher is not null
+        assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
+        assertNotNull(dummyTest1.getOutput()); // checks that the output of first fetcher is not null i.e. output!=null
+        assertEquals(false, dummyTest2.isCalledToFetch());// checks that the 2nd fetcher has not been called as the result of first fetcher is not null
     }
     @Test
     public void testCase2() throws Exception {
@@ -34,9 +34,9 @@ public class SimpleOrderedFetcherManagerTest {
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
         File resultFile = manager.fetch(uri);
-        assertEquals(true,dummyTest1.isPostFlag()); // 1st fetcher has been called
-        assertNull(dummyTest1.getResult()); // optional, to make sure that the result is null
-        assertEquals(true, dummyTest2.isPostFlag()); // 2nd fetcher has been called
+        assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
+        assertNull(dummyTest1.getOutput()); // optional, to make sure that the output is null
+        assertEquals(true, dummyTest2.isCalledToFetch()); // 2nd fetcher has been called
     }
     @Test
     public void testCase3() throws Exception {
@@ -46,9 +46,9 @@ public class SimpleOrderedFetcherManagerTest {
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
         File resultFile = manager.fetch(uri);
-        assertEquals(true,dummyTest1.isPostFlag()); // 1st fetcher has been called
-        assertNull(dummyTest1.getResult()); //optional
-        assertEquals(true, dummyTest2.isPostFlag()); //2nd fetcher has been called
+        assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
+        assertNull(dummyTest1.getOutput()); //optional
+        assertEquals(true, dummyTest2.isCalledToFetch()); //2nd fetcher has been called
     }
 
 
