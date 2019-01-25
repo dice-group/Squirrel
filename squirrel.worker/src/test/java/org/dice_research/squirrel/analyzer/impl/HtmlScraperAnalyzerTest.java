@@ -158,10 +158,29 @@ public class HtmlScraperAnalyzerTest {
         List<Triple> listTriples = new ArrayList<Triple>();
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
-	
+
+    @Test
+    public void scrapDetailcambridgeshireinsight() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+
+
+    }
+
+    @Test
+    public void scrapeCambridgeshireinsightHU() throws Exception{
+        CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/search/field_topics/type/dataset"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_search.html");
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
 	public void testAnalyzer() throws URISyntaxException {
-		CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten/-/details/jahresbericht-der-bundespolizei-2014"));
-		fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_detail.html");
+		CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
+		fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");
 	
 		sink.openSinkForUri(curi);
 		collector.openSinkForUri(curi);

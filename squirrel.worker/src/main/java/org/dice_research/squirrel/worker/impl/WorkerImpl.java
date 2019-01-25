@@ -221,13 +221,10 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
 
-        try {
-            long timeout = manager.getMinWaitingTime(uri.getUri());
-            uri.addData(Constants.URI_TIMEOUT_KEY, timeout);
-            System.out.println("Value of the Time out "+ timeout);
-        } catch (Exception e) {
-            LOGGER.error("Exception while adding the Crawl delay value to the uri Data", e);
-        }
+        //The time out set up for this URI
+        long timeout = manager.getMinWaitingTime(uri.getUri());
+        uri.addData(Constants.URI_TIMEOUT_KEY, timeout);
+
         
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {

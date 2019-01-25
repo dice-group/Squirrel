@@ -18,10 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.gargoylesoftware.htmlunit.*;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HTMLParser;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -207,14 +204,14 @@ public class HtmlScraper {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
         Map<String, Object> jsResources = null;
         for(Entry<String, Object> resEntry: resources.entrySet()){
-            if (resEntry.getKey().equals(YamlFileAtributes.JAVASCRIPT)){
+            if ((resEntry.getKey().equals(YamlFileAtributes.JAVASCRIPT))||(resEntry.getKey().equals(YamlFileAtributes.PAGINATION))){
                  jsResources = (Map<String, Object>) resEntry.getValue();
                 resources.remove(resEntry.getKey());
                 break;
             }
         }
         if (jsResources != null)
-            handleJavaScript(jsResources, htmlFile, curi);
+            HtmlUnitImp(jsResources, htmlFile, curi);
 
         uri= curi.getUri().toString();
         Set<Triple> triples = new LinkedHashSet<Triple>();
@@ -242,8 +239,10 @@ public class HtmlScraper {
         return triples;
     }
 
-    private void handleJavaScript(Map<String, Object> resources, File htmlFile, CrawleableUri curi){
+    private void HtmlUnitImp(Map<String, Object> resources, File htmlFile, CrawleableUri curi){
         String id = null, action = null, disable_id = null;
+        long Timeout=0, defaultMinWaitingTime=2000;
+        Boolean htmltypejs=false;
         for(Entry<String, Object> jsEntry: resources.entrySet()){
             if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
                 Map<String, Object> btnEntry = (Map<String, Object>) jsEntry.getValue();
@@ -257,36 +256,57 @@ public class HtmlScraper {
                 }
             }
         }
+
+        if (action.equals("click"))
+            htmltypejs=true;
+
         if (id != null && action != null && disable_id != null) {
             WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
-            webClient.getOptions().setJavaScriptEnabled(true);
+            webClient.getOptions().setJavaScriptEnabled(htmltypejs);
             webClient.getOptions().setThrowExceptionOnScriptError(true);
             webClient.getOptions().setCssEnabled(false);
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
 
             try{
-
-               Object timeout = curi.getData(Constants.URI_TIMEOUT_KEY);
-                if (timeout == null) { System.out.print("key transfer value fail ,"+ timeout);}
+               if (curi.getData("time-out").equals(null)) {
+                  Timeout= defaultMinWaitingTime;
+                }else{
+                    Timeout= (long) curi.getData("time-out");
+                }
             } catch (Exception e) {
-                LOGGER.error("An error occurred when retrieving the Key, ", e);
+                LOGGER.error("An error occurred when retrieving the Time out value, ", e);
             }
-
 
             uri= curi.getUri().toString();
             try{
                 HtmlPage htmlPage = webClient.getPage(uri);
-                HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
-                DomElement disabledElement = htmlPage.getElementById(disable_id);
-                do {
-                    htmlPage = btn.click();
-                } while (!disabledElement.getStyleMap().containsKey("display") ||
-                    (disabledElement.getStyleMap().containsKey("display") &&
-                        !disabledElement.getStyleMap().get("display").getValue().equals("none")));
-                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+                if (action.equals("click")){
+                    try{
+                    HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
+                    DomElement disabledElement = htmlPage.getElementById(disable_id);
+                    do {
+                        htmlPage = btn.click();
+                        Thread.sleep(Timeout);
+                    } while (!disabledElement.getStyleMap().containsKey("display") ||
+                        (disabledElement.getStyleMap().containsKey("display") &&
+                            !disabledElement.getStyleMap().get("display").getValue().equals("none")));
+                    this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+                     } catch (Exception e) {
+                    LOGGER.error("An error occurred when trying to scrape Java script, ", e);
+                }
+
+                }else if (action.equals("link")) {
+                    try {
+                        HtmlAnchor htmlAnchor = htmlPage.getAnchorByText(id);
+                        HtmlPage htmlpage2 = htmlAnchor.click();
+                        this.doc = Jsoup.parse(htmlpage2.getWebResponse().getContentAsString(), "UTF-8");
+                    } catch (Exception e) {
+                        LOGGER.error("An error occurred when trying to scrape html Anchor, ", e);
+                    }
+                }
             } catch (Exception e) {
-                LOGGER.error("An error occurred when trying to scrape Java script, ", e);
+                LOGGER.error("An error occurred when trying to scrape the Uri , ", e);
             }
         }
     }

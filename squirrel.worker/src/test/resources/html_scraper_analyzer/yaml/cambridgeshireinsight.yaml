@@ -3,14 +3,18 @@ file_descriptor:
         domain: data.cambridgeshireinsight.org.uk
         ignore-request: true
     search-result-page:
-        regex: dataset?query=
+        regex: search
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  div.view-content h2 a
                 "http://projekt-opal.de/dataset#pagination": .pagination a
-
+            "pagination":
+                button:
+                    id: next ›
+                    action: link
+                    disable_id: last »
     download_page:
-        regex: dataset
+        regex: dataset/
         resources:
             "http://projekt-opal.de/dataset/$label":
                 "http://purl.org/dc/terms/title": div.panel-pane.pane-entity-view.pane-node h2
