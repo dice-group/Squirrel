@@ -31,7 +31,7 @@ public class HTTPFetcherTest extends AbstractServerMockUsingTest {
 
 
     private CrawleableUri[] seeds;
-   private CrawleableResource[] resources;
+    private CrawleableResource[] resources;
    public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));
         this.resources = resources;
