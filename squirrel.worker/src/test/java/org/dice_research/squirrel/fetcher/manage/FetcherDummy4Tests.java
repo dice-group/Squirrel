@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.IOException;
 /**
  * A very simple dummy fetcher which provides the fetcher instances for {@link SimpleOrderedFetcherManagerTest)
- * in order to test the {@link SimpleOrderedFetcherManager}
- * There are two flags which have been used (resultFile and calledToFetch)
- * The constructor takes a resultFile flag which tells the fetcher that it should return a file if the flag is set to true
- * if resultFile = true , then the fetcher must return some file.
- * Additionally, calledToFetch flag is set as soon as the fetcher is asked to fetch i.e. setCalledToFetch(true);
+ * in order to test the {@link SimpleOrderedFetcherManager}.
+ * There are two flags which are used (resultFile and calledToFetch).
+ * The constructor takes a resultFile flag which tells the fetcher that it should return a file if the flag is set to true.
+ * If resultFile = true , then the fetcher must return some file.
+ * Additionally, calledToFetch flag is set as soon as the fetcher is asked to fetch i.e. setCalledToFetch(true).
  *
  * @author Ajay (ajay@uni-paderborn.de)
  *
@@ -25,7 +25,7 @@ public class FetcherDummy4Tests implements Fetcher {
     /**
      *
      * @param flag
-     * sets the resultFile = flag and which specifies what must be resulted by the fetch method
+     * sets the resultFile = flag and which specifies what must be resulted by the fetch method.
      */
     public  FetcherDummy4Tests(boolean flag)
     {
