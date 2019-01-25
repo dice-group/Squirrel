@@ -229,7 +229,7 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         if (knownUriFilter.isUriGood(uri)) {
-            LOGGER.info("PerformanceAnalysis addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
+            LOGGER.debug("PerformanceAnalysis addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
                 LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
                 // Make sure that the IP is known

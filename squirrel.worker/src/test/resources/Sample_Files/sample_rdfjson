@@ -1,0 +1,25 @@
+{
+  "http://dbpedia.org/resource/List_of_lakes_of_the_United_States" : {
+    "http://www.w3.org/2000/01/rdf-schema#seeAlso" : [ {
+      "type" : "uri" ,
+      "value" : "http://dbpedia.org/resource/New_York"
+    }
+     ]
+  }
+   ,
+  "http://dbpedia.org/resource/EDUN" : {
+    "http://dbpedia.org/ontology/locationCountry" : [ {
+      "type" : "uri" ,
+      "value" : "http://dbpedia.org/resource/New_York"
+    }
+     ]
+  }
+   ,
+  "http://dbpedia.org/resource/Antoinette_Brown_Blackwell" : {
+    "http://dbpedia.org/ontology/birthPlace" : [ {
+      "type" : "uri" ,
+      "value" : "http://dbpedia.org/resource/New_York"
+    }
+     ]
+  }
+  }

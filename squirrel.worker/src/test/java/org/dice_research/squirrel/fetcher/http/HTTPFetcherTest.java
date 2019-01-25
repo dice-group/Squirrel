@@ -30,6 +30,14 @@ import static org.junit.Assert.*;
 public class HTTPFetcherTest extends AbstractServerMockUsingTest {
 
 
+    private CrawleableUri[] seeds;
+    private CrawleableResource[] resources;
+   public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
+        super(new CrawleableResourceContainer(resources));
+        this.resources = resources;
+        this.seeds = seeds;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
         List<Object[]> scenarios = new ArrayList<Object[]>();
@@ -41,31 +49,24 @@ public class HTTPFetcherTest extends AbstractServerMockUsingTest {
         model1 = ModelFactory.createDefaultModel();
         model1.add(model1.createResource(server1Url + "/entity_1.n3"),
             model1.createProperty(server1Url + "/property_1.n3"), model1.createLiteral("literal"));
+        //generating crawlable URI objects for two classes
         scenarios.add(new Object[]{
             new CrawleableUri[]{uriFactory.create(new URI(server1Url + "/entity_1.n3"), UriType.DUMP)},
-            new CrawleableResource[]{new StringResource(model1, server1Url + "/entity_1.n3", Lang.N3),
-                new StringResource(model1, server1Url + "/property_1.n3", Lang.N3),
-                new StringResource(model1, server1Url + "/entity_2.n3", Lang.N3)}});
+            new CrawleableResource[]{new StringResource(model1, server1Url + "/entity_1.n3", Lang.N3)}});
         return scenarios;
     }
-
-    private CrawleableUri[] seeds;
-    private CrawleableResource[] resources;
-
-    public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
-        super(new CrawleableResourceContainer(resources));
-        this.resources = resources;
-        this.seeds = seeds;
-    }
-
-
 
     @Test
     public void fetch() throws Exception {
         int expected_file_content = 110;
         HTTPFetcher fetcher = new HTTPFetcher();
-        File data = fetcher.fetch(seeds[0]);
-        assertNotNull(data); //checks that the file has been fetched
-        assertEquals(expected_file_content,data.length()); //checks that the fetched file is not empty and has the expeceted content
+        //checks the crawlable uri object of first class
+            File data = fetcher.fetch(seeds[0]);
+            assertNotNull(data); //checks that the file has been fetched
+            assertEquals(expected_file_content,data.length()); //checks that the fetched file is not empty and has the expeceted content
+        //checks the crawlable uri object of second class
+            File resourceData1 = fetcher.fetch(new CrawleableUri(new URI(resources[0].getResourceName())));
+            assertNotNull(resourceData1);
+            assertEquals(expected_file_content,resourceData1.length());
     }
 }

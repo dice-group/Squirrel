@@ -68,7 +68,6 @@ public class FileBasedSink implements Sink {
         try {
             status.getTripleOutputStream().triple(triple);
             status.increaseTripleCount();
-            LOGGER.info("PerformanceAnalysis current triple count: " + status.getTripleCount());
         } catch (Exception e) {
             LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
                     + uri.getUri().toString() + "\". Ignoring it.", e);
@@ -113,6 +112,7 @@ public class FileBasedSink implements Sink {
         String uriString = uri.getUri().toString();
         StreamStatus status = null;
         if (streamMapping.containsKey(uriString)) {
+//            LOGGER.debug("PerformanceAnalysis triple count for uri " + uriString + " is: " + streamMapping.get(uriString).tripleCount);
             Closer.close(streamMapping.get(uriString));
             status = streamMapping.remove(uriString);
         } else {
@@ -196,10 +196,6 @@ public class FileBasedSink implements Sink {
 
         public void increaseTripleCount() {
             ++tripleCount;
-        }
-
-        public int getTripleCount() {
-            return tripleCount;
         }
 
         @Override
