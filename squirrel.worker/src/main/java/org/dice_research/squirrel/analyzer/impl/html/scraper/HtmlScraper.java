@@ -51,6 +51,8 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
+    private String ReturnedURI = null;
+
 
 
     public HtmlScraper(File file) {
@@ -300,6 +302,7 @@ public class HtmlScraper {
                     try {
                         HtmlAnchor htmlAnchor = htmlPage.getAnchorByText(id);
                         HtmlPage htmlpage2 = htmlAnchor.click();
+                        this.ReturnedURI=htmlpage2.getUrl().toString(); //Return the Uri of the next page
                         this.doc = Jsoup.parse(htmlpage2.getWebResponse().getContentAsString(), "UTF-8");
                     } catch (Exception e) {
                         LOGGER.error("An error occurred when trying to scrape html Anchor, ", e);
@@ -309,6 +312,11 @@ public class HtmlScraper {
                 LOGGER.error("An error occurred when trying to scrape the Uri , ", e);
             }
         }
+    }
+
+    public String getReturnedURI(){
+        if (ReturnedURI!=null){ return ReturnedURI; }
+        return null;
     }
     
     private String replaceCommands(String s) {
