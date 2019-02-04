@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.fetcher.http;
 
-import org.dice_research.squirrel.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
@@ -12,12 +11,9 @@ import org.dice_research.squirrel.simulation.StringResource;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.simpleframework.http.core.Container;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,10 +27,9 @@ public class HTTPFetcherTest extends AbstractServerMockUsingTest {
 
 
     private CrawleableUri[] seeds;
-    private CrawleableResource[] resources;
+
    public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));
-        this.resources = resources;
         this.seeds = seeds;
     }
 
