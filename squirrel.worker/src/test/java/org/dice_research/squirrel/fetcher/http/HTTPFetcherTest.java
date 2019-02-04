@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.fetcher.http;
 
-import org.dice_research.squirrel.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
@@ -27,12 +26,10 @@ import static org.junit.Assert.*;
 public class HTTPFetcherTest extends AbstractServerMockUsingTest {
 
 
-    private final CrawleableResource[] resources;
     private CrawleableUri[] seeds;
 
    public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));
-        this.resources = resources;
         this.seeds = seeds;
     }
 
