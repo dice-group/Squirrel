@@ -76,6 +76,6 @@ public class FetcherDummy4Tests implements Fetcher {
     }
 
     public void close() throws IOException {
-
+        // not meant to be implemented
     }
 }

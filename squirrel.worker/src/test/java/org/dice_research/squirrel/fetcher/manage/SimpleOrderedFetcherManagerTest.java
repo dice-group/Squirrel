@@ -1,10 +1,6 @@
 package org.dice_research.squirrel.fetcher.manage;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.fetcher.Fetcher;
-import org.dice_research.squirrel.fetcher.ftp.FTPFetcher;
-import org.dice_research.squirrel.fetcher.http.HTTPFetcher;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,7 +17,7 @@ public class SimpleOrderedFetcherManagerTest {
         FetcherDummy4Tests dummyTest2 = new FetcherDummy4Tests(true);
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
-        File resultFile = manager.fetch(uri);
+        manager.fetch(uri);
         assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
         assertNotNull(dummyTest1.getOutput()); // checks that the output of first fetcher is not null i.e. output!=null
         assertEquals(false, dummyTest2.isCalledToFetch());// checks that the 2nd fetcher has not been called as the result of first fetcher is not null
@@ -33,7 +29,7 @@ public class SimpleOrderedFetcherManagerTest {
         FetcherDummy4Tests dummyTest2 = new FetcherDummy4Tests(true);
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
-        File resultFile = manager.fetch(uri);
+        manager.fetch(uri);
         assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
         assertNull(dummyTest1.getOutput()); // optional, to make sure that the output is null
         assertEquals(true, dummyTest2.isCalledToFetch()); // 2nd fetcher has been called
@@ -45,7 +41,7 @@ public class SimpleOrderedFetcherManagerTest {
         FetcherDummy4Tests dummyTest2 = new FetcherDummy4Tests(false);
         SimpleOrderedFetcherManager manager = new SimpleOrderedFetcherManager(dummyTest1, dummyTest2);
         manager.setFetchers(dummyTest1, dummyTest2);
-        File resultFile = manager.fetch(uri);
+        manager.fetch(uri);
         assertEquals(true,dummyTest1.isCalledToFetch()); // 1st fetcher has been called
         assertNull(dummyTest1.getOutput()); //optional
         assertEquals(true, dummyTest2.isCalledToFetch()); //2nd fetcher has been called

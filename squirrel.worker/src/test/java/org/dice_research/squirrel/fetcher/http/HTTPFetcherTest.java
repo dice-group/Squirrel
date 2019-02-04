@@ -12,12 +12,9 @@ import org.dice_research.squirrel.simulation.StringResource;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.simpleframework.http.core.Container;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -30,8 +27,9 @@ import static org.junit.Assert.*;
 public class HTTPFetcherTest extends AbstractServerMockUsingTest {
 
 
+    private final CrawleableResource[] resources;
     private CrawleableUri[] seeds;
-    private CrawleableResource[] resources;
+
    public HTTPFetcherTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));
         this.resources = resources;
