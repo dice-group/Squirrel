@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.regex.Pattern;
 import java.sql.ResultSet;
 
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -24,8 +23,8 @@ public class SqlBasedIteratorTest {
     private static Connection dbConnection;
     private static final String CREATE_TABLE_QUERY = "CREATE TABLE ? (uri VARCHAR(255), serial INT, data BLOB, PRIMARY KEY(uri,serial));";
     private static final String tableName = "A0" ;
-    PreparedStatement stmt;
-    String uris = "http://example.org/example";
+    private PreparedStatement stmt;
+    private String uris = "http://example.org/example";
 
     @BeforeClass
     public static void createDb() throws SQLException, IOException {
