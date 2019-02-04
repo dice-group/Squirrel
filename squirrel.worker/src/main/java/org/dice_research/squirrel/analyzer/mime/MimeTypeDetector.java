@@ -1,9 +1,6 @@
 package org.dice_research.squirrel.analyzer.mime;
 
 import org.apache.jena.riot.Lang;
-import org.dice_research.squirrel.analyzer.impl.RDFAnalyzer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +17,6 @@ import java.util.ListIterator;
  */
 public class MimeTypeDetector implements TypeDetector {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     protected List<Lang> mimeTypes = new ArrayList<>();
 
@@ -29,7 +25,6 @@ public class MimeTypeDetector implements TypeDetector {
      * Precondtions to the files are checked.
      * Each element in the file is passed one after the
      * other to the built finite state machines until the check is complete.
-     *
      */
 
     public Lang detectMimeType(File data) {
@@ -89,7 +84,6 @@ public class MimeTypeDetector implements TypeDetector {
 
     /**
      * Adding all the mime types to a list
-     *
      */
     private void setMimeTypes(Lang... types) {
         for (Lang type : types)

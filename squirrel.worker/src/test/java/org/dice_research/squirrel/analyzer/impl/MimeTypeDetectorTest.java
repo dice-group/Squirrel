@@ -2,7 +2,6 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.vocabulary.RDF;
 import org.dice_research.squirrel.analyzer.mime.MimeTypeDetector;
 import org.dice_research.squirrel.analyzer.mime.TypeDetector;
 import org.junit.Before;
