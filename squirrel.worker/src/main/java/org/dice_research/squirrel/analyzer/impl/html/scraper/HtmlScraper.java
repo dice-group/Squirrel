@@ -51,7 +51,7 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
-    private String ReturnedURI = null;
+    private String newUri;
 
 
 
@@ -243,7 +243,7 @@ public class HtmlScraper {
 
     private void HtmlUnitImp(Map<String, Object> resources, File htmlFile, CrawleableUri curi){
         String id = null, action = null, disable_id = null;
-        long Timeout=0, defaultMinWaitingTime=2000;
+        long timeout=0, defaultMinWaitingTime=2000;
         Boolean htmltypejs=false;
         for(Entry<String, Object> jsEntry: resources.entrySet()){
             if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
@@ -272,9 +272,9 @@ public class HtmlScraper {
 
             try{
                if (curi.getData("time-out").equals(null)) {
-                  Timeout= defaultMinWaitingTime;
+                  timeout= defaultMinWaitingTime;
                 }else{
-                    Timeout= (long) curi.getData("time-out");
+                    timeout= (long) curi.getData("time-out");
                 }
             } catch (Exception e) {
                 LOGGER.error("An error occurred when retrieving the Time out value, ", e);
@@ -289,7 +289,7 @@ public class HtmlScraper {
                     DomElement disabledElement = htmlPage.getElementById(disable_id);
                     do {
                         htmlPage = btn.click();
-                        Thread.sleep(Timeout);
+                        //Thread.sleep(timeout);
                     } while (!disabledElement.getStyleMap().containsKey("display") ||
                         (disabledElement.getStyleMap().containsKey("display") &&
                             !disabledElement.getStyleMap().get("display").getValue().equals("none")));
@@ -299,10 +299,12 @@ public class HtmlScraper {
                 }
 
                 }else if (action.equals("link")) {
+                    //TODO Test in case of being in last page
                     try {
                         HtmlAnchor htmlAnchor = htmlPage.getAnchorByText(id);
                         HtmlPage htmlpage2 = htmlAnchor.click();
-                        this.ReturnedURI=htmlpage2.getUrl().toString(); //Return the Uri of the next page
+                        this.newUri=htmlpage2.getUrl().toString(); //Return the Uri of the next page
+                        LOGGER.info("woslet"+ newUri);
                         this.doc = Jsoup.parse(htmlpage2.getWebResponse().getContentAsString(), "UTF-8");
                     } catch (Exception e) {
                         LOGGER.error("An error occurred when trying to scrape html Anchor, ", e);
@@ -314,8 +316,10 @@ public class HtmlScraper {
         }
     }
 
-    public String getReturnedURI(){
-        if (ReturnedURI!=null){ return ReturnedURI; }
+    public String getNewUri(){
+        if (newUri!=null){
+            return newUri;
+        }
         return null;
     }
     

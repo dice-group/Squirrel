@@ -178,6 +178,50 @@ public class HtmlScraperAnalyzerTest {
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
 
+    @Test
+    public void scrapDetailOtvorenipodatoci() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/otvorenipodatoci/otvorenipodatoci_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapOtvorenipodatociHU() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.otvorenipodatoci.gov.mk/en/dataset?page=5"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/otvorenipodatoci/otvorenipodatoci_search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailDatagovsk() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://data.gov.sk/dataset/register-adries-register-budov"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/datagovsk/datagovsk_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDatagovskHU() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://data.gov.sk/en/dataset"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/datagovsk/datagovsk_search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailSSA() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.ssa.gov/open/data"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/ssagov/ssagov_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
 	public void testAnalyzer() throws URISyntaxException {
 		CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");

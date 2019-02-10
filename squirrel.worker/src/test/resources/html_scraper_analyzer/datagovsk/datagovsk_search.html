@@ -1,0 +1,2363 @@
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="sk" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="sk" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="sk" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="sk"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/js/vendor/leaflet/leaflet.css" />
+  <!--[if lte ie 8]><link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/js/vendor/leaflet/leaflet.ie.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/:bundle:js/vendor/leaflet.draw/leaflet.draw.css;js/vendor/leaflet.draw/leaflet.draw.ie.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/css/spatial_query.css" />
+
+  <meta name="generator" content="ckan 2.2.3" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datasety -data.gov.sk</title>
+
+
+
+
+  <link rel="alternate" type="text/n3" href="https://data.gov.sk/catalog.n3"/>
+  <link rel="alternate" type="text/ttl" href="https://data.gov.sk/catalog.ttl"/>
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.sk/catalog.xml"/>
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.sk/catalog.rdf"/>
+
+
+
+  <style type="text/css">
+    @media (min-width: 1200px){
+      #content > div.row.row1 > div.span3.col1{
+        margin-top: -195px;
+      }
+    }
+  </style>
+
+
+
+  <style type="text/css">
+    #search_input_index{
+      width: 100% !important;
+    }
+  </style>
+
+
+
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/main.css?version=1.0" />
+  <link rel="stylesheet" type="text/css" href="/font-awesome/css/font-awesome.min.css"/>
+  <!--link rel="stylesheet" type="text/css" href="/v2/base/css/main.css"/!-->
+  <!--
+  css : <link rel="stylesheet" type="text/css" href="/base/css/main.css" />
+  -->
+  <style>
+    #content > div.row.wrapper > div > section > div > form > ol > li{
+      width:33.33%;
+    }
+  </style>
+
+
+
+
+
+  <link href="/images/favicon.png" type="image/png" rel="shortcut  icon" media="screen" />
+
+  <script type="text/javascript">
+    var appended = false, bookmark = document.createElement("div");
+    bookmark.id = "arrowUp";
+    bookmark.innerHTML = "<a href=\"#\" title=\"Top of the page.\" class='back-to-top' data-scroll data-options=\"{ &quot;easing&quot;: &quot;easeOutCubic&quot; }\"><img src='/backtotop.png' alt='back to top' width='50' heigth='50' onmouseover=\"this.src='/up_hover.png'\" onmouseout=\"this.src='/backtotop.png'\" /><\/a>";
+
+
+    onscroll = function() {
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollTop > 300) {
+        if (!appended) {
+          document.body.appendChild(bookmark);
+          appended = true;
+        }
+      } else {
+        if (appended) {
+          document.body.removeChild(bookmark);
+          appended = false;
+        }
+      }
+    };
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body data-site-root="https://data.gov.sk/" data-locale-root="https://data.gov.sk/" >
+
+
+
+
+<div style="position: absolute; top:-200; left:-200;"><a href="#content">Prejsť na obsah</a></div>
+
+
+
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<!--link rel="stylesheet" type="text/css"  href="/screen.css?version=1.0" property='stylesheet'!-->
+<link rel="stylesheet" type="text/css" id="contrast" href="/normal_contrast.css" property='stylesheet'>
+<!--link rel="stylesheet" type="text/css" href="/screen2.css?version=1.0" property='stylesheet'!-->
+
+
+
+
+<style type="text/css">
+  @media(max-width: 771px){
+    #long_boxes, #big_box{display: none !important;}}
+</style>
+
+
+<script type="text/javascript">
+  function createCookie(name,value,mins) {
+    if (mins) {
+      var date = new Date();
+      date.setTime(date.getTime()+(mins*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+  }
+
+  function eraseCookie(name) {
+    createCookie(name,"",-1);
+  }
+
+
+  function getContrast(){
+    var actualContrast = "";
+    var cookies = document.cookie.split("; ");
+    for(var i =0; i < cookies.length; i++){
+      if(cookies[i].split('=')[0] === 'contrast'){
+        actualContrast = cookies[i].split('=')[1]
+      }
+    }
+    var result = "";
+    if(actualContrast === "high"){
+      result= "/high_contrast.css"
+    }else{
+      result= "/normal_contrast.css"
+
+    }
+    var style = document.getElementById("contrast");
+    style.href = result;
+  }
+
+  getContrast();
+
+</script>
+
+
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container">
+
+    <!-- hgroup class="header-image pull-left" !-->
+
+
+
+
+
+    <script type="text/javascript">
+      function change_style(){
+        var style = document.getElementById("contrast");
+        var cookies = document.cookie;
+        var contrast = "";
+        var cc = cookies.split('; ');
+        for(var i=0; i < cc.length; i++){
+          if(cc[i].split('=')[0] == 'contrast'){
+            contrast = cc[i].split('=')[1];
+          }
+        }
+        if(contrast === "high"){
+          style.href = "/main.css";
+          var d = new Date();
+          d.setTime(d.getTime() + (24*60*60*1000));
+          var expires = "expires="+d.toUTCString()+"; path=/;";
+          document.cookie = "contrast=normal;"+ expires;
+        }else {
+          style.href = "/high_contrast.css";
+          var d = new Date();
+          d.setTime(d.getTime() + (24*60*60*1000));
+          var expires = "expires="+d.toUTCString()+"; path=/;";
+          document.cookie = "contrast=high;"+ expires;
+        }
+
+      }
+
+    </script>
+
+    <div>
+
+
+      <div id="helpNavigation">
+        <div class="inner clr">
+          <ul>
+            <li class="hidden-phone contrastVersion"><a href="#" onclick="change_style()" title="Zmena kontrastu"  class="contrast_icon" > Zmena kontrastu</a></li>
+            <li class="hidden-phone"><a href="/" title="Úvod" >Úvod</a></li>
+            <li class="hidden-phone"><a href="/about" title="O portáli" >O portáli</a></li>
+            <li class="hidden-phone"><a href="https://www.slovensko.sk/sk/pomoc" title="Pomoc -v novom okne" >Pomoc</a></li>
+            <li class="mobileVersion"><a href="/contact-us" title="Kontakt" >Kontakt</a></li>
+            <li class="hidden-phone lang">
+
+
+
+
+
+
+
+
+              <a class="lang_en" style="" href="/util/redirect?url=/en/dataset" >
+
+                English
+
+              </a>
+
+
+
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <div class="hero" style="">
+    <div id="content2" class="container" >
+      <div class="row row1" id="top_user_box">
+        <div class="span11 col1">
+          <a href="/" class="full_size" title="Portál otvorených dát- Úvodná strana"> <img id="header_logo" src="/logo.png" alt="Portál otvorených dát logo"> </a>
+        </div>
+
+        <div class="span3 col1 mini_boxes" style="z-index: 999; position: relative">
+          <div class="account_box" style="margin-bottom: 20px;">
+
+
+            <nav class="account not-authed">
+              <ul class="unstyled">
+
+                <li id="acc_info_not_logged"><span> Informácie o účte </span></li>
+                <li id="login_link_not_logged"><a href="/user/login">Prihlásiť sa</a></li>
+
+
+              </ul>
+            </nav>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</header>
+
+
+
+
+
+
+<div role="main">
+
+
+  <div id="content" class="container">
+
+
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+      <ol class="breadcrumb">
+
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->
+
+        <li class="home"><a href="/"><i class="icon-home"></i><span> Úvod</span></a></li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+        <li class="active"><a href="/dataset">Datasety</a></li>
+
+      </ol>
+
+
+    </div>
+
+
+    <div class="row row1">
+
+
+
+
+
+
+      <div class="span3 col1" id="upper_menu">
+
+
+        <!-- Snippet home/snippets/right_menu.html start -->
+
+
+
+        <div id="right_boxes" class="box2 box_padding" style="">
+          <ul>
+            <li class="menubox green_menubox" >
+              <a href="/dataset" title="Datasety" ><div class="datasets_right_menu_item"></div>Datasety</a>
+            </li>
+            <li class="menubox purple_menubox">
+              <a  href="/organization" title="Organizácie"><div class="organizations_right_menu_item"></div>Organizácie</a>
+            </li>
+            <li class="menubox red_menubox">
+              <a  href="/apps" title="Aplikácie"><div class="applications_right_menu_item"></div>Aplikácie</a>
+            </li>
+            <li class="menubox blue_menubox" title="Nástroje ">
+              <a  href="/tools"><div class="tools_right_menu_item"></div>Nástroje</a>
+            </li>
+          </ul>
+        </div>
+        <div id="long_boxes" class="box3" style="margin-bottom: 1em;">
+          <ul>
+            <li class="brown_menubox" >
+              <a href="https://www.slovensko.sk/sk/najst-sluzbu" title="Služby -v novom okne" ><span></span>Služby </a>
+              <ul>
+
+
+                <li class="services_menu">
+                  <a href="https://schranka1.slovensko.sk/FormConstructor/Default.aspx?IdService=214550" title="Návrh na zverejnenie údajov na Portáli otvorených dát" class="menuitem_services">
+                    Návrh na zverejnenie údajov na Portáli otvorených dát
+                  </a>
+                </li>
+
+                <li class="services_menu">
+                  <a href="https://schranka1.slovensko.sk/FormConstructor/Default.aspx?IdService=214575" title="Podnet na úpravu údajov zverejnených na Portáli otvorených dát" class="menuitem_services">
+                    Podnet na úpravu údajov zverejnených na Portáli otvorených dát
+                  </a>
+                </li>
+
+                <li class="services_menu">
+                  <a href="https://data.gov.sk/apps/new" title="Žiadosť o registráciu aplikácie na Portáli otvorených dát" class="menuitem_services">
+                    Žiadosť o registráciu aplikácie na Portáli otvorených dát
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div id="big_box" class="box4" style="margin-bottom: 1em; margin-left: 10px; margin-right: 10px;">
+          <h2> Užitočné linky</h2>
+          <ul>
+            <li >
+              <a class="right_menu_icon_nases" href="http://www.nases.gov.sk/" title="NASES -v novom okne"  target="_blank" >NASES </a>
+            </li>
+            <li >
+              <a class="right_menu_icon_opendata"  href="http://www.opendefinition.org/okd/" title="open data -v novom okne" target="_blank"></a>
+            </li>
+            <li  >
+              <a class="right_menu_icon_fb" href="https://www.facebook.com/slovensko.sk/" title="facebook slovensko.sk -v novom okne" target="_blank">Facebook slovensko.sk</a>
+            </li>
+            <li >
+              <a class="right_menu_icon_fb"  href="https://www.facebook.com/nasessk/" title="facebook nases.sk -v novom okne" target="_blank">Facebook nases.sk</a>
+            </li>
+            <li >
+              <a class="right_menu_icon_eu"  href="http://europa.eu/youreurope/citizens/index_sk.htm" title="Portal Your Europe -v novom okne" target="_blank">Portal Your Europe </a>
+            </li>
+            <li >
+              <a   class="right_menu_icon_eu"href="https://open.slovensko.sk/" title="open.slovensko.sk -v novom okne" target="_blank">open.slovensko.sk</a>
+            </li>
+            <li >
+              <a  class="right_menu_icon_eu"href="https://www.slovensko.sk/" title="www.slovensko.sk -v novom okne" target="_blank" >www.slovensko.sk</a>
+            </li>
+          </ul>
+        </div>
+        <!-- Snippet home/snippets/right_menu.html end -->
+
+      </div>
+      <div class="wrapper">
+        <div class="primary span9" style="">
+
+
+          <section class="module">
+            <div class="module-content">
+
+
+
+
+
+
+
+              <!-- Snippet snippets/search_form.html start -->
+
+
+
+
+
+
+
+              <form class="search-form" method="get" data-module="select-switch">
+
+
+                <div class="search-input control-group search-giant">
+                  <label for="search_input_index" style="display: none;">Hľadať</label>
+                  <input id="search_input_index" type="text" class="search" name="q" value="" autocomplete="off" placeholder="Vyhľadať datasety...">
+                  <button type="submit" value="search">
+                    <i class="icon-search"></i>
+                    <span>Predložiť</span>
+                  </button>
+                </div>
+
+
+
+
+
+
+
+
+                <div class="form-select control-group control-order-by">
+                  <label for="field-order-by">Zoradiť podľa</label>
+                  <select id="field-order-by" name="sort">
+
+
+                    <option value="score desc, metadata_modified desc">Platnosť</option>
+
+
+
+                    <option value="title_string asc">Mená vzostupne</option>
+
+
+
+                    <option value="title_string desc">Mená zostupne</option>
+
+
+
+                    <option value="metadata_modified desc" selected="selected">Posledná modifikácia</option>
+
+
+
+                    <option value="views_recent desc">Obľúbené</option>
+
+
+                  </select>
+                  <button class="btn js-hide" type="submit">Ísť</button>
+                </div>
+
+
+
+
+
+                <h2>
+                  <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+                  1 827 nájdených datasetov
+                  <!-- Snippet snippets/search_result_text.html end -->
+                </h2>
+
+
+
+
+
+                <p class="filter-list">
+
+                </p>
+
+
+
+              </form>
+
+
+
+
+              <!-- Snippet snippets/search_form.html end -->
+
+
+
+
+              <!-- Snippet snippets/package_list.html start -->
+
+
+              <ul class="dataset-list unstyled">
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-budov">Register Adries - Register budov (súpisných čísiel)</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="38 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-budov" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-budov" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-budov" class="label" data-format="zip" style="color:white;">ZIP</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o budovách (súpisných číslach) v SR.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-krajov">Register adries - Register krajov</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="29 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-krajov" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-krajov" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-krajov" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o krajoch SR. Kraj je najvyššia administratívna a územnosprávna jednotka a jednotka štátnej správy na Slovensku. Obsahovo tento dataset zodpovedá základnému...</div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-casti-obci">Register Adries - Register častí obcí</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="24 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-casti-obci" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-casti-obci" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-casti-obci" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o častiach obcí SR. Obsahovo tento dataset zodpovedá základnému číselníku CL010141 - Časť obce.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-vchodov">Register Adries - Register vchodov (orientačných čísiel)</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="28 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-vchodov" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-vchodov" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-vchodov" class="label" data-format="zip" style="color:white;">ZIP</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o vchodoch (orientačných číslach) v SR.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-obci">Register Adries - Register obcí</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="28 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-obci" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-obci" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-obci" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o obciach SR. Obsahovo tento dataset zodpovedá základnému číselníku CL000025 - Lokálna štatistická územná jednotka 2 - obec.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-ulic">Register Adries - Register ulíc</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="30 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-ulic" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-ulic" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-ulic" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o uliciach v SR.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-okresov">Register Adries - Register okresov</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="24 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-okresov" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-okresov" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-okresov" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o okresoch SR. Obsahovo tento dataset zodpovedá základnému číselníku CL000024 - Lokálna štatistická územná jednotka 1 - okres.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-register-bytov">Register Adries - Register bytov</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="19 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-bytov" class="label" data-format="api, csv" style="color:white;">api, csv</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-bytov" class="label" data-format="html" style="color:white;">HTML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-bytov" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-register-bytov" class="label" data-format="zip" style="color:white;">ZIP</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Obsahuje informácie o bytoch v SR.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/register-adries-ra-zmenove-davky">Register adries - Zmenové dávky registra adries</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="22 nedávnych videní" xmlns="http://www.w3.org/1999/xhtml">Obľúbené</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-ra-zmenove-davky" class="label" data-format="xml,zip" style="color:white;">xml,zip</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-ra-zmenove-davky" class="label" data-format="xsd" style="color:white;">xsd</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/register-adries-ra-zmenove-davky" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Dataset obsahuje inicializačnú dávku a zmenové dávky z Registra adries vo formáte XML. Jedna dávka obsahuje všetky zmenené dáta od predošlej aktualizácie (zmenovej dávky)....</div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/zoznam-datasetov-mo-sr">Zoznam datasetov MO SR</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/zoznam-datasetov-mo-sr" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Zoznam datasetov MO SR
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/vestnik-verejneho-obstaravania-20192">Vestník verejného obstarávania február 2019</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Vestník verejného obstarávania február 2019
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/objednavky-rok-2018">Objednávky rok 2018</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/objednavky-rok-2018" class="label" data-format="xls" style="color:white;">XLS</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/data-o-kontrolach">Dáta o kontrolách</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/data-o-kontrolach" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Sprístupňuje výsledky kontrol poskytnutia minimálnej pomoci podľa § 14 zákona č. 358/2015 Z. z. o úprave niektorých vzťahov v oblasti štátnej pomoci a minimálnej pomoci a o...</div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/zoznam-schvalenych-zo-nfp-opii">Zoznam schválených ŽO NFP OPII</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/zoznam-schvalenych-zo-nfp-opii" class="label" data-format="csv" style="color:white;">CSV</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Žiadosť o poskytnutie NFP - dokument, pozostávajúci z formulára žiadosti a povinných príloh, ktorým žiadateľ o NFP žiada o poskytnutie NFP, a na základe ktorého RO prijme...</div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/vyvoj-certifikovaneho-cerpania-v-ramci-opii">Vývoj certifikovaného čerpania v rámci OPII</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/vyvoj-certifikovaneho-cerpania-v-ramci-opii" class="label" data-format="csv" style="color:white;">CSV</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Čerpanie je suma za schválené súhrnné žiadosti o platbu znížené o nezrovnalosti (úroveň certifikačného orgánu) zo zdrojov EÚ.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/zoznam-narodnych-projektov-opii">Zoznam národných projektov OPII</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/zoznam-narodnych-projektov-opii" class="label" data-format="xml" style="color:white;">XML</a>
+                      <!--/li!-->
+
+
+                      <!--li!-->
+                      <a href="/dataset/zoznam-narodnych-projektov-opii" class="label" data-format="csv" style="color:white;">CSV</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Národný projekt je individuálny projekt investičného alebo neinvestičného charakteru s vopred vymedzeným predmetom projektu, ktorý realizuje vopred určený subjekt vzhľadom na...</div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/phm">PHM</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/phm" class="label" data-format="xls" style="color:white;">XLS</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Dataset obsahuje prehľad nákupu PHM v hotovosti v HMSP.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/faktury-na-zverejnenie">Faktúry na zverejnenie</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/faktury-na-zverejnenie" class="label" data-format="xls" style="color:white;">XLS</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Dataset obsahuje prehľad prijatých faktúr HMSP
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/konsolidacia-uctovnej-uzavierky">Konsolidácia účtovnej uzávierky</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/konsolidacia-uctovnej-uzavierky" class="label" data-format="xls" style="color:white;">XLS</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <script src="/js/star-rating.js" type="text/javascript"></script>
+                  <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" property='stylesheet' />
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+                      <a href="/dataset/zoznam-elektronickych-sluzieb-a-formularov-na-upvs">Zoznam elektronických služieb a formulárov na ÚPVS</a>
+
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+
+
+
+                      <!--li!-->
+                      <a href="/dataset/zoznam-elektronickych-sluzieb-a-formularov-na-upvs" class="label" data-format="csv" style="color:white;">CSV</a>
+                      <!--/li!-->
+
+
+
+                      <span class="rating-container rating-uni" data-content="★★★★★"><span class="rating-stars" data-content="★★★★★" style="width: 0%;"></span></span>
+
+                    </h3>
+
+
+                    <div>Dataset obsahuje zoznam elektronických služieb a formulárov registrovaných na ÚPVS.
+                    </div>
+
+                  </div>
+
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+              </ul>
+
+              <!-- Snippet snippets/package_list.html end -->
+
+
+            </div>
+
+
+            <div class='pagination pagination-centered'><ul> <li class="active"><a href="/dataset?page=1">1</a></li> <li><a href="/dataset?page=2">2</a></li> <li><a href="/dataset?page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a href="/dataset?page=92">92</a></li> <li><a href="/dataset?page=2">»</a></li></ul></div>
+
+          </section>
+
+
+          <section class="module">
+            <div class="module-content">
+              <small>
+
+
+
+                Register je tiež dostupný použitím <a href="/api/3">API</a> (viď <a href="http://docs.ckan.org/en/ckan-2.2.3/api.html">API Docs</a>).
+              </small>
+            </div>
+          </section>
+
+
+        </div>
+
+
+
+        <aside class="secondary span3">
+
+
+
+          <!-- Snippet spatial/snippets/spatial_query.html start -->
+
+          <section id="dataset-map" class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-globe"></i>
+              Filtrovať podľa lokácie
+              <a href="/dataset" class="action">Resetovať</a>
+            </h2>
+
+            <div class="dataset-map" data-module="spatial-query" data-default_extent="[[47.662773, 16.568661], [49.661560, 22.638607]]" data-module-map_config="{&#34;custom.url&#34;: &#34;https://a.tile.openstreetmap.org/{z}/{x}/{y}.png&#34;, &#34;type&#34;: &#34;custom&#34;, &#34;subdomains&#34;: &#34;1234&#34;}">
+              <div id="dataset-map-container"></div>
+            </div>
+            <div id="dataset-map-attribution">
+
+              <!-- Snippet spatial/snippets/map_attribution.html start -->
+              <div>&copy;Prispievatelia <a
+                href="http://openstreetmap.org/copyright">OpenStreetMap</a> </div>
+
+
+              <!-- Snippet spatial/snippets/map_attribution.html end -->
+
+            </div>
+          </section>
+
+
+
+          <!-- Snippet spatial/snippets/spatial_query.html end -->
+
+
+
+
+
+          <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+          <section class="module module-narrow module-shallow">
+
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter"></i>
+
+              Organizácie
+            </h2>
+
+
+
+
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=f4787c6f-9fa3-406c-b8d5-d374f1e1f2d3" title="">
+                    <span>Štatistický úrad SR (648)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=3553318c-c815-4b28-8087-1f99540b3652" title="Ústredný kontrolný a skúšobný ústav poľnohospodársky v Bratislave">
+                    <span>Ústredný kontrolný ... (124)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=2e5a548a-983f-45bf-978a-1cd6cd22fbbc" title="Ministerstvo pôdohospodárstva a rozvoja vidieka SR">
+                    <span>Ministerstvo pôdoho... (77)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=656f92fc-f8ed-4da5-a9f5-1499e03ad575" title="Úrad pre verejné obstarávanie">
+                    <span>Úrad pre verejné ob... (75)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=2df13d50-0b6f-48ba-884e-be66dc0a2934" title="">
+                    <span>Ministerstvo vnútra SR (60)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=8a043e04-3ef8-45d4-a9a9-ede214e5fac5" title="">
+                    <span>Mesto Prešov (58)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=af5117ea-5b86-4519-a456-2bbf0de4ad3c" title="LESY Slovenskej republiky, štátny podnik">
+                    <span>LESY Slovenskej rep... (55)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=74297377-7ad7-4ed7-80cf-457eea6e75ad" title="Ministerstvo dopravy a výstavby SR">
+                    <span>Ministerstvo doprav... (43)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=b6f05ff8-a598-42a6-a1e4-85154b6dc6a5" title="Hydromeliorácie, štátny podnik">
+                    <span>Hydromeliorácie, št... (32)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?organization=7fd57fac-2a2b-4e95-b8df-948972af89f6" title="Ministerstvo životného prostredia SR">
+                    <span>Ministerstvo životn... (30)</span>
+                  </a>
+                </li>
+
+              </ul>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_organization_limit=0" class="read-more">
+
+                  Ukázať viac Organizácií
+
+                </a>
+
+
+              </p>
+
+
+
+          </section>
+
+
+
+
+          <!-- Snippet snippets/facet_list.html end -->
+
+
+
+
+
+
+
+          <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+          <section class="module module-narrow module-shallow">
+
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter"></i>
+
+              Tagy
+            </h2>
+
+
+
+
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=%C5%A1tatistika" title="">
+                    <span>štatistika (642)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=vo%C4%BEby" title="">
+                    <span>voľby (201)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=%C4%8D%C3%ADseln%C3%ADky" title="">
+                    <span>číselníky (190)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=k%C4%BE%C3%BA%C4%8Dov%C3%A9+ukazovatele" title="">
+                    <span>kľúčové ukazovatele (98)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=po%C4%BEnohospod%C3%A1rstvo" title="">
+                    <span>poľnohospodárstvo (76)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=MPRV+SR" title="">
+                    <span>MPRV SR (76)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=parlament" title="">
+                    <span>parlament (66)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=org%C3%A1ny+samospr%C3%A1vnych+krajov" title="orgány samosprávnych krajov">
+                    <span>orgány samosprávnyc... (65)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=register" title="">
+                    <span>register (61)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?tags=sodb+2011" title="">
+                    <span>sodb 2011 (60)</span>
+                  </a>
+                </li>
+
+              </ul>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_tags_limit=0" class="read-more">
+
+                  Ukázať viac Tagov
+
+                </a>
+
+
+              </p>
+
+
+
+          </section>
+
+
+
+
+          <!-- Snippet snippets/facet_list.html end -->
+
+
+
+
+
+          <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+          <section class="module module-narrow module-shallow">
+
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter"></i>
+
+              Formáty
+            </h2>
+
+
+
+
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=CSV" title="">
+                    <span>CSV (1030)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=XML" title="">
+                    <span>XML (681)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=HTML" title="">
+                    <span>HTML (325)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=xlsx" title="">
+                    <span>xlsx (293)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=PDF" title="">
+                    <span>PDF (171)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=XLS" title="">
+                    <span>XLS (123)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=xsd" title="">
+                    <span>xsd (59)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=JSON" title="">
+                    <span>JSON (56)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=xml.net" title="">
+                    <span>xml.net (35)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?res_format=shp" title="">
+                    <span>shp (25)</span>
+                  </a>
+                </li>
+
+              </ul>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_res_format_limit=0" class="read-more">
+
+                  Ukázať viac Formátov
+
+                </a>
+
+
+              </p>
+
+
+
+          </section>
+
+
+
+
+          <!-- Snippet snippets/facet_list.html end -->
+
+
+
+
+
+          <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+          <section class="module module-narrow module-shallow">
+
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter"></i>
+
+              Licencia
+            </h2>
+
+
+
+
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-by-sa" title="Creative Commons Attribution Share-Alike">
+                    <span>Creative Commons At... (961)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-zero" title="Creative Commons CCZero">
+                    <span>Creative Commons CC... (566)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-by" title="Creative Commons Attribution">
+                    <span>Creative Commons At... (122)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-nc" title="">
+                    <span>Iné (Nekomerčné) (84)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-open" title="">
+                    <span>Iné (Otvoriť) (9)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-pd" title="Ostatné (verejná doména)">
+                    <span>Ostatné (verejná do... (8)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=gfdl" title="GNU Free Documentation License">
+                    <span>GNU Free Documentat... (8)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-nc" title="Creative Commons Non-Commercial (Any)">
+                    <span>Creative Commons No... (6)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=notspecified" title="Nie je uvedená licencia">
+                    <span>Nie je uvedená lice... (4)</span>
+                  </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-closed" title="Ostatné (zatvorená licencia)">
+                    <span>Ostatné (zatvorená ... (2)</span>
+                  </a>
+                </li>
+
+              </ul>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_license_id_limit=0" class="read-more">
+
+                  Ukázať viac Licencia
+
+                </a>
+
+
+              </p>
+
+
+
+          </section>
+
+
+
+
+          <!-- Snippet snippets/facet_list.html end -->
+
+
+
+
+
+        </aside>
+
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="inner clr">
+      <div class="footerLinksWrap">
+        <ul>
+          <li><a href="/about">O portáli</a></li>
+          <li><a href="https://www.slovensko.sk/sk/navody">Návody</a></li>
+          <li><a href="https://www.slovensko.sk/sk/institucie">Inštitúcie</a></li>
+          <li><a href="https://www.slovensko.sk/sk/slovnik">Slovník</a></li>
+        </ul>
+      </div>
+      <div class="footerLinksWrap">
+        <ul>
+          <li><a href="/sitemap">Mapa stránok</a></li>
+          <li><a href="/published-services">Zoznam zverejnených služieb</a></li>
+          <li><a href="/feeds/dataset.atom">RSS</a></li>
+          <li><a href="https://www.slovensko.sk/sk/vyhlasenie-o-pristupnosti">Vyhlásenie o prístupnosti</a></li>
+        </ul>
+      </div>
+      <div class="legalWrap">
+        <div class="copyright">&copy; 2015, <a href="https://data.gov.sk" title="Portál otvorených dát">Data.gov.sk</a>, v1.7.1 <br />Informácie zverejnené na portáli majú informatívny charakter.<br />
+          Dátum vytvorenia stránky: 30.11.2015 &nbsp;&nbsp;&nbsp;Dátum poslednej aktualizácie: 18.04.2018   </div>
+        <div class="legal">Prevádzku stránky data.gov.sk a správu jej obsahu zabezpečuje<br> <a href="https://www.nases.gov.sk/kontakt/index.html">Národná agentúra pre sieťové a elektronické služby</a>.</div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-72982617-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script type="text/javascript" src="/js/smooth-scroll.js"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 1000,
+        easing: 'easeInOutCubic',
+        offset: 0,
+        updateURL: true,
+        callbackBefore: function ( toggle, anchor ) {},
+        callbackAfter: function ( toggle, anchor ) {}
+      });
+    </script>
+
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2016-05-04T15:52:51.07/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2016-05-04T15:52:51.07/tracking.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/:bundle:js/vendor/leaflet/leaflet.js;js/common_map.js;js/vendor/leaflet.draw/leaflet.draw.js;js/spatial_query.js"></script></body>
+</html>

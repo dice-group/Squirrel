@@ -1,0 +1,29 @@
+file_descriptor:
+    check:
+        domain: data.gov.sk
+        ignore-request: true
+    search-result-page:
+        regex: en/dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-list h3 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+            "pagination":
+                button:
+                    id: »
+                    action: link
+                    disable_id: «
+
+    download_page:
+        regex: dataset/
+        resources:
+            "http://projekt-opal.de/dataset/$label":
+                "http://purl.org/dc/terms/title": h1.heading:eq(0)
+                "http://purl.org/dc/terms/description":  .notes p
+                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/homepage": .additional-info table tr:contains(Dataset provider) a
+                    "http://xmlns.com/foaf/0.1/name": .additional-info table tr:contains(Dataset provider) td

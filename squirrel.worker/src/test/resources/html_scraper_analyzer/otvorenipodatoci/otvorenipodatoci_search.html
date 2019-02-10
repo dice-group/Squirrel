@@ -1,0 +1,2332 @@
+
+<!DOCTYPE html>
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2018-11-21T12:42:20/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2018-11-21T12:42:20/main.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2018-11-21T12:42:20/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/archiver/:version:2018-12-28T15:22:18/css/ckanext-archiver.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-harvest/:version:2018-12-28T15:22:42/styles/harvest.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-pages/:version:2018-12-28T15:23:52/vendor/datepicker/css/datepicker.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-pages/:version:2018-12-28T15:23:52/ckedit.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2018-12-28T15:22:05/js/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2018-12-28T15:22:05/js/vendor/leaflet.draw/leaflet.draw.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2018-12-28T15:22:05/css/spatial_query.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/datagovmk/:version:2018-12-28T15:22:00/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/experience/:version:2018-12-28T15:24:40/ckanext_experience.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/pages/:version:2018-12-28T15:23:52/:bundle:css/bootstrap.css;css/medium-editor.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/qa/:version:2018-12-28T15:22:31/css/ckanext-qa.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/requestdata/:version:2018-12-28T15:24:43/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/showcase/:version:2018-12-28T15:22:40/ckanext_showcase.css" />
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.8.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datasets - datagovmk</title>
+
+
+
+
+  <script type="text/javascript">
+    function redirectToSelectedLanguage() {
+      var selectedLocale = window.localStorage.selected_locale
+      var parser = document.createElement('a')
+      parser.href = "https://data.gov.mk/en/"
+      var currentLocale = parser.pathname.split('/')[1]
+      if (selectedLocale && (selectedLocale !== currentLocale)) {
+        if (currentLocale) {
+          var urlRest = location.pathname.split('/').slice(2).join('/')
+        } else {
+          var urlRest = location.pathname.split('/').slice(1).join('/')
+        }
+        window.location.href = window.location.origin + '/' + selectedLocale + '/' + urlRest + location.search
+      }
+    }
+
+    redirectToSelectedLanguage()
+  </script>
+
+
+
+  <link rel="shortcut icon" href="/base/images/ckan.ico" />
+
+
+  <!--[if IE]>
+  <script src="/classList.min.js"></script>
+  <![endif]-->
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-123648515-1', 'auto', {});
+
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+
+
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+
+  <link rel="alternate" type="text/n3" href="https://data.gov.mk/en/catalog.n3"/>
+  <link rel="alternate" type="text/ttl" href="https://data.gov.mk/en/catalog.ttl"/>
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.mk/en/catalog.xml"/>
+  <link rel="alternate" type="application/ld+json" href="https://data.gov.mk/en/catalog.jsonld"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body data-site-root="https://data.gov.mk/" data-locale-root="https://data.gov.mk/en/" >
+
+
+<div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+<header class="account-masthead">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1">
+
+
+
+        <ul class="list-inline list-social-media pull-right">
+          <li class="title">Share</li>
+          <li><a class="btn btn-link btn-social-icon btn-facebook" title="Share on Facebook" href="https://www.facebook.com/sharer.php?u=https://data.gov.mk/en/dataset?q%3D" target="_blank"><i class="fa fa-facebook"></i></a></li>
+          <li><a class="btn btn-link btn-social-icon btn-twitter" title="Share on Twitter" href="https://twitter.com/share?url=https://data.gov.mk/en/dataset?q%3D" target="_blank"><i class="fa fa-twitter"></i></a></li>
+          <li><a class="btn btn-link btn-social-icon btn-google" title="Share on Google+" href="https://plus.google.com/share?url=https://data.gov.mk/en/dataset?q%3D" target="_blank"><i class="fa fa-google"></i></a></li>
+        </ul>
+
+
+
+
+
+
+        <ul class="list-inline list-language-switch">
+
+          <li>
+            <a class=""
+               href="/mk/dataset?q="
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="mk">mk</a>
+          </li>
+
+          <li>
+            <a class="active"
+               href="/en/dataset?q="
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="en">en</a>
+          </li>
+
+          <li>
+            <a class=""
+               href="/sq/dataset?q="
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="sq">sq</a>
+          </li>
+
+        </ul>
+
+
+        <nav class="account not-authed">
+          <ul class="list-unstyled">
+
+
+
+            <li><a href="/en/user/login">Login</a></li>
+
+            <li><a class="sub" href="/en/user/register">Register</a></li>
+
+
+
+          </ul>
+        </nav>
+
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1">
+        <div class="navbar-right">
+          <button data-target="#main-navigation-toggle" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <span class="fa fa-bars"></span>
+          </button>
+        </div>
+        <div class="flex flex-wrap align-items-end justify-content-between">
+          <hgroup class="header-image navbar-left">
+
+
+            <a class="logo" href="/en/"><img src="/base/images/ckan-logo.png" alt="datagovmk" title="datagovmk" /></a>
+
+
+          </hgroup>
+          <div class="collapse navbar-collapse" id="main-navigation-toggle">
+            <nav class="section navigation">
+              <ul class="nav nav-pills">
+
+
+                <li><a href="/en/dataset">Datasets</a></li><li><a href="/en/organization">Organizations</a></li><li><a href="/en/group">Groups</a></li><li><a href="/en/organogram">Organogram</a></li><li><a href="/en/showcase">Showcases</a></li><li><a href="/en/experience">Experiences</a></li><li><a href="/en/report">Reports</a></li><li><a href="/en/datarequest">Data Requests</a></li><li><a href="/en/about">About</a></li>
+
+              </ul>
+            </nav>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<div role="main">
+  <div id="content" class="container-fluid">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1">
+
+
+
+        <div class="flash-messages">
+
+
+
+        </div>
+
+
+
+
+
+        <div class="toolbar">
+
+
+          <ol class="breadcrumb">
+
+            <li class="home"><a href="/en/"><i class="fa fa-home"></i><span> Home</span></a></li>
+
+            <li class="active"><a href="/en/dataset">Datasets</a></li>
+
+          </ol>
+
+
+        </div>
+
+
+
+        <div class="row ">
+
+
+
+
+
+
+
+
+          <aside class="secondary col-sm-3">
+
+
+
+            <section id="dataset-map" class="module module-narrow module-shallow">
+              <h2 class="module-heading">
+                <i class="fa fa-globe"></i>
+                Filter by location
+                <a href="/en/dataset?q=" class="action">Clear</a>
+              </h2>
+
+              <div class="dataset-map" data-module="spatial-query" data-default_extent="" data-module-map_config="{}">
+                <div id="dataset-map-container"></div>
+              </div>
+              <div id="dataset-map-attribution">
+
+                <div>Map data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors</div>
+
+                <div>Tiles by <a href="http://stamen.com">Stamen Design</a> (<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>)</div>
+
+
+
+              </div>
+            </section>
+
+
+
+
+            <div class="filters">
+              <div>
+
+
+
+
+
+
+
+
+                <section class="module module-narrow module-shallow">
+
+                  <h2 class="module-heading">
+                    <i class="fa fa-filter"></i>
+
+                    Organizations
+                  </h2>
+
+
+
+
+                  <nav>
+                    <ul class="list-unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=mtctt" title="Ministry of Labor and Social Policy">
+                          <span class="item-label">Ministry of Labor a...</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">21</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=mbp" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">19</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=dpxabeh-nchnektopat-3a-rpadexhnwtbo-n-yp6ahn3am" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">9</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=jtt-xndpocnctem-3jietobnua" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">9</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=ekohomnja" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">8</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=mnoa" title="">
+                          <span class="item-label">MISA</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">8</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=arehunja-3a-admnhnctpaunja-ha-pm" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">7</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=dnpekunja-3a-padnjaunoha-cnryphoct" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">6</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;organization=mxctttt" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">6</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?organization=abpm&amp;q=" title="">
+                          <span class="item-label"></span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">5</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                  <p class="module-footer">
+
+
+                    <a href="/en/dataset?q=&amp;_organization_limit=0"
+                       class="read-more">Show More Organizations</a>
+
+
+                  </p>
+
+
+
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+                <section class="module module-narrow module-shallow">
+
+                  <h2 class="module-heading">
+                    <i class="fa fa-filter"></i>
+
+                    Groups
+                  </h2>
+
+
+
+
+                  <nav>
+                    <ul class="list-unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?groups=3emjodejictbo-wymapctbo-pn6apctbo-n-xpaha&amp;q=" title="3emjodejictbo-wymapctbo-pn6apctbo-n-xpaha">
+                          <span class="item-label">3emjodejictbo-wymap...</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">4</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                  <p class="module-footer">
+
+
+
+                  </p>
+
+
+
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+                <section class="module module-narrow module-shallow">
+
+                  <h2 class="module-heading">
+                    <i class="fa fa-filter"></i>
+
+                    Tags
+                  </h2>
+
+
+
+
+                  <nav>
+                    <ul class="list-unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;tags=%D0%BC%D0%B2%D1%80" title="">
+                          <span class="item-label">мвр</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">18</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%B4%D1%80%D0%B6%D0%B0%D0%B2%D0%B5%D0%BD+%D0%B8%D0%BD%D1%81%D0%BF%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B0%D1%82+%D0%B7%D0%B0+%D0%B3%D1%80%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D0%B8%D1%88%D1%82%D0%B2%D0%BE+%D0%B8+%D1%83%D1%80%D0%B1%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D0%BC+%D0%BD%D0%B0+%D1%80%D0%B5%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0+%D0%BC%D0%B0%D0%BA%D0%B5%D0%B4%D0%BE%D0%BD%D0%B8%D1%98%D0%B0&amp;q=" title="државен инспекторат за градежништво и урбанизам на република македонија">
+                          <span class="item-label">државен инспекторат...</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">9</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;tags=%D0%A1%D0%BE%D1%86%D0%B8%D1%98%D0%B0%D0%BB%D0%BD%D0%B0+%D0%B7%D0%B0%D1%88%D1%82%D0%B8%D1%82%D0%B0" title="">
+                          <span class="item-label">Социјална заштита</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">9</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;tags=%D0%B4%D0%B8%D0%B3%D1%83" title="">
+                          <span class="item-label">дигу</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">7</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%A2%D1%80%D1%83%D0%B4&amp;q=" title="">
+                          <span class="item-label">Труд</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">7</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%B4%D0%BE%D0%B7%D0%B2%D0%BE%D0%BB%D0%B8&amp;q=" title="">
+                          <span class="item-label">дозволи</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">6</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%BE%D1%82%D0%BF%D0%B0%D0%B4&amp;q=" title="">
+                          <span class="item-label">отпад</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">6</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;tags=%D0%BD%D0%B5%D0%B2%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B5%D0%BD%D0%B8+%D0%BB%D0%B8%D1%86%D0%B0" title="">
+                          <span class="item-label">невработени лица</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">5</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%A1%D0%95%D0%A2&amp;q=" title="">
+                          <span class="item-label">СЕТ</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">5</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?tags=%D0%97%D0%B4%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D1%98%D0%B0&amp;q=" title="">
+                          <span class="item-label">Здруженија</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">4</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                  <p class="module-footer">
+
+
+                    <a href="/en/dataset?q=&amp;_tags_limit=0"
+                       class="read-more">Show More Tags</a>
+
+
+                  </p>
+
+
+
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+                <section class="module module-narrow module-shallow">
+
+                  <h2 class="module-heading">
+                    <i class="fa fa-filter"></i>
+
+                    Formats
+                  </h2>
+
+
+
+
+                  <nav>
+                    <ul class="list-unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?res_format=XLSX&amp;q=" title="">
+                          <span class="item-label">XLSX</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">81</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?res_format=CSV&amp;q=" title="">
+                          <span class="item-label">CSV</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">44</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?res_format=XLS&amp;q=" title="">
+                          <span class="item-label">XLS</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">11</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?res_format=.xls&amp;q=" title="">
+                          <span class="item-label">.xls</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">3</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?res_format=DOC&amp;q=" title="">
+                          <span class="item-label">DOC</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">2</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;res_format=XML" title="">
+                          <span class="item-label">XML</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">2</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?q=&amp;res_format=DOCX" title="">
+                          <span class="item-label">DOCX</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">1</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                  <p class="module-footer">
+
+
+
+                  </p>
+
+
+
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+                <section class="module module-narrow module-shallow">
+
+                  <h2 class="module-heading">
+                    <i class="fa fa-filter"></i>
+
+                    Licenses
+                  </h2>
+
+
+
+
+                  <nav>
+                    <ul class="list-unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?license_id=cc-zero&amp;q=" title="Creative Commons CCZero">
+                          <span class="item-label">Creative Commons CC...</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">18</span>
+                        </a>
+                      </li>
+
+
+
+
+
+
+
+                      <li class="nav-item">
+                        <a href="/en/dataset?license_id=other-pd&amp;q=" title="">
+                          <span class="item-label">Other (Public Domain)</span>
+                          <span class="hidden separator"> - </span>
+                          <span class="item-count badge">8</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                  <p class="module-footer">
+
+
+
+                  </p>
+
+
+
+                </section>
+
+
+
+
+
+              </div>
+              <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
+            </div>
+
+
+          </aside>
+
+
+
+
+
+          <div class="primary col-sm-9 col-xs-12">
+
+
+            <section class="module">
+              <div class="module-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <form id="dataset-search-form" class="search-form" method="get" data-module="select-switch">
+
+                  <div class="row">
+                    <div class="col-md-6">
+
+                      <div class="form-group control-medium">
+                        <label class="control-label" for="field-start-date">From</label>
+                        <div class="controls ">
+
+                          <input id="field-start-date" type="text" name="_start_date" value="" placeholder=""  datepicker-show-direction="bottom" data-module="datepicker" class="form-control" />
+
+
+
+
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <div class="col-md-6">
+
+                      <div class="form-group control-medium">
+                        <label class="control-label" for="field-start-date">To</label>
+                        <div class="controls ">
+
+                          <input id="field-start-date" type="text" name="_end_date" value="" placeholder=""  datepicker-show-direction="bottom" data-module="datepicker" class="form-control" />
+
+
+
+
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div><div class="input-group search-input-group">
+                  <input aria-label="Search datasets..." id="field-giant-search" type="text" class="form-control input-lg" name="q" value=""  autocomplete="off" placeholder="Search datasets...">
+
+                  <span class="input-group-btn">
+    <button class="btn btn-default btn-lg" type="submit" value="search">
+      <i class="fa fa-search"></i>
+    </button>
+  </span>
+
+                </div>
+
+
+
+
+
+
+
+
+                  <div class="form-select form-group control-order-by">
+                    <label for="field-order-by">Order by</label>
+                    <select id="field-order-by" name="sort" class="form-control">
+
+
+                      <option value="score desc, metadata_modified desc" selected="selected">Relevance</option>
+
+
+
+                      <option value="title_string asc">Name Ascending</option>
+
+
+
+                      <option value="title_string desc">Name Descending</option>
+
+
+
+                      <option value="metadata_modified desc">Last Modified</option>
+
+
+
+                      <option value="organization asc">Organization Ascending</option>
+
+
+
+                      <option value="organization desc">Organization Descending</option>
+
+
+
+                      <option value="extras_total_downloads asc">Total Downloads Ascending</option>
+
+
+
+                      <option value="extras_total_downloads desc">Total Downloads Descending</option>
+
+
+
+                      <option value="extras_file_size asc">File Size Ascending</option>
+
+
+
+                      <option value="extras_file_size desc">File Size Descending</option>
+
+
+
+                      <option value="extras_spatial_location_name asc">Location Ascending</option>
+
+
+
+                      <option value="extras_spatial_location_name desc">Location Descending</option>
+
+
+                    </select>
+
+                    <button class="btn btn-default js-hide" type="submit">Go</button>
+
+                  </div>
+
+
+
+
+
+                  <h2>
+
+
+
+
+
+
+
+
+                    154 datasets found</h2>
+
+
+
+
+
+                  <p class="filter-list">
+
+                  </p>
+                  <a class="show-filters btn btn-default">Filter Results</a>
+
+
+
+                </form>
+
+
+
+
+
+
+
+
+
+                <ul class="dataset-list list-unstyled">
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-n3dadehn-do3bojin-3a-tpahcnopt-ha-onaceh-otnad">pernctap-ha-n3dadehn-do3bojin-3a-tpahcnopt-ha-onaceh-otnad</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-n3dadehn-do3bojin-3a-tpahcnopt-ha-onaceh-otnad" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-n3dadehn-do3bojin-3a-ckjiadnpahbe-n-tpetmah-ha-otnad1">pernctap-ha-n3dadehn-do3bojin-3a-ckjiadnpahbe-n-tpetmah-ha-otnad1</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-n3dadehn-do3bojin-3a-ckjiadnpahbe-n-tpetmah-ha-otnad1" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/ttpon3bodntejin-co-ejiektpnhha-n-ejiektpohcka-onpema">ttpon3bodntejin-co-ejiektpnhha-n-ejiektpohcka-onpema</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/ttpon3bodntejin-co-ejiektpnhha-n-ejiektpohcka-onpema" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/ttpon3bodntejin-co-otnadhn-6atepnn-n-akymyjiatopn">ttpon3bodntejin-co-otnadhn-6atepnn-n-akymyjiatopn</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/ttpon3bodntejin-co-otnadhn-6atepnn-n-akymyjiatopn" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/ebndehunja-ha-npabhn-jinua-kon-noctanybaat-co-otnad-od-nakybahbe">ebndehunja-ha-npabhn-jinua-kon-noctanybaat-co-otnad-od-nakybahbe</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/ebndehunja-ha-npabhn-jinua-kon-noctanybaat-co-otnad-od-nakybahbe" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/do3bojin-3a-ckjiadnpahbe-ha-ejiektpnheh-n-ejiektpohckn-otnad">do3bojin-3a-ckjiadnpahbe-ha-ejiektpnheh-n-ejiektpohckn-otnad</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/do3bojin-3a-ckjiadnpahbe-ha-ejiektpnheh-n-ejiektpohckn-otnad" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-mecto-ha-xnbeehbe-rpad-cejio-coctoj6a-30-09-2018">hebpa6otehn-jinua-cnoped-mecto-ha-xnbeehbe-rpad-cejio-coctoj6a-30-09-2018</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-mecto-ha-xnbeehbe-rpad-cejio-coctoj6a-30-09-2018" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-haunohajiha-npnnadhoct-coctoj6a-30-09-2018">hebpa6otehn-jinua-cnoped-haunohajiha-npnnadhoct-coctoj6a-30-09-2018</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-haunohajiha-npnnadhoct-coctoj6a-30-09-2018" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-bo3pacha-ctpyktypa-coctoj6a-30-09-2018">hebpa6otehn-jinua-cnoped-bo3pacha-ctpyktypa-coctoj6a-30-09-2018</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-bo3pacha-ctpyktypa-coctoj6a-30-09-2018" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-bpeme-ha-hekahbe-coctoj6a-30-09-2018">hebpa6otehn-jinua-cnoped-bpeme-ha-hekahbe-coctoj6a-30-09-2018</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-bpeme-ha-hekahbe-coctoj6a-30-09-2018" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-wkojicka-nodrotobka-coctoj6a-30-09-2018">hebpa6otehn-jinua-cnoped-wkojicka-nodrotobka-coctoj6a-30-09-2018</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/hebpa6otehn-jinua-cnoped-wkojicka-nodrotobka-coctoj6a-30-09-2018" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/bdnh-3a-uapnhehbe-ha-ctokn-2019">Customs Clearance Guide 2019 </a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/bdnh-3a-uapnhehbe-ha-ctokn-2019" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-ochobhn-yhnjinwta">pernctap-ha-ochobhn-yhnjinwta</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-ochobhn-yhnjinwta" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-otkynybahn-ha-3emjodejickn-npon3bodn-obowje-bo-peny6jinka-makedohnja">pernctap-ha-otkynybahn-ha-3emjodejickn-npon3bodn-obowje-bo-peny6jinka-makedohnja</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-otkynybahn-ha-3emjodejickn-npon3bodn-obowje-bo-peny6jinka-makedohnja" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-otkynybahn-ha-bnhcko-rpo3je-bo-peny6jinka-makedohnja">pernctap-ha-otkynybahn-ha-bnhcko-rpo3je-bo-peny6jinka-makedohnja</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-otkynybahn-ha-bnhcko-rpo3je-bo-peny6jinka-makedohnja" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-bnhapckn-bn36n-bo-peny6jinka-makedohnja">pernctap-ha-bnhapckn-bn36n-bo-peny6jinka-makedohnja</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-bnhapckn-bn36n-bo-peny6jinka-makedohnja" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/pernctap-ha-ybo3hnun-ha-bnho-ha-peny6jinka-makedohnja">pernctap-ha-ybo3hnun-ha-bnho-ha-peny6jinka-makedohnja</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/pernctap-ha-ybo3hnun-ha-bnho-ha-peny6jinka-makedohnja" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/uehn-ha-3emjodejickn-npon3bodn">uehn-ha-3emjodejickn-npon3bodn</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/uehn-ha-3emjodejickn-npon3bodn" class="label label-default" data-format="xls">XLS</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/ttoctankn-3a-cejiekunja-n-bpa6otybahbe-ha-admnhnctpatnbeh-cjiyx6ehnk-3a-2017-rodnha">ttoctankn-3a-cejiekunja-n-bpa6otybahbe-ha-admnhnctpatnbeh-cjiyx6ehnk-3a-2017-...</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/ttoctankn-3a-cejiekunja-n-bpa6otybahbe-ha-admnhnctpatnbeh-cjiyx6ehnk-3a-2017-rodnha" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+
+
+
+
+
+
+                  <li class="dataset-item">
+
+                    <div class="dataset-content">
+
+                      <h3 class="dataset-heading">
+
+
+
+
+                        <a href="/en/dataset/3anohhatn-noctankn-kon-npodojixnjie-bo-2017">3anohhatn-noctankn-kon-npodojixnjie-bo-2017</a>
+
+
+
+
+
+                      </h3>
+
+
+
+
+
+
+                      <p class="empty">This dataset has no description</p>
+
+
+                    </div>
+
+
+
+                    <ul class="dataset-resources list-unstyled">
+
+
+                      <li>
+                        <a href="/en/dataset/3anohhatn-noctankn-kon-npodojixnjie-bo-2017" class="label label-default" data-format="xlsx">XLSX</a>
+                      </li>
+
+
+                    </ul>
+
+
+
+
+                  </li>
+
+
+
+                </ul>
+
+
+
+              </div>
+
+
+              <div class='pagination-wrapper'><ul class='pagination'> <li class="active"><a href="/en/dataset?q=&amp;page=1">1</a></li> <li><a href="/en/dataset?q=&amp;page=2">2</a></li> <li><a href="/en/dataset?q=&amp;page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a href="/en/dataset?q=&amp;page=8">8</a></li> <li><a href="/en/dataset?q=&amp;page=2">»</a></li></ul></div>
+
+            </section>
+
+
+            <section class="module">
+              <div class="module-content">
+
+                <small>
+
+
+
+                  You can also access this registry using the <a href="/en/api/3">API</a> (see <a href="http://docs.ckan.org/en/2.8/api/">API Docs</a>).
+                </small>
+
+              </div>
+            </section>
+
+
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+
+        <div class="row">
+          <div class="col-lg-8 footer-links">
+            <h3><a href="/en/">datagovmk</a></h3>
+
+            <hr>
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-5">
+                <ul class="list-inline list-logos">
+                  <li><a class="mioa-logo" href="http://www.mio.gov.mk"><img class="img-responsive" src="/base/images/mioa-logo-mk.png" alt="logo"></a></li>
+                </ul>
+                <dl>
+                  <dt>Address</dt>
+                  <dd>
+                    <address>Blvd. St. Cyril and Methodius No.54 1000 Skopje, Republic of Macedonia</address>
+                  </dd>
+                  <dt>E-mail</dt>
+                  <dd><a href="mailto:info@otvorenipodatoci.gov.mk">info@otvorenipodatoci.gov.mk</a></dd>
+                  <dt>Phone</dt>
+                  <dd><a href="tel:+38923200889">+389 (0)2 3200 889</a></dd>
+                  <dt>Fax</dt>
+                  <dd><a href="tel:+38923200881">+389 (0)2 3200 881</a></dd>
+                </dl>
+                <ul class="list-inline">
+                  <li><a href="#">Terms of use</a></li>
+                  <li><a href="/en/pages/ttojintnka-3a-npnbathoct-n-3awtnta-ha-jinhhnte-nodatoun">Privacy Policy</a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="footer-nav footer-links">
+
+                  <h4 class="title">Navigation</h4>
+                  <ul class="list-unstyled">
+
+                    <li><a href="/en/dataset">Datasets</a></li><li><a href="/en/organization">Organizations</a></li><li><a href="/en/group">Groups</a></li><li><a href="/en/organogram">Organogram</a></li><li><a href="/en/showcase">Showcases</a></li><li><a href="/en/experience">Experiences</a></li><li><a href="/en/report">Reports</a></li><li><a href="/en/datarequest">Data Requests</a></li><li><a href="/en/about">About</a></li>
+
+                    <li><a href="/en/issues/report_site_issue">Report site issue</a></li>
+                    <li><a href="/en/stats">Statistics</a></li>
+                  </ul>
+
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="footer-links footer-nav">
+
+                  <h4 class="title">Links</h4>
+                  <ul>
+                    <li><a href="https://ener.gov.mk/">ЕНЕР (Единствен национален електронски регистар на прописи на Република Македонија)</a></li>
+                    <li><a href="https://vlada.mk/">Влада на Република Македонија</a></li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4">
+            <!-- Begin MailChimp Signup Form -->
+            <div id="mc_embed_signup">
+              <form action="https://data.us18.list-manage.com/subscribe/post?u=d6f1b227acbdd8d88316c37fa&amp;id=f17b9b49bf" method="post"
+                    id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                <div id="mc_embed_signup_scroll">
+                  <h3 class="title text-uppercase">Subscribe to our newsletter</h3>
+                  <p>Stay updated with datagovmk. Subscribe to our free newsletter.</p>
+                  <hr>
+                  <label class="sr-only" for="mce-EMAIL">E-mail</label>
+                  <div class="input-group">
+                    <input type="email" required="required" value="" name="EMAIL" class="form-control" id="mce-EMAIL" placeholder="Your e-mail address">
+                    <div class="input-group-btn">
+                      <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-primary">
+                    </div>
+                  </div>
+                  <div id="mce-responses" class="clear">
+                    <div class="response" id="mce-error-response" style="display:none"></div>
+                    <div class="response" id="mce-success-response" style="display:none"></div>
+                  </div>
+                  <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                  <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                    <input type="text" name="b_d6f1b227acbdd8d88316c37fa_f17b9b49bf" tabindex="-1" value="">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!--End mc_embed_signup-->
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4">
+            <div class="list-logos-wrapper">
+              <ul class="list-inline list-logos list-logos-sm">
+                <li><a href="https://www.gov.uk/world/organisations/british-embassy-skopje"><img class="img-responsive" src="/base/images/british-embassy-skopje.png" alt="logo"></a></li>
+                <li><a><img class="img-responsive" src="/base/images/funded-by-uk-government.png" alt="logo"></a></li>
+                <li><a href="http://www.cup.org.mk/"><img class="img-responsive" src="/base/images/cup.png" alt="logo"></a></li>
+              </ul>
+              <p class="text-muted">The portal is developed within a programme implemented by the Centre for Change Management, funded by the UK Government with the support of the British Embassy Skopje. The data and content provided on this portal are not under the authority of the UK Government.</p>
+            </div>
+            <div class="attribution">
+
+              <p><strong>Powered by</strong> <a class="hide-text ckan-footer-logo" href="http://ckan.org">CKAN</a></p>
+
+              <div class="footer-links">
+                <ul class="list-inline">
+                  <li><a href="">CKAN API</a></li>
+                  <li><a href="http://www.ckan.org/">CKAN Association</a></li>
+                  <li><a href="http://www.opendefinition.org/okd/"><img src="/base/images/od_80x15_blue.png" alt="Open Data"></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2018-11-21T12:42:20/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2018-11-21T12:42:20/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2018-11-21T12:42:20/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;plugins/jquery.images-loaded.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js;modules/followers-counter.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-googleanalytics/:version:2018-12-28T15:24:07/googleanalytics_event_tracking.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-pages/:version:2018-12-28T15:23:52/vendor/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-pages/:version:2018-12-28T15:23:52/:bundle:vendor/ckeditor/adapters/jquery.js;vendor/datepicker/js/bootstrap-datepicker.js;vendor/datepicker/locales/bootstrap-datepicker.mk.js;vendor/datepicker/locales/bootstrap-datepicker.sq.js;ckedit.js;datepicker.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-spatial/:version:2018-12-28T15:22:05/:bundle:js/vendor/leaflet/leaflet.js;js/common_map.js;js/vendor/leaflet.draw/leaflet.draw.js;js/spatial_query.js"></script>
+<script type="text/javascript" src="/fanstatic/datagovmk/:version:2018-12-28T15:22:00/js/modules/store-selected-language.js"></script>
+<script type="text/javascript" src="/fanstatic/pages/:version:2018-12-28T15:23:52/:bundle:js/medium-editor.min.js;js/pages-editor.js"></script></body>
+</html>
