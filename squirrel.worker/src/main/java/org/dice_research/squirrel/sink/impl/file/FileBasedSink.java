@@ -112,6 +112,7 @@ public class FileBasedSink implements Sink {
         String uriString = uri.getUri().toString();
         StreamStatus status = null;
         if (streamMapping.containsKey(uriString)) {
+//            LOGGER.debug("PerformanceAnalysis triple count for uri " + uriString + " is: " + streamMapping.get(uriString).tripleCount);
             Closer.close(streamMapping.get(uriString));
             status = streamMapping.remove(uriString);
         } else {

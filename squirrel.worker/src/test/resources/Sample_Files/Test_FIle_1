@@ -1,0 +1,12 @@
+#File contaning blank nodes in RDF/XML format
+
+<rdf:RDF
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:ex="http://example.org/data#">
+<rdf:Description rdf:about="http://example.org/web-data" ex:title="Web Data">
+  <ex:professor rdf:nodeID="b"/>
+</rdf:Description>
+<rdf:Description rdf:nodeID="b" ex:fullName="Alice Carol">
+  <ex:homePage rdf:resource="http://example.net/alice-carol"/>
+</rdf:Description>
+</rdf:RDF>

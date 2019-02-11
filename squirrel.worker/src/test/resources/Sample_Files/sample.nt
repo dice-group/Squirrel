@@ -1,0 +1,2 @@
+<http://dbpedia.org/resource/Alice_Adams_(artist)> <http://dbpedia.org/ontology/birthPlace> <http://dbpedia.org/resource/New_York> .
+<http://dbpedia.org/resource/Tim_Bishop> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://dbpedia.org/resource/New_York> .
