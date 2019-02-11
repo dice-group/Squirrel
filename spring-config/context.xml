@@ -49,11 +49,13 @@
         		<array value-type="java.lang.String">
 				  <value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
-        		  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.RDFaSemarglParser</value>  
         		  <value>org.dice_research.squirrel.analyzer.impl.MicrodataParser</value>
 				  <value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
+				  
      			  <value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value> 
+     			  <value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
+     			  <!--  -->
 				</array>
         	</constructor-arg>
         </bean>
@@ -65,9 +67,10 @@
         		 	<ref bean="httpFetcherBean" />
         			<ref bean="ftpFetcherBean" />
         			<ref bean="ckanFetcherBean" />
+        			
         			<ref bean="sparqlDatasetFetcherBean" />
            			<ref bean="sparqlFetcherBean" />
-        			
+        			<!--  -->
         			
         		</list>
         	</constructor-arg>
@@ -110,9 +113,9 @@
 		<constructor-arg name="port"
 		                 value="#{systemEnvironment['SPARQL_HOST_PORT']}"/>
 		<constructor-arg name="updateAppendix"
-		                 value="europeandataportal/update"/>
+		                 value="contentset/update"/>
 		<constructor-arg name="queryAppendix"
-		                 value="europeandataportal/query"/>
+		                 value="contentset/query"/>
 		<constructor-arg name="updateMetaDataAppendix"
 		                 value="MetaData/update"/>
 		<constructor-arg name="queryMetaDataAppendix"
@@ -120,25 +123,17 @@
 
 	    </bean>
 	    -->
-        
+          <!--
         <bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SimpleUriCollector" >
         	<constructor-arg index="0" ref="serializerBean" />
         </bean>
-        
-        <!--  
-	        <bean id="uriCollectorBean" class="org.aksw.simba.squirrel.collect.SqlBasedUriCollector" >
-	        	<constructor-arg index="0" ref="datasourceConnection" />
-	        	<constructor-arg index="1" ref="serializerBean" />
-	        </bean>
         -->
-        <bean id="serializerBean" class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
+            <bean id="serializerBean" class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
         
-        <bean id="datasourceConnection" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
-        	<property name="driverClassName" value="org.hsqldb.jdbc.JDBCDriver" />
-        	<property name="url" value="jdbc:hsqldb:mem:foundUris" />
-        	<property name="username" value="SA" />
-        	<property name="password" value="" />
-        </bean>
+	        <bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SqlBasedUriCollector" >
+	        	       	<constructor-arg index="0" ref="serializerBean" />
+	        	       	<constructor-arg index="1" value="foundUris" />
+	        </bean>
         
         <bean id="robotsManagerBean" class="org.dice_research.squirrel.robots.RobotsManagerImpl">
         	<constructor-arg index="0" ref="simpleHttpFetcherBean" />

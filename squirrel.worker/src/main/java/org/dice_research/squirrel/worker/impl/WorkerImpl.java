@@ -13,7 +13,6 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.analyzer.compress.impl.FileManager;
 import org.dice_research.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
-import org.dice_research.squirrel.collect.SqlBasedUriCollector;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -111,8 +110,7 @@ public class WorkerImpl implements Worker, Closeable {
         }
         // Make sure that there is a collector. Otherwise, create one.
         if (collector == null) {
-            LOGGER.warn("Will use a default configuration of the URI collector.");
-            collector = SqlBasedUriCollector.create(serializer);
+            LOGGER.warn("Will use Spring configuration of the URI collector.");
             if (collector == null) {
                 throw new IllegalStateException("Couldn't create collector for storing identified URIs.");
             }
@@ -258,11 +256,11 @@ public class WorkerImpl implements Worker, Closeable {
                     sink.openSinkForUri(uri);
                     collector.openSinkForUri(uri);
                     // Go over all files and analyze them
-                    
+                    LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
                     for (File data : fetchedFiles) {
                         if (data != null) {
                             fileList = fm.decompressFile(data);
-                            LOGGER.info("Found " + fileList + " files after decompression ");
+                            LOGGER.info("Found " + fileList.size() + " files after decompression ");
                             int cont = 1;
                             for (File file : fileList) {
                             	LOGGER.info("Analyzing file " + cont + " of " + fileList.size());
