@@ -12,10 +12,20 @@
 	<packaging>jar</packaging>
 	<name>Squirrel Worker</name>
 
+	<properties>
+		<version.clerezza.core>0.12-incubating</version.clerezza.core>
+		<version.clerezza.simple.storage>0.7-incubating</version.clerezza.simple.storage>
+		<version.clerezza.jena.serializer>0.9-incubating</version.clerezza.jena.serializer>
+		<version.clerezza.jena.parser>0.10-incubating</version.clerezza.jena.parser>
+		<version.jena>2.11.1</version.jena>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.dice-research</groupId>
 			<artifactId>squirrel.api</artifactId>
+			<!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId> 
+				<artifactId>httpclient-cache</artifactId> </exclusion> </exclusions> -->
 		</dependency>
 
 		<dependency>
@@ -33,21 +43,62 @@
 
 		</dependency>
 
+
+		<!-- https://mvnrepository.com/artifact/com.github.mautini/schemaorg-java -->
+		<dependency>
+			<groupId>com.github.mautini</groupId>
+			<artifactId>schemaorg-java</artifactId>
+			<version>1.0.1</version>
+			<type>pom</type>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.semarglproject</groupId>
 			<artifactId>semargl-rdfa</artifactId>
 			<version>0.7</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.semarglproject</groupId>
+			<artifactId>semargl-clerezza</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.simple.storage</artifactId>
+			<version>0.7-incubating</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.jena.parser</artifactId>
+			<version>0.10-incubating</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.kylewm</groupId>
 			<artifactId>mf2j</artifactId>
 			<version>0.0.4</version>
 		</dependency>
 
+		<!-- Html Cleaner -->
+		<dependency>
+			<groupId>net.sourceforge.htmlcleaner</groupId>
+			<artifactId>htmlcleaner</artifactId>
+			<version>2.22</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.any23</groupId>
 			<artifactId>apache-any23-core</artifactId>
 			<version>2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient-cache</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
