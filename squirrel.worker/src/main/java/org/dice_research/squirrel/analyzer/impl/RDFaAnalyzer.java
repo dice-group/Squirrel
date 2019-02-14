@@ -78,7 +78,6 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 		System.out.println("Model size = " + model.size());
 
 		Iterator<Triple> tripleIterator = model.getGraph().iterator();
-		List<org.apache.jena.graph.Triple> listTriples = new ArrayList<org.apache.jena.graph.Triple>();
 
 		while (tripleIterator.hasNext()) {
 			Triple t = tripleIterator.next();
@@ -102,7 +101,7 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 			sink.addTriple(curi, triple);
 			System.out.println(triple);
 		}
-
+		tempFile.delete();
 		return collector.getUris(curi);
 	}
 

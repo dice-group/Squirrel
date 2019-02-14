@@ -49,11 +49,12 @@
 			<array value-type="java.lang.String">
 				<value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.MicrodataParser	</value>
+				<value>org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.RDFaAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
 				<value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
+			 
 			</array>
 		</constructor-arg>
 	</bean>
@@ -63,7 +64,7 @@
 		<constructor-arg>
 			<list>
 
-				<ref bean="httpFetcherBean" />
+				<ref bean="httpFetcherBean" /> 
 				<ref bean="ftpFetcherBean" />
 				<ref bean="ckanFetcherBean" /> 
 				<ref bean="sparqlDatasetFetcherBean" />
