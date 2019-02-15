@@ -55,6 +55,7 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 		props.setTransResCharsToNCR(true);
 		props.setOmitComments(true);
 		File tempFile = null;
+
 		try {
 			TagNode tagNode = cleaner.clean(data);
 
@@ -62,12 +63,8 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 			FileWriter writer = new FileWriter(tempFile);
 
 			new PrettyXmlSerializer(props).write(tagNode, writer, "utf-8");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		try {
+			
+			
 			ModifiableConfiguration modifiableConf = DefaultConfiguration.copy();
 			modifiableConf.setProperty("any23.microdata.ns.default", "http://schema.org/");
 			Any23 runner = new Any23(modifiableConf, "html-rdfa11");

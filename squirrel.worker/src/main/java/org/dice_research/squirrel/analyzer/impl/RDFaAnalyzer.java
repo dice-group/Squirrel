@@ -61,47 +61,42 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 			FileWriter writer = new FileWriter(tempFile);
 
 			new PrettyXmlSerializer(props).write(tagNode, writer, "utf-8");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			
+			MGraph model = createClerezzaModel(curi.getUri().toString());
 
-		MGraph model = createClerezzaModel(curi.getUri().toString());
-
-		StreamProcessor streamProcessor = new StreamProcessor(RdfaParser.connect(ClerezzaSink.connect(model)));
-
-		try {
+			StreamProcessor streamProcessor = new StreamProcessor(RdfaParser.connect(ClerezzaSink.connect(model)));
 			streamProcessor.process(tempFile, curi.getUri().toString());
-		} catch (ParseException e) {
-			LOGGER.debug(e.getMessage());
-		}
-		System.out.println("Model size = " + model.size());
+			
+			Iterator<Triple> tripleIterator = model.getGraph().iterator();
 
-		Iterator<Triple> tripleIterator = model.getGraph().iterator();
+			while (tripleIterator.hasNext()) {
+				Triple t = tripleIterator.next();
+				boolean isUri = true;
+				URI uri = null;
+				try {
+					uri = new URI(t.getObject().toString().substring(1, t.getObject().toString().length() - 1));
+				} catch (URISyntaxException e) {
+					isUri = false;
+				}
 
-		while (tripleIterator.hasNext()) {
-			Triple t = tripleIterator.next();
-			boolean isUri = true;
-			URI uri = null;
-			try {
-				uri = new URI(t.getObject().toString().substring(1, t.getObject().toString().length() - 1));
-			} catch (URISyntaxException e) {
-				isUri = false;
+				Node s = NodeFactory
+						.createURI(t.getSubject().toString().substring(1, t.getSubject().toString().length() - 1));
+				Node p = NodeFactory.createURI(t.getPredicate().getUnicodeString());
+				Node o = isUri ? NodeFactory.createURI(uri.toString())
+						: NodeFactory.createLiteral(
+								t.getObject().toString().substring(1, t.getObject().toString().length() - 1));
+
+				org.apache.jena.graph.Triple triple = new org.apache.jena.graph.Triple(s, p, o);
+				collector.addTriple(curi, triple);
+				sink.addTriple(curi, triple);
 			}
+			tempFile.delete();
+			
+		} catch (Exception e1) {
+			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
 
-			Node s = NodeFactory
-					.createURI(t.getSubject().toString().substring(1, t.getSubject().toString().length() - 1));
-			Node p = NodeFactory.createURI(t.getPredicate().getUnicodeString());
-			Node o = isUri ? NodeFactory.createURI(uri.toString())
-					: NodeFactory.createLiteral(
-							t.getObject().toString().substring(1, t.getObject().toString().length() - 1));
-
-			org.apache.jena.graph.Triple triple = new org.apache.jena.graph.Triple(s, p, o);
-			collector.addTriple(curi, triple);
-			sink.addTriple(curi, triple);
-			System.out.println(triple);
 		}
-		tempFile.delete();
+		
 		return collector.getUris(curi);
 	}
 
