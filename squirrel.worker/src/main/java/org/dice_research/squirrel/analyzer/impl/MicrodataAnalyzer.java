@@ -1,7 +1,5 @@
 package org.dice_research.squirrel.analyzer.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -14,15 +12,11 @@ import org.apache.any23.configuration.DefaultConfiguration;
 import org.apache.any23.configuration.ModifiableConfiguration;
 import org.apache.any23.source.DocumentSource;
 import org.apache.any23.source.FileDocumentSource;
-import org.apache.any23.writer.NTriplesWriter;
 import org.apache.any23.writer.TripleHandler;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
-import org.dice_research.squirrel.analyzer.commons.FilterSinkRDF;
+import org.dice_research.squirrel.analyzer.commons.SquirrelTripleHandler;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
@@ -35,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * Any23 Microdata Parser
+ * Any23 Microdata Extractor
  * 
- * @author Meyer1995
+ * @author Geraldo de Souza Junior
  *
  */
 
@@ -81,14 +75,10 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 
 			runner.setHTTPUserAgent(Any23.DEFAULT_HTTP_CLIENT_USER_AGENT);
 			DocumentSource source = new FileDocumentSource(tempFile, curi.getUri().toString());
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			TripleHandler handler = new NTriplesWriter(out);
+			TripleHandler handler = new SquirrelTripleHandler(curi,collector,sink);
 			runner.extract(source, handler);
 			handler.close();
-			String n3 = out.toString("UTF-8");
 
-			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
-			RDFDataMgr.parse(filtered, new ByteArrayInputStream(n3.getBytes()), Lang.NTRIPLES);
 		} catch (Exception e) {
 			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: "
 					+ this.getClass().getName());
