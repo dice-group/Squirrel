@@ -213,15 +213,51 @@ public class HtmlScraperAnalyzerTest {
         List<Triple> listTriples = new ArrayList<Triple>();
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
-
     @Test
     public void scrapDetailSSA() throws Exception {
         CrawleableUri curi = new CrawleableUri(new URI("https://www.ssa.gov/open/data"));
-        fetchedFile = new File("src/test/resources/html_scraper_analyzer/ssagov/ssagov_detail.html");
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/ssagov/ssagov_datasets.html");
 
         List<Triple> listTriples = new ArrayList<Triple>();
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
+
+    @Test
+    public void scrapDetailBilbao() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://www.bilbao.eus/opendata/catalogo/dato-agenda-cultural"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/bilbao/bilbao_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailDatago() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.data.go.jp/data/dataset/mlit_20190201_0005"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/datago/datago_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailOpendatajena() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://opendata.jena.de/dataset/vornamen"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/opendatajena/opendatajena_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailottawaca() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://data.ottawa.ca/dataset/ball-diamonds"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/ottawaca/ottawaca_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
 	public void testAnalyzer() throws URISyntaxException {
 		CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");

@@ -1,0 +1,31 @@
+file_descriptor:
+    check:
+        domain: data.colorado.gov
+        ignore-request: true
+    search-result-page:
+        regex: browse
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .browse2-result-title h2 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex:
+            -Agriculture/
+            -Business/
+            -Health/
+            -Public-Safety/
+            -Recreation/
+            -Government/
+            -Water/
+        resources:
+            "http://projekt-opal.de/dataset/$label":
+                "http://purl.org/dc/terms/title": #infoBox h2
+                "http://purl.org/dc/terms/description": .descriptionContent
+                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/homepage": .aboutHeader a:eq(1)
+                    "http://xmlns.com/foaf/0.1/name": .aboutAuthorName

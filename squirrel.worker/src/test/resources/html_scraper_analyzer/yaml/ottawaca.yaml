@@ -1,0 +1,24 @@
+file_descriptor:
+    check:
+        domain: data.ottawa.ca
+        ignore-request: true
+    search-result-page:
+        regex: en/dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .col-md-12 h3 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "http://projekt-opal.de/dataset/$label":
+                "http://purl.org/dc/terms/title": .col-md-12 h2
+                "http://purl.org/dc/terms/description": tr:nth-child(1) p
+                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/homepage":  tr:nth-child(10) td a
+                    "http://xmlns.com/foaf/0.1/name":  tr:nth-child(9) td

@@ -1,0 +1,134 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head><meta http-equiv="X-UA-Compatible" content="IE=Edge" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Bilbao.eus, Bilbao Open Data, Cat&aacute;logo de datos, Agenda Municipal de Bilbao</title><meta name="og:title" content="Bilbao.eus, Bilbao Open Data, Cat&aacute;logo de datos, Agenda Municipal de Bilbao" /><link rel="image_src" href="/Bilbaonet/img/opendata/opendata-facebook.jpg"/><meta name="og:description" content="Servicio de datos abiertos del Ayuntamiento de Bilbao" /><link rel="stylesheet" href="/Bilbaonet/css/opendata/bio_opendata.css?1550260335911" type="text/css" media="screen" /><script type="text/ecmascript" src="/Bilbaonet/js/formularios.js" charset="UTF-8"></script><script type="text/javascript">
+  var totalDestacadosCarrusel=0;
+</script><script type="text/javascript" src="/Bilbaonet/js/comun/jquery-1.4.2.min.js" charset="UTF-8"></script><script type="text/JavaScript" src="/Bilbaonet/js/comun/prototype.lite.js"></script><script type="text/JavaScript" src="/Bilbaonet/js/comun/moo.fx.js"></script><script type="text/JavaScript" src="/Bilbaonet/js/comun/moo.fx.pack.js"></script><script type="text/javascript" src="/Bilbaonet/js/opendata/opendata.js" charset="UTF-8"></script><script type="text/JavaScript">
+
+
+  <!--
+  //the main function, call to the effect object
+  var desplegado=0;
+  function init(indice,contTabEnlace){
+    //function init(indice){
+
+    var stretchers = document.getElementsByClassName('stretcher'); //div that stretches
+    var toggles = document.getElementsByClassName('display'); //h3s where I click on
+    var mostrar="Mostrar men&uacute; completo";
+    var ocultar="Ocultar men&uacute; completo";
+
+    //accordion effect
+    var myAccordion = new fx.Accordion(
+      toggles, stretchers, {opacity: false, duration: 400}
+    );
+
+
+    if (indice==-1){
+      if (desplegado==0){
+        for (var i=0;i<stretchers.length;i++){
+          myAccordion.showThisHideOpen(stretchers[i]);
+          desplegado=1;
+          capa.innerHTML="<div class=\"ocultar\"><a class=\"lnkMostrar\" href=\"javascript:init(-1,"+contTabEnlace+");\">" + ocultar +"</a></div>";
+        }
+      }else{
+        desplegado=0;
+        init(-2,contTabEnlace);
+        capa.innerHTML="<div class=\"mostrar\"><a class=\"lnkMostrar\" href=\"javascript:init(-1,"+contTabEnlace+");\">" + mostrar +"</a></div>";
+      }
+    }else if ((indice >=0 ) && (stretchers.length>indice)){
+      myAccordion.showThisHideOpen(stretchers[indice]);
+    }
+
+  } // fin init
+
+
+
+  jQuery(document).ready(function(){
+
+    jQuery(function () {
+
+      jQuery('.menuBusq a.tituBusq').each(function(){
+        this.href="javascript:void(0);";
+      });
+
+      jQuery('.menuBusq a.tituBusq').click(function(event) {
+        jQuery(this).parent('li').children('ul').slideToggle();
+
+        if (this.className=='act_des tituBusq')
+        {
+          this.className='act tituBusq';
+        }
+        else
+        {
+          this.className='act_des tituBusq';
+        }
+
+        event.stopPropagation();
+      });
+
+    });
+  }); // fin ready
+
+
+
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20337143-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  //Objeto estadisticas
+  var estadisticas ={
+    guardar:function(rastro){
+      try{
+        _gaq.push(['_trackPageview',rastro]);
+      }catch(err){
+      }
+    }
+  }
+
+
+
+
+
+  //-->
+</script></head><body><div id="webcontainer"><div id="cabecera-cont"><div id="foto-cabecera" style='background-image: url(/Bilbaonet/img/opendata/cabecera-od.jpg)'><div class="cabecera-up_izq"><a name="inicio_pagina" accesskey="1" href='/opendata/es/inicio'><img src="/Bilbaonet/img/opendata/logo-od.png" alt="Logotipo de Open Data" /></a></div><div class="cont-superior-d"><ul class="idiomasGr" id="idiomas"><li><a accesskey="8" href='http://www.bilbao.eus/opendata/eu/catalogo/dato-agenda-cultural' id="change_eu" title='Euskaraz' hreflang="eu" lang="eu">Euskaraz</a></li></ul></div><div class="clear"></div><div id="comparte"><ul><li class="texto_comparte">Compartir en:</li><li><a rel="nofollow" target="_blank" onclick="window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent('http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural') + '&amp;t=' + encodeURIComponent('') + ''); return false;" href="http://www.facebook.com/sharer.php?u=http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural" onmouseout="getElementById('img_facebook').src='/Bilbaonet/img/iconos_compartir/c_facebook_on.gif'" onmouseover="getElementById('img_facebook').src='/Bilbaonet/img/iconos_compartir/c_facebook.gif'" onfocus="getElementById('img_facebook').src='/Bilbaonet/img/iconos_compartir/c_facebook.gif'" onblur="getElementById('img_facebook').src='/Bilbaonet/img/iconos_compartir/c_facebook_on.gif'"><img id="img_facebook" src="/Bilbaonet/img/iconos_compartir/c_facebook_on.gif" width="16" height="16" alt="Facebook" /></a></li><li><a rel="nofollow" target="_blank" onclick="window.open('http://twitter.com/share?url=' + encodeURIComponent('http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural') + '&amp;text=' + encodeURIComponent('Cat&aacute;logo+de+datos+') + ''); return false;" href="http://www.twitter.com/share?url=http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural&amp;text=Cat&aacute;logo+de+datos+" onmouseout="getElementById('img_twitter').src='/Bilbaonet/img/iconos_compartir/c_twitter_on.gif'" onmouseover="getElementById('img_twitter').src='/Bilbaonet/img/iconos_compartir/c_twitter.gif'" onblur="getElementById('img_twitter').src='/Bilbaonet/img/iconos_compartir/c_twitter_on.gif'" onfocus="getElementById('img_twitter').src='/Bilbaonet/img/iconos_compartir/c_twitter.gif'"><img id="img_twitter" src="/Bilbaonet/img/iconos_compartir/c_twitter_on.gif" width="16" height="16" alt="Twitter" /></a></li><li><a rel="nofollow" target="_blank" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url=' + encodeURIComponent('http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural') + '&amp;title=' + encodeURIComponent('') + '&amp;summary=' + encodeURIComponent('Cat&aacute;logo+de+datos+') + ''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural&amp;summary=Cat&aacute;logo+de+datos+" onmouseout="getElementById('img_linkedin').src='/Bilbaonet/img/iconos_compartir/c_linkedin_on.gif'" onmouseover="getElementById('img_linkedin').src='/Bilbaonet/img/iconos_compartir/c_linkedin.gif'" onblur="getElementById('img_linkedin').src='/Bilbaonet/img/iconos_compartir/c_linkedin_on.gif'" onfocus="getElementById('img_linkedin').src='/Bilbaonet/img/iconos_compartir/c_linkedin.gif'"><img id="img_linkedin" src="/Bilbaonet/img/iconos_compartir/c_linkedin_on.gif" width="16" height="16" alt="Linkedin" /></a></li><li><a rel="nofollow" target="_blank" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent('http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural')+'','', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" href="https://plus.google.com/share?url=http://www.bilbao.eus/opendata/es/catalogo/dato-agenda-cultural" onmouseout="getElementById('img_googleplus').src='/Bilbaonet/img/iconos_compartir/c_google_on.gif'" onmouseover="getElementById('img_googleplus').src='/Bilbaonet/img/iconos_compartir/c_google.gif'" onblur="getElementById('img_googleplus').src='/Bilbaonet/img/iconos_compartir/c_google_on.gif'" onfocus="getElementById('img_googleplus').src='/Bilbaonet/img/iconos_compartir/c_google.gif'"><img id="img_googleplus" src="/Bilbaonet/img/iconos_compartir/c_google_on.gif" alt="Google Plus"/></a></li></ul></div><div id="mainnav"><div id="nav"> <span class="inv">Men&uacute; principal</span><ul><li><a  href='/opendata/es/open-data'>Open Data</a></li><li><a  href='/opendata/es/catalogo'>Cat&aacute;logo de datos</a></li><li><a  href='/opendata/es/terminos-de-uso'>T&eacute;rminos de uso</a></li><li><a  href='/opendata/es/aplicaciones'>Aplicaciones</a></li><li><a accesskey="6" href='/opendata/es/colabora'>Colabora</a></li></ul><ul class="menu_secundario"><li><a target="_blank" onclick="javascript:var uEudala='Bilbao.net/Bilbao Open Data/eUdala/'; var langu='es'; estadisticas.guardar(uEudala+langu);" href="/cs/Satellite?cid=1272990083710&amp;language=es&amp;pagename=Bilbaonet/Page/BIO_homeSrvTramites">e-Udala</a></li></ul></div></div><div class="clear"></div></div></div><div class="content-all"><div id="migas"><div id="sendero"><span class="inv"><strong>Ruta:</strong></span><ul><li><a target="_blank" class="negrita" href="/cs/Satellite?c=Page&amp;cid=3000005415&amp;language=es&amp;pagename=Bilbaonet%2FPage%2FBIO_home">Bilbao.eus</a></li>
+  <li><span class="vinetas">&nbsp;&nbsp;</span><a class="negrita" href="/opendata/es/inicio">Bilbao Open Data</a></li>
+  <li><span class="vinetas">&nbsp;&nbsp;</span><a class="negrita" href="/opendata/es/catalogo">Cat&aacute;logo de datos</a></li>
+  <li><span class="vinetas">&nbsp;&nbsp;</span>Agenda Municipal de Bilbao</li>
+</ul></div></div>
+  <div class="skip">
+    <p><a accesskey="s" href="#contenido">ir a contenido principal</a></p>
+  </div>
+  <div class="clear"></div><script type="text/javascript">
+    <!--
+    var idiomarastro = "/es";
+
+    var rastromigas = "Bilbaonet/Bilbao Open Data/Catálogo de datos/Agenda Municipal de Bilbao";
+
+
+    -->
+  </script><div class="content_full_100"><div class="cont-txt"><div class="cont-form"><div class="blq-col"><h1>Cat&aacute;logo de datos </h1><h2>Agenda Municipal de Bilbao<span class="volver"><a href='/opendata/es/catalogo'>Ir al cat&aacute;logo de datos</a></span>  <span class="volver_rdf"> <a target="_blank" href='/opendata/es/catalogo/dato-agenda-cultural/rdf'>Acceder al dataset en formato RDF <img alt="RDF" src="/Bilbaonet/img/opendata/rdf_icon.png" /> </a></span></h2><div class="etiquetas"><ul><li><a href=/opendata/es/catalogo/buscar/etiqueta-1279138180966/nombre-ascendente/enviado>agenda</a></li><li><a href=/opendata/es/catalogo/buscar/etiqueta-1279138181000/nombre-ascendente/enviado>cultura</a></li></ul></div><dl class="fondo_gris"><dt class="clear_cien">Descripción: </dt><dd class="margen_iz4">Agenda cultural completa del Ayuntamiento de Bilbao.</dd><div class="clear"></div><dt class="clear_cien">Formatos: </dt>
+    <dd><ul class="rlist_ul_temario"><li><a class="f-xml" target="_blank" title="Enlace de descarga XML" onclick="javascript:estadisticas.guardar(rastromigas + '/Agenda Municipal de Bilbao/xml' + idiomarastro);" href="http://www.bilbao.eus/cs/Satellite?c=Page&amp;pageid=3000094681&amp;idioma=es&amp;pagename=Bilbaonet/Page/OD_obtenerAgendaMunicipal&amp;formato=XML">XML</a><li><a class="f-json" target="_blank" title="Enlace de descarga JSON" onclick="javascript:estadisticas.guardar(rastromigas + '/Agenda Municipal de Bilbao/json' + idiomarastro);" href="http://www.bilbao.eus/cs/Satellite?c=Page&amp;cid=1272990237857&amp;pageid=1272990237857&amp;idioma=es&amp;pagename=Bilbaonet/Page/BIO_ListadoEventosAppInfoBilbao&amp;todos=si">JSON</a></ul></dd>
+    <dd class="clear"></dd><dt class="clear_cien">Tipo de licencia: </dt><dd class="margen_iz4"><a target="_blank" class="licencia" href='http://creativecommons.org/licenses/by/3.0/es'><img alt='' src="/cs/Satellite?blobcol=urldata&amp;blobheadername1=Content-disposition&amp;blobheadervalue1=attachment%3B+filename%3Dreconocimiento-3.0.png&amp;blobkey=id&amp;blobtable=MungoBlobs&amp;blobwhere=1274007429245&amp;ssbinary=true"/> Creative Commons Reconocimiento 3.0 Espania</a></dd></dl><div class="clear"></div><dl class="fondo_blanco"><dt>Publicador: </dt><dd>Ayuntamiento de Bilbao</dd><dt>Tema:</dt><dd>Cultura y ocio</dd><dt>&Aacute;mbito geogr&aacute;fico:</dt><dd>Bilbao
+  </dd><dt>Idioma:</dt><dd>Espa&ntilde;ol</dd><dt>Fecha de creaci&oacute;n:</dt><dd>30/10/2014</dd><dt>Fecha de actualizaci&oacute;n:</dt><dd>15/02/2019</dd><dt>Frecuencia de actualizaci&oacute;n:</dt><dd>Diaria</dd></dl><div class="clear"></div><div class="fondo_gris_apps"></div><div class="clear"></div>
+
+
+
+
+
+
+
+    <!--googleoff: all-->
+    <div id="subir">
+      <p><a href="#inicio_pagina">Subir al inicio de la página</a></p>
+    </div>
+    <!--googleon: all-->
+
+  </div></div></div></div></div><div id="pie"><div class="pie_bgl"></div><div class="pie_bgr"></div><div id="marcabilbao"><img width="129" height="47" alt="Marca Bilbao.eus" src="/Bilbaonet/img/opendata/marca_bilbaonet_pie.gif" /></div><div id="enlacespie"><div class="cont-enlacespie"><ul><li ><a accesskey="4" href='/opendata/es/mapa-web'>Mapa Web</a></li><li ><a  href='/opendata/es/aviso-legal'>Aviso legal</a></li><li ><a target="_blank" accesskey="5" href="/cs/Satellite?c=Page&amp;cid=3000106343&amp;language=es&amp;pageid=3000106343&amp;pagename=Bilbaonet%2FPage%2FBIO_contenidoFinal">Accesibilidad</a></li><li class="ultimo"><a target="_blank" accesskey="3" href="/cs/Satellite?c=Page&amp;cid=3000106301&amp;language=es&amp;pageid=3000106301&amp;pagename=Bilbaonet%2FPage%2FBIO_contenidoFinal">Ayuda</a></li></ul></div><div id="direccionpie"><p class="inv"><strong>Dirección:</strong></p><p><span lang="eu">Bilboko Udala</span> / <span lang="es">Ayuntamiento de Bilbao</span> / <span lang="en">Bilbao Council</span></p><address>Plaza Ernesto Erkoreka <abbr title="N&uacute;mero">nº</abbr>1. 48007 Bilbao. Tel&eacute;fono: 944 204 200 - www.bilbao.eus</address></div></div><div id="aenor"><a target="_blank" href='/cs/Satellite?c=Page&amp;cid=3000106343&amp;language=es&amp;pageid=3000106343&amp;pagename=Bilbaonet%2FPage%2FBIO_contenidoFinal'> <img src="/Bilbaonet/img/Acc-TIC-blanco-GR.gif" alt='Certificaci&oacute;n de Accesibilidad TIC de AENOR' width="30" height="54" /> </a></div></div><script type="text/javascript">
+  _gaq.push(['_trackPageview', rastromigas+idiomarastro]);
+</script></div></body></html>
+</html>
