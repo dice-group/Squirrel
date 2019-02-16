@@ -1,0 +1,11 @@
+# A Turtle document is a textual representations of an RDF graph
+# Faulty turtle file
+# A triple with all absolute IRIs
+<one.example/subject1> <http://one.example/predicate1> <http://one.example/object1> .
+
+@base <one.example/> .
+<subject2> < <ob     # relative IRIs, e.g. http://one.example/subject2
+
+BASE <http://one.example/>
+<su     # relative IRIs, e.g. http://one.example/subject2
+
