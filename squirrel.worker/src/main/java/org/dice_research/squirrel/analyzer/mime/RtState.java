@@ -2,7 +2,6 @@ package org.dice_research.squirrel.analyzer.mime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * State in a finite state machine.
@@ -23,13 +22,13 @@ public final class RtState implements State {
         this.isError = isError;
     }
 
-    public State transit(final String c) throws NoSuchElementException {
+    public State transit(final String c) {
         return transitions
             .stream()
             .filter(t -> t.isPossible(c))
             .map(Transition::state)
             .findAny()
-            .get();
+            .orElseThrow(() -> new IllegalArgumentException("Input not accepted: " + c));
     }
 
     public boolean isFinal() {

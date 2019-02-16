@@ -73,7 +73,7 @@ public class RDFaSemarglParser extends AbstractAnalyzer {
 		
 		return collector.getUris(curi);
 	}
-	
+
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
 		String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);

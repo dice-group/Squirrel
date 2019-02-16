@@ -27,6 +27,7 @@ public class SimpleOrderedFetcherManager implements Fetcher {
 
     private Fetcher[] fetchers;
 
+    @Autowired
     public SimpleOrderedFetcherManager(Fetcher... fetchers) {
         this.fetchers = fetchers;
     }

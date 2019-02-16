@@ -229,13 +229,12 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         if (knownUriFilter.isUriGood(uri)) {
-            LOGGER.debug("PerformanceAnalysis addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
+            LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
                 LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
                 // Make sure that the IP is known
                 try {
                     uri = this.uriProcessor.recognizeInetAddress(uri);
-                    
                 } catch (UnknownHostException e) {
                     LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
                 }
@@ -244,13 +243,11 @@ public class FrontierImpl implements Frontier {
                 } else {
                     LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
                 }
-                knownUriFilter.add(uri, System.currentTimeMillis());
             } else {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only " + schemeUriFilter.getSchemes() + ". Will not added!");
             }
-            
         } else {
-            LOGGER.info("PerformanceAnalysis addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
+            LOGGER.info("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }
     }
 

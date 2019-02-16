@@ -1,92 +1,42 @@
 package org.dice_research.squirrel.analyzer.mime;
 
 import org.apache.jena.riot.Lang;
+import org.dice_research.squirrel.analyzer.impl.RDFAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
-/**
- * Standard implementation of the {@link TypeDetector} interface.
- *
- * @author Abhishek Hassan Chandrashekar (abhihc@mail.uni-paderborn.de).
- */
 public class MimeTypeDetector implements TypeDetector {
-
-
-    protected List<Lang> mimeTypes = new ArrayList<>();
-
-    /**
-     * The finite state machines are built.
-     * Precondtions to the files are checked.
-     * Each element in the file is passed one after the
-     * other to the built finite state machines until the check is complete.
-     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     public Lang detectMimeType(File data) {
 
-        LinkedList<FiniteStateMachine> machinesList = new LinkedList<FiniteStateMachine>();
-
-        setMimeTypes(Lang.RDFXML, Lang.TURTLE, Lang.NTRIPLES, Lang.RDFJSON, Lang.JSONLD);
-
-        Lang detectedMimeType = null;
-
+        Lang mimeType = null;
         try {
             FileInputStream inputStream = new FileInputStream(data.getAbsolutePath());
-
-            for (Lang type : mimeTypes) {
-                machinesList.add(FiniteStateMachineFactory.create(type.getName()));
-            }
-
+            FiniteStateMachine machine1 = RdfAutomata.buildRDFStateMachine();
+            FiniteStateMachine machine2 = TurtleAutomata.buildTurtleStateMachine();
             char current;
-
-            nextchar:
-            while (inputStream.available() > 0 && machinesList.size() > 1) {
+            while (inputStream.available() > 0 && (!machine1.canStop() || !machine2.canStop())) {
                 current = (char) inputStream.read();
-                // Preconditions checked for the file.
-                if (Character.isWhitespace(current)) {
-                    continue nextchar;
-                } else if (current == '#') {
-                    do {
-                        current = (char) inputStream.read();
-                    } while (current != '\n');
-                    continue nextchar;
-                }
-
-
-                ListIterator<FiniteStateMachine> iter = machinesList.listIterator();
-
-                while (iter.hasNext()) {
-                    FiniteStateMachine machine = iter.next();
-                    machine.switchState(String.valueOf(current));
-
-                    if (machine.isError())
-                        iter.remove();
-                }
-
+                if (!machine1.isError()) //whichever leads to error state is processed anymore.
+                    machine1 = machine1.switchState(String.valueOf(current));
+                if (!machine2.isError())
+                    machine2 = machine2.switchState(String.valueOf(current));
             }
 
-            if (machinesList.size() != 0)
-                detectedMimeType = machinesList.get(0).getMimeType();
-            else
-                detectedMimeType = Lang.RDFNULL;
+            if (machine1.canStop() && !machine1.isError())
+                mimeType = machine1.getMimeType();
+            if (machine2.canStop() && !machine2.isError())
+                mimeType = machine2.getMimeType();
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return detectedMimeType;
-    }
-
-    /**
-     * Adding all the mime types to a list
-     */
-    private void setMimeTypes(Lang... types) {
-        for (Lang type : types)
-            mimeTypes.add(type);
+        return mimeType;
     }
 }

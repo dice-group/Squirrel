@@ -24,7 +24,7 @@ public class WorkerGuard {
      * A map from {@link org.dice_research.squirrel.worker.Worker} id to {@link WorkerInfo} containing information about the
      * {@link org.dice_research.squirrel.worker.Worker}.
      */
-    private Map<Integer, WorkerInfo> mapWorkerInfo = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, WorkerInfo> mapWorkerInfo = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * After this period of time (in seconds), a worker is considered to be dead if he has not sent
@@ -53,8 +53,8 @@ public class WorkerGuard {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                List<Integer> lstIdsToBeRemoved = new ArrayList<>();
-                for (int idWorker : mapWorkerInfo.keySet()) {
+                List<String> lstIdsToBeRemoved = new ArrayList<>();
+                for (String idWorker : mapWorkerInfo.keySet()) {
 
                     if (mapWorkerInfo.get(idWorker).getDateLastAlive() == null) {
                         continue;
@@ -88,7 +88,7 @@ public class WorkerGuard {
      *
      * @param idOfWorker the given id.
      */
-    public void putNewTimestamp(int idOfWorker) {
+    public void putNewTimestamp(String idOfWorker) {
         WorkerInfo workerInfo;
         if (mapWorkerInfo.containsKey(idOfWorker)) {
             workerInfo = mapWorkerInfo.get(idOfWorker);
@@ -105,7 +105,7 @@ public class WorkerGuard {
      * @param idOfWorker The id of the worker for which to put the uris.
      * @param lstUris    The uris to put.
      */
-    public void putUrisForWorker(int idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
+    public void putUrisForWorker(String idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
         WorkerInfo workerInfo;
         if (mapWorkerInfo.containsKey(idOfWorker)) {
             workerInfo = mapWorkerInfo.get(idOfWorker);
@@ -139,7 +139,7 @@ public class WorkerGuard {
         timer.cancel();
     }
 
-    public Map<Integer, WorkerInfo> getMapWorkerInfo() {
+    public Map<String, WorkerInfo> getMapWorkerInfo() {
         return mapWorkerInfo;
     }
 

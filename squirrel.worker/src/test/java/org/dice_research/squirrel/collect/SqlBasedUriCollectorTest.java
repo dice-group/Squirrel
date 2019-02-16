@@ -44,7 +44,7 @@ public class SqlBasedUriCollectorTest {
         
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test1"));
 
-        SqlBasedUriCollector collector = new SqlBasedUriCollector(serializer, "testUris");
+        SqlBasedUriCollector collector = SqlBasedUriCollector.create(serializer, dbdir);
         
         collector.openSinkForUri(uri);
 
@@ -80,7 +80,7 @@ public class SqlBasedUriCollectorTest {
     	Set<URI> expectedUris = new TreeSet<URI>();
     	Set<URI> listUris = new TreeSet<URI>();
     	
-    	SqlBasedUriCollector collector = new SqlBasedUriCollector(serializer, "testUris");
+    	SqlBasedUriCollector collector = SqlBasedUriCollector.create(serializer, dbdir);
     	CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test2"));
     	collector.openSinkForUri(uri);
 
