@@ -2,6 +2,7 @@ package org.dice_research.squirrel.analyzer.commons;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.any23.extractor.ExtractionContext;
 import org.apache.any23.writer.TripleHandler;
@@ -57,26 +58,38 @@ public class SquirrelTripleHandler implements TripleHandler {
 	@Override
 	public void receiveTriple(Resource s, IRI p, Value o, IRI g, ExtractionContext context)
 			throws TripleHandlerException {
-		boolean isUri = true;
+		boolean isUri1 = true;
+		boolean isUri2 = true;
 
-		URI uri = null;
+		URL uri1 = null;
 		try {
-			uri = new URI(o.stringValue());
-		} catch (URISyntaxException e) {
-			isUri = false;
+			uri1 = new URL(o.stringValue());
+		} catch (Exception e) {
+			isUri1 = false;
 		}
 		
-		Node r = NodeFactory.createURI(s.stringValue());
-		Node pr = NodeFactory.createURI(p.toString());
-		Node obj = isUri ? NodeFactory.createURI(o.stringValue()) : NodeFactory.createLiteral(o.stringValue());
+		URL uri2 = null;
+		try {
+			uri2 = new URL(s.stringValue());
+		} catch (Exception e) {
+			isUri2 = false;
+		}
 		
-		Triple t = new Triple(r,pr,obj);
-		
-		LOGGER.info(">> Storing Triple: " + t);
+		if(isUri2) {
+			Node r = NodeFactory.createURI(s.stringValue());
+			Node pr = NodeFactory.createURI(p.toString());
+			Node obj = isUri1 ? NodeFactory.createURI(o.stringValue()) : NodeFactory.createLiteral(o.stringValue());
+			
+			Triple t = new Triple(r,pr,obj);
+			
+			LOGGER.info(">> Storing Triple: " + t);
 
+			
+			sink.addTriple(curi, t);
+			collector.addTriple(curi, t);
+		}
 		
-		sink.addTriple(curi, t);
-		collector.addTriple(curi, t);
+	
 		
 	}
 
