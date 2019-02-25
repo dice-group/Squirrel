@@ -98,6 +98,8 @@ public class FrontierImpl implements Frontier {
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
     
     private Semaphore terminationMutex;
+    
+    private TerminationCheck terminationCheck = new EndlessCrawlingTerminationCheck();
 
     /**
      * Constructor.
@@ -217,13 +219,10 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
-    	
-    	if(queue.isEmpty()) {
-    		System.out.println("FILA VAZIA, TERMINANDO");
-    		terminationMutex.release();
-    		Thread.currentThread().interrupt();
-    	}
-    	
+
+        if(terminationCheck.shouldFrontierTerminate(this)) {
+            terminationMutex.release();
+        }
     	
         return queue.getNextUris();
     }
@@ -345,5 +344,9 @@ public class FrontierImpl implements Frontier {
      */
     public UriQueue getQueue() {
         return queue;
+    }
+    
+    public void setTerminationCheck(TerminationCheck terminationCheck) {
+        this.terminationCheck = terminationCheck;
     }
 }

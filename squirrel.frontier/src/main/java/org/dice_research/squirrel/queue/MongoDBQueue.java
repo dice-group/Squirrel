@@ -71,7 +71,6 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		curi.setIpAddress(InetAddress.getByName(uri.getHost()));
 
 		queue.addToQueue(curi);
-
 	}
 
 	@Override

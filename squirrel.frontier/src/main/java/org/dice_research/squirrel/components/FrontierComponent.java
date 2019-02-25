@@ -96,7 +96,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling,terminationMutex);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, terminationMutex);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -129,7 +129,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-
+        // Wait for termination
         terminationMutex.acquire();
     }
 
