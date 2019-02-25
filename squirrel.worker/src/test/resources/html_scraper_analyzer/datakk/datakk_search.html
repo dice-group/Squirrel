@@ -1,0 +1,2291 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="da_DK" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="da_DK" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="da_DK" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="da_DK"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2017-02-24T11:53:25/main.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-geoview/:version:2017-11-10T15:39:58/css/geo-resource-styles.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-harvest/:version:2016-02-03T11:14:04/styles/harvest.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/cphopendata/:version:2016-07-01T10:53:26/style.css" />
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.5.4" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datasæt - Open Data København</title>
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Matomo --> <script type="text/javascript">
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://data-kk.innocraft.cloud/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script> <!-- End Matomo Code -->
+  <style>
+    body {
+      background-image: none !important;
+      background-color: #171514 !important;
+    };
+
+    featured .media-overlay .hidden-phone {
+      display: none !important;
+    };
+    media-overlay.hidden-phone {
+      display: none !important;
+    };
+
+    .select2-chosen {
+      color: black !important;
+    }
+  </style>
+
+</head>
+
+
+<body data-site-root="https://data.kk.dk/" data-locale-root="https://data.kk.dk/" >
+
+
+<div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+<header class="account-masthead">
+  <div class="container">
+
+
+    <nav class="account not-authed">
+      <ul class="unstyled">
+
+        <li><a href="/user/login">Log ind</a></li>
+
+        <li><a class="sub" href="/user/register">Registrér</a></li>
+
+
+      </ul>
+    </nav>
+
+
+  </div>
+</header>
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container">
+    <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <hgroup class="header-image pull-left">
+
+
+
+      <a class="logo" href="/"><img src="/base/custom/od-logo.png" alt="Open Data København" title="Open Data København" /></a>
+
+
+
+    </hgroup>
+
+    <div class="nav-collapse collapse">
+
+
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+
+          <li class="active"><a href="/dataset">Datasæt</a></li><li><a href="/organization">Organisationer</a></li><li><a href="/group">Grupper</a></li><li><a href="/about">Om</a></li>
+
+        </ul>
+      </nav>
+
+
+
+      <form class="section site-search simple-input" action="/dataset" method="get">
+        <div class="field">
+          <label for="field-sitewide-search">Søg datasæt</label>
+          <input id="field-sitewide-search" type="text" name="q" placeholder="Søg" />
+          <button class="btn-search" type="submit"><i class="icon-search"></i></button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</header>
+
+
+<div role="main">
+  <div id="content" class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+      <ol class="breadcrumb">
+
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->
+
+        <li class="home"><a href="/"><i class="icon-home"></i><span> Hjem</span></a></li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+        <li class="active"><a href="/dataset">Datasæt</a></li>
+
+      </ol>
+
+
+    </div>
+
+
+    <div class="row wrapper">
+
+
+
+
+
+
+      <div class="primary span9">
+
+
+        <section class="module">
+          <div class="module-content">
+
+
+
+
+
+
+
+            <!-- Snippet snippets/search_form.html start -->
+
+
+
+
+
+
+
+
+            <form id="dataset-search-form" class="search-form" method="get" data-module="select-switch">
+
+
+              <div class="search-input control-group search-giant">
+                <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="Søg datasæt...">
+
+                <button type="submit" value="search">
+                  <i class="icon-search"></i>
+                  <span>Indsend</span>
+                </button>
+
+              </div>
+
+
+
+
+
+
+
+
+              <div class="form-select control-group control-order-by">
+                <label for="field-order-by">Sortér efter</label>
+                <select id="field-order-by" name="sort">
+
+
+                  <option value="score desc, metadata_modified desc" selected="selected">Relevans</option>
+
+
+
+                  <option value="title_string asc">Navn stigende</option>
+
+
+
+                  <option value="title_string desc">Navn faldende</option>
+
+
+
+                  <option value="metadata_modified desc">Sidst modificeret</option>
+
+
+
+                  <option value="views_recent desc">Populære</option>
+
+
+                </select>
+
+                <button class="btn js-hide" type="submit">Go</button>
+
+              </div>
+
+
+
+
+
+              <h2>
+                <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+                283 datasæt fundet
+                <!-- Snippet snippets/search_result_text.html end -->
+              </h2>
+
+
+
+
+
+              <p class="filter-list">
+
+              </p>
+              <a class="show-filters btn">Filtrér resultater</a>
+
+
+
+            </form>
+
+
+
+
+            <!-- Snippet snippets/search_form.html end -->
+
+
+
+
+            <!-- Snippet snippets/package_list.html start -->
+
+
+
+            <ul class="dataset-list unstyled">
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/rist">Nedløbsrist - vejbrønd</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Placering og FOT_ID og type for københavnske vejbrønde.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/rist" class="label" data-format="geojson">GeoJSON</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/rist" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/rist" class="label" data-format="shape">Shape</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/rck_behandlingsenheder">Rusmiddelbehandling</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Behandlingsenheder under Rådgivningscenter København
+                    Kontakt her </div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/rck_behandlingsenheder" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/indsamling_kartoner_karre">Kartoner, indsamling</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Karréer der indgår i forsøg med indsamling af mælkekartoner og pizzabakker</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/indsamling_kartoner_karre" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/erhvervshus_kbh">Københavns Erhvervshus</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Københavns Erhvervshhus er virksomhedernes indgang til kommunen.
+                    Virksomhedsteamet samler betjeningen af en række eksisterende virksomhedsindgange på ét sted. </div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/erhvervshus_kbh" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/giv_et_praj_privatfaellesvej">Giv et praj, private fællesveje</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Angivelse af indkomne praj på private fællesveje, som har at gøre med vejbelægning.
+                    Praj vedrørende renhold og grøn pleje er frasorteret.
+                    Læs mere her</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/giv_et_praj_privatfaellesvej" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/genbrugsstation">Genbrugsstation</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Genbrugsstationerne i Københavns Kommune drives af Amager Ressource center.
+                    Ud over genbrugstationer, er der nærgenbrugsstationer, disse modtager ikke lige så mange typer affald...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/genbrugsstation" class="label" data-format="geojson">GeoJSON</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/genbrugsstation" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/genbrugsstation" class="label" data-format="shp">SHP</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/gang_ansvarsomr">Ansvarsområder for saltning på gangareal</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Vintertjenesten har ansvaret for at salte og snerydde ca. 5 % af fortovene i København - enen fordi TMF er grundejer eller af hensyn til fremkommeligheden. Vi tager også...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/gang_ansvarsomr" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/suf_centre">Sundhedsforvaltningens centre</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Dækker over:
+
+                    Ambulante træningscentre
+                    Center for Børn og Unges Sundhed - læs mere her
+                    Midlertidige døgnophold - læs mere her
+                    Center for Diabetes - læs mere her
+                    Center for...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/suf_centre" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/plads_aktivitet">Arealer til arrangementer</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Teknik- og Miljøforvaltningen</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Areal der kan bruges til arrangementer. Indeholder også information omkring tilkørselsforhold (Adgang til arrangementspladsen), friholdspassager, maksimal vægtbelastning samt...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/plads_aktivitet" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/servicemarkering">Service afmærkning på veje</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Datasættet viser servicemarkering af 10-meterreglen ved vejkryds på offentlige og private fælles veje</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/servicemarkering" class="label" data-format="geojson">GeoJSON</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/servicemarkering" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/servicemarkering" class="label" data-format="shp">SHP</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/mobilgadesalg_saerlige_omraader_zoner">Mobilt gadesalg, zoner</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Arealer hvor det kræves særlig tilladelse at lave gadesalg fra.
+                    Indeholder også bymidter, bydelscentre og private veje</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/mobilgadesalg_saerlige_omraader_zoner" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/arealanvendelse">Arealanvendelse</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Arealanvendelse i København. Data indeholder bl.a.:
+
+                    Grønne områder
+                    Parker
+                    Rekreative områder
+                    Naturområde
+                    Havekolonier
+                    Kirkegårde
+                  </div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/arealanvendelse" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/trae_basis">Træer, basisregister</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Master register der indeholder alle træer (fx. parktræer, naturtræer, gadetræer samt risikotræer, træer med bakteriekræft og fældede træer) på kommunale veje.
+                    Eksisterende træer...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/trae_basis" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/vejstoej">Vejstøj</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Vejstøj måles i 1,5 og 4 meters højde.
+                    Vejstøjs belastning af boliger opdeles efter:
+                    Under 58 dB
+                    Mellem 58-68 dB
+                    * Over 68 dB
+                    Data er senest opdateret i 2017.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/vejstoej" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/kv_2013">Kommunevalg 2013</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Valgresultater samt valgsteder fra kommunevalget i 2013. Opdelt efter afstemningsområder.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/kv_2013" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/partnerskabstraer">Partnerskabstræer</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Master register der indeholder alle partnerskabstræer der er uddelt af Teknik- og Miljøforvaltningen. En del af handlingsplan for plantning af 100.000 træer, grøn...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/partnerskabstraer" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/ikoniske_traer_vedtaget">Ikoniske træer</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>136 enkeltstående træer og 56 større trægrupper fordelt over hele byen har fået status som ikoniske træer.
+                    De ikoniske træer er udpeget som et led i Københavns Kommunes...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/ikoniske_traer_vedtaget" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/bevaringsvaerdige_traer">Bevaringsværdige træer</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>I Københavns Kommune er kriterierne for at et træ kan udpeges som bevaringsværdigt, at det er minimum 20 år gammelt og kan leve mindst 25 år mere på udpegningstidspunktet....</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/bevaringsvaerdige_traer" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/pejlinger">Vandforsyning, pejlinger og potentialelinjer</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Pejlinger er de målte trykniveauer i det primære grundvandsreservoir i kalken, april 2018
+                    Potentialelinjer er trykniveauer i det primære grundvandsreservior i kalken. Målt i...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/pejlinger" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/strandbeskyt_kbh_umatr">Strandbeskyttelse på umatrikuleret areal</a>
+
+                    <!--</br>-->
+                    <!--<span class="label label-info">Københavns Kommune Bydata</span>-->
+
+
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Strandbeskyttelse på umatrikulerede arealer i Københavns Kommune. 300m beskyttelseszone til beskyttelse af de åbne og i særdeleshed uberørte kyststrækninger</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/strandbeskyt_kbh_umatr" class="label" data-format="link">Link</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+            </ul>
+
+
+            <!-- Snippet snippets/package_list.html end -->
+
+
+          </div>
+
+
+          <div class='pagination pagination-centered'><ul> <li class="active"><a href="/dataset?q=&amp;page=1">1</a></li> <li><a href="/dataset?q=&amp;page=2">2</a></li> <li><a href="/dataset?q=&amp;page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a href="/dataset?q=&amp;page=15">15</a></li> <li><a href="/dataset?q=&amp;page=2">»</a></li></ul></div>
+
+        </section>
+
+
+        <section class="module">
+          <div class="module-content">
+
+            <small>
+
+
+
+              Du kan også tilgå dette register med <a href="/api/3">API</a> (se <a href="http://docs.ckan.org/en/ckan-2.5.4/api/">API-dokumenter</a>).
+            </small>
+
+          </div>
+        </section>
+
+
+      </div>
+
+
+
+      <aside class="secondary span3">
+
+
+        <div class="filters">
+          <div>
+
+
+            <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="icon-medium icon-filter"></i>
+
+                Organisationer
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=kobenhavns-kommune-bydata&amp;q=" title="Københavns Kommune Bydata">
+                      <span>Københavns Kommune ... (140)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=kobenhavns-kommune-sundheds-og-omsorgsforvaltningen&amp;q=" title="Sundheds- og Omsorgsforvaltningen">
+                      <span>Sundheds- og Omsorg... (45)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=its&amp;q=" title="">
+                      <span>ITS (21)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=teknik-og-miljoforvaltningen&amp;q=" title="Teknik- og Miljøforvaltningen">
+                      <span>Teknik- og Miljøfor... (17)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=beskaeftigelses-og-integrationsforvaltningen&amp;q=" title="Beskæftigelses- og Integrationsforvaltningen">
+                      <span>Beskæftigelses- og ... (12)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;organization=kobenhavns-kommune-statistik" title="">
+                      <span>Statistik (8)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;organization=kobenhavns-kommunes-miljoregnskab" title="">
+                      <span>Miljøregnskab (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;organization=klima" title="">
+                      <span>Klima (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;organization=kobenhavns-kommune-omrade-og-byfornyelse" title="">
+                      <span>Område- og Byfornyelse (4)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;organization=kobenhavns-kommune-kultur-og-fritidsforvaltningen" title="Kultur- og Fritidsforvaltningen">
+                      <span>Kultur- og Fritidsf... (4)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?q=&amp;_organization_limit=0" class="read-more">Vis mere Organisationer</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+            <!-- Snippet snippets/facet_list.html end -->
+
+
+
+            <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="icon-medium icon-filter"></i>
+
+                Grupper
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=geografi&amp;q=" title="">
+                      <span>Geografi (65)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=transport-og-infrastruktur&amp;q=" title="Transport og infrastruktur">
+                      <span>Transport og infras... (29)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;groups=statistik" title="">
+                      <span>Statistik (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;groups=born-og-unge" title="">
+                      <span>Børn og unge (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=ydelsesmodtagere&amp;q=" title="">
+                      <span>Ydelsesmodtagere (4)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+            <!-- Snippet snippets/facet_list.html end -->
+
+
+
+            <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="icon-medium icon-filter"></i>
+
+                Tags
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=parkering" title="">
+                      <span>parkering (11)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=afm%C3%A6rkning" title="">
+                      <span>afmærkning (8)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=zoner" title="">
+                      <span>zoner (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=road+marking&amp;q=" title="">
+                      <span>road marking (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=vejstriber" title="">
+                      <span>vejstriber (6)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=veje&amp;q=" title="">
+                      <span>veje (6)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=alder" title="">
+                      <span>alder (6)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;tags=Klima" title="">
+                      <span>Klima (6)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=vej&amp;q=" title="">
+                      <span>vej (5)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=t%C3%A6llinger&amp;q=" title="">
+                      <span>tællinger (5)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?q=&amp;_tags_limit=0" class="read-more">Vis mere Tags</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+            <!-- Snippet snippets/facet_list.html end -->
+
+
+
+            <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="icon-medium icon-filter"></i>
+
+                Formater
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=CSV&amp;q=" title="">
+                      <span>CSV (144)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;res_format=GeoJSON" title="">
+                      <span>GeoJSON (120)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;res_format=SHP" title="">
+                      <span>SHP (115)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=XLSX&amp;q=" title="">
+                      <span>XLSX (71)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=PDF&amp;q=" title="">
+                      <span>PDF (37)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=Link&amp;q=" title="">
+                      <span>Link (37)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=ODS&amp;q=" title="">
+                      <span>ODS (7)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=XLS&amp;q=" title="">
+                      <span>XLS (6)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;res_format=DOCX" title="">
+                      <span>DOCX (5)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;res_format=dwg" title="">
+                      <span>dwg (4)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?q=&amp;_res_format_limit=0" class="read-more">Vis mere Formater</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+            <!-- Snippet snippets/facet_list.html end -->
+
+
+
+            <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="icon-medium icon-filter"></i>
+
+                Licenser
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=opendatadk&amp;q=" title="">
+                      <span>opendata.dk (235)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?q=&amp;license_id=other-open" title="">
+                      <span>Andet (Åben) (47)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=notspecified&amp;q=" title="">
+                      <span>Licens ikke angivet (1)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+            <!-- Snippet snippets/facet_list.html end -->
+
+
+          </div>
+          <a class="close no-text hide-filters"><i class="icon-remove-sign"></i><span class="text">close</span></a>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <nav class="footer-links">
+
+      <ul class="unstyled">
+
+
+        <li>
+          <script type="text/javascript">
+            <!--
+            var string1 = "opendata";
+            var string2 = "@";
+            var string3 = "tmf.kk.dk";
+            var string4 = string1 + string2 + string3;
+            document.write("<a href=" + "mail" + "to:" + string1 + string2 + string3 + ">" + string4 + "</a>");
+            //-->
+          </script>
+        </li>
+        <li><a href="https://twitter.com/datakkdk" target="_blank"><img src="/base/custom/twitter.png" />@datakkdk</a></li>
+        <!--              <li><a href="http://blog.data.kk.dk" target="_blank">blog.data.kk.dk</a></li>-->
+        <li><a href="http://data.kk.dk/labs" target="_blank">data.kk.dk/labs</a></li>
+        <li><a href="http://kbhkort.kk.dk" target="_blank">K&oslash;benhavnerkortet</a></li>
+        <li><a href="http://opendata.dk" target="_blank">Open Data DK</a></li>
+        <li style="color: #ffffff !important; font-size: 12px !important ; font-style: italic !important; line-height: 16px !important; padding-top: 25px !important; width: 100% !important;">
+          Vi samler statistik og husker dine pr&aelig;ferencer ved hj&aelig;lp af cookies.<br />
+          L&aelig;s om cookies p&aring; Digitaliseringsstyrelsens hjemmeside <a href="http://www.digst.dk/Servicemenu/Cookies/om-cookies" target="_blank" style="text-decoration: underline !important;">her$
+        </li>
+
+        <li>
+
+        <li>
+        </li>
+      </ul>
+
+    </nav>
+
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-75190007-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- /Google Analytics -->
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-02-24T11:53:25/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-02-24T11:53:25/tracking.min.js"></script></body>
+</html>

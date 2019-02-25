@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="da_DK" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="da_DK" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="da_DK" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="da_DK"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2017-02-24T11:53:25/main.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-02-24T11:53:25/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-geoview/:version:2017-11-10T15:39:58/css/geo-resource-styles.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-harvest/:version:2016-02-03T11:14:04/styles/harvest.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/cphopendata/:version:2016-07-01T10:53:26/style.css" />
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.5.4" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genbrugsstation - Datasæt - Open Data København</title>
+
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Matomo --> <script type="text/javascript">
+  var _paq = _paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://data-kk.innocraft.cloud/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script> <!-- End Matomo Code -->
+
+
+  <meta property="og:title" content="Genbrugsstation - Open Data København">
+  <meta property="og:description" content="Genbrugsstationerne i Københavns Kommune drives af Amager Ressource center.
+Ud over genbrugstationer, er der nærgenbrugsstationer, disse modtager ikke lige så mange typer affald som de andre...">
+  <style>
+    body {
+      background-image: none !important;
+      background-color: #171514 !important;
+    };
+
+    featured .media-overlay .hidden-phone {
+      display: none !important;
+    };
+    media-overlay.hidden-phone {
+      display: none !important;
+    };
+
+    .select2-chosen {
+      color: black !important;
+    }
+  </style>
+
+</head>
+
+
+<body data-site-root="https://data.kk.dk/" data-locale-root="https://data.kk.dk/" >
+
+
+<div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+<header class="account-masthead">
+  <div class="container">
+
+
+    <nav class="account not-authed">
+      <ul class="unstyled">
+
+        <li><a href="/user/login">Log ind</a></li>
+
+        <li><a class="sub" href="/user/register">Registrér</a></li>
+
+
+      </ul>
+    </nav>
+
+
+  </div>
+</header>
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container">
+    <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <hgroup class="header-image pull-left">
+
+
+
+      <a class="logo" href="/"><img src="/base/custom/od-logo.png" alt="Open Data København" title="Open Data København" /></a>
+
+
+
+    </hgroup>
+
+    <div class="nav-collapse collapse">
+
+
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+
+          <li><a href="/dataset">Datasæt</a></li><li><a href="/organization">Organisationer</a></li><li><a href="/group">Grupper</a></li><li><a href="/about">Om</a></li>
+
+        </ul>
+      </nav>
+
+
+
+      <form class="section site-search simple-input" action="/dataset" method="get">
+        <div class="field">
+          <label for="field-sitewide-search">Søg datasæt</label>
+          <input id="field-sitewide-search" type="text" name="q" placeholder="Søg" />
+          <button class="btn-search" type="submit"><i class="icon-search"></i></button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</header>
+
+
+<div role="main">
+  <div id="content" class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+      <ol class="breadcrumb">
+
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->
+
+        <li class="home"><a href="/"><i class="icon-home"></i><span> Hjem</span></a></li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+
+
+
+
+        <li><a href="/organization">Organisationer</a></li>
+        <li><a href="/organization/kobenhavns-kommune-bydata">Københavns Kommune Bydata</a></li>
+
+        <li class="active"><a class=" active" href="/dataset/genbrugsstation">Genbrugsstation</a></li>
+
+
+      </ol>
+
+
+    </div>
+
+
+    <div class="row wrapper">
+
+
+
+
+
+
+      <div class="primary span9">
+
+
+        <article class="module">
+
+          <header class="module-content page-header">
+
+            <ul class="nav nav-tabs">
+
+              <li class="active"><a href="/dataset/genbrugsstation"><i class="icon-sitemap"></i> Datasæt</a></li>
+              <li><a href="/dataset/groups/genbrugsstation"><i class="icon-group"></i> Grupper</a></li>
+              <li><a href="/dataset/activity/genbrugsstation"><i class="icon-time"></i> Aktivitetsstrøm</a></li>
+
+            </ul>
+          </header>
+
+          <div class="module-content">
+
+
+
+
+
+
+
+
+
+            <h1>
+
+              Genbrugsstation
+
+
+
+            </h1>
+
+
+            <div class="notes embedded-content">
+              <p>Genbrugsstationerne i Københavns Kommune drives af Amager Ressource center.
+                Ud over genbrugstationer, er der nærgenbrugsstationer, disse modtager ikke lige så mange typer affald som de andre genbrugsstationer, og der er ikke adgang med bil. Datasættet indeholder også information omkring byttestationer.</p>
+            </div>
+
+
+
+            <span class="insert-comment-thread"></span>
+
+
+
+
+            <!-- Snippet package/snippets/resources_list.html start -->
+
+            <section id="dataset-resources" class="resources">
+              <h3>Data og ressourcer</h3>
+
+
+              <ul class="resource-list">
+
+
+
+                <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                <li class="resource-item" data-id="02e676a9-d1db-4e91-8757-57462ebd0425">
+
+                  <a class="heading" href="/dataset/genbrugsstation/resource/02e676a9-d1db-4e91-8757-57462ebd0425" title="genbrugsstation.geojson">
+                    genbrugsstation.geojson<span class="format-label" property="dc:format" data-format="geojson">GeoJSON</span>
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </a>
+
+
+                  <p class="description">
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Udforsk
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/genbrugsstation/resource/02e676a9-d1db-4e91-8757-57462ebd0425">
+
+                          <i class="icon-bar-chart"></i>
+                          Preview/eksempel
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://wfs-kbhkort.kk.dk/k101/ows?service=WFS&amp;version=1.0.0&amp;request=GetFeature&amp;typeName=k101:genbrugsstation&amp;outputFormat=json&amp;SRSNAME=EPSG:4326" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-download"></i>
+                          Download
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+                <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                <li class="resource-item" data-id="3fa9b19e-b4ad-4f1e-a535-876879f0d051">
+
+                  <a class="heading" href="/dataset/genbrugsstation/resource/3fa9b19e-b4ad-4f1e-a535-876879f0d051" title="genbrugsstation.csv">
+                    genbrugsstation.csv<span class="format-label" property="dc:format" data-format="csv">CSV</span>
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </a>
+
+
+                  <p class="description">
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Udforsk
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/genbrugsstation/resource/3fa9b19e-b4ad-4f1e-a535-876879f0d051">
+
+                          <i class="icon-bar-chart"></i>
+                          Preview/eksempel
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://wfs-kbhkort.kk.dk/k101/ows?service=WFS&amp;version=1.0.0&amp;request=GetFeature&amp;typeName=k101:genbrugsstation&amp;outputFormat=csv&amp;SRSNAME=EPSG:4326" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-download"></i>
+                          Download
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+                <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                <li class="resource-item" data-id="950e5fec-5ca8-46aa-bfa4-29fbc462db39">
+
+                  <a class="heading" href="/dataset/genbrugsstation/resource/950e5fec-5ca8-46aa-bfa4-29fbc462db39" title="genbrugsstation.zip">
+                    genbrugsstation.zip<span class="format-label" property="dc:format" data-format="shp">SHP</span>
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <span class="popular ckan-icon ckan-icon-flame" title="13 visninger" xmlns="http://www.w3.org/1999/xhtml">Populære</span>
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </a>
+
+
+                  <p class="description">
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Udforsk
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/genbrugsstation/resource/950e5fec-5ca8-46aa-bfa4-29fbc462db39">
+
+                          <i class="icon-info-sign"></i>
+                          Mere information
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://wfs-kbhkort.kk.dk/k101/ows?service=WFS&amp;version=1.0.0&amp;request=GetFeature&amp;typeName=k101:genbrugsstation&amp;outputFormat=SHAPE-ZIP&amp;SRSNAME=EPSG:4326" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-external-link"></i>
+                          Gå til ressource
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+                <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+              </ul>
+
+
+            </section>
+            <!-- Snippet package/snippets/resources_list.html end -->
+
+
+
+
+
+            <!-- Snippet package/snippets/tags.html start -->
+
+            <section class="tags">
+
+              <!-- Snippet snippets/tag_list.html start -->
+
+
+
+              <ul class="tag-list well">
+
+                <li>
+                  <a class="tag" href="/dataset?tags=byttestation">byttestation</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=genbrug">genbrug</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=genbrugsplads">genbrugsplads</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=n%C3%A6rgenbrug">nærgenbrug</a>
+                </li>
+
+              </ul>
+
+              <!-- Snippet snippets/tag_list.html end -->
+
+            </section>
+
+            <!-- Snippet package/snippets/tags.html end -->
+
+
+
+
+
+            <!-- Snippet package/snippets/additional_info.html start -->
+            <section class="additional-info">
+              <h3>Yderligere info</h3>
+              <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                  <th scope="col">Felt</th>
+                  <th scope="col">Værdi</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Forfatter</th>
+                  <td class="dataset-details" property="dc:creator"><a href="mailto:aneski@tmf.kk.dk">Anne Christine Eskildsen</a></td>
+                </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Opdateringsfrekvens</th>
+                  <td class="dataset-details">Halvårligt</td>
+                </tr>
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Datakvalitet</th>
+                  <td class="dataset-details">Total ajourført</td>
+                </tr>
+
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Enhed</th>
+                  <td class="dataset-details">Bæredygtighed</td>
+                </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </tbody>
+              </table>
+            </section>
+            <!-- Snippet package/snippets/additional_info.html end -->
+
+
+
+
+          </div>
+        </article>
+
+      </div>
+
+
+
+      <aside class="secondary span3">
+
+
+
+
+
+
+
+        <!-- Snippet package/snippets/info.html start -->
+
+
+
+        <section class="module module-narrow">
+          <div class="module context-info">
+            <div class="module-content">
+
+
+              <h1 class="heading">Genbrugsstation</h1>
+
+
+              <div class="nums">
+                <dl>
+                  <dt>Følgere</dt>
+                  <dd><span>1</span></dd>
+                </dl>
+              </div>
+
+
+
+              <div class="follow_button">
+
+              </div>
+
+
+
+            </div>
+          </div>
+        </section>
+
+
+        <!-- Snippet package/snippets/info.html end -->
+
+
+
+
+
+
+
+        <!-- Snippet snippets/organization.html start -->
+
+
+
+
+
+
+        <div class="module module-narrow module-shallow context-info">
+
+          <h2 class="module-heading"><i class="icon-building"></i> Organisation</h2>
+
+          <section class="module-content">
+
+
+            <div class="image">
+              <a href="/organization/kobenhavns-kommune-bydata">
+                <img src="https://data.kk.dk/uploads/group/2017-03-06-112920.880546bydata.jpeg" width="200" alt="kobenhavns-kommune-bydata" />
+              </a>
+            </div>
+
+
+            <h1 class="heading">Københavns Kommune Bydata
+
+            </h1>
+
+
+
+            <p>
+              Fra matrikelkort til 3D bymodeller.
+              <a href="/organization/about/kobenhavns-kommune-bydata">Læs mere</a>
+            </p>
+
+
+
+
+          </section>
+        </div>
+
+        <!-- Snippet snippets/organization.html end -->
+
+
+
+
+
+
+        <!-- Snippet snippets/social.html start -->
+
+
+        <section class="module module-narrow social">
+
+          <h2 class="module-heading"><i class="icon-medium icon-share"></i> Social</h2>
+
+
+          <ul class="nav nav-simple">
+            <li class="nav-item"><a href="https://plus.google.com/share?url=https://data.kk.dk/dataset/genbrugsstation" target="_blank"><i class="icon-google-plus-sign"></i> Google+</a></li>
+            <li class="nav-item"><a href="https://twitter.com/share?url=https://data.kk.dk/dataset/genbrugsstation" target="_blank"><i class="icon-twitter-sign"></i> Twitter</a></li>
+            <li class="nav-item"><a href="https://www.facebook.com/sharer.php?u=https://data.kk.dk/dataset/genbrugsstation" target="_blank"><i class="icon-facebook-sign"></i> Facebook</a></li>
+          </ul>
+
+        </section>
+
+        <!-- Snippet snippets/social.html end -->
+
+
+
+
+
+        <!-- Snippet snippets/license.html start -->
+
+
+
+
+
+
+        <section class="module module-narrow module-shallow license">
+
+          <h2 class="module-heading"><i class="icon-medium icon-lock"></i> Licens</h2>
+
+
+          <p class="module-content">
+
+
+
+            <a href="http://portal.opendata.dk/dataset/open-data-dk-licens" rel="dc:rights">opendata.dk</a>
+
+
+
+            <a href="http://opendefinition.org/okd/" title="Dette datasæt opfylder Open Definition.">
+              <img class="open-data" src="/base/images/od_80x15_blue.png" alt="[Open Data]" />
+            </a>
+
+
+          </p>
+
+        </section>
+
+
+
+
+        <!-- Snippet snippets/license.html end -->
+
+
+
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <nav class="footer-links">
+
+      <ul class="unstyled">
+
+
+        <li>
+          <script type="text/javascript">
+            <!--
+            var string1 = "opendata";
+            var string2 = "@";
+            var string3 = "tmf.kk.dk";
+            var string4 = string1 + string2 + string3;
+            document.write("<a href=" + "mail" + "to:" + string1 + string2 + string3 + ">" + string4 + "</a>");
+            //-->
+          </script>
+        </li>
+        <li><a href="https://twitter.com/datakkdk" target="_blank"><img src="/base/custom/twitter.png" />@datakkdk</a></li>
+        <!--              <li><a href="http://blog.data.kk.dk" target="_blank">blog.data.kk.dk</a></li>-->
+        <li><a href="http://data.kk.dk/labs" target="_blank">data.kk.dk/labs</a></li>
+        <li><a href="http://kbhkort.kk.dk" target="_blank">K&oslash;benhavnerkortet</a></li>
+        <li><a href="http://opendata.dk" target="_blank">Open Data DK</a></li>
+        <li style="color: #ffffff !important; font-size: 12px !important ; font-style: italic !important; line-height: 16px !important; padding-top: 25px !important; width: 100% !important;">
+          Vi samler statistik og husker dine pr&aelig;ferencer ved hj&aelig;lp af cookies.<br />
+          L&aelig;s om cookies p&aring; Digitaliseringsstyrelsens hjemmeside <a href="http://www.digst.dk/Servicemenu/Cookies/om-cookies" target="_blank" style="text-decoration: underline !important;">her$
+        </li>
+
+        <li>
+
+        <li>
+        </li>
+      </ul>
+
+    </nav>
+
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-75190007-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- /Google Analytics -->
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-02-24T11:53:25/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-02-24T11:53:25/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-02-24T11:53:25/tracking.min.js"></script></body>
+</html>
