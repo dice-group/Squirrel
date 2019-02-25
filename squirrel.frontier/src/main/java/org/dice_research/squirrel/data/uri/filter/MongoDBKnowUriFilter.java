@@ -29,6 +29,14 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 
+/**
+ * 
+ * Filter implementation for use with MongoDB
+ * 
+ * * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
+ *
+ */
+
 public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);

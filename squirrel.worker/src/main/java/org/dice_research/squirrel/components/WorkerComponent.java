@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.components;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -9,17 +8,12 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.WorkerConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
-import org.dice_research.squirrel.sink.Sink;
-import org.dice_research.squirrel.sink.impl.file.FileBasedSink;
-import org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.dice_research.squirrel.utils.Closer;
 import org.dice_research.squirrel.worker.AliveMessage;
 import org.dice_research.squirrel.worker.Worker;

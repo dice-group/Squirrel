@@ -76,7 +76,7 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 	        Statement s = null;
 	        try {
 	        	
-	        		this.dbConnection = DriverManager.getConnection("jdbc:hsqldb:file:" + dbPath + "-"+Math.floor(Math.random() * 100000), "SA", "");
+	        		this.dbConnection = DriverManager.getConnection("jdbc:hsqldb:file:foundUris/" + dbPath + "-"+Math.floor(Math.random() * 100000), "SA", "");
 	        	
 	        } catch (Exception e) {
 	            LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);

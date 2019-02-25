@@ -27,6 +27,15 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
 
+
+/**
+ * 
+ * Queue implementation for use with MongoDB
+ * 
+ * * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
+ *
+ */
+
 @SuppressWarnings("deprecation")
 public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 

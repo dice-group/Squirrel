@@ -99,7 +99,7 @@ public class FrontierImpl implements Frontier {
     
     private Semaphore terminationMutex;
     
-    private TerminationCheck terminationCheck = new EndlessCrawlingTerminationCheck();
+    private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
 
     /**
      * Constructor.
