@@ -29,6 +29,15 @@ public interface UriQueue {
      *         are available
      */
     public List<CrawleableUri> getNextUris();
+    
+    
+    /**
+     * 
+     * Returns true is the queue is empty
+     * 
+     * @return
+     */
+    public boolean isEmpty();
 
     /**
      * Close RDB connection, destroy the database.

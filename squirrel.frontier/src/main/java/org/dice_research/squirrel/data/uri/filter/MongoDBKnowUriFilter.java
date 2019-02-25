@@ -87,12 +87,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     public Document crawleableUriToMongoDocument(CrawleableUri uri) {
 
-        InetAddress ipAddress = uri.getIpAddress();
         @SuppressWarnings("deprecation")
         UriType uriType = uri.getType();
 
-        return new Document("ipAddress", ipAddress.toString()).append("type", uriType.toString()).append("uri",
-                uri.getUri().toString());
+        return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
 
     }
 

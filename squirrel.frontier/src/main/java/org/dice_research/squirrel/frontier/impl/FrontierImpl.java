@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -95,6 +96,8 @@ public class FrontierImpl implements Frontier {
      * Default value for {@link #timerPeriod}.
      */
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
+    
+    private Semaphore terminationMutex;
 
     /**
      * Constructor.
@@ -110,7 +113,7 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
-        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
+        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod,null);
     }
     /**
      * Constructor.
@@ -139,8 +142,8 @@ public class FrontierImpl implements Frontier {
      *                       crawled.
      * @param doesRecrawling Value for {@link #doesRecrawling}.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
-        this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, Semaphore terminationMutex) {
+        this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD,terminationMutex);
     }
 
     /**
@@ -185,13 +188,15 @@ public class FrontierImpl implements Frontier {
      * @param generalRecrawlTime used to select the general Time after URIs should be recrawled. If Value is null the default Time is used.
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod,Semaphore terminationMutex) {
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
+        
+        this.terminationMutex = terminationMutex;
 
         this.queue.open();
         this.doesRecrawling = doesRecrawling;
@@ -212,6 +217,14 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
+    	
+    	if(queue.isEmpty()) {
+    		System.out.println("FILA VAZIA, TERMINANDO");
+    		terminationMutex.release();
+    		Thread.currentThread().interrupt();
+    	}
+    	
+    	
         return queue.getNextUris();
     }
 
@@ -228,6 +241,8 @@ public class FrontierImpl implements Frontier {
         uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+        
+        System.out.println(uri.getUri().toString());
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {

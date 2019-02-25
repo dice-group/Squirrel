@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
@@ -22,10 +20,8 @@ import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.queue.MongoDBQueue;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
