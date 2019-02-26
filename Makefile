@@ -8,6 +8,7 @@ dockerize:
 	docker build -f Dockerfile.frontier -t squirrel.frontier .
 	docker build -f Dockerfile.worker -t squirrel.worker .
 	docker build -f Dockerfile.web -t squirrel.web .
+	docker build -f Dockerfile.mockup -t squirrel.mockup .
 
 start: dockerize
 	docker-compose -f docker-compose-sparql.yml up

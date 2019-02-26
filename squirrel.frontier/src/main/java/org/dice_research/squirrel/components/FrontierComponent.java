@@ -69,15 +69,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        if(mongoConfiguration != null) {
+        if (mongoConfiguration != null) {
             String dbHostName = mongoConfiguration.getMDBHostName();
             Integer dbPort = mongoConfiguration.getMDBPort();
-            queue = new MongoDBQueue(dbHostName, dbPort,serializer);
+            queue = new MongoDBQueue(dbHostName, dbPort, serializer);
             ((MongoDBQueue) queue).open();
 
             knownUriFilter = new MongoDBKnowUriFilter(dbHostName, dbPort);
-            ((MongoDBKnowUriFilter)knownUriFilter).open();
-            
+            ((MongoDBKnowUriFilter) knownUriFilter).open();
+
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
@@ -96,7 +96,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, terminationMutex);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling,
+                terminationMutex);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -137,13 +138,15 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void close() throws IOException {
         LOGGER.info("Closing Frontier Component.");
         if (receiver != null)
-            receiver.closeWhenFinished();
+            // Force the receiver to close
+            receiver.close();
+        // receiver.closeWhenFinished();
         if (queue != null)
             queue.close();
         if (uriReferences != null)
             uriReferences.close();
         if (knownUriFilter instanceof Closeable) {
-            ((Closeable)knownUriFilter).close();
+            ((Closeable) knownUriFilter).close();
         }
         workerGuard.shutdown();
         if (frontier != null)
@@ -186,11 +189,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
-                LOGGER.trace("Received the message that the crawling for {} URIs is done.",
-                        crawlingResult.uris.size());
+                LOGGER.trace("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
                 frontier.crawlingDone(crawlingResult.uris);
-                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker,
-                        crawlingResult.uris);
+                workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
                 int idReceived = message.getIdOfWorker();

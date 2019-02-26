@@ -45,13 +45,13 @@ services:
     ports:
       - "27017:27017"
 
-  rethinkdb:
-    image: rethinkdb:2.3.5
-    volumes:
-      - ./data/rethinkdb:/data
-    ports:
-      - "8080:8080"
-    command: rethinkdb --bind all
+#  rethinkdb:
+#    image: rethinkdb:2.3.5
+#    volumes:
+#      - ./data/rethinkdb:/data
+#    ports:
+#      - "8080:8080"
+#    command: rethinkdb --bind all
 
   # message bus
   rabbit:
