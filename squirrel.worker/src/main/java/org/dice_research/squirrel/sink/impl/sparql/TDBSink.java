@@ -21,20 +21,17 @@ import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
-import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
-public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
+public class TDBSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TDBSink.class);
     /**
      * The URI to the metadata DB in which updates can be performed.
      */
@@ -43,6 +40,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * The URI to the metadata DB in which querys can be performed.
      */
     private final String queryMetaDataUri;
+
     /**
      * The URI of the DB in which updates can be performed.
      */
@@ -52,6 +50,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      */
     @SuppressWarnings("unused")
     private String queryDatasetURI;
+
     /**
      * Uri for the MetaData graph, will be stored in the default graph
      */
@@ -73,7 +72,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @param queryMetaDataAppendix
      *            The query appendix for the meta data
      */
-    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix,
+    public TDBSink(String host, String port, String updateAppendix, String queryAppendix,
             String updateMetaDataAppendix, String queryMetaDataAppendix) {
         String prefix = "http://" + host + ":" + port + "/";
         updateDatasetURI = prefix + updateAppendix;
@@ -105,15 +104,6 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
         return triplesFound;
     }
 
-    @Override
-    public void closeSinkForUri(CrawleableUri uri) {
-        super.closeSinkForUri(uri);
-        CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
-        if(activity != null) {
-            activity.addOutputResource(getGraphId(uri), Squirrel.ResultGraph);
-        }
-    }
-
     /**
      * Method to send all buffered triples to the database
      *
@@ -122,14 +112,15 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @param tripleList
      *            the list of {@link Triple}s regarding that uri
      */
-    protected void sendTriples(CrawleableUri uri, Collection<Triple> tripleList) {
+    @Override
+    protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
         String stringQuery = null;
         String sparqlEndpoint;
         if (uri.equals(metaDataGraphUri)) {
-            stringQuery = QueryGenerator.getInstance().getAddQuery(tripleList);
+            stringQuery = QueryGenerator.getInstance().getAddQuery(triples);
             sparqlEndpoint = updateMetaDataUri;
         } else {
-            stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
+            stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), triples);
             sparqlEndpoint = updateDatasetURI;
         }
 
@@ -141,7 +132,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             } catch (Exception e) {
                 LOGGER.error(
                         "Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( ["
-                                + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]",
+                                + request + "] on " + updateDatasetURI + " with " + triples.size() + " triples]",
                         e);
             }
         } catch (QueryException e) {
@@ -181,4 +172,5 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
     }
+
 }
