@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.analyzer.compress.impl.FileManager;
-import org.dice_research.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -119,8 +118,6 @@ public class WorkerImpl implements Worker, Closeable {
 //        fetcher = new SimpleOrderedFetcherManager(
 //                // new SparqlBasedFetcher(),
 //        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
-
-        analyzer = new SimpleOrderedAnalyzerManager(collector);
     }
 
     @Override
