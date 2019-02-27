@@ -241,7 +241,6 @@ public class FrontierImpl implements Frontier {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
         
-        System.out.println(uri.getUri().toString());
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {

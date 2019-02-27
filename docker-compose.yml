@@ -18,6 +18,9 @@ services:
       - SEED_FILE=/var/squirrel/seeds.txt
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
+      - MDB_CONNECTION_TIME_OUT=5000
+      - MDB_SOCKET_TIME_OUT=10000
+      - MDB_SERVER_TIME_OUT=10000
       - COMMUNICATION_WITH_WEBSERVICE=false
       - VISUALIZATION_OF_CRAWLED_GRAPH=false
       - JVM_ARGS=-Xmx8g

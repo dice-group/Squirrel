@@ -2,8 +2,6 @@ package org.dice_research.squirrel.queue;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -13,6 +11,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.types.Binary;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -21,7 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -48,15 +49,32 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBQueue.class);
 
-	public MongoDBQueue(String hostName, Integer port) {
+	public MongoDBQueue(String hostName, Integer port,Serializer serializer) {
+		this.serializer = serializer;
 
-		client = new MongoClient(hostName, port);
-		serializer = new SnappyJavaUriSerializer();
+		
+		MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+        MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+
+		
+		if(mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null) {
+			optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
+			optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
+			optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
+			
+			MongoClientOptions options = optionsBuilder.build();
+
+			client = new MongoClient(new ServerAddress(hostName, port),options);
+			
+		}else {
+			client = new MongoClient(hostName, port);
+		}
+
 	}
 
-	public MongoDBQueue(String hostName, Integer port, Serializer serializer) {
+	public MongoDBQueue(String hostName, Integer port) {
 		client = new MongoClient(hostName, port);
-		this.serializer = serializer;
+		serializer = new SnappyJavaUriSerializer();
 	}
 
 	public void purge() {
@@ -68,19 +86,6 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		return mongoDB.getCollection(COLLECTION_QUEUE).count();
 	}
 
-	public static void main(String[] args) throws URISyntaxException, UnknownHostException {
-		String host = "localhost";
-		Integer port = 27017;
-
-		MongoDBQueue queue = new MongoDBQueue(host, port);
-		queue.open();
-
-		URI uri = new URI("https://g1.globo.com/saude");
-		CrawleableUri curi = new CrawleableUri(uri);
-		curi.setIpAddress(InetAddress.getByName(uri.getHost()));
-
-		queue.addToQueue(curi);
-	}
 
 	@Override
 	public void close() {

@@ -90,7 +90,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             // uriReferences.open();
             // }
         } else {
-            LOGGER.warn("Couldn't get RDBConfiguration. An in-memory queue will be used.");
+            LOGGER.warn("Couldn't get MDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
