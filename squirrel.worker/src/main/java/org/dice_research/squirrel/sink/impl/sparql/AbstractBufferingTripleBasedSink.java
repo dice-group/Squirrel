@@ -3,7 +3,6 @@ package org.dice_research.squirrel.sink.impl.sparql;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Triple;
@@ -22,7 +21,7 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
      * Interval that specifies how many triples are to be buffered at once until
      * they are sent to the sink.
      */
-    protected static final int DEFAULT_BUFFER_SIZE = 500;
+    protected static final int DEFAULT_BUFFER_SIZE = 200;
     /**
      * The data structure (map) in which the triples are buffered.
      */

@@ -1,22 +1,33 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
+import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryHttp;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.sparql.core.DatasetDescription;
+import org.apache.jena.sparql.modify.request.QuadAcc;
+import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
@@ -31,67 +42,73 @@ import org.slf4j.LoggerFactory;
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
+@SuppressWarnings("deprecation")
 public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
     /**
-     * The URI to the metadata DB in which updates can be performed.
+     * The Query factory used to query the SPARQL endpoint.
      */
-    private final String updateMetaDataUri;
-    /**
-     * The URI to the metadata DB in which querys can be performed.
-     */
-    private final String queryMetaDataUri;
-    /**
-     * The URI of the DB in which updates can be performed.
-     */
-    private String updateDatasetURI;
-    /**
-     * The URI of the DB in which querys can be performed.
-     */
-    @SuppressWarnings("unused")
-    private String queryDatasetURI;
-    /**
-     * Uri for the MetaData graph, will be stored in the default graph
-     */
-    private CrawleableUri metaDataGraphUri;
+    protected QueryExecutionFactory queryExecFactory = null;
 
-    /**
-     * Constructor of SparqlBasedSink.
-     *
-     * @param host
-     *            The host name of the sink.
-     * @param port
-     *            The port of the sink.
-     * @param updateAppendix
-     *            The update appendix for the content data
-     * @param queryAppendix
-     *            The query appendix for the content data
-     * @param updateMetaDataAppendix
-     *            The update appendix for the meta data
-     * @param queryMetaDataAppendix
-     *            The query appendix for the meta data
-     */
-    public SparqlBasedSink(String host, String port, String updateAppendix, String queryAppendix,
-            String updateMetaDataAppendix, String queryMetaDataAppendix) {
-        String prefix = "http://" + host + ":" + port + "/";
-        updateDatasetURI = prefix + updateAppendix;
-        queryDatasetURI = prefix + queryAppendix;
-        updateMetaDataUri = prefix + updateMetaDataAppendix;
-        queryMetaDataUri = prefix + queryMetaDataAppendix;
+    protected UpdateExecutionFactory updateExecFactory = null;
+
+    protected CrawleableUri metaDataGraphUri = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
+
+    public SparqlBasedSink(String sparqlEndpointUrl) {
+        this(sparqlEndpointUrl, null, null);
+    }
+
+    public SparqlBasedSink(String sparqlEndpointUrl, String username, String password) {
+        if (username != null && password != null) {
+            // Create the factory with the credentials
+            final Credentials credentials = new UsernamePasswordCredentials(username, password);
+            HttpAuthenticator authenticator = new HttpAuthenticator() {
+                @Override
+                public void invalidate() {
+                }
+
+                @Override
+                public void apply(AbstractHttpClient client, HttpContext httpContext, URI target) {
+                    client.setCredentialsProvider(new CredentialsProvider() {
+                        @Override
+                        public void clear() {
+                        }
+
+                        @Override
+                        public Credentials getCredentials(AuthScope scope) {
+                            return credentials;
+                        }
+
+                        @Override
+                        public void setCredentials(AuthScope arg0, Credentials arg1) {
+                            LOGGER.error("I am a read-only credential provider but got a call to set credentials.");
+                        }
+                    });
+                }
+            };
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl, new DatasetDescription(),
+                    authenticator);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl, authenticator);
+        } else {
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
+        }
+        // open meta data sink
+        openSinkForUri(metaDataGraphUri);
     }
 
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         Query selectQuery = null;
-        if (uri.equals(metaDataGraphUri)) {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery();
-        } else {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
-        }
+        // if (uri.equals(metaDataGraphUri)) {
+        selectQuery = QueryGenerator.getInstance().getSelectQuery();
+        // } else {
+        // selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
+        // }
 
-        QueryExecution qe = QueryExecutionFactory.sparqlService(queryDatasetURI, selectQuery);
+        QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
         ResultSet rs = qe.execSelect();
         List<Triple> triplesFound = new ArrayList<>();
         while (rs.hasNext()) {
@@ -109,7 +126,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     public void closeSinkForUri(CrawleableUri uri) {
         super.closeSinkForUri(uri);
         CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
-        if(activity != null) {
+        if (activity != null) {
             activity.addOutputResource(getGraphId(uri), Squirrel.ResultGraph);
         }
     }
@@ -122,44 +139,25 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @param tripleList
      *            the list of {@link Triple}s regarding that uri
      */
-    protected void sendTriples(CrawleableUri uri, Collection<Triple> tripleList) {
-        String stringQuery = null;
-        String sparqlEndpoint;
-        if (uri.equals(metaDataGraphUri)) {
-            stringQuery = QueryGenerator.getInstance().getAddQuery(tripleList);
-            sparqlEndpoint = updateMetaDataUri;
-        } else {
-            stringQuery = QueryGenerator.getInstance().getAddQuery(getGraphId(uri), tripleList);
-            sparqlEndpoint = updateDatasetURI;
-        }
-
+    protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
         try {
-            UpdateRequest request = UpdateFactory.create(stringQuery);
-            UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, sparqlEndpoint);
-            try {
-                proc.execute();
-            } catch (Exception e) {
-                LOGGER.error(
-                        "Was not able to send the triples to the database (SPARQL), may because the dataset does not exists. Information will get lost :( ["
-                                + request + "] on " + updateDatasetURI + " with " + tripleList.size() + " triples]",
-                        e);
+            UpdateDeleteInsert update = new UpdateDeleteInsert();
+            // Set the graph
+            if (metaDataGraphUri.equals(uri)) {
+                update.setWithIRI(NodeFactory.createURI(uri.getUri().toString()));
+            } else {
+                update.setWithIRI(NodeFactory.createURI(getGraphId(uri)));
             }
-        } catch (QueryException e) {
-            LOGGER.error(stringQuery);
-            LOGGER.error("Query could not be parsed, no data will be written to the sink", e);
+            // Add the triples
+            QuadAcc quads = update.getInsertAcc();
+            for (Triple triple : triples) {
+                quads.addTriple(triple);
+            }
+            UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(update));
+            processor.execute();
+        } catch (Exception e) {
+            LOGGER.error("Exception while sending update query.", e);
         }
-    }
-
-    @Override
-    public void addMetaData(Model model) {
-        metaDataGraphUri = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        StmtIterator iterator = model.listStatements();
-
-        openSinkForUri(metaDataGraphUri);
-        while (iterator.hasNext()) {
-            addTriple(metaDataGraphUri, iterator.next().asTriple());
-        }
-        closeSinkForUri(metaDataGraphUri);
     }
 
     @Override
@@ -178,7 +176,16 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
         return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
     }
 
-    public String getUpdateDatasetURI() {
-        return updateDatasetURI;
+    @Override
+    public void close() throws IOException {
+        closeSinkForUri(metaDataGraphUri);
+        try {
+            queryExecFactory.close();
+        } catch (Exception e) {
+        }
+        try {
+            updateExecFactory.close();
+        } catch (Exception e) {
+        }
     }
 }
