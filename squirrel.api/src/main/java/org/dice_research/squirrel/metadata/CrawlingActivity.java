@@ -198,6 +198,10 @@ public class CrawlingActivity implements Serializable {
     public void setNumberOfTriples(long numberOfTriples) {
         this.numberOfTriples = numberOfTriples;
     }
+    
+    public long getNumberOfTriples() {
+        return numberOfTriples;
+    }
 
     public void addOutputResource(String outputResource, Resource resourceType) {
         this.outputResource.put(outputResource, resourceType);
