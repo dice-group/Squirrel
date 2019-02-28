@@ -54,13 +54,21 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
 
     protected UpdateExecutionFactory updateExecFactory = null;
 
-    protected CrawleableUri metaDataGraphUri = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
+    protected CrawleableUri metadataGraphUri = null;
 
-    public SparqlBasedSink(String sparqlEndpointUrl) {
-        this(sparqlEndpointUrl, null, null);
+    protected SparqlBasedSink(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+        this.queryExecFactory = queryExecFactory;
+        this.updateExecFactory = updateExecFactory;
+        setMetadataGraphUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
-    public SparqlBasedSink(String sparqlEndpointUrl, String username, String password) {
+    public static SparqlBasedSink create(String sparqlEndpointUrl) {
+        return create(sparqlEndpointUrl, null, null);
+    }
+
+    public static SparqlBasedSink create(String sparqlEndpointUrl, String username, String password) {
+        QueryExecutionFactory queryExecFactory = null;
+        UpdateExecutionFactory updateExecFactory = null;
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
@@ -95,8 +103,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
         }
-        // open meta data sink
-        openSinkForUri(metaDataGraphUri);
+        return new SparqlBasedSink(queryExecFactory, updateExecFactory);
     }
 
     @Override
@@ -125,9 +132,11 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
         super.closeSinkForUri(uri);
-        CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
-        if (activity != null) {
-            activity.addOutputResource(getGraphId(uri), Squirrel.ResultGraph);
+        if (!uri.equals(metadataGraphUri)) {
+            CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
+            if (activity != null) {
+                activity.addOutputResource(getGraphId(uri), Squirrel.ResultGraph);
+            }
         }
     }
 
@@ -143,7 +152,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
         try {
             UpdateDeleteInsert update = new UpdateDeleteInsert();
             // Set the graph
-            if (metaDataGraphUri.equals(uri)) {
+            if (uri.equals(metadataGraphUri)) {
                 update.setWithIRI(NodeFactory.createURI(uri.getUri().toString()));
             } else {
                 update.setWithIRI(NodeFactory.createURI(getGraphId(uri)));
@@ -172,13 +181,23 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      *            The given uri.
      * @return The id of the graph.
      */
-    public String getGraphId(CrawleableUri uri) {
+    public static String getGraphId(CrawleableUri uri) {
         return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
+    }
+
+    public void setMetadataGraphUri(CrawleableUri metadataGraphUri) {
+        // close the old graph if it is not null
+        if (this.metadataGraphUri != null) {
+            closeSinkForUri(this.metadataGraphUri);
+        }
+        this.metadataGraphUri = metadataGraphUri;
+        // open new meta data sink
+        openSinkForUri(metadataGraphUri);
     }
 
     @Override
     public void close() throws IOException {
-        closeSinkForUri(metaDataGraphUri);
+        closeSinkForUri(metadataGraphUri);
         try {
             queryExecFactory.close();
         } catch (Exception e) {
