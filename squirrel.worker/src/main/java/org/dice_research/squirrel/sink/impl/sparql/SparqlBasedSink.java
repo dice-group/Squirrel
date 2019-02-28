@@ -18,6 +18,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
@@ -26,8 +27,9 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
-import org.apache.jena.sparql.modify.request.QuadAcc;
-import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.modify.request.QuadDataAcc;
+import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
@@ -150,19 +152,20 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      */
     protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
         try {
-            UpdateDeleteInsert update = new UpdateDeleteInsert();
-            // Set the graph
+            Node graph;
             if (uri.equals(metadataGraphUri)) {
-                update.setWithIRI(NodeFactory.createURI(uri.getUri().toString()));
+                graph = NodeFactory.createURI(uri.getUri().toString());
             } else {
-                update.setWithIRI(NodeFactory.createURI(getGraphId(uri)));
+                 graph = NodeFactory.createURI(getGraphId(uri));
             }
-            // Add the triples
-            QuadAcc quads = update.getInsertAcc();
-            for (Triple triple : triples) {
-                quads.addTriple(triple);
+
+            QuadDataAcc quads = new QuadDataAcc();
+            for(Triple triple : triples){
+               quads.addQuad(new Quad(graph, triple));
             }
-            UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(update));
+            quads.setGraph(graph);
+            UpdateDataInsert insert = new UpdateDataInsert(quads);
+            UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
             processor.execute();
         } catch (Exception e) {
             LOGGER.error("Exception while sending update query.", e);

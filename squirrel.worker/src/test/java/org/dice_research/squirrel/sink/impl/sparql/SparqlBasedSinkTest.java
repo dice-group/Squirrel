@@ -18,9 +18,6 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
@@ -38,16 +35,6 @@ public class SparqlBasedSinkTest {
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-
-        UpdateProcessor exec = updateExecFactory.createUpdateProcessor(
-                "WITH <http://example.org/123> INSERT { <http://example.org/1> <http://example.org/2> <http://example.org/3> . } WHERE {}");
-        exec.execute();
-//        Model model22 = dataset.getNamedModel("http://example.org/123");
-//        model22.add(Squirrel.ResultGraph, RDF.type, RDFS.Class);
-//        
-//        exec = updateExecFactory.createUpdateProcessor(
-//                "WITH <http://example.org/123> INSERT { <http://example.org/1> <http://example.org/2> <http://example.org/3> . } WHERE {}");
-//        exec.execute();
 
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/dataset"));
         uri.addData(Constants.UUID_KEY, "123");
