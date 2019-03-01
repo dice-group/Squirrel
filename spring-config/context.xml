@@ -47,15 +47,19 @@
 		<constructor-arg index="0" ref="uriCollectorBean" />
 		<constructor-arg index="1">
 			<array value-type="java.lang.String">
+			
 				<value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.RDFaAnalyzer</value>
 				<value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
-				<value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
-			 
+  
 			</array>
+			<!--
+				<value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>			 
+				<value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>	
+				<value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
+				
+			 -->
 		</constructor-arg>
 	</bean>
 
@@ -64,11 +68,11 @@
 		<constructor-arg>
 			<list>
 
-				<ref bean="httpFetcherBean" /> 
+				<ref bean="httpFetcherBean" /> <!-- 
 				<ref bean="ftpFetcherBean" />
 				<ref bean="ckanFetcherBean" /> 
 				<ref bean="sparqlDatasetFetcherBean" />
-				<ref bean="sparqlFetcherBean" />
+				<ref bean="sparqlFetcherBean" /> -->
 
 			</list>
 		</constructor-arg>
@@ -97,25 +101,25 @@
 			value="#{systemEnvironment['OUTPUT_FOLDER']}" />
 	</bean>
 
-	<!-- File Based Sink implementation -->
+	<!-- File Based Sink implementation 
 	<bean id="sinkBean"
 		class="org.dice_research.squirrel.sink.impl.file.FileBasedSink">
 		<constructor-arg name="outputDirectory"
 			ref="outputFolderBean" />
 		<constructor-arg name="useCompression" value="false" />
-	</bean>
+	</bean>-->
 
 
 	<!-- HDT File Based Sink implementation <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink"> 
 		<constructor-arg name="outputDirectory" ref="outputFolderBean" /> </bean> -->
 
-	<!-- Triple Store (JENA) Sink implementation <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink"> 
-		<constructor-arg name="host" value="#{systemEnvironment['SPARQL_HOST_NAME']}"/> 
-		<constructor-arg name="port" value="#{systemEnvironment['SPARQL_HOST_PORT']}"/> 
-		<constructor-arg name="updateAppendix" value="contentset/update"/> <constructor-arg 
-		name="queryAppendix" value="contentset/query"/> <constructor-arg name="updateMetaDataAppendix" 
-		value="MetaData/update"/> <constructor-arg name="queryMetaDataAppendix" value="MetaData/query"/> 
-		</bean> -->
+	<!-- Triple Store (JENA) Sink implementation -->
+	 <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink" factory-method="create"> 
+		<constructor-arg index="0" value="http://#{systemEnvironment['SPARQL_HOST_NAME']}:#{systemEnvironment['SPARQL_HOST_PORT']}/sparql-auth" />
+		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}" />
+		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />	
+	 </bean> 
+		
 	<!-- <bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SimpleUriCollector" 
 		> <constructor-arg index="0" ref="serializerBean" /> </bean> -->
 	<bean id="serializerBean"
