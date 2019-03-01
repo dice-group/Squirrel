@@ -64,13 +64,10 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 				    .setIncludeRelUrls(true);
 				//Map<String,Object> parsed = parser.parse(microdata5, new URI("https://kylewm.com"));
 				Map<String,Object> parsed = parser.parse(file,URI.create(curi.getUri().toString()));
-//				for (Entry<String, Object> string : parsed.entrySet()) {
-//				System.out.println(string.getKey() +" = "+string.getValue());
-//				}
+
 				
 				String json = addContextToJSON(parsed.toString());
 				json = replaceVocab(json);
-				//System.out.println(json);
 				Model model = createModelFromJSONLD(json);
 				String syntax = "N-TRIPLE";
 				StringWriter out = new StringWriter();
@@ -111,7 +108,6 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 		} catch (IOException e) {
 			LOGGER.error("Exception while analyzing. Aborting. ", e);
 		}
-	    //System.out.println("model size: " + model.size());
 	    return model;
 	}
 
