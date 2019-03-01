@@ -30,19 +30,6 @@ services:
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
 
-  virtuosohost:
-    image: openlink/virtuoso-opensource-7:latest
-    container_name: sparqlhost
-    ports:
-      - "1111:1111"
-    ports:
-      - "8890:8890"
-    volumes:
-      - ./data/sparqlhost/sparqlhost_data:/virtuoso
-    environment:
-      - Driver=/usr/local/lib/virtodbc_32.so
-      - Address=localhost:1111
-    
   sparqlhost:
     image: stain/jena-fuseki
     container_name: sparqlhost
