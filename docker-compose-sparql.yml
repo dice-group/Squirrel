@@ -87,7 +87,7 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
       - SPARQL_HOST_NAME=my_virtdb/sparql-auth
       - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_USER=DBA
       - SPARQL_HOST_PASSWD=123pwd
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
@@ -109,7 +109,7 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
       - SPARQL_HOST_NAME=my_virtdb/sparql-auth
       - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_USER=DBA
       - SPARQL_HOST_PASSWD=123pwd
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
@@ -131,7 +131,7 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
       - SPARQL_HOST_NAME=my_virtdb/sparql-auth
       - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_USER=DBA
       - SPARQL_HOST_PASSWD=123pwd
       - DEDUPLICATION_ACTIVE=true
       - MDB_HOST_NAME=mongodb

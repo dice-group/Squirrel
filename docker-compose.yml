@@ -30,17 +30,6 @@ services:
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
 
-  sparqlhost:
-    image: stain/jena-fuseki
-    container_name: sparqlhost
-    ports:
-      - "3030:3030"
-    volumes:
-      - ./data/sparqlhost/sparqlhost_data:/fuseki
-    environment:
-      - ADMIN_PASSWORD=pw123
-      - JVM_ARGS=-Xmx2g
-
   mongodb:
     image: mongo:4.0.0
     volumes:
