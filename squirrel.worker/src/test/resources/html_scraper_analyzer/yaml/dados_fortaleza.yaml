@@ -1,9 +1,9 @@
 file_descriptor:
     check:
-        domain: otvorenipodatoci.gov.mk
+        domain: dados.fortaleza.ce.gov.br
         ignore-request: true
     search-result-page:
-        regex: en/dataset
+        regex: catalogo/dataset?q=
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-heading a
@@ -13,12 +13,12 @@ file_descriptor:
         regex: dataset/
         resources:
             "http://projekt-opal.de/dataset/$label":
-                "http://purl.org/dc/terms/title": .dataset-header h1
-                "http://purl.org/dc/terms/description": .additional-info table tr:contains(Description) td
+                "http://purl.org/dc/terms/title": h1.heading:eq(0)
+                "http://purl.org/dc/terms/description": .notes p
                 "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
                 "http://www.w3.org/ns/dcat#landingPage": l($uri)
 
                 "http://projekt-opal.de/agent/$label":
-                    "http://xmlns.com/foaf/0.1/name": .additional-info table tr:eq(3) td
-                    "http://xmlns.com/foaf/0.1/mbox": .additional-info table tr:eq(4) td
+                    "http://xmlns.com/foaf/0.1/mbox": tr:contains(Mantenedor) td a
+                    "http://xmlns.com/foaf/0.1/name": tr:contains(Mantenedor) td

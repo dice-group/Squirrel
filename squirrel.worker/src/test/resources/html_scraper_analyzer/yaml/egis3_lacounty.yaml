@@ -1,0 +1,19 @@
+file_descriptor:
+    check:
+        domain: egis3.lacounty.gov
+        ignore-request: true
+    search-result-page:
+        regex: dataportal/data-catalog
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  tbody tr td:nth-child(3) a
+
+    download_page:
+        regex: dataportal/
+        resources:
+            "http://projekt-opal.de/dataset/$label":
+                "http://purl.org/dc/terms/title": .post-headline h1
+                "http://purl.org/dc/terms/description": .post-bodycopy
+                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
+                "http://purl.org/dc/terms/publisher": div:nth-child(10)
+                "http://www.w3.org/ns/dcat#landingPage": l($uri)

@@ -258,6 +258,78 @@ public class HtmlScraperAnalyzerTest {
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
 
+    @Test
+    public void scrapebermuda() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://bermuda.io/dataset?q=&sort=score+desc%2C+metadata_modified+desc"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/bermuda/bermuda_search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapDetailbermuda() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://bermuda.io/dataset/budget-book-estimates-of-revenue-and-expenditure-for-the-year"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/bermuda/bermuda_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDataBrisbane() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.data.brisbane.qld.gov.au/data/dataset"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/databrisbane/databrisbane_search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDetailDataBrisbane() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/databrisbane/databrisbane_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeEgis3Lacounty() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://egis3.lacounty.gov/dataportal/data-catalog/"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/egis3_lacounty/egis3_lacounty_datacatalog.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDetailEgis3Lacounty() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://egis3.lacounty.gov/dataportal/2011/01/27/county-lighting-maintenance-district/"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/egis3_lacounty/egis3_lacounty_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDadosFortaleza() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.data.brisbane.qld.gov.au/data/dataset"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/dados_fortaleza/dados_fortaleza__search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDetailDadosFortaleza() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.data.brisbane.qld.gov.au/data/dataset"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/dados_fortaleza/dados_fortaleza_detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
 	public void testAnalyzer() throws URISyntaxException {
 		CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");
