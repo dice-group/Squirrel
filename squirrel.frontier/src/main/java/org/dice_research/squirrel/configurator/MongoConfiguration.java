@@ -43,7 +43,7 @@ public class MongoConfiguration extends Configuration {
         Integer serverTimeout = getSrv_Timeout();
 
 
-        if(MDBHostName != null && MDBPort != null && connectionTimeout != null && socketTimeout != null && serverTimeout != null) {
+        if(MDBHostName != null && MDBPort != 0 && connectionTimeout != 0 && socketTimeout != 0 && serverTimeout != 0) {
             return new MongoConfiguration(MDBHostName, MDBPort,connectionTimeout,socketTimeout,serverTimeout);
         } else if(MDBHostName != null && MDBPort != null){
         	return new MongoConfiguration(MDBHostName, MDBPort);
