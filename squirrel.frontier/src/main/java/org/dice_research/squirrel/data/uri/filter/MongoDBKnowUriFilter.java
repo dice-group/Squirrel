@@ -68,7 +68,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 	
-		if(mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null) {
+		if(mongoConfiguration != null &&(mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null)) {
 			optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
 			optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
 			optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
