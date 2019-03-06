@@ -1,6 +1,4 @@
-FROM openjdk:8u151-jdk
-
-RUN apt-get update && apt-get install -y netcat
+FROM openjdk:8u151-jdk-alpine
 
 COPY ./squirrel.mockup/target/squirrel.mockup.jar /data/squirrel/squirrel.jar
 WORKDIR /data/squirrel
