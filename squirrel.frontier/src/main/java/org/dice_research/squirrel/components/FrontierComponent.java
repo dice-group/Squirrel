@@ -137,6 +137,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         Timer timer = new Timer();
         timer.schedule(terminatorTask, 10000,60000);
         terminationMutex.acquire();
+        timer.cancel();
     }
 
     @Override
