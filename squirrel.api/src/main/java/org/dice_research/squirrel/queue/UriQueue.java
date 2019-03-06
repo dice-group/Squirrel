@@ -32,20 +32,19 @@ public interface UriQueue {
     
     
     /**
-     * 
-     * Returns true is the queue is empty
+     * Returns true if the queue is empty
      * 
      * @return
      */
     public boolean isEmpty();
 
     /**
-     * Close RDB connection, destroy the database.
+     * Closes the queue and frees all resources.
      */
     public void close();
 
     /**
-     * Open RDB connection, init the database.
+     * Opens the queue and allocates necessary resources.
      */
     public void open();
 }

@@ -96,8 +96,6 @@ public class FrontierImpl implements Frontier {
      */
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
         
-    private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
-
     /**
      * Constructor.
      *
@@ -258,7 +256,7 @@ public class FrontierImpl implements Frontier {
             }
             
         } else {
-            LOGGER.info("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
+            LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }
     }
 
@@ -340,7 +338,4 @@ public class FrontierImpl implements Frontier {
         return queue;
     }
     
-    public void setTerminationCheck(TerminationCheck terminationCheck) {
-        this.terminationCheck = terminationCheck;
-    }
 }

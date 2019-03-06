@@ -16,15 +16,15 @@ public class AliveMessage implements Serializable {
     /**
      * The id of the worker that sends the alive message.
      */
-    private int idOfWorker;
+    private String workerId;
 
     /**
      * Create aliveMessage by an id of a worker.
      *
      * @param idOfWorker The id of the worker.
      */
-    public AliveMessage(int idOfWorker) {
-        this.idOfWorker = idOfWorker;
+    public AliveMessage(String workerId) {
+        this.workerId = workerId;
     }
 
     /**
@@ -32,8 +32,8 @@ public class AliveMessage implements Serializable {
      *
      * @return the id of the worker.
      */
-    public int getIdOfWorker() {
-        return idOfWorker;
+    public String getWorkerId() {
+        return workerId;
     }
 
 }
