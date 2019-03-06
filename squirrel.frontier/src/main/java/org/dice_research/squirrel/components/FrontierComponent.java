@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
@@ -28,6 +30,8 @@ import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
+import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
+import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
@@ -96,8 +100,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling,
-                terminationMutex);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -130,7 +133,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        // Wait for termination
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
+        Timer timer = new Timer();
+        timer.schedule(terminatorTask, 10000,60000);
         terminationMutex.acquire();
     }
 
@@ -245,5 +250,26 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public WorkerGuard getWorkerGuard() {
         return workerGuard;
+    }
+    
+    private class TerminatorTask extends TimerTask{
+    	
+    	private IpAddressBasedQueue queue;
+    	private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
+    	private Semaphore terminationMutex;
+    	
+    	public TerminatorTask(IpAddressBasedQueue queue, Semaphore terminationMutex) {
+    		this.queue = queue;
+    		this.terminationMutex = terminationMutex;
+		}
+
+		@Override
+		public void run() {
+			if(terminationCheck.shouldFrontierTerminate(queue)) {
+	        	LOGGER.error("FRONTIER IS TERMINATING!", new Exception());
+	        	terminationMutex.release();
+	        }			
+		}
+    	
     }
 }

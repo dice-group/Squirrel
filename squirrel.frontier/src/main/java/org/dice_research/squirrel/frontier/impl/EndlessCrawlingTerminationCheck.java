@@ -1,10 +1,13 @@
 package org.dice_research.squirrel.frontier.impl;
 
-public class EndlessCrawlingTerminationCheck implements TerminationCheck {
+import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 
-    @Override
-    public boolean shouldFrontierTerminate(FrontierImpl frontier) {
-        // return always false
-        return false;
-    }
+public class EndlessCrawlingTerminationCheck {
+
+	public boolean shouldFrontierTerminate(IpAddressBasedQueue queue) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 }
