@@ -1,0 +1,24 @@
+file_descriptor:
+    check:
+        domain: catalogue.data.govt.nz
+        ignore-request: true
+
+    search-result-page:
+        regex: dataset
+        resources:
+            "http://projekt-opal.de/dataset#link":  .dataset-heading a
+            "http://projekt-opal.de/dataset#pagination": .pagination a:contains(»)
+
+    detail-page:
+        regex: dataset/*
+        resources:
+            "http://purl.org/dc/terms/title": .module-content h1.heading:eq(0)
+            "http://purl.org/dc/terms/description": section.module-content p
+            "http://purl.org/dc/terms/publisher": tr:contains(Author) td
+            "http://purl.org/dc/terms/creator": tr:contains(Maintainer) td
+            "http://purl.org/dc/terms/modified": tr:contains(Date modified) td
+            "http://purl.org/dc/terms/issued": tr:contains(Created) td
+            "http://www.w3.org/ns/dcat#distribution": tr:contains(Source) td a
+            "http://purl.org/dc/terms/language": tr:contains(Language) td
+            "http://purl.org/dc/terms/spatial": tr:contains(Spatial) td
+            "http://www.w3.org/ns/dcat#downloadURL": .dropdown-menu li:eq(1) a

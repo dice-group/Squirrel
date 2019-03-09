@@ -1,0 +1,13 @@
+file_descriptor:
+    check:
+        domain: sciencebase.gov
+        ignore-request: true
+
+    detail-page:
+        regex: catalog/item
+        resources:
+            "http://purl.org/dc/terms/title": header h1
+            "http://purl.org/dc/terms/description": .sb-expander-content span[itemprop="articleBody"]
+            "http://purl.org/dc/terms/modified": dd[itemprop="datePublished"]
+            "http://purl.org/dc/terms/issued": dd[itemprop="datePublished"]
+            "http://www.w3.org/ns/dcat#downloadURL": .sb-download-link

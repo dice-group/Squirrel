@@ -1,0 +1,19 @@
+file_descriptor:
+    check:
+        domain: usgs.gov
+        ignore-request: true
+
+    search-result-page:
+        regex: data-and-tools/science-datasets
+        resources:
+            "http://projekt-opal.de/dataset#link":  .list-title a
+            "http://projekt-opal.de/dataset#pagination": .next a
+
+    detail-page:
+        regex: catalog/item
+        resources:
+            "http://purl.org/dc/terms/title": header h1
+            "http://purl.org/dc/terms/description": .sb-expander-content span[itemprop="articleBody"]
+            "http://purl.org/dc/terms/modified": dd[itemprop="datePublished"]
+            "http://purl.org/dc/terms/issued": dd[itemprop="datePublished"]
+            "http://www.w3.org/ns/dcat#downloadURL": .sb-download-link
