@@ -1,0 +1,22 @@
+file_descriptor:
+    check:
+        domain: stlouis-mo.gov
+        ignore-request: true
+    search-result-page:
+        regex: data/all
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link": .row td a
+
+    download_page:
+        regex: data/
+        resources:
+            "http://projekt-opal.de/dataset/$label":
+                "http://purl.org/dc/terms/title": .col-sm-12 h1
+                "http://purl.org/dc/terms/description": .page-summary
+                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/name": .col-md-8 .list-group li:nth-child(1)
