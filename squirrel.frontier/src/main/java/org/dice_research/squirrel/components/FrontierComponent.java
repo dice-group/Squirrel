@@ -187,21 +187,21 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         if (deserializedData != null) {
-            LOGGER.trace("Got a message (\"{}\").", deserializedData.toString());
+            LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
-                LOGGER.trace("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
-                LOGGER.trace("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
+                LOGGER.warn("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
                 frontier.crawlingDone(crawlingResult.uris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
                 String idReceived = message.getWorkerId();
-                LOGGER.trace("Received alive message from worker with id " + idReceived);
+                LOGGER.warn("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", deserializedData.toString());

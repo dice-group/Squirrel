@@ -234,6 +234,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 		try {
 			mongoDB.getCollection(COLLECTION_QUEUE).insertOne(crawleableUriToMongoDocument(uri)[0]);
 			mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
+			LOGGER.warn("Added " + uri.getUri().toString() + " to the queue");
 		} catch (Exception e) {
 			if (e instanceof MongoWriteException)
 				LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
