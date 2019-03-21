@@ -3,6 +3,11 @@ file_descriptor:
         domain: osni-spatial-ni.opendata.arcgis.com
         ignore-request: true
 
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": h3 a:contains(All Data)
+
     search-result-page:
         regex: datasets
         resources:

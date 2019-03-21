@@ -38,10 +38,7 @@ public class HTMLScraperAnalyzer extends AbstractAnalyzer {
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
         try {
             List<Triple> listTriples = htmlScraper.scrape(curi, data);
-            String newUri = htmlScraper.getNewUri();
-            if(newUri!=null){
-            collector.addNewUri(curi, newUri);
-            }
+
             for (Triple triple : listTriples) {
                 sink.addTriple(curi, triple);
                 collector.addTriple(curi, triple);

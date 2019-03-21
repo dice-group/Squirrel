@@ -3,6 +3,16 @@ file_descriptor:
         domain: donnees.ville.montreal.qc.ca
         ignore-request: true
 
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": ul#liste-categories li a
+
+    search-result-page:
+        regex: group
+        resources:
+            "http://projekt-opal.de/dataset#link":  .dataset-heading a
+
     detail-page:
         regex: dataset
         resources:

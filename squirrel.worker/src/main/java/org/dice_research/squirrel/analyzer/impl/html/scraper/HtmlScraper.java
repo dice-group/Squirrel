@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -14,16 +12,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.tdb.store.Hash;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -41,19 +34,12 @@ import org.slf4j.LoggerFactory;
  * @author gsjunior
  */
 public class HtmlScraper {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlScraper.class);
-
     private Map<String, YamlFile> yamlFiles = new HashMap<String, YamlFile>();
-    
     private LinkedHashSet<String> listIterableObjects;
-    
     private String uri;
     private String label;
     private Document doc;
-    private String newUri;
-
-
 
     public HtmlScraper(File file) {
         try {
@@ -78,13 +64,9 @@ public class HtmlScraper {
         listIterableObjects = new LinkedHashSet<String>();
         uri= curi.getUri().toString();
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
-        
-        
-        
+
         if((boolean) yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("ignore-request") && uri.contains("?")) {
-
         	uri = uri.substring(0, uri.indexOf("?"));
-
         }
         
         if (yamlFile != null) {
@@ -128,8 +110,6 @@ public class HtmlScraper {
      * @return
      */
     private List<Triple> updateRelationship(List<Triple> listTriples) {
-    	
-    	
     	Map<String,Set<Triple>> updatedTriples = new HashMap<String, Set<Triple>>();
     	
     	for(String o: listIterableObjects) {
@@ -165,10 +145,6 @@ public class HtmlScraper {
     			updatedTriples.put(o, newTriples);
     			cont++;
     		}
-    		
-    		
-    		
-    		System.out.println();
     	}
     	
     	
@@ -195,132 +171,52 @@ public class HtmlScraper {
 				updatedList.add(t);
 			}
 		}
-		
-	
-    	
+
     	return updatedList;
     }
-       
+
+    /**
+     * Method to execute java script commands in a html page.
+     * @param uri
+     * @throws IOException
+     */
+    private void executeJavaScript(String uri){
+        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+        webClient.setRefreshHandler(new ThreadedRefreshHandler());
+        webClient.getCookieManager().setCookiesEnabled(true);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setUseInsecureSSL(true);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setCssEnabled(true);
+        try {
+            HtmlPage htmlPage = webClient.getPage(uri);
+            webClient.waitForBackgroundJavaScript(Constants.JAVASCRIPT_WAIT_TIME);
+            this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+        } catch (java.io.IOException e){
+            LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
+        }
+    }
 
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, CrawleableUri curi) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
-        Map<String, Object> jsResources = null;
-        for(Entry<String, Object> resEntry: resources.entrySet()){
-            if ((resEntry.getKey().equals(YamlFileAtributes.JAVASCRIPT))||(resEntry.getKey().equals(YamlFileAtributes.PAGINATION))){
-                 jsResources = (Map<String, Object>) resEntry.getValue();
-                resources.remove(resEntry.getKey());
-                break;
-            }
-        }
-        if (jsResources != null)
-            HtmlUnitImp(jsResources, htmlFile, curi);
-
-        uri= curi.getUri().toString();
+        this.uri = curi.getUri().toString();
         Set<Triple> triples = new LinkedHashSet<Triple>();
-
-
-        List<String> resourcesList = new ArrayList<String>();
-        
-        this.uri = uri;
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
+
+        if (!htmlFile.toString().contains("test")) //To prevent downloading a page when running unit test cases
+            executeJavaScript(curi.getUri().toString());
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
-            resourcesList.clear();
-            
-            
-            if(entry.getValue() instanceof Map<?,?>) {
+            if(entry != null) {
             	Stack<Node> stackNode = new Stack<Node>();
             	stackNode.push(NodeFactory.createURI(replaceCommands(entry.getKey())));
-            	
-            	scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode);
+            	scrapeTree(entry,triples,stackNode);
             }
 
         }
 
         return triples;
-    }
-
-    private void HtmlUnitImp(Map<String, Object> resources, File htmlFile, CrawleableUri curi){
-        String id = null, action = null, disable_id = null;
-        long timeout=0, defaultMinWaitingTime=2000;
-        Boolean htmltypejs=false;
-        for(Entry<String, Object> jsEntry: resources.entrySet()){
-            if (jsEntry.getKey().equals(YamlFileAtributes.BUTTON)){
-                Map<String, Object> btnEntry = (Map<String, Object>) jsEntry.getValue();
-                for (Entry<String, Object> btnEntries: btnEntry.entrySet()){
-                    if (btnEntries.getKey().equals(YamlFileAtributes.ACTION))
-                        action = btnEntries.getValue().toString();
-                    if (btnEntries.getKey().equals(YamlFileAtributes.ID))
-                        id = btnEntries.getValue().toString();
-                    if (btnEntries.getKey().equals(YamlFileAtributes.DISABLE_ID))
-                        disable_id = btnEntries.getValue().toString();
-                }
-            }
-        }
-
-        if (action.equals("click"))
-            htmltypejs=true;
-
-        if (id != null && action != null && disable_id != null) {
-            WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
-            webClient.getOptions().setJavaScriptEnabled(htmltypejs);
-            webClient.getOptions().setThrowExceptionOnScriptError(true);
-            webClient.getOptions().setCssEnabled(false);
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-
-
-            try{
-               if (curi.getData("time-out").equals(null)) {
-                  timeout= defaultMinWaitingTime;
-                }else{
-                    timeout= (long) curi.getData("time-out");
-                }
-            } catch (Exception e) {
-                LOGGER.error("An error occurred when retrieving the Time out value, ", e);
-            }
-
-            uri= curi.getUri().toString();
-            try{
-                HtmlPage htmlPage = webClient.getPage(uri);
-                if (action.equals("click")){
-                    try{
-                    HtmlButton btn = (HtmlButton) htmlPage.getElementById(id);
-                    DomElement disabledElement = htmlPage.getElementById(disable_id);
-                    do {
-                        htmlPage = btn.click();
-                        //Thread.sleep(timeout);
-                    } while (!disabledElement.getStyleMap().containsKey("display") ||
-                        (disabledElement.getStyleMap().containsKey("display") &&
-                            !disabledElement.getStyleMap().get("display").getValue().equals("none")));
-                    this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
-                     } catch (Exception e) {
-                    LOGGER.error("An error occurred when trying to scrape Java script, ", e);
-                }
-
-                }else if (action.equals("link")) {
-                    //TODO Test in case of being in last page
-                    try {
-                        HtmlAnchor htmlAnchor = htmlPage.getAnchorByText(id);
-                        HtmlPage htmlpage2 = htmlAnchor.click();
-                        this.newUri=htmlpage2.getUrl().toString(); //Return the Uri of the next page
-                        LOGGER.info("woslet"+ newUri);
-                        this.doc = Jsoup.parse(htmlpage2.getWebResponse().getContentAsString(), "UTF-8");
-                    } catch (Exception e) {
-                        LOGGER.error("An error occurred when trying to scrape html Anchor, ", e);
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.error("An error occurred when trying to scrape the Uri , ", e);
-            }
-        }
-    }
-
-    public String getNewUri(){
-        if (newUri!=null){
-            return newUri;
-        }
-        return null;
     }
     
     private String replaceCommands(String s) {
@@ -328,7 +224,6 @@ public class HtmlScraper {
     	if (s.contains("$uri")) {
  			s = s.replaceAll("\\$uri", uri);
  		}
-
  		
  		if (s.contains("$label")) {
  			s = s.replaceAll("\\$label", label);
@@ -338,40 +233,36 @@ public class HtmlScraper {
     }
     
     /**
-     * 
-     * 
-     * 
-     * @param mapEntry
+     * @param entry
      * @param triples
      * @param stackNode
      * @return
      * @throws MalformedURLException
      */
-    private Set<Triple> scrapeTree(Map<String, Object > mapEntry,Set<Triple> triples, Stack<Node> stackNode) throws MalformedURLException{
-    	for(Entry<String,Object> entry: mapEntry.entrySet()) {
-    		if(entry.getValue() instanceof Map<?,?>) {
-    				Node node = NodeFactory.createURI(replaceCommands(entry.getKey()));
-        			stackNode.push(node);
-                   triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
-            }else if(entry.getValue() instanceof String) {
-            	
-            	Node p = NodeFactory.createURI(entry.getKey());
-    			List<Node> o = jsoupQuery((String) entry.getValue());
-    			if (o.isEmpty()) {
-    				LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
-    				continue;
-    			}
-    			for(Node n : o) {
-    				Triple t = new Triple(stackNode.peek(),p,n);
-        			triples.add(t);
-    			}
-    			
+    private Set<Triple> scrapeTree(Entry<String, Object> entry, Set<Triple> triples, Stack<Node> stackNode) throws MalformedURLException{
+        if(entry.getValue() instanceof Map<?,?>) {
+            for (Entry<String, Object> nestedEntry: ((Map<String, Object>) entry.getValue()).entrySet()) {
+                Node node = NodeFactory.createURI(replaceCommands(nestedEntry.getKey()));
+                stackNode.push(node);
+                triples.addAll(scrapeTree((Map.Entry<String, Object>) nestedEntry.getValue(), triples, stackNode));
             }
-    	}
+        } else if (entry.getValue() instanceof String) {
+            Node p = NodeFactory.createURI(entry.getKey());
+            List<Node> o = jsoupQuery((String) entry.getValue());
+            if (o.isEmpty()) {
+                LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
+            }
+
+            for(Node n : o) {
+                Triple t = new Triple(stackNode.peek(),p,n);
+                triples.add(t);
+            }
+
+        }
     	stackNode.pop();
     	return triples;
     }
-    
+
     /**
      * 
      * @param cssQuery
@@ -417,41 +308,42 @@ public class HtmlScraper {
           } catch (Exception e) {
               LOGGER.warn(e.getMessage() + " :: Uri: " + uri);
           }
-    	 
-    	 
-    	 for (int i = 0; i < elements.size(); i++) {
-             if (elements.get(i).hasAttr("href")) {
-                 if (!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
-                     URL url = new URL(uri);
-                     String path = elements.get(i).attr("href");
-                     String base = url.getProtocol() + "://" + url.getHost() + path;
-                     listNodes.add(NodeFactory.createURI(base));
-                 } else {
-                	 listNodes.add(NodeFactory.createURI(elements.get(i).attr("abs:href")));
-                 }
-             } else {
-                 boolean uriFlag = true;
-                 
-                 String qText = elements.get(i).text();
-                 
-                 if(elements.get(i).text().endsWith("*")) {
-                	 qText = qText.substring(0,qText.length()-1);
-                	 listIterableObjects.add(qText);
-                 }
-                 
-                 try {
-                     new URL(qText);
-                 } catch (MalformedURLException e) {
-                     uriFlag = false;
-                     listNodes.add(NodeFactory.createLiteral(qText));
-                 }
-                 if (uriFlag) {
-                	 listNodes.add(NodeFactory.createURI(qText));
-                 }
-                 
-             }
-                    
 
+    	 if (elements != null) {
+             for (int i = 0; i < elements.size(); i++) {
+                 if (elements.get(i).hasAttr("href")) {
+                     if (!elements.get(i).attr("href").startsWith("http") && !elements.get(i).attr("href").startsWith("https")) {
+                         URL url = new URL(uri);
+                         String path = elements.get(i).attr("href");
+                         String base = url.getProtocol() + "://" + url.getHost() + path;
+                         listNodes.add(NodeFactory.createURI(base));
+                     } else {
+                         listNodes.add(NodeFactory.createURI(elements.get(i).attr("abs:href")));
+                     }
+                 } else {
+                     boolean uriFlag = true;
+
+                     String qText = elements.get(i).text();
+
+                     if (elements.get(i).text().endsWith("*")) {
+                         qText = qText.substring(0, qText.length() - 1);
+                         listIterableObjects.add(qText);
+                     }
+
+                     try {
+                         new URL(qText);
+                     } catch (MalformedURLException e) {
+                         uriFlag = false;
+                         listNodes.add(NodeFactory.createLiteral(qText));
+                     }
+                     if (uriFlag) {
+                         listNodes.add(NodeFactory.createURI(qText));
+                     }
+
+                 }
+
+
+             }
          }
     	 
     	 return listNodes;
