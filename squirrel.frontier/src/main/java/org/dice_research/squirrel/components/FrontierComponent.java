@@ -133,11 +133,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
-        Timer timer = new Timer();
-        timer.schedule(terminatorTask, 10000,60000);
+//        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
+//        Timer timer = new Timer();
+//        timer.schedule(terminatorTask, 10000,60000);
         terminationMutex.acquire();
-        timer.cancel();
+//        timer.cancel();
     }
 
     @Override
