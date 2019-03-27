@@ -33,12 +33,12 @@ import com.mongodb.client.model.Indexes;
  * 
  * Queue implementation for use with MongoDB
  * 
- * * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
+ * * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
  */
 
 @SuppressWarnings("deprecation")
-public class MongoDBQueue extends AbstractIpAddressBasedQueue {
+public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
 	private MongoClient client;
 	private MongoDatabase mongoDB;
@@ -47,9 +47,9 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	private final String COLLECTION_QUEUE = "queue";
 	private final String COLLECTION_URIS = "uris";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
-	public MongoDBQueue(String hostName, Integer port,Serializer serializer) {
+	public MongoDBIpBasedQueue(String hostName, Integer port,Serializer serializer) {
 		this.serializer = serializer;
 
 		
@@ -72,7 +72,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 
 	}
 
-	public MongoDBQueue(String hostName, Integer port) {
+	public MongoDBIpBasedQueue(String hostName, Integer port) {
 		client = new MongoClient(hostName, port);
 		serializer = new SnappyJavaUriSerializer();
 	}

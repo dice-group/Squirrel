@@ -21,7 +21,18 @@ public interface UriQueue {
      */
     public void addUri(CrawleableUri uri);
     
+    
+    /**
+     * Adds the given {@link CrawleableUri} instance to the queue.
+     * (should be implemented in the specific queue.
+     * 
+     * @param uri
+     *            the {@link CrawleableUri} instance that should be added to the
+     *            queue.
+     */
     public abstract void addToQueue(CrawleableUri uri);
+    
+    
 
 
     /**

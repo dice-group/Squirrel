@@ -35,7 +35,7 @@ import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
-import org.dice_research.squirrel.queue.MongoDBQueue;
+import org.dice_research.squirrel.queue.MongoDBIpBasedQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
 import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
@@ -76,8 +76,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (mongoConfiguration != null) {
             String dbHostName = mongoConfiguration.getMDBHostName();
             Integer dbPort = mongoConfiguration.getMDBPort();
-            queue = new MongoDBQueue(dbHostName, dbPort, serializer);
-            ((MongoDBQueue) queue).open();
+            queue = new MongoDBIpBasedQueue(dbHostName, dbPort, serializer);
+            ((MongoDBIpBasedQueue) queue).open();
 
             knownUriFilter = new MongoDBKnowUriFilter(dbHostName, dbPort);
             ((MongoDBKnowUriFilter) knownUriFilter).open();

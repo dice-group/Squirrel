@@ -15,7 +15,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.queue.IpUriTypePair;
-import org.dice_research.squirrel.queue.MongoDBQueue;
+import org.dice_research.squirrel.queue.MongoDBIpBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,11 +23,11 @@ import org.junit.Test;
 public class MongoDBQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    private MongoDBQueue mongodbQueue;
+    private MongoDBIpBasedQueue mongodbQueue;
 
     @Before
     public void setUp() throws Exception {
-    	mongodbQueue = new MongoDBQueue("localhost", 58027);
+    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027);
     	
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 
