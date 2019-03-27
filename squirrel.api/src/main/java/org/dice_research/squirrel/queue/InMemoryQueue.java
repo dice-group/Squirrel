@@ -25,7 +25,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addToQueue(CrawleableUri uri) {
+    public void addToQueue(CrawleableUri uri) {
         IpUriTypePair pair = new IpUriTypePair(uri.getIpAddress(), uri.getType());
         if (queue.containsKey(pair)) {
             queue.get(pair).add(uri);

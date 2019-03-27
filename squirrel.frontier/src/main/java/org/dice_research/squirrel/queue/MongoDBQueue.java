@@ -120,7 +120,7 @@ public class MongoDBQueue extends AbstractIpAddressBasedQueue {
 	}
 
 	@Override
-	protected void addToQueue(CrawleableUri uri) {
+	public void addToQueue(CrawleableUri uri) {
 		List<?> ipAddressTypeKey = getIpAddressTypeKey(uri);
 		// if URI exists update the uris list
 		if (queueContainsIpAddressTypeKey(uri, ipAddressTypeKey)) {

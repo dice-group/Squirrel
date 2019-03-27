@@ -20,6 +20,9 @@ public interface UriQueue {
      *            queue.
      */
     public void addUri(CrawleableUri uri);
+    
+    public abstract void addToQueue(CrawleableUri uri);
+
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that

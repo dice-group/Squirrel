@@ -42,8 +42,6 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
         }
     }
 
-    protected abstract void addToQueue(CrawleableUri uri);
-
     @Override
     public List<CrawleableUri> getNextUris() {
         try {
