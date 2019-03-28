@@ -1,0 +1,26 @@
+file_descriptor:
+    check:
+        domain: data-brookline.opendata.arcgis.com
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": .category-grid a:eq(1)
+
+    search-result-page:
+        regex: datasets
+        resources:
+            "http://projekt-opal.de/dataset#link": .card-title a[itemprop="url"]
+
+    detail-page:
+        regex: datasets
+        resources:
+            "http://purl.org/dc/terms/title": div#main-message
+            "http://purl.org/dc/terms/description": span#dataset-description
+            "http://purl.org/dc/terms/publisher": span[itemprop="author"]
+            "http://purl.org/dc/terms/issued": span[itemprop="datePublished"]
+            "http://purl.org/dsnotify/vocab/eventset/sourceDataset": ul#dataset-meta-list li:eq(0) a
+            "http://www.w3.org/ns/dcat#accessURL": ul#dataset-meta-list li:eq(1) a
+            "http://purl.org/dc/terms/license": ul#dataset-meta-list li:eq(2)
+            "http://purl.org/dc/terms/modified": li[itemprop="dateModified"]

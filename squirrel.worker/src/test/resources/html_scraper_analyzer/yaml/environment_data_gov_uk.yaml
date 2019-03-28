@@ -1,0 +1,22 @@
+file_descriptor:
+    check:
+        domain: environment.data.gov.uk
+        ignore-request: true
+
+    search-result-page:
+        regex: registry
+        resources:
+            "http://projekt-opal.de/dataset#link": table#DataTables_Table_0 tbody tr td:eq(0) a
+            "http://projekt-opal.de/dataset#pagination": a.next
+
+    detail-page:
+        regex: registry
+        resources:
+            "http://purl.org/dc/terms/title": div#description h2
+            "http://purl.org/dc/terms/description": div#propertiesTab table tr:contains(description) td:eq(1)
+            "http://www.w3.org/ns/dcat#theme": div#propertiesTab table tr:contains(category) td:eq(1) a
+            "http://purl.org/dc/terms/publisher": div#propertiesTab table tr:contains(publisher) td:eq(1) a
+            "http://purl.org/dc/terms/creator": div#propertiesTab table tr:contains(owner) td:eq(1) a
+            "http://purl.org/dc/terms/license": div#propertiesTab table tr:contains(license) td:eq(1) a
+            "http://purl.org/dc/terms/modified": div#propertiesTab table tr:contains(modified) td:eq(1)
+            "http://www.w3.org/ns/dcat#downloadURL": div#downloadsTab table tr td a:contains(with metadata)

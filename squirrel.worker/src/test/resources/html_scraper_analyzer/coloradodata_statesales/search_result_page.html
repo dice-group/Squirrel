@@ -1,0 +1,1053 @@
+
+<!doctype html>
+<!-- NOTE: we need embed on the html element, not the body -->
+<html lang="en" class=" ">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <title>Search | Colorado Open Data</title>
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta name="description" content="Discover, explore, and download open data from Colorado Open Data" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+
+  <link rel="search" type="application/opensearchdescription+xml" title="Colorado Open Data" href="/opensearch.xml" />
+
+  <link type="text/css" rel="stylesheet" href="//fast.fonts.com/cssapi/4a60d16b-c9e4-404d-89d3-809adb97d65c.css"/>
+
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css" />
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css" />
+  <link rel="canonical" href="http://coloradodata-statesales.opendata.arcgis.com/datasets" />
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application-ie.css" />
+  <![endif]-->
+
+  <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendorhead.js"></script>
+
+  <script>
+    //normalize/shim window.performance.now
+    //NOTE: this needs to be here because we make use of it immediately below
+    window.performance = window.performance || {};
+    window.performance.now =
+      performance.now           ||
+      performance.webkitNow     ||
+      performance.msNow         ||
+      performance.oNow          ||
+      performance.mozNow        ||
+      function() { return new Date().getTime(); };
+
+    window.composerTelemetryStart = window.performance.now();
+  </script>
+
+  <meta name="csrf-param" content="authenticity_token" />
+  <meta name="csrf-token" content="p3xRe6xOXGgmTyAbovawNcQ4Jk4lqHKvk2sX+6zKTmbgCOgiXIFF1jpVc62CGPWCQhbXFn9gS4W2wATPaZmv7A==" />
+</head>
+
+
+<body class="page-datasets action-index custom-site " dir=ltr>
+
+<!-- customer site -->
+<header id="header" role="banner">
+  <div class="container">
+    <div class="row">
+      <div  class="col-xs-12">
+        <div id="home-link-region">
+
+          <div class="inner-header header-nav-items">
+            <a id="home-link" href="http://coloradodata-statesales.opendata.arcgis.com/">
+              <!-- Skip-Nav should be placed ahead of links to allow non-sighted users to bypass navigation -->
+              <a href="#slide-region" class="skip-nav">Skip Navigation</a>
+
+              <div class="tippy-top">
+                <ul class="nav nav-pills pull-right">
+                  <li><a target="_blank" href=""></a></li>
+                </ul>
+              </div>
+              <div class="clearfix"></div>
+              <div class="secondary-menu">
+                <nav class="navbar navbar-static-top">
+                  <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">
+                      <a href="http://coloradodata.statesales.opendata.arcgis.com/">
+			<span class="site-logo">
+	            Colorado Open Data
+	        </span>
+                      </a>
+                    </div>
+                  </div>
+                  <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data<span class="caret"></span></a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                          <li><a href="http://coloradodata.statesales.opendata.arcgis.com/datasets?">Browse All Datasets</a></li>
+                        </ul>
+                      </li>
+                      <li class="dropdown">
+                    </ul>
+                  </div><!--/.nav-collapse -->
+                </nav>
+              </div><!-- /.secondary-menu -->
+              <div class="clearfix"></div><style type='text/css'>body {
+              background-color: #66666;
+              background-position: 0px 40px;
+              background-repeat: no-repeat;
+              background-size: cover;
+              font-family: 'Century Gothic',Helvetica,Arial,sans-serif;
+            }
+
+            #header {
+              background-color: transparent;
+              background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDIyMiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ5JSIgc3RvcC1jb2xvcj0iIzAwMDIyMiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iIzM5NmY4OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzOTZmODkiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+              background: -moz-linear-gradient(top, rgba(0,2,34,1) 0px, rgba(0,2,34,1) 41px, rgba(57,111,137,1) 40px, rgba(57,111,137,1) 90px); /* FF3.6+ */
+              background: -webkit-gradient(linear, left top, left bottom, color-stop(0px,rgba(0,2,34,1)), color-stop(40px,rgba(0,2,34,1)), color-stop(40px,rgba(57,111,137,1)), color-stop(90px,rgba(57,111,137,1))); /* Chrome,Safari4+ */
+              background: -webkit-linear-gradient(top, rgba(0,2,34,1) 0px,rgba(0,2,34,1) 40px,rgba(57,111,137,1) 40px,rgba(57,111,137,1) 90px); /* Chrome10+,Safari5.1+ */
+              background: -o-linear-gradient(top, rgba(0,2,34,1) 0%,rgba(0,2,34,1) 40px,rgba(57,111,137,1) 40px,rgba(57,111,137,1) 90px); /* Opera 11.10+ */
+              background: -ms-linear-gradient(top, rgba(0,2,34,1) 0%,rgba(0,2,34,1) 41px,rgba(57,111,137,1) 40px,rgba(57,111,137,1) 90px); /* IE10+ */
+              background: linear-gradient(to bottom, rgba(0,2,34,1) 0px,rgba(0,2,34,1) 40px,rgba(57,111,137,1) 40px,rgba(57,111,137,1) 90px); /* W3C */
+              filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000222', endColorstr='#396f89',GradientType=0 ); /* IE6-8 */
+              height: 90px;
+            }
+
+            #slide-region, .home #page-content, #footer {
+              background: transparent;
+              background-color: transparent;
+            }
+
+            #banner-container #main-message {
+              color: #000000;
+            }
+
+            ul.nav.nav-pills.pull-right {
+              margin-top: 0px;
+            }
+
+            ul.nav.nav-pills.pull-right #home-link {display:none}
+
+            #home-link-region {
+              margin: 5px;
+            }
+
+            .inner-header .tippy-top li a {
+              color: #C1C1C1 !important;
+              text-transform: capitalize;
+              font-weight: normal;
+            }
+
+            .tippy-top .nav>li>a {
+              margin-top: 0px;
+              padding: 15px 6px;
+            }
+
+            .tippy-top .nav>li>a:focus,
+            .tippy-top .nav>li>a:hover {
+              background-color: #4d4d4d;
+            }
+
+            .tippy-top svg {
+              display: block;
+              width: 24px;
+              height: 21px;
+            }
+
+            .site-brand {
+              margin-top: 0px;
+            }
+
+            .site-logo,
+            .site-logo:hover {
+              color: #fff;
+              font-size: 1.5em;
+            }
+
+            .site-logo .highlight,
+            .site-logo .highlight:hover {
+              color: #6DBCE2;
+            }
+
+            .secondary-menu .navbar {
+              margin-top: 6px;
+              margin-bottom: 0px;
+            }
+
+            .secondary-menu .nav>li>a,
+            .secondary-menu .dropdown-menu>li>a {
+              text-transform: capitalize !important;
+              color: #fff !important;
+            }
+
+            .secondary-menu .dropdown-menu {
+              background-color: #222;
+            }
+
+            .secondary-menu .nav>li>a:focus,
+            .secondary-menu .nav>li>a:hover,
+            .secondary-menu .dropdown-menu>li>a:focus,
+            .secondary-menu .dropdown-menu>li>a:hover {
+              background-color: #2B5E76;
+            }
+
+            .navbar-brand {
+              padding-top: 10px;
+              padding-left: 0px;
+            }
+
+            #title-bar-region {
+              background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%) !important;
+            }
+
+            .intro {
+              margin-bottom: 30px;
+            }
+
+            .intro h1 {
+              font-size: 1.5em;
+              font-weight: 300;
+              margin: 40px auto 10px;
+              color: #000;
+            }
+
+            .categories {
+              margin-top: 30px;
+            }
+
+            .category-box {
+              background-color: #396F89;
+              padding: 25px 10px;
+              box-sizing: border-box;
+              margin-bottom: 20px;
+              height: 178px;
+              opacity: 0.9;
+            }
+
+            .category-box span {
+              color: #6DBCE2;
+              font-size: 45px;
+            }
+
+            .category-box h2 {
+              color: #fff;
+              font-size: 1em;
+              font-weight: normal;
+              line-height: 1.3em;
+            }
+
+            .dept-btn {
+              margin-top: 20px;
+              background-color: #396F89;
+              color: #fff;
+              width: 240px;
+              padding: 15px;
+            }
+
+            .dept-btn:hover {
+              background-color: #2B5E76;
+              text-decoration: underline;
+            }
+
+            .departments {
+              background-color: #396F89;
+              color: #fff;
+            }
+
+            .departments .row {
+              margin-top: 20px;
+              margin-bottom: 30px;
+            }
+
+            .departments ul {
+              list-style: none;
+              padding: 0px;
+              margin: 0px 0px 40px 0px;
+            }
+
+            .departments li a{
+              color: #fff;
+              text-decoration: none;
+              margin-bottom: 8px;
+            }
+
+            .departments li:before {
+              content: "• ";
+              color: #6DBCE2;
+            }
+
+            #footer p {
+              font-size: 0.9em;
+              color: #C1C1C1;
+              margin-top: 5px;
+            }
+
+            #footer p a {
+              color: #C1C1C1;
+            }
+            </style>
+            </a>          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="title-bar-region">
+  <div id="copier"></div>
+  <div class="container" id="title-wrap">
+
+    <div id="title-bar-inner">
+      <div id="search-region" role="search">
+        <a href="/datasets?q=*" data-pjax="true" id="search-all" class="btn light small">BROWSE ALL</a>
+        <div id="search-input-wrapper">
+          <label for="gsearch" class="sr-only">Search</label>
+          <div class="input-group">
+            <form action="/datasets" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />                <input type="search" name="q" id="gsearch" value=" " size="75" autocomplete="off" class="form-control" placeholder="Search for open data" />
+              <div id="click-to-search">search icon</div>
+              <!--<span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">GO</button>
+              </span>-->
+          </div>
+          </form>        </div>
+        <div id="search-results-extent-button-region" class="search-nav-item">
+          <div class="icon-unchecked" >&nbsp; Search Within Map</div>
+        </div>
+      </div>
+
+      <div id="activities-region">
+      </div>
+
+      <div id="user-region"></div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="flyout-right-region">
+  <div id="flyout-right-controls-region"></div>
+  <div id="flyout-content-region"></div>
+</div>
+<div id="map-bar-region" class="">
+  <div id="overlay-region"></div>
+  <div id="controls-region"></div>
+  <div id="legend-region"></div>
+  <div id="map-region">
+    <div id="info-window-container"></div>
+  </div>
+  <div id="locator-region"></div>
+  <div id="title-region" ></div>
+  <div id="progress-region" ></div>
+  <div id="navigation-region"></div>
+</div>
+
+<div id="slide-region" role="main">
+  <div id="slide-me" class="layout">
+    <div id="page-content">
+      <div class="container">
+        <div class="row" id="banner-container">
+          <div class="col-xs-12">
+            <div id="show-banner-region"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="content-sidebar-right">
+            <main id="main" class="col-xs-12 col-md-9" role="main">
+              <div id="dataset-header-row">
+                <form>
+                  <div class="btn-group">
+                    <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle">Sort by </span><span class="caret"></button>
+                    <ul class="dropdown-menu">
+                      <li><a id="relevance" href="#">Relevance</a></li>
+                      <li><a id="name" href="#">Name</a></li>
+                      <li><a id="created" href="#">Upload Date</a></li>
+                      <li><a id="modified" href="#">Most Recent</a></li>
+                    </ul>
+                </form>
+              </div>
+
+              <section id="search-results-region" class="item-list">
+                <div id="search-results">
+                  <ul><li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                    <div data-itemid="5d2bfa736f8448b3a1708e1f6be23eed">
+
+                      <div class="invisible-container">
+                        <div class="card-info-container">
+                          <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                          </div>
+                          <div class="action-icons">
+        <span id="5d2bfa736f8448b3a1708e1f6be23eed" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                          </div>
+                          <div class="action-icons">
+                            <span></span>
+                          </div>
+                          <div class="attributes">
+                            <div class="info-text">-1 locations</div>
+                          </div>
+                          <div class="attributes">
+                            <div class="info-text">0 attributes</div>
+                          </div>
+                        </div><!-- /card-info-container -->
+                        <div class="download-popover"></div>
+                      </div><!-- /invisible-container -->
+
+
+                      <div class="dataset-thumb">
+                        <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                      </div>
+                      <div class="card-title" itemprop="name">
+                        <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/5d2bfa736f8448b3a1708e1f6be23eed"> OpenStreetMap </a>
+                        <em>(from SRQ Basemaps)</em>
+                      </div>
+                      <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">esri_en</span>
+   <span itemprop="datePublished" datetime="2012-02-18T18:09:16Z">on February 18, 2012.</span>
+   <span itemprop="dateModified" datetime="2019-03-20T04:39:21Z">updated about 8 hours ago.</span></span>
+                        <div class="snippet">
+                          <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/5d2bfa736f8448b3a1708e1f6be23eed">
+                            This web map references the live tiled map service from the OpenStreetMap project. OpenStreetMap (OSM) is an open collaborative project to create a free editable map of the world.  Volunteers gather location data using GPS, local knowledge, and other free sources of information such as free satellite imagery, and upload it. The resulting free map can be viewed and downloaded from the OpenStreetMap server: &lt;a href=&quot;http://www.OpenStreetMap.org&quot; target=&quot;_tab&quot;&gt;http://www.OpenStreetMap.org&lt;/a&gt;. See that website for additional information about OpenStreetMap. It is made available as a basemap for GIS work in Esri products under a &lt;a href=&quot;http://creativecommons.org/licenses/by-sa/2.0/&quot; target=&quot;_blank&quot;&gt;Creative Commons Attribution-ShareAlike license&lt;/a&gt;.
+                          </a>
+                          <div class="no-desc"></div>
+                        </div>
+                      </div>
+                      <div class="people-popover"></div>
+
+                    </div>
+                  </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="d8855ee4d3d74413babfb0f41203b168">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="d8855ee4d3d74413babfb0f41203b168" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">-1 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">0 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/d8855ee4d3d74413babfb0f41203b168"> Streets </a>
+                          <em>(from SRQ Basemaps)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">esri_en</span>
+   <span itemprop="datePublished" datetime="2012-02-18T18:08:49Z">on February 18, 2012.</span>
+   <span itemprop="dateModified" datetime="2019-03-20T04:39:21Z">updated about 8 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/d8855ee4d3d74413babfb0f41203b168">
+                              This map features highway-level data for the world and street-level data for North America, Europe, and other parts of the world.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the &lt;a href=&quot;http://www.arcgis.com/home/item.html?id=3b93337983e9436f8db950e38a8629af&quot;&gt;World Street Map&lt;/a&gt; service description.
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="6e03e8c26aad4b9c92a87c1063ddb0e3">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="6e03e8c26aad4b9c92a87c1063ddb0e3" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">-1 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">0 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/6e03e8c26aad4b9c92a87c1063ddb0e3"> Topographic </a>
+                          <em>(from SRQ Basemaps)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">esri_en</span>
+   <span itemprop="datePublished" datetime="2012-02-18T18:07:19Z">on February 18, 2012.</span>
+   <span itemprop="dateModified" datetime="2019-03-20T04:39:21Z">updated about 8 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/6e03e8c26aad4b9c92a87c1063ddb0e3">
+                              This topographic map is designed to be used as a basemap and a reference map.  The map has been compiled by Esri and the ArcGIS user community from a variety of best available sources.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the &lt;a href=&quot;http://goto.arcgisonline.com/maps/World_Topo_Map&quot;&gt;World Topographic Map&lt;/a&gt; service description.
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="48b8cec7ebf04b5fbdcaf70d09daff21">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="48b8cec7ebf04b5fbdcaf70d09daff21" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">-1 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">0 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/48b8cec7ebf04b5fbdcaf70d09daff21"> Oceans </a>
+                          <em>(from SRQ Basemaps)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">esri_en</span>
+   <span itemprop="datePublished" datetime="2012-02-18T18:07:05Z">on February 18, 2012.</span>
+   <span itemprop="dateModified" datetime="2019-03-20T04:39:20Z">updated about 8 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/48b8cec7ebf04b5fbdcaf70d09daff21">
+                              This map is designed to be used as a basemap by marine GIS professionals and as a reference map by anyone interested in ocean data.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the &lt;a href=&quot;http://www.arcgis.com/home/item.html?id=1e126e7520f9466c9ca28b8f28b5e500&quot;&gt;World Ocean Base&lt;/a&gt; map service description.
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="8b3b470883a744aeb60e5fff0a319ce7">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="8b3b470883a744aeb60e5fff0a319ce7" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">-1 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">0 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/8b3b470883a744aeb60e5fff0a319ce7"> Light Gray Canvas </a>
+                          <em>(from SRQ Basemaps)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">esri_en</span>
+   <span itemprop="datePublished" datetime="2012-02-18T18:09:37Z">on February 18, 2012.</span>
+   <span itemprop="dateModified" datetime="2019-03-20T04:39:20Z">updated about 8 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/8b3b470883a744aeb60e5fff0a319ce7">
+                              This map is designed to focus attention on your thematic content by providing a neutral background with minimal colors, labels, and features.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the &lt;a href=&quot;http://www.arcgis.com/home/item.html?id=ed712cb1db3e4bae9e85329040fb9a49&quot;&gt;World Light Gray Base&lt;/a&gt; and &lt;a href=&quot;http://www.arcgis.com/home/item.html?id=87fcdf91a0f14e4a9fda40a763c6f2b8&quot;&gt;World Light Gray Reference&lt;/a&gt; map service descriptions.
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="55dde9e04edd4e06bfd760d2d138eb8f_1">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="55dde9e04edd4e06bfd760d2d138eb8f_1" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">133 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">6 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/55dde9e04edd4e06bfd760d2d138eb8f_1"> Walk Bike Broomfield Survey Table </a>
+                          <em>(from Broomfield Open Data)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">BroomfieldOpenData</span>
+   <span itemprop="datePublished" datetime="2018-08-29T14:34:21Z">on August 29, 2018.</span>
+   <span itemprop="dateModified" datetime="2019-03-19T15:21:33Z">updated about 21 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/55dde9e04edd4e06bfd760d2d138eb8f_1">
+                              City and County of Broomfield Walk Bike Broomfield Initiative
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="fd42be86f5ff4f5c848703aec970ccf6_0">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="fd42be86f5ff4f5c848703aec970ccf6_0" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">619 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">17 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/fd42be86f5ff4f5c848703aec970ccf6_0"> Subdivisions </a>
+                          <em>(from Broomfield Open Data)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">BroomfieldOpenData</span>
+   <span itemprop="datePublished" datetime="2016-01-19T17:22:04Z">on January 19, 2016.</span>
+   <span itemprop="dateModified" datetime="2019-03-19T15:21:16Z">updated about 21 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/fd42be86f5ff4f5c848703aec970ccf6_0">
+                              City and County of Broomfield Subdivisions
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="9f124c0896ff4b4e8d2292d9ae83aafb_0">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="9f124c0896ff4b4e8d2292d9ae83aafb_0" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">4 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">8 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/9f124c0896ff4b4e8d2292d9ae83aafb_0"> BuildingInspectionAreas </a>
+                          <em>(from Broomfield Open Data)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">BroomfieldOpenData</span>
+   <span itemprop="datePublished" datetime="2017-07-21T20:43:09Z">on July 21, 2017.</span>
+   <span itemprop="dateModified" datetime="2019-03-19T15:21:16Z">updated about 21 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/9f124c0896ff4b4e8d2292d9ae83aafb_0">
+                              Building Inspection Area
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="0a099781798646a28dc01a019fc4922d_0">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="0a099781798646a28dc01a019fc4922d_0" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">29 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">9 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/0a099781798646a28dc01a019fc4922d_0"> SnowPriorityAreas </a>
+                          <em>(from Broomfield Open Data)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">BroomfieldOpenData</span>
+   <span itemprop="datePublished" datetime="2016-01-19T18:29:36Z">on January 19, 2016.</span>
+   <span itemprop="dateModified" datetime="2019-03-19T15:21:16Z">updated about 21 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/0a099781798646a28dc01a019fc4922d_0">
+                              Snow Priority Areas
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                    <li itemscope itemtype="http://schema.org/Dataset" class="card card-summary item item-type-feature_service">
+                      <div data-itemid="7c79ce47e31d4a71ae2f055b7fd7cee3_0">
+
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+        <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+          <div class="opendata-star-hollow control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+        <span id="7c79ce47e31d4a71ae2f055b7fd7cee3_0" class="download" data-pjax="true" href="#" title="Download this dataset to your computer">
+          <div class="icon-download control-text"></div>
+        </span>
+                            </div>
+                            <div class="action-icons">
+                              <span></span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">4 locations</div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">7 attributes</div>
+                            </div>
+                          </div><!-- /card-info-container -->
+                          <div class="download-popover"></div>
+                        </div><!-- /invisible-container -->
+
+
+                        <div class="dataset-thumb">
+                          <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/default-dataset-thumb.png" style="opacity: 0.4;">
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/7c79ce47e31d4a71ae2f055b7fd7cee3_0"> TrailImprovements </a>
+                          <em>(from Broomfield Open Data)</em>
+                        </div>
+                        <div class="result-main">
+   <span class="result-credit">Shared by <span itemprop="author" class="card-author">BroomfieldOpenData</span>
+   <span itemprop="datePublished" datetime="2018-10-09T23:25:21Z">on October  9, 2018.</span>
+   <span itemprop="dateModified" datetime="2019-03-19T15:21:16Z">updated about 21 hours ago.</span></span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link" data-pjax="true" href="/datasets/7c79ce47e31d4a71ae2f055b7fd7cee3_0">
+                              City and County of Broomfield Trail Improvement Projects
+                            </a>
+                            <div class="no-desc"></div>
+                          </div>
+                        </div>
+                        <div class="people-popover"></div>
+
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+              <div id="results-pagination-region"></div>
+            </main>
+          </div>
+
+          <aside id="sidebar-right" class="col-xs-12 col-md-3 sidebar-navigation">
+            <div id="search-results-favorites-region">
+              <div id="saved-layers" class="dropzone">
+                <div id="my-layers">
+                  <h4>My Favorites</h4>
+                  <div id="fav-region" class="dropzone"></div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      </aside>
+    </div><!-- /row -->
+  </div><!-- /container -->
+
+
+</div>
+</div>
+</div>
+
+
+<footer id="footer" class="footer" role="footer">
+  <div class="container">
+    <div class="row">
+      <div class="row departments">
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <h2>Participating Organizations</h2>
+          </div>
+        </div><!-- /.row -->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-md-offset-1">
+          <ul>
+            <li><a href="http://data.auroraco.opendata.arcgis.com/">Aurora, Colorado</a></li>
+            <li><a href="http://data.bouldercounty.opendata.arcgis.com/">Boulder County, Colorado</a></a></li>
+            <li><a href="http://opendata.broomfield.org/">Broomfield, Colorado</a></a></li>
+            <li><a href="http://data.centennial.opendata.arcgis.com/">Centennial, Colorado</a></a></li>
+            <li><a href="#">Colorado Springs, Colorado</a></a></li>
+            <li><a href="http://gis.dougco.opendata.arcgis.com/">Douglas County, Colorado</a></a></li>
+            <li><a href="http://data.erieco.opendata.arcgis.com/">Erie, Colorado</a></a></li>
+          </ul>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 col-md-offset-1">
+          <ul>
+            <li><a href="#">Loveland, Colorado</a></li>
+            <li><a href="http://greeleygis.greeley.opendata.arcgis.com/">Greeley, Colorado</a></a></li>
+            <li><a href="http://longmontopendata.longmontco.opendata.arcgis.com/">Longmont, Colorado</a></a></li>
+            <li><a href="http://data.puebloco.opendata.arcgis.com/">Pueblo, Colorado</a></a></li>
+            <li><a href="http://data.routtgis.opendata.arcgis.com/">Routt County, Colorado</a></a></li>
+            <li><a href="http://data.cityofthornton.opendata.arcgis.com/">Thornton, Colorado</a></a></li>
+            <li><a href="http://data.westminster.opendata.arcgis.com/">Westminster, Colorado</a></a></li>
+          </ul>
+        </div>
+      </div><!-- /.row -->
+      <div class="row">
+
+        <div class="col-md-12 last">
+          <p> ©2016 <a href="https://www.colorado.gov/">State of Colorado</a></p>
+
+        </div>
+
+      </div>
+      <style type='text/css'></style>
+    </div>
+  </div>
+</footer>
+
+<!--
+<footer id="sub-footer" >
+  <div class="container">
+    <div class="row" >
+      <div class="column-12">
+        <a href="">Powered by ArcGIS for Open Data</a>
+        | f5cddae
+        | deploy
+        | 2018-12-11 09:03:58 -0500
+      </div>
+    </div>
+  </div>
+</footer>
+ -->
+
+
+<!-- loading this down here to improve page load
+this isn't used until the js below is loaded -->
+<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
+
+<!--[if lte IE 8]>
+<script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor-ie.min.js"></script>
+<![endif]-->
+<!--[if gte IE 9]><!-->
+<script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor.min.js"></script>
+<!--<![endif]-->
+
+<script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/composer-ui.min.js"></script>
+
+<script type="text/javascript">
+  I18n.defaultLocale = "en";
+  I18n.fallbacks = true;
+</script>
+
+<script id="site-configuration-json" type="text/json">
+  {"site_info":{"title":"Colorado Open Data","default_extent":{"type":"extent","xmin":-12165430.3392757,"ymin":4403098.21513507,"xmax":-11326457.5168178,"ymax":5041500.2753727,"spatialReference":{"wkid":102100}},"mapbar_enabled":false,"flags":{"charts":true,"autocomplete":true,"large_dataset_extent":true,"geohash":true,"one_click_styling":true,"heatmap":true,"projection":false,"signin":false,"comments_enabled":true,"api_explorer":false,"activities":true,"pages":false,"my_data":false,"social_logins":false,"metadata_tab":false,"dataset_identity":false},"map":{"basemaps":{"type":"default","primary":{"extent":{"xmin":-20037507.0671618,"ymin":-19971868.8804086,"xmax":20037507.0671618,"ymax":19971868.8804086,"spatialReference":{"wkid":102100}},"isWebMercator":true,"title":"Light Gray Canvas","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer","type":"ArcGISTiledMapServiceLayer"},{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer","isReference":true,"type":"ArcGISTiledMapServiceLayer"}]},"secondary":{"extent":{"xmin":-20037507.0671618,"ymin":-19971868.8804086,"xmax":20037507.0671618,"ymax":19971868.8804086,"spatialReference":{"wkid":102100}},"isWebMercator":true,"title":"World Imagery","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"}]}}},"default_license":{"title":"none","description":"no default license specified"}}}
+</script>
+
+<script id="site-serialized-datasets-json" type="text/json">
+  {"data":[{"id":"5d2bfa736f8448b3a1708e1f6be23eed","landing_page":"https://www.arcgis.com/home/item.html?id=5d2bfa736f8448b3a1708e1f6be23eed","description":"This web map references the live tiled map service from the OpenStreetMap project. OpenStreetMap (OSM) is an open collaborative project to create a free editable map of the world.  Volunteers gather location data using GPS, local knowledge, and other free sources of information such as free satellite imagery, and upload it. The resulting free map can be viewed and downloaded from the OpenStreetMap server: <a href=\"http://www.OpenStreetMap.org\" target=\"_tab\">http://www.OpenStreetMap.org</a>. See that website for additional information about OpenStreetMap. It is made available as a basemap for GIS work in Esri products under a <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\" target=\"_blank\">Creative Commons Attribution-ShareAlike license</a>.","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"OpenStreetMap","type":"ItemMap","item_type":"Web Map","license":"<br />","main_group_description":"GIS datasets available for download by the public.  Data provided by the City of Greeley for reference only.<br /><div><p><font size='2' style='background-color: rgb(255, 255, 255);'>The City makes no representation or warranty as to its accuracy, timeliness, or completeness, and in particular, its accuracy in labeling or displaying dimensions, contours, property boundaries, or placement or location of any map features thereon. THE CITY OF GREELEY MAKES NO WARRANTY OF MERCHANTABILITY OR WARRANTY FOR FITNESS OF USE FOR A PARTICULAR PURPOSE, EXPRESSED OR IMPLIED, WITH RESPECT TO THESE MAP PRODUCTS OR THE UNDERLYING DATA. Any users of these map products, map applications, or data, accepts same AS IS, WITH ALL FAULTS, and assumes all responsibility for the use thereof, and further covenants and agrees to hold the City harmless from and against all damage, loss, or liability arising from any use of this map product, in consideration of the City's having made this information available. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>Independent verification of all data contained herein should be obtained by any user of these map products, or the underlying data. The City disclaims, and shall not be held liable for, any and all damage, loss, or liability, whether direct, indirect, or consequential, which arises or may arise from these map products or the use thereof by any person or entity. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>The City’s Data will be delivered in HARN NAD83 Stateplane US Survey Feet Northern Colorado projection.  The City will do no projection change prior to transfer of the Data.  Client will be responsible for adjusting appropriate coordinate system for their purpose.</font><span style='font-size: 11pt;'></span></p></div>","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/a3de2495a72949a98457eed2c583706b/info/Origin3BlueIcon_5B1_5D.png","main_group_title":"Greeley Open Data","max_record_count":null,"name":"OpenStreetMap","owner":"esri_en","record_count":-1,"tags":["basemap","world","Open Street Map","OSM","OpenStreetMap","international","road","roads","street","streets","wiki","world"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/5d2bfa736f8448b3a1708e1f6be23eed/info/thumbnail/temposm.jpg","sites":[{"title":"Montclair State University Sustainable Situation Room","url":"http://msuinsitu-sustainablemsu.opendata.arcgis.com","logo":null},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"},{"title":"Town of Mashpee","url":"http://data-mashpeegis.opendata.arcgis.com","logo":"http://MashpeeGIS.opendata.arcgis.com/favicon.ico"},{"title":"CAPCOG","url":"http://capcog-assessoroffice.opendata.arcgis.com","logo":"http://AssessorOffice.opendata.arcgis.com/favicon.ico"},{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Office of Geographic Information (MassGIS) Open Data","url":"http://maps-massgis.opendata.arcgis.com","logo":null},{"title":"WA State Salmon Recovery Data Portal (2017 Beta)","url":"http://data.myorg1.com","logo":"//wa-rco.opendata.arcgis.com/favicon.ico"},{"title":"City of Greeley, Colorado - Open GIS Data","url":"http://greeleygis2017-02-01t212304815z-greeley.opendata.arcgis.com","logo":"http://gis3.greeleygov.com/Html5ORIGIN/favicon.ico"}],"public":true,"created_at":"2012-02-18T18:09:16.000Z","updated_at":"2019-03-20T04:39:21.000Z","url":"https://www.arcgis.com/home/webmap/viewer.html?webmap=5d2bfa736f8448b3a1708e1f6be23eed","views":null,"quality":74,"coverage":"global","current_version":"n/a","comments_enabled":true,"service_spatial_reference":null,"metadata_url":null,"org_id":null,"metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":""},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"d8855ee4d3d74413babfb0f41203b168","landing_page":"https://www.arcgis.com/home/item.html?id=d8855ee4d3d74413babfb0f41203b168","description":"This map features highway-level data for the world and street-level data for North America, Europe, and other parts of the world.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the <a href=\"http://www.arcgis.com/home/item.html?id=3b93337983e9436f8db950e38a8629af\">World Street Map</a> service description.","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"Streets","type":"ItemMap","item_type":"Web Map","license":"This work is licensed under the Esri Master License Agreement.<br /><a href=\"http://links.esri.com/agol_mla\" target=\"_blank\"><b>View Terms of Use</b></a>","main_group_description":"GIS datasets available for download by the public.  Data provided by the City of Greeley for reference only.<br /><div><p><font size='2' style='background-color: rgb(255, 255, 255);'>The City makes no representation or warranty as to its accuracy, timeliness, or completeness, and in particular, its accuracy in labeling or displaying dimensions, contours, property boundaries, or placement or location of any map features thereon. THE CITY OF GREELEY MAKES NO WARRANTY OF MERCHANTABILITY OR WARRANTY FOR FITNESS OF USE FOR A PARTICULAR PURPOSE, EXPRESSED OR IMPLIED, WITH RESPECT TO THESE MAP PRODUCTS OR THE UNDERLYING DATA. Any users of these map products, map applications, or data, accepts same AS IS, WITH ALL FAULTS, and assumes all responsibility for the use thereof, and further covenants and agrees to hold the City harmless from and against all damage, loss, or liability arising from any use of this map product, in consideration of the City's having made this information available. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>Independent verification of all data contained herein should be obtained by any user of these map products, or the underlying data. The City disclaims, and shall not be held liable for, any and all damage, loss, or liability, whether direct, indirect, or consequential, which arises or may arise from these map products or the use thereof by any person or entity. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>The City’s Data will be delivered in HARN NAD83 Stateplane US Survey Feet Northern Colorado projection.  The City will do no projection change prior to transfer of the Data.  Client will be responsible for adjusting appropriate coordinate system for their purpose.</font><span style='font-size: 11pt;'></span></p></div>","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/a3de2495a72949a98457eed2c583706b/info/Origin3BlueIcon_5B1_5D.png","main_group_title":"Greeley Open Data","max_record_count":null,"name":"Streets","owner":"esri_en","record_count":-1,"tags":["basemap"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/d8855ee4d3d74413babfb0f41203b168/info/thumbnail/world_street_map.jpg","sites":[{"title":"Montclair State University Sustainable Situation Room","url":"http://msuinsitu-sustainablemsu.opendata.arcgis.com","logo":null},{"title":"Ashtabula County","url":"http://ashtabulacounty-ashtabulacounty.opendata.arcgis.com","logo":"http://ashtabulacounty.opendata.arcgis.com/sites"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"},{"title":"Town of Mashpee","url":"http://data-mashpeegis.opendata.arcgis.com","logo":"http://MashpeeGIS.opendata.arcgis.com/favicon.ico"},{"title":"CAPCOG","url":"http://capcog-assessoroffice.opendata.arcgis.com","logo":"http://AssessorOffice.opendata.arcgis.com/favicon.ico"},{"title":"Ohio Geographically Referenced Information Program- OGRIP","url":"http://ogrip1-geohio.opendata.arcgis.com","logo":"http://gis3.oit.ohio.gov/ZIPARCHIVES/images/GeOhio Logo.png"},{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Office of Geographic Information (MassGIS) Open Data","url":"http://maps-massgis.opendata.arcgis.com","logo":null},{"title":"WA State Salmon Recovery Data Portal (2017 Beta)","url":"http://data.myorg1.com","logo":"//wa-rco.opendata.arcgis.com/favicon.ico"},{"title":"City of Greeley, Colorado - Open GIS Data","url":"http://greeleygis2017-02-01t212304815z-greeley.opendata.arcgis.com","logo":"http://gis3.greeleygov.com/Html5ORIGIN/favicon.ico"}],"public":true,"created_at":"2012-02-18T18:08:49.000Z","updated_at":"2019-03-20T04:39:21.000Z","url":"https://www.arcgis.com/home/webmap/viewer.html?webmap=d8855ee4d3d74413babfb0f41203b168","views":null,"quality":78,"coverage":"global","current_version":"n/a","comments_enabled":true,"service_spatial_reference":null,"metadata_url":null,"org_id":null,"metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"This work is licensed under the Esri Master License Agreement.<a href=\"http://links.esri.com/agol_mla\" target=\"_blank\">View Terms of Use</a>"},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"6e03e8c26aad4b9c92a87c1063ddb0e3","landing_page":"https://www.arcgis.com/home/item.html?id=6e03e8c26aad4b9c92a87c1063ddb0e3","description":"This topographic map is designed to be used as a basemap and a reference map.  The map has been compiled by Esri and the ArcGIS user community from a variety of best available sources.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the <a href=\"http://goto.arcgisonline.com/maps/World_Topo_Map\">World Topographic Map</a> service description.","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"Topographic","type":"ItemMap","item_type":"Web Map","license":"This work is licensed under the Esri Master License Agreement.<br /><a href=\"http://links.esri.com/agol_mla\" target=\"_blank\"><b>View Terms of Use</b></a>","main_group_description":"GIS datasets available for download by the public.  Data provided by the City of Greeley for reference only.<br /><div><p><font size='2' style='background-color: rgb(255, 255, 255);'>The City makes no representation or warranty as to its accuracy, timeliness, or completeness, and in particular, its accuracy in labeling or displaying dimensions, contours, property boundaries, or placement or location of any map features thereon. THE CITY OF GREELEY MAKES NO WARRANTY OF MERCHANTABILITY OR WARRANTY FOR FITNESS OF USE FOR A PARTICULAR PURPOSE, EXPRESSED OR IMPLIED, WITH RESPECT TO THESE MAP PRODUCTS OR THE UNDERLYING DATA. Any users of these map products, map applications, or data, accepts same AS IS, WITH ALL FAULTS, and assumes all responsibility for the use thereof, and further covenants and agrees to hold the City harmless from and against all damage, loss, or liability arising from any use of this map product, in consideration of the City's having made this information available. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>Independent verification of all data contained herein should be obtained by any user of these map products, or the underlying data. The City disclaims, and shall not be held liable for, any and all damage, loss, or liability, whether direct, indirect, or consequential, which arises or may arise from these map products or the use thereof by any person or entity. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>The City’s Data will be delivered in HARN NAD83 Stateplane US Survey Feet Northern Colorado projection.  The City will do no projection change prior to transfer of the Data.  Client will be responsible for adjusting appropriate coordinate system for their purpose.</font><span style='font-size: 11pt;'></span></p></div>","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/a3de2495a72949a98457eed2c583706b/info/Origin3BlueIcon_5B1_5D.png","main_group_title":"Greeley Open Data","max_record_count":null,"name":"Topographic","owner":"esri_en","record_count":-1,"tags":["basemap"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/6e03e8c26aad4b9c92a87c1063ddb0e3/info/thumbnail/topo_map_2.jpg","sites":[{"title":"Montclair State University Sustainable Situation Room","url":"http://msuinsitu-sustainablemsu.opendata.arcgis.com","logo":null},{"title":"Ashtabula County","url":"http://ashtabulacounty-ashtabulacounty.opendata.arcgis.com","logo":"http://ashtabulacounty.opendata.arcgis.com/sites"},{"title":"OnlineAcct","url":"http://data-online.opendata.arcgis.com","logo":"http://Online.opendata.arcgis.com/favicon.ico"},{"title":"YWAM Townsville","url":"http://maps-ywamtownsville.opendata.arcgis.com","logo":"http://ywamtownsville.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"},{"title":"Town of Mashpee","url":"http://data-mashpeegis.opendata.arcgis.com","logo":"http://MashpeeGIS.opendata.arcgis.com/favicon.ico"},{"title":"CAPCOG","url":"http://capcog-assessoroffice.opendata.arcgis.com","logo":"http://AssessorOffice.opendata.arcgis.com/favicon.ico"},{"title":"Ohio Geographically Referenced Information Program- OGRIP","url":"http://ogrip1-geohio.opendata.arcgis.com","logo":"http://gis3.oit.ohio.gov/ZIPARCHIVES/images/GeOhio Logo.png"},{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Office of Geographic Information (MassGIS) Open Data","url":"http://maps-massgis.opendata.arcgis.com","logo":null},{"title":"WA State Salmon Recovery Data Portal (2017 Beta)","url":"http://data.myorg1.com","logo":"//wa-rco.opendata.arcgis.com/favicon.ico"},{"title":"City of Greeley, Colorado - Open GIS Data","url":"http://greeleygis2017-02-01t212304815z-greeley.opendata.arcgis.com","logo":"http://gis3.greeleygov.com/Html5ORIGIN/favicon.ico"}],"public":true,"created_at":"2012-02-18T18:07:19.000Z","updated_at":"2019-03-20T04:39:21.000Z","url":"https://www.arcgis.com/home/webmap/viewer.html?webmap=6e03e8c26aad4b9c92a87c1063ddb0e3","views":null,"quality":78,"coverage":"global","current_version":"n/a","comments_enabled":true,"service_spatial_reference":null,"metadata_url":null,"org_id":null,"metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"This work is licensed under the Esri Master License Agreement.<a href=\"http://links.esri.com/agol_mla\" target=\"_blank\">View Terms of Use</a>"},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"48b8cec7ebf04b5fbdcaf70d09daff21","landing_page":"https://www.arcgis.com/home/item.html?id=48b8cec7ebf04b5fbdcaf70d09daff21","description":"This map is designed to be used as a basemap by marine GIS professionals and as a reference map by anyone interested in ocean data.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the <a href=\"http://www.arcgis.com/home/item.html?id=1e126e7520f9466c9ca28b8f28b5e500\">World Ocean Base</a> map service description.","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"Oceans","type":"ItemMap","item_type":"Web Map","license":"This work is licensed under the Esri Master License Agreement.<br /><a href=\"http://links.esri.com/agol_mla\" target=\"_blank\"><b>View Terms of Use</b></a>","main_group_description":"GIS datasets available for download by the public.  Data provided by the City of Greeley for reference only.<br /><div><p><font size='2' style='background-color: rgb(255, 255, 255);'>The City makes no representation or warranty as to its accuracy, timeliness, or completeness, and in particular, its accuracy in labeling or displaying dimensions, contours, property boundaries, or placement or location of any map features thereon. THE CITY OF GREELEY MAKES NO WARRANTY OF MERCHANTABILITY OR WARRANTY FOR FITNESS OF USE FOR A PARTICULAR PURPOSE, EXPRESSED OR IMPLIED, WITH RESPECT TO THESE MAP PRODUCTS OR THE UNDERLYING DATA. Any users of these map products, map applications, or data, accepts same AS IS, WITH ALL FAULTS, and assumes all responsibility for the use thereof, and further covenants and agrees to hold the City harmless from and against all damage, loss, or liability arising from any use of this map product, in consideration of the City's having made this information available. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>Independent verification of all data contained herein should be obtained by any user of these map products, or the underlying data. The City disclaims, and shall not be held liable for, any and all damage, loss, or liability, whether direct, indirect, or consequential, which arises or may arise from these map products or the use thereof by any person or entity. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>The City’s Data will be delivered in HARN NAD83 Stateplane US Survey Feet Northern Colorado projection.  The City will do no projection change prior to transfer of the Data.  Client will be responsible for adjusting appropriate coordinate system for their purpose.</font><span style='font-size: 11pt;'></span></p></div>","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/a3de2495a72949a98457eed2c583706b/info/Origin3BlueIcon_5B1_5D.png","main_group_title":"Greeley Open Data","max_record_count":null,"name":"Oceans","owner":"esri_en","record_count":-1,"tags":["basemap"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/48b8cec7ebf04b5fbdcaf70d09daff21/info/thumbnail/tempoceans.jpg","sites":[{"title":"Montclair State University Sustainable Situation Room","url":"http://msuinsitu-sustainablemsu.opendata.arcgis.com","logo":null},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"},{"title":"Town of Mashpee","url":"http://data-mashpeegis.opendata.arcgis.com","logo":"http://MashpeeGIS.opendata.arcgis.com/favicon.ico"},{"title":"CAPCOG","url":"http://capcog-assessoroffice.opendata.arcgis.com","logo":"http://AssessorOffice.opendata.arcgis.com/favicon.ico"},{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Office of Geographic Information (MassGIS) Open Data","url":"http://maps-massgis.opendata.arcgis.com","logo":null},{"title":"SDGs","url":"http://the-sdgs.opendata.arcgis.com","logo":"//sdgs.opendata.arcgis.com/favicon.ico"},{"title":"SDGs","url":"http://the-sdgs.opendata.arcgis.com","logo":"//sdgs.opendata.arcgis.com/favicon.ico"},{"title":"WA State Salmon Recovery Data Portal (2017 Beta)","url":"http://data.myorg1.com","logo":"//wa-rco.opendata.arcgis.com/favicon.ico"},{"title":"City of Greeley, Colorado - Open GIS Data","url":"http://greeleygis2017-02-01t212304815z-greeley.opendata.arcgis.com","logo":"http://gis3.greeleygov.com/Html5ORIGIN/favicon.ico"}],"public":true,"created_at":"2012-02-18T18:07:05.000Z","updated_at":"2019-03-20T04:39:20.000Z","url":"https://www.arcgis.com/home/webmap/viewer.html?webmap=48b8cec7ebf04b5fbdcaf70d09daff21","views":null,"quality":78,"coverage":"global","current_version":"n/a","comments_enabled":true,"service_spatial_reference":null,"metadata_url":null,"org_id":null,"metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"This work is licensed under the Esri Master License Agreement.<a href=\"http://links.esri.com/agol_mla\" target=\"_blank\">View Terms of Use</a>"},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"8b3b470883a744aeb60e5fff0a319ce7","landing_page":"https://www.arcgis.com/home/item.html?id=8b3b470883a744aeb60e5fff0a319ce7","description":"This map is designed to focus attention on your thematic content by providing a neutral background with minimal colors, labels, and features.  The map is intended to support the ArcGIS Online basemap gallery.  For more details on the map, please visit the <a href=\"http://www.arcgis.com/home/item.html?id=ed712cb1db3e4bae9e85329040fb9a49\">World Light Gray Base</a> and <a href=\"http://www.arcgis.com/home/item.html?id=87fcdf91a0f14e4a9fda40a763c6f2b8\">World Light Gray Reference</a> map service descriptions.","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"Light Gray Canvas","type":"ItemMap","item_type":"Web Map","license":"This work is licensed under the Esri Master License Agreement.<br /><a href=\"http://links.esri.com/agol_mla\" target=\"_blank\"><b>View Terms of Use</b></a>","main_group_description":"GIS datasets available for download by the public.  Data provided by the City of Greeley for reference only.<br /><div><p><font size='2' style='background-color: rgb(255, 255, 255);'>The City makes no representation or warranty as to its accuracy, timeliness, or completeness, and in particular, its accuracy in labeling or displaying dimensions, contours, property boundaries, or placement or location of any map features thereon. THE CITY OF GREELEY MAKES NO WARRANTY OF MERCHANTABILITY OR WARRANTY FOR FITNESS OF USE FOR A PARTICULAR PURPOSE, EXPRESSED OR IMPLIED, WITH RESPECT TO THESE MAP PRODUCTS OR THE UNDERLYING DATA. Any users of these map products, map applications, or data, accepts same AS IS, WITH ALL FAULTS, and assumes all responsibility for the use thereof, and further covenants and agrees to hold the City harmless from and against all damage, loss, or liability arising from any use of this map product, in consideration of the City's having made this information available. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>Independent verification of all data contained herein should be obtained by any user of these map products, or the underlying data. The City disclaims, and shall not be held liable for, any and all damage, loss, or liability, whether direct, indirect, or consequential, which arises or may arise from these map products or the use thereof by any person or entity. </font></p>  <p><font size='2' style='background-color: rgb(255, 255, 255);'>The City’s Data will be delivered in HARN NAD83 Stateplane US Survey Feet Northern Colorado projection.  The City will do no projection change prior to transfer of the Data.  Client will be responsible for adjusting appropriate coordinate system for their purpose.</font><span style='font-size: 11pt;'></span></p></div>","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/a3de2495a72949a98457eed2c583706b/info/Origin3BlueIcon_5B1_5D.png","main_group_title":"Greeley Open Data","max_record_count":null,"name":"Light Gray Canvas","owner":"esri_en","record_count":-1,"tags":["basemap"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/8b3b470883a744aeb60e5fff0a319ce7/info/thumbnail/light_gray_canvas.jpg","sites":[{"title":"Montclair State University Sustainable Situation Room","url":"http://msuinsitu-sustainablemsu.opendata.arcgis.com","logo":null},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"},{"title":"Town of Mashpee","url":"http://data-mashpeegis.opendata.arcgis.com","logo":"http://MashpeeGIS.opendata.arcgis.com/favicon.ico"},{"title":"CAPCOG","url":"http://capcog-assessoroffice.opendata.arcgis.com","logo":"http://AssessorOffice.opendata.arcgis.com/favicon.ico"},{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Office of Geographic Information (MassGIS) Open Data","url":"http://maps-massgis.opendata.arcgis.com","logo":null},{"title":"WA State Salmon Recovery Data Portal (2017 Beta)","url":"http://data.myorg1.com","logo":"//wa-rco.opendata.arcgis.com/favicon.ico"},{"title":"City of Greeley, Colorado - Open GIS Data","url":"http://greeleygis2017-02-01t212304815z-greeley.opendata.arcgis.com","logo":"http://gis3.greeleygov.com/Html5ORIGIN/favicon.ico"}],"public":true,"created_at":"2012-02-18T18:09:37.000Z","updated_at":"2019-03-20T04:39:20.000Z","url":"https://www.arcgis.com/home/webmap/viewer.html?webmap=8b3b470883a744aeb60e5fff0a319ce7","views":null,"quality":88,"coverage":"global","current_version":"n/a","comments_enabled":true,"service_spatial_reference":null,"metadata_url":null,"org_id":null,"metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"This work is licensed under the Esri Master License Agreement.<a href=\"http://links.esri.com/agol_mla\" target=\"_blank\">View Terms of Use</a>"},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"display_field":"CATEGORY","max_record_count":1000,"record_count":133,"geometry_type":null,"object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":false,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supports_advanced_queries":true,"id":"55dde9e04edd4e06bfd760d2d138eb8f_1","landing_page":"https://www.arcgis.com/home/item.html?id=55dde9e04edd4e06bfd760d2d138eb8f","description":"City and County of Broomfield Walk Bike Broomfield Initiative","extent":{"coordinates":[[-105.29,39.8599999990716],[-104.84,40.0699999990704]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:28.329Z"},{"name":"CATEGORY","type":"esriFieldTypeString","alias":"CATEGORY","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:28.329Z"},{"name":"SURVEY_COMMENT","type":"esriFieldTypeString","alias":"SURVEY_COMMENT","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:28.329Z"},{"name":"USER_COMMENT","type":"esriFieldTypeString","alias":"USER_COMMENT","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:28.329Z"},{"name":"LAST_UPDATE","type":"esriFieldTypeDate","alias":"LAST_UPDATE","domain":null,"updated_at":"2019-03-19T15:21:28.423Z","statistics":{"duration":94.3188730478287,"count":133,"min":1536102386000,"max":1536347493000}},{"name":"GlobalID","type":"esriFieldTypeString","alias":"GlobalID","domain":null,"updated_at":"2019-03-19T15:21:28.425Z","statistics":{"values":[{"value":"{FF76E4CB-C4D2-4511-9E2B-90B34D6BD928}","count":1},{"value":"{FE4C9BA8-42B7-4417-AE61-45399CB535E7}","count":1},{"value":"{FE070833-962D-4126-8974-421C828008DD}","count":1},{"value":"{FAFCEBC7-801C-435C-92AF-50007313606D}","count":1},{"value":"{F6A49FF0-1F85-4EAA-8AF3-E3A43C185DCF}","count":1},{"value":"{F5280C24-746E-4EF5-8E93-E3C27EC76D82}","count":1},{"value":"{F0ED82E8-92E1-4CA2-B442-FD13150A158E}","count":1},{"value":"{F06D4DB4-C06E-4B0C-B675-EE1ECA92C1D9}","count":1},{"value":"{F0166130-76CA-44B0-A29B-018F92935AC8}","count":1},{"value":"{E807085F-67B4-4F4D-B710-198D5B31D601}","count":1}],"duration":95.530111014843,"count":133}}],"item_name":"WalkBikeBroomfield","type":"ItemLayer","item_type":"Table","license":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. The data provided on this site is prepared for the inventory of real property found within the City and County of Broomfield, and is compiled from recorded plats, deeds and other public records. Use of this information is the sole responsibility of the user; the City and County of Broomfield assumes no liability associated with the use or misuse of this information.","main_group_description":"Broomfield Open Data","main_group_thumbnail_url":null,"main_group_title":"Broomfield Open Data","max_record_count":1000,"name":"Walk Bike Broomfield Survey Table","owner":"BroomfieldOpenData","record_count":133,"tags":["Broomfield"," Colorado"," Community Development"," Open Space and Trails"," Trails"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/55dde9e04edd4e06bfd760d2d138eb8f/info/thumbnail/thumbnail.png","sites":[{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Broomfield Open Data","url":"http://data-03032017-broomfield.opendata.arcgis.com","logo":"http://broomfield-opendata.s3.amazonaws.com/assets/city-logo-unsealed-favicon-32x32.png"}],"public":true,"created_at":"2018-08-29T14:34:21.000Z","updated_at":"2019-03-19T15:21:33.336Z","url":"https://services1.arcgis.com/vXSRPZbyyOmH9pek/arcgis/rest/services/WalkBikeBroomfield/FeatureServer/1","views":null,"quality":80,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":2876,"latestWkid":2876},"metadata_url":"https://www.arcgis.com/sharing/rest/content/items/55dde9e04edd4e06bfd760d2d138eb8f/info/metadata/metadata.xml?format=default&output=html","org_id":"vXSRPZbyyOmH9pek","metadata":{"published":null,"present":true,"url":"https://www.arcgis.com/sharing/rest/content/items/55dde9e04edd4e06bfd760d2d138eb8f/info/metadata/metadata.xml","online_resources":[]},"structured_license":{"type":"custom","text":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. The data provided on this site is prepared for the inventory of real property found within the City and County of Broomfield, and is compiled from recorded plats, deeds and other public records. Use of this information is the sole responsibility of the user; the City and County of Broomfield assumes no liability associated with the use or misuse of this information."},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":false,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supported_extensions":""},{"display_field":"FULL_NAME","max_record_count":1000,"record_count":619,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID_1","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supports_advanced_queries":true,"id":"fd42be86f5ff4f5c848703aec970ccf6_0","landing_page":"https://www.arcgis.com/home/item.html?id=fd42be86f5ff4f5c848703aec970ccf6","description":"City and County of Broomfield Subdivisions","extent":{"coordinates":[[-105.29,39.8599999990716],[-104.84,40.0699999990704]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeInteger","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:07.768Z"},{"name":"GlobalID","type":"esriFieldTypeString","alias":"GlobalID","domain":null,"updated_at":"2019-03-19T15:21:08.955Z","statistics":{"values":[{"value":"{868DDC33-A1C7-4FA1-8B7A-D455D856432B}","count":2},{"value":"{715C137F-4659-474E-8208-86D81B1F2BC5}","count":2},{"value":"{48937166-8431-49FF-AE1E-4D84C7F39A28}","count":2},{"value":"{2F0B5A36-A5FE-48B9-94DC-3D791D3A72C6}","count":2},{"value":"{1AFA16F7-373C-40C0-BF52-83F3805A78AB}","count":2},{"value":"{18D64C64-E9A3-4D79-9F5D-C7AE1BC123FE}","count":2},{"value":"{076C7B26-7BD8-48CB-AB60-0728BDCD0FB2}","count":2},{"value":"{FFEB21B2-CE4A-4836-9780-54134AE8F0BF}","count":1},{"value":"{FF9934FF-CEEF-4BB0-8521-2281A08C8226}","count":1},{"value":"{FF5ABDA1-9731-4F56-8B07-A52DCAB2D015}","count":1}],"duration":1187.05435299873,"count":612}},{"name":"GIS_ID","type":"esriFieldTypeInteger","alias":"GIS_ID","domain":null,"updated_at":"2019-03-19T15:21:07.852Z","statistics":{"duration":83.5794180035591,"sum":79822738,"avg":128954.342487884,"count":619,"min":45016,"max":622964,"stddev":161287.081661186,"var":26013522710.7822}},{"name":"FULL_NAME","type":"esriFieldTypeString","alias":"Full Name","domain":null,"updated_at":"2019-03-19T15:21:07.890Z","statistics":{"values":[{"value":"BROADLANDS GOLF COURSE ","count":4},{"value":"GREAT WESTERN PARK 1","count":3},{"value":"WILDGRASS 3","count":2},{"value":"WILDGRASS 2","count":2},{"value":"WILDGRASS 1","count":2},{"value":"PARKWAY CIRCLE 2 REPLAT A","count":2},{"value":"MOUNTAIN VIEW ESTATES 1 REPLAT A","count":2},{"value":"MOUNTAIN VIEW ESTATES 1","count":2},{"value":"MONARCH 1 REPLAT B","count":2},{"value":"MONARCH 1 REPLAT A","count":2}],"duration":122.131137013435,"count":602}},{"name":"NEIGHBORHOOD_FULL_NAME","type":"esriFieldTypeString","alias":"Neighborhood Full Name","domain":null,"updated_at":"2019-03-19T15:21:07.869Z","statistics":{"values":[{"value":"BROADLANDS","count":42},{"value":"ANTHEM","count":33},{"value":"MIDCITIES","count":27},{"value":"INTERLOCKEN","count":25},{"value":"GREAT WESTERN PARK","count":20},{"value":"BROOMFIELD URBAN TRANSIT VILLAGE","count":20},{"value":"WESTLAKE VILLAGE","count":16},{"value":"PALISADE PARK","count":15},{"value":"NORTHMOOR ESTATES","count":13},{"value":"MCKAY LANDING","count":13}],"duration":100.122276008129,"count":142}},{"name":"NEIGHBORHOOD_CODE","type":"esriFieldTypeString","alias":"Neighborhood Code","domain":null,"updated_at":"2019-03-19T15:21:07.963Z","statistics":{"values":[{"value":"BLAND","count":42},{"value":"ANTHEM","count":33},{"value":"MIDCITIES","count":27},{"value":"INTERLOCKEN","count":25},{"value":"GW PK","count":20},{"value":"BRM UTV","count":20},{"value":"WESTLAKE VILLAGE","count":16},{"value":"PALISADE PK","count":15},{"value":"NORTHMOOR ESTS","count":13},{"value":"MCKAY LND","count":13}],"duration":194.284147024155,"count":140}},{"name":"FILING_CODE","type":"esriFieldTypeString","alias":"Filing Code","domain":null,"updated_at":"2019-03-19T15:21:07.927Z","statistics":{"values":[{"value":"1","count":114},{"value":"2","count":45},{"value":"3","count":34},{"value":"4","count":28},{"value":"1 REPLAT A","count":26},{"value":"5","count":19},{"value":"6","count":17},{"value":"1 REPLAT B","count":17},{"value":"REPLAT A","count":13},{"value":"1 REPLAT C","count":12}],"duration":158.083831012249,"count":126}},{"name":"IS_CONDO","type":"esriFieldTypeString","alias":"Is Condo","domain":null,"updated_at":"2019-03-19T15:21:07.928Z","statistics":{"values":[{"value":"FALSE","count":593},{"value":"TRUE","count":26}],"duration":158.812247991562,"count":2}},{"name":"LEGACY_SNAME","type":"esriFieldTypeString","alias":"Legacy Subdivision Name","domain":null,"updated_at":"2019-03-19T15:21:07.877Z","statistics":{"values":[{"value":"UNPLATTED","count":54},{"value":"BROADLANDS","count":33},{"value":"MIDCITIES","count":27},{"value":"INTERLOCKEN","count":24},{"value":"BROOMFIELD URBAN TRANSIT VILLAGE","count":20},{"value":"ANTHEM","count":18},{"value":"WESTLAKE VILLAGE","count":15},{"value":"NORTHMOOR ESTATES","count":13},{"value":"COUNTRY ESTATES","count":12},{"value":"THE OUTLOOK","count":11}],"duration":107.490883052349,"count":169}},{"name":"LEGACY_FNAME","type":"esriFieldTypeString","alias":"Legacy Filing Name","domain":null,"updated_at":"2019-03-19T15:21:07.916Z","statistics":{"values":[{"value":"1","count":97},{"value":"2","count":44},{"value":"4","count":38},{"value":"3","count":36},{"value":"6","count":16},{"value":"5","count":15},{"value":"7","count":11},{"value":"11","count":10},{"value":"A","count":9},{"value":"8","count":9}],"duration":146.682066977024,"count":118}},{"name":"AIMS_SUBCODE","type":"esriFieldTypeString","alias":"AIMS Subdivision Code","domain":null,"updated_at":"2019-03-19T15:21:07.886Z","statistics":{"values":[{"value":"1069","count":4},{"value":"4009","count":3},{"value":"3053","count":3},{"value":"7243","count":2},{"value":"7228","count":2},{"value":"7190","count":2},{"value":"7183","count":2},{"value":"7122","count":2},{"value":"7101","count":2},{"value":"7047","count":2}],"duration":116.213159024715,"count":589}},{"name":"USER_COMMENT","type":"esriFieldTypeString","alias":"User Comment","domain":null,"updated_at":"2019-03-19T15:21:07.904Z","statistics":{"values":[{"value":"Replatted a portion of 4 and all 4 Replat C","count":1},{"value":"Partial Replat 7","count":1}],"duration":133.930478990078,"count":2}},{"name":"F_NEIGH_GIS_ID","type":"esriFieldTypeInteger","alias":"F_NEIGH_GIS_ID","domain":null,"updated_at":"2019-03-19T15:21:07.996Z","statistics":{"duration":225.622102975845,"sum":47709267,"avg":77702.3892508143,"count":614,"min":44777,"max":621010,"stddev":111652.593226763,"var":12466301574.261}},{"name":"LAST_UPDATE","type":"esriFieldTypeDate","alias":"Last Update","domain":null,"updated_at":"2019-03-19T15:21:07.935Z","statistics":{"duration":164.660059988499,"count":496,"min":1396850400000,"max":1551817614000}},{"name":"OBJECTID_1","type":"esriFieldTypeOID","alias":"OBJECTID_1","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:07.771Z"},{"name":"Shape__Area","type":"esriFieldTypeDouble","alias":"Shape__Area","domain":null,"updated_at":"2019-03-19T15:21:08.113Z","statistics":{"duration":342.375742018223,"sum":619400893.766846,"avg":1000647.6474424,"count":619,"min":0.583984375,"max":13469001.8666992,"stddev":1729490.36485524,"var":2991136922127.1}},{"name":"Shape__Length","type":"esriFieldTypeDouble","alias":"Shape__Length","domain":null,"updated_at":"2019-03-19T15:21:08.018Z","statistics":{"duration":246.986492991447,"sum":3004561.16928662,"avg":4853.8952654065,"count":619,"min":234.12791636843,"max":65335.3085859352,"stddev":5923.57287378055,"var":35088715.5909888}}],"item_name":"Subdivisions","type":"ItemLayer","item_type":"Feature Layer","license":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. Use of this information is the sole responsibility of the user and The City and County of Broomfield assumes no liability associated with the use or misuse of this information.","main_group_description":"Broomfield Open Data","main_group_thumbnail_url":null,"main_group_title":"Broomfield Open Data","max_record_count":1000,"name":"Subdivisions","owner":"BroomfieldOpenData","record_count":619,"tags":["Broomfield"," Colorado"," Community Development"," Assessor"," Subdivisions"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/fd42be86f5ff4f5c848703aec970ccf6/info/thumbnail/thumbnail.png","sites":[{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Broomfield Open Data","url":"http://data-03032017-broomfield.opendata.arcgis.com","logo":"http://broomfield-opendata.s3.amazonaws.com/assets/city-logo-unsealed-favicon-32x32.png"}],"public":true,"created_at":"2016-01-19T17:22:04.000Z","updated_at":"2019-03-19T15:21:16.573Z","url":"https://services1.arcgis.com/vXSRPZbyyOmH9pek/arcgis/rest/services/Subdivisions/FeatureServer/0","views":null,"quality":75,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":2876,"latestWkid":2876},"metadata_url":"https://www.arcgis.com/sharing/rest/content/items/fd42be86f5ff4f5c848703aec970ccf6/info/metadata/metadata.xml?format=default&output=html","org_id":"vXSRPZbyyOmH9pek","metadata":{"published":null,"present":true,"url":"https://www.arcgis.com/sharing/rest/content/items/fd42be86f5ff4f5c848703aec970ccf6/info/metadata/metadata.xml","online_resources":[]},"structured_license":{"type":"custom","text":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. Use of this information is the sole responsibility of the user and The City and County of Broomfield assumes no liability associated with the use or misuse of this information."},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supported_extensions":""},{"display_field":"GlobalID","max_record_count":1000,"record_count":4,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supports_advanced_queries":true,"id":"9f124c0896ff4b4e8d2292d9ae83aafb_0","landing_page":"https://www.arcgis.com/home/item.html?id=9f124c0896ff4b4e8d2292d9ae83aafb","description":"Building Inspection Area","extent":{"coordinates":[[-105.29,39.8599999990716],[-104.84,40.0699999990704]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:08.256Z"},{"name":"GlobalID","type":"esriFieldTypeString","alias":"GLOBALID","domain":null,"updated_at":"2019-03-19T15:21:08.384Z","statistics":{"values":[{"value":"{8D1DD372-99B7-4CDA-A86E-6212B0B99FF1}","count":1},{"value":"{50D81D35-4AA5-432E-B2B4-9F4BD97F5C39}","count":1},{"value":"{4F092BA9-998F-4E4B-8F1B-560CBEC33867}","count":1},{"value":"{331B4BC4-D59A-4003-8A62-BF0AC55FC274}","count":1}],"duration":127.872555971146,"count":4}},{"name":"GIS_ID","type":"esriFieldTypeInteger","alias":"GIS_ID","domain":null,"updated_at":"2019-03-19T15:21:08.353Z","statistics":{"duration":96.8280619978905,"sum":973014,"avg":243253.5,"count":4,"min":243252,"max":243255,"stddev":1.29099444873581,"var":1.66666666666667}},{"name":"AREA_ID","type":"esriFieldTypeString","alias":"Area Id","domain":null,"updated_at":"2019-03-19T15:21:08.942Z","statistics":{"values":[{"value":"4","count":1},{"value":"3","count":1},{"value":"2","count":1},{"value":"1","count":1}],"duration":685.461138010025,"count":4}},{"name":"USER_COMMENT","type":"esriFieldTypeString","alias":"User Comment","domain":null,"updated_at":"2019-03-19T15:21:08.382Z","statistics":{"values":null,"duration":124.683525979519,"count":0}},{"name":"LAST_UPDATE","type":"esriFieldTypeDate","alias":"Last Update","domain":null,"updated_at":"2019-03-19T15:21:09.040Z","statistics":{"duration":782.65113401413,"count":4,"min":1395295200000,"max":1395295200000}},{"name":"Shape__Area","type":"esriFieldTypeDouble","alias":"Shape__Area","domain":null,"updated_at":"2019-03-19T15:21:08.357Z","statistics":{"duration":99.4018909931183,"sum":935067486.709473,"avg":233766871.677368,"count":4,"min":36750127.048584,"max":434670373.871094,"stddev":166016170.729779,"var":27561368943779000}},{"name":"Shape__Length","type":"esriFieldTypeDouble","alias":"Shape__Length","domain":null,"updated_at":"2019-03-19T15:21:08.454Z","statistics":{"duration":196.263839006424,"sum":471466.328327432,"avg":117866.582081858,"count":4,"min":28762.9982438856,"max":238102.206310639,"stddev":88073.3670383765,"var":7756917981.47659}}],"item_name":"BuildingInspectionAreas","type":"ItemLayer","item_type":"Feature Layer","license":"The City and County of Broomfield has made every effort to ensure the \naccuracy of its data. Use of this information is the sole responsibility\n of the user and The City and County of Broomfield assumes no liability \nassociated with the use or misuse of this information.","main_group_description":"Broomfield Open Data","main_group_thumbnail_url":null,"main_group_title":"Broomfield Open Data","max_record_count":1000,"name":"BuildingInspectionAreas","owner":"BroomfieldOpenData","record_count":4,"tags":["Broomfield"," Colorado"," Community Development"," Building Inspection Areas"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/9f124c0896ff4b4e8d2292d9ae83aafb/info/thumbnail/thumbnail.png","sites":[{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Broomfield Open Data","url":"http://data-03032017-broomfield.opendata.arcgis.com","logo":"http://broomfield-opendata.s3.amazonaws.com/assets/city-logo-unsealed-favicon-32x32.png"}],"public":true,"created_at":"2017-07-21T20:43:09.000Z","updated_at":"2019-03-19T15:21:16.435Z","url":"https://services1.arcgis.com/vXSRPZbyyOmH9pek/arcgis/rest/services/BuildingInspectionAreas/FeatureServer/0","views":null,"quality":75,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":2876,"latestWkid":2876},"metadata_url":null,"org_id":"vXSRPZbyyOmH9pek","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City and County of Broomfield has made every effort to ensure the \naccuracy of its data. Use of this information is the sole responsibility\n of the user and The City and County of Broomfield assumes no liability \nassociated with the use or misuse of this information."},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supported_extensions":""},{"display_field":"GlobalID","max_record_count":1000,"record_count":29,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supports_advanced_queries":true,"id":"0a099781798646a28dc01a019fc4922d_0","landing_page":"https://www.arcgis.com/home/item.html?id=0a099781798646a28dc01a019fc4922d","description":"Snow Priority Areas","extent":{"coordinates":[[-105.29,39.8599999990716],[-104.84,40.0699999990704]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:07.599Z"},{"name":"GlobalID","type":"esriFieldTypeString","alias":"GlobalID","domain":null,"updated_at":"2019-03-19T15:21:07.743Z","statistics":{"values":[{"value":"{FFA50DB1-302B-48B5-B835-AF9DC0C1E0E7}","count":1},{"value":"{FC4B9F39-5C92-4A53-9B6E-3ED958592B68}","count":1},{"value":"{EA931E26-E145-4FB1-9E25-6B89F6FF4206}","count":1},{"value":"{D10CEE0F-A893-4C61-8139-8D9469E285EC}","count":1},{"value":"{D04F1C09-7B0C-486E-8A52-9873F3D572E7}","count":1},{"value":"{CE5A91F1-56FA-41BE-8E52-0E3BF2C7E64D}","count":1},{"value":"{CCE07738-A081-40F8-B876-6522490B2A4F}","count":1},{"value":"{B482E7EB-1C63-48DF-8045-F287602F4EB6}","count":1},{"value":"{B2031017-EC30-4222-8A95-D6DB81DA9412}","count":1},{"value":"{B0F4E037-9EFC-484F-A8FE-D4741D0B8BFD}","count":1}],"duration":143.912473976612,"count":29}},{"name":"GIS_ID","type":"esriFieldTypeInteger","alias":"GIS_ID","domain":null,"updated_at":"2019-03-19T15:21:07.732Z","statistics":{"duration":132.832099020481,"count":0}},{"name":"ROUTEAREA","type":"esriFieldTypeString","alias":"ROUTEAREA","domain":null,"updated_at":"2019-03-19T15:21:07.723Z","statistics":{"values":[{"value":"Area 4","count":6},{"value":"Area 5","count":3},{"value":"Null","count":2},{"value":"NA","count":2},{"value":"Area 1","count":2},{"value":"Area 9","count":1},{"value":"Area 8","count":1},{"value":"Area 7","count":1},{"value":"Area 6","count":1},{"value":"Area 3","count":1}],"duration":122.784749031067,"count":16}},{"name":"MAP_COLOR","type":"esriFieldTypeInteger","alias":"MAP_COLOR","domain":null,"updated_at":"2019-03-19T15:21:07.949Z","statistics":{"duration":349.11543405056,"count":0}},{"name":"USER_COMMENT","type":"esriFieldTypeString","alias":"USER_COMMENT","domain":null,"updated_at":"2019-03-19T15:21:07.734Z","statistics":{"values":null,"duration":134.046558976173,"count":0}},{"name":"LAST_UPDATE","type":"esriFieldTypeDate","alias":"LAST_UPDATE","domain":null,"updated_at":"2019-03-19T15:21:07.742Z","statistics":{"duration":141.794266998768,"count":29,"min":1512691697000,"max":1537816640000}},{"name":"Shape__Area","type":"esriFieldTypeDouble","alias":"Shape__Area","domain":null,"updated_at":"2019-03-19T15:21:07.738Z","statistics":{"duration":137.736652970314,"sum":898034635.976807,"avg":30966711.5854071,"count":29,"min":156787.307373047,"max":168662484.369141,"stddev":40557468.701817,"var":1644908267498870}},{"name":"Shape__Length","type":"esriFieldTypeDouble","alias":"Shape__Length","domain":null,"updated_at":"2019-03-19T15:21:07.735Z","statistics":{"duration":134.022469997406,"sum":773082.903696775,"avg":26658.0311619578,"count":29,"min":2030.02801109888,"max":110835.865217023,"stddev":24791.5622012944,"var":614621556.380649}}],"item_name":"SnowPriorityAreas","type":"ItemLayer","item_type":"Feature Layer","license":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. Use of this information is the sole responsibility of the user and The City and County of Broomfield assumes no liability associated with the use or misuse of this information.","main_group_description":"Broomfield Open Data","main_group_thumbnail_url":null,"main_group_title":"Broomfield Open Data","max_record_count":1000,"name":"SnowPriorityAreas","owner":"BroomfieldOpenData","record_count":29,"tags":["Broomfield"," Colorado"," Community Development"," Assessor"," Snow Priority Areas"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/0a099781798646a28dc01a019fc4922d/info/thumbnail/thumbnail.png","sites":[{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Broomfield Open Data","url":"http://data-03032017-broomfield.opendata.arcgis.com","logo":"http://broomfield-opendata.s3.amazonaws.com/assets/city-logo-unsealed-favicon-32x32.png"}],"public":true,"created_at":"2016-01-19T18:29:36.000Z","updated_at":"2019-03-19T15:21:16.316Z","url":"https://services1.arcgis.com/vXSRPZbyyOmH9pek/arcgis/rest/services/SnowPriorityAreas/FeatureServer/0","views":null,"quality":75,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":2876,"latestWkid":2876},"metadata_url":"https://www.arcgis.com/sharing/rest/content/items/0a099781798646a28dc01a019fc4922d/info/metadata/metadata.xml?format=default&output=html","org_id":"vXSRPZbyyOmH9pek","metadata":{"published":null,"present":true,"url":"https://www.arcgis.com/sharing/rest/content/items/0a099781798646a28dc01a019fc4922d/info/metadata/metadata.xml","online_resources":[]},"structured_license":{"type":"custom","text":"The City and County of Broomfield has made every effort to ensure the accuracy of its data. Use of this information is the sole responsibility of the user and The City and County of Broomfield assumes no liability associated with the use or misuse of this information."},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supported_extensions":""},{"display_field":"NAME","max_record_count":1000,"record_count":4,"geometry_type":"esriGeometryPolyline","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":false,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supports_advanced_queries":true,"id":"7c79ce47e31d4a71ae2f055b7fd7cee3_0","landing_page":"https://www.arcgis.com/home/item.html?id=7c79ce47e31d4a71ae2f055b7fd7cee3","description":"City and County of Broomfield Trail Improvement Projects","extent":{"coordinates":[[-105.29,39.8599999990716],[-104.84,40.0699999990704]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"ObjectID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-19T15:21:07.658Z"},{"name":"DESCRIPTION","type":"esriFieldTypeString","alias":"Project Description","domain":null,"updated_at":"2019-03-19T15:21:07.742Z","statistics":{"values":[{"value":"West Midway Pedestrian Bridge","count":1},{"value":"Nickel Street Improvements\r\n","count":1},{"value":"Industrial Lane Bike Lane and Sidewalk\r\n","count":1},{"value":"96th St / Storage Tek / NW Parkway Underpass Trail Improvement\r\n","count":1}],"duration":84.4503279924393,"count":4}},{"name":"LAST_UPDATE","type":"esriFieldTypeDate","alias":"Last Update","domain":null,"updated_at":"2019-03-19T15:21:07.760Z","statistics":{"duration":101.808658003807,"count":4,"min":1536102331000,"max":1536102331000}},{"name":"NAME","type":"esriFieldTypeString","alias":"Project Name","domain":null,"updated_at":"2019-03-19T15:21:07.792Z","statistics":{"values":[{"value":"West Midway Pedestrian Bridge\r\n","count":1},{"value":"Nickle Street","count":1},{"value":"Industrial Lane","count":1},{"value":"96th Underpass","count":1}],"duration":133.737441003323,"count":4}},{"name":"PROJECT_LINK","type":"esriFieldTypeString","alias":"Project Link","domain":null,"updated_at":"2019-03-19T15:21:07.786Z","statistics":{"values":[{"value":"https://www.broomfield.org/2799/West-Midway-Pedestrian-Bridge","count":1},{"value":"https://www.broomfield.org/2798/Nickel-Street-Improvements","count":1},{"value":"https://www.broomfield.org/2797/Industrial-Lane","count":1},{"value":"https://www.broomfield.org/2659/96th-StStorage-Tek-Underpass-Trail-Impro","count":1}],"duration":127.650056004524,"count":4}},{"name":"GlobalID","type":"esriFieldTypeString","alias":"GlobalID","domain":null,"updated_at":"2019-03-19T15:21:07.781Z","statistics":{"values":[{"value":"{66D51D04-22D7-4E13-8552-703342AA69C4}","count":1},{"value":"{5B0DC36E-358A-4BE0-A25E-C13C45D0BE2F}","count":1},{"value":"{1B5993C8-3F2F-4165-9869-BD32747FADBA}","count":1},{"value":"{196B4B77-BDCA-4AAB-B79F-BA1EBDD0B855}","count":1}],"duration":122.591049969196,"count":4}},{"name":"Shape__Length","type":"esriFieldTypeDouble","alias":"Shape__Length","domain":null,"updated_at":"2019-03-19T15:21:07.782Z","statistics":{"duration":123.290158987045,"sum":12246.9168094093,"avg":3061.72920235233,"count":4,"min":674.284786715743,"max":8616.08378792591,"stddev":3738.53597185748,"var":13976651.2128723}}],"item_name":"TrailImprovements","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Broomfield Open Data","main_group_thumbnail_url":null,"main_group_title":"Broomfield Open Data","max_record_count":1000,"name":"TrailImprovements","owner":"BroomfieldOpenData","record_count":4,"tags":["Broomfield"," Colorado"," Community Development"," Assessor"," Open Space and Trails"," Trails"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/7c79ce47e31d4a71ae2f055b7fd7cee3/info/thumbnail/thumbnail.png","sites":[{"title":"Colorado Open Data","url":"http://coloradodata-statesales.opendata.arcgis.com","logo":""},{"title":"Broomfield Open Data","url":"http://data-03032017-broomfield.opendata.arcgis.com","logo":"http://broomfield-opendata.s3.amazonaws.com/assets/city-logo-unsealed-favicon-32x32.png"}],"public":true,"created_at":"2018-10-09T23:25:21.000Z","updated_at":"2019-03-19T15:21:16.314Z","url":"https://services1.arcgis.com/vXSRPZbyyOmH9pek/arcgis/rest/services/TrailImprovements/FeatureServer/0","views":null,"quality":64,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":2876,"latestWkid":2876},"metadata_url":"https://www.arcgis.com/sharing/rest/content/items/7c79ce47e31d4a71ae2f055b7fd7cee3/info/metadata/metadata.xml?format=default&output=html","org_id":"vXSRPZbyyOmH9pek","metadata":{"published":null,"present":true,"url":"https://www.arcgis.com/sharing/rest/content/items/7c79ce47e31d4a71ae2f055b7fd7cee3/info/metadata/metadata.xml","online_resources":[]},"structured_license":{"type":"none"},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":false,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true},"supported_extensions":""}],"metadata":{"query_parameters":{"bbox":null,"page":1,"per_page":10,"q":"*","required_keywords":[],"sort_by":"updated_at","sort_order":"desc"},"stats":{"count":10,"total_count":229,"top_tags":[{"name":"open data","count":8246},{"name":"transportation","count":7557},{"name":"boundaries","count":6482},{"name":"planning","count":4230},{"name":"water","count":4200},{"name":"environment","count":4088},{"name":"arcgis","count":3522},{"name":"service definition","count":3328},{"name":".sd","count":3273},{"name":"government","count":2914},{"name":"cartografia, região metropolitana, cartas","count":2669},{"name":"infrastructure","count":2612},{"name":"census","count":2485},{"name":"demographics","count":2339},{"name":"education","count":2315},{"name":"2017","count":2302},{"name":"moncton","count":2091},{"name":"zoning","count":2047},{"name":"noaa","count":1960},{"name":"pdf","count":1941},{"name":"development","count":1935},{"name":"boundary","count":1905},{"name":"recreation","count":1895},{"name":"health","count":1884},{"name":"parks","count":1817},{"name":"map","count":1729},{"name":"county","count":1718},{"name":"florida","count":1697},{"name":"maryland","count":1610},{"name":"data","count":1575},{"name":"population","count":1574},{"name":"esri","count":1565},{"name":"gis","count":1540},{"name":"imagery","count":1513},{"name":"michigan","count":1470},{"name":"roads","count":1457},{"name":"wms","count":1455},{"name":"wfs","count":1432},{"name":"elevation","count":1423},{"name":"land use","count":1419},{"name":"wildlife","count":1409},{"name":"lake county illinois","count":1399},{"name":"facilities","count":1390},{"name":"opendata","count":1383},{"name":"property","count":1374},{"name":"geology","count":1311},{"name":"parcels","count":1295},{"name":"washington","count":1279},{"name":"utilities","count":1276},{"name":"community","count":1239},{"name":"story map","count":1236},{"name":"economic development","count":1234},{"name":"university of michigan","count":1233},{"name":"eda","count":1230},{"name":"university of michigan flint","count":1226},{"name":"um-flint outreach","count":1226},{"name":"um-flint gisc","count":1226},{"name":"um-flint gis trc","count":1226},{"name":"um-flint gis training and research center","count":1226},{"name":"um-flint gis center","count":1226},{"name":"um-flint","count":1226},{"name":"um flint outreach","count":1226},{"name":"um flint","count":1226},{"name":"ucced","count":1226},{"name":"plf3","count":1226},{"name":"michigan usa","count":1226},{"name":"mi usa","count":1226},{"name":"medc region vi","count":1226},{"name":"medc region 6","count":1226},{"name":"medc","count":1226},{"name":"mapflint","count":1226},{"name":"map flint","count":1226},{"name":"i-69 thumb region","count":1226},{"name":"https://mapflint.org","count":1226},{"name":"gistrc","count":1226},{"name":"gisc","count":1226},{"name":"gis trc","count":1226},{"name":"eda university center for community and economic development","count":1226},{"name":"habitat","count":1209},{"name":"housing","count":1191},{"name":"local government","count":1179},{"name":"police","count":1172},{"name":"environmental","count":1170},{"name":"basemap","count":1157},{"name":"ontario","count":1143},{"name":"fire","count":1132},{"name":"2016","count":1121},{"name":"printed maps","count":1105},{"name":"md imap","count":1100},{"name":"md","count":1081},{"name":"ohio","count":1063},{"name":"2010","count":1048},{"name":"trails","count":1045},{"name":"safety","count":1043},{"name":"public safety","count":1042},{"name":"hydrology","count":1036},{"name":"auth_cdfw","count":1035},{"name":"national park service","count":1033},{"name":"test","count":1030},{"name":"enc","count":1020},{"name":"resources","count":1010},{"name":"s-57","count":1004},{"name":"district","count":999},{"name":"dc","count":996},{"name":"district of columbia","count":990},{"name":"streets","count":987},{"name":"dnr","count":987},{"name":"traffic","count":982},{"name":"canada","count":964},{"name":"species","count":931},{"name":"public","count":931},{"name":"gouvernement","count":923},{"name":"washington dc","count":919},{"name":"avr","count":916},{"name":"schools","count":908},{"name":"environnement","count":901},{"name":"natural","count":896},{"name":"maps","count":896},{"name":"people","count":893},{"name":"land","count":886},{"name":"agriculture","count":869},{"name":"flood","count":857},{"name":"parking","count":855},{"name":"2018","count":850},{"name":"transport","count":842},{"name":"biota","count":842},{"name":"california","count":840},{"name":"lidar","count":836},{"name":"public works","count":819},{"name":"natural resources","count":818},{"name":"sn:","count":816},{"name":"fema","count":814},{"name":"cn:","count":814},{"name":"districts","count":805},{"name":"2012","count":802},{"name":"conservation","count":801},{"name":"historical","count":794},{"name":"usa","count":793},{"name":"colorado","count":786},{"name":"council","count":782},{"name":"2015","count":781},{"name":"stormwater","count":780},{"name":"transit","count":776},{"name":"virginia","count":775},{"name":"los angeles","count":767},{"name":"topography","count":757},{"name":"business","count":748},{"name":"administrative boundaries","count":657},{"name":"north carolina","count":634},{"name":"2014","count":624},{"name":"landscape","count":611},{"name":"sip4d","count":595},{"name":"udc2014","count":576},{"name":"road","count":466},{"name":"open","count":462},{"name":"election","count":456},{"name":"la","count":454},{"name":"kml","count":453},{"name":"hydrography","count":443},{"name":"imr","count":437}]}}}
+</script>
+
+
+<script>
+  $(function() {
+    var rawJSONElt = $('#site-configuration-json');
+    var rawJSON = rawJSONElt.text();
+    var siteConfiguration = JSON.parse(rawJSON.replace('<\\/script>', '</'+'script>'));
+
+    var rawDatasetsJSONElt = $('#site-serialized-datasets-json');
+    var rawDatasetsJSON = rawDatasetsJSONElt.text();
+    siteConfiguration.inlinedData = JSON.parse(rawDatasetsJSON.replace('<\\/script>', '</'+'script>'));
+
+    //currently the siteInfo serializer returns a top-level object of "site_info", but
+    //we want that passed into the app as site, so minor juggling here
+    if(siteConfiguration.site_info){
+      siteConfiguration = siteConfiguration.site_info;
+    }
+
+    //extent the site over ComposerConfig
+    var options = $.extend(ComposerConfig, {site: siteConfiguration });
+
+    var localizr = new util.Localizr(_);
+    localizr.localize()
+      .always(function () {
+        Composer.create(options);
+      });
+  });
+</script>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', "UA-47337822-2", 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+</body>
+</html>

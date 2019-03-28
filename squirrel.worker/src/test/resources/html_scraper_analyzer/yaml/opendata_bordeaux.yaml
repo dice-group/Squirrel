@@ -1,0 +1,27 @@
+file_descriptor:
+    check:
+        domain: opendata.bordeaux.fr
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": li:contains(Les données) a
+
+    search-result-page:
+        regex: recherche/results
+        resources:
+            "http://projekt-opal.de/dataset#link": td.views-field-title a
+            "http://projekt-opal.de/dataset#pagination": li.pager-next a
+
+    detail-page:
+        regex: content
+        resources:
+            "http://purl.org/dc/terms/title": div.title
+            "http://purl.org/dc/terms/description": div.field-field-description
+            "http://purl.org/dc/terms/publisher": div.field-field-proprietaire
+            "http://purl.org/dc/terms/issued": div.field-field-datemaj span
+            "http://purl.org/dc/terms/license": div.field-field-lien-licence a
+            "http://purl.org/dc/terms/language": div.field-field-data-langue
+            "http://purl.org/dc/terms/modified": div.field-field-datemaj span
+            "http://www.w3.org/ns/dcat#downloadURL": div.field-field-liensref a
