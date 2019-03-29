@@ -18,7 +18,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
-import org.dice_research.squirrel.queue.MongoDBIpBasedQueue;
+import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

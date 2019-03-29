@@ -26,7 +26,7 @@ public interface DomainBasedQueue extends UriQueue {
      * @param domainName
      *            the Domain that should be marked as accessible.
      */
-    public void markIpAddressAsAccessible(String domainName);
+    public void markDomainAsAccessible(String domainName);
 
     /**
      * Returns the number of Domains that are currently blocked.
