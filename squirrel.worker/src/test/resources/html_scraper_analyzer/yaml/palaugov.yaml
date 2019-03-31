@@ -1,24 +1,24 @@
 file_descriptor:
     check:
-        domain: data.colorado.gov
+        domain: palaugov.pw
         ignore-request: true
     search-result-page:
-        regex: browse
+        regex: /?s=
         resources:
             "$uri":
-                "http://projekt-opal.de/dataset#link":  .browse2-result-title h2 a
-                "http://projekt-opal.de/dataset#pagination": .pagination a
+                "http://projekt-opal.de/dataset#link":  ul.search-results-page__list li a
+                "http://projekt-opal.de/dataset#pagination": .nav-links a
 
     download_page:
         regex: /
         resources:
             "http://projekt-opal.de/dataset/$label":
-                "http://purl.org/dc/terms/title": #infoBox h2
-                "http://purl.org/dc/terms/description": .descriptionContent
+                "http://purl.org/dc/terms/title": h1.post__title.is-main-headline
+                "http://purl.org/dc/terms/description": .post__content
                 "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
                 "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
                 "http://www.w3.org/ns/dcat#landingPage": l($uri)
 
                 "http://projekt-opal.de/agent/$label":
-                    "http://xmlns.com/foaf/0.1/homepage": .aboutHeader a:eq(1)
-                    "http://xmlns.com/foaf/0.1/name": .aboutAuthorName
+                    "http://xmlns.com/foaf/0.1/name": .post__meta-author
+                    "http://xmlns.com/foaf/0.1/homepage": .post__meta-author a

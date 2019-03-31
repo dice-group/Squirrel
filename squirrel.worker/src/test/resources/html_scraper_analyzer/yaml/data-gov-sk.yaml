@@ -8,11 +8,6 @@ file_descriptor:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-list h3 a
                 "http://projekt-opal.de/dataset#pagination": .pagination a
-            "pagination":
-                button:
-                    id: »
-                    action: link
-                    disable_id: «
 
     download_page:
         regex: dataset/

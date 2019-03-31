@@ -330,6 +330,42 @@ public class HtmlScraperAnalyzerTest {
         listTriples.addAll(scraper.scrape(curi, fetchedFile));
     }
 
+    @Test
+    public void scrapeUsviber() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://www.usviber.org/archived-data/"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/usviber/usviber_data.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDetailUsviber() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("http://www.usviber.org/cruise-visitor-arrivals/"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/usviber/usviber__detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapePalaugov() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.palaugov.pw/?s="));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/palaugov/palaugov_search.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
+    @Test
+    public void scrapeDetailPalaugov() throws Exception {
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.palaugov.pw/president-remengesau-hosts-state-banquet-in-honor-of-president-tsai-ing-wen/"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/palaugov/palaugov__detail.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+    }
+
 	public void testAnalyzer() throws URISyntaxException {
 		CrawleableUri curi = new CrawleableUri(new URI("https://data.cambridgeshireinsight.org.uk/dataset/empty-homes"));
 		fetchedFile = new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html");
