@@ -180,7 +180,7 @@ public class HtmlScraper {
      * @param uri
      * @throws IOException
      */
-    private void executeJavaScript(String uri){
+    private void executeJavaScript(CrawleableUri uri){
         WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
         webClient.setRefreshHandler(new ThreadedRefreshHandler());
         webClient.getCookieManager().setCookiesEnabled(true);
@@ -188,9 +188,21 @@ public class HtmlScraper {
         webClient.getOptions().setUseInsecureSSL(true);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setCssEnabled(true);
+        long timeout;
         try {
-            HtmlPage htmlPage = webClient.getPage(uri);
-            webClient.waitForBackgroundJavaScript(Constants.JAVASCRIPT_WAIT_TIME);
+            if (uri.getData("time-out").equals(null)) {
+                    timeout = Constants.JAVASCRIPT_WAIT_TIME;
+            }else{
+                timeout = (long) uri.getData("time-out");
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred when retrieving the Time out value, ", e);
+            timeout = (long) uri.getData("time-out");
+        }
+        
+        try {
+            HtmlPage htmlPage = webClient.getPage(uri.getUri().toString());
+            webClient.waitForBackgroundJavaScript(timeout);
             this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
         } catch (java.io.IOException e){
             LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
@@ -204,7 +216,7 @@ public class HtmlScraper {
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
         if (!htmlFile.toString().contains("test")) //To prevent downloading a page when running unit test cases
-            executeJavaScript(curi.getUri().toString());
+            executeJavaScript(curi);
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
@@ -244,7 +256,7 @@ public class HtmlScraper {
             for (Entry<String, Object> nestedEntry: ((Map<String, Object>) entry.getValue()).entrySet()) {
                 Node node = NodeFactory.createURI(replaceCommands(nestedEntry.getKey()));
                 stackNode.push(node);
-                triples.addAll(scrapeTree((Map.Entry<String, Object>) nestedEntry.getValue(), triples, stackNode));
+                triples.addAll(scrapeTree(nestedEntry, triples, stackNode));
             }
         } else if (entry.getValue() instanceof String) {
             Node p = NodeFactory.createURI(entry.getKey());
