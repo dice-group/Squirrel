@@ -42,33 +42,61 @@
 		<constructor-arg index="9" value="false" /><!-- Logging -->
 	</bean>
 
-	<bean id="analyzerBean"
-		class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
-		<constructor-arg index="0" ref="uriCollectorBean" />
-		<constructor-arg index="1">
-			<array value-type="java.lang.String">
-				<value>org.dice_research.squirrel.analyzer.impl.RDFAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.HDTAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.RDFaAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.MicroformatMF2JParser</value>
-				<value>org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer</value>
-				<value>org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer</value>
-			</array>
+	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
+		<constructor-arg index="0">
+            <list>
+                 <ref bean="rdfAnalyzerBean"/>          
+                 <ref bean="rdfaAnalyzerBean"/>    
+                 <ref bean="microdataanalyzerBean"/>          
+                 <ref bean="microformatanalyzerBean"/>          
+                 <ref bean="hdtanalyzerBean"/>          
+                 <ref bean="htmlscraperanalyzerBean"/>          
+                 <ref bean="ckananalyzerBean"/>          
+                       
+            </list>
 		</constructor-arg>
 	</bean>
+    
+    <!-- Analyzers Beans -->
+    <bean id="rdfAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.RDFAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="rdfaAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.RDFaAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="microdataanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="microformatanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicroformatMF2JAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="hdtanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.HDTAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="htmlscraperanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
+    <bean id="ckananalyzerBean" class="org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer">
+            <constructor-arg index="0" ref="uriCollectorBean" />
+    </bean>
+    
 
 	<bean id="fetcherBean"
 		class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
-
+				<ref bean="ckanFetcherBean" /> 
 				<ref bean="httpFetcherBean" />
 				<ref bean="ftpFetcherBean" />
-				<ref bean="ckanFetcherBean" /> 
 				<ref bean="sparqlDatasetFetcherBean" />
 				<ref bean="sparqlFetcherBean" />
-
+ 				
 			</list>
 		</constructor-arg>
 	</bean>
@@ -102,8 +130,8 @@
 		<constructor-arg name="outputDirectory"
 			ref="outputFolderBean" />
 		<constructor-arg name="useCompression" value="false" />
-	</bean>
--->
+	</bean>-->
+
 
 	<!-- HDT File Based Sink implementation <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink"> 
 		<constructor-arg name="outputDirectory" ref="outputFolderBean" /> </bean> -->

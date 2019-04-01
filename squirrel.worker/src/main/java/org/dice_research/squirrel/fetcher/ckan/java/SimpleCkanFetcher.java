@@ -64,6 +64,8 @@ public class SimpleCkanFetcher implements Fetcher {
             CkanClient client = null;
             OutputStream out = null;
             try {
+                
+                
                 client = new CkanClient(uri.getUri().toString());
                 List<String> datasets = client.getDatasetList();
                 File dataFile = File.createTempFile("fetched_", "", dataDirectory);

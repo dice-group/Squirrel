@@ -38,12 +38,12 @@ import com.kylewm.mf2j.Mf2Parser;
  *
  */
 
-public class MicroformatMF2JParser extends AbstractAnalyzer {
+public class MicroformatMF2JAnalyzer extends AbstractAnalyzer {
 	
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MicroformatMF2JParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MicroformatMF2JAnalyzer.class);
 
-	public MicroformatMF2JParser(UriCollector collector) {
+	public MicroformatMF2JAnalyzer(UriCollector collector) {
 		super(collector);
 	}
 
