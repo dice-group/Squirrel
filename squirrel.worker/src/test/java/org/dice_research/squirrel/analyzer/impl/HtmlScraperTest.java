@@ -1056,4 +1056,68 @@ public class HtmlScraperTest {
             Assert.assertEquals(expected.toString(), actual.toString());
         }
     }
+
+    @Test
+    public void scrapeDetailPageOpendataOpennorth() throws Exception {
+        List<Triple> expectedTriples = new ArrayList<>();
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://projekt-opal.de/dataset#pagination"), NodeFactory.createURI("http://projekt-opal.de/dataset#pagination"), NodeFactory.createURI("http://opendata.opennorth.se/dataset")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://projekt-opal.de/dataset#pagination"), NodeFactory.createURI("http://projekt-opal.de/dataset#pagination"), NodeFactory.createURI("http://opendata.opennorth.se/dataset/energy-water-consumption-properties-skelleftea")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/modified"), NodeFactory.createURI("http://purl.org/dc/terms/modified"), NodeFactory.createURI("\"March 13, 2019, 08:59 (UTC)\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/issued"), NodeFactory.createURI("http://purl.org/dc/terms/issued"), NodeFactory.createURI("\"April 13, 2016, 08:38 (UTC)\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dsnotify/vocab/eventset/sourceDataset"), NodeFactory.createURI("http://purl.org/dsnotify/vocab/eventset/sourceDataset"), NodeFactory.createURI("http://wiki.opennorth.se/index.php/Metadata/energy-water-consumption-properties-skelleftea")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-04-18T13:35:47/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-05-01T16:02:06/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-06-01T16:02:14/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-09-01T16:02:05/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-10-01T16:02:28/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2016-11-01T17:02:18/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("https://openumea-storage.s3.amazonaws.com/2017-09-22T06:26:27/energy_water_skelleftea.csv")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://ckan.openumea.se/dataset/ea9d210a-ba7d-48c5-8b71-83cd0ab67bcd/resource/d6b59b76-c83c-42ed-b50a-189e2d7ea5b2/download/energy_water_skelleftea.csv")));
+        CrawleableUri curi = new CrawleableUri(new URI("http://opendata.opennorth.se/dataset/customer-service-errands-skelleftea"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/opendata_opennorth/details_page.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+
+        for (int i=0; i<expectedTriples.size(); i++){
+            Triple expected = expectedTriples.get(i);
+            Triple actual = listTriples.get(i);
+            Assert.assertEquals(expected.toString(), actual.toString());
+        }
+    }
+
+    @Test
+    public void scrapeDetailPageGeonodeMsri() throws Exception {
+        List<Triple> expectedTriples = new ArrayList<>();
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/title"), NodeFactory.createURI("http://purl.org/dc/terms/title"), NodeFactory.createURI("\"Forest density in Kyrgyzstan\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/description"), NodeFactory.createURI("http://purl.org/dc/terms/description"), NodeFactory.createURI("\"Forest density in Kyrgyzstan, data from Global Forest Watch\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/publisher"), NodeFactory.createURI("http://purl.org/dc/terms/publisher"), NodeFactory.createURI("http://geonode.msri.io/people/profile/maksim.kulikov/")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://purl.org/dc/terms/issued"), NodeFactory.createURI("http://purl.org/dc/terms/issued"), NodeFactory.createURI("\"June 8, 2018, 2:38 a.m.\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#accessURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#accessURL"), NodeFactory.createURI("\"Download Metadata\"")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/gwc/service/gmaps?layers=geonode:forests&zoom={z}&x={x}&y={y}&format=image/png8")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wms/kml?layers=geonode%3Aforests&mode=refresh")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wms/kml?layers=geonode%3Aforests&mode=download")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wcs?format=image%2Ftiff&request=GetCoverage&version=2.0.1&service=WCS&coverageid=geonode%3Aforests")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wcs?format=application%2Fx-gzip&request=GetCoverage&version=2.0.1&service=WCS&coverageid=geonode%3Aforests")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&width=1539&bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&service=WMS&format=image%2Fpng&srs=EPSG%3A4326&request=GetMap&height=550")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&width=1539&bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&service=WMS&format=application%2Fpdf&srs=EPSG%3A4326&request=GetMap&height=550")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&width=1539&bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&service=WMS&format=image%2Fjpeg&srs=EPSG%3A4326&request=GetMap&height=550")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2Fcsdgm&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=urn%3Aoasis%3Anames%3Atc%3Aebxml-regrep%3Axsd%3Arim%3A3.0&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fgcmd.gsfc.nasa.gov%2FAboutus%2Fxml%2Fdif%2F&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        expectedTriples.add(new Triple(NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://www.w3.org/ns/dcat#downloadURL"), NodeFactory.createURI("http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.w3.org%2F2005%2FAtom&service=CSW&request=GetRecordById&version=2.0.2&elementsetname=full&id=e279bbae-6aee-11e8-9d66-000c29ef5152")));
+        CrawleableUri curi = new CrawleableUri(new URI("http://geonode.msri.io/layers/geonode%3Aforests#more"));
+        fetchedFile = new File("src/test/resources/html_scraper_analyzer/geonode_msri/details_page.html");
+
+        List<Triple> listTriples = new ArrayList<Triple>();
+        listTriples.addAll(scraper.scrape(curi, fetchedFile));
+
+        for (int i=0; i<expectedTriples.size(); i++){
+            Triple expected = expectedTriples.get(i);
+            Triple actual = listTriples.get(i);
+            Assert.assertEquals(expected.toString(), actual.toString());
+        }
+    }
 }

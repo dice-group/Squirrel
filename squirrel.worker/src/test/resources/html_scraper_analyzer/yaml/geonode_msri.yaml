@@ -1,0 +1,25 @@
+file_descriptor:
+    check:
+        domain: geonode.msri.io
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": a:contains(Explore layers)
+
+    search-result-page:
+        regex: layers
+        resources:
+            "http://projekt-opal.de/dataset#link": .item-details h4 a
+
+    detail-page:
+        regex: layers
+        resources:
+            "http://purl.org/dc/terms/title": dd[itemprop="name"]
+            "http://purl.org/dc/terms/description": dd[itemprop="description"]
+            "http://purl.org/dc/terms/publisher": a[itemprop="author"]
+            "http://purl.org/dc/terms/issued": dd[itemprop="datePublished"]
+            "http://www.w3.org/ns/dcat#accessURL": button:contains(Download Metadata)
+            "http://purl.org/dc/terms/modified": dd[itemprop="dateModified"]
+            "http://www.w3.org/ns/dcat#downloadURL": .modal-dialog .modal-body li a

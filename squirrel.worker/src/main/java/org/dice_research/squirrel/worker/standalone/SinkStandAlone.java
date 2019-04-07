@@ -23,11 +23,11 @@ public class SinkStandAlone implements Sink {
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-
+        LOGGER.debug("Opening sink for uri.");
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-
+        LOGGER.debug("Closing sink for uri.");
     }
 }

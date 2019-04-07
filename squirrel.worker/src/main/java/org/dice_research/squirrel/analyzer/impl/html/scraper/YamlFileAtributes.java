@@ -2,10 +2,6 @@ package org.dice_research.squirrel.analyzer.impl.html.scraper;
 
 public class YamlFileAtributes {
 
-    private YamlFileAtributes() {
-
-    }
-
     protected static final String SEARCH_CHECK = "check";
     protected static final String SEARCH_DOMAIN = "domain";
     protected static final String REGEX = "regex";
@@ -17,5 +13,8 @@ public class YamlFileAtributes {
     protected static final String DISABLE_ID = "disable_id";
     protected static final String ID = "id";
 
+    private YamlFileAtributes() {
+
+    }
 
 }

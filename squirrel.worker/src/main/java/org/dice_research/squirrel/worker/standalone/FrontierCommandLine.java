@@ -28,7 +28,7 @@ public class FrontierCommandLine implements Frontier {
 
     @Override
     public void crawlingDone(List<CrawleableUri> uris) {
-
+        LOGGER.info("Crawling has been successfully complete.");
     }
 
     @Override
@@ -43,5 +43,6 @@ public class FrontierCommandLine implements Frontier {
 
     @Override
     public void close() throws IOException {
+        LOGGER.info("Closing the frontier");
     }
 }

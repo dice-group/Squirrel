@@ -197,14 +197,14 @@ public class HtmlScraper {
             }
         } catch (Exception e) {
             LOGGER.error("An error occurred when retrieving the Time out value, ", e);
-            timeout = (long) uri.getData("time-out");
+            timeout = Constants.JAVASCRIPT_WAIT_TIME;
         }
         
         try {
             HtmlPage htmlPage = webClient.getPage(uri.getUri().toString());
             webClient.waitForBackgroundJavaScript(timeout);
             this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
-        } catch (java.io.IOException e){
+        } catch (IOException e){
             LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
         }
     }

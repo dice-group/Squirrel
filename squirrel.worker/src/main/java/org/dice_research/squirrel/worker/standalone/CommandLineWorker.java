@@ -27,22 +27,21 @@ public class CommandLineWorker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineWorker.class);
 
-    private WorkerImpl worker;
-    private Frontier frontier;
-    private Sink sink;
-    private Analyzer analyzer;
-    private RobotsManager manager;
-    private Serializer serializer;
-    private UriCollector uriCollector;
-
     public void startWorker(String uriToCrawl) throws Exception{
+
+        WorkerImpl worker;
+        Frontier frontier;
+        Sink sink;
+        Analyzer analyzer;
+        RobotsManager manager;
+        Serializer serializer;
+        UriCollector uriCollector;
+
         CrawleableUri uri = new CrawleableUri(new URI(uriToCrawl));
         sink = new SinkStandAlone();
-//        sink = new InMemorySink();
         serializer = new GzipJavaUriSerializer();
         uriCollector = new SimpleUriCollector(serializer);
         analyzer = new SimpleOrderedAnalyzerManager(uriCollector);
-//        analyzer = new MicrodataParser(uriCollector);
         frontier = new FrontierCommandLine();
         manager = new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", "")));
         worker = new WorkerImpl(frontier,
