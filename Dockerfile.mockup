@@ -1,0 +1,11 @@
+FROM openjdk:8u151-jdk-alpine
+
+COPY ./squirrel.mockup/target/squirrel.mockup.jar /data/squirrel/squirrel.jar
+WORKDIR /data/squirrel
+
+#ADD entrypoint.sh /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
+
+VOLUME ["/var/squirrel/data"]
+
+CMD java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.SimpleHttpServerComponent

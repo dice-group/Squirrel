@@ -63,4 +63,10 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
         return queue.entrySet().stream().limit(LIMITFORITERATOR).map(e -> new AbstractMap.SimpleEntry<>(e.getKey().ip, e.getValue())).iterator();
     }
 
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -988,7 +988,7 @@ public class RDFaParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer1 = new RDFaSemarglParser(collector);
+		analyzer1 = new RDFaAnalyzer(collector);
 //		analyzer2 = new RDFaParser(collector);
 		
 		String strindex = test.getMethodName();

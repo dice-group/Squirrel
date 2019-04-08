@@ -1,135 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.dice-research</groupId>
-        <artifactId>squirrel</artifactId>
-        <version>0.3.0</version>
-    </parent>
-    <artifactId>squirrel.worker</artifactId>
-    <packaging>jar</packaging>
-    <name>Squirrel Worker</name>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.dice-research</groupId>
+		<artifactId>squirrel</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>squirrel.worker</artifactId>
+	<packaging>jar</packaging>
+	<name>Squirrel Worker</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.dice-research</groupId>
-            <artifactId>squirrel.api</artifactId>
-        </dependency>
+	<properties>
+		<version.clerezza.core>0.12-incubating</version.clerezza.core>
+		<version.clerezza.simple.storage>0.7-incubating</version.clerezza.simple.storage>
+		<version.clerezza.jena.serializer>0.9-incubating</version.clerezza.jena.serializer>
+		<version.clerezza.jena.parser>0.10-incubating</version.clerezza.jena.parser>
+		<version.jena>2.11.1</version.jena>
+	</properties>
 
-        <dependency>
-            <groupId>eu.trentorise.opendata</groupId>
-            <artifactId>jackan</artifactId>
-            <version>0.4.2</version>
-        </dependency>
-<!-- Microformats parser -->
+	<dependencies>
+		<dependency>
+			<groupId>org.dice-research</groupId>
+			<artifactId>squirrel.api</artifactId>
+			<!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId> 
+				<artifactId>httpclient-cache</artifactId> </exclusion> </exclusions> -->
+		</dependency>
 
-			
-			<dependency>
-				<groupId>com.github.mautini</groupId>
-				<artifactId>schemaorg-java</artifactId>
-				<version>1.0.1</version>
-				
-			</dependency>
-			
-			<dependency>
-				<groupId>org.semarglproject</groupId>
-				<artifactId>semargl-rdfa</artifactId>
-				<version>0.7</version>
-			</dependency>
-			<dependency>
-				<groupId>com.kylewm</groupId>
-				<artifactId>mf2j</artifactId>
-				<version>0.0.4</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23</groupId>
-			    <artifactId>apache-any23-core</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23</groupId>
-			    <artifactId>apache-any23-api</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23.plugins</groupId>
-			    <artifactId>apache-any23-html-scraper</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23.plugins</groupId>
-			    <artifactId>apache-any23-basic-crawler</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23</groupId>
-			    <artifactId>apache-any23-encoding</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.any23</groupId>
-			    <artifactId>apache-any23-mime</artifactId>
-			    <version>2.2</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.apache.tika</groupId>
-			    <artifactId>tika-parsers</artifactId>
-			    <version>1.19.1</version>
-			</dependency>
+		<dependency>
+			<groupId>eu.trentorise.opendata</groupId>
+			<artifactId>jackan</artifactId>
+			<version>0.4.2</version>
+		</dependency>
+		<!-- Microformats parser -->
 
-        <!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dice-research</groupId>
-            <artifactId>squirrel.mockup</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
-        <!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- slf4j: Logging API -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <!-- log4j binding -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-        </dependency>
-        <!-- make Logging with java.util.Logging possible -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-        </dependency>
-        <!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
-    </dependencies>
+		<dependency>
+			<groupId>com.github.mautini</groupId>
+			<artifactId>schemaorg-java</artifactId>
+			<version>1.0.1</version>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.github.mautini/schemaorg-java -->
+		<dependency>
+			<groupId>com.github.mautini</groupId>
+			<artifactId>schemaorg-java</artifactId>
+			<version>1.0.1</version>
+			<type>pom</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.semarglproject</groupId>
+			<artifactId>semargl-rdfa</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.semarglproject</groupId>
+			<artifactId>semargl-clerezza</artifactId>
+			<version>0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.simple.storage</artifactId>
+			<version>0.7-incubating</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.clerezza</groupId>
+			<artifactId>rdf.jena.parser</artifactId>
+			<version>0.10-incubating</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.kylewm</groupId>
+			<artifactId>mf2j</artifactId>
+			<version>0.0.4</version>
+		</dependency>
+
+		<!-- Html Cleaner -->
+		<dependency>
+			<groupId>net.sourceforge.htmlcleaner</groupId>
+			<artifactId>htmlcleaner</artifactId>
+			<version>2.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23</groupId>
+			<artifactId>apache-any23-core</artifactId>
+			<version>2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.httpcomponents</groupId>
+					<artifactId>httpclient-cache</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23</groupId>
+			<artifactId>apache-any23-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23.plugins</groupId>
+			<artifactId>apache-any23-html-scraper</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23.plugins</groupId>
+			<artifactId>apache-any23-basic-crawler</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23</groupId>
+			<artifactId>apache-any23-encoding</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.any23</groupId>
+			<artifactId>apache-any23-mime</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>1.19.1</version>
+		</dependency>
+
+		<!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dice-research</groupId>
+			<artifactId>squirrel.mockup</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
+
+		<!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!-- slf4j: Logging API -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- log4j binding -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>apache-log4j-extras</artifactId>
+		</dependency>
+		<!-- make Logging with java.util.Logging possible -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

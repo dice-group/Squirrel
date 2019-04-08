@@ -299,4 +299,10 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
         };
     }
 
+	@Override
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

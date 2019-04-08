@@ -1,5 +1,10 @@
 package org.dice_research.squirrel.frontier.impl;
 
+import java.net.InetAddress;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
@@ -9,11 +14,6 @@ import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
-
-import java.net.InetAddress;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFrontier {
 
@@ -66,7 +66,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
     }
 
     @Override
-    public void informAboutDeadWorker(int idOfWorker, List<CrawleableUri> lstUrisToReassign) {
+    public void informAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign) {
         if (queue instanceof IpAddressBasedQueue) {
             IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
 

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
@@ -23,11 +24,21 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
+
+/**
+ * 
+ * Filter implementation for use with MongoDB
+ * 
+ * * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
+ *
+ */
 
 public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
 
@@ -54,7 +65,21 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public MongoDBKnowUriFilter(String hostName, Integer port) {
     
     	
-        client = new MongoClient(hostName, port);
+    	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+        MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+	
+		if(mongoConfiguration != null &&(mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null)) {
+			optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
+			optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
+			optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
+			
+			MongoClientOptions options = optionsBuilder.build();
+
+			client = new MongoClient(new ServerAddress(hostName, port),options);
+			
+		}else {
+			client = new MongoClient(hostName, port);
+		}
     }
 
     @Override
@@ -87,12 +112,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     public Document crawleableUriToMongoDocument(CrawleableUri uri) {
 
-        InetAddress ipAddress = uri.getIpAddress();
         @SuppressWarnings("deprecation")
         UriType uriType = uri.getType();
 
-        return new Document("ipAddress", ipAddress.toString()).append("type", uriType.toString()).append("uri",
-                uri.getUri().toString());
+        return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
 
     }
 

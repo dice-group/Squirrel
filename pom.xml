@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.dice-research</groupId>
 	<artifactId>squirrel</artifactId>
-	<version>0.3.0</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<inceptionYear>2017</inceptionYear>
 	<name>Squirrel</name>
@@ -95,6 +96,16 @@
 				<groupId>org.hobbit</groupId>
 				<artifactId>core</artifactId>
 				<version>1.0.12</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpclient</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpclient-cache</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- Jackason databind and Jackson’s YAML extension -->
@@ -108,7 +119,6 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>2.6.0</version>
 			</dependency>
-
 
 			<!-- Content detect utility tool -->
 			<dependency>
@@ -126,8 +136,8 @@
 			</dependency>
 
 			<!-- ~~~~~~~~~~~~~~~~~~~ HTML libraries END ~~~~~~~~~~~~~~~~~~~~~~ -->
-						
-			
+
+
 
 			<!-- ~~~~~~~~~~~~~~~~~~~ Apache Commons ~~~~~~~~~~~~~~~~~~~~~~ -->
 			<dependency>
@@ -193,6 +203,12 @@
 				<groupId>org.aksw.jena-sparql-api</groupId>
 				<artifactId>jena-sparql-api-core</artifactId>
 				<version>3.1.0-2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpclient</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- ~~~~~~~~~~~~~~~~~~~ HDT ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -221,18 +237,6 @@
 			</dependency>
 			<!-- ~~~~~~~~~~~~~~~~~~~ HDT END ~~~~~~~~~~~~~~~~~~~~~~ -->
 
-			<!-- HTTP Requests -->
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpcore</artifactId>
-				<version>4.4</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.4</version>
-			</dependency>
-			<!-- End HTTP Requests -->
 
 			<!-- Zip archives -->
 			<dependency>

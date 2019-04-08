@@ -95,7 +95,7 @@ public class FrontierImpl implements Frontier {
      * Default value for {@link #timerPeriod}.
      */
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
-
+        
     /**
      * Constructor.
      *
@@ -192,7 +192,7 @@ public class FrontierImpl implements Frontier {
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
-
+        
         this.queue.open();
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
@@ -212,6 +212,11 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
+
+//        if(terminationCheck.shouldFrontierTerminate(this)) {
+//        	LOGGER.error("FRONTIER IS TERMINATING!", new Exception());
+//        }
+    	
         return queue.getNextUris();
     }
 
@@ -228,6 +233,7 @@ public class FrontierImpl implements Frontier {
         uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+        
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
@@ -250,7 +256,7 @@ public class FrontierImpl implements Frontier {
             }
             
         } else {
-            LOGGER.info("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
+            LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }
     }
 
@@ -331,4 +337,5 @@ public class FrontierImpl implements Frontier {
     public UriQueue getQueue() {
         return queue;
     }
+    
 }

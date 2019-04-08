@@ -52,40 +52,33 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 		String file = "";
 		BufferedReader br;
 		String line;
+		String result = "";
 		try {
 			br = new BufferedReader(new FileReader(data));
 			while ((line = br.readLine()) != null) {
 			     file+= line+"\n";
 			}
-		} catch (IOException e) {
+			
+			Mf2Parser parser = new Mf2Parser()
+				    .setIncludeAlternates(true)
+				    .setIncludeRelUrls(true);
+				//Map<String,Object> parsed = parser.parse(microdata5, new URI("https://kylewm.com"));
+				Map<String,Object> parsed = parser.parse(file,URI.create(curi.getUri().toString()));
+
+				
+				String json = addContextToJSON(parsed.toString());
+				json = replaceVocab(json);
+				Model model = createModelFromJSONLD(json);
+				String syntax = "N-TRIPLE";
+				StringWriter out = new StringWriter();
+				model.write(out, syntax);
+				result = out.toString();
+				StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
+				RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);	
+		} catch (Exception e) {
 			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
 
 		}
-		Mf2Parser parser = new Mf2Parser()
-		    .setIncludeAlternates(true)
-		    .setIncludeRelUrls(true);
-		//Map<String,Object> parsed = parser.parse(microdata5, new URI("https://kylewm.com"));
-		Map<String,Object> parsed = parser.parse(file,URI.create(curi.getUri().toString()));
-//		for (Entry<String, Object> string : parsed.entrySet()) {
-//		System.out.println(string.getKey() +" = "+string.getValue());
-//		}
-		
-		String json = addContextToJSON(parsed.toString());
-		json = replaceVocab(json);
-		//System.out.println(json);
-		Model model = createModelFromJSONLD(json);
-		String syntax = "N-TRIPLE";
-		StringWriter out = new StringWriter();
-		model.write(out, syntax);
-		String result = out.toString();
-		
-		try {
-			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
-			RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);	
-		}catch (Exception e) {
-			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
-		}
-		
 
 		return collector.getUris(curi);
 	}
@@ -115,7 +108,6 @@ public class MicroformatMF2JParser extends AbstractAnalyzer {
 		} catch (IOException e) {
 			LOGGER.error("Exception while analyzing. Aborting. ", e);
 		}
-	    //System.out.println("model size: " + model.size());
 	    return model;
 	}
 
