@@ -10,8 +10,8 @@ public class YamlFileAtributes {
     protected static final String PAGINATION = "pagination";
     protected static final String ACTION = "action";
     protected static final String BUTTON = "button";
-    protected static final String DISABLE_ID = "disable_id";
     protected static final String ID = "id";
+    protected static final String PAGINATION_DETAILS = "pagination-details";
 
     private YamlFileAtributes() {
 

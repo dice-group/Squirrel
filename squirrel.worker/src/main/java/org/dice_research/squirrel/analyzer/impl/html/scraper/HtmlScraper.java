@@ -4,14 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Stack;
+
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.jena.graph.Node;
@@ -40,6 +35,7 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
+    private Map<String, Object> pageLoadResources;
 
     public HtmlScraper(File file) {
         try {
@@ -82,6 +78,9 @@ public class HtmlScraper {
                     } else {
                         regexList.add(cfg.getValue().toString().toLowerCase());
                     }
+
+                    if (cfg.getKey().equals(YamlFileAtributes.PAGINATION_DETAILS))
+                        pageLoadResources = (LinkedHashMap) cfg.getValue();
 
                     for (String regex : regexList) {
                         if (cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase()) ) {
@@ -175,6 +174,21 @@ public class HtmlScraper {
     	return updatedList;
     }
 
+    private long getJavascriptTimeout(CrawleableUri uri){
+        long timeout;
+        try {
+            if (uri.getData("time-out").equals(null)) {
+                timeout = Constants.JAVASCRIPT_WAIT_TIME;
+            }else{
+                timeout = (long) uri.getData("time-out");
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred when retrieving the Time out value, ", e);
+            timeout = Constants.JAVASCRIPT_WAIT_TIME;
+        }
+        return timeout;
+    }
+
     /**
      * Method to execute java script commands in a html page.
      * @param uri
@@ -188,24 +202,37 @@ public class HtmlScraper {
         webClient.getOptions().setUseInsecureSSL(true);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setCssEnabled(true);
-        long timeout;
-        try {
-            if (uri.getData("time-out").equals(null)) {
-                    timeout = Constants.JAVASCRIPT_WAIT_TIME;
-            }else{
-                timeout = (long) uri.getData("time-out");
-            }
-        } catch (Exception e) {
-            LOGGER.error("An error occurred when retrieving the Time out value, ", e);
-            timeout = Constants.JAVASCRIPT_WAIT_TIME;
-        }
-        
+        long timeout = getJavascriptTimeout(uri);
         try {
             HtmlPage htmlPage = webClient.getPage(uri.getUri().toString());
             webClient.waitForBackgroundJavaScript(timeout);
             this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
         } catch (IOException e){
             LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
+        }
+    }
+
+    private void handlePageLoad(CrawleableUri uri){
+        HtmlPage htmlPage;
+        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setThrowExceptionOnScriptError(true);
+        webClient.getOptions().setCssEnabled(false);
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        long timeout = getJavascriptTimeout(uri);
+        try{
+            htmlPage = webClient.getPage(uri.getUri().toString());
+            DomElement btn = htmlPage.getElementById(pageLoadResources.get(YamlFileAtributes.ID).toString());
+            DomElement disabledElement = htmlPage.getElementById(pageLoadResources.get(YamlFileAtributes.ID).toString());
+            do {
+                htmlPage = btn.click();
+                webClient.waitForBackgroundJavaScript(timeout);
+            } while (!disabledElement.getStyleMap().containsKey("display") ||
+                (disabledElement.getStyleMap().containsKey("display") &&
+                    !disabledElement.getStyleMap().get("display").getValue().equals("none")));
+            this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+        } catch (Exception e) {
+            LOGGER.error("An error occurred when trying handle page load, ", e);
         }
     }
 
@@ -216,7 +243,10 @@ public class HtmlScraper {
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
         if (!htmlFile.toString().contains("test")) //To prevent downloading a page when running unit test cases
-            executeJavaScript(curi);
+            if (pageLoadResources != null)
+                handlePageLoad(curi);
+            else
+                executeJavaScript(curi);
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
