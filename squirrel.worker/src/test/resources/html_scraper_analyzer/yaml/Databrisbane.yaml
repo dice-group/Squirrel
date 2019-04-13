@@ -1,13 +1,13 @@
 file_descriptor:
     check:
-        domain: Data.brisbane.qld.gov.au
+        domain: data.brisbane.qld.gov.au
         ignore-request: true
     search-result-page:
         regex: data/dataset
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-heading a
-                "http://projekt-opal.de/dataset#pagination": [data-module="bcc-paginator"] a
+                "http://projekt-opal.de/dataset#pagination": div[data-module="bcc-paginator"] a
 
     download_page:
         regex: dataset/
