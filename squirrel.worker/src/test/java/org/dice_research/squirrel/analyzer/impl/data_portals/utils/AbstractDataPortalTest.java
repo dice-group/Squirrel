@@ -21,7 +21,7 @@ public abstract class AbstractDataPortalTest {
 
     private CrawleableUri uriToCrawl;
     private File fileToScrape;
-    private List<Triple> expectedTriples;
+    private ModelCom expectedModel;
     private HtmlScraper htmlScraper;
 
     @Before
@@ -30,22 +30,17 @@ public abstract class AbstractDataPortalTest {
         this.htmlScraper = new HtmlScraper(configurationFile);
     }
 
-    public AbstractDataPortalTest(CrawleableUri uri, File fileToScrape, List<Triple> expectedTriples) {
+    public AbstractDataPortalTest(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
         super();
         this.uriToCrawl = uri;
         this.fileToScrape = fileToScrape;
-        this.expectedTriples = expectedTriples;
+        this.expectedModel = expectedModel;
     }
 
     @Test
     public void test() throws Exception{
         List<Triple> listTriples = new ArrayList<Triple>();
         listTriples.addAll(htmlScraper.scrape(uriToCrawl, fileToScrape));
-        ModelCom expectedModel = (ModelCom) ModelFactory.createDefaultModel();
-        for (Triple curTriple: expectedTriples){
-            Statement tempStmt = StatementImpl.toStatement(curTriple, expectedModel);
-            expectedModel.add(tempStmt);
-        }
 
         ModelCom actualModel = (ModelCom) ModelFactory.createDefaultModel();
         for (Triple curTriple: listTriples){
