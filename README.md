@@ -5,7 +5,7 @@ Squirrel is a crawler for the linked web. It provides several tools to search an
 from the heterogeneous content of the linked web.
 
 You can find the crawler documentation, tutorials and more here:
-https://dice-group.github.io/squirrel.github.io/
+<https://dice-group.github.io/squirrel.github.io/>
 
 <img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
 
