@@ -36,7 +36,7 @@ import com.mongodb.client.model.Indexes;
  * 
  * Filter implementation for use with MongoDB
  * 
- * * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
+ * * @author Geraldo Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
  */
 

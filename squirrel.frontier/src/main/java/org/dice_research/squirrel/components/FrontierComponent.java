@@ -48,7 +48,12 @@ import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component
+@Qualifier("frontierComponent")
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
@@ -56,6 +61,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected IpAddressBasedQueue queue;
     private KnownUriFilter knownUriFilter;
     private URIReferences uriReferences = null;
+    @Qualifier("frontierBean")
+    @Autowired
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
     private DataReceiver receiver;
@@ -187,7 +194,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         if (deserializedData != null) {
-            LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
