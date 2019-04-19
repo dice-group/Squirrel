@@ -12,6 +12,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.ElementNotFoundException;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -250,10 +251,10 @@ public class HtmlScraper {
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
-            if(entry != null) {
-            	Stack<Node> stackNode = new Stack<Node>();
-            	stackNode.push(NodeFactory.createURI(replaceCommands(entry.getKey())));
-            	scrapeTree(entry,triples,stackNode);
+            if(entry.getValue() instanceof Map<?,?>) {
+                Stack<Node> stackNode = new Stack<>();
+                stackNode.push(NodeFactory.createURI(replaceCommands(entry.getKey())));
+                scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode);
             }
 
         }
@@ -275,34 +276,35 @@ public class HtmlScraper {
     }
     
     /**
-     * @param entry
+     * @param mapEntry
      * @param triples
      * @param stackNode
      * @return
      * @throws MalformedURLException
      */
-    private Set<Triple> scrapeTree(Entry<String, Object> entry, Set<Triple> triples, Stack<Node> stackNode) throws MalformedURLException{
-        if(entry.getValue() instanceof Map<?,?>) {
-            for (Entry<String, Object> nestedEntry: ((Map<String, Object>) entry.getValue()).entrySet()) {
-                Node node = NodeFactory.createURI(replaceCommands(nestedEntry.getKey()));
+    private Set<Triple> scrapeTree(Map<String, Object> mapEntry,Set<Triple> triples, Stack<Node> stackNode) throws MalformedURLException{
+        for(Entry<String,Object> entry: mapEntry.entrySet()) {
+            if(entry.getValue() instanceof Map<?,?>) {
+                Node node = NodeFactory.createURI(replaceCommands(entry.getKey()));
                 stackNode.push(node);
-                triples.addAll(scrapeTree(nestedEntry, triples, stackNode));
-            }
-        } else if (entry.getValue() instanceof String) {
-            Node p = NodeFactory.createURI(entry.getKey());
-            List<Node> o = jsoupQuery((String) entry.getValue());
-            if (o.isEmpty()) {
-                LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
-            }
+                triples.addAll(scrapeTree((Map<String,Object> )entry.getValue(),triples,stackNode));
+            }else if(entry.getValue() instanceof String) {
 
-            for(Node n : o) {
-                Triple t = new Triple(stackNode.peek(),p,n);
-                triples.add(t);
-            }
+                Node p = ResourceFactory.createResource(entry.getKey()).asNode();
+                List<Node> o = jsoupQuery((String) entry.getValue());
+                if (o.isEmpty()) {
+                    LOGGER.warn("Element "+ entry.getKey() + ": " + entry.getValue() + " not found or does not exist");
+                    continue;
+                }
+                for(Node n : o) {
+                    Triple t = new Triple(stackNode.peek(),p,n);
+                    triples.add(t);
+                }
 
+            }
         }
-    	stackNode.pop();
-    	return triples;
+        stackNode.pop();
+        return triples;
     }
 
     /**
