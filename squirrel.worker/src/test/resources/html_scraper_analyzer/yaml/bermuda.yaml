@@ -2,8 +2,13 @@ file_descriptor:
     check:
         domain: bermuda.io
         ignore-request: true
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination":  ul.nav.nav-pills li:nth-child(1) a
+
     search-result-page:
-        regex: dataset?q=
+        regex: dataset
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-heading a
@@ -15,10 +20,4 @@ file_descriptor:
             "http://projekt-opal.de/dataset/$label":
                 "http://purl.org/dc/terms/title": .module-content h1:eq(0)
                 "http://purl.org/dc/terms/description": .notes p
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
-
-                "http://projekt-opal.de/agent/$label":
-                    "http://xmlns.com/foaf/0.1/mbox": table tr:contains(Author) td a
-                    "http://xmlns.com/foaf/0.1/name": table tr:contains(Author) td
+                "http://purl.org/dc/terms/creator": table tr:contains(Author) td

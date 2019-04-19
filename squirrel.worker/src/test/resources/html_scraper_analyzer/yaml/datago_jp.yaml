@@ -10,14 +10,13 @@ file_descriptor:
                 "http://projekt-opal.de/dataset#pagination": .pagination a
 
     download_page:
-        regex: dataset/
+        regex: en/dataset/
         resources:
             "http://projekt-opal.de/dataset/$label":
                 "http://purl.org/dc/terms/title": h1.heading:eq(0)
                 "http://purl.org/dc/terms/description": tr:contains(Description) td
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+                "http://purl.org/dc/terms/publisher": tr:contains(Publisher) td
+                "http://purl.org/dc/terms/creator": tr:contains(Creator) td
+                "http://purl.org/dc/terms/issued": tr:contains(Release date) td
+                "http://www.w3.org/ns/dcat#downloadURL": ul.dropdown-menu li:nth-child(2)  a
 
-                "http://projekt-opal.de/agent/$label":
-                    "http://xmlns.com/foaf/0.1/name": tr:contains(Publisher) td

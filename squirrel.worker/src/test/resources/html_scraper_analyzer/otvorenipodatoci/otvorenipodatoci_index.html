@@ -1,0 +1,587 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2018-11-21T12:42:20/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2018-11-21T12:42:20/main.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2018-11-21T12:42:20/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/archiver/:version:2019-03-29T15:42:10/css/ckanext-archiver.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/c3charts/:version:2019-03-29T15:43:24/vendor/c3.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/c3charts/:version:2019-03-29T15:43:24/charts.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-harvest/:version:2019-03-29T15:42:37/styles/harvest.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/datagovmk/:version:2019-03-29T15:41:50/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/experience/:version:2019-03-29T15:44:46/ckanext_experience.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/pages/:version:2019-03-29T15:43:52/:bundle:css/bootstrap.css;css/medium-editor.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/qa/:version:2019-03-29T15:42:25/css/ckanext-qa.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/requestdata/:version:2019-03-29T15:44:49/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/showcase/:version:2019-03-29T15:42:34/ckanext_showcase.css" />
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.8.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - datagovmk</title>
+
+
+
+
+  <script type="text/javascript">
+    function redirectToSelectedLanguage() {
+      var selectedLocale = window.localStorage.selected_locale
+      var parser = document.createElement('a')
+      parser.href = "https://data.gov.mk/en/"
+      var currentLocale = parser.pathname.split('/')[1]
+      if (selectedLocale && (selectedLocale !== currentLocale)) {
+        if (currentLocale) {
+          var urlRest = location.pathname.split('/').slice(2).join('/')
+        } else {
+          var urlRest = location.pathname.split('/').slice(1).join('/')
+        }
+        window.location.href = window.location.origin + '/' + selectedLocale + '/' + urlRest + location.search
+      }
+    }
+
+    redirectToSelectedLanguage()
+  </script>
+
+
+
+  <link rel="shortcut icon" href="/base/images/ckan.ico" />
+
+
+  <!--[if IE]>
+  <script src="/classList.min.js"></script>
+  <![endif]-->
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-123648515-1', 'auto', {});
+
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+
+
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+
+  <link rel="alternate" type="text/n3" href="https://data.gov.mk/en/catalog.n3"/>
+  <link rel="alternate" type="text/ttl" href="https://data.gov.mk/en/catalog.ttl"/>
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.mk/en/catalog.xml"/>
+  <link rel="alternate" type="application/ld+json" href="https://data.gov.mk/en/catalog.jsonld"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body data-site-root="https://data.gov.mk/" data-locale-root="https://data.gov.mk/en/" >
+
+
+<div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+<header class="account-masthead">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1">
+
+
+
+        <ul class="list-inline list-social-media pull-right">
+          <li class="title">Share</li>
+          <li><a class="btn btn-link btn-social-icon btn-facebook" title="Share on Facebook" href="https://www.facebook.com/sharer.php?u=https://data.gov.mk/en/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+          <li><a class="btn btn-link btn-social-icon btn-twitter" title="Share on Twitter" href="https://twitter.com/share?url=https://data.gov.mk/en/" target="_blank"><i class="fa fa-twitter"></i></a></li>
+          <li><a class="btn btn-link btn-social-icon btn-google" title="Share on Google+" href="https://plus.google.com/share?url=https://data.gov.mk/en/" target="_blank"><i class="fa fa-google"></i></a></li>
+        </ul>
+
+
+
+
+
+
+        <ul class="list-inline list-language-switch">
+
+          <li>
+            <a class=""
+               href="/mk/"
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="mk">mk</a>
+          </li>
+
+          <li>
+            <a class="active"
+               href="/en/"
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="en">en</a>
+          </li>
+
+          <li>
+            <a class=""
+               href="/sq/"
+               data-module="datagovmk-store-selected-language"
+               data-module-locale="sq">sq</a>
+          </li>
+
+        </ul>
+
+
+        <nav class="account not-authed">
+          <ul class="list-unstyled">
+
+
+
+            <li><a href="/en/user/login">Login</a></li>
+
+            <li><a class="sub" href="/en/user/register">Register</a></li>
+
+
+
+          </ul>
+        </nav>
+
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1">
+        <div class="navbar-right">
+          <button data-target="#main-navigation-toggle" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+            <span class="fa fa-bars"></span>
+          </button>
+        </div>
+        <div class="flex flex-wrap align-items-end justify-content-between">
+          <hgroup class="header-image navbar-left">
+
+
+            <a class="logo" href="/en/"><img src="/base/images/ckan-logo.png" alt="datagovmk" title="datagovmk" /></a>
+
+
+          </hgroup>
+          <div class="collapse navbar-collapse" id="main-navigation-toggle">
+            <nav class="section navigation">
+              <ul class="nav nav-pills">
+
+
+                <li><a href="/en/dataset">Datasets</a></li><li><a href="/en/organization">Organizations</a></li><li><a href="/en/group">Groups</a></li><li><a href="/en/organogram">Organogram</a></li><li><a href="/en/showcase">Showcases</a></li><li><a href="/en/experience">Experiences</a></li><li><a href="/en/report">Reports</a></li><li><a href="/en/datarequest">Data Requests</a></li><li><a href="/en/about">About</a></li>
+
+              </ul>
+            </nav>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+<div class="homepage layout-1">
+  <div class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+  </div>
+
+
+  <div role="main" class="hero">
+    <div class="container-fluid">
+      <div class="row flex flex-wrap">
+        <div class="col-md-6 intro">
+
+
+
+          <div class="module-content">
+            <header>
+
+              <h1>Добредојдовте на порталот за отворени податоци</h1>
+              <p>Портал за отворени податоци на Владата на Република Северна Македонија</p>
+
+            </header>
+
+            <a class="btn btn-lg btn-primary btn-primary-outline" href="/en/about">Learn more</a>
+
+
+
+
+          </div>
+
+        </div>
+        <div class="col-md-6 accent">
+
+
+
+
+          <div class="quick-stats">
+            <a href="/en/dataset">
+              <i class="fa fa-database"></i>
+              <span class="wrap">
+      <span class="value"><span>197</span></span>
+      <span class="title">datasets</span>
+    </span>
+            </a>
+            <a href="/en/organization">
+              <i class="fa fa-university"></i>
+              <span class="wrap">
+      <span class="value"><span>45</span></span>
+      <span class="title">organizations</span>
+    </span>
+            </a>
+            <a href="/en/group">
+              <i class="fa fa-th"></i>
+              <span class="wrap">
+        <span class="value"><span>8</span></span>
+        <span class="title">groups</span>
+    </span>
+            </a>
+            <a href="/en/dataset?q=extras_org_catalog_enabled%3Atrue">
+              <i class="fa fa-book"></i>
+              <span class="wrap">
+        <span class="value"><span>24</span></span>
+        <span class="title">catalogs</span>
+    </span>
+            </a>
+          </div>
+
+
+
+
+
+          <div class="module module-search module-narrow module-shallow box">
+            <form class="module-content search-form" method="get" action="/en/dataset">
+              <h3 class="heading">Search data</h3>
+              <div class="search-input form-group search-giant">
+                <input aria-label="Search datasets" id="field-main-search" type="text" class="form-control" name="q" value="" autocomplete="off" placeholder="E.g. environment" />
+                <button type="submit">
+                  <i class="fa fa-search"></i>
+                  <span class="sr-only">Search</span>
+                </button>
+              </div>
+            </form>
+
+            <div class="tags">
+              <h3>Popular tags</h3>
+
+              <a class="tag" href="/en/dataset?tags=%D0%BC%D0%B2%D1%80">мвр</a>
+
+              <a class="tag" href="/en/dataset?tags=%D0%B4%D1%80%D0%B6%D0%B0%D0%B2%D0%B5%D0%BD+%D0%B8%D0%BD%D1%81%D0%BF%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B0%D1%82+%D0%B7%D0%B0+%D0%B3%D1%80%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D0%B8%D1%88%D1%82%D0%B2%D0%BE+%D0%B8+%D1%83%D1%80%D0%B1%D0%B0%D0%BD%D0%B8%D0%B7%D0%B0%D0%BC+%D0%BD%D0%B0+%D1%80%D0%B5%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0+%D0%BC%D0%B0%D0%BA%D0%B5%D0%B4%D0%BE%D0%BD%D0%B8%D1%98%D0%B0">државен инспекторат...</a>
+
+              <a class="tag" href="/en/dataset?tags=%D0%A1%D0%BE%D1%86%D0%B8%D1%98%D0%B0%D0%BB%D0%BD%D0%B0+%D0%B7%D0%B0%D1%88%D1%82%D0%B8%D1%82%D0%B0">Социјална заштита</a>
+
+            </div>
+
+          </div>
+
+          <div class="lists">
+
+
+            <div class="col-md-6">
+              <h4 class="title"><i class="fa fa-clock-o"></i> Recent datasets</h4>
+
+              <ul class="list-unstyled">
+
+                <li><i class="fa fa-database"></i> <a href="/en/dataset/ncnntn-3a-admnhnctpatnbho-ynpabybahbe-2019">ncnntn-3a-admnhnctpatnbho-ynpabybahbe-2019</a></li>
+
+                <li><i class="fa fa-database"></i> <a href="/en/dataset/o6pa6otehn-xaji6n-n-npnrobopn-ha-admnhnctpatnbhn-cjiyx6ehnun-2019">o6pa6otehn-xaji6n-n-npnrobopn-ha-admnhnctpatnbhn-cjiyx6ehnun-2019</a></li>
+
+                <li><i class="fa fa-database"></i> <a href="/en/dataset/ttokapaktepnctnhhn-dejia-od-o6jiacta-ha-ekohomcknot-n-kpnmnhaji-od-2010-do-2107-rodnha">More specific acts in the field of economic crime</a></li>
+
+                <li><i class="fa fa-database"></i> <a href="/en/dataset/camoy6nctba-od-2010-do-2017-rodnha">Suicide rate</a></li>
+
+                <li><i class="fa fa-database"></i> <a href="/en/dataset/pernctap-3a-mecehhn-n3bewtan">pernctap-3a-mecehhn-n3bewtan</a></li>
+
+              </ul>
+
+            </div>
+            <div class="col-md-6">
+              <h4 class="title"><i class="fa fa-star"></i> Most active institutions</h4>
+
+              <ul class="list-unstyled">
+
+                <li><i class="fa fa-university"></i> <a href="/en/organization/arehunja-3a-admnhnctpaunja-ha-pm"></a></li>
+
+                <li><i class="fa fa-university"></i> <a href="/en/organization/mbp"></a></li>
+
+                <li><i class="fa fa-university"></i> <a href="/en/organization/dyn"></a></li>
+
+                <li><i class="fa fa-university"></i> <a href="/en/organization/jtt-ctydehhnua-knhebo"></a></li>
+
+                <li><i class="fa fa-university"></i> <a href="/en/organization/mtctt">Ministry of Labor and Social Policy</a></li>
+
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container-fluid featured-groups-wrap">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <ul class="featured-groups">
+
+
+
+
+
+
+
+          <li>
+            <a href="/en/group/3emjodejictbo-wymapctbo-pn6apctbo-n-xpaha" class="group">
+                <span role="img" class="icon-wrap">
+                
+                  <img class="icon" src="https://data.gov.mk/uploads/group/2018-12-20-082808.151170pexels-photo-1595104.jpeg" alt="icon">
+                
+                </span>
+              <span role="heading" class="title"></span>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="featured-charts-wrap container-fluid">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="featured-charts">
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="row">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+
+        <div class="row">
+          <div class="col-lg-8 footer-links">
+            <h3><a href="/en/">datagovmk</a></h3>
+
+            <hr>
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-5">
+                <ul class="list-inline list-logos">
+
+                  <li><a class="mioa-logo" href="http://www.mio.gov.mk"><img class="img-responsive" src="/base/images/mioa-logo-en.png" alt="logo"></a></li>
+                </ul>
+                <dl>
+                  <dt>Address</dt>
+                  <dd>
+                    <address>Blvd. St. Cyril and Methodius No.54 1000 Skopje, Republic of North Macedonia</address>
+                  </dd>
+                  <dt>E-mail</dt>
+                  <dd><a href="mailto:info@otvorenipodatoci.gov.mk">info@otvorenipodatoci.gov.mk</a></dd>
+                  <dt>Phone</dt>
+                  <dd><a href="tel:+38923200889">+389 (0)2 3200 889</a></dd>
+                  <dt>Fax</dt>
+                  <dd><a href="tel:+38923200881">+389 (0)2 3200 881</a></dd>
+                </dl>
+                <ul class="list-inline">
+                  <li><a href="#">Terms of use</a></li>
+                  <li><a href="/en/pages/ttojintnka-3a-npnbathoct-n-3awtnta-ha-jinhhnte-nodatoun">Privacy Policy</a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="footer-nav footer-links">
+
+                  <h4 class="title">Navigation</h4>
+                  <ul class="list-unstyled">
+
+                    <li><a href="/en/dataset">Datasets</a></li><li><a href="/en/organization">Organizations</a></li><li><a href="/en/group">Groups</a></li><li><a href="/en/organogram">Organogram</a></li><li><a href="/en/showcase">Showcases</a></li><li><a href="/en/experience">Experiences</a></li><li><a href="/en/report">Reports</a></li><li><a href="/en/datarequest">Data Requests</a></li><li><a href="/en/about">About</a></li>
+
+                    <li><a href="/en/issues/report_site_issue">Report site issue</a></li>
+                    <li><a href="/en/stats">Statistics</a></li>
+                  </ul>
+
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="footer-links footer-nav">
+
+                  <h4 class="title">Links</h4>
+                  <ul>
+                    <li><a href="https://ener.gov.mk/">ЕНЕР (Единствен национален електронски регистар на прописи на Република Северна Македонија)</a></li>
+                    <li><a href="https://vlada.mk/">Влада на Република Северна Македонија</a></li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4">
+            <!-- Begin MailChimp Signup Form -->
+            <div id="mc_embed_signup">
+              <form action="https://data.us18.list-manage.com/subscribe/post?u=d6f1b227acbdd8d88316c37fa&amp;id=f17b9b49bf" method="post"
+                    id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                <div id="mc_embed_signup_scroll">
+                  <h3 class="title text-uppercase">Subscribe to our newsletter</h3>
+                  <p>Stay updated with datagovmk. Subscribe to our free newsletter.</p>
+                  <hr>
+                  <label class="sr-only" for="mce-EMAIL">E-mail</label>
+                  <div class="input-group">
+                    <input type="email" required="required" value="" name="EMAIL" class="form-control" id="mce-EMAIL" placeholder="Your e-mail address">
+                    <div class="input-group-btn">
+                      <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-primary">
+                    </div>
+                  </div>
+                  <div id="mce-responses" class="clear">
+                    <div class="response" id="mce-error-response" style="display:none"></div>
+                    <div class="response" id="mce-success-response" style="display:none"></div>
+                  </div>
+                  <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                  <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                    <input type="text" name="b_d6f1b227acbdd8d88316c37fa_f17b9b49bf" tabindex="-1" value="">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!--End mc_embed_signup-->
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4">
+            <div class="list-logos-wrapper">
+              <ul class="list-inline list-logos list-logos-sm">
+                <li><a href="https://www.gov.uk/world/organisations/british-embassy-skopje"><img class="img-responsive" src="/base/images/british-embassy-skopje.png" alt="logo"></a></li>
+                <li><a><img class="img-responsive" src="/base/images/funded-by-uk-government.png" alt="logo"></a></li>
+                <li><a href="http://www.cup.org.mk/"><img class="img-responsive" src="/base/images/cup.png" alt="logo"></a></li>
+              </ul>
+              <p class="text-muted">The portal is developed within a programme implemented by the Centre for Change Management, funded by the UK Government with the support of the British Embassy Skopje. The data and content provided on this portal are not under the authority of the UK Government.</p>
+            </div>
+            <div class="attribution">
+
+              <p><strong>Powered by</strong> <a class="hide-text ckan-footer-logo" href="http://ckan.org">CKAN</a></p>
+
+              <div class="footer-links">
+                <ul class="list-inline">
+                  <li><a href="">CKAN API</a></li>
+                  <li><a href="http://www.ckan.org/">CKAN Association</a></li>
+                  <li><a href="http://www.opendefinition.org/okd/"><img src="/base/images/od_80x15_blue.png" alt="Open Data"></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2018-11-21T12:42:20/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2018-11-21T12:42:20/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2018-11-21T12:42:20/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;plugins/jquery.images-loaded.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js;modules/followers-counter.min.js"></script>
+<script type="text/javascript" src="/fanstatic/c3charts/:version:2019-03-29T15:43:24/:bundle:vendor/d3.js;vendor/c3.js;vendor/backend.ckan.js;charts.js;charts_view.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-googleanalytics/:version:2019-03-29T15:44:09/googleanalytics_event_tracking.js"></script>
+<script type="text/javascript" src="/fanstatic/datagovmk/:version:2019-03-29T15:41:50/js/modules/store-selected-language.js"></script>
+<script type="text/javascript" src="/fanstatic/pages/:version:2019-03-29T15:43:52/:bundle:js/medium-editor.min.js;js/pages-editor.js"></script></body>
+</html>

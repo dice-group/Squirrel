@@ -13,9 +13,8 @@ file_descriptor:
         regex: data/
         resources:
             "http://projekt-opal.de/dataset/$label":
-                "http://purl.org/dc/terms/title": section.column-8 h3
-                "http://purl.org/dc/terms/description":  section.column-8
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+                "http://purl.org/dc/terms/title":  div > h2
+                "http://purl.org/dc/terms/description":  article > section > h2
+                "http://www.w3.org/ns/dcat#downloadURL": p.mb0.mt2 a
 
 
