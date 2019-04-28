@@ -6,21 +6,24 @@ file_descriptor:
     redirection-one:
         regex: /
         resources:
-            "http://projekt-opal.de/dataset#pagination": div.explore a
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": div.explore a
 
     search-result-page:
         regex: DataCatalog/Dataset
         resources:
-            "http://projekt-opal.de/dataset#link":  a#datasetTitle
-            "http://projekt-opal.de/dataset#pagination": li.next a #But anchor doesn't have href. It has call to js func
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  a#datasetTitle
+                "http://projekt-opal.de/dataset#pagination": li.next a #But anchor doesn't have href. It has call to js func
 
     detail-page:
-        regex: DataCatalog/Dataset#
+        regex: DataCatalog/Dataset#DataCatalogID
         resources:
-            "http://purl.org/dc/terms/title": h3#datasettitle[href=""]
-            "http://purl.org/dc/terms/description": div#aboutdesc p
-            "http://purl.org/dc/terms/publisher": span#unitres
-            "http://purl.org/dc/terms/license": a#licenceImg
-            "http://purl.org/dc/terms/modified": div#lastupdate
-            "http://purl.org/dc/terms/issued": div#createdate
-            "http://www.w3.org/ns/dcat#downloadURL": div#downloadformats a
+            "$uri":
+                "http://purl.org/dc/terms/title": h3#datasettitle[href=""]
+                "http://purl.org/dc/terms/description": div#aboutdesc p
+                "http://purl.org/dc/terms/publisher": span#unitres
+                "http://purl.org/dc/terms/license": a#licenceImg
+                "http://purl.org/dc/terms/modified": div#lastupdate
+                "http://purl.org/dc/terms/issued": div#createdate
+                "http://www.w3.org/ns/dcat#downloadURL": div#downloadformats a

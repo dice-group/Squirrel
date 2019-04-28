@@ -6,22 +6,25 @@ file_descriptor:
     redirection-one:
         regex: /
         resources:
-            "http://projekt-opal.de/dataset#pagination": div.page-menu:contains(Catálogo de Datos) a
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": div.page-menu:contains(Catálogo de Datos) a
 
     search-result-page:
         regex: page/1808-catalogo-de-datos
         resources:
-            "http://projekt-opal.de/dataset#link": td._titulo a
-            "http://projekt-opal.de/dataset#pagination": div.pagination a.next_page
+            "$uri":
+                "http://projekt-opal.de/dataset#link": td._titulo a
+                "http://projekt-opal.de/dataset#pagination": div.pagination a
 
     detail-page:
         regex: set
         resources:
-            "http://purl.org/dc/terms/title": h2
-            "http://purl.org/dc/terms/description": div.descripcion
-            "http://purl.org/dc/terms/publisher": div.actualizacion:contains(Editor) a
-            "http://purl.org/dc/terms/issued": div.sector:contains(Fecha de creación) span:eq(1)
-            "http://purl.org/dsnotify/vocab/eventset/sourceDataset": div.identificador
-            "http://purl.org/dc/terms/license": div.actualizacion:contains(Licencia) a
-            "http://purl.org/dc/terms/modified": div.sector:contains(Fecha de última actualización de los metadatos del dataset en el catálogo de datos) span:eq(1)
-            "http://www.w3.org/ns/dcat#downloadURL": ul.dataset-formats li a
+            "$uri":
+                "http://purl.org/dc/terms/title": h2
+                "http://purl.org/dc/terms/description": div.descripcion
+                "http://purl.org/dc/terms/publisher": div.actualizacion:contains(Editor) a
+                "http://purl.org/dc/terms/issued": div.sector:contains(Fecha de creación) span:eq(1)
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": div.identificador
+                "http://purl.org/dc/terms/license": div.actualizacion:contains(Licencia) a
+                "http://purl.org/dc/terms/modified": div.sector:contains(Fecha de última actualización de los metadatos del dataset en el catálogo de datos) span:eq(1)
+                "http://www.w3.org/ns/dcat#downloadURL": ul.dataset-formats li a

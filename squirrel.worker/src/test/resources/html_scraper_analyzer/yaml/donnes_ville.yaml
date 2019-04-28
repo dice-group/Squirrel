@@ -6,22 +6,25 @@ file_descriptor:
     redirection-one:
         regex: /
         resources:
-            "http://projekt-opal.de/dataset#pagination": ul#liste-categories li a
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": ul#liste-categories li a
 
     search-result-page:
         regex: group
         resources:
-            "http://projekt-opal.de/dataset#link":  .dataset-heading a
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
 
     detail-page:
         regex: dataset
         resources:
-            "http://purl.org/dc/terms/title": .module-content h1
-            "http://purl.org/dc/terms/description": .embedded-content p
-            "http://purl.org/dc/terms/publisher": tr:contains(Publieur) td
-            "http://purl.org/dc/terms/spatial": tr:contains(Couverture géographique) td
-            "http://purl.org/dc/terms/language": tr:contains(Langue) td
-            "http://purl.org/dc/terms/license": tr:contains(Licence) td a
-            "http://purl.org/dc/terms/modified": tr:contains(Dernière modification) td
-            "http://purl.org/dc/terms/issued": tr:contains(Créé le) td
-            "http://www.w3.org/ns/dcat#downloadURL": .resource-item .btn-group ul li a
+            "$uri":
+                "http://purl.org/dc/terms/title": .module-content h1
+                "http://purl.org/dc/terms/description": .embedded-content p
+                "http://purl.org/dc/terms/publisher": tr:contains(Publieur) td
+                "http://purl.org/dc/terms/spatial": tr:contains(Couverture géographique) td
+                "http://purl.org/dc/terms/language": tr:contains(Langue) td
+                "http://purl.org/dc/terms/license": tr:contains(Licence) td a
+                "http://purl.org/dc/terms/modified": tr:contains(Dernière modification) td
+                "http://purl.org/dc/terms/issued": tr:contains(Créé le) td
+                "http://www.w3.org/ns/dcat#downloadURL": .resource-item .btn-group ul li a

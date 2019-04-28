@@ -4,19 +4,21 @@ file_descriptor:
         ignore-request: true
 
     search-result-page:
-        regex: dataset
+        regex: dataset?
         resources:
-            "http://projekt-opal.de/dataset#link": .dataset-heading a
-            "http://projekt-opal.de/dataset#pagination": a:contains(»)
+            "$uri":
+                "http://projekt-opal.de/dataset#link": .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": a:contains(»)
 
     detail-page:
         regex: dataset
         resources:
-            "http://purl.org/dc/terms/title": h1[itemprop="name"]
-            "http://purl.org/dc/terms/description": div[itemprop="description"]
-            "http://purl.org/dc/terms/publisher": tr[itemprop="publisher"] td
-            "http://purl.org/dc/terms/issued": tr:contains(Metadata Created Date) td
-            "http://purl.org/dsnotify/vocab/eventset/sourceDataset": a:contains(Download Metadata)
-            "http://purl.org/dc/terms/license": span:contains(License) a
-            "http://purl.org/dc/terms/modified": span[itemprop="dateModified"]
-            "http://www.w3.org/ns/dcat#downloadURL": a:contains(Download)
+            "$uri":
+                "http://purl.org/dc/terms/title": h1[itemprop="name"]
+                "http://purl.org/dc/terms/description": div[itemprop="description"]
+                "http://purl.org/dc/terms/publisher": tr[itemprop="publisher"] td
+                "http://purl.org/dc/terms/issued": tr:contains(Metadata Created Date) td
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": a:contains(Download Metadata)
+                "http://purl.org/dc/terms/license": span:contains(License) a
+                "http://purl.org/dc/terms/modified": span[itemprop="dateModified"]
+                "http://www.w3.org/ns/dcat#downloadURL": a:contains(Download)
