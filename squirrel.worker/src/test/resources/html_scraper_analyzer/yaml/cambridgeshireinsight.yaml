@@ -16,7 +16,7 @@ file_descriptor:
     download_page:
         regex: dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": div.panel-pane.pane-entity-view.pane-node h2
                 "http://purl.org/dc/terms/description": div.field.field-name-body.field-type-text-with-summary.field-label-hidden
                 "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)

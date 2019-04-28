@@ -12,7 +12,7 @@ file_descriptor:
     download_page:
         regex: en/dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": h1.heading:eq(0)
                 "http://purl.org/dc/terms/description": tr:contains(Description) td
                 "http://purl.org/dc/terms/publisher": tr:contains(Publisher) td

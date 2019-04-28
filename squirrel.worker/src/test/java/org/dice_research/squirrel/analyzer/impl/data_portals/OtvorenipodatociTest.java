@@ -24,18 +24,6 @@ public class OtvorenipodatociTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws IOException, URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-/*        testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("otvorenipodatoci.gov.mk")),
-            new File("src/test/resources/html_scraper_analyzer/otvorenipodatoci/otvorenipodatoci_index.html"),
-            ModelFactory.createDefaultModel().add(
-                new StatementImpl(
-                    new ResourceImpl("otvorenipodatoci.gov.mk"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
-                    new PropertyImpl("https://www.otvorenipodatoci.gov.mk/en/dataset")
-                )
-            )
-
-        });*/
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha")),
             new File("src/test/resources/html_scraper_analyzer/otvorenipodatoci/otvorenipodatoci_detail.html"),
@@ -65,19 +53,19 @@ public class OtvorenipodatociTest extends AbstractDataPortalTest {
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("http://ambar.utpl.edu.ec/dataset/feminicidios-latam"),
+                    new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
                     new PropertyImpl(DCAT.downloadURL.toString()),
                     new PropertyImpl("https://data.gov.mk/dataset/60870dab-a37b-4e3e-a9a1-fc77556a44e7/resource/e68043f2-aeb3-41a4-bd7d-a9bb577769ba/download/2.1.7-2017-.csv")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
+                    new ResourceImpl("http://projekt-opal.de/agent/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
                     new PropertyImpl("http://xmlns.com/foaf/0.1/mbox"),
-                    new PropertyImpl("katerina.darkoska@ipardpa.gov.mk")
+                    new LiteralImpl(NodeFactory.createLiteral("katerina.darkoska@ipardpa.gov.mk"),null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
+                    new ResourceImpl("http://projekt-opal.de/agent/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
                     new PropertyImpl("http://xmlns.com/foaf/0.1/name"),
                     new LiteralImpl(NodeFactory.createLiteral("Катерина Даркоска"), null)
                 )
@@ -205,6 +193,12 @@ public class OtvorenipodatociTest extends AbstractDataPortalTest {
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/en/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/en/dataset/cnpobedehn-aktnbhoctn-no-orjiacn-2019")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.otvorenipodatoci.gov.mk/en/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("https://www.otvorenipodatoci.gov.mk/en/dataset?page=1")
                 )
             ).add(
                 new StatementImpl(

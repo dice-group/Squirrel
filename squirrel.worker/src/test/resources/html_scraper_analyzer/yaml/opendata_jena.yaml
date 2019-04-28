@@ -3,21 +3,21 @@ file_descriptor:
         domain: opendata.jena.de
         ignore-request: true
     search-result-page:
-        regex: en/dataset
+        regex: dataset
         resources:
             "$uri":
-                "http://projekt-opal.de/dataset#link":  div.view-content h2 a
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
                 "http://projekt-opal.de/dataset#pagination": .pagination a
 
     download_page:
         regex: dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": h1.heading:eq(0)
                 "http://purl.org/dc/terms/description": .notes
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
                 "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+                "http://purl.org/dc/terms/issued": tr:contains(Erstellt) td
+                "http://www.w3.org/ns/dcat#downloadURL": .resource-list .dropdown.btn-group li:eq(1) a
 
                 "http://projekt-opal.de/agent/$label":
                     "http://xmlns.com/foaf/0.1/name": tr:contains(Author) td

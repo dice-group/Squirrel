@@ -46,13 +46,13 @@ public class Datagov_skTest extends AbstractDataPortalTest {
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/dataset/register-adries-register-budov"),
+                    new ResourceImpl("http://projekt-opal.de/agent/register-adries-register-budov"),
                     new PropertyImpl("http://xmlns.com/foaf/0.1/homepage"),
                     new PropertyImpl("https://data.gov.sk/en/organization/2DF13D50-0B6F-48BA-884E-BE66DC0A2934")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/dataset/register-adries-register-budov"),
+                    new ResourceImpl("http://projekt-opal.de/agent/register-adries-register-budov"),
                     new PropertyImpl("http://xmlns.com/foaf/0.1/name"),
                     new LiteralImpl(NodeFactory.createLiteral("Ministerstvo vnútra SR"), null)
                 )
@@ -179,26 +179,6 @@ public class Datagov_skTest extends AbstractDataPortalTest {
                     new ResourceImpl("https://data.gov.sk/en/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://data.gov.sk/dataset/zoznam-elektronickych-sluzieb-a-formularov-na-upvs"))
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/en/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl(""))
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/en/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl(""))
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/en/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl(""))
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://data.gov.sk/en/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl(""))
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://data.gov.sk/en/dataset"),

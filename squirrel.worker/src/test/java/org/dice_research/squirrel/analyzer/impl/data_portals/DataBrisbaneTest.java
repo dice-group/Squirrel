@@ -22,20 +22,9 @@ public class DataBrisbaneTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws IOException, URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-/*        testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("")),
-            new File("src/test/resources/"),
-            ModelFactory.createDefaultModel().add(
-                new StatementImpl(
-                    new ResourceImpl("data.brisbane.qld.gov.au"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
-                    new PropertyImpl("https://www.data.brisbane.qld.gov.au/data/dataset")
-                )
-            )
-        });*/
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations")),
-            new File("src/test/resources/databrisbane/databrisbane_detail.html"),
+            new File("src/test/resources/html_scraper_analyzer/databrisbane/databrisbane_detail.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"),
@@ -52,7 +41,7 @@ public class DataBrisbaneTest extends AbstractDataPortalTest {
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"),
                     new PropertyImpl(DCTerms.license.toString()),
-                    new PropertyImpl("http://creativecommons.org/licenses/by/4.0")
+                    new ResourceImpl("http://creativecommons.org/licenses/by/4.0")
                 )
             )
         });
@@ -75,42 +64,6 @@ public class DataBrisbaneTest extends AbstractDataPortalTest {
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/flood-study-citywide-overland-flow-pullen-pullen-sub-model")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/flood-study-coastal")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/flood-study-citywide-overland-flow-lower-bulimba-sub-model")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-regional-infrastructure-corridors-and-substations-overlay-major-transport-infras")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-streetscape-hierarchy-overlay-streetscape-hierarchy")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/stormwater-end-structures-existing")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/planned-temporary-road-occupancies")
                 )
             ).add(
@@ -123,44 +76,90 @@ public class DataBrisbaneTest extends AbstractDataPortalTest {
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/flood-study-citywide-overland-flow-enoggera-sub-model")
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/cemetery-locations")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-regional-infrastructure-corridors-and-substations-overlay-high-voltage-powerline")
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-city-plan-2014-qpp-codes")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-regional-infrastructure-corridors-and-substations-overlay-high-voltage-easements"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/golf-course-locations")
+                )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-regional-infrastructure-corridors-and-substations-overlay-petroleum-pipelines"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-zoning-overlay")
+                )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/stormwater-quality-improvement-device-existing"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-dwelling-house-character-overlay")
+                )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/stormwater-pipe-existing"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/wild-fire-history")
+                )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/stormwater-gully-existing"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/planned-burns-history")
+                )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/stormwater-junction-existing"))
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-biodiversity-areas-overlay-koala-habitat-areas")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-active-frontages-in-residential-zones-overlay"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-streetscape-hierarchy-overlay-corner-land-dedication"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-transport-air-quality-corridor-overlay-tunnel-ventilation-stack"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-road-hierarchy-overlay-primary-freight-route"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-wetlands-overlay"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-neighbourhood-plan-boundaries"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-road-hierarchy-overlay-road-hierarchy"))
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),
+                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
+                    new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/city-plan-2014-water-resource-catchments-overlay"))
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset"),

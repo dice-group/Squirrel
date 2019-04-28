@@ -2,10 +2,7 @@ file_descriptor:
     check:
         domain: otvorenipodatoci.gov.mk
         ignore-request: true
-    redirection-one:
-        regex: en/
-        resources:
-            "http://projekt-opal.de/dataset#pagination":  ul.nav.nav-pills li:nth-child(1) a
+
     search-result-page:
         regex: en/dataset
         resources:
@@ -16,7 +13,7 @@ file_descriptor:
     download_page:
         regex: dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": .dataset-header h1
                 "http://purl.org/dc/terms/description": .additional-info table tr:contains(Description) td
                 "http://purl.org/dc/terms/issued": .additional-info table tr:contains(Issued Date) td

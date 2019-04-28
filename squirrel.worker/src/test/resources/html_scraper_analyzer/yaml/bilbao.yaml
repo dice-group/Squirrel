@@ -12,12 +12,7 @@ file_descriptor:
     download_page:
         regex: catalogo/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": .blq-col h2
                 "http://purl.org/dc/terms/description": .margen_iz4:eq(1)
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
-
-            "http://projekt-opal.de/agent/$label":
-                "http://xmlns.com/foaf/0.1/name": .fondo_blanco dd:eq(1)
+                "http://purl.org/dc/terms/publisher": .fondo_blanco dd:eq(1)

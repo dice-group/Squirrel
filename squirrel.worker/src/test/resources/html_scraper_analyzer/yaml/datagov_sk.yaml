@@ -12,7 +12,7 @@ file_descriptor:
     download_page:
         regex: dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": h1.heading:eq(0)
                 "http://purl.org/dc/terms/description":  .notes p
                 "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)

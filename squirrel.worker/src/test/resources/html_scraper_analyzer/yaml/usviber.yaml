@@ -1,6 +1,6 @@
 file_descriptor:
     check:
-        domain: www.usviber.org
+        domain: usviber.org
         ignore-request: true
     search-result-page:
         regex: archived-data
@@ -11,6 +11,6 @@ file_descriptor:
     download_page:
         regex: /
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": .visual-internal h1
                 "http://www.w3.org/ns/dcat#downloadURL*": .entry-content a

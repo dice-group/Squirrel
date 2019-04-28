@@ -3,7 +3,7 @@ file_descriptor:
         domain: dados.fortaleza.ce.gov.br
         ignore-request: true
     search-result-page:
-        regex: catalogo/dataset?q=
+        regex: catalogo/dataset
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-heading a
@@ -12,12 +12,11 @@ file_descriptor:
     download_page:
         regex: dataset/
         resources:
-            "http://projekt-opal.de/dataset/$label":
+            "$uri":
                 "http://purl.org/dc/terms/title": h1.heading:eq(0)
                 "http://purl.org/dc/terms/description": .notes p
-                "http://www.w3.org/ns/dcat#distribution": l(http://projekt-opal.de/distribution/$label*)
-                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
-                "http://www.w3.org/ns/dcat#landingPage": l($uri)
+                "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#downloadURL": ul.resource-list .dropdown.btn-group li:eq(1) a
 
                 "http://projekt-opal.de/agent/$label":
                     "http://xmlns.com/foaf/0.1/mbox": tr:contains(Mantenedor) td a

@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.impl.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.dice_research.squirrel.analyzer.impl.data_portals.utils.AbstractDataPortalTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.vocab.DCAT;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -24,7 +25,7 @@ public class Datago_jpTest extends AbstractDataPortalTest{
 
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005")),
-            new File("src/test/resources/html_scraper_analyzer/datago/datago_detail.html"),
+            new File("src/test/resources/html_scraper_analyzer/datago_jp/datago_detail.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
@@ -58,15 +59,15 @@ public class Datago_jpTest extends AbstractDataPortalTest{
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
-                    new PropertyImpl("http://www.w3.org/ns/dcat#downloadURL"),
+                    new PropertyImpl(DCAT.downloadURL.toString()),
                     new ResourceImpl("http://www1.gsi.go.jp/geowww/lake/download/kahokugata/kahokugata-2018_A3.pdf")
                 )
             )
 
         });
         testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("")),
-            new File("src/test/resources/"),
+            new CrawleableUri(new URI("https://www.data.go.jp/data/en/dataset")),
+            new File("src/test/resources/html_scraper_analyzer/datago_jp/datago_resultpage.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
@@ -171,7 +172,7 @@ public class Datago_jpTest extends AbstractDataPortalTest{
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl(""),
+                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2473")
                 )

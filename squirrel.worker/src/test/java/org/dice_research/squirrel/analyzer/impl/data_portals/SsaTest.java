@@ -41,13 +41,13 @@ public class SsaTest extends AbstractDataPortalTest{
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.ssa.gov/open/data/retirement-insurance-online-apps.html"),
-                    new PropertyImpl("http://www.w3.org/ns/dcat#downloadURL"),
+                    new PropertyImpl(DCAT.downloadURL.toString()),
                     new ResourceImpl("https://www.ssa.govfy08-present-rib-filed-via-internet.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.ssa.gov/open/data/retirement-insurance-online-apps.html"),
-                    new PropertyImpl("http://www.w3.org/ns/dcat#downloadURL"),
+                    new PropertyImpl(DCAT.downloadURL.toString()),
                     new ResourceImpl("https://www.ssa.govfy08-present-rib-filed-via-internet.xlsx")
                 )
             )
@@ -127,11 +127,6 @@ public class SsaTest extends AbstractDataPortalTest{
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.ssa.govAAPI-Language-Preferences-yearly-SSDI.html")
                 )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl("https://www.ssa.gov/open/data"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl(""))
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.ssa.gov/open/data"),
@@ -257,7 +252,7 @@ public class SsaTest extends AbstractDataPortalTest{
                 new StatementImpl(
                     new ResourceImpl("https://www.ssa.gov/open/data"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.ssa.gov/appeals/DataSets/04_Disposition_Per_Day_Per_ALJ_Ranking_Report.htm")
+                    new ResourceImpl("https://www.ssa.gov/appeals/DataSets/04_Disposition_Per_Day_Per_ALJ_Ranking_Report.html")
                 )
             ).add(
                 new StatementImpl(
@@ -334,7 +329,7 @@ public class SsaTest extends AbstractDataPortalTest{
                 new StatementImpl(
                     new ResourceImpl("https://www.ssa.gov/open/data"),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("https://www.ssa.gov/disabilityresearch/nbs_round_5.htm")
+                    new ResourceImpl("https://www.ssa.gov/disabilityresearch/nbs_round_5.html")
                 )
             ).add(
                 new StatementImpl(
