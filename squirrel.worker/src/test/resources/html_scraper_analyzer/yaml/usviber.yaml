@@ -13,4 +13,4 @@ file_descriptor:
         resources:
             "$uri":
                 "http://purl.org/dc/terms/title": .visual-internal h1
-                "http://www.w3.org/ns/dcat#downloadURL*": .entry-content a
+                "http://www.w3.org/ns/dcat#downloadURL": .entry-content a

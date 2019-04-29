@@ -146,7 +146,7 @@ public class UsviberTest extends AbstractDataPortalTest {
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCAT.downloadURL.toString()),
-                    new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP18-1.pdf")
+                    new PropertyImpl("http://www.usviber.org/wp-content/uploads/2018/11/CP18-1.pdf")
                 )
             ).add(
                 new StatementImpl(
@@ -252,12 +252,6 @@ public class UsviberTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.title.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("Archived Data"), null)
                 )
