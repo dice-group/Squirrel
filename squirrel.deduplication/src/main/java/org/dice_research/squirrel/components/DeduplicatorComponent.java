@@ -31,6 +31,8 @@ import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * This component is responsible for deduplication.
@@ -42,6 +44,9 @@ import org.slf4j.LoggerFactory;
  * If The hash values of two uris are equal, the deduplicator looks behind the triples of those two uris and compares them. If the
  * lists of triples are equal, one of the two lists of triples will be deleted as it is a duplicate.
  */
+
+@Component
+@Qualifier("deduplicatorBean")
 public class DeduplicatorComponent extends AbstractComponent implements RespondingDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
@@ -87,15 +92,15 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         if (deduplicationActive) {
             String rdbHostName = null;
             int rdbPort = -1;
-            if (env.containsKey(Constants.RDB_HOST_NAME_KEY)) {
-                rdbHostName = env.get(Constants.RDB_HOST_NAME_KEY);
-                if (env.containsKey(Constants.RDB_PORT_KEY)) {
-                    rdbPort = Integer.parseInt(env.get(Constants.RDB_PORT_KEY));
+            if (env.containsKey(Constants.MDB_HOST_NAME_KEY)) {
+                rdbHostName = env.get(Constants.MDB_HOST_NAME_KEY);
+                if (env.containsKey(Constants.MDB_PORT_KEY)) {
+                    rdbPort = Integer.parseInt(env.get(Constants.MDB_PORT_KEY));
                 } else {
-                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_PORT_KEY);
+                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.MDB_PORT_KEY);
                 }
             } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
+                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.MDB_HOST_NAME_KEY);
             }
             String sparqlHostName = null;
             String sparqlHostPort = null;

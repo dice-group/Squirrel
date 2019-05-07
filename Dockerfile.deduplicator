@@ -1,0 +1,14 @@
+FROM openjdk:8u151-jdk-alpine
+
+#RUN apt-get update && apt-get install -y netcat
+
+COPY ./squirrel.deduplication/target/squirrel.deduplication.jar /data/squirrel/squirrel.jar
+COPY ./spring-config /var/squirrel/spring-config
+WORKDIR /data/squirrel
+
+#ADD entrypoint.sh /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
+
+VOLUME ["/var/squirrel/data"]
+
+CMD java -cp squirrel.jar:. org.dice_research.squirrel.components.DeduplicatorComponentStarter
