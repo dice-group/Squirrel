@@ -30,7 +30,7 @@ public class DeduplicatorComponentStarter {
      * @param args The first element has to be the class name of the component.
      */
     public static void main(String[] args){
-//        addShutdownHook();
+        addShutdownHook();
         LOGGER.debug("Deduplication: In main function!");
         boolean success = true;
         try {
@@ -44,8 +44,7 @@ public class DeduplicatorComponentStarter {
             System.out.println("Exception while executing deduplicator component. Exiting with error code - " + t.getMessage());
             success = false;
         } finally {
-//            closeComponent();
-            System.out.println("Closing deduplicator!");
+            closeComponent();
         }
 
         if (!success) {

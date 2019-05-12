@@ -46,7 +46,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@Qualifier("deduplicatorBean")
+@Qualifier("deduplicatorComponent")
 public class DeduplicatorComponent extends AbstractComponent implements RespondingDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicatorComponent.class);
@@ -205,6 +205,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
+        LOGGER.info("Deduplicator invoked!");
         if (!deduplicationActive) {
             return;
         }

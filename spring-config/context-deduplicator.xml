@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/aop
+                            http://www.springframework.org/schema/aop/spring-aop.xsd
+                            http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/tx
+                            http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+	<context:component-scan
+		base-package="org.dice_research.squirrel" />
+
+	<!-- This will automatically locate any and all property files you have
+		within your classpath, provided they fall under the META-INF directory. The
+		located property files are parsed and their values can then be used within
+		application context files in the form of ${propertyKey}. -->
+
+	<bean id="deduplicatorComponent"
+		  class="org.dice_research.squirrel.components.DeduplicatorComponent">
+
+	</bean>
+
+	<!-- Output folder for FileBasedSink -->
+	<bean id="outputFolderBean" class="java.io.File">
+		<constructor-arg index="0"
+						 value="#{systemEnvironment['OUTPUT_FOLDER']}" />
+	</bean>
+
+	<bean id="serializerBean"
+		  class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer" />
+
+	<bean id="simpleHttpFetcherBean"
+		  class="crawlercommons.fetcher.http.SimpleHttpFetcher">
+		<constructor-arg index="0" ref="userAgentBean" />
+	</bean>
+
+	<bean id="userAgentBean"
+		  class="crawlercommons.fetcher.http.UserAgent">
+		<constructor-arg index="0" value="Test" />
+		<constructor-arg index="1" value="" />
+		<constructor-arg index="2" value="" />
+	</bean>
+
+</beans>

@@ -122,7 +122,7 @@ services:
       DEDUPLICATION_ACTIVE: "true"
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
-      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context.xml
+      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
       MDB_HOST_NAME: mongodb
       MDB_PORT: 27017
       SPARQL_HOST_NAME: sparqlhost
@@ -130,4 +130,3 @@ services:
       SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
     volumes:
     - ./data/deduplicator:/var/squirrel/data
-#    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.DeduplicatorComponent

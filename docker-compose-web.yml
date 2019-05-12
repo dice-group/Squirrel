@@ -139,17 +139,17 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   deduplicator:
-    image: squirrel
+    image: squirrel.deduplication
     container_name: deduplicator
     environment:
       DEDUPLICATION_ACTIVE: "true"
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
+      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
       MDB_HOST_NAME: mongodb
       MDB_PORT: 27017
       SPARQL_HOST_NAME: sparqlhost
       SPARQL_HOST_PORT: 3030
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
     volumes:
-        - ./data/deduplicator:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.DeduplicatorComponent
+    - ./data/deduplicator:/var/squirrel/data
