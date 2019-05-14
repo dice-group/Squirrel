@@ -94,12 +94,10 @@
 			<list>
 
 				<ref bean="httpFetcherBean" /> 
-                <ref bean="ftpFetcherBean" />
-                
-                <!--  
+                <ref bean="ftpFetcherBean" />  
 				<ref bean="ckanFetcherBean" /> 
 				<ref bean="sparqlDatasetFetcherBean" />
-				<ref bean="sparqlFetcherBean" />-->
+				<ref bean="sparqlFetcherBean" />
 
 			</list>
 		</constructor-arg>

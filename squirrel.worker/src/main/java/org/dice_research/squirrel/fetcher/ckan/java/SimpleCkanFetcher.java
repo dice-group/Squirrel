@@ -80,7 +80,7 @@ public class SimpleCkanFetcher implements Fetcher {
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY,"CKAN_API");
                 return dataFile;
             } catch(CkanException e) {
-                LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null. Exception: " + e.getMessage());
+                LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } catch (IOException e) {

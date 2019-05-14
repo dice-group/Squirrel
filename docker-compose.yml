@@ -15,6 +15,7 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+      - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
       - SEED_FILE=/var/squirrel/seeds.txt
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -62,9 +63,7 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
-      - SPARQL_HOST_NAME=sparqlhost
-      - SPARQL_HOST_PORT=3030
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -82,9 +81,7 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
-      - SPARQL_HOST_NAME=sparqlhost
-      - SPARQL_HOST_PORT=3030
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -102,9 +99,7 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
-      - SPARQL_HOST_NAME=sparqlhost
-      - SPARQL_HOST_PORT=3030
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=true
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017

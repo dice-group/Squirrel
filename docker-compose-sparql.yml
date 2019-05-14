@@ -40,12 +40,12 @@ services:
       - ./data/sparqlhost/sparqlhost_data:/virtuoso
     environment:
       - Driver=/usr/local/lib/virtodbc_32.so
-      - DBA_PASSWORD=123pwd
+      - DBA_PASSWORD=pw123
 
-# sparqlhost:
-#   image: stain/jena-fuseki
-#  container_name: sparqlhost
-# ports:
+#  sparqlhost:
+#    image: stain/jena-fuseki
+#    container_name: sparqlhost
+#    ports:
 #      - "3030:3030"
 #    volumes:
 #      - ./data/sparqlhost/sparqlhost_data:/fuseki
@@ -85,11 +85,10 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_HOST_NAME=my_virtdb/sparql-auth
-      - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=DBA
-      - SPARQL_HOST_PASSWD=123pwd
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -107,11 +106,10 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_HOST_NAME=my_virtdb/sparql-auth
-      - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=DBA
-      - SPARQL_HOST_PASSWD=123pwd
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -129,11 +127,10 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_HOST_NAME=my_virtdb/sparql-auth
-      - SPARQL_HOST_PORT=8890
-      - SPARQL_HOST_USER=DBA
-      - SPARQL_HOST_PASSWD=123pwd
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_USER=dba
+      - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
