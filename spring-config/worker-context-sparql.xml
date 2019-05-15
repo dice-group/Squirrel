@@ -45,13 +45,14 @@
 	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
 		<constructor-arg index="0">
             <list>
-                 <ref bean="rdfAnalyzerBean"/>          
+                 <ref bean="rdfAnalyzerBean"/>
+                 <ref bean="ckananalyzerBean"/> <!--         
                  <ref bean="rdfaAnalyzerBean"/>    
                  <ref bean="microdataanalyzerBean"/>          
                  <ref bean="microformatanalyzerBean"/>          
                  <ref bean="hdtanalyzerBean"/>          
                  <ref bean="htmlscraperanalyzerBean"/>          
-                 <ref bean="ckananalyzerBean"/>          
+                          -->
                        
             </list>
 		</constructor-arg>
@@ -93,9 +94,11 @@
 			<list>
 				<ref bean="ckanFetcherBean" /> 
 				<ref bean="httpFetcherBean" />
-				<ref bean="ftpFetcherBean" />
 				<ref bean="sparqlDatasetFetcherBean" />
+				<!-- 
 				<ref bean="sparqlFetcherBean" />
+				<ref bean="ftpFetcherBean" />
+				-->
  				
 			</list>
 		</constructor-arg>
