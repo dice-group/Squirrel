@@ -30,7 +30,13 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
-
+		<!-- ~~~~~~~~~~~~~~~~~~~ Prediction ~~~~~~~~~~~~~~~~~~~~~~ -->
+		<dependency>
+			<groupId>de.jungblut.ml</groupId>
+			<artifactId>tjungblut-online-ml</artifactId>
+			<version>0.5</version>
+		</dependency>
+		<!-- ~~~~~~~~~~~~~~~~~~~ End Prediction ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- slf4j: Logging API -->
 		<dependency>
