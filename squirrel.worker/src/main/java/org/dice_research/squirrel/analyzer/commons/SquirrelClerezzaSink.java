@@ -81,10 +81,7 @@ public class SquirrelClerezzaSink implements TripleSink {
 
 	@Override
 	public boolean setProperty(String key, Object value) {
-		if (OUTPUT_GRAPH_PROPERTY.equals(key) && value instanceof MGraph) {
-			return true;
-		}
-		return false;
+		return (OUTPUT_GRAPH_PROPERTY.equals(key) && value instanceof MGraph);
 	}
 
 	/**
@@ -125,13 +122,16 @@ public class SquirrelClerezzaSink implements TripleSink {
 
 	@Override
 	public void startStream() throws ParseException {
+	    //not used on this implementation
 	}
 
 	@Override
 	public void endStream() throws ParseException {
+	       //not used on this implementation
 	}
 
 	@Override
 	public void setBaseUri(String baseUri) {
+	       //not used on this implementation
 	}
 }

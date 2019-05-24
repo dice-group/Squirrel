@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.queue;
 
-import java.net.InetAddress;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.List;

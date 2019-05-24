@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.queue.ipbased;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -48,15 +47,15 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
-    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
+            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer) {
-        
-        
+
         LOGGER.info("Queue Persistance: " + PERSIST);
-        
+
         this.serializer = serializer;
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
@@ -94,7 +93,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     @Override
     public void close() {
-        if(!PERSIST) {
+        if (!PERSIST) {
             mongoDB.getCollection(COLLECTION_QUEUE).drop();
             mongoDB.getCollection(COLLECTION_URIS).drop();
         }
@@ -120,7 +119,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     public boolean queueTableExists() {
         for (String collection : mongoDB.listCollectionNames()) {
-            if (collection.toLowerCase().equals(COLLECTION_QUEUE.toLowerCase())) {
+            if (collection.equalsIgnoreCase(COLLECTION_QUEUE.toLowerCase())) {
                 return true;
             }
         }
@@ -173,8 +172,9 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     @Override
     public List<CrawleableUri> getUris(IpUriTypePair pair) {
 
-        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(
-                new Document("ipAddress", pair.getIp().getHostAddress().toString()).append("type", pair.getType().toString()))
+        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
+                .find(new Document("ipAddress", pair.getIp().getHostAddress().toString()).append("type",
+                        pair.getType().toString()))
                 .iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
@@ -192,10 +192,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             LOGGER.error("Error while retrieving uri from MongoDBQueue", e);
         }
 
-        mongoDB.getCollection(COLLECTION_QUEUE)
-                .deleteOne(new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
-        mongoDB.getCollection(COLLECTION_URIS)
-                .deleteMany(new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
+        mongoDB.getCollection(COLLECTION_QUEUE).deleteOne(
+                new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
+        mongoDB.getCollection(COLLECTION_URIS).deleteMany(
+                new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
 
         return listUris;
     }
@@ -206,11 +206,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
                 .find(new Document("ipAddress", ipAddressTypeKey.get(0)).append("type", ipAddressTypeKey.get(1)))
                 .iterator();
 
-        if (iterator.hasNext()) {
-            return true;
-        } else {
-            return false;
-        }
+        return iterator.hasNext();
 
     }
 
@@ -243,11 +239,9 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             mongoDB.getCollection(COLLECTION_QUEUE).insertOne(crawleableUriToMongoDocument(uri)[0]);
             mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
             LOGGER.warn("Added " + uri.getUri().toString() + " to the queue");
-        } catch (Exception e) {
-            if (e instanceof MongoWriteException)
-                LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
-            else
-                LOGGER.error("Error while adding uri to MongoDBQueue", e);
+        } catch (MongoWriteException e) {
+            LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
+
         }
 
         LOGGER.debug("Inserted new UriTypePair");
@@ -353,10 +347,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     @Override
     public boolean isEmpty() {
-        if (length() == 0L)
-            return true;
-        else
-            return false;
+       return length() == 0L;
     }
 
 }

@@ -14,13 +14,11 @@ import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.IpUriTypePair;
 import org.dice_research.squirrel.queue.domainbased.MongoDBDomainBasedQueue;
-import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "deprecation" })
 public class MongoDBDomainQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
