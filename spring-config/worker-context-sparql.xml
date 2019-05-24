@@ -92,8 +92,8 @@
 		class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
-				<ref bean="ckanFetcherBean" /> 
 				<ref bean="httpFetcherBean" />
+				<ref bean="ckanFetcherBean" /> 
 				<ref bean="sparqlDatasetFetcherBean" />
 				<!-- 
 				<ref bean="sparqlFetcherBean" />
@@ -113,8 +113,8 @@
 	<bean id="sparqlDatasetFetcherBean"
 		class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
 		<constructor-arg index="0" value="20"></constructor-arg>
-		<constructor-arg index="1" value="800000"></constructor-arg>
-		<constructor-arg index="2" value="100000"></constructor-arg>
+		<constructor-arg index="1" value="0"></constructor-arg>
+		<constructor-arg index="2" value="200000"></constructor-arg>
 	</bean>
 	<bean id="ckanFetcherBean"
 		class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />

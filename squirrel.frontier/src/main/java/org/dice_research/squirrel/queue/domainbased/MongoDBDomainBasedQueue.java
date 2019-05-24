@@ -1,10 +1,8 @@
 package org.dice_research.squirrel.queue.domainbased;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +17,6 @@ import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
 import org.dice_research.squirrel.queue.DomainUriTypePair;
-import org.dice_research.squirrel.queue.IpUriTypePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +46,17 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
     private final String DEFAULT_DOMAIN = "default";
+    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
     public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer) {
         this.serializer = serializer;
 
+        LOGGER.info("Queue Persistance: " + PERSIST);
+
+        
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
@@ -90,8 +92,11 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     @Override
     public void close() {
-        mongoDB.getCollection(COLLECTION_QUEUE).drop();
-        mongoDB.getCollection(COLLECTION_URIS).drop();
+        if(!PERSIST) {
+            mongoDB.getCollection(COLLECTION_QUEUE).drop();
+            mongoDB.getCollection(COLLECTION_URIS).drop();
+        }
+    
         client.close();
     }
 

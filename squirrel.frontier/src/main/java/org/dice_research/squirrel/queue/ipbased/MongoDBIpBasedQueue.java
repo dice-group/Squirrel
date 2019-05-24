@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.queue.ipbased;
 
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -47,10 +48,15 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
+    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer) {
+        
+        
+        LOGGER.info("Queue Persistance: " + PERSIST);
+        
         this.serializer = serializer;
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
@@ -88,8 +94,11 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     @Override
     public void close() {
-        mongoDB.getCollection(COLLECTION_QUEUE).drop();
-        mongoDB.getCollection(COLLECTION_URIS).drop();
+        if(!PERSIST) {
+            mongoDB.getCollection(COLLECTION_QUEUE).drop();
+            mongoDB.getCollection(COLLECTION_URIS).drop();
+        }
+
         client.close();
     }
 
@@ -288,6 +297,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         return pack;
     }
 
+    @SuppressWarnings("unused")
     private List<CrawleableUri> createCrawleableUriList(List<Object> uris) {
         List<CrawleableUri> resultUris = new ArrayList<>();
 
