@@ -92,7 +92,7 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 		Tika tika = new Tika();
 		try (InputStream is = new FileInputStream(data)) {
 			String mimeType = tika.detect(is);
-			if (mimeType.equals("text/html")) {
+			if ("text/html".equals(mimeType)) {
 				return true;
 			}
 		} catch (Exception e) {

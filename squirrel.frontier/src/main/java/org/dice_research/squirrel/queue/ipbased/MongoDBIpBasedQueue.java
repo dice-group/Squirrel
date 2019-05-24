@@ -226,9 +226,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             }
 
         } catch (Exception e) {
-            if (e instanceof MongoWriteException)
-                LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
-            else
                 LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
     }

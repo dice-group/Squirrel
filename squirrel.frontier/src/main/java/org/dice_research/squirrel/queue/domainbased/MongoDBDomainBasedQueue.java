@@ -46,8 +46,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
     private final String DEFAULT_DOMAIN = "default";
-    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
-
+    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
+            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
@@ -56,7 +56,6 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
         LOGGER.info("Queue Persistance: " + PERSIST);
 
-        
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
@@ -92,11 +91,11 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     @Override
     public void close() {
-        if(!PERSIST) {
+        if (!PERSIST) {
             mongoDB.getCollection(COLLECTION_QUEUE).drop();
             mongoDB.getCollection(COLLECTION_URIS).drop();
         }
-    
+
         client.close();
     }
 
@@ -155,10 +154,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             }
 
         } catch (Exception e) {
-            if (e instanceof MongoWriteException)
-                LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
-            else
-                LOGGER.error("Error while adding uri to MongoDBQueue", e);
+
+            LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
     }
 
@@ -203,11 +200,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         Iterator<Document> iterator = mongoDB.getCollection(COLLECTION_QUEUE)
                 .find(new Document("domain", domainTypeKey.get(0)).append("type", domainTypeKey.get(1))).iterator();
 
-        if (iterator.hasNext()) {
-            return true;
-        } else {
-            return false;
-        }
+       return iterator.hasNext();
 
     }
 
@@ -236,10 +229,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     @Override
     public boolean isEmpty() {
-        if (length() == 0L)
-            return true;
-        else
-            return false;
+        return length() == 0L;
     }
 
     @Override
@@ -250,16 +240,15 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             mongoDB.createCollection(COLLECTION_URIS);
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
-            mongoCollection
-                    .createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
-            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"),
-                    Indexes.ascending("domain"), Indexes.ascending("type")));
+            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
+            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("domain"),
+                    Indexes.ascending("type")));
         }
     }
-    
+
     public boolean queueTableExists() {
         for (String collection : mongoDB.listCollectionNames()) {
-            if (collection.toLowerCase().equals(COLLECTION_QUEUE.toLowerCase())) {
+            if (collection.equalsIgnoreCase(COLLECTION_QUEUE.toLowerCase())) {
                 return true;
             }
         }
@@ -280,11 +269,11 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             @Override
             public DomainUriTypePair next() {
                 Document doc = (Document) cursor.next();
-                    String domain = doc.get("domain").toString();
-                    UriType uriType = UriType.valueOf(doc.get("type").toString());
-                    DomainUriTypePair pair = new DomainUriTypePair(domain, uriType);
-                    return pair;
-                }
+                String domain = doc.get("domain").toString();
+                UriType uriType = UriType.valueOf(doc.get("type").toString());
+                DomainUriTypePair pair = new DomainUriTypePair(domain, uriType);
+                return pair;
+            }
         };
 
         return domainTypePairIterator;
@@ -293,9 +282,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     @Override
     public List<CrawleableUri> getUris(DomainUriTypePair pair) {
 
-        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(
-                new Document("domain", pair.getDomain()).append("type", pair.getType().toString()))
-                .iterator();
+        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
+                .find(new Document("domain", pair.getDomain()).append("type", pair.getType().toString())).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 

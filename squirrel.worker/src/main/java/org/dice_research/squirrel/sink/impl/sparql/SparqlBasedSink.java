@@ -77,6 +77,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             HttpAuthenticator authenticator = new HttpAuthenticator() {
                 @Override
                 public void invalidate() {
+                    // unused method in this implementation
                 }
 
                 @Override
@@ -84,6 +85,8 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
                     client.setCredentialsProvider(new CredentialsProvider() {
                         @Override
                         public void clear() {
+                            // unused method in this implementation
+
                         }
 
                         @Override
