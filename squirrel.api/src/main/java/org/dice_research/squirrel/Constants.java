@@ -81,4 +81,5 @@ public class Constants {
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String DEFAULT_USER_AGENT = "Squirrel";
+    public static final String GENERATED_URIS = "GENERATED_URIS";
 }

@@ -106,9 +106,9 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_URL=https://sparqlhost:3030/squirrel/update
+      - SPARQL_URL=http://sparqlhost:3030/squirrel/update
       - SPARQL_HOST_USER=admin
-      - SPARQL_HOST_PASSWD=123pwd
+      - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -127,9 +127,9 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_URL=https://sparqlhost:3030/squirrel/update
+      - SPARQL_URL=http://sparqlhost:3030/squirrel/update
       - SPARQL_HOST_USER=admin
-      - SPARQL_HOST_PASSWD=123pwd
+      - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017

@@ -37,5 +37,5 @@ public class Squirrel {
     public static final Property uriHostedOn = property("uriHostedOn");
     public static final Property status = property("status");
     public static final Property containsDataOf = property("containsDataOf");
-    
+    public static final Property generatedURIs = property("GeneratedURIs");
 }
