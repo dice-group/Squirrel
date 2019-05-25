@@ -27,11 +27,6 @@
 
 	<!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> -->
 
-	<bean id="deduplicatorBean"
-		  class="org.dice_research.squirrel.components.DeduplicatorComponent">
-
-	</bean>
-
 	<bean id="workerBean"
 		class="org.dice_research.squirrel.worker.impl.WorkerImpl">
 		<constructor-arg index="0" ref="workerComponent" />
