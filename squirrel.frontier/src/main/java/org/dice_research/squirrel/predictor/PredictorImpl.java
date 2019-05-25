@@ -22,6 +22,12 @@ public class PredictorImpl {
     private FeatureOutcomePair featureOutcome;
     private DoubleVector features;
 
+    protected CrawleableUri uri;
+
+    public PredictorImpl(CrawleableUri uri) {
+        this.uri =  uri;
+    }
+
     public void predictor(CrawleableUri uri) {
 
         // TODO update the strucutre
