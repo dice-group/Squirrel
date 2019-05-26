@@ -16,6 +16,10 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - SEED_FILE=/var/squirrel/seeds.txt
+      - SPARQL_HOST_NAME=my_virtdb/sparql-auth
+      - SPARQL_HOST_PORT=8890
+      - SPARQL_HOST_USER=DBA
+      - SPARQL_HOST_PASSWD=123pwd
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - MDB_CONNECTION_TIME_OUT=5000

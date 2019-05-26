@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
+import org.dice_research.squirrel.configurator.SparqlConfiguration;
 import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -64,6 +65,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
+    String sparqlEndpointUrl = "http://localhost:8890/sparql";
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
@@ -73,6 +75,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+        SparqlConfiguration sparqlConfiguration = SparqlConfiguration.create(sparqlEndpointUrl);
         if (mongoConfiguration != null) {
             String dbHostName = mongoConfiguration.getMDBHostName();
             Integer dbPort = mongoConfiguration.getMDBPort();
