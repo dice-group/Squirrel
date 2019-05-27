@@ -10,6 +10,11 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -26,6 +31,7 @@ import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
+import org.dice_research.squirrel.sink.SparqlBasedSinkDedup;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
@@ -89,6 +95,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", Constants.DEDUPLICATION_ACTIVE_KEY);
             deduplicationActive = Constants.DEFAULT_DEDUPLICATION_ACTIVE;
         }
+        LOGGER.warn("Into Deduplicator__Aakash");
         if (deduplicationActive) {
             String rdbHostName = null;
             int rdbPort = -1;
@@ -123,8 +130,10 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 //                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
 //                uriHashCustodian = knownUriFilter;
 //            }
-
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
+//            SparqlBasedSinkDedup sparqlSinkDedup = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/update","admin","pw123");
+//            SQLKnownUriFilter knownUriFilter = new SQLKnownUriFilter(sparqlName, sparqlPort);
+//            uriHashCustodian = knownUriFilter;
 
             serializer = new GzipJavaUriSerializer();
 
@@ -136,6 +145,26 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 LOGGER.error("Error while creating sender object.", e);
             }
             LOGGER.info("Deduplicator initialized.");
+
+            //endpoint setup
+            SparqlBasedSinkDedup sparqlSinkDedup = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
+            //query
+            String queryString = "SELECT ?subject ?predicate ?object\n" +
+                    "WHERE {\n" +
+                    "GRAPH ?g {?subject ?predicate ?object}\n" +
+                    "}\n" +
+                    "LIMIT 100";
+
+            QueryExecution qe = SparqlBasedSinkDedup.queryExecFactory.createQueryExecution(queryString);
+            System.out.println(qe);
+            ResultSet rs = qe.execSelect();
+            System.out.println("-------------------------------------------------------------------------------------------------------");
+
+            while (rs.hasNext()) {
+                QuerySolution sol = rs.nextSolution();
+                RDFNode subject = sol.get("Concept");
+                System.out.println(subject);
+            }
         }
     }
 

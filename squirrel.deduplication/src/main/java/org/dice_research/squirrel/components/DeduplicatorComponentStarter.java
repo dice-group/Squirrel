@@ -56,7 +56,7 @@ public class DeduplicatorComponentStarter {
         if (closed == false) {
             Closer.close(component, LOGGER);
             closed = true;
-            context.close();
+//            context.close();
         }
     }
 
