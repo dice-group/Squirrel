@@ -42,6 +42,7 @@ public class HTMLScraperAnalyzer extends AbstractAnalyzer {
                 sink.addTriple(curi, triple);
                 collector.addTriple(curi, triple);
             }
+            curi.addData(Constants.GENERATED_URIS, htmlScraper.getGeneratedUris());
             return collector.getUris(curi);
 
         } catch (Exception e) {

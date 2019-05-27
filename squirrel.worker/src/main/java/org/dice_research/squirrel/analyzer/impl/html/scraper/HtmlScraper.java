@@ -3,14 +3,8 @@ package org.dice_research.squirrel.analyzer.impl.html.scraper;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Stack;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -47,7 +41,7 @@ public class HtmlScraper {
     private Document doc;
     private Map<String,List<Triple>> staticMap = new HashMap<String,List<Triple>>();
     private Map<String,List<Triple>> selectedMap = new HashMap<String,List<Triple>>();
-
+    private Set<String> generatedUris = new HashSet<>();
 
     public HtmlScraper(File file) {
         try {
@@ -150,6 +144,10 @@ public class HtmlScraper {
         }
 
         return listTriples;
+    }
+
+    public Set<String> getGeneratedUris(){
+        return generatedUris;
     }
     
     /**
@@ -274,7 +272,9 @@ public class HtmlScraper {
  		if (s.contains("$label")) {
  			s = s.replaceAll("\\$label", label);
  		}
-    	
+
+        LOGGER.debug("Adding a generated URI to CrawlableUri object - " + s);
+ 		generatedUris.add(s);
     	return s;
     }
     

@@ -1,11 +1,7 @@
 package org.dice_research.squirrel.metadata;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
@@ -129,11 +125,15 @@ public class CrawlingActivity implements Serializable {
         model.add(generatedUris, RDF.type, Squirrel.generatedURIs);
         model.add(generatedUris, PROV_O.wasDerivedFrom, crawledUri);
         model.add(generatedUris, PROV_O.wasGeneratedBy, activity);
-        String generatedURIs = "";
+        Set<String> generatedURIs = new HashSet<>();
         if (getCrawleableUri().getData(Constants.GENERATED_URIS) != null) {
-            generatedURIs = getCrawleableUri().getData(Constants.GENERATED_URIS).toString();
-        }
-        model.add(generatedUris, PROV_O.value, generatedURIs);
+            generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
+            Iterator<String> itr = generatedURIs.iterator();
+            while (itr.hasNext()){
+                model.add(generatedUris, PROV_O.value, itr.next());
+            }
+        } else
+            model.add(generatedUris, PROV_O.value, generatedURIs.toString());
 
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);
