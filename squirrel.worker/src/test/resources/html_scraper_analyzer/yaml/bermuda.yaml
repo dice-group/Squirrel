@@ -2,10 +2,6 @@ file_descriptor:
     check:
         domain: bermuda.io
         ignore-request: true
-#    redirection-one:
-#        regex: /
-#        resources:
-#            "http://projekt-opal.de/dataset#pagination":  ul.nav.nav-pills li:nth-child(1) a
 
     search-result-page:
         regex: dataset

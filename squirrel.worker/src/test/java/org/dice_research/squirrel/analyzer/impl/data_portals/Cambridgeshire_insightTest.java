@@ -27,18 +27,7 @@ public class Cambridgeshire_insightTest extends AbstractDataPortalTest {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
         String uriSearchPage = "https://data.cambridgeshireinsight.org.uk/search/field_topics/type/dataset?sort_by=changed";
         String uriDetailsPage = "https://data.cambridgeshireinsight.org.uk/dataset/empty-homes";
-/*        testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("http://data.cambridgeshireinsight.org.uk")),
-            new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshire_index.html"),
-            ModelFactory.createDefaultModel().add(
-                new StatementImpl(
-                    new ResourceImpl("http://projekt-opal.de/dataset#pagination"),
-                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
-                    new PropertyImpl("https://data.cambridgeshireinsight.org.uk/search/field_topics/type/dataset?sort_by=changed")
-                )
-            )
 
-        });*/
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriDetailsPage)),
             new File("src/test/resources/html_scraper_analyzer/cambridgeshireinsight/cambridgeshireinsight_detail.html"),

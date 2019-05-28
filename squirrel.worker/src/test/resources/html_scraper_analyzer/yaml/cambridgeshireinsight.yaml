@@ -2,10 +2,7 @@ file_descriptor:
     check:
         domain: data.cambridgeshireinsight.org.uk
         ignore-request: true
-    redirection-one:
-        regex: /
-        resources:
-            "http://projekt-opal.de/dataset#pagination":  .leaf.menu-link-all-datasets a
+
     search-result-page:
         regex: search
         resources:

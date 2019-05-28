@@ -22,43 +22,44 @@ public class Datago_jpTest extends AbstractDataPortalTest{
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws IOException, URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-
+        String uriSearchPage = "https://www.data.go.jp/data/en/dataset";
+        String uriDetailsPage = "https://www.data.go.jp/data/en/dataset/mlit_20190201_0005";
         testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005")),
+            new CrawleableUri(new URI(uriDetailsPage)),
             new File("src/test/resources/html_scraper_analyzer/datago_jp/datago_detail.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.title.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("湖沼データ（河北潟）参考資料A3サイズ"), null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.description.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("湖沼データ（河北潟）のうち、湖沼画像データをA3サイズでPDFにしたものです。"), null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.publisher.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("国土交通省"),null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.creator.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("応用地理部"),null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCTerms.issued.toString()),
                     new LiteralImpl(NodeFactory.createLiteral("2018-12-03"),null)
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005"),
+                    new ResourceImpl(uriDetailsPage),
                     new PropertyImpl(DCAT.downloadURL.toString()),
                     new ResourceImpl("http://www1.gsi.go.jp/geowww/lake/download/kahokugata/kahokugata-2018_A3.pdf")
                 )
@@ -66,154 +67,154 @@ public class Datago_jpTest extends AbstractDataPortalTest{
 
         });
         testConfigs.add(new Object[]{
-            new CrawleableUri(new URI("https://www.data.go.jp/data/en/dataset")),
+            new CrawleableUri(new URI(uriSearchPage)),
             new File("src/test/resources/html_scraper_analyzer/datago_jp/datago_resultpage.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20150223_0105")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0005")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0004")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20180907_0054")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_3101")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_3075")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_3046")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2528")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2527")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2526")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2525")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20190201_0032")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20160907_0024")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20161206_0029")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20171204_0069")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2475")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2474")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2473")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2472")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset/mlit_20140919_2471")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset?page=1")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset?page=2")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset?page=3"))
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("https://www.data.go.jp#")
                 )
             ).add(
                 new StatementImpl(
-                    new ResourceImpl("https://www.data.go.jp/data/en/dataset"),
+                    new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("https://www.data.go.jp/data/en/dataset?page=1246")
                 )
