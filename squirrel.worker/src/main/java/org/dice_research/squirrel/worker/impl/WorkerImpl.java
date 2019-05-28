@@ -12,8 +12,6 @@ import java.util.UUID;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.analyzer.compress.impl.FileManager;
-import org.dice_research.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
-import org.dice_research.squirrel.collect.SqlBasedUriCollector;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -78,6 +76,7 @@ public class WorkerImpl implements Worker, Closeable {
     protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
+    @Deprecated
     private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
@@ -123,11 +122,9 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         this.collector = collector;
-        fetcher = new SimpleOrderedFetcherManager(
-                // new SparqlBasedFetcher(),
-                new HTTPFetcher(), new SimpleCkanFetcher(), new FTPFetcher(), new SparqlBasedFetcher());
-
-        analyzer = new SimpleOrderedAnalyzerManager(collector);
+//        fetcher = new SimpleOrderedFetcherManager(
+//                // new SparqlBasedFetcher(),
+//        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
     }
 
     @Override
@@ -336,7 +333,7 @@ public class WorkerImpl implements Worker, Closeable {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
         CrawleableUri newUri;
         int packageCount = 0;
-        while (uriIterator.hasNext()) {
+        while (uriIterator != null && uriIterator.hasNext()) {
             try {
                 newUri = serializer.deserialize(uriIterator.next());
                 uriProcessor.recognizeUriType(newUri);
@@ -362,5 +359,11 @@ public class WorkerImpl implements Worker, Closeable {
     public void setTerminateFlag(boolean terminateFlag) {
         this.terminateFlag = terminateFlag;
     }
+
+    @Deprecated
+	@Override
+	public int getId() {
+		return this.id;
+	}
 
 }

@@ -1,12 +1,12 @@
 version: "2"
 
 services:
-  rethinkdb:
-    image: rethinkdb:2.3.5
+#  rethinkdb:
+#    image: rethinkdb:2.3.5
 #    volumes:
 #      - ./scenarios/1/rethinkdb:/data
-    ports:
-      - "28015:28015"
+#    ports:
+#      - "28015:28015"
 
   # message bus
   rabbit:
@@ -18,66 +18,60 @@ services:
       # Forwarding the port for testing
       - "5672:5672"
 
-  sparqlHost:
-      image: stain/jena-fuseki
-      container_name: sparqlHost
-      ports:
-        - "3030:3030"
-      volumes:
-        - ./scenarios/1/data/sparqlHost:/fuseki
-      environment:
-        - ADMIN_PASSWORD=pw123
-        - JVM_ARGS=-Xmx2g
+#  sparqlHost:
+#      image: stain/jena-fuseki
+#      container_name: sparqlHost
+#      ports:
+#        - "3030:3030"
+#      volumes:
+#        - ./scenarios/1/data/sparqlHost:/fuseki
+#      environment:
+#        - ADMIN_PASSWORD=pw123
+#        - JVM_ARGS=-Xmx2g
+
+  mongodb:
+    image: mongo:4.0.0
+    volumes:
+      - ./data/mongodb:/data
+    ports:
+      - "27017:27017"
 
   frontier:
-    image: squirrel
+    image: squirrel.frontier:latest
     container_name: frontier
     environment:
-      HOBBIT_RABBIT_HOST: rabbit
-      SEED_FILE: /var/squirrel/data/seeds.txt
-      RDB_HOST_NAME: rethinkdb
-      RDB_PORT: 28015
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-      COMMUNICATION_WITH_WEBSERVICE: "false"
+      - HOBBIT_RABBIT_HOST=rabbit
+      - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+      - SEED_FILE=/var/squirrel/seeds.txt
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - COMMUNICATION_WITH_WEBSERVICE=false
+      - VISUALIZATION_OF_CRAWLED_GRAPH=false
+      - JVM_ARGS=-Xmx8g
     volumes:
       - ./scenarios/1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
-
+      
   worker1:
-    image: squirrel
+    image: squirrel.worker:latest
     container_name: worker1
     environment:
-      HOBBIT_RABBIT_HOST: rabbit
-      OUTPUT_FOLDER: /var/squirrel/data
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-      SPARQL_HOST_NAME: sparqlHost
-      SPARQL_HOST_PORT: 3030
-      DEDUPLICATION_ACTIVE: "true"
-      RDB_HOST_NAME: rethinkdb
-      RDB_PORT: 28015
+      - HOBBIT_RABBIT_HOST=rabbit
+      - OUTPUT_FOLDER=/var/squirrel/data
+      - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
+      - SPARQL_HOST_NAME=sparqlhost
+      - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - JVM_ARGS=-Xmx8g
     volumes:
-        - ./scenarios/1/worker1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.WorkerComponent
-
-
-  deduplicator:
-    image: squirrel
-    container_name: deduplicator
-    environment:
-      DEDUPLICATION_ACTIVE: "true"
-      HOBBIT_RABBIT_HOST: rabbit
-      OUTPUT_FOLDER: /var/squirrel/data
-      RDB_HOST_NAME: rethinkdb
-      RDB_PORT: 28015
-      SPARQL_HOST_NAME: sparqlHost
-      SPARQL_HOST_PORT: 3030
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-    volumes:
-        - ./scenarios/1/deduplicator:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.DeduplicatorComponent
+        - ./data/worker1:/var/squirrel/data
+        - ../yaml:/var/squirrel/yaml
+        - ../spring-config:/var/squirrel/spring-config
 
   SimulationNodeA:
-    image: squirrel
+    image: squirrel.mockup
     container_name: NodeA
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
@@ -85,26 +79,26 @@ services:
       PORT: 80
       DUMP_FILE_NAME: dump.gz
       USE_DEREF: "true"
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SERVICE_PRECONDITION: "rabbit:5672"
     volumes:
         - ./scenarios/1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.SimpleHttpServerComponent
+    ports:
+      - "80:80"
 
   SimulationNodeB:
-    image: squirrel
+    image: squirrel.mockup
     container_name: NodeB
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeB.ttl
       RESOURCE_MODEL_LANG: N3
       PORT: 80
       USE_DEREF: "true"
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SERVICE_PRECONDITION: "rabbit:5672"
     volumes:
         - ./scenarios/1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.SimpleHttpServerComponent
 
   SimulationNodeC:
-    image: squirrel
+    image: squirrel.mockup
     container_name: NodeC
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeC.ttl
@@ -112,7 +106,6 @@ services:
       PORT: 80
       DUMP_FILE_NAME: dump.gz
       USE_DEREF: "false"
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+      SERVICE_PRECONDITION: "rabbit:5672"
     volumes:
         - ./scenarios/1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.SimpleHttpServerComponent

@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,12 +18,10 @@ import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
-import org.dice_research.squirrel.queue.MongoDBQueue;
+import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -33,7 +29,7 @@ public class FrontierImplTest {
 
 
     static FrontierImpl frontier;
-    static MongoDBQueue queue;
+    static MongoDBIpBasedQueue queue;
     static MongoDBKnowUriFilter filter;
     static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
@@ -45,7 +41,7 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBQueue("localhost", 58027);
+        queue = new MongoDBIpBasedQueue("localhost", 58027);
          filter.open();
          queue.open();
         frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true);

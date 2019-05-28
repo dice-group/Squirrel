@@ -148,12 +148,7 @@ public class HtmlScraper {
     	}
     	
     	
-//    	for(Entry<String,Set<Triple>> entry: updatedTriples.entrySet()) {
-//    		System.out.println(entry.getKey());
-//    		for(Triple t: entry.getValue()) {
-//    			System.out.println(" -- " + t);
-//    		}
-//    	}
+
     	
     	List<Triple> updatedList = new ArrayList<>();
 		

@@ -12,9 +12,6 @@ import java.util.Set;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.InMemoryQueue;
-import org.dice_research.squirrel.queue.IpAddressBasedQueue;
-import org.dice_research.squirrel.queue.IpUriTypePair;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class IpAddressBasedQueueIpPackagingTest {
 
+    @SuppressWarnings("deprecation")
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         CrawleableUriFactory4Tests factory = new CrawleableUriFactory4Tests();
@@ -115,6 +113,7 @@ public class IpAddressBasedQueueIpPackagingTest {
         this.expectedChunkUris = expectedChunkUris;
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void test() throws Exception {
         IpAddressBasedQueue queue = new InMemoryQueue();
@@ -129,8 +128,8 @@ public class IpAddressBasedQueueIpPackagingTest {
         while ((chunk != null) && (chunk.size() > 0)) {
             chunkId = 0;
             while ((chunkId < expectedChunks.length)
-                    && ((!expectedChunks[chunkId].ip.equals(chunk.get(0).getIpAddress()))
-                            || (expectedChunks[chunkId].type != chunk.get(0).getType()))) {
+                    && ((!expectedChunks[chunkId].getIp().equals(chunk.get(0).getIpAddress()))
+                            || (expectedChunks[chunkId].getType() != chunk.get(0).getType()))) {
                 ++chunkId;
             }
             Assert.assertTrue("Couldn't find a matching chunk with the IP " + chunk.get(0).getIpAddress().toString()

@@ -18,6 +18,7 @@ import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class SimpleOrderedAnalyzerManager implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleOrderedAnalyzerManager.class);

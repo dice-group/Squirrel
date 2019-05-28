@@ -14,19 +14,25 @@ services:
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
+      - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+      - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
       - SEED_FILE=/var/squirrel/seeds.txt
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - RDB_HOST_NAME=rethinkdb
       - RDB_PORT=28015
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
+      - MDB_CONNECTION_TIME_OUT=5000
+      - MDB_SOCKET_TIME_OUT=10000
+      - MDB_SERVER_TIME_OUT=10000
       - COMMUNICATION_WITH_WEBSERVICE=false
       - VISUALIZATION_OF_CRAWLED_GRAPH=false
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
-      - ./whitelist/ckanwhitelist.txt:/var/squirrel/whitelist.txt:ro
-#    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
+      - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
+    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponentStarter
+
   mongodb:
     image: mongo:4.0.0
     volumes:
@@ -34,12 +40,13 @@ services:
     ports:
       - "27017:27017"
 
-  rethinkdb:
-    image: rethinkdb:2.3.5
-    volumes:
-      - ./data/rethinkdb:/data
-    ports:
-      - "28015:28015"
+#  rethinkdb:
+#    image: rethinkdb:2.3.5
+#    volumes:
+#      - ./data/rethinkdb:/data
+#    ports:
+#      - "8080:8080"
+#    command: rethinkdb --bind all
 
   # message bus
   rabbit:
@@ -58,10 +65,11 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
-      - DEDUPLICATION_ACTIVE=true
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
+      - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -75,10 +83,11 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
-      - DEDUPLICATION_ACTIVE=true
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
+      - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -92,7 +101,7 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-fileBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=true
       - RDB_HOST_NAME=rethinkdb
       - RDB_PORT=28015
