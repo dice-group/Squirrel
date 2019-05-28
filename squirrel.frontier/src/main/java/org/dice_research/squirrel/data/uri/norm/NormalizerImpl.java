@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * Parts of the code borrowed from <a href=
@@ -21,6 +23,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  * <li>filter parts of the URI</li>
  * </ul>
  */
+@Component
+@Qualifier("normalizerImpl")
 public class NormalizerImpl implements UriNormalizer {
 
     /**

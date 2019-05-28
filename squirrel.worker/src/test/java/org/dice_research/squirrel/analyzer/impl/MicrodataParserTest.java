@@ -157,7 +157,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicrodataParser(collector);
+		analyzer = new MicrodataAnalyzer(collector);
 		
 		String strindex = test.getMethodName();
 //		strindex = strindex.substring(11, strindex.indexOf(","));

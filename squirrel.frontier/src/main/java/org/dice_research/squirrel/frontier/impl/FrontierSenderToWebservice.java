@@ -1,9 +1,19 @@
 package org.dice_research.squirrel.frontier.impl;
 
-import com.SquirrelWebObject;
-import com.graph.VisualisationGraph;
-import com.graph.VisualisationNode;
-import com.rabbitmq.client.Channel;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.EMPTY_MAP;
+
+import java.awt.Color;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -12,6 +22,7 @@ import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
+import org.dice_research.squirrel.queue.UriQueue;
 import org.hobbit.core.rabbit.DataSender;
 import org.hobbit.core.rabbit.DataSenderImpl;
 import org.hobbit.core.rabbit.RabbitQueueFactory;
@@ -19,22 +30,16 @@ import org.hobbit.core.rabbit.RabbitQueueFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.EMPTY_MAP;
+import com.SquirrelWebObject;
+import com.graph.VisualisationGraph;
+import com.graph.VisualisationNode;
+import com.rabbitmq.client.Channel;
 
 public class FrontierSenderToWebservice implements Runnable, Closeable {
 
     private final long startRunTime = System.currentTimeMillis();
     private WorkerGuard workerGuard;
-    private IpAddressBasedQueue queue;
+    private UriQueue queue;
     private KnownUriFilter knownUriFilter;
     private URIReferences uriReferences;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
@@ -56,7 +61,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @param knownUriFilter has information about the crawled URIs
      * @param uriReferences  has information for the crawled graph. if it is {@code null}, the feature of creating a crawled graph is disabled
      */
-    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, IpAddressBasedQueue queue, KnownUriFilter knownUriFilter, URIReferences uriReferences) {
+    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, UriQueue queue, KnownUriFilter knownUriFilter, URIReferences uriReferences) {
         this.factory = factory;
         this.workerGuard = workerGuard;
         this.queue = queue;
@@ -161,31 +166,33 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
         LinkedHashMap<InetAddress, List<CrawleableUri>> currentQueue = new LinkedHashMap<>(50);
         Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> i;
-        // FIXME!!!
-        throw new RuntimeException("This is not correctly implemented!");
-//        for (i = queue.getIPURIIterator(); i.hasNext() && currentQueue.size() < 50; ) {
-//            AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>> entry = i.next();
-//            currentQueue.put(entry.getKey(), entry.getValue());
-//        }
-//        if (currentQueue.isEmpty()) {
-//            newObject.setIPMapPendingURis(EMPTY_MAP);
-//            newObject.setPendingURIs(EMPTY_LIST);
-//            newObject.setNextCrawledURIs(EMPTY_LIST);
-//        } else {
-//            newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
-//                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
-//                .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
-//            List<String> pendingURIs = new ArrayList<>(currentQueue.size());
-//            currentQueue.forEach((key, value) -> value.forEach(uri -> pendingURIs.add(uri.getUri().toString())));
-//            newObject.setPendingURIs(pendingURIs);
-//            newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().toString()).collect(Collectors.toList()));
-//        }
-//
-//        //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
-//        //newObject.setCrawledURIs(Collections.EMPTY_LIST);
-//        newObject.setCountOfCrawledURIs((int) knownUriFilter.count());
-//
-//        return newObject;
+        
+        //TODO
+        //improve this iterator to any kind of queue
+        
+        for (i = ((IpAddressBasedQueue) queue).getIPURIIterator(); i.hasNext() && currentQueue.size() < 50; ) {
+            AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>> entry = i.next();
+            currentQueue.put(entry.getKey(), entry.getValue());
+        }
+        if (currentQueue.isEmpty()) {
+            newObject.setIPMapPendingURis(EMPTY_MAP);
+            newObject.setPendingURIs(EMPTY_LIST);
+            newObject.setNextCrawledURIs(EMPTY_LIST);
+        } else {
+            newObject.setIPMapPendingURis(currentQueue.entrySet().stream()
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getHostAddress(), e.getValue().stream().map(uri -> uri.getUri().getPath()).collect(Collectors.toList())))
+                .collect(HashMap::new, (m, entry) -> m.put(entry.getKey(), entry.getValue()), HashMap::putAll));
+            List<String> pendingURIs = new ArrayList<>(currentQueue.size());
+            currentQueue.forEach((key, value) -> value.forEach(uri -> pendingURIs.add(uri.getUri().toString())));
+            newObject.setPendingURIs(pendingURIs);
+            newObject.setNextCrawledURIs(currentQueue.entrySet().iterator().next().getValue().stream().map(e -> e.getUri().toString()).collect(Collectors.toList()));
+        }
+
+        //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
+        //newObject.setCrawledURIs(Collections.EMPTY_LIST);
+        newObject.setCountOfCrawledURIs((int) knownUriFilter.count());
+
+        return newObject;
     }
 
     /**

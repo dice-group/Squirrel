@@ -41,6 +41,8 @@ public class SimpleAnalyzerManager implements Analyzer{
 	 * @param uriCollector The collector used to create a new Analyzer
 	 * @param analyzers Array of Strings, containing the full class name used to create a new instance of an Analyzer
 	 */
+	
+	@Deprecated
 	public SimpleAnalyzerManager(UriCollector uriCollector,String... analyzers) {
 		this.analyzers = new HashMap<String, Analyzer>();
 		for(String analyzer: analyzers) {
@@ -65,6 +67,23 @@ public class SimpleAnalyzerManager implements Analyzer{
 		}
 		
 	}
+	
+	
+	/**
+     * Receives the array of String injected by Spring
+     * and crates new instances of classes that implements the Analyzer
+     * interface
+     * 
+     * @param uriCollector The collector used to create a new Analyzer
+     * @param analyzers Array of Strings, containing the full class name used to create a new instance of an Analyzer
+     */
+	
+	public SimpleAnalyzerManager(List<AbstractAnalyzer> listAnalyzers) {
+	    this.analyzers = new HashMap<String, Analyzer>();
+	    for(Analyzer analyzer: listAnalyzers) {
+	        analyzers.put(analyzer.getClass().getName(), analyzer);
+	    }
+    }
 	
 	/**
 	 * 

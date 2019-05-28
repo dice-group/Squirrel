@@ -39,6 +39,15 @@ public interface Worker extends Runnable {
      */
     boolean sendsAliveMessages();
 
+    /**
+     * Gives the unique id of the worker.
+     * 
+     * @return The id of the worker.
+     * @deprecated use {@link #getUri()} instead
+     */
+    @Deprecated
+    int getId();
+
     public void setTerminateFlag(boolean terminateFlag);
 
 }

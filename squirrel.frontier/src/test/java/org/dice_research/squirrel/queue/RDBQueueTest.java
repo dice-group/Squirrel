@@ -15,7 +15,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.queue.IpUriTypePair;
-import org.dice_research.squirrel.queue.RDBQueue;
+import org.dice_research.squirrel.queue.ipbased.RDBIpBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +25,11 @@ import com.rethinkdb.model.MapObject;
 public class RDBQueueTest extends RethinkDBBasedTest {
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    private RDBQueue rdbQueue;
+    private RDBIpBasedQueue rdbQueue;
 
     @Before
     public void setUp() throws Exception {
-        rdbQueue = new RDBQueue("localhost", 58015);
+        rdbQueue = new RDBIpBasedQueue("localhost", 58015);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));

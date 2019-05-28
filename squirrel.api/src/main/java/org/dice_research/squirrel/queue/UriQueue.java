@@ -20,6 +20,20 @@ public interface UriQueue {
      *            queue.
      */
     public void addUri(CrawleableUri uri);
+    
+    
+    /**
+     * Adds the given {@link CrawleableUri} instance to the queue.
+     * (should be implemented in the specific queue.
+     * 
+     * @param uri
+     *            the {@link CrawleableUri} instance that should be added to the
+     *            queue.
+     */
+    public abstract void addToQueue(CrawleableUri uri);
+    
+    
+
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
@@ -29,14 +43,22 @@ public interface UriQueue {
      *         are available
      */
     public List<CrawleableUri> getNextUris();
+    
+    
+    /**
+     * Returns true if the queue is empty
+     * 
+     * @return
+     */
+    public boolean isEmpty();
 
     /**
-     * Close RDB connection, destroy the database.
+     * Closes the queue and frees all resources.
      */
     public void close();
 
     /**
-     * Open RDB connection, init the database.
+     * Opens the queue and allocates necessary resources.
      */
     public void open();
 }
