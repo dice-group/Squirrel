@@ -4,13 +4,14 @@ import crawlercommons.fetcher.http.SimpleHttpFetcher;
 import crawlercommons.fetcher.http.UserAgent;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
-import org.dice_research.squirrel.analyzer.impl.MicrodataParser;
 import org.dice_research.squirrel.analyzer.manager.SimpleOrderedAnalyzerManager;
 import org.dice_research.squirrel.collect.SimpleUriCollector;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
+import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.sparql.SparqlBasedFetcher;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.robots.RobotsManager;
 import org.dice_research.squirrel.robots.RobotsManagerImpl;
@@ -36,15 +37,17 @@ public class CommandLineWorker {
         RobotsManager manager;
         Serializer serializer;
         UriCollector uriCollector;
-
+        Fetcher fetcher;
         CrawleableUri uri = new CrawleableUri(new URI(uriToCrawl));
         sink = new SinkStandAlone();
         serializer = new GzipJavaUriSerializer();
         uriCollector = new SimpleUriCollector(serializer);
         analyzer = new SimpleOrderedAnalyzerManager(uriCollector);
         frontier = new FrontierCommandLine();
+        fetcher = new SparqlBasedFetcher();
         manager = new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent(Constants.DEFAULT_USER_AGENT, "", "")));
         worker = new WorkerImpl(frontier,
+            fetcher,
             sink,
             analyzer,
             manager,

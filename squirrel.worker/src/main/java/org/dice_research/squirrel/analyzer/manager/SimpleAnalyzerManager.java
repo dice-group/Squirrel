@@ -116,6 +116,7 @@ public class SimpleAnalyzerManager implements Analyzer{
 				ActivityUtil.addStep(curi, analyzerEntry.getValue().getClass());
 				
 				iterator = analyzerEntry.getValue().analyze(curi, data, sink);
+				LOGGER.info(">> Using analyzer " + analyzerEntry.getValue().getClass().getName() + ".");
 			}
 		}
 		return iterator;

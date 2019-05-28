@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
+
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.EMPTY_MAP;
 

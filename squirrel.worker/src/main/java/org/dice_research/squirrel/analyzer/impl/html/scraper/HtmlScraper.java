@@ -27,6 +27,10 @@ import org.slf4j.LoggerFactory;
 
 
 /**
+ *
+ * HTMLScraper to extract triples from HTML Data based in
+ * pre configured yaml files.
+ *
  * @author gsjunior
  */
 public class HtmlScraper {
@@ -110,6 +114,8 @@ public class HtmlScraper {
      * @return
      */
     private List<Triple> updateRelationship(List<Triple> listTriples) {
+
+
     	Map<String,Set<Triple>> updatedTriples = new HashMap<String, Set<Triple>>();
     	
     	for(String o: listIterableObjects) {
@@ -145,6 +151,9 @@ public class HtmlScraper {
     			updatedTriples.put(o, newTriples);
     			cont++;
     		}
+
+
+
     	}
     	
     	
@@ -166,6 +175,8 @@ public class HtmlScraper {
 				updatedList.add(t);
 			}
 		}
+
+
 
     	return updatedList;
     }
@@ -262,7 +273,8 @@ public class HtmlScraper {
     	if (s.contains("$uri")) {
  			s = s.replaceAll("\\$uri", uri);
  		}
- 		
+
+
  		if (s.contains("$label")) {
  			s = s.replaceAll("\\$label", label);
  		}
@@ -271,6 +283,9 @@ public class HtmlScraper {
     }
     
     /**
+     *
+     *
+     *
      * @param mapEntry
      * @param triples
      * @param stackNode

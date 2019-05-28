@@ -19,14 +19,14 @@ services:
   #  ports:
 
   frontier:
-    image: squirrel:latest
+    image: squirrel.frontier:latest
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - SEED_FILE=/var/squirrel/seeds.txt
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       - COMMUNICATION_WITH_WEBSERVICE=true
       - VISUALIZATION_OF_CRAWLED_GRAPH=true
     volumes:
@@ -36,10 +36,13 @@ services:
     command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
 
   web:
-    image: squirrel/webimage:latest
+    image: squirrel.web:latest
     container_name: web
+    environment:
+      - HOST=rabbit
     ports:
       - "8080:8080"
+    command: java -jar squirrel.web.jar
 
   sparqlhost:
     image: stain/jena-fuseki
@@ -70,19 +73,19 @@ services:
       - "5672:5672"
 
   worker1:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
       - SPARQL_HOST_NAME=sparqlhost
       #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       #-CKAN_PORT=
     volumes:
         - ./data/worker1:/var/squirrel/data
@@ -92,19 +95,19 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker2:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker2
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
       - SPARQL_HOST_NAME=sparqlhost
       #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       #-CKAN_PORT=
     volumes:
         - ./data/worker2:/var/squirrel/data
@@ -114,19 +117,19 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker3:
-    image: squirrel:latest
+    image: squirrel.worker:latest
     container_name: worker3
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
-      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparqlStoreBased.xml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context.xml
       - SPARQL_HOST_NAME=sparqlhost
       #- CKAN_WHITELIST_FILE=/var/squirrel/ckanwhitelist.txt
       - SPARQL_HOST_PORT=3030
       - DEDUPLICATION_ACTIVE=true
-      - RDB_HOST_NAME=rethinkdb
-      - RDB_PORT=28015
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       #-CKAN_PORT=
     volumes:
         - ./data/worker3:/var/squirrel/data
@@ -142,8 +145,8 @@ services:
       DEDUPLICATION_ACTIVE: "true"
       HOBBIT_RABBIT_HOST: rabbit
       OUTPUT_FOLDER: /var/squirrel/data
-      RDB_HOST_NAME: rethinkdb
-      RDB_PORT: 28015
+      MDB_HOST_NAME: mongodb
+      MDB_PORT: 27017
       SPARQL_HOST_NAME: sparqlhost
       SPARQL_HOST_PORT: 3030
       SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"

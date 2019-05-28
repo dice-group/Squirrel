@@ -1,7 +1,7 @@
 default: build
 
 build:
-	docker-compose -f docker-compose-sparql.yml down
+	docker-compose -f docker-compose.yml down
 	mvn clean install -U -DskipTests -Dmaven.javadoc.skip=true
 
 dockerize:

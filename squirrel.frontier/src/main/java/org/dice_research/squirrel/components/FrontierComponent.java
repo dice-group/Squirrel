@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
+import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
@@ -92,6 +93,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue.open();
             knownUriFilter.open();
 
+
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
@@ -123,22 +125,22 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         LOGGER.info("Frontier initialized.");
 
-//        if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
-//            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-//                    workerGuard, queue, knownUriFilter, uriReferences);
-//            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
-//                    + webConfiguration.isVisualizationOfCrawledGraphEnabled());
-//            Thread senderThread = new Thread(sender);
-//            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
-//            senderThread.start();
-//            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state "
-//                    + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
-//        } else {
-//            LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to "
-//                    + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
-//                    + webConfiguration.isVisualizationOfCrawledGraphEnabled()
-//                    + ". No WebServiceSenderThread will be started!");
-//        }
+        if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
+            final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
+                    workerGuard, queue, knownUriFilter, uriReferences);
+            LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
+                    + webConfiguration.isVisualizationOfCrawledGraphEnabled());
+            Thread senderThread = new Thread(sender);
+            senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
+            senderThread.start();
+            LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state "
+                    + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
+        } else {
+            LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to "
+                    + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
+                    + webConfiguration.isVisualizationOfCrawledGraphEnabled()
+                    + ". No WebServiceSenderThread will be started!");
+        }
     }
 
     @Override
