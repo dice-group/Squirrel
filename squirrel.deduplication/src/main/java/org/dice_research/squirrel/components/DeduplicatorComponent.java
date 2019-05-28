@@ -89,6 +89,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     @Override
     public void init() throws Exception {
         super.init();
+
         Map<String, String> env = System.getenv();
         if (env.containsKey(Constants.DEDUPLICATION_ACTIVE_KEY)) {
             deduplicationActive = Boolean.parseBoolean(env.get(Constants.DEDUPLICATION_ACTIVE_KEY));
@@ -96,7 +97,24 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             LOGGER.warn("Couldn't get {} from the environment. The default value will be used.", Constants.DEDUPLICATION_ACTIVE_KEY);
             deduplicationActive = Constants.DEFAULT_DEDUPLICATION_ACTIVE;
         }
-        LOGGER.warn("Into Deduplicator__Aakash");
+
+        if(deduplicationActive){
+            //FIXME: get sparql values from env
+            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter("","","");
+            uriHashCustodian = knownUriFilter;
+            //FIXME: if need the sink uncomment
+            sink = ((SPARQLKnownUriFilter) uriHashCustodian).connector;
+            serializer = new GzipJavaUriSerializer();
+            try {
+                RabbitQueue rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.DEDUPLICATOR_QUEUE_NAME);
+                receiver = DataReceiverImpl.builder().dataHandler(this)
+                        .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+            } catch (IOException e) {
+                LOGGER.error("Error while creating sender object.", e);
+            }
+            LOGGER.info("Deduplicator initialized.");
+        }
+        /*
         if (deduplicationActive) {
             String rdbHostName = null;
             int rdbPort = -1;
@@ -126,9 +144,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 //            }
 
             //endpoint setup
-            sink = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
-            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter();
-            uriHashCustodian = knownUriFilter;
+//            sink = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
+//            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter();
+//            uriHashCustodian = knownUriFilter;
 
 //  String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
 //            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
@@ -167,7 +185,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 //                RDFNode subject = sol.get("Concept");
 //                System.out.println(subject);
 //            }
-        }
+        }*/
     }
 
     private void handleNewUris(List<CrawleableUri> uris) {

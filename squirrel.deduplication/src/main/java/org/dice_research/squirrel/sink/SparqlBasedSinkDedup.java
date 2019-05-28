@@ -36,7 +36,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
-    public static QueryExecutionFactory queryExecFactory = null;
+    public QueryExecutionFactory queryExecFactory = null;
 
     public UpdateExecutionFactory updateExecFactory = null;
 
