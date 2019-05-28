@@ -2,6 +2,7 @@ package org.dice_research.squirrel.sink;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.impl.sparql.QueryGenerator;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSinkDedup.class);
-
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
@@ -89,8 +90,37 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     public void queryExecute(String query){
     }
 
+    public RDFNode getActivityUri(String uriCrawled){
+        Query activityIdQuery = QueryGenerator.getInstance().getActivityUriQuery(uriCrawled);
+        QueryExecution qe = this.queryExecFactory.createQueryExecution(activityIdQuery);
+        ResultSet rs = qe.execSelect();
+        RDFNode activityId = null;
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            activityId = sol.get("subject");
+        }
+        qe.close();
+        return activityId;
+    }
+
     public List<CrawleableUri> getGeneratedUrisFromMetadata(CrawleableUri uri){
-        return null;
+        List<CrawleableUri> generatedUris = new ArrayList<>();
+        RDFNode activityUri = getActivityUri(uri.getUri().toString());
+        Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(
+            QueryGenerator.formatNodeToString(activityUri.asNode())); //TODO check weather the node with the prefix is returned
+        QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
+        ResultSet rs = qe.execSelect();
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            String genUri = sol.get("subject").toString();
+            try {
+                generatedUris.add(new CrawleableUri(new URI(genUri)));
+            } catch (URISyntaxException e){
+                LOGGER.warn("Exception thrown when parsing generated uri - " + genUri, e);
+            }
+        }
+        qe.close();
+        return generatedUris;
     }
 
     @Override
@@ -98,22 +128,28 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
 
     }
 
+    public RDFNode getGraphId(String uriCrawled){
+        Query graphIdQuery = QueryGenerator.getInstance().getGraphIdQuery(uriCrawled);
+        QueryExecution qe = this.queryExecFactory.createQueryExecution(graphIdQuery);
+        ResultSet rs = qe.execSelect();
+        RDFNode graphId = null;
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            graphId = sol.get("subject");
+        }
+        qe.close();
+        return graphId;
+    }
+
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        //query
-        String queryString = "SELECT ?subject ?predicate ?object\n" +
-                "WHERE {\n" +
-                "GRAPH ?g {"+uri.toString()+ "?predicate ?object}\n" +
-                "}\n" +
-                "LIMIT 100";
-        LOGGER.info("Query looks like: ", queryString);
-
-        QueryExecution qe = this.queryExecFactory.createQueryExecution(queryString);
-        LOGGER.warn("Query execution: ", qe);
-
+        RDFNode graphId = getGraphId(uri.getUri().toString());
+        Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(
+            QueryGenerator.formatNodeToString(graphId.asNode()),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
+            false);
+        QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
         ResultSet rs = qe.execSelect();
         List<Triple> triplesFound = new ArrayList<>();
-        System.out.println("-------------------------------------------------------------------------------------------------------");
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
             RDFNode subject = sol.get("subject");
