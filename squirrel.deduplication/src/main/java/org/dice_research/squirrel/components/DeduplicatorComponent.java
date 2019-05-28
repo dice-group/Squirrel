@@ -18,6 +18,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.SPARQLKnownUriFilter;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
@@ -71,7 +72,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * Needed to access the {@link Triple}s.
      */
-    private AdvancedTripleBasedSink sink;
+    private SparqlBasedSinkDedup sink;
 
     private Serializer serializer;
 
@@ -112,7 +113,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             String sparqlHostName = null;
             String sparqlHostPort = null;
 //            FIXME Fix the following code
-//            
+//
 //            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
 //                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
 //                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
@@ -123,17 +124,20 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 //            } else {
 //                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
 //            }
-//            String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
+
+            //endpoint setup
+            sink = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
+            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter();
+            uriHashCustodian = knownUriFilter;
+
+//  String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
 //            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
 //
 //            if ((rdbHostName != null) && (rdbPort > 0)) {
-//                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
+//                SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter(rdbHostName, rdbPort);
 //                uriHashCustodian = knownUriFilter;
 //            }
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
-//            SparqlBasedSinkDedup sparqlSinkDedup = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/update","admin","pw123");
-//            SQLKnownUriFilter knownUriFilter = new SQLKnownUriFilter(sparqlName, sparqlPort);
-//            uriHashCustodian = knownUriFilter;
 
             serializer = new GzipJavaUriSerializer();
 
@@ -146,35 +150,43 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             }
             LOGGER.info("Deduplicator initialized.");
 
-            //endpoint setup
-            SparqlBasedSinkDedup sparqlSinkDedup = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
-            //query
-            String queryString = "SELECT ?subject ?predicate ?object\n" +
-                    "WHERE {\n" +
-                    "GRAPH ?g {?subject ?predicate ?object}\n" +
-                    "}\n" +
-                    "LIMIT 100";
-
-            QueryExecution qe = SparqlBasedSinkDedup.queryExecFactory.createQueryExecution(queryString);
-            System.out.println(qe);
-            ResultSet rs = qe.execSelect();
-            System.out.println("-------------------------------------------------------------------------------------------------------");
-
-            while (rs.hasNext()) {
-                QuerySolution sol = rs.nextSolution();
-                RDFNode subject = sol.get("Concept");
-                System.out.println(subject);
-            }
+//            //query
+//            String queryString = "SELECT ?subject ?predicate ?object\n" +
+//                    "WHERE {\n" +
+//                    "GRAPH ?g {?subject ?predicate ?object}\n" +
+//                    "}\n" +
+//                    "LIMIT 100";
+//
+//            QueryExecution qe = SparqlBasedSinkDedup.queryExecFactory.createQueryExecution(queryString);
+//            System.out.println(qe);
+//            ResultSet rs = qe.execSelect();
+//            System.out.println("-------------------------------------------------------------------------------------------------------");
+//
+//            while (rs.hasNext()) {
+//                QuerySolution sol = rs.nextSolution();
+//                RDFNode subject = sol.get("Concept");
+//                System.out.println(subject);
+//            }
         }
     }
 
     private void handleNewUris(List<CrawleableUri> uris) {
+        List<CrawleableUri> generatedUris = new ArrayList<>();
+
         for (CrawleableUri nextUri : uris) {
+            // query to fetch metadata for respective uris
+            List<CrawleableUri> newGeneratedUriList = sink.getGeneratedUrisFromMetadata(nextUri);
+            for (CrawleableUri genUri : newGeneratedUriList){
+                List<Triple> gentriples = sink.getTriplesForGraph(genUri);
+                HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(gentriples));
+                genUri.addData(Constants.URI_HASH_KEY, value);
+            }
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value);
+            generatedUris.addAll(newGeneratedUriList);
         }
-
+        uris.addAll(generatedUris);
         compareNewUrisWithOldUris(uris);
         uriHashCustodian.addHashValuesForUris(uris);
 

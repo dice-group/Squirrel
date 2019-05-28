@@ -1,6 +1,9 @@
 package org.dice_research.squirrel.sink;
 
+import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
@@ -13,13 +16,20 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
-public class SparqlBasedSinkDedup  {
+public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSinkDedup.class);
 
@@ -34,11 +44,6 @@ public class SparqlBasedSinkDedup  {
     protected SparqlBasedSinkDedup(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
         this.updateExecFactory = updateExecFactory;
-    }
-
-    public static SparqlBasedSinkDedup create(String sparqlEndpointUrl) {
-
-        return create(sparqlEndpointUrl, null, null);
     }
 
     public static SparqlBasedSinkDedup create(String sparqlEndpointUrl, String username, String password) {
@@ -81,7 +86,58 @@ public class SparqlBasedSinkDedup  {
         return new SparqlBasedSinkDedup(queryExecFactory, updateExecFactory);
     }
 
-    public static void queryExecute(String query){
+    public void queryExecute(String query){
+    }
+
+    public List<CrawleableUri> getGeneratedUrisFromMetadata(CrawleableUri uri){
+        return null;
+    }
+
+    @Override
+    public void addData(CrawleableUri uri, InputStream stream) {
+
+    }
+
+    @Override
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        //query
+        String queryString = "SELECT ?subject ?predicate ?object\n" +
+                "WHERE {\n" +
+                "GRAPH ?g {"+uri.toString()+ "?predicate ?object}\n" +
+                "}\n" +
+                "LIMIT 100";
+        LOGGER.info("Query looks like: ", queryString);
+
+        QueryExecution qe = this.queryExecFactory.createQueryExecution(queryString);
+        LOGGER.warn("Query execution: ", qe);
+
+        ResultSet rs = qe.execSelect();
+        List<Triple> triplesFound = new ArrayList<>();
+        System.out.println("-------------------------------------------------------------------------------------------------------");
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode subject = sol.get("subject");
+            RDFNode predicate = sol.get("predicate");
+            RDFNode object = sol.get("object");
+            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+        }
+        qe.close();
+        return triplesFound;
+    }
+
+    @Override
+    public void addTriple(CrawleableUri uri, Triple triple) {
+
+    }
+
+    @Override
+    public void openSinkForUri(CrawleableUri uri) {
+
+    }
+
+    @Override
+    public void closeSinkForUri(CrawleableUri uri) {
+
     }
 //public static void main(String args[]) {
 //	String sparqlEndpointUrl = "http://localhost:8890/sparql/";
