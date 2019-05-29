@@ -42,8 +42,6 @@ public class PredictorImpl {
             .progressReportInterval(1_000) // report every n iterations
             .build();
 
-        // output the feature vector
-        //features = (DoubleVector) uri.getData(Constants.FEATURE_VECTOR);
 
         // simple regression with Sigmoid and LogLoss
         RegressionLearner learner = new RegressionLearner(sgd,
