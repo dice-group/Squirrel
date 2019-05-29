@@ -1,36 +1,29 @@
 package org.dice_research.squirrel.queue;
 
-import java.net.InetAddress;
-
 import org.dice_research.squirrel.data.uri.UriType;
 
 @SuppressWarnings("deprecation")
-public class IpUriTypePair implements Comparable<IpUriTypePair> {
-    private InetAddress ip;
+public class DomainUriTypePair implements Comparable<DomainUriTypePair> {
+    
+    private String domain;
     private UriType type;
-
-    public IpUriTypePair(InetAddress ip, UriType type) {
-        this.ip = ip;
+    
+    
+    public  DomainUriTypePair(String domain, UriType type) {
+        this.domain = domain;
         this.type = type;
     }
-
+    
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((ip == null) ? 0 : ip.hashCode());
+        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
-
-    public InetAddress getIp() {
-        return ip;
-    }
-
-    public UriType getType() {
-        return type;
-    }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -39,22 +32,22 @@ public class IpUriTypePair implements Comparable<IpUriTypePair> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        IpUriTypePair other = (IpUriTypePair) obj;
-        if (ip == null) {
-            if (other.ip != null)
+        DomainUriTypePair other = (DomainUriTypePair) obj;
+        if (domain == null) {
+            if (other != null)
                 return false;
-        } else if (!ip.equals(other.ip))
+        } else if (!domain.equals(other.domain))
             return false;
         if (type != other.type)
             return false;
         return true;
     }
-
+    
     @Override
-    public int compareTo(IpUriTypePair o) {
+    public int compareTo(DomainUriTypePair o) {
         int diff = this.type.ordinal() - o.type.ordinal();
         if (diff == 0) {
-            diff = this.ip.getHostAddress().compareTo(o.ip.getHostAddress());
+            diff = this.domain.compareTo(o.getDomain());
         }
         if (diff < 0) {
             return -1;
@@ -65,11 +58,22 @@ public class IpUriTypePair implements Comparable<IpUriTypePair> {
         }
     }
 
+    public String getDomain() {
+        return domain;
+    }
+
+
+    public UriType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
-        return "IpUriTypePair{" +
-            "ip=" + ip +
+        return "DomainUriTypePair{" +
+            "domain=" + domain +
             ", type=" + type +
             '}';
     }
+
+
 }

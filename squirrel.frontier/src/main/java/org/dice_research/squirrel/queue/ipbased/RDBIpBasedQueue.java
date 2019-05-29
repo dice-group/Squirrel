@@ -1,8 +1,14 @@
-package org.dice_research.squirrel.queue;
+package org.dice_research.squirrel.queue.ipbased;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Cursor;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactoryImpl;
@@ -15,25 +21,24 @@ import org.dice_research.squirrel.queue.IpUriTypePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
 
-@SuppressWarnings("rawtypes")
-public class RDBQueue extends AbstractIpAddressBasedQueue {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RDBQueue.class);
+@SuppressWarnings({ "rawtypes", "deprecation" })
+public class RDBIpBasedQueue extends AbstractIpAddressBasedQueue {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDBIpBasedQueue.class);
 
     protected RDBConnector connector;
     private RethinkDB r = RethinkDB.r;
     private Serializer serializer;
 
-    public RDBQueue(String hostname, Integer port) {
+    public RDBIpBasedQueue(String hostname, Integer port) {
         this.serializer = new SnappyJavaUriSerializer();
         connector = new RDBConnector(hostname, port);
     }
 
-    public RDBQueue(String hostname, Integer port, Serializer serializer) {
+    public RDBIpBasedQueue(String hostname, Integer port, Serializer serializer) {
         this.serializer = serializer;
         connector = new RDBConnector(hostname, port);
     }
@@ -80,7 +85,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addToQueue(CrawleableUri uri) {
+    public void addToQueue(CrawleableUri uri) {
         List ipAddressTypeKey = getIpAddressTypeKey(uri);
         // if URI exists update the uris list
         if(queueContainsIpAddressTypeKey(ipAddressTypeKey)) {
@@ -183,7 +188,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected Iterator<IpUriTypePair> getIterator() {
+    public Iterator<IpUriTypePair> getIterator() {
         Cursor cursor = r.db("squirrel")
             .table("queue")
             .orderBy()
@@ -213,10 +218,10 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected List<CrawleableUri> getUris(IpUriTypePair pair) {
+    public List<CrawleableUri> getUris(IpUriTypePair pair) {
         List<CrawleableUri> uris = null;
 
-        List ipAddressTypeKey = packTuple(pair.ip.getHostAddress(), pair.type.toString());
+        List ipAddressTypeKey = packTuple(pair.getIp().getHostAddress(), pair.getType().toString());
         Cursor cursor = r.db("squirrel")
             .table("queue")
             .getAll(ipAddressTypeKey)
@@ -287,7 +292,7 @@ public class RDBQueue extends AbstractIpAddressBasedQueue {
                         value = Collections.singletonList(factory.create((String) uriField));
                     } else {
                         LOGGER.error("Was not able to read the field from the RDBQueue \"uris\"");
-                        value = Collections.EMPTY_LIST;
+                        value = Collections.emptyList();
                     }
 
                     return new AbstractMap.SimpleEntry<>(key, value);

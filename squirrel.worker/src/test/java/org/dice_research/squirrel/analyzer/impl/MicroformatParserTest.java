@@ -196,7 +196,7 @@ public class MicroformatParserTest extends RDFParserTest {
 	@Test
 	public void parsertest() throws URISyntaxException, IOException {
 		sink = new InMemorySink();
-		analyzer = new MicroformatMF2JParser(collector);
+		analyzer = new MicroformatMF2JAnalyzer(collector);
 		boolean pastprocess = true; //true falls das Ergebnis im Nachhinein noch überarbeitet werden soll
 		
 		String strindex = test.getMethodName();

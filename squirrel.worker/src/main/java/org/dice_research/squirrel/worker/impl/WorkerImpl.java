@@ -330,7 +330,7 @@ public class WorkerImpl implements Worker, Closeable {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
         CrawleableUri newUri;
         int packageCount = 0;
-        while (uriIterator.hasNext()) {
+        while (uriIterator != null && uriIterator.hasNext()) {
             try {
                 newUri = serializer.deserialize(uriIterator.next());
                 uriProcessor.recognizeUriType(newUri);

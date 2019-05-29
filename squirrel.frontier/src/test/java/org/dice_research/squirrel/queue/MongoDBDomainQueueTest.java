@@ -14,23 +14,20 @@ import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.IpUriTypePair;
-import org.dice_research.squirrel.queue.MongoDBQueue;
+import org.dice_research.squirrel.queue.domainbased.MongoDBDomainBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("rawtypes")
-public class MongoDBQueueTest  extends MongoDBBasedTest{
+@SuppressWarnings({ "rawtypes", "deprecation" })
+public class MongoDBDomainQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    private MongoDBQueue mongodbQueue;
+    private MongoDBDomainBasedQueue mongodbQueue;
 
     @Before
     public void setUp() throws Exception {
-    	mongodbQueue = new MongoDBQueue("localhost", 58027);
+    	mongodbQueue = new MongoDBDomainBasedQueue("localhost", 58027);
     	
-//    	mongodbQueue = new MongoDBQueue("localhost", 27017);
-
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
@@ -68,21 +65,21 @@ public class MongoDBQueueTest  extends MongoDBBasedTest{
     }
 
     @Test
-    public void getIpAddressTypeKey() throws Exception {
-        List rArray = mongodbQueue.getIpAddressTypeKey(uris.get(0));
+    public void getDomainTypeKey() throws Exception {
+        List rArray = mongodbQueue.getDomainTypeKey(uris.get(0));
         String arrayString = rArray.toString();
-        assertTrue(arrayString, rArray.contains("127.0.0.1"));
+        assertTrue(arrayString, rArray.contains("localhost"));
         assertFalse(arrayString, rArray.contains("http://danbri.org/foaf.rdf"));
         assertTrue(arrayString, rArray.contains("SPARQL"));
     }
 
     @Test
-    public void queueContainsIpAddressTypeKey() throws Exception {
+    public void queueContainsDomainTypeKey() throws Exception {
         mongodbQueue.open();
-        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(0));
-        assertFalse(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
+        List iatKey = mongodbQueue.getDomainTypeKey(uris.get(0));
+        assertFalse(mongodbQueue.queueContainsDomainTypeKey(null,iatKey));
         mongodbQueue.addToQueue(uris.get(0));
-        assertTrue(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
+        assertTrue(mongodbQueue.queueContainsDomainTypeKey(null,iatKey));
         mongodbQueue.close();
     }
 
@@ -106,7 +103,7 @@ public class MongoDBQueueTest  extends MongoDBBasedTest{
         mongodbQueue.purge();
         mongodbQueue.addCrawleableUri(uris.get(1));
         assertEquals(1, mongodbQueue.length());
-        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(2));
+        List iatKey = mongodbQueue.getDomainTypeKey(uris.get(2));
         mongodbQueue.addCrawleableUri(uris.get(2), iatKey);
         assertEquals(1, mongodbQueue.length());
         mongodbQueue.close();
@@ -129,9 +126,9 @@ public class MongoDBQueueTest  extends MongoDBBasedTest{
         for (CrawleableUri uri : uris) {
             mongodbQueue.addToQueue(uri);
         }
-        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
+        Iterator<DomainUriTypePair> iter = mongodbQueue.getIterator();
         while (iter.hasNext()) {
-            IpUriTypePair pair = iter.next();
+            DomainUriTypePair pair = iter.next();
             System.out.println(pair.toString());
         }
         mongodbQueue.close();
@@ -143,9 +140,9 @@ public class MongoDBQueueTest  extends MongoDBBasedTest{
         for (CrawleableUri uri : uris) {
             mongodbQueue.addToQueue(uri);
         }
-        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
+        Iterator<DomainUriTypePair> iter = mongodbQueue.getIterator();
         while (iter.hasNext()) {
-            IpUriTypePair pair = iter.next();
+            DomainUriTypePair pair = iter.next();
             List<CrawleableUri> uriList = mongodbQueue.getUris(pair);
             for (CrawleableUri uri : uriList) {
                 assertTrue(uris.contains(uri));

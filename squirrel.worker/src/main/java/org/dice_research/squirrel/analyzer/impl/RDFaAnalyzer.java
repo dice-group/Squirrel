@@ -6,9 +6,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.TcManager;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
@@ -75,14 +72,6 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 		return collector.getUris(curi);
 	}
 
-	private MGraph createClerezzaModel(String uri) {
-		TcManager manager = TcManager.getInstance();
-		UriRef graphUri = new UriRef(uri);
-		if (manager.listMGraphs().contains(graphUri)) {
-			manager.deleteTripleCollection(graphUri);
-		}
-		return manager.createMGraph(graphUri);
-	}
 
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
@@ -93,7 +82,7 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 		Tika tika = new Tika();
 		try (InputStream is = new FileInputStream(data)) {
 			String mimeType = tika.detect(is);
-			if (mimeType.equals("text/html")) {
+			if ("text/html".equals(mimeType)) {
 				return true;
 			}
 		} catch (Exception e) {

@@ -10,26 +10,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.dice_research.squirrel.RethinkDBBasedTest;
+import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.IpUriTypePair;
-import org.dice_research.squirrel.queue.ipbased.RDBIpBasedQueue;
+import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.rethinkdb.model.MapObject;
-
 @SuppressWarnings("rawtypes")
-public class RDBQueueTest extends RethinkDBBasedTest {
+public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    private RDBIpBasedQueue rdbQueue;
+    private MongoDBIpBasedQueue mongodbQueue;
 
     @Before
     public void setUp() throws Exception {
-        rdbQueue = new RDBIpBasedQueue("localhost", 58015);
+    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027);
+    	
+//    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -44,32 +43,32 @@ public class RDBQueueTest extends RethinkDBBasedTest {
 
     @Test
     public void openClose() throws Exception {
-        rdbQueue.open();
-        assertTrue("squirrel database was created", rdbQueue.squirrelDatabaseExists());
-        assertTrue("queue table was created", rdbQueue.queueTableExists());
-        rdbQueue.close();
+        mongodbQueue.open();
+//        assertTrue("squirrel database was created", mongodbQueue.squirrelDatabaseExists());
+        assertTrue("queue table was created", mongodbQueue.queueTableExists());
+        mongodbQueue.close();
     }
 
     @Test
     public void openOpen() throws Exception {
-        rdbQueue.open();
-        rdbQueue.open();
-        rdbQueue.close();
+        mongodbQueue.open();
+        mongodbQueue.open();
+        mongodbQueue.close();
     }
 
     @Test
     public void packTuple() throws Exception {
-        List rArray = rdbQueue.packTuple("192.168.1.1", "http://localhost");
+        List rArray = mongodbQueue.packTuple("192.168.1.1", "http://localhost");
         assertTrue(rArray.contains("192.168.1.1"));
         assertTrue(rArray.contains("http://localhost"));
-        rArray = rdbQueue.packTuple("192.168.1.1", "DUMP");
+        rArray = mongodbQueue.packTuple("192.168.1.1", "DUMP");
         assertTrue(rArray.contains("192.168.1.1"));
         assertTrue(rArray.contains("DUMP"));
     }
 
     @Test
     public void getIpAddressTypeKey() throws Exception {
-        List rArray = rdbQueue.getIpAddressTypeKey(uris.get(0));
+        List rArray = mongodbQueue.getIpAddressTypeKey(uris.get(0));
         String arrayString = rArray.toString();
         assertTrue(arrayString, rArray.contains("127.0.0.1"));
         assertFalse(arrayString, rArray.contains("http://danbri.org/foaf.rdf"));
@@ -78,88 +77,79 @@ public class RDBQueueTest extends RethinkDBBasedTest {
 
     @Test
     public void queueContainsIpAddressTypeKey() throws Exception {
-        rdbQueue.open();
-        List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(0));
-        assertFalse(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
-        rdbQueue.addToQueue(uris.get(0));
-        assertTrue(rdbQueue.queueContainsIpAddressTypeKey(iatKey));
-        rdbQueue.close();
+        mongodbQueue.open();
+        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(0));
+        assertFalse(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
+        mongodbQueue.addToQueue(uris.get(0));
+        assertTrue(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
+        mongodbQueue.close();
     }
 
     @Test
     public void purgeQueue() throws Exception {
-        rdbQueue.open();
-        rdbQueue.purge();
-        assertEquals(0, rdbQueue.length());
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        assertEquals(0, mongodbQueue.length());
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            mongodbQueue.addToQueue(uri);
         }
-        assertEquals(3, rdbQueue.length());
-        rdbQueue.purge();
-        assertEquals(0, rdbQueue.length());
-        rdbQueue.close();
+        assertEquals(3, mongodbQueue.length());
+        mongodbQueue.purge();
+        assertEquals(0, mongodbQueue.length());
+        mongodbQueue.close();
     }
 
     @Test
     public void addCrawleableUri() throws Exception {
-        rdbQueue.open();
-        rdbQueue.purge();
-        rdbQueue.addCrawleableUri(uris.get(1));
-        assertEquals(1, rdbQueue.length());
-        List iatKey = rdbQueue.getIpAddressTypeKey(uris.get(2));
-        rdbQueue.addCrawleableUri(uris.get(2), iatKey);
-        assertEquals(1, rdbQueue.length());
-        rdbQueue.close();
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        mongodbQueue.addCrawleableUri(uris.get(1));
+        assertEquals(1, mongodbQueue.length());
+        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(2));
+        mongodbQueue.addCrawleableUri(uris.get(2), iatKey);
+        assertEquals(1, mongodbQueue.length());
+        mongodbQueue.close();
     }
 
     @Test
     public void addToQueue() throws Exception {
-        rdbQueue.open();
+        mongodbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            mongodbQueue.addToQueue(uri);
         }
-        assertEquals(3, rdbQueue.length());
-        rdbQueue.close();
+        assertEquals(3, mongodbQueue.length());
+        mongodbQueue.close();
     }
 
-    @Test
-    public void crawleableUriToRDBHashMap() throws Exception {
-        MapObject rHashMap = rdbQueue.crawleableUriToRDBHashMap(uris.get(0));
-        assertTrue(rHashMap.containsKey("uris"));
-        assertTrue(rHashMap.containsKey("ipAddress"));
-        assertTrue(rHashMap.containsKey("type"));
-        assertEquals("127.0.0.1", rHashMap.get("ipAddress"));
-        assertEquals("SPARQL", rHashMap.get("type"));
-    }
 
     @Test
     public void getIterator() throws Exception {
-        rdbQueue.open();
+        mongodbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            mongodbQueue.addToQueue(uri);
         }
-        Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
+        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
         while (iter.hasNext()) {
             IpUriTypePair pair = iter.next();
             System.out.println(pair.toString());
         }
-        rdbQueue.close();
+        mongodbQueue.close();
     }
 
     @Test
     public void getUris() throws Exception {
-        rdbQueue.open();
+        mongodbQueue.open();
         for (CrawleableUri uri : uris) {
-            rdbQueue.addToQueue(uri);
+            mongodbQueue.addToQueue(uri);
         }
-        Iterator<IpUriTypePair> iter = rdbQueue.getIterator();
+        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
         while (iter.hasNext()) {
             IpUriTypePair pair = iter.next();
-            List<CrawleableUri> uriList = rdbQueue.getUris(pair);
+            List<CrawleableUri> uriList = mongodbQueue.getUris(pair);
             for (CrawleableUri uri : uriList) {
                 assertTrue(uris.contains(uri));
             }
         }
-        rdbQueue.close();
+        mongodbQueue.close();
     }
 }
