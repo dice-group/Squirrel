@@ -24,6 +24,23 @@ public class QueryGenerator {
     private QueryGenerator() {
     }
 
+    private String getPrefixes(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("PREFIX sq-s:  <http://w3id.org/squirrel/status#>\n");
+        sb.append("PREFIX owl:  <http://www.w3.org/2002/07/owl#>\n");
+        sb.append("PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n");
+        sb.append("PREFIX sq-a:  <http://w3id.org/squirrel/activity#>\n");
+        sb.append("PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n");
+        sb.append("PREFIX sq-m:  <http://w3id.org/squirrel/metadata>\n");
+        sb.append("PREFIX dcat:  <http://www.w3.org/ns/dcat#>\n");
+        sb.append("PREFIX prov:  <http://www.w3.org/ns/prov#>\n");
+        sb.append("PREFIX sq-g:  <http://w3id.org/squirrel/graph#>\n");
+        sb.append("PREFIX sq-w:  <http://w3id.org/squirrel/worker#>\n");
+        sb.append("PREFIX sq:  <http://w3id.org/squirrel/vocab#>\n");
+        sb.append("PREFIX dc:  <http://purl.org/dc/terms/>\n");
+        return sb.toString();
+    }
+
     /**
      * Getter for {@link #instance}.
      *
@@ -40,6 +57,7 @@ public class QueryGenerator {
      */
     public Query getGraphIdQuery(String uriCrawled){
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH ?g {");
         stringBuilder.append("?subject sq:containsDataOf <");
         stringBuilder.append(uriCrawled);
@@ -58,6 +76,7 @@ public class QueryGenerator {
      */
     public Query getActivityUriQuery(String uriCrawled){
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
@@ -77,6 +96,7 @@ public class QueryGenerator {
      */
     public Query getGeneratedUrisQuery(String activityUri){
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?object WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
@@ -96,6 +116,7 @@ public class QueryGenerator {
      */
     public Query getHashQuery(String hashValue){
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
@@ -118,6 +139,7 @@ public class QueryGenerator {
      */
     public Query getSelectQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
