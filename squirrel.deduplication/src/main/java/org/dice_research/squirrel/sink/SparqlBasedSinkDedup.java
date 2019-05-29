@@ -45,9 +45,10 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     protected SparqlBasedSinkDedup(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
         this.updateExecFactory = updateExecFactory;
+        LOGGER.info("Dedup_Testing: Connection established");
     }
 
-    public static SparqlBasedSinkDedup create(String sparqlEndpointUrl, String username, String password) {
+    public static SparqlBasedSinkDedup create(String sparqlEndpointUrlQuery, String sparqlEndpointUrlUpdate, String username, String password) {
         QueryExecutionFactory queryExecFactory = null;
         UpdateExecutionFactory updateExecFactory = null;
         if (username != null && password != null) {
@@ -77,12 +78,12 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
                     });
                 }
             };
-            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl, new DatasetDescription(),
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrlQuery, new DatasetDescription(),
                 authenticator);
-            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl, authenticator);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrlUpdate, authenticator);
         } else {
-            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
-            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrlQuery);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrlUpdate);
         }
         return new SparqlBasedSinkDedup(queryExecFactory, updateExecFactory);
     }
@@ -106,6 +107,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     public List<CrawleableUri> getGeneratedUrisFromMetadata(CrawleableUri uri){
         List<CrawleableUri> generatedUris = new ArrayList<>();
         RDFNode activityUri = getActivityUri(uri.getUri().toString());
+        LOGGER.info("Dedup_Testing: activityURI: "+ activityUri.toString());
         Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(
             QueryGenerator.formatNodeToString(activityUri.asNode())); //TODO check weather the node with the prefix is returned
         QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
@@ -113,6 +115,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
             String genUri = sol.get("object").toString();
+            LOGGER.info("Dedup_Testing: result: " + genUri);
             try {
                 generatedUris.add(new CrawleableUri(new URI(genUri)));
             } catch (URISyntaxException e){

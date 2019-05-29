@@ -94,9 +94,9 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 
         if(deduplicationActive){
             //FIXME: get sparql values from env
-            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter("","","");
+            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter("http://sparqlhost:3030/squirrel/query","http://sparqlhost:3030/squirrel/update","admin","pw123");
             uriHashCustodian = knownUriFilter;
-            //FIXME: if need the sink uncomment
+            //FIXME: if don't need the sink, then comment
             sink = ((SPARQLKnownUriFilter) uriHashCustodian).connector;
             serializer = new GzipJavaUriSerializer();
             try {
@@ -183,20 +183,24 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     }
 
     private void handleNewUris(List<CrawleableUri> uris) {
+        LOGGER.info("Dedup_Testing: inside handleNewUris: "+ uris.size());
         List<CrawleableUri> generatedUris = new ArrayList<>();
 
         for (CrawleableUri nextUri : uris) {
             // query to fetch metadata for respective uris
             List<CrawleableUri> newGeneratedUriList = sink.getGeneratedUrisFromMetadata(nextUri);
+            LOGGER.info("Dedup_Testing: newGeneratedUrisList: "+ newGeneratedUriList.size());
             for (CrawleableUri genUri : newGeneratedUriList){
                 List<Triple> gentriples = sink.getTriplesForGraph(genUri);
                 HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(gentriples));
                 genUri.addData(Constants.URI_HASH_KEY, value);
+                LOGGER.info("Dedup_Testing: genTriples: " + gentriples.size());
             }
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value);
             generatedUris.addAll(newGeneratedUriList);
+            LOGGER.info("Dedup_Testing: triples: " + triples.size());
         }
         uris.addAll(generatedUris);
         compareNewUrisWithOldUris(uris);

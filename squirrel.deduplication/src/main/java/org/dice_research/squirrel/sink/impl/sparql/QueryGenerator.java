@@ -46,6 +46,8 @@ public class QueryGenerator {
         stringBuilder.append(">} ");
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
+
+        LOGGER.info("Dedup_Testing: query getGraphIdQuery : " + stringBuilder.toString());
         return query;
     }
 
@@ -64,6 +66,7 @@ public class QueryGenerator {
         stringBuilder.append(">} ");
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getActivityUriQuery: " + stringBuilder.toString());
         return query;
     }
 
@@ -82,6 +85,7 @@ public class QueryGenerator {
         stringBuilder.append("> prov:value ?object }");
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getGeneratedUrisQuery: " + stringBuilder.toString());
         return query;
     }
 
@@ -101,6 +105,7 @@ public class QueryGenerator {
         stringBuilder.append(hashValue);
         stringBuilder.append("}}");
         Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getHashQuery: " + stringBuilder.toString());
         return query;
     }
     /**
@@ -125,6 +130,7 @@ public class QueryGenerator {
         }
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getSelectQuery: " + stringBuilder.toString());
         return query;
     }
 

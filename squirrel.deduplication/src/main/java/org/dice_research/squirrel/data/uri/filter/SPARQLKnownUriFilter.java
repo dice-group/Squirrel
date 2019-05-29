@@ -1,9 +1,7 @@
 package org.dice_research.squirrel.data.uri.filter;
 
-import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_URI;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -32,49 +30,14 @@ import java.util.*;
 
 public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
 
-    /*
-   Some constants for the rethinkDB
-    */
-    public static final String DATABASE_NAME = "squirrel";
-    public static final String TABLE_NAME = "knownurifilter";
-    public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
-    public static final String COLUMN_URI = "uri";
-    public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
-    public static final String COLUMN_TIMESTAMP_NEXT_CRAWL = "timestampNextCrawl";
-    public static final String COLUMN_IP = "ipAddress";
-    public static final String COLUMN_TYPE = "type";
-    public static final String COLUMN_HASH_VALUE = "hashValue";
-
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SPARQLKnownUriFilter.class);
 
     public SparqlBasedSinkDedup connector = null;
 
-    public SPARQLKnownUriFilter(String sparqlEndpointUrl, String username, String password) {
-        this.connector = SparqlBasedSinkDedup.create(sparqlEndpointUrl, username, password);
+    public SPARQLKnownUriFilter(String sparqlEndpointUrlQuery, String sparqlEndpointUrlUpdate, String username, String password) {
+        this.connector = SparqlBasedSinkDedup.create(sparqlEndpointUrlQuery, sparqlEndpointUrlUpdate, username, password);
     }
 
-    public List<String> getGeneratedUris(QueryExecutionFactory queryExecFactory){
-        String queryString = "SELECT ?s ?p ?o\n" +
-                "WHERE {\n" +
-                " GRAPH <http://w3id.org/squirrel/metadata> {?s prov:value ?o}\n" +
-                "}";
-        LOGGER.info("Query looks like: ", queryString);
-
-        QueryExecution qe = queryExecFactory.createQueryExecution(queryString);
-        LOGGER.warn("Query execution: ", qe);
-
-        ResultSet rs = qe.execSelect();
-        List<String> urisFound = new ArrayList<>();
-        System.out.println("-------------------------------------------------------------------------------------------------------");
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode object = sol.get("object");
-            urisFound.add(object.asLiteral().toString());
-        }
-        qe.close();
-        return urisFound;
-    }
     @Override
     public void close() throws IOException {
 
@@ -124,6 +87,7 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
                 QuerySolution sol = rs.nextSolution();
                 RDFNode subject = sol.get("subject");
                 String uri = subject.toString();
+                LOGGER.info("Dedup_testing: uri getUrisSameHashValue: " + uri);
                 CrawleableUri newUri = null;
                 try{
                     newUri = new CrawleableUri(new URI(uri));
