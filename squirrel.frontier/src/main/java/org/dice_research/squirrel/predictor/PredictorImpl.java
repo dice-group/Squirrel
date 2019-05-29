@@ -43,7 +43,7 @@ public class PredictorImpl {
             .build();
 
         // output the feature vector
-        Object data = uri.getData(Constants.FEATURE_VECTOR);
+        //features = (DoubleVector) uri.getData(Constants.FEATURE_VECTOR);
 
         // simple regression with Sigmoid and LogLoss
         RegressionLearner learner = new RegressionLearner(sgd,
