@@ -1,5 +1,7 @@
 package org.dice_research.squirrel.predictor;
 
+import java.io.IOException;
+
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.loss.LogLoss;
@@ -24,11 +26,11 @@ public class PredictorImpl {
 
     protected CrawleableUri uri;
 
-    public PredictorImpl(CrawleableUri uri) {
-        this.uri =  uri;
-    }
+    protected static RegressionModel model;
 
-    public void predictor(CrawleableUri uri) {
+    public PredictorImpl(CrawleableUri uri) { this.uri = uri; }
+
+    public static void main(String[] args) throws IOException {
 
         // TODO update the strucutre
 
@@ -49,22 +51,18 @@ public class PredictorImpl {
 
         // train the model
         // TODO train the the learner
-        RegressionModel model = new RegressionModel();
-
+        model = new RegressionModel();
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
-        DoubleVector prediction = predict(model,features);
 
     }
 
-    public static DoubleVector predict(RegressionModel model, DoubleVector features){
-
+    public static DoubleVector predict(DoubleVector features) {
 
         RegressionClassifier classifier = new RegressionClassifier(model);
         // add the bias to the feature and predict it
         DoubleVector prediction = classifier.predict(features);
-
 
         return prediction;
     }
