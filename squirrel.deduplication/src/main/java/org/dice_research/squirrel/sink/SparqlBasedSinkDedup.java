@@ -112,7 +112,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         ResultSet rs = qe.execSelect();
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
-            String genUri = sol.get("subject").toString();
+            String genUri = sol.get("object").toString();
             try {
                 generatedUris.add(new CrawleableUri(new URI(genUri)));
             } catch (URISyntaxException e){

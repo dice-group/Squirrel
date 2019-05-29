@@ -6,6 +6,9 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.CollationElementIterator;
+import java.util.function.Predicate;
+
 public class QueryGenerator {
 
     /**
@@ -13,6 +16,8 @@ public class QueryGenerator {
      */
     private static final QueryGenerator instance = new QueryGenerator();
     public static final String METADATA_GRAPH_ID = "http://w3id.org/squirrel/metadata";
+    public static final String COLUMN_PREDICATE_ID = "sq:hashvalue";
+
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
@@ -73,13 +78,31 @@ public class QueryGenerator {
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append("<");
-        stringBuilder.append(activityUri);
+        stringBuilder.append(activityUri+"_generatedURIs");
         stringBuilder.append("> prov:value ?object }");
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
+    /**
+     * Return a select query for generated Hash values from metadata graph for the respective activity uri.
+     * @param hashValue The uri of the activity for which generated uris has to be selected.
+     * @return select query string.
+     */
+    public Query getHashQuery(String hashValue){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
+        stringBuilder.append(METADATA_GRAPH_ID);
+        stringBuilder.append("> {");
+        stringBuilder.append("?subject ");
+        stringBuilder.append(COLUMN_PREDICATE_ID);
+        stringBuilder.append(" ");
+        stringBuilder.append(hashValue);
+        stringBuilder.append("}}");
+        Query query = QueryFactory.create(stringBuilder.toString());
+        return query;
+    }
     /**
      * Return a select query for the given graphID or default graph.
      * It will return all triples contained in the graph.

@@ -1,16 +1,26 @@
 package org.dice_research.squirrel.data.uri.filter;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_URI;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.modify.request.QuadDataAcc;
+import org.apache.jena.sparql.modify.request.UpdateDataInsert;
+import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.sink.SparqlBasedSinkDedup;
+import org.dice_research.squirrel.sink.impl.sparql.QueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +45,6 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_HASH_VALUE = "hashValue";
 
-    public static final String COLUMN_PREDICATE = "sq:hashvalue";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SPARQLKnownUriFilter.class);
 
@@ -99,70 +108,57 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
     @Override
     public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
         Set<String> stringHashValues = new HashSet<>();
+        Set<CrawleableUri> urisToReturn = new HashSet<>();
+
+        //convert  hash values to set
         for (HashValue value : hashValuesForComparison) {
             stringHashValues.add(value.encodeToString());
         }
 
-//        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter
-//                (doc -> stringHashValues.contains(doc.getField(COLUMN_HASH_VALUE))).run(connector.connection);
+        for (String hashVal : stringHashValues){
+            Query query = QueryGenerator.getInstance().getHashQuery(hashVal);
+            QueryExecution qe = connector.queryExecFactory.createQueryExecution(query);
+            ResultSet rs = qe.execSelect();
 
-        List<Triple> triplesFound = new ArrayList<>();
-        Set<CrawleableUri> urisToReturn = new HashSet<>();
-        //TODO: Query the database again to check
-        String tempQuery = "";
-        QueryExecution qe = connector.queryExecFactory.createQueryExecution(tempQuery);
-        ResultSet rs = qe.execSelect();
-
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode subject = sol.get("subject");
-            RDFNode predicate = sol.get("predicate");
-            RDFNode object = sol.get("object");
-
-            String uri = subject.toString();
-            String unique = predicate.toString();
-
+            while (rs.hasNext()) {
+                QuerySolution sol = rs.nextSolution();
+                RDFNode subject = sol.get("subject");
+                String uri = subject.toString();
+                CrawleableUri newUri = null;
+                try{
+                    newUri = new CrawleableUri(new URI(uri));
+                }catch (URISyntaxException e) {
+                        LOGGER.error("Error while constructing an uri: " + uri);
+                }
+                newUri.addData(Constants.URI_HASH_KEY, hashVal);
+                urisToReturn.add(newUri);
+            }
+            qe.close();
         }
-//        qe.close();
-
-//        while (cursor.hasNext()) {
-//            HashMap<String, Object> nextRow = cursor.next();
-//            CrawleableUri newUri = null;
-//            HashValue hashValue = null;
-//            for (String key : nextRow.keySet()) {
-//                if (key.equals(COLUMN_HASH_VALUE)) {
-//                    String hashAsString = (String) nextRow.get(key);
-//                    hashValue = hashValueForDecoding.decodeFromString(hashAsString);
-//                } else if (key.equals(COLUMN_URI)) {
-//                    try {
-//                        newUri = new CrawleableUri(new URI((String) nextRow.get(key)));
-//                    } catch (URISyntaxException e) {
-//                        LOGGER.error("Error while constructing an uri: " + nextRow.get(key));
-//                    }
-//                }
-//            }
-//            newUri.addData(Constants.URI_HASH_KEY, hashValue);
-//            urisToReturn.add(newUri);
-//        }
-//        cursor.close();
         return urisToReturn;
     }
 
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
-        List<Triple> triplesFound = new ArrayList<>();
-        for (CrawleableUri uri : uris) {
-            HashValue tempHash = (HashValue) uri.getData(Constants.URI_HASH_KEY);
-            String tempQuery = "INSERT DATA\n" +
-                    " {\n" +
-                    "   GRAPH <http://w3id.org/squirrel/metadata>\n" +
-                    "     {\n" +
-                    uri.getUri().toString() +" "+ COLUMN_PREDICATE + " "+ tempHash.encodeToString()+
-                    "     }\n" +
-                    " }";
-            QueryExecution qe = connector.queryExecFactory.createQueryExecution(tempQuery);
-            ResultSet rs = qe.execSelect();
 
+        Node graph = NodeFactory.createURI(QueryGenerator.METADATA_GRAPH_ID);
+        for (CrawleableUri uri : uris) {
+            try {
+                HashValue tempHash = (HashValue) uri.getData(Constants.URI_HASH_KEY);
+                Node subjectNode = NodeFactory.createURI(uri.getUri().toString());
+                Node predicateNode = NodeFactory.createURI(QueryGenerator.COLUMN_PREDICATE_ID);
+                Node objectNode = NodeFactory.createURI(tempHash.encodeToString());
+                Triple triple = new Triple(subjectNode, predicateNode, objectNode);
+
+                QuadDataAcc quads = new QuadDataAcc();
+                quads.addQuad(new Quad(graph, triple));
+                quads.setGraph(graph);
+                UpdateDataInsert insert = new UpdateDataInsert(quads);
+                UpdateProcessor processor = this.connector.updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
+                processor.execute();
+            }catch (Exception e) {
+                LOGGER.error("Exception while sending update query.", e);
+            }
         }
     }
 
