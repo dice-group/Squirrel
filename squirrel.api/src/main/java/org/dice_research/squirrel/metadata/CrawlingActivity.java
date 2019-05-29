@@ -125,15 +125,14 @@ public class CrawlingActivity implements Serializable {
         model.add(generatedUris, RDF.type, Squirrel.generatedURIs);
         model.add(generatedUris, PROV_O.wasDerivedFrom, crawledUri);
         model.add(generatedUris, PROV_O.wasGeneratedBy, activity);
-        Set<String> generatedURIs = new HashSet<>();
         if (getCrawleableUri().getData(Constants.GENERATED_URIS) != null) {
-            generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
+            Set<String> generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
             Iterator<String> itr = generatedURIs.iterator();
             while (itr.hasNext()){
                 model.add(generatedUris, PROV_O.value, itr.next());
             }
         } else
-            model.add(generatedUris, PROV_O.value, generatedURIs.toString());
+            model.add(generatedUris, PROV_O.value, "");
 
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);

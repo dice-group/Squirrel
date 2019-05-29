@@ -6,9 +6,6 @@ import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.CollationElementIterator;
-import java.util.function.Predicate;
-
 public class QueryGenerator {
 
     /**

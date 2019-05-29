@@ -108,8 +108,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         List<CrawleableUri> generatedUris = new ArrayList<>();
         RDFNode activityUri = getActivityUri(uri.getUri().toString());
         LOGGER.info("Dedup_Testing: activityURI: "+ activityUri.toString());
-        Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(
-            QueryGenerator.formatNodeToString(activityUri.asNode())); //TODO check weather the node with the prefix is returned
+        Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString()); //TODO check weather the node with the prefix is returned
         QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
         ResultSet rs = qe.execSelect();
         while (rs.hasNext()) {
@@ -147,8 +146,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         RDFNode graphId = getGraphId(uri.getUri().toString());
-        Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(
-            QueryGenerator.formatNodeToString(graphId.asNode()),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
+        Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(graphId.toString(),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
             false);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
         ResultSet rs = qe.execSelect();

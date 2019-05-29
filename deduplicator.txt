@@ -1,0 +1,806 @@
+2019-05-29 17:22:16,774 [main] INFO  [ileSystemXmlApplicationContext] - <Refreshing org.springframework.context.support.FileSystemXmlApplicationContext@39a054a5: startup date [Wed May 29 17:22:16 GMT 2019]; root of context hierarchy>
+2019-05-29 17:22:16,990 [main] INFO  [.b.f.x.XmlBeanDefinitionReader] - <Loading XML bean definitions from file [/var/squirrel/spring-config/context-deduplicator.xml]>
+2019-05-29 17:22:19,094 [main] INFO  [f.s.DefaultListableBeanFactory] - <Overriding bean definition for bean 'deduplicatorComponent' with a different definition: replacing [Generic bean: class [org.dice_research.squirrel.components.DeduplicatorComponent]; scope=singleton; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [jar:file:/data/squirrel/squirrel.jar!/org/dice_research/squirrel/components/DeduplicatorComponent.class]] with [Generic bean: class [org.dice_research.squirrel.components.DeduplicatorComponent]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in file [/var/squirrel/spring-config/context-deduplicator.xml]]>
+2019-05-29 17:22:20,843 [main] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: Connection established>
+2019-05-29 17:22:20,905 [main] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator initialized.>
+2019-05-29 17:23:54,432 [pool-4-thread-1] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:23:54,570 [pool-4-thread-1] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://cs.dbpedia.org/resource/New_York_(stát)",cs.dbpedia.org/146.102.18.71,DEREFERENCEABLE)]]").>
+2019-05-29 17:23:54,571 [pool-4-thread-1] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 1>
+2019-05-29 17:23:57,830 [pool-4-thread-1] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://cs.dbpedia.org/resource/New_York_(stát)>} }>
+2019-05-29 17:24:00,069 [pool-4-thread-2] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:00,089 [pool-4-thread-2] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://www.citypopulation.de/USA-NewYork.html",www.citypopulation.de/81.169.145.175,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:00,090 [pool-4-thread-2] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 1>
+2019-05-29 17:24:00,147 [pool-4-thread-2] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.citypopulation.de/USA-NewYork.html>} }>
+2019-05-29 17:24:00,773 [pool-4-thread-2] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#77a5cce9-ad7f-4a98-9a6b-4bd8ac5fc818>
+2019-05-29 17:24:00,778 [pool-4-thread-1] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#344b7669-74cb-4ac8-a762-883383fbd09c>
+2019-05-29 17:24:00,785 [pool-4-thread-2] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#77a5cce9-ad7f-4a98-9a6b-4bd8ac5fc818_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:00,787 [pool-4-thread-1] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#344b7669-74cb-4ac8-a762-883383fbd09c_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:01,179 [pool-4-thread-1] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:01,183 [pool-4-thread-2] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:01,186 [pool-4-thread-1] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:01,186 [pool-4-thread-2] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:01,216 [pool-4-thread-2] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:01,219 [pool-4-thread-1] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:01,267 [pool-4-thread-2] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.citypopulation.de/USA-NewYork.html>} }>
+2019-05-29 17:24:01,301 [pool-4-thread-1] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://cs.dbpedia.org/resource/New_York_(stát)>} }>
+2019-05-29 17:24:01,785 [pool-4-thread-2] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#77a5cce9-ad7f-4a98-9a6b-4bd8ac5fc818> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:01,895 [pool-4-thread-1] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#344b7669-74cb-4ac8-a762-883383fbd09c> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:01,998 [pool-4-thread-2] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 2>
+2019-05-29 17:24:02,032 [pool-4-thread-2] ERROR [o.h.c.r.DataReceiverImpl      ] - <Uncatched throwable inside the data handler.>
+org.apache.jena.query.QueryParseException: Lexical error at line 13, column 94.  Encountered: "," (44), after : "null"
+	at org.apache.jena.sparql.lang.ParserSPARQL11.perform(ParserSPARQL11.java:110)
+	at org.apache.jena.sparql.lang.ParserSPARQL11.parse$(ParserSPARQL11.java:52)
+	at org.apache.jena.sparql.lang.SPARQLParser.parse(SPARQLParser.java:34)
+	at org.apache.jena.query.QueryFactory.parse(QueryFactory.java:147)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:79)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:52)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:40)
+	at org.dice_research.squirrel.sink.impl.sparql.QueryGenerator.getHashQuery(QueryGenerator.java:128)
+	at org.dice_research.squirrel.data.uri.filter.SPARQLKnownUriFilter.getUrisWithSameHashValues(SPARQLKnownUriFilter.java:82)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.compareNewUrisWithOldUris(DeduplicatorComponent.java:231)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:206)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:02,929 [pool-4-thread-3] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:02,930 [pool-4-thread-3] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://www.georss.org/georss/point",www.georss.org/192.30.252.154,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:02,930 [pool-4-thread-3] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 1>
+2019-05-29 17:24:02,945 [pool-4-thread-3] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.georss.org/georss/point>} }>
+2019-05-29 17:24:03,069 [pool-4-thread-3] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#be5507a5-3d81-4ce6-a5f7-45057f54868c>
+2019-05-29 17:24:03,073 [pool-4-thread-3] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#be5507a5-3d81-4ce6-a5f7-45057f54868c_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:03,394 [pool-4-thread-1] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 3469>
+2019-05-29 17:24:03,398 [pool-4-thread-1] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 538869,1073858411,-2146270580,-1073648622}}>
+2019-05-29 17:24:03,506 [pool-4-thread-3] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:03,506 [pool-4-thread-3] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:03,507 [pool-4-thread-3] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:03,511 [pool-4-thread-3] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.georss.org/georss/point>} }>
+2019-05-29 17:24:03,600 [pool-4-thread-3] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#be5507a5-3d81-4ce6-a5f7-45057f54868c> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:03,679 [pool-4-thread-3] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 0>
+2019-05-29 17:24:03,681 [pool-4-thread-3] ERROR [o.h.c.r.DataReceiverImpl      ] - <Uncatched throwable inside the data handler.>
+org.apache.jena.query.QueryParseException: Lexical error at line 13, column 94.  Encountered: "," (44), after : "null"
+	at org.apache.jena.sparql.lang.ParserSPARQL11.perform(ParserSPARQL11.java:110)
+	at org.apache.jena.sparql.lang.ParserSPARQL11.parse$(ParserSPARQL11.java:52)
+	at org.apache.jena.sparql.lang.SPARQLParser.parse(SPARQLParser.java:34)
+	at org.apache.jena.query.QueryFactory.parse(QueryFactory.java:147)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:79)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:52)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:40)
+	at org.dice_research.squirrel.sink.impl.sparql.QueryGenerator.getHashQuery(QueryGenerator.java:128)
+	at org.dice_research.squirrel.data.uri.filter.SPARQLKnownUriFilter.getUrisWithSameHashValues(SPARQLKnownUriFilter.java:82)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.compareNewUrisWithOldUris(DeduplicatorComponent.java:231)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:206)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:42,153 [pool-4-thread-4] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:42,159 [pool-4-thread-4] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://id.dbpedia.org/resource/New_York",id.dbpedia.org/152.118.148.93,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:42,159 [pool-4-thread-4] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 1>
+2019-05-29 17:24:42,162 [pool-4-thread-4] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://id.dbpedia.org/resource/New_York>} }>
+2019-05-29 17:24:42,316 [pool-4-thread-4] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#7c715f6d-966e-46e2-add2-bd3ba8258845>
+2019-05-29 17:24:42,319 [pool-4-thread-4] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#7c715f6d-966e-46e2-add2-bd3ba8258845_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:42,622 [pool-4-thread-4] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:42,623 [pool-4-thread-4] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:42,624 [pool-4-thread-4] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:42,633 [pool-4-thread-4] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://id.dbpedia.org/resource/New_York>} }>
+2019-05-29 17:24:42,779 [pool-4-thread-4] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#7c715f6d-966e-46e2-add2-bd3ba8258845> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:43,515 [pool-4-thread-4] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 1997>
+2019-05-29 17:24:43,575 [pool-4-thread-4] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 498381,1073862278,-2147267417,-1070459658}}>
+2019-05-29 17:24:49,530 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:49,534 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://www.loc.gov/rr/program/bib/states/newyork/",www.loc.gov/104.16.55.16,DEREFERENCEABLE), CrawleableUri("http://id.loc.gov/authorities/n80126293",id.loc.gov/104.16.55.16,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:49,534 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 2>
+2019-05-29 17:24:49,557 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.loc.gov/rr/program/bib/states/newyork/>} }>
+2019-05-29 17:24:49,705 [pool-4-thread-5] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#8ee5a8e8-7c6b-4f94-8b5e-37265514c676>
+2019-05-29 17:24:49,707 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#8ee5a8e8-7c6b-4f94-8b5e-37265514c676_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:49,778 [pool-4-thread-5] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:49,778 [pool-4-thread-5] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:49,781 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:49,804 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.loc.gov/rr/program/bib/states/newyork/>} }>
+2019-05-29 17:24:49,903 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#8ee5a8e8-7c6b-4f94-8b5e-37265514c676> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:50,113 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 7>
+2019-05-29 17:24:50,115 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://id.loc.gov/authorities/n80126293>} }>
+2019-05-29 17:24:50,157 [pool-4-thread-5] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#dae8f839-5d18-49b2-af5e-9e245f4774e1>
+2019-05-29 17:24:50,160 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#dae8f839-5d18-49b2-af5e-9e245f4774e1_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:50,200 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:50,209 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://id.loc.gov/authorities/n80126293>} }>
+2019-05-29 17:24:50,244 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#dae8f839-5d18-49b2-af5e-9e245f4774e1> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:50,565 [pool-4-thread-5] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 1059>
+2019-05-29 17:24:50,569 [pool-4-thread-5] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 45904230,1099890042,-2138290020,-1040683230}}>
+2019-05-29 17:24:50,693 [pool-4-thread-5] ERROR [o.h.c.r.DataReceiverImpl      ] - <Uncatched throwable inside the data handler.>
+org.apache.jena.query.QueryParseException: Lexical error at line 13, column 94.  Encountered: "," (44), after : "null"
+	at org.apache.jena.sparql.lang.ParserSPARQL11.perform(ParserSPARQL11.java:110)
+	at org.apache.jena.sparql.lang.ParserSPARQL11.parse$(ParserSPARQL11.java:52)
+	at org.apache.jena.sparql.lang.SPARQLParser.parse(SPARQLParser.java:34)
+	at org.apache.jena.query.QueryFactory.parse(QueryFactory.java:147)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:79)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:52)
+	at org.apache.jena.query.QueryFactory.create(QueryFactory.java:40)
+	at org.dice_research.squirrel.sink.impl.sparql.QueryGenerator.getHashQuery(QueryGenerator.java:128)
+	at org.dice_research.squirrel.data.uri.filter.SPARQLKnownUriFilter.getUrisWithSameHashValues(SPARQLKnownUriFilter.java:82)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.compareNewUrisWithOldUris(DeduplicatorComponent.java:231)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:206)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:56,015 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:56,035 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://www.ny.gov",www.ny.gov/104.18.96.34,DEREFERENCEABLE), CrawleableUri("http://www.ny.gov/",www.ny.gov/104.18.96.34,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:56,035 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 2>
+2019-05-29 17:24:56,039 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.ny.gov>} }>
+2019-05-29 17:24:56,077 [pool-4-thread-6] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#37240757-755f-4b95-8a88-7002e71d1f5d>
+2019-05-29 17:24:56,080 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#37240757-755f-4b95-8a88-7002e71d1f5d_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:56,102 [pool-4-thread-6] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:56,103 [pool-4-thread-6] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:56,105 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:56,108 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.ny.gov>} }>
+2019-05-29 17:24:56,158 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#37240757-755f-4b95-8a88-7002e71d1f5d> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:56,229 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 79>
+2019-05-29 17:24:56,231 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.ny.gov/>} }>
+2019-05-29 17:24:56,267 [pool-4-thread-6] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#54c73141-c040-4429-ab18-405629de936f>
+2019-05-29 17:24:56,269 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#54c73141-c040-4429-ab18-405629de936f_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:56,296 [pool-4-thread-6] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:56,296 [pool-4-thread-6] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:56,313 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:56,327 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.ny.gov/>} }>
+2019-05-29 17:24:56,369 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#54c73141-c040-4429-ab18-405629de936f> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:56,402 [pool-4-thread-6] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 79>
+2019-05-29 17:24:56,416 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 28021732,1223423619,-2137144500,-604322231}}>
+2019-05-29 17:24:56,482 [pool-4-thread-6] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 113098405,1122793461,-2087323185,-604322231}}>
+2019-05-29 17:24:58,711 [pool-4-thread-7] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator invoked!>
+2019-05-29 17:24:58,712 [pool-4-thread-7] INFO  [o.d.s.c.DeduplicatorComponent ] - <Deduplicator got a message ("UriSet [uris=[CrawleableUri("http://www.rdfabout.com/rdf/usgov/geo/us/ny",www.rdfabout.com/188.166.65.63,DEREFERENCEABLE)]]").>
+2019-05-29 17:24:58,713 [pool-4-thread-7] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: inside handleNewUris: 1>
+2019-05-29 17:24:58,714 [pool-4-thread-7] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getActivityUriQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:crawled <http://www.rdfabout.com/rdf/usgov/geo/us/ny>} }>
+2019-05-29 17:24:58,738 [pool-4-thread-7] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: activityURI: http://w3id.org/squirrel/activity#27fa40d3-1d8b-4f8d-b04c-fd785df7718f>
+2019-05-29 17:24:58,740 [pool-4-thread-7] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGeneratedUrisQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?object WHERE { GRAPH <http://w3id.org/squirrel/metadata> {<http://w3id.org/squirrel/activity#27fa40d3-1d8b-4f8d-b04c-fd785df7718f_generatedURIs> prov:value ?object }}>
+2019-05-29 17:24:58,807 [pool-4-thread-7] INFO  [o.d.s.s.SparqlBasedSinkDedup  ] - <Dedup_Testing: result: []>
+2019-05-29 17:24:58,807 [pool-4-thread-7] WARN  [o.d.s.s.SparqlBasedSinkDedup  ] - <Exception thrown when parsing generated uri - []>
+java.net.URISyntaxException: Illegal character in path at index 0: []
+	at java.net.URI$Parser.fail(URI.java:2848)
+	at java.net.URI$Parser.checkChars(URI.java:3021)
+	at java.net.URI$Parser.parseHierarchical(URI.java:3105)
+	at java.net.URI$Parser.parse(URI.java:3063)
+	at java.net.URI.<init>(URI.java:588)
+	at org.dice_research.squirrel.sink.SparqlBasedSinkDedup.getGeneratedUrisFromMetadata(SparqlBasedSinkDedup.java:119)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleNewUris(DeduplicatorComponent.java:191)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:279)
+	at org.dice_research.squirrel.components.DeduplicatorComponent.handleData(DeduplicatorComponent.java:288)
+	at org.hobbit.core.rabbit.DataReceiverImpl$MsgProcessingTask.run(DataReceiverImpl.java:216)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+2019-05-29 17:24:58,809 [pool-4-thread-7] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: newGeneratedUrisList: 0>
+2019-05-29 17:24:58,815 [pool-4-thread-7] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getGraphIdQuery : PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH ?g {?subject sq:containsDataOf <http://www.rdfabout.com/rdf/usgov/geo/us/ny>} }>
+2019-05-29 17:24:58,896 [pool-4-thread-7] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getSelectQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject ?predicate ?object WHERE { GRAPH <http://w3id.org/squirrel/graph#27fa40d3-1d8b-4f8d-b04c-fd785df7718f> { ?subject ?predicate ?object } }>
+2019-05-29 17:24:58,948 [pool-4-thread-7] INFO  [o.d.s.c.DeduplicatorComponent ] - <Dedup_Testing: triples: 95>
+2019-05-29 17:24:58,950 [pool-4-thread-7] INFO  [o.d.s.s.i.s.QueryGenerator    ] - <Dedup_Testing: query getHashQuery: PREFIX sq-s:  <http://w3id.org/squirrel/status#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sq-a:  <http://w3id.org/squirrel/activity#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sq-m:  <http://w3id.org/squirrel/metadata>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX sq-g:  <http://w3id.org/squirrel/graph#>
+PREFIX sq-w:  <http://w3id.org/squirrel/worker#>
+PREFIX sq:  <http://w3id.org/squirrel/vocab#>
+PREFIX dc:  <http://purl.org/dc/terms/>
+SELECT ?subject WHERE { GRAPH <http://w3id.org/squirrel/metadata> {?subject sq:hashvalue 120849632,1152152044,-1245350039,-1048963924}}>
