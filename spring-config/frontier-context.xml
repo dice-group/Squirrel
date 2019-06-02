@@ -25,8 +25,8 @@
 
 
 
-	<!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> -->
-    <!-- 
+	<!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> 
+   
 	<bean id="frontierBean"
 		class="org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl">
 		<constructor-arg index="0" ref="normalizerImpl" />
@@ -51,6 +51,12 @@
         <constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
         <constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
     </bean>
+    <!-- Triple Store sparql implementation  -->
+	 <bean id="sparqlBean" class="org.dice_research.squirrel.configurator.SparqlConfiguration"> 
+		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}" />
+		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}" />
+		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />	
+	 </bean> 
 
 
 
