@@ -127,13 +127,19 @@ public class PredictorImpl {
 
     }
 
-    public static DoubleVector predict( DoubleVector features){
+    public void predict(CrawleableUri uri){
 
+
+        Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+        double[] doubleFeatureArray = (double[]) featureArray;
+        DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
         RegressionClassifier classifier = new RegressionClassifier(model);
         // add the bias to the feature and predict it
         DoubleVector prediction = classifier.predict(features);
+        double[] predictVal = prediction.toArray();
+         uri.addData(Constants.URI_PREDICTED_LABEL, predictVal[0]);
 
-        return prediction;
+
     }
 
 
