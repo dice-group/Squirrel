@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
+import de.jungblut.math.DoubleVector;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -15,6 +16,7 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.dice_research.squirrel.predictor.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -233,6 +235,13 @@ public class FrontierImpl implements Frontier {
         uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+
+        try {
+            PredictorImpl pred = new PredictorImpl(uri);
+            pred.FeatureHashing(uri);
+            }catch (Exception e){
+            LOGGER.info("Exception happened while predicting" +e);
+        }
         
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
