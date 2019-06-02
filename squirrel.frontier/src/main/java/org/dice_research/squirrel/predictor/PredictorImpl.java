@@ -5,8 +5,6 @@ import java.io.IOException;
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
-import de.jungblut.math.dense.DenseDoubleVector;
-import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
@@ -103,8 +101,6 @@ public class PredictorImpl {
 
     public static void main(String[] args) throws IOException {
 
-        // TODO update the strucutre
-
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
             .holdoutValidationPercentage(0.05d) // 5% as validation set
@@ -112,7 +108,6 @@ public class PredictorImpl {
             .weightUpdater(new AdaptiveFTRLRegularizer(beta, l1, l2)) // FTRL updater
             .progressReportInterval(1_000) // report every n iterations
             .build();
-
 
         // simple regression with Sigmoid and LogLoss
         RegressionLearner learner = new RegressionLearner(sgd,
@@ -127,19 +122,21 @@ public class PredictorImpl {
 
     }
 
-    public void predict(CrawleableUri uri){
+    public void predict(CrawleableUri uri) {
+        try {
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+            RegressionClassifier classifier = new RegressionClassifier(model);
+            // add the bias to the feature and predict it
+            DoubleVector prediction = classifier.predict(features);
+            double[] predictVal = prediction.toArray();
+            uri.addData(Constants.URI_PREDICTED_LABEL, predictVal[0]);
 
+        } catch (Exception e) {
+            LOGGER.warn("Prediction for "+ uri.getUri().toString() +" failed " + e);
 
-        Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-        double[] doubleFeatureArray = (double[]) featureArray;
-        DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-        RegressionClassifier classifier = new RegressionClassifier(model);
-        // add the bias to the feature and predict it
-        DoubleVector prediction = classifier.predict(features);
-        double[] predictVal = prediction.toArray();
-         uri.addData(Constants.URI_PREDICTED_LABEL, predictVal[0]);
-
-
+        }
     }
 
 

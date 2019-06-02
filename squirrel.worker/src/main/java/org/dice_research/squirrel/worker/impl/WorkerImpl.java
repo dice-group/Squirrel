@@ -288,6 +288,12 @@ public class WorkerImpl implements Worker, Closeable {
             LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
             activity.addStep(manager.getClass(), "Decided to reject this URI.");
         }
+        // Adding true label value for the prediction in uri map
+        if (activity.getNumberOfTriples()>0) {
+            uri.addData(Constants.URI_TRUE_LABEL,1);
+        } else {
+            uri.addData(Constants.URI_TRUE_LABEL, 0);
+        }
         activity.finishActivity(sink);
         // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
