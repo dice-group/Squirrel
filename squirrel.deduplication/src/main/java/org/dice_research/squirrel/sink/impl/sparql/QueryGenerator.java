@@ -167,11 +167,26 @@ public class QueryGenerator {
         return query;
     }
 
-    public Query getUpdateTriplesGraphIdQuery(String activityId, RDFNode graphId) {
+    public Query getUpdateTriplesGraphIdQuery(String newUri, RDFNode oldGraphId) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
-        Query query = QueryFactory.create(stringBuilder.toString());
-        LOGGER.info("Dedup_Testing: query getUpdateTriplesGraphIdQuery: <yet_to_be_made>");
+        stringBuilder.append("DELETE { GRAPH <");
+        stringBuilder.append(METADATA_GRAPH_ID);
+        stringBuilder.append("> { ?subject sq:containsDataOf <");
+        stringBuilder.append(newUri);
+        stringBuilder.append("> }}");
+        stringBuilder.append("INSERT { GRAPH <");
+        stringBuilder.append(METADATA_GRAPH_ID);
+        stringBuilder.append("> {");
+        stringBuilder.append(oldGraphId.toString());
+		stringBuilder.append(" sq:containsDataOf <");
+		stringBuilder.append(newUri);
+		stringBuilder.append("> } }");
+		stringBuilder.append(" WHERE { GRAPH <");
+		stringBuilder.append(METADATA_GRAPH_ID);
+		stringBuilder.append("> { ?subject ?object ?predicate } }");
+        LOGGER.info("Dedup_Testing: query getUpdateTriplesGraphIdQuery: " + stringBuilder.toString());
+		Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
