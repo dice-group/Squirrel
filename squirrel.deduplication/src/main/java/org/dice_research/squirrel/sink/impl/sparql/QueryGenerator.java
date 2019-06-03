@@ -3,6 +3,7 @@ package org.dice_research.squirrel.sink.impl.sparql;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class QueryGenerator {
      * @param uriCrawled The crawled uri for which graph id has to be selected.
      * @return select query string.
      */
-    public Query getGraphIdQuery(String uriCrawled){
+    public Query getTriplesGraphIdQuery(String uriCrawled){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH ?g {");
@@ -60,9 +61,8 @@ public class QueryGenerator {
         stringBuilder.append(uriCrawled);
         stringBuilder.append(">} ");
         stringBuilder.append("}");
+        LOGGER.info("Dedup_Testing: query getTriplesGraphIdQuery : " + stringBuilder.toString());
         Query query = QueryFactory.create(stringBuilder.toString());
-
-        LOGGER.info("Dedup_Testing: query getGraphIdQuery : " + stringBuilder.toString());
         return query;
     }
 
@@ -81,8 +81,8 @@ public class QueryGenerator {
         stringBuilder.append(uriCrawled);
         stringBuilder.append(">} ");
         stringBuilder.append("}");
-        Query query = QueryFactory.create(stringBuilder.toString());
         LOGGER.info("Dedup_Testing: query getActivityUriQuery: " + stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
@@ -101,8 +101,8 @@ public class QueryGenerator {
         stringBuilder.append(activityUri+"_generatedURIs");
         stringBuilder.append("> prov:value ?object }");
         stringBuilder.append("}");
-        Query query = QueryFactory.create(stringBuilder.toString());
         LOGGER.info("Dedup_Testing: query getGeneratedUrisQuery: " + stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
@@ -122,8 +122,8 @@ public class QueryGenerator {
         stringBuilder.append(" ");
         stringBuilder.append(hashValue);
         stringBuilder.append("}}");
-        Query query = QueryFactory.create(stringBuilder.toString());
         LOGGER.info("Dedup_Testing: query getHashQuery: " + stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
     /**
@@ -148,8 +148,30 @@ public class QueryGenerator {
             stringBuilder.append("} ");
         }
         stringBuilder.append("}");
-        Query query = QueryFactory.create(stringBuilder.toString());
         LOGGER.info("Dedup_Testing: query getSelectQuery: " + stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
+        return query;
+    }
+
+    public Query getDeleteQuery(String graphID) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
+        stringBuilder.append("DELETE WHERE {");
+        stringBuilder.append("GRAPH <");
+        stringBuilder.append(graphID);
+        stringBuilder.append("> { ");
+        stringBuilder.append("?subject ?predicate ?object ");
+        stringBuilder.append("}}");
+        LOGGER.info("Dedup_Testing: query getDeleteQuery: " + stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
+        return query;
+    }
+
+    public Query getUpdateTriplesGraphIdQuery(String activityId, RDFNode graphId) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getPrefixes());
+        Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getUpdateTriplesGraphIdQuery: <yet_to_be_made>");
         return query;
     }
 
@@ -166,7 +188,7 @@ public class QueryGenerator {
         if (node.isURI()) {
             stringBuilder.append("<");
             //Should possibly be further improved
-            stringBuilder.append(node.getURI().replace(" ",""));
+            stringBuilder.append(node.getURI().replace(" ", ""));
             stringBuilder.append(">");
         } else if (node.isBlank()) {
             stringBuilder.append("_:");

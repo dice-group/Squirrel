@@ -24,6 +24,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
+import org.apache.jena.update.UpdateProcessor;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.impl.sparql.QueryGenerator;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
@@ -52,7 +53,6 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         QueryExecutionFactory queryExecFactory = null;
         UpdateExecutionFactory updateExecFactory = null;
         if (username != null && password != null) {
-            // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
             HttpAuthenticator authenticator = new HttpAuthenticator() {
                 @Override
@@ -88,9 +88,6 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         return new SparqlBasedSinkDedup(queryExecFactory, updateExecFactory);
     }
 
-    public void queryExecute(String query){
-    }
-
     public RDFNode getActivityUri(String uriCrawled){
         Query activityIdQuery = QueryGenerator.getInstance().getActivityUriQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(activityIdQuery);
@@ -101,27 +98,31 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
             activityId = sol.get("subject");
         }
         qe.close();
+        LOGGER.info("Dedup_Testing: activityURI: "+ activityId);
         return activityId;
     }
 
     public List<CrawleableUri> getGeneratedUrisFromMetadata(CrawleableUri uri){
         List<CrawleableUri> generatedUris = new ArrayList<>();
         RDFNode activityUri = getActivityUri(uri.getUri().toString());
-        LOGGER.info("Dedup_Testing: activityURI: "+ activityUri.toString());
-        Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString()); //TODO check weather the node with the prefix is returned
-        QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
-        ResultSet rs = qe.execSelect();
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            String genUri = sol.get("object").toString();
-            LOGGER.info("Dedup_Testing: result: " + genUri);
-            try {
-                generatedUris.add(new CrawleableUri(new URI(genUri)));
-            } catch (URISyntaxException e){
-                LOGGER.warn("Exception thrown when parsing generated uri - " + genUri, e);
+        if (activityUri != null) {
+            Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString()); //TODO check weather the node with the prefix is returned
+            QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
+            ResultSet rs = qe.execSelect();
+            while (rs.hasNext()) {
+                QuerySolution sol = rs.nextSolution();
+                String genUri = sol.get("object").toString();
+                LOGGER.info("Dedup_Testing: result: " + genUri);
+                try {
+                    generatedUris.add(new CrawleableUri(new URI(genUri)));
+                } catch (URISyntaxException e) {
+                    LOGGER.warn("Exception thrown when parsing generated uri - " + genUri, e);
+                }
             }
+            qe.close();
+        } else {
+            LOGGER.info("Dedup_Testing: activityUri not found in metadata for the uri - " + uri.getUri().toString());
         }
-        qe.close();
         return generatedUris;
     }
 
@@ -131,7 +132,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     }
 
     public RDFNode getGraphId(String uriCrawled){
-        Query graphIdQuery = QueryGenerator.getInstance().getGraphIdQuery(uriCrawled);
+        Query graphIdQuery = QueryGenerator.getInstance().getTriplesGraphIdQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(graphIdQuery);
         ResultSet rs = qe.execSelect();
         RDFNode graphId = null;
@@ -145,21 +146,45 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
 
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        RDFNode graphId = getGraphId(uri.getUri().toString());
-        Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(graphId.toString(),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
-            false);
-        QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
-        ResultSet rs = qe.execSelect();
+        LOGGER.info("Getting triples for uri - " + uri.toString());
         List<Triple> triplesFound = new ArrayList<>();
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode subject = sol.get("subject");
-            RDFNode predicate = sol.get("predicate");
-            RDFNode object = sol.get("object");
-            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+        RDFNode graphId = getGraphId(uri.getUri().toString());
+        if (graphId != null) {
+            Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(graphId.toString(),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
+                false);
+            QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
+            ResultSet rs = qe.execSelect();
+
+            while (rs.hasNext()) {
+                QuerySolution sol = rs.nextSolution();
+                RDFNode subject = sol.get("subject");
+                RDFNode predicate = sol.get("predicate");
+                RDFNode object = sol.get("object");
+                triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+            }
+            qe.close();
+        } else {
+            LOGGER.info("Graph id not found for uri - " + uri.getUri().toString());
         }
-        qe.close();
         return triplesFound;
+    }
+
+    public void deleteTriplesWithGraphId(CrawleableUri curi){
+        String uri = curi.getUri().toString();
+        LOGGER.info("Deleting triples for uri - " + uri);
+        RDFNode graphId = getGraphId(uri);
+        LOGGER.info("Deleting triples from graph - " + graphId.toString());
+        Query deleteQuery = QueryGenerator.getInstance().getDeleteQuery(graphId.toString());
+        UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(deleteQuery.toString());
+        processor.execute();
+
+    }
+
+    public void updateGraphIdForActivity(CrawleableUri newUri, CrawleableUri oldUri){
+        String activityId = newUri.getUri().toString();
+        LOGGER.info("Updating the graph id of triples in uri - " + activityId);
+        RDFNode graphId = getGraphId(oldUri.getUri().toString());
+        Query query = QueryGenerator.getInstance().getUpdateTriplesGraphIdQuery(activityId, graphId);
     }
 
     @Override

@@ -127,7 +127,8 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
-      - SPARQL_URL=http://sparqlhost:3030/squirrel/update
+      - SPARQL_QUERY_URL=http://sparqlhost:3030/squirrel/query
+      - SPARQL_UPDATE_URL=http://sparqlhost:3030/squirrel/update
       - SPARQL_HOST_USER=admin
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true

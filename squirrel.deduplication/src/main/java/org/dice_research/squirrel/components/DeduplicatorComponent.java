@@ -93,10 +93,11 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         }
 
         if(deduplicationActive){
-            //FIXME: get sparql values from env
-            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter("http://sparqlhost:3030/squirrel/query","http://sparqlhost:3030/squirrel/update","admin","pw123");
+            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter(System.getenv("SPARQL_QUERY_URL"),
+                System.getenv("SPARQL_UPDATE_URL"),
+                System.getenv("SPARQL_HOST_USER"),
+                System.getenv("SPARQL_HOST_PASSWD"));
             uriHashCustodian = knownUriFilter;
-            //FIXME: if don't need the sink, then comment
             sink = ((SPARQLKnownUriFilter) uriHashCustodian).connector;
             serializer = new GzipJavaUriSerializer();
             try {
@@ -194,13 +195,13 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 List<Triple> gentriples = sink.getTriplesForGraph(genUri);
                 HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(gentriples));
                 genUri.addData(Constants.URI_HASH_KEY, value);
-                LOGGER.info("Dedup_Testing: genTriples: " + gentriples.size());
+                LOGGER.info("Dedup_Testing: Calculated hash value for genUri: " + genUri.getUri().toString() + ": " + value.encodeToString());
             }
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value);
             generatedUris.addAll(newGeneratedUriList);
-            LOGGER.info("Dedup_Testing: triples: " + triples.size());
+            LOGGER.info("Dedup_Testing: Calculated hash value for nextUri: " + nextUri.getUri().toString() + ": " + value.encodeToString());
         }
         uris.addAll(generatedUris);
         compareNewUrisWithOldUris(uris);
@@ -219,11 +220,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
      * @param uris
      */
     private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
-//  FIXME fix this part!
-//        if (uriHashCustodian instanceof RDBKnownUriFilter) {
-//            ((RDBKnownUriFilter) uriHashCustodian).openConnector();
-//        }
-
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : uris) {
             hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
@@ -240,6 +236,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                     if (tripleComparator.triplesAreEqual(listOld, listNew)) {
                         // TODO: delete duplicate, this means Delete the triples from the new uris and
                         // replace them by a link to the old uris which has the same content
+                        sink.deleteTriplesWithGraphId(uriNew);
+                        sink.updateGraphIdForActivity(uriNew, uriOld);
                         continue outer;
                     }
 
