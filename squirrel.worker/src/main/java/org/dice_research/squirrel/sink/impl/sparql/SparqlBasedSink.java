@@ -28,8 +28,10 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.modify.request.QuadDataAcc;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
+import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
@@ -162,12 +164,12 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
                  graph = NodeFactory.createURI(getGraphId(uri));
             }
 
-            QuadDataAcc quads = new QuadDataAcc();
+            UpdateDeleteInsert insert = new UpdateDeleteInsert();
+            QuadAcc quads = insert.getInsertAcc();
             for(Triple triple : triples){
                quads.addQuad(new Quad(graph, triple));
             }
             quads.setGraph(graph);
-            UpdateDataInsert insert = new UpdateDataInsert(quads);
             UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
             processor.execute();
         } catch (Exception e) {
