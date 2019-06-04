@@ -91,8 +91,6 @@ services:
       - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
-      - MDB_HOST_NAME=mongodb
-      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker1:/var/squirrel/data
@@ -112,8 +110,6 @@ services:
       - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
-      - MDB_HOST_NAME=mongodb
-      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker2:/var/squirrel/data
@@ -133,8 +129,6 @@ services:
       - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
-      - MDB_HOST_NAME=mongodb
-      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker3:/var/squirrel/data

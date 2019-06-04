@@ -66,8 +66,6 @@ services:
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=false
-      - MDB_HOST_NAME=mongodb
-      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker1:/var/squirrel/data
@@ -102,8 +100,6 @@ services:
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=true
-      - MDB_HOST_NAME=mongodb
-      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker3:/var/squirrel/data
