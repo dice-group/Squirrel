@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.predictor;
 
-import java.io.IOException;
 
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.net.*;
 
 
-public class PredictorImpl {
+public final class PredictorImpl  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
     private static final double beta = 0;
@@ -33,14 +32,11 @@ public class PredictorImpl {
 
     protected CrawleableUri uri;
 
-    protected static RegressionModel model;
-
+    public RegressionModel model;
 
     public PredictorImpl(CrawleableUri uri) { this.uri =  uri; }
 
-    public void FeatureHashing(CrawleableUri uri)  {
-
-
+    public void featureHashing(CrawleableUri uri)  {
         String[] tokens = new String[7];
         URI furi = null;
         try {
@@ -48,47 +44,38 @@ public class PredictorImpl {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
         if (furi != null) {
             String authority = furi.getAuthority();
             if(authority == null) authority = "aaaa";
             tokens[0] = authority;
-
-
             String scheme = furi.getScheme();
             if(scheme == null) scheme = "ssss";
             tokens[1] = scheme;
-
 
             String userInfo = furi.getUserInfo();
             if(userInfo == null) userInfo = "uuuu";
             tokens[2] = userInfo;
 
-
             String host = furi.getHost();
             if(host == null) host = "hhhh";
             tokens[3] = host;
-
 
             String path = furi.getPath();
             if(path == null) path = "pppp";
             tokens[4] = path;
 
-
             String query = furi.getQuery();
             if(query == null) query = "qqqq";
             tokens[5] = query;
 
-
             String fragment = furi.getFragment();
             if(fragment == null) fragment = "ffff";
             tokens[6] = fragment;
-
         }
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 7));
+                2 << 2));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
@@ -99,7 +86,7 @@ public class PredictorImpl {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public void train (){
 
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
@@ -122,21 +109,28 @@ public class PredictorImpl {
 
     }
 
-    public void predict(CrawleableUri uri) {
+    public double predict(CrawleableUri uri) {
+        Double p = 0.0;
         try {
+            //Get the feature vector
             Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
             double[] doubleFeatureArray = (double[]) featureArray;
             DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
             RegressionClassifier classifier = new RegressionClassifier(model);
             // add the bias to the feature and predict it
             DoubleVector prediction = classifier.predict(features);
             double[] predictVal = prediction.toArray();
+            p = predictVal[0];
+
+            //Update uri key with the predicted value
             uri.addData(Constants.URI_PREDICTED_LABEL, predictVal[0]);
 
         } catch (Exception e) {
             LOGGER.warn("Prediction for "+ uri.getUri().toString() +" failed " + e);
 
         }
+        return  p ;
     }
 
 

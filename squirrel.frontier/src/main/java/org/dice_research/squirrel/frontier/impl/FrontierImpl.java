@@ -238,8 +238,8 @@ public class FrontierImpl implements Frontier {
 
         try {
             PredictorImpl pred = new PredictorImpl(uri);
-            pred.FeatureHashing(uri);
-            pred.predict(uri);
+            pred.featureHashing(uri);
+            Double p = pred.predict(uri);
             }catch (Exception e){
             LOGGER.info("Exception happened while predicting" +e);
         }
