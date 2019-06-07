@@ -239,7 +239,10 @@ public class FrontierImpl implements Frontier {
         try {
             PredictorImpl pred = new PredictorImpl(uri);
             pred.featureHashing(uri);
+
+            //Update uri key with the predicted value
             Double p = pred.predict(uri);
+            uri.addData(Constants.URI_PREDICTED_LABEL, p);
             }catch (Exception e){
             LOGGER.info("Exception happened while predicting" +e);
         }

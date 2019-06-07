@@ -110,7 +110,7 @@ public final class PredictorImpl  {
     }
 
     public double predict(CrawleableUri uri) {
-        Double p = 0.0;
+        Double pred = 0.0;
         try {
             //Get the feature vector
             Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
@@ -121,16 +121,13 @@ public final class PredictorImpl  {
             // add the bias to the feature and predict it
             DoubleVector prediction = classifier.predict(features);
             double[] predictVal = prediction.toArray();
-            p = predictVal[0];
-
-            //Update uri key with the predicted value
-            uri.addData(Constants.URI_PREDICTED_LABEL, predictVal[0]);
+            pred = predictVal[0];
 
         } catch (Exception e) {
-            LOGGER.warn("Prediction for "+ uri.getUri().toString() +" failed " + e);
+            LOGGER.warn("Prediction for this "+ uri.getUri().toString() +" failed " + e);
 
         }
-        return  p ;
+        return  pred ;
     }
 
 
