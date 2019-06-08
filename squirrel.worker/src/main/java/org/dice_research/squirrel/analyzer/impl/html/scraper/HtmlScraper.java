@@ -42,6 +42,8 @@ public class HtmlScraper {
     private Document doc;
     private Map<String, Object> pageLoadResources;
 
+    public WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+
     public HtmlScraper(File file) {
         try {
             yamlFiles = new YamlFilesParser(file).getYamlFiles();
@@ -202,13 +204,13 @@ public class HtmlScraper {
      * @throws IOException
      */
     private void executeJavaScript(CrawleableUri uri){
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
         webClient.setRefreshHandler(new ThreadedRefreshHandler());
         webClient.getCookieManager().setCookiesEnabled(true);
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setUseInsecureSSL(true);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setCssEnabled(true);
+        LOGGER.info(" yoooooooooo2" + isJUnitTest());
         long timeout = getJavascriptTimeout(uri);
         try {
             HtmlPage htmlPage = webClient.getPage(uri.getUri().toString());
@@ -218,10 +220,23 @@ public class HtmlScraper {
             LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
         }
     }
+    /**
+     * Method to check if the code is running through a Unit test
+     * @return a boolean value.
+     */
+    public static boolean isJUnitTest() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        List<StackTraceElement> list = Arrays.asList(stackTrace);
+        for (StackTraceElement element : list) {
+            if (element.getClassName().startsWith("org.junit.")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void handlePageLoad(CrawleableUri uri){
         HtmlPage htmlPage;
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setThrowExceptionOnScriptError(true);
         webClient.getOptions().setCssEnabled(false);
@@ -249,7 +264,7 @@ public class HtmlScraper {
         Set<Triple> triples = new LinkedHashSet<Triple>();
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
-        if (!htmlFile.toString().contains("test")) //To prevent downloading a page when running unit test cases
+        if (!isJUnitTest()) //To prevent downloading a page when running unit test cases
             if (pageLoadResources != null)
                 handlePageLoad(curi);
             else
