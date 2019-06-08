@@ -48,6 +48,7 @@ import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.dice_research.squirrel.predictor.PredictorImpl;
 
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
@@ -64,8 +65,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
-
     public static final boolean RECRAWLING_ACTIVE = true;
+    public  PredictorImpl pred = new PredictorImpl();
 
     @Override
     public void init() throws Exception {

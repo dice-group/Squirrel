@@ -4,6 +4,7 @@ package org.dice_research.squirrel.predictor;
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
+import de.jungblut.math.dense.DenseDoubleVector;
 import de.jungblut.math.loss.LogLoss;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
@@ -18,6 +19,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.*;
+import java.util.ArrayList;
 
 
 public final class PredictorImpl  {
@@ -33,8 +35,9 @@ public final class PredictorImpl  {
     protected CrawleableUri uri;
 
     public RegressionModel model;
-
-    public PredictorImpl(CrawleableUri uri) { this.uri =  uri; }
+    // TODO weights to be initialised by the trainer
+    public DoubleVector weights = new DenseDoubleVector(new double[]{1, 2, 3, 4, 5, 6, 7, 3, 2, 1});
+    public PredictorImpl() { }
 
     public void featureHashing(CrawleableUri uri)  {
         String[] tokens = new String[7];
@@ -110,13 +113,15 @@ public final class PredictorImpl  {
     }
 
     public double predict(CrawleableUri uri) {
-        Double pred = 0.0;
+        double pred = 0.0;
         try {
             //Get the feature vector
             Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
             double[] doubleFeatureArray = (double[]) featureArray;
             DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+            SigmoidActivationFunction activation = new SigmoidActivationFunction();
 
+            model = new RegressionModel(weights, activation);
             RegressionClassifier classifier = new RegressionClassifier(model);
             // add the bias to the feature and predict it
             DoubleVector prediction = classifier.predict(features);

@@ -23,7 +23,7 @@ public class PredictorImplTest {
 
         //Initialization
         CrawleableUri uri = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
-        PredictorImpl predictor = new PredictorImpl(uri);
+        PredictorImpl predictor = new PredictorImpl();
         RegressionModel model = new RegressionModel();
 
         // TODO weight to be intilized by the training weight

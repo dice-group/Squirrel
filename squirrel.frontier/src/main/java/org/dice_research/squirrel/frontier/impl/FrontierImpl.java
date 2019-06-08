@@ -14,6 +14,7 @@ import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
+import org.dice_research.squirrel.components.FrontierComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dice_research.squirrel.predictor.*;
@@ -67,7 +68,11 @@ public class FrontierImpl implements Frontier {
      */
     protected GraphLogger graphLogger;
 
+    /**
+     * To call the URI predictor in Frontier component
+     */
 
+    protected  FrontierComponent comp = new FrontierComponent();
     /**
      * Indicates whether recrawling is active.
      */
@@ -237,11 +242,10 @@ public class FrontierImpl implements Frontier {
         // UriProcessor
 
         try {
-            PredictorImpl pred = new PredictorImpl(uri);
-            pred.featureHashing(uri);
 
+            comp.pred.featureHashing(uri);
             //Update uri key with the predicted value
-            Double p = pred.predict(uri);
+            double p = comp.pred.predict(uri);
             uri.addData(Constants.URI_PREDICTED_LABEL, p);
             }catch (Exception e){
             LOGGER.info("Exception happened while predicting" +e);
