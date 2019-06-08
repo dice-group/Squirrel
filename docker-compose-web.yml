@@ -18,6 +18,13 @@ services:
   #  command: python rabbitrecieve.py
   #  ports:
 
+  mongodb:
+    image: mongo:4.0.0
+    volumes:
+      - ./data/mongodb:/data
+    ports:
+      - "27017:27017"
+
   frontier:
     image: squirrel.frontier:latest
     container_name: frontier
