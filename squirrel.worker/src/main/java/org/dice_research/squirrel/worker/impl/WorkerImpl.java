@@ -291,6 +291,7 @@ public class WorkerImpl implements Worker, Closeable {
         // Adding true label value for the prediction in uri map
         if (activity.getNumberOfTriples()>0) {
             uri.addData(Constants.URI_TRUE_LABEL,1);
+            uri.addData(Constants.URI_TYPE,"RDF");
         } else {
             uri.addData(Constants.URI_TRUE_LABEL, 0);
         }
