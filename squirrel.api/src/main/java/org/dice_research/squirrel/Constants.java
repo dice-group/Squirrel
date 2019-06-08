@@ -51,6 +51,7 @@ public class Constants {
     public static final String URI_PREDICTED_LABEL = "predicted-label";
     public static final String URI_TRUE_LABEL = "true-label";
     public static final String FEATURE_VECTOR = "feature-vector";
+    public static final String REFERRING_URI = "referring-uri";
 
     //////////////////////////////////////////////////
     // URIs

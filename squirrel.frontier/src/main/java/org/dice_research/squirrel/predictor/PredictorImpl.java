@@ -40,45 +40,22 @@ public final class PredictorImpl  {
     public PredictorImpl() { }
 
     public void featureHashing(CrawleableUri uri)  {
-        String[] tokens = new String[7];
-        URI furi = null;
-        try {
-            furi = new URI(uri.getUri().toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        ArrayList<String> tokens1 = new ArrayList<String>();
+        tokens1 = tokenCreation(uri, tokens1);
+        CrawleableUri referUri;
+        if(uri.getData(Constants.REFERRING_URI) != null) {
+            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
+            if (referUri != null)
+                tokens1 = tokenCreation(referUri, tokens1);
         }
-        if (furi != null) {
-            String authority = furi.getAuthority();
-            if(authority == null) authority = "aaaa";
-            tokens[0] = authority;
-            String scheme = furi.getScheme();
-            if(scheme == null) scheme = "ssss";
-            tokens[1] = scheme;
-
-            String userInfo = furi.getUserInfo();
-            if(userInfo == null) userInfo = "uuuu";
-            tokens[2] = userInfo;
-
-            String host = furi.getHost();
-            if(host == null) host = "hhhh";
-            tokens[3] = host;
-
-            String path = furi.getPath();
-            if(path == null) path = "pppp";
-            tokens[4] = path;
-
-            String query = furi.getQuery();
-            if(query == null) query = "qqqq";
-            tokens[5] = query;
-
-            String fragment = furi.getFragment();
-            if(fragment == null) fragment = "ffff";
-            tokens[6] = fragment;
+        String[] tokens = new String[tokens1.size()];
+        for(int i =0; i<tokens1.size(); i++){
+            tokens[i] = tokens1.get(i);
         }
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 2));
+                2<<2));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
@@ -86,8 +63,45 @@ public final class PredictorImpl  {
             LOGGER.info("Exception caused while adding the feature vector to the URI map"+e);
         }
 
-
     }
+
+    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens){
+
+        String authority, scheme, userInfo, host, path, query, fragment;
+        URI furi = null;
+        try {
+            furi = new URI(uri.getUri().toString());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        if (furi != null) {
+            authority = furi.getAuthority();
+            if(authority == null) authority = "aaaa";
+            tokens.add(authority);
+            scheme = furi.getScheme();
+            if(scheme == null) scheme = "ssss";
+            tokens.add(scheme);
+            userInfo = furi.getUserInfo();
+            if(userInfo == null) userInfo = "uuuu";
+            tokens.add(userInfo);
+            host = furi.getHost();
+            if(host == null) host = "hhhh";
+            tokens.add(host);
+            path = furi.getPath();
+            if(path == null) path = "pppp";
+            tokens.add(path);
+            query = furi.getQuery();
+            if(query == null) query = "qqqq";
+            tokens.add(query);
+            fragment = furi.getFragment();
+            if(fragment == null) fragment = "ffff";
+            tokens.add(fragment);
+        }
+        return tokens;
+    }
+
+
+
 
     public void train (){
 
