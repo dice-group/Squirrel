@@ -130,21 +130,22 @@ public final class PredictorImpl  {
         double pred = 0.0;
         try {
             //Get the feature vector
-            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-            double[] doubleFeatureArray = (double[]) featureArray;
-            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-            SigmoidActivationFunction activation = new SigmoidActivationFunction();
+            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
 
-            model = new RegressionModel(weights, activation);
-            RegressionClassifier classifier = new RegressionClassifier(model);
-            // add the bias to the feature and predict it
-            DoubleVector prediction = classifier.predict(features);
-            double[] predictVal = prediction.toArray();
-            pred = predictVal[0];
-
+                RegressionClassifier classifier = new RegressionClassifier(model);
+                // add the bias to the feature and predict it
+                DoubleVector prediction = classifier.predict(features);
+                double[] predictVal = prediction.toArray();
+                pred = predictVal[0];
+            }else {
+                LOGGER.info("Feature vector of this "+ uri.getUri().toString() +" is null");
+            }
         } catch (Exception e) {
             LOGGER.warn("Prediction for this "+ uri.getUri().toString() +" failed " + e);
-
+            pred = 0.0;
         }
         return  pred ;
     }

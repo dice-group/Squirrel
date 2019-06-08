@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.predictor.impl;
+package org.dice_research.squirrel.predictor;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 

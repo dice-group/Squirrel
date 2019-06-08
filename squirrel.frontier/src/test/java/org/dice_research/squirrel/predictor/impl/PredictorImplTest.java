@@ -24,7 +24,6 @@ public class PredictorImplTest {
         //Initialization
         CrawleableUri uri = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
         PredictorImpl predictor = new PredictorImpl();
-        RegressionModel model = new RegressionModel();
 
         // TODO weight to be intilized by the training weight
         DenseDoubleVector weights = new DenseDoubleVector(new double[] {
@@ -32,13 +31,13 @@ public class PredictorImplTest {
 
         // Model and Classifier set up
         predictor.model = new RegressionModel(weights,  new SigmoidActivationFunction());
-        RegressionClassifier classifier = new RegressionClassifier(model);
+        RegressionClassifier classifier = new RegressionClassifier(predictor.model);
 
         // Generate feature vector
         predictor.featureHashing(uri);
 
         // Prediction
-        Double pred = predictor.predict(uri);
+        double pred = predictor.predict(uri);
         Assert.assertEquals(1d, pred, 1e-4);
 
     }
