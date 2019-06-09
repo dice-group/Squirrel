@@ -91,20 +91,20 @@ public class FrontierQueryGenerator {
     }
     public Query getTimeStampQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT ?subject ?predicate ?object WHERE { ");
+        stringBuilder.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+        		+ "PREFIX prov:  <http://www.w3.org/ns/prov#>"
+        		+ "SELECT ?subject  ?timestamp WHERE { ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
             stringBuilder.append(graphID);
             stringBuilder.append("> { ");
         }
-        stringBuilder.append("?subject ?predicate ?object ");
+        stringBuilder.append("?subject rdf:type prov:Activity .\n" + 
+        		"   ?subject prov:endedAtTime ?timestamp .");
         if (!defaultGraph) {
             stringBuilder.append("} ");
         }
-        stringBuilder.append("FILTER ( xsd:time(?object))");
-        if (!defaultGraph) {
-            stringBuilder.append("} ");
-        }
+       
         stringBuilder.append("}");
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;

@@ -24,15 +24,19 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.frontier.impl.FrontierQueryGenerator;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
-public  class SparqlConfiguration implements AdvancedTripleBasedSink{
+public  class SparqlConfiguration implements AdvancedTripleBasedSink, KnownUriFilter{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SparqlConfiguration.class);
+
+
+
 	/**
 	 * The Query factory used to query the SPARQL endpoint.
 	 */
@@ -40,6 +44,7 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 
 	protected UpdateExecutionFactory updateExecFactory = null;
 	protected static CrawleableUri metadataGraphUri = null;
+	private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000;
 
 
 	public SparqlConfiguration(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
@@ -93,9 +98,8 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 	}
 
 	public static void main(String args[]) {
-
-		String sparqlEndpointUrl = "http://localhost:8890/sparql";
-		SparqlConfiguration.create(sparqlEndpointUrl);
+	
+		SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123");
 		Query selectQuery = FrontierQueryGenerator.getInstance().getTimeStampQuery();
 		System.out.println(selectQuery);
 
@@ -106,14 +110,18 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 			QuerySolution sol = rs.nextSolution();
 			RDFNode subject = sol.get("subject");
 			RDFNode predicate = sol.get("predicate");
-			RDFNode object = sol.get("object");
+			RDFNode object = sol.get("timestamp");
 			triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
-			System.out.println(subject+" "+ predicate+" "+object);
+			System.out.println(subject+ " "+predicate+" "+ object);
 		}
 		qe.close();
 	}
 
-
+	@Override
+	public boolean isUriGood(CrawleableUri uri) {
+		
+		return false;
+	}
 
 	@Override
 	public List<Triple> getTriplesForGraph(CrawleableUri uri) {
@@ -141,6 +149,8 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 		return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
 	}
 
+	
+
 
 	@Override
 	public void addTriple(CrawleableUri uri, Triple triple) {
@@ -158,6 +168,38 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 	public void closeSinkForUri(CrawleableUri uri) {
 		// TODO Auto-generated method stub
 
+	}
+
+	
+
+	@Override
+	public void add(CrawleableUri uri, long nextCrawlTimestamp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<CrawleableUri> getOutdatedUris() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void open() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
