@@ -64,6 +64,11 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
     }
 
     @Override
+    public void open() {
+
+    }
+
+    @Override
     public boolean isUriGood(CrawleableUri uri) {
         return false;
     }
