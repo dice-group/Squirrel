@@ -109,4 +109,11 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
             this.crawlingInProcess = crawlingInProcess;
         }
     }
+
+
+    @Override
+    public void open() {
+        // TODO Auto-generated method stub
+        
+    }
 }

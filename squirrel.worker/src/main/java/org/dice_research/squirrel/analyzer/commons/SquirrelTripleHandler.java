@@ -1,9 +1,5 @@
 package org.dice_research.squirrel.analyzer.commons;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import org.apache.any23.extractor.ExtractionContext;
 import org.apache.any23.writer.TripleHandler;
 import org.apache.any23.writer.TripleHandlerException;
@@ -61,19 +57,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 		boolean isUri1 = true;
 		boolean isUri2 = true;
 
-		URL uri1 = null;
-		try {
-			uri1 = new URL(o.stringValue());
-		} catch (Exception e) {
-			isUri1 = false;
-		}
-		
-		URL uri2 = null;
-		try {
-			uri2 = new URL(s.stringValue());
-		} catch (Exception e) {
-			isUri2 = false;
-		}
 		
 		if(isUri2) {
 			Node r = NodeFactory.createURI(s.stringValue());

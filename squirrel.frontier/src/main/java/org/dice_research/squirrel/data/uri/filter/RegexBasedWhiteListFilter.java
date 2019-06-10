@@ -83,4 +83,10 @@ public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
 
     }
 
+    @Override
+    public void open() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

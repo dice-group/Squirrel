@@ -25,7 +25,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addToQueue(CrawleableUri uri) {
+    public void addToQueue(CrawleableUri uri) {
         IpUriTypePair pair = new IpUriTypePair(uri.getIpAddress(), uri.getType());
         if (queue.containsKey(pair)) {
             queue.get(pair).add(uri);
@@ -60,7 +60,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
     
     @Override
     public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator() {
-        return queue.entrySet().stream().limit(LIMITFORITERATOR).map(e -> new AbstractMap.SimpleEntry<>(e.getKey().ip, e.getValue())).iterator();
+        return queue.entrySet().stream().limit(LIMITFORITERATOR).map(e -> new AbstractMap.SimpleEntry<>(e.getKey().getIp(), e.getValue())).iterator();
     }
 
 	@Override
