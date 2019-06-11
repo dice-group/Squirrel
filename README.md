@@ -1,5 +1,7 @@
 # Squirrel - Crawler of linked data.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e98f6dbb54c548ab868f3656c7e6f674)](https://app.codacy.com/app/MichaelRoeder/Squirrel?utm_source=github.com&utm_medium=referral&utm_content=dice-group/Squirrel&utm_campaign=Badge_Grade_Dashboard)
+
 ## Introduction
 Squirrel is a crawler for the linked web. It provides several tools to search and collect data
 from the heterogeneous content of the linked web.
