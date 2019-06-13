@@ -36,7 +36,6 @@ public class SimpleCkanFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleCkanFetcher.class);
 
-    public static final String CKAN_API_URI_TYPE_VALUE = "CKAN_API";
     public static final String CKAN_JSON_OBJECT_MIME_TYPE = "ckan/json";
     public static final byte NEWLINE_CHAR = '\n';
     
@@ -59,7 +58,7 @@ public class SimpleCkanFetcher implements Fetcher {
     public File fetch(CrawleableUri uri) {
         // If this is a CKAN API URI or we do not check it at all
     	LOGGER.info("Starting Ckanfetcher...");
-        if(!checkForUriType || CKAN_API_URI_TYPE_VALUE.equals(uri.getData(Constants.URI_TYPE_KEY))) {
+        if(!checkForUriType || Constants.URI_TYPE_VALUE_CKAN.equals(uri.getData(Constants.URI_TYPE_KEY))) {
         	LOGGER.info("Fetching " + uri.getUri().toString());
             CkanClient client = null;
             OutputStream out = null;

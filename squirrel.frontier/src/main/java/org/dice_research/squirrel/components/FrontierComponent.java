@@ -2,7 +2,9 @@ package org.dice_research.squirrel.components;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -18,6 +22,7 @@ import org.dice_research.squirrel.configurator.SeedConfiguration;
 import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -247,6 +252,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     protected void processSeedFile(String seedFile) {
         try {
+            
+           
+            List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
+            if(!listSeeds.isEmpty())
+                frontier.addNewUris(listSeeds);
+            
             List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {

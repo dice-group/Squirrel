@@ -6,6 +6,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -16,6 +18,9 @@ import org.dice_research.squirrel.sink.Sink;
  */
 
 public class FilterSinkRDF extends StreamRDFBase {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilterSinkRDF.class);
+
 
     private CrawleableUri curi;
     private Sink sink;
@@ -30,8 +35,7 @@ public class FilterSinkRDF extends StreamRDFBase {
     @Override
     public void triple(Triple triple) {
         sink.addTriple(curi, triple);
-        collector.addTriple(curi, triple);
-    }
+        collector.addTriple(curi, triple);    }
 
     @Override
     public void quad(Quad quad) {

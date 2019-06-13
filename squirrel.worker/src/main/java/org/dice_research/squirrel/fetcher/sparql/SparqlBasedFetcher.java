@@ -121,7 +121,8 @@ public class SparqlBasedFetcher implements Fetcher {
         @Override
         public Triple next() {
             QuerySolution solution = resultSet.next();
-            return new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode());
+            Triple t = new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode());
+            return t;
         }
 
     }

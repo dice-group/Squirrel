@@ -40,7 +40,7 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
         LOGGER.info("Fetching " + uri.getUri().toString());
         CkanClient client = null;
         OutputStream out = null;
-        if (!checkForUriType || CKAN_API_URI_TYPE_VALUE.equals(uri.getData(Constants.URI_TYPE_KEY))) {
+        if (!checkForUriType || Constants.URI_TYPE_VALUE_CKAN.equals(uri.getData(Constants.URI_TYPE_KEY))) {
 
             try {
 

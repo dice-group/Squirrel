@@ -165,12 +165,18 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             }
 
             UpdateDeleteInsert insert = new UpdateDeleteInsert();
+            insert.setHasInsertClause(true);
+            insert.setHasDeleteClause(false);
             QuadAcc quads = insert.getInsertAcc();
             for(Triple triple : triples){
                quads.addQuad(new Quad(graph, triple));
             }
             quads.setGraph(graph);
-            UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
+            UpdateProcessor processor = updateExecFactory.createUpdateProcessor(
+                    new UpdateRequest(insert).toString()
+                    .replaceAll("\\{\\}", ""
+                            + "{ SELECT * {OPTIONAL {?s ?p ?o} } LIMIT 1}")
+                    );
             processor.execute();
         } catch (Exception e) {
             LOGGER.error("Exception while sending update query.", e);

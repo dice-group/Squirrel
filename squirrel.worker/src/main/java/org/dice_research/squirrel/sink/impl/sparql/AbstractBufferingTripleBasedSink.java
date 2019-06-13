@@ -21,7 +21,7 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
      * Interval that specifies how many triples are to be buffered at once until
      * they are sent to the sink.
      */
-    protected static final int DEFAULT_BUFFER_SIZE = 200;
+    protected static final int DEFAULT_BUFFER_SIZE = 50;
     /**
      * The data structure (map) in which the triples are buffered.
      */
