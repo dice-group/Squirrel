@@ -131,8 +131,9 @@ public class CrawlingActivity implements Serializable {
             while (itr.hasNext()){
                 model.add(generatedUris, PROV_O.value, itr.next());
             }
-        } else
+        } else{
             model.add(generatedUris, PROV_O.value, "");
+        }
 
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);

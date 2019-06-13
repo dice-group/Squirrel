@@ -29,13 +29,15 @@ public class Squirrel {
         return ResourceFactory.createProperty(uri, local);
     }
 
-    public static final Resource ResultGraph = resource("ResultGraph");
-    public static final Resource ResultFile = resource("ResultFile");
 
     public static final Property approxNumberOfTriples = property("approxNumberOfTriples");
     public static final Property crawled = property("crawled");
-    public static final Property uriHostedOn = property("uriHostedOn");
-    public static final Property status = property("status");
     public static final Property containsDataOf = property("containsDataOf");
     public static final Property generatedURIs = property("GeneratedURIs");
+
+    public static final Resource ResultGraph = resource("ResultGraph");
+    public static final Resource ResultFile = resource("ResultFile");
+    public static final Property status = property("status");
+
+    public static final Property uriHostedOn = property("uriHostedOn");
 }
