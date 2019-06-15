@@ -14,7 +14,7 @@ file_descriptor:
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-content a
-                "http://projekt-opal.de/dataset#pagination": .pagination a:contains(»)
+                "http://projekt-opal.de/dataset#pagination": .pagination a
 
     detail-page:
         regex: dataset

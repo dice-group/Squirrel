@@ -147,61 +147,61 @@ public class LaosOpendevMekongTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Registering property indicators, Laos"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Three of the Laos' property indicators from the World Bank Doing Business report, 2016. Collated for the Laos Land page: https://opendevelopmentmekong.net/topics/land-laos"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Source: World Bank. Doing Business Report 2016. http://www.doingbusiness.org/custom-query"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new LiteralImpl(NodeFactory.createLiteral("Source: World Bank. Doing Business Report 2016. http://www.doingbusiness.org/custom-query"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("24 Jun 2016"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("17 May 2016"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.distribution.toString()),
+                    DCAT.distribution,
                     new LiteralImpl(NodeFactory.createLiteral("Source: World Bank. Doing Business Report 2016. http://www.doingbusiness.org/custom-query"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.language.toString()),
+                    DCTerms.language,
                     new LiteralImpl(NodeFactory.createLiteral("English"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("https://creativecommons.org/licenses/by/4.0/")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://data.opendevelopmentmekong.net/dataset/9d9a2f88-0a89-41bb-8f81-6741253c6e89/resource/6ae58114-7a60-4631-bd2d-085b5c8c6650/download/registering-property-indicators-laos.csv")
                 )
             )

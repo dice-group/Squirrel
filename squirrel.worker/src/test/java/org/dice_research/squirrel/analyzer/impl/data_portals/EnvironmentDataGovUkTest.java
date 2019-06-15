@@ -307,37 +307,37 @@ public class EnvironmentDataGovUkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Register: Organizations"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Codes used to identify each organization in the DEFRA family."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.theme.toString()),
+                    DCAT.theme,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/category/System")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("http://environment.data.gov.uk/registry/?entity=http%3a%2f%2fwww.nationalarchives.gov.uk%2fdoc%2fopen-government-licence%2fversion%2f2%2f")
                 )
             ).add(
@@ -349,31 +349,31 @@ public class EnvironmentDataGovUkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("5 Mar 2014 17:24:17.517"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org?_format=csv&_view=with_metadata")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org?_format=ttl&_view=with_metadata")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org?_format=rdf&_view=with_metadata")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://environment.data.gov.uk/registry/structure/org?_format=jsonld&_view=with_metadata")
                 )
             ).add(

@@ -42,13 +42,13 @@ public class OpendataOpennorthTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("March 13, 2019, 08:59 (UTC)"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("April 13, 2016, 08:38 (UTC)"), null)
                 )
             ).add(
@@ -60,49 +60,49 @@ public class OpendataOpennorthTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-04-18T13:35:47/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-05-01T16:02:06/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-06-01T16:02:14/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-09-01T16:02:05/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-10-01T16:02:28/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2016-11-01T17:02:18/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://openumea-storage.s3.amazonaws.com/2017-09-22T06:26:27/energy_water_skelleftea.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://ckan.openumea.se/dataset/ea9d210a-ba7d-48c5-8b71-83cd0ab67bcd/resource/d6b59b76-c83c-42ed-b50a-189e2d7ea5b2/download/energy_water_skelleftea.csv")
                 )
             )

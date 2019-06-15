@@ -30,31 +30,31 @@ public class OtvorenipodatociTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Paid funds by measure for 2017"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Paid funds by measure of the Program for Financial Support of Agriculture for 2017"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("12-11-2018"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new PropertyImpl("http://projekt-opal.de/agent/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.otvorenipodatoci.gov.mk/dataset/ncnjiatehn-cpedctba-no-mepkn-3a-2017-rodnha"),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("https://data.gov.mk/dataset/60870dab-a37b-4e3e-a9a1-fc77556a44e7/resource/e68043f2-aeb3-41a4-bd7d-a9bb577769ba/download/2.1.7-2017-.csv")
                 )
             ).add(

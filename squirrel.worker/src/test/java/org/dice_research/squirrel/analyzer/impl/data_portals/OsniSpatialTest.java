@@ -153,13 +153,13 @@ public class OsniSpatialTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("SpatialNI_Admin"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-10 of 83 results"), null)
                 )
             )
@@ -171,19 +171,19 @@ public class OsniSpatialTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("OSNI Open Data 50k Admin Boundaries - Townlands"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Mid scale vector polygon dataset showing townland boundaries. Published here for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("SpatialNI_Admin"), null)
                 )
             ).add(
@@ -195,14 +195,20 @@ public class OsniSpatialTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.accessURL.toString()),
+                    DCAT.accessURL,
                     new ResourceImpl("https://www.arcgis.com/home/item.html?id=1cdb3f26958046799f84a3de58dcc349")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License Open Government Licence applies Land & Property Services (LPS) has made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded datasets available free of charge under the terms of the current Open Government Licence (OGL). These datasets – which include raster and vector mapping, boundary, gazetteer, height, street and townland products – are available for download. Each dataset is clearly marked with the OGL symbol shown belowThe OGL allows you to: copy, distribute and transmit the data; adapt the data; and exploit the data commercially, whether by sub-licensing it, combining it with other data, or including it in your own product or application. You are therefore able to use the LPS datasets in any way and for any purpose. We simply ask that you acknowledge the copyright and the source of the data by including the following attribution statement:Contains public sector information licensed under the terms of the Open Government Licence v3.0.You must also: include the same acknowledgement requirement in any sub-licences of the data that you grant, and a requirement that any further sub-licences do the same; ensure that you do not use the data in a way that suggests LPS endorses you or your use of the data; and make sure you do not misrepresent the data or its source. N.B. Any dataset that does not expressly state that it has been released under OGL will require a licence from LPS and the appropriate licence fee will be applied."), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated:"), null)
                 )
             )
         });

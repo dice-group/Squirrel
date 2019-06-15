@@ -222,7 +222,31 @@ public class AmbarTest extends AbstractDataPortalTest {
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("http://ambar.utpl.edu.ec/dataset?page=1")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriSearchPage),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("http://ambar.utpl.edu.ec/dataset?page=2")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriSearchPage),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("http://ambar.utpl.edu.ec/dataset?page=3")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriSearchPage),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("http://ambar.utpl.edu.ec/dataset?page=28")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriSearchPage),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("http://ambar.utpl.edu.ec#")
                 )
             )
         });

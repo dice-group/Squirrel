@@ -31,25 +31,25 @@ public class Transparenz_hamburgTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("100 Jahre Stadtgrün - Stadtpark und Volkspark"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Anlässlich des 100. Geburtstags vom Hamburger Stadtpark und Altonaer Volkspark werden für beide Parks Informationen zu Service-Einrichtungen und Sehenswürdigkeiten im Park dargeboten. Dazu zählen zum einen die Standorte von Restaurants, Minigolfanlagen, StadtRAD-Stationen, Grillwiese, öffentliche Toilette etc., zum anderen Standorte von Sehenswürdigkeiten und Kunstskulpturen. Hinweis: Im Datensatz verlinkte Fotos unterliegen nicht der Veröffentlichungspflicht nach Hamburgischem Transparenzgesetz und sind nicht Teil der freien Lizenz. Weitere Informationen: www.hamburg.de/parkanlagen"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Behörde für Umwelt und Energie (BUE), Präsidialabteilung (BUE), P 3 - Öffentlichkeitsarbeit und Kommunikation, P 32 - Presse und Online-Kommunikation"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("19.02.2019"), null)
                 )
             ).add(

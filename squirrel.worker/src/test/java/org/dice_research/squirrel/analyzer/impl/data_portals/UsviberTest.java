@@ -31,127 +31,127 @@ public class UsviberTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Cruise Visitor Arrivals"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP13.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP04.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2018/03/CP16-december.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP10.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP15.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP11.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP97.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP07.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP03.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2018/03/CP17-dec.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP08.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP12.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP14.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP06.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP99.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP02.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP01.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP95.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2018/11/CP18-1.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://www.usviber.org/wp-content/uploads/2016/11/CP05.pdf")
                 )
             )

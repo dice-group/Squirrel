@@ -31,19 +31,19 @@ public class Opendata_jenaTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Vornamen"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Auflistung aller für die jeweiligen Jahre vergebenen Vornamen. Folgende Felder sind enthalten: Spalte 1: Vorname, Spalte 2: Anzahl, Spalte 3: Geschlecht (m=männlich,w=weiblich) Hinweise Bei Erst- und Folgevornamen wurde nur der erste Vorname gezählt. Vornamen, die zwei mal oder weniger als zwei Mal vergeben wurden, werden mit der Anzahl \"0\" gelistet. Die Dateien sind Unicode UTF-8 formatiert."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new ResourceImpl("http://projekt-opal.de/agent/vornamen")
                 )
             ).add(
@@ -61,25 +61,25 @@ public class Opendata_jenaTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("https://opendata.jena.de/dataset/45cb0cf5-5b09-4b14-8f5b-bed05371fe93/resource/77b83a14-1087-4d0a-bdba-db254b71b674/download/2015_geburten_namensstatistik.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("https://opendata.jena.de/dataset/45cb0cf5-5b09-4b14-8f5b-bed05371fe93/resource/9837f9c5-f883-439a-b87b-c460aa757f6a/download/vornamen2018_opendata_anonymisiert.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("https://opendata.jena.de/dataset/45cb0cf5-5b09-4b14-8f5b-bed05371fe93/resource/7ca5d3ea-0a48-4bd3-b710-d23f6bc856b2/download/2016_geburten_namensstatistik.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("https://opendata.jena.de/dataset/45cb0cf5-5b09-4b14-8f5b-bed05371fe93/resource/5851cb71-c329-4816-9119-22eb487e0ea0/download/vornamen2017_opendata_jena_anonymisiert_utf8.csv")
                 )
             )

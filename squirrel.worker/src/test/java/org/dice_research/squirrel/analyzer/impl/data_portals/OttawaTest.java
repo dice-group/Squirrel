@@ -31,19 +31,19 @@ public class OttawaTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Ball Diamonds"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Point file of all ball diamonds located in City of Ottawa parkland. File includes baseball, softball and t-ball diamonds."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new ResourceImpl("http://projekt-opal.de/agent/ball-diamonds")
                 )
             ).add(
@@ -61,49 +61,49 @@ public class OttawaTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new PropertyImpl("https://ottawa.ca/en/contact-open-data")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/3a6f2773-ed6b-44b3-9a66-bfb0139f1274")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/8fb062b6-2d8a-4238-b9a9-307bb2696736")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/b0b8de34-8199-47f3-9cf3-35ad0f2aaf9c")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/5f366f20-2655-4bc1-80b2-69e95d864a72")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/fa45372a-0b7b-400b-9638-ca6ca3f5ce9a")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/ed988e40-d46c-4048-bf5a-908cd048c570")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://data.ottawa.ca/dataset/ball-diamonds/resource/82f9b4ea-50f2-48fd-88b2-a75e1124bea9")
                 )
             )

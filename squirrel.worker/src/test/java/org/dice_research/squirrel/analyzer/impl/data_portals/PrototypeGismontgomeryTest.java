@@ -91,43 +91,43 @@ public class PrototypeGismontgomeryTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-10 of 212 results"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("jay.mukherjee"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("melissa.noakes"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("RockvilleMD"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("on September 13, 2013"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("on May 07, 2018"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchResultPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("on April 09, 2014"), null)
                 )
             ).add(
@@ -199,26 +199,32 @@ public class PrototypeGismontgomeryTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Full Address"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Full Addresses for a given location"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("jay.mukherjee"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("on March 26, 2014"), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated: 2 days ago"), null)
                 )
             ).add(
                 new StatementImpl(
@@ -229,31 +235,31 @@ public class PrototypeGismontgomeryTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.accessURL.toString()),
+                    DCAT.accessURL,
                     new ResourceImpl("http://prototype-gismontgomery.opendata.arcgis.com")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License No license specified"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://prototype-gismontgomery.opendata.arcgis.com/datasets/3f2dc8774b934b17b1c8bf9c2d05d45b_0.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://prototype-gismontgomery.opendata.arcgis.com/datasets/3f2dc8774b934b17b1c8bf9c2d05d45b_0.kml")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://prototype-gismontgomery.opendata.arcgis.com/datasets/3f2dc8774b934b17b1c8bf9c2d05d45b_0.zip")
                 )
             )
