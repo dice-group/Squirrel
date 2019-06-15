@@ -49,13 +49,13 @@ public class DataSofartdkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-3 of 3 results"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("sofart.dk"), null)
                 )
             )
@@ -73,13 +73,13 @@ public class DataSofartdkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Skibsruter og TSS Information på http://data.soefartsstyrelsen.dk"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("sofart.dk"), null)
                 )
             ).add(
@@ -97,8 +97,14 @@ public class DataSofartdkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("http://data-sofartdk.opendata.arcgis.com#")
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated: 3 years ago"), null)
                 )
             )
         });

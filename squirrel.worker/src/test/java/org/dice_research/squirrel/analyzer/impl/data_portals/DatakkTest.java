@@ -32,19 +32,19 @@ public class DatakkTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Genbrugsstation"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Genbrugsstationerne i Københavns Kommune drives af Amager Ressource center. Ud over genbrugstationer, er der nærgenbrugsstationer, disse modtager ikke lige så mange typer affald som de andre genbrugsstationer, og der er ikke adgang med bil. Datasættet indeholder også information omkring byttestationer."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new ResourceImpl("http://projekt-opal.de/agent/genbrugsstation")
                 )
             ).add(
@@ -62,7 +62,7 @@ public class DatakkTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://wfs-kbhkort.kk.dk/k101/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=k101:genbrugsstation&outputFormat=SHAPE-ZIP&SRSNAME=EPSG:4326")
                 )
             ).add(

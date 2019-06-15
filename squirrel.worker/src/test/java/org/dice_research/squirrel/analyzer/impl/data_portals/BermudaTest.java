@@ -31,19 +31,19 @@ public class BermudaTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Budget Book (Estimates of Revenue and Expenditure for the Year)"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Estimates of Revenue and Expenditure for the Year"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new LiteralImpl(NodeFactory.createLiteral("Financial Secretary"),null)
                 )
             )

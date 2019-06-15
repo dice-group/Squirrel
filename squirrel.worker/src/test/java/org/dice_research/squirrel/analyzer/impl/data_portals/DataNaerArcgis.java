@@ -43,13 +43,13 @@ public class DataNaerArcgis extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-2 of 2 results"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("tinkas"), null)
                 )
             )
@@ -61,13 +61,13 @@ public class DataNaerArcgis extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("CHRsogn0015"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("tinkas"), null)
                 )
             ).add(
@@ -79,14 +79,20 @@ public class DataNaerArcgis extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.accessURL.toString()),
+                    DCAT.accessURL,
                     new ResourceImpl("https://www.arcgis.com/sharing/rest/content/items/e7e6b3e7c5704d48bbb221d95e0802be/info/metadata/metadata.xml?format=default&output=html")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License No license specified"), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated:"), null)
                 )
             )
         });

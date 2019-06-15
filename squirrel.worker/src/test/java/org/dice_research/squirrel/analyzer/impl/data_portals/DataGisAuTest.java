@@ -80,13 +80,13 @@ public class DataGisAuTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-8 of 8 results"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("larskeh_gisau"), null)
                 )
             )
@@ -98,19 +98,19 @@ public class DataGisAuTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("BaltSvingelArtsOverv"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Baltisk Svingel fundsteder fra naturdatabasen"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("larskeh_gisau"), null)
                 )
             ).add(
@@ -128,8 +128,14 @@ public class DataGisAuTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License No license specified"), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated: 2 years ago"), null)
                 )
             )
         });

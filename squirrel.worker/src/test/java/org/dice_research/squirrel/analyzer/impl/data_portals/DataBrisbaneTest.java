@@ -28,19 +28,19 @@ public class DataBrisbaneTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Parking — Stations"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Number of vacant spaces at Brisbane City Council’s 2 parking stations. Brisbane City Council operates two car parks in the Brisbane Central Business District (CBD) at King George Square and Wickham Terrace. Both car parks operate with extended hours throughout the year and are open on most public holidays and during some special events. See the Brisbane City Council website for information on the car parks including location, opening hours, fees and to see if there are any special offers currently available."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl("https://www.data.brisbane.qld.gov.au/data/dataset/brisbane-parking-stations"),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("http://creativecommons.org/licenses/by/4.0")
                 )
             )

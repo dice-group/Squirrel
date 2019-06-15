@@ -30,13 +30,13 @@ public class DataBrooklineArcgis extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Building Permits"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Town-of-Brookline.MA"), null)
                 )
             ).add(
@@ -48,14 +48,20 @@ public class DataBrooklineArcgis extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.accessURL.toString()),
+                    DCAT.accessURL,
                     new ResourceImpl("https://www.arcgis.com/home/item.html?id=094e5eda61db4e8b855e736343a37b3a")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License No license specified"), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated:"), null)
                 )
             )
         });

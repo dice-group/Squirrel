@@ -188,163 +188,163 @@ public class CatalogueDataGovtNzTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Directory of Educational Institutions"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("The following key areas summarise the overall focus of the Ministry's work: 1) More children gaining strong learning foundations; 2) More students participating in and achieving... read more"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Ministry of Education"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new LiteralImpl(NodeFactory.createLiteral("Ministry of Education"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("2018-10-31"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("Unknown"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl("http://www.w3.org/ns/dcat#distribution"),
+                    DCAT.distribution,
                     new ResourceImpl("http://www.educationcounts.govt.nz/statistics/tertiary_education/27436")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.language.toString()),
+                    DCTerms.language,
                     new LiteralImpl(NodeFactory.createLiteral("English"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.spatial.toString()),
+                    DCTerms.spatial,
                     new LiteralImpl(NodeFactory.createLiteral(""), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://catalogue.data.govt.nz/dataset/2756db90-a096-4ffa-9fb4-73b74ad279d9/resource/26f44973-b06d-479d-b697-8d7943c97c57/download/ecedirectory-19-03-2019-110021.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://www.educationcounts.govt.nz/__data/assets/file/0009/63873/Directory-Maori-Medium-current.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://www.educationcounts.govt.nz/__data/assets/file/0004/74344/Directory-Private-Schools-Current.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://catalogue.data.govt.nz/dataset/2756db90-a096-4ffa-9fb4-73b74ad279d9/resource/bdfe0e4c-1554-4701-a8fe-ba1c8e0cc2ce/download/schooldirectory-19-03-2019-233049.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://www.educationcounts.govt.nz/__data/assets/file/0005/62573/Directory-Tertiary-Current.csv")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0008/170684/School-Closures_Mergers-and-New_Nov_2016.xlsx")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0007/162259/School-Closures_Mergers-and-New_Dec_2015.xlsx")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0008/145709/School-Closures_Mergers-and-New_Nov_2014.xlsx")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0009/115758/School-Closures_Mergers-and-New_Nov_Dec_2013.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0014/107330/School-Closures_Mergers-and-New_Dec_2012.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0009/101313/School-Closures_Mergers-and-New_Dec_2011.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0018/71505/School-Closures-Mergers-New-2010.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0010/38962/School-Closures-Mergers-New-2009.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/excel_doc/0008/33983/School_Closures_Mergers_and_New_December_2008.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/file/0003/7770/Edcounts2007.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/file/0006/7773/mergers-closures-new-sch-jan06-jan07.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www.educationcounts.govt.nz/__data/assets/file/0005/7772/mergers-closures-new-sch-jan05-jan06.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://www.educationcounts.govt.nz/__data/assets/file/0004/7771/mergers-closures-new-sch-jan04-jan05.xls")
                 )
             )

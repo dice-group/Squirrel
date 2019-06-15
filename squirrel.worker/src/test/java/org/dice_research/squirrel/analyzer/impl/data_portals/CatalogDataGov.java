@@ -30,25 +30,25 @@ public class CatalogDataGov extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("National Student Loan Data System"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("The National Student Loan Data System (NSLDS) is the national database of information about loans and grants awarded to students under Title IV of the Higher Education Act (HEA) of 1965. NSLDS provides a centralized, integrated view of Title IV loans and grants during their complete life cycle, from aid approval through disbursement, repayment, deferment, delinquency, and closure."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Office of Federal Student Aid"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("January 7, 2016"), null)
                 )
             ).add(
@@ -60,121 +60,121 @@ public class CatalogDataGov extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("http://www.opendefinition.org/licenses/cc-zero")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("August 9, 2018"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://ifap.ed.gov/fedschcodelist/attachments/1617FedSchoolCodeList.xlsx")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/about/data-center/student/title-iv/sites/default/files/fsawg/datacenter/library/FL_Dashboard_AY2009_2010_Q1.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/about/data-center/student/title-iv/sites/default/files/fsawg/datacenter/library/FL_Dashboard_AY2009_2010_Q2.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/about/data-center/student/title-iv/sites/default/files/fsawg/datacenter/library/FL_Dashboard_AY2009_2010_Q3.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/about/data-center/student/title-iv/sites/default/files/fsawg/datacenter/library/FL_Dashboard_AY2009_2010_Q4.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/PortfolioSummary.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/PortfoliobyLoanType.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/LocationofFFELPLoans.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/PortfoliobyLoanStatus.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/DLbyDefermentType.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/DLbyForbearanceType.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/FFELbyDefermentType.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/DLPortfoliobyRepaymentPlan.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/DLPortfoliobyDelinquencyStatus.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sa/sites/default/files/fsawg/datacenter/library/ECFReport.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sites/default/files/fsawg/datacenter/library/DLEnteringDefaults.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://studentaid.ed.gov/sites/default/files/fsawg/datacenter/library/TLF.xls")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://catalog.data.gov/harvest/object/b764a3d1-d5cc-4456-8d05-a6a17e21cc7b")
                 )
             )

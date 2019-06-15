@@ -31,19 +31,19 @@ public class DatacoloradoTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Highway Mileposts in Colorado"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("Mileposts (or mile markers) along highways and their locations collection during GPS mapping efforts in the early 2000s from the Colorado Department of Transportation (CDOT)."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new ResourceImpl("https://data.colorado.gov/profile/Colorado-Information-Marketplace/8cet-tw9x")
                 )
             )

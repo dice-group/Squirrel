@@ -31,19 +31,19 @@ public class Dados_fortalezaTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Rede de Atenção e Cuidado de Fortaleza"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("A Rede de Atenção e Cuidado de Fortaleza, no que diz respeito à temática Drogas e outras substâncias psicoativas, compreende diversas instituições sendo ONG’s, Organizações Governamentais e do Terceiro Setor assim distribuídas: Unidades de Saúde, Residências terapêuticas, Farmácias Polo, Conveniadas e Popular, OCAS, Grupos de Ajuda Mútua (A.A, N.A., AL-ANON, NAR-ANON), Serviços especializados para a população em situação de rua, Hospitais, Unidades de saúde, SAMU, Leitos para desintoxicação, CAPS, CREAS e CRAS."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new ResourceImpl("http://projekt-opal.de/agent/http-www-fortaleza-ce-gov-br-sites-default-files-rede-de-atencao-e-cuidados-de-fortaleza-pdf")
                 )
             ).add(
@@ -61,13 +61,13 @@ public class Dados_fortalezaTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://dados.fortaleza.ce.gov.br/dataset/f5db028c-002c-4f3d-96b0-ee835a79bcfa/resource/611c97d1-f599-4d7b-9a5f-47d45b287597/download/rededeatencaoecuidadosdefortaleza.pdf")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new PropertyImpl("http://dados.fortaleza.ce.gov.br/dataset/f5db028c-002c-4f3d-96b0-ee835a79bcfa/resource/3de5388b-b695-4187-8215-341db81d0b2e/download/rededeatencaoecuidadosdefortaleza.pdf")
                 )
             )

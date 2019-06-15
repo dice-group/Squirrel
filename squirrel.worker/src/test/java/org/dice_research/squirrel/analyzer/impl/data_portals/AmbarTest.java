@@ -48,43 +48,43 @@ public class AmbarTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("feminicidios-LatAm"), null)
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCTerms.description.toString()),
+                DCTerms.description,
                 new LiteralImpl(NodeFactory.createLiteral("A medida que las tecnologías de la información y la comunicación incrementan su impacto social, más académicos se interesan en vincular la tecnología con las necesidades reales de la sociedad. En este documento se presenta el desarrollo de una iniciativa de monitoreo de feminicidios en América Latina, que se ha desarrollado con la colaboración de estudiantes de ingeniería en sistemas quienes a través de la metodología de aprendizaje mediante retos lograron desarrollar prototipos de visualizaciones cívicas para dar a conocer al mundo esta problemática y como aporte en datos abiertos al problema latente en nuestra región."), null)
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCTerms.publisher.toString()),
+                DCTerms.publisher,
                 new LiteralImpl(NodeFactory.createLiteral("Ambar"), null)
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCTerms.license.toString()),
+                DCTerms.license,
                 new PropertyImpl("http://www.opendefinition.org/licenses/cc-by")
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCTerms.modified.toString()),
+                DCTerms.modified,
                 new LiteralImpl(NodeFactory.createLiteral("October 29, 2018, 16:33"), null)
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCTerms.issued.toString()),
+                DCTerms.issued,
                 new LiteralImpl(NodeFactory.createLiteral("October 29, 2018, 16:24"), null)
               )
             ).add(
             new StatementImpl(
                 new ResourceImpl(uriDetailsPage),
-                new PropertyImpl(DCAT.downloadURL.toString()),
+                DCAT.downloadURL,
                 new PropertyImpl("http://ambar.utpl.edu.ec/dataset/5e16693b-b693-4e87-9948-0d2a3d82fc81/resource/8e3c2eec-83ca-4a2b-af92-e8e06f8c87e0/download/datafeminicidiosmundo.xlsx")
               )
             )

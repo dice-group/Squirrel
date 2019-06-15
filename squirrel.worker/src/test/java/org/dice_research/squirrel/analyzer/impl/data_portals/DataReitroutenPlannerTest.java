@@ -43,13 +43,13 @@ public class DataReitroutenPlannerTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("1-1 of 1 results"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriSearchPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("schoolgis_chr.sailer"), null)
                 )
             )
@@ -61,13 +61,13 @@ public class DataReitroutenPlannerTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Altersheim Restis"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("schoolgis_chr.sailer"), null)
                 )
             ).add(
@@ -85,8 +85,14 @@ public class DataReitroutenPlannerTest extends AbstractDataPortalTest {
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new LiteralImpl(NodeFactory.createLiteral("License No license specified"), null)
+                )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriDetailsPage),
+                    DCTerms.modified,
+                    new LiteralImpl(NodeFactory.createLiteral("Updated: 5 years ago"), null)
                 )
             )
         });

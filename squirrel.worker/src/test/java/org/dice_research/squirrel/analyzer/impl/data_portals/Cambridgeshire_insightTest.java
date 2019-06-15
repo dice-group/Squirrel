@@ -34,19 +34,19 @@ public class Cambridgeshire_insightTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("Empty homes"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("This data on empty homes is presented in two sections: our original data is provided for the whole of England, collated from local authority returns to the Department of Communities and Local Government (DCLG) for 2010 to 2014. Re-formatting the data and releasing it locally helps us see and use the data locally to monitor this issue - especially useful in an area of high housing pressure. Our second section of empty homes data, published in 2019, is presented under six side-headings, with one line of data for the whole of England followed by data for our eight Housing Board districts only, rather than districts across the whole country. The data comes from returns made to the Government and is simply re-presented to make it easier to use locally, and slightly more accessible. The 2019 data comes from a variety of government returns which can be found on the MHCLG web pages; is provided for 2004 to 2017, and is broken down into All vacants All long-term vacants Local authority owned vacants Private registered provider vacants (aka housing associations) Private registered provider long tem vacants (aka housing associations) Other public sector vacants (discontinued in 2015, so no values in 2016 or 2017). Notes are provided in the data dictionary for each dataset, setting out further detail."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new PropertyImpl("http://projekt-opal.de/agent/empty-homes")
                 )
             ).add(

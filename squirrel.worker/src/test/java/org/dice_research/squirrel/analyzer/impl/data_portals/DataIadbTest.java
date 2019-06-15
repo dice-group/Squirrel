@@ -88,6 +88,12 @@ public class DataIadbTest extends AbstractDataPortalTest {
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://data.iadb.org#DataCatalogID=11319/9069")
                 )
+            ).add(
+                new StatementImpl(
+                    new ResourceImpl(uriSearchPage),
+                    new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
+                    new ResourceImpl("https://data.iadb.org#")
+                )
             )
         });
 
@@ -97,73 +103,73 @@ public class DataIadbTest extends AbstractDataPortalTest {
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new ResourceImpl("https://data.iadb.org")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("This dataset contains information on 404 Centros infantiles del Buen Vivir (CIBVs), Ecuador's primary providers of public child care services for infant and toddlers at the time of data collection in 2012. In 2012, The Inter-American Development Bank administered a battery of widely-used instruments to measure the quality of child care services in the CIBVs, including four internationally-recognized quality instruments that were then adapted for use in Ecuador."), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral(""), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("Protección social y salud"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.license.toString()),
+                    DCTerms.license,
                     new ResourceImpl("https://creativecommons.org/licenses/by-nc-nd/3.0/igo/legalcode")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.modified.toString()),
+                    DCTerms.modified,
                     new LiteralImpl(NodeFactory.createLiteral("Jan 15, 2019"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("Jan 15, 2019"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://mydata.iadb.org/resource/fmzp-pctv.CSV")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://data.iadb.orgjavascript:download('https://mydata.iadb.org/api/views/fmzp-pctv/rows.JSON?accessType=DOWNLOAD','fmzp-pctv.JSON');")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://mydata.iadb.org/resource/fmzp-pctv.RDF")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://data.iadb.orgjavascript:download('https://mydata.iadb.org/api/views/fmzp-pctv/rows.RSS?accessType=DOWNLOAD','fmzp-pctv.RSS');")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("https://data.iadb.orgjavascript:download('https://mydata.iadb.org/api/views/fmzp-pctv/rows.XML?accessType=DOWNLOAD','fmzp-pctv.XML');")
                 )
             )

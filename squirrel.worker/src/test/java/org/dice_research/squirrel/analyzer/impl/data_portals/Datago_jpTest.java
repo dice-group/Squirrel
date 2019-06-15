@@ -30,37 +30,37 @@ public class Datago_jpTest extends AbstractDataPortalTest{
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.title.toString()),
+                    DCTerms.title,
                     new LiteralImpl(NodeFactory.createLiteral("湖沼データ（河北潟）参考資料A3サイズ"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.description.toString()),
+                    DCTerms.description,
                     new LiteralImpl(NodeFactory.createLiteral("湖沼データ（河北潟）のうち、湖沼画像データをA3サイズでPDFにしたものです。"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.publisher.toString()),
+                    DCTerms.publisher,
                     new LiteralImpl(NodeFactory.createLiteral("国土交通省"),null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.creator.toString()),
+                    DCTerms.creator,
                     new LiteralImpl(NodeFactory.createLiteral("応用地理部"),null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCTerms.issued.toString()),
+                    DCTerms.issued,
                     new LiteralImpl(NodeFactory.createLiteral("2018-12-03"),null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
-                    new PropertyImpl(DCAT.downloadURL.toString()),
+                    DCAT.downloadURL,
                     new ResourceImpl("http://www1.gsi.go.jp/geowww/lake/download/kahokugata/kahokugata-2018_A3.pdf")
                 )
             )
