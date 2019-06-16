@@ -91,21 +91,23 @@ public class FrontierQueryGenerator {
     }
     public Query getTimeStampQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
-        		+ "PREFIX prov:  <http://www.w3.org/ns/prov#>"
-        		+ "SELECT ?subject  ?timestamp WHERE { ");
+        stringBuilder.append("PREFIX prov:  <http://www.w3.org/ns/prov#> PREFIX sq:  <http://w3id.org/squirrel/vocab#> "
+        		+ "SELECT ?url (MAX(?timestamp) AS ?endtime) WHERE { ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
             stringBuilder.append(graphID);
             stringBuilder.append("> { ");
         }
-        stringBuilder.append("?subject rdf:type prov:Activity .\n" + 
-        		"   ?subject prov:endedAtTime ?timestamp .");
+        stringBuilder.append("?s sq:crawled ?url;\n" + 
+        		"    prov:endedAtTime ?timestamp");
         if (!defaultGraph) {
-            stringBuilder.append("} ");
+            stringBuilder.append("}");
         }
        
-        stringBuilder.append("}");
+        stringBuilder.append("}GROUP BY ?url\n" + 
+        		"HAVING (COUNT (?url) > 1) \n" + 
+        		"ORDER BY DESC (?endtime)");
+       
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
