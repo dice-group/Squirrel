@@ -22,7 +22,7 @@ import java.net.*;
 import java.util.ArrayList;
 
 
-public final class PredictorImpl  {
+public final class PredictorImpl implements Predictor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
     private static final double beta = 0;
@@ -35,10 +35,11 @@ public final class PredictorImpl  {
     protected CrawleableUri uri;
 
     public RegressionModel model;
+    public RegressionClassifier classifier;
     // TODO weights to be initialised by the trainer
     public DoubleVector weights = new DenseDoubleVector(new double[]{1, 2, 3, 4, 5, 6, 7, 3, 2, 1});
-    public PredictorImpl() { }
 
+    @Override
     public void featureHashing(CrawleableUri uri)  {
         ArrayList<String> tokens1 = new ArrayList<String>();
         tokens1 = tokenCreation(uri, tokens1);
@@ -102,7 +103,7 @@ public final class PredictorImpl  {
 
 
 
-
+    @Override
     public void train (){
 
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
@@ -119,13 +120,14 @@ public final class PredictorImpl  {
 
         // train the model
         // TODO train the the learner
-        model = new RegressionModel();
+        model = learner.train(null);
 
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
     }
 
+    @Override
     public double predict(CrawleableUri uri) {
         double pred = 0.0;
         try {
@@ -135,7 +137,7 @@ public final class PredictorImpl  {
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
 
-                RegressionClassifier classifier = new RegressionClassifier(model);
+                classifier = new RegressionClassifier(model);
                 // add the bias to the feature and predict it
                 DoubleVector prediction = classifier.predict(features);
                 double[] predictVal = prediction.toArray();
@@ -148,6 +150,11 @@ public final class PredictorImpl  {
             pred = 0.0;
         }
         return  pred ;
+    }
+
+    @Override
+    public void weightUpdate(CrawleableUri uri) {
+
     }
 
 

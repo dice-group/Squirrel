@@ -12,6 +12,8 @@ import org.junit.Test;
 import java.net.URI;
 
 public class PredictorImplTest {
+    private CrawleableUri curi;
+    private PredictorImpl predictor;
 
     @Test
     public void featureHashing() throws Exception {
@@ -22,8 +24,8 @@ public class PredictorImplTest {
     public void predict() throws Exception {
 
         //Initialization
-        CrawleableUri uri = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
-        PredictorImpl predictor = new PredictorImpl();
+        curi = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
+        predictor = new PredictorImpl();
 
         // TODO weight to be intilized by the training weight
         DenseDoubleVector weights = new DenseDoubleVector(new double[] {
@@ -34,10 +36,10 @@ public class PredictorImplTest {
         RegressionClassifier classifier = new RegressionClassifier(predictor.model);
 
         // Generate feature vector
-        predictor.featureHashing(uri);
+        predictor.featureHashing(curi);
 
         // Prediction
-        double pred = predictor.predict(uri);
+        double pred = predictor.predict(curi);
         Assert.assertEquals(1d, pred, 1e-4);
 
     }
