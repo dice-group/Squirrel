@@ -230,6 +230,11 @@ public class HtmlScraper {
     	return updatedList;
     }
 
+    /**
+     * Method to fetch the javascript timeout.
+     * @param uri
+     * @return timeout
+     */
     private long getJavascriptTimeout(CrawleableUri uri){
         long timeout;
         try {
@@ -266,6 +271,7 @@ public class HtmlScraper {
             LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
         }
     }
+
     /**
      * Method to check if the code is running through a Unit test
      * @return a boolean value.
@@ -281,6 +287,10 @@ public class HtmlScraper {
         return false;
     }
 
+    /**
+     * This function handles loading a html page on javascript based element click.
+     * @param uri
+     */
     private void handlePageLoad(CrawleableUri uri){
         HtmlPage htmlPage;
         webClient.getOptions().setJavaScriptEnabled(true);
@@ -304,6 +314,14 @@ public class HtmlScraper {
         }
     }
 
+    /**
+     * Method that scrapes the downloaded html page for triples based on the yaml rule written for the url.
+     * @param resources yaml resources
+     * @param htmlFile html file to scrape
+     * @param curi uri of the html file
+     * @return set of triples found in the page
+     * @throws Exception
+     */
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, CrawleableUri curi) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
         this.uri = curi.getUri().toString();

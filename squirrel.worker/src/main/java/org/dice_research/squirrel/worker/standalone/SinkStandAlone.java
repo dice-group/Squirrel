@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
+/**
+ * Implementation of {@link Sink} interface and prints all the results to the command line.
+ */
 public class SinkStandAlone implements Sink {
     private static final Logger LOGGER = LoggerFactory.getLogger(SinkStandAlone.class);
 

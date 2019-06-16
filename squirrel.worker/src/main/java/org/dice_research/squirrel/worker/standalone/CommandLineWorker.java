@@ -24,6 +24,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URI;
 
+/**
+ * Class to instantiate worker as a standalone class and prints all the results to the command line.
+ * Used in combination with {@link FrontierCommandLine} and {@link SinkStandAlone}
+ * This class is useful in testing the worker flow without starting docker.
+ */
 public class CommandLineWorker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineWorker.class);

@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Implementation of {@link Frontier} interface to print all the results to the command line.
+ */
 public class FrontierCommandLine implements Frontier {
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierCommandLine.class);
     @Override
