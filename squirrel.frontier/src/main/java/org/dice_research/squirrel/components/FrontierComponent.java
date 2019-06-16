@@ -17,7 +17,6 @@ import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
-import org.dice_research.squirrel.configurator.SparqlConfiguration;
 import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -71,9 +70,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 	private Frontier frontier;
 	private RabbitQueue rabbitQueue;
 	private DataReceiver receiver;
-	@Qualifier("sparqlBean")
-	@Autowired
-	private static  SparqlConfiguration sparqlConfig;
 	@Qualifier("serializerBean")
 	@Autowired
 	private Serializer serializer;
@@ -88,7 +84,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 	protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
 
 	protected static QueryExecutionFactory queryExecFactory = null;
+
 	protected UpdateExecutionFactory updateExecFactory = null;
+
+
 
 
 	@Override

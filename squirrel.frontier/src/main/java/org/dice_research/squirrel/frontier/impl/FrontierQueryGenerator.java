@@ -106,7 +106,7 @@ public class FrontierQueryGenerator {
        
         stringBuilder.append("}GROUP BY ?url\n" + 
         		"HAVING (COUNT (?url) > 1) \n" + 
-        		"ORDER BY DESC (?endtime)");
+        		"ORDER BY ?url DESC (?endtime)");
        
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
