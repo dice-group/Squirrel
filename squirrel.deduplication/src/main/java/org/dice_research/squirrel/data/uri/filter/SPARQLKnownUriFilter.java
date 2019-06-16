@@ -28,7 +28,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
+/**
+ * This component maintains hash values {@link UriHashCustodian}s for uris by implementing UriHashCustodian interface.
+ * It implements the methods to retrieve the uris with similar hash values and store the hash values for uris in
+ * SPARQL endpoint.
+ */
+public class SPARQLKnownUriFilter implements UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SPARQLKnownUriFilter.class);
 
@@ -36,41 +41,6 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
 
     public SPARQLKnownUriFilter(String sparqlEndpointUrlQuery, String sparqlEndpointUrlUpdate, String username, String password) {
         this.connector = SparqlBasedSinkDedup.create(sparqlEndpointUrlQuery, sparqlEndpointUrlUpdate, username, password);
-    }
-
-    @Override
-    public void close() throws IOException {
-
-    }
-
-    @Override
-    public void add(CrawleableUri uri, long nextCrawlTimestamp) {
-
-    }
-
-    @Override
-    public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-
-    }
-
-    @Override
-    public List<CrawleableUri> getOutdatedUris() {
-        return null;
-    }
-
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void open() {
-
-    }
-
-    @Override
-    public boolean isUriGood(CrawleableUri uri) {
-        return false;
     }
 
     @Override
@@ -113,18 +83,20 @@ public class SPARQLKnownUriFilter implements KnownUriFilter, Closeable, UriHashC
         Node graph = NodeFactory.createURI(QueryGenerator.METADATA_GRAPH_ID);
         for (CrawleableUri uri : uris) {
             try {
-                HashValue tempHash = (HashValue) uri.getData(Constants.URI_HASH_KEY);
-                Node subjectNode = NodeFactory.createURI(uri.getUri().toString());
-                Node predicateNode = NodeFactory.createURI(QueryGenerator.COLUMN_PREDICATE_ID);
-                Node objectNode = NodeFactory.createURI(tempHash.encodeToString());
-                Triple triple = new Triple(subjectNode, predicateNode, objectNode);
+                if (uri.getData(Constants.URI_HASH_KEY) != null) {
+                    HashValue tempHash = (HashValue) uri.getData(Constants.URI_HASH_KEY);
+                    Node subjectNode = NodeFactory.createURI(uri.getUri().toString());
+                    Node predicateNode = NodeFactory.createURI(QueryGenerator.COLUMN_PREDICATE_ID);
+                    Node objectNode = NodeFactory.createURI(tempHash.encodeToString());
+                    Triple triple = new Triple(subjectNode, predicateNode, objectNode);
 
-                QuadDataAcc quads = new QuadDataAcc();
-                quads.addQuad(new Quad(graph, triple));
-                quads.setGraph(graph);
-                UpdateDataInsert insert = new UpdateDataInsert(quads);
-                UpdateProcessor processor = this.connector.updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
-                processor.execute();
+                    QuadDataAcc quads = new QuadDataAcc();
+                    quads.addQuad(new Quad(graph, triple));
+                    quads.setGraph(graph);
+                    UpdateDataInsert insert = new UpdateDataInsert(quads);
+                    UpdateProcessor processor = this.connector.updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
+                    processor.execute();
+                }
             }catch (Exception e) {
                 LOGGER.error("Exception while sending update query.", e);
             }

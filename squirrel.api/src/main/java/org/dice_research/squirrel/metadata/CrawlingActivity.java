@@ -121,17 +121,19 @@ public class CrawlingActivity implements Serializable {
         model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
 
         Resource generatedUris = model.createResource(activityUri + "_generatedURIs");
-        model.add(generatedUris, RDF.type, PROV_O.Entity);
-        model.add(generatedUris, RDF.type, Squirrel.generatedURIs);
-        model.add(generatedUris, PROV_O.wasDerivedFrom, crawledUri);
-        model.add(generatedUris, PROV_O.wasGeneratedBy, activity);
+
         if (getCrawleableUri().getData(Constants.GENERATED_URIS) != null) {
+            model.add(generatedUris, RDF.type, PROV_O.Entity);
+            model.add(generatedUris, RDF.type, Squirrel.generatedURIs);
+            model.add(generatedUris, PROV_O.wasDerivedFrom, crawledUri);
+            model.add(generatedUris, PROV_O.wasGeneratedBy, activity);
+
             Set<String> generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
             Iterator<String> itr = generatedURIs.iterator();
             while (itr.hasNext()){
                 model.add(generatedUris, PROV_O.value, itr.next());
             }
-        } else{
+        } else {
             model.add(generatedUris, PROV_O.value, "");
         }
 

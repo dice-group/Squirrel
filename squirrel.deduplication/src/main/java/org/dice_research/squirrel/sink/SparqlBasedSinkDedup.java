@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.sink;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -31,8 +30,10 @@ import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("deprecation")
-public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
+/**
+ * A sink which stores the data in different graphs in a sparql based db.
+ */
+public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSinkDedup.class);
     /**
@@ -88,7 +89,12 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         return new SparqlBasedSinkDedup(queryExecFactory, updateExecFactory);
     }
 
-    public RDFNode getActivityUri(String uriCrawled){
+    /**
+     * Method that fetches the activity uri of the uri crawled from sparql endpoint.
+     * @param uriCrawled
+     * @return activity uri
+     */
+    private RDFNode getActivityUri(String uriCrawled){
         Query activityIdQuery = QueryGenerator.getInstance().getActivityUriQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(activityIdQuery);
         ResultSet rs = qe.execSelect();
@@ -102,11 +108,16 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         return activityId;
     }
 
+    /**
+     * Method that fetches generated uri of the given uri from metadata in sparql endpoint.
+     * @param uri
+     * @return list of generated uris
+     */
     public List<CrawleableUri> getGeneratedUrisFromMetadata(CrawleableUri uri){
         List<CrawleableUri> generatedUris = new ArrayList<>();
         RDFNode activityUri = getActivityUri(uri.getUri().toString());
         if (activityUri != null) {
-            Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString()); //TODO check weather the node with the prefix is returned
+            Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString());
             QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
@@ -126,12 +137,12 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         return generatedUris;
     }
 
-    @Override
-    public void addData(CrawleableUri uri, InputStream stream) {
-
-    }
-
-    public RDFNode getGraphId(String uriCrawled){
+    /**
+     * Gets the uri of the graph in which the given uri is stored.
+     * @param uriCrawled
+     * @return graph uri
+     */
+    private RDFNode getGraphUri(String uriCrawled){
         Query graphIdQuery = QueryGenerator.getInstance().getTriplesGraphIdQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(graphIdQuery);
         ResultSet rs = qe.execSelect();
@@ -148,9 +159,9 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         LOGGER.info("Getting triples for uri - " + uri.toString());
         List<Triple> triplesFound = new ArrayList<>();
-        RDFNode graphId = getGraphId(uri.getUri().toString());
+        RDFNode graphId = getGraphUri(uri.getUri().toString());
         if (graphId != null) {
-            Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(graphId.toString(),//TODO check weather the node with the prefix is returned(ex: http://w3id.org/squirrel/graph#e5b059d0-61d0-4830-8625-baea3b9a2bbc).
+            Query triplesQuery = QueryGenerator.getInstance().getSelectQuery(graphId.toString(),
                 false);
             QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
             ResultSet rs = qe.execSelect();
@@ -169,18 +180,27 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
         return triplesFound;
     }
 
+    /**
+     * Delete the triples stored for the given uri in sparql endpoint.
+     * @param curi
+     */
     public void deleteTriplesWithGraphId(CrawleableUri curi){
         String uri = curi.getUri().toString();
         LOGGER.info("Deleting triples for uri - " + uri);
-        RDFNode graphId = getGraphId(uri);
+        RDFNode graphId = getGraphUri(uri);
         LOGGER.info("Deleting triples from graph - " + graphId.toString());
         Query deleteQuery = QueryGenerator.getInstance().getDeleteQuery(graphId.toString());
         UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(deleteQuery.toString());
         processor.execute();
     }
 
+    /**
+     * Update the graph id of the triples for new uri with the graph id of the old uri.
+     * @param newUri
+     * @param oldUri
+     */
     public void updateGraphIdForActivity(CrawleableUri newUri, CrawleableUri oldUri){
-        RDFNode graphId = getGraphId(oldUri.getUri().toString());
+        RDFNode graphId = getGraphUri(oldUri.getUri().toString());
         LOGGER.info("Updating the graph id of triples in uri - " + newUri.getUri().toString() + ", to: " + graphId.toString());
         Query updateTriplesGraphIdQuery = QueryGenerator.getInstance().getUpdateTriplesGraphIdQuery(newUri.getUri().toString(), graphId);
         UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(updateTriplesGraphIdQuery.toString());
@@ -189,17 +209,17 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink, Sink {
 
     @Override
     public void addTriple(CrawleableUri uri, Triple triple) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
-
+        throw new UnsupportedOperationException();
     }
 //public static void main(String args[]) {
 //	String sparqlEndpointUrl = "http://localhost:8890/sparql/";

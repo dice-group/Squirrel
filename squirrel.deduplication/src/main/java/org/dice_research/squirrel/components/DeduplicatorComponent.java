@@ -107,24 +107,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             } catch (IOException e) {
                 LOGGER.error("Error while creating sender object.", e);
             }
-            LOGGER.info("Deduplicator initialized.");
         }
-        /*
-        if (deduplicationActive) {
-            String rdbHostName = null;
-            int rdbPort = -1;
-            if (env.containsKey(Constants.MDB_HOST_NAME_KEY)) {
-                rdbHostName = env.get(Constants.MDB_HOST_NAME_KEY);
-                if (env.containsKey(Constants.MDB_PORT_KEY)) {
-                    rdbPort = Integer.parseInt(env.get(Constants.MDB_PORT_KEY));
-                } else {
-                    LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.MDB_PORT_KEY);
-                }
-            } else {
-                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.MDB_HOST_NAME_KEY);
-            }
-            String sparqlHostName = null;
-            String sparqlHostPort = null;
 //            FIXME Fix the following code
 //
 //            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
@@ -137,19 +120,14 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
 //            } else {
 //                LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", WorkerConfiguration.SPARQL_HOST_PORTS_KEY);
 //            }
-
-            //endpoint setup
-//            sink = SparqlBasedSinkDedup.create("http://sparqlhost:3030/squirrel/query","admin","pw123");
-//            SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter();
-//            uriHashCustodian = knownUriFilter;
-
-//  String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
+//            String httpPrefix = "http://" + sparqlHostName + ":" + sparqlHostPort + "/contentset/";
 //            sink = new SparqlBasedSink(sparqlHostName, sparqlHostPort, "contentset/update", "contentset/query", "MetaData/update", "MetaData/query");
 //
 //            if ((rdbHostName != null) && (rdbPort > 0)) {
-//                SPARQLKnownUriFilter knownUriFilter = new SPARQLKnownUriFilter(rdbHostName, rdbPort);
+//                RDBKnownUriFilter knownUriFilter = new RDBKnownUriFilter(rdbHostName, rdbPort, FrontierComponent.RECRAWLING_ACTIVE);
 //                uriHashCustodian = knownUriFilter;
 //            }
+
             // at the moment, RDBKnownUriFilter is the only implementation of UriHashCustodian, that might change in the future
 
             serializer = new GzipJavaUriSerializer();
@@ -163,24 +141,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             }
             LOGGER.info("Deduplicator initialized.");
 
-//            //query
-//            String queryString = "SELECT ?subject ?predicate ?object\n" +
-//                    "WHERE {\n" +
-//                    "GRAPH ?g {?subject ?predicate ?object}\n" +
-//                    "}\n" +
-//                    "LIMIT 100";
-//
-//            QueryExecution qe = SparqlBasedSinkDedup.queryExecFactory.createQueryExecution(queryString);
-//            System.out.println(qe);
-//            ResultSet rs = qe.execSelect();
-//            System.out.println("-------------------------------------------------------------------------------------------------------");
-//
-//            while (rs.hasNext()) {
-//                QuerySolution sol = rs.nextSolution();
-//                RDFNode subject = sol.get("Concept");
-//                System.out.println(subject);
-//            }
-        }*/
     }
 
     private void handleNewUris(List<CrawleableUri> uris) {
@@ -192,21 +152,28 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             List<CrawleableUri> newGeneratedUriList = sink.getGeneratedUrisFromMetadata(nextUri);
             LOGGER.info("Dedup_Testing: newGeneratedUrisList: "+ newGeneratedUriList.size());
             for (CrawleableUri genUri : newGeneratedUriList){
-                List<Triple> gentriples = sink.getTriplesForGraph(genUri);
-                HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(gentriples));
-                genUri.addData(Constants.URI_HASH_KEY, value);
-                LOGGER.info("Dedup_Testing: Calculated hash value for genUri: " + genUri.getUri().toString() + ": " + value.encodeToString());
+                List<Triple> genTriples = sink.getTriplesForGraph(genUri);
+                if (genTriples.size() > 0) { //There might not be triples for generatedUris.
+                    HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(genTriples));
+                    genUri.addData(Constants.URI_HASH_KEY, value);
+                    LOGGER.info("Dedup_Testing: Calculated hash value for genUri: " + genUri.getUri().toString() + ": " + value.encodeToString());
+                } else {
+                    LOGGER.info("No triples found for genUri: " + genUri.getUri().toString());
+                }
             }
             List<Triple> triples = sink.getTriplesForGraph(nextUri);
-            HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
-            nextUri.addData(Constants.URI_HASH_KEY, value);
-            generatedUris.addAll(newGeneratedUriList);
-            LOGGER.info("Dedup_Testing: Calculated hash value for nextUri: " + nextUri.getUri().toString() + ": " + value.encodeToString());
+            if (triples.size() > 0) {
+                HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
+                nextUri.addData(Constants.URI_HASH_KEY, value);
+                generatedUris.addAll(newGeneratedUriList);
+                LOGGER.info("Dedup_Testing: Calculated hash value for nextUri: " + nextUri.getUri().toString() + ": " + value.encodeToString());
+            } else {
+                LOGGER.info("No triples found for nextUri: " + nextUri.getUri().toString());
+            }
         }
         uris.addAll(generatedUris);
         compareNewUrisWithOldUris(uris);
         uriHashCustodian.addHashValuesForUris(uris);
-
     }
 
     @Override
@@ -222,7 +189,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
         Set<HashValue> hashValuesOfNewUris = new HashSet<>();
         for (CrawleableUri uri : uris) {
-            hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
+            if (uri.getData(Constants.URI_HASH_KEY) != null)
+                hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
         }
         Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
         outer:

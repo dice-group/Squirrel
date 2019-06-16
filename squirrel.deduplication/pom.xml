@@ -12,10 +12,6 @@
 	<packaging>jar</packaging>
 	<name>Squirrel Deduplication</name>
 	<properties>
-		<version.clerezza.core>0.12-incubating</version.clerezza.core>
-		<version.clerezza.simple.storage>0.7-incubating</version.clerezza.simple.storage>
-		<version.clerezza.jena.serializer>0.9-incubating</version.clerezza.jena.serializer>
-		<version.clerezza.jena.parser>0.10-incubating</version.clerezza.jena.parser>
 		<version.jena>2.11.1</version.jena>
 	</properties>
 
