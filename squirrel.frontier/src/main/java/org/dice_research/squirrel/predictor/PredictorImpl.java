@@ -5,6 +5,7 @@ import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.dense.DenseDoubleVector;
+import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
@@ -18,8 +19,13 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 
 public final class PredictorImpl implements Predictor {
@@ -36,8 +42,11 @@ public final class PredictorImpl implements Predictor {
 
     public RegressionModel model;
     public RegressionClassifier classifier;
-    // TODO weights to be initialised by the trainer
-    public DoubleVector weights = new DenseDoubleVector(new double[]{1, 2, 3, 4, 5, 6, 7, 3, 2, 1});
+    private static final String TRAINING_SET_PATH = "trainDataSet.txt";
+    private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
+    private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
+
+
 
     @Override
     public void featureHashing(CrawleableUri uri)  {
@@ -77,26 +86,26 @@ public final class PredictorImpl implements Predictor {
         }
         if (furi != null) {
             authority = furi.getAuthority();
-            if(authority == null) authority = "aaaa";
-            tokens.add(authority);
+            if(authority != null)
+                tokens.add(authority);
             scheme = furi.getScheme();
-            if(scheme == null) scheme = "ssss";
-            tokens.add(scheme);
+            if(scheme != null)
+                tokens.add(scheme);
             userInfo = furi.getUserInfo();
-            if(userInfo == null) userInfo = "uuuu";
-            tokens.add(userInfo);
+            if(userInfo != null)
+                tokens.add(userInfo);
             host = furi.getHost();
-            if(host == null) host = "hhhh";
-            tokens.add(host);
+            if(host != null)
+                tokens.add(host);
             path = furi.getPath();
-            if(path == null) path = "pppp";
-            tokens.add(path);
+            if(path != null) ;
+                tokens.add(path);
             query = furi.getQuery();
-            if(query == null) query = "qqqq";
-            tokens.add(query);
+            if(query != null)
+                tokens.add(query);
             fragment = furi.getFragment();
-            if(fragment == null) fragment = "ffff";
-            tokens.add(fragment);
+            if(fragment != null)
+                tokens.add(fragment);
         }
         return tokens;
     }
@@ -117,14 +126,37 @@ public final class PredictorImpl implements Predictor {
         // simple regression with Sigmoid and LogLoss
         RegressionLearner learner = new RegressionLearner(sgd,
             new SigmoidActivationFunction(), new LogLoss());
-
+        learner.setNumPasses(2);
         // train the model
-        // TODO train the the learner
-        model = learner.train(null);
 
+        model = learner.train(() -> setupStream());
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
+    }
+
+    private Stream<FeatureOutcomePair> setupStream(){
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(TRAINING_SET_PATH)
+            , Charset.defaultCharset()));
+        return reader.lines().map((s) -> parseFeature(s));
+    }
+
+    private FeatureOutcomePair parseFeature(String line) {
+        String[] split = line.split("\t");
+
+        URI furi = null;
+        try {
+            furi = new URI(split[0]);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        CrawleableUri uri = new CrawleableUri(furi);
+        featureHashing(uri);
+        Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+        double[] doubleFeatureArray = (double[]) featureArray;
+        DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+        return new FeatureOutcomePair(features, split[1].equals("sparql")? POSITIVE_CLASS : NEGATIVE_CLASS);
     }
 
     @Override

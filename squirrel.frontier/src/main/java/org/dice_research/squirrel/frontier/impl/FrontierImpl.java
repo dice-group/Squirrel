@@ -204,7 +204,8 @@ public class FrontierImpl implements Frontier {
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
         FrontierImpl.generalRecrawlTime = generalRecrawlTime;
-
+        // calling training URI predictor
+        comp.pred.train();
         if (this.doesRecrawling) {
             timerRecrawling = new Timer();
             timerRecrawling.schedule(new TimerTask() {
