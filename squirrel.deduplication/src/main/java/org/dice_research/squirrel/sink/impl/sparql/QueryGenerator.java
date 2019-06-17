@@ -4,6 +4,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,6 @@ public class QueryGenerator {
      */
     private static final QueryGenerator instance = new QueryGenerator();
     public static final String METADATA_GRAPH_ID = "http://w3id.org/squirrel/metadata";
-    public static final String COLUMN_PREDICATE_ID = "sq:hashvalue";
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
@@ -22,7 +22,7 @@ public class QueryGenerator {
     private QueryGenerator() {
     }
 
-    private String getPrefixes(){
+    private String getPrefixes() {
         StringBuilder sb = new StringBuilder();
         sb.append("PREFIX sq-s:  <http://w3id.org/squirrel/status#>\n");
         sb.append("PREFIX owl:  <http://www.w3.org/2002/07/owl#>\n");
@@ -50,10 +50,11 @@ public class QueryGenerator {
 
     /**
      * Return a select query to find the graph id of the crawled uri.
+     *
      * @param uriCrawled The crawled uri for which graph id has to be selected.
      * @return select query string.
      */
-    public Query getTriplesGraphIdQuery(String uriCrawled){
+    public Query getTriplesGraphIdQuery(String uriCrawled) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH ?g {");
@@ -68,10 +69,11 @@ public class QueryGenerator {
 
     /**
      * Return a select query to find the activity uri of the crawled uri.
+     *
      * @param uriCrawled The crawled uri for which activity uri has to be selected.
      * @return select query string.
      */
-    public Query getActivityUriQuery(String uriCrawled){
+    public Query getActivityUriQuery(String uriCrawled) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
@@ -88,6 +90,7 @@ public class QueryGenerator {
 
     /**
      * Return a select query for generated uris from metadata graph for the respective activity uri.
+     *
      * @param activityUri The uri of the activity for which generated uris has to be selected.
      * @return select query string.
      */
@@ -98,7 +101,7 @@ public class QueryGenerator {
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append("<");
-        stringBuilder.append(activityUri+"_generatedURIs");
+        stringBuilder.append(activityUri + "_generatedURIs");
         stringBuilder.append("> prov:value ?object }");
         stringBuilder.append("}");
         LOGGER.info("Dedup_Testing: query getGeneratedUrisQuery: " + stringBuilder.toString());
@@ -108,17 +111,18 @@ public class QueryGenerator {
 
     /**
      * Return a select query for generated Hash values from metadata graph for the respective activity uri.
+     *
      * @param hashValue The uri of the activity for which generated uris has to be selected.
      * @return select query string.
      */
-    public Query getHashQuery(String hashValue){
+    public Query getHashQuery(String hashValue) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append("?subject ");
-        stringBuilder.append(COLUMN_PREDICATE_ID);
+        stringBuilder.append(Squirrel.hashValue);
         stringBuilder.append(" ");
         stringBuilder.append(hashValue);
         stringBuilder.append("}}");
@@ -126,6 +130,7 @@ public class QueryGenerator {
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
+
     /**
      * Return a select query for the given graphID or default graph.
      * It will return all triples contained in the graph.
@@ -179,56 +184,14 @@ public class QueryGenerator {
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append(oldGraphId.toString());
-		stringBuilder.append(" sq:containsDataOf <");
-		stringBuilder.append(newUri);
-		stringBuilder.append("> } }");
-		stringBuilder.append(" WHERE { GRAPH <");
-		stringBuilder.append(METADATA_GRAPH_ID);
-		stringBuilder.append("> { ?subject ?object ?predicate } }");
+        stringBuilder.append(" sq:containsDataOf <");
+        stringBuilder.append(newUri);
+        stringBuilder.append("> } }");
+        stringBuilder.append(" WHERE { GRAPH <");
+        stringBuilder.append(METADATA_GRAPH_ID);
+        stringBuilder.append("> { ?subject ?object ?predicate } }");
         LOGGER.info("Dedup_Testing: query getUpdateTriplesGraphIdQuery: " + stringBuilder.toString());
-		Query query = QueryFactory.create(stringBuilder.toString());
+        Query query = QueryFactory.create(stringBuilder.toString());
         return query;
-    }
-
-    /**
-     * Formats the node for a query
-     *
-     * @param node The node which should formated
-     * @return a robust representation of the node
-     * <p>
-     * Note: Should be updated in relation to the robustness of parsing.
-     */
-    public static String formatNodeToString(Node node) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (node.isURI()) {
-            stringBuilder.append("<");
-            //Should possibly be further improved
-            stringBuilder.append(node.getURI().replace(" ", ""));
-            stringBuilder.append(">");
-        } else if (node.isBlank()) {
-            stringBuilder.append("_:");
-            //Should possibly be further improved
-            String label = node.getBlankNodeId().getLabelString().replace(":", "");
-            if (label.startsWith("-")) {
-                label = label.substring(1);
-            }
-            stringBuilder.append(label);
-        } else if (node.isLiteral()) {
-            stringBuilder.append("\"");
-            //Should possibly be further improved
-            stringBuilder.append(node.getLiteral().getLexicalForm().replace("\n", "").replace("\"", "'").replace("\r", ""));
-            stringBuilder.append("\"");
-            if (node.getLiteralLanguage() != null && !node.getLiteralLanguage().isEmpty()) {
-                stringBuilder.append("@");
-                stringBuilder.append(node.getLiteralLanguage());
-            } else if (node.getLiteralDatatype() != null) {
-                stringBuilder.append("^^");
-                stringBuilder.append("<");
-                stringBuilder.append(node.getLiteralDatatype().getURI());
-                stringBuilder.append(">");
-            }
-        }
-        stringBuilder.append(" ");
-        return stringBuilder.toString();
     }
 }
