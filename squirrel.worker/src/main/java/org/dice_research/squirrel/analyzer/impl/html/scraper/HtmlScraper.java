@@ -41,7 +41,7 @@ public class HtmlScraper {
     private Document doc;
     private Map<String,List<Triple>> staticMap = new HashMap<String,List<Triple>>();
     private Map<String,List<Triple>> selectedMap = new HashMap<String,List<Triple>>();
-    private Set<String> generatedUris = new HashSet<>();
+    private Set<String> generatedUris;
 
     public HtmlScraper(File file) {
         try {
@@ -65,6 +65,7 @@ public class HtmlScraper {
 
         List<Triple> listTriples = new ArrayList<Triple>();
         listIterableObjects = new LinkedHashSet<String>();
+        generatedUris = new HashSet<>();
 
         YamlFile yamlFile = (YamlFile) yamlFiles.get(UriUtils.getDomainName(uri)).clone();
         

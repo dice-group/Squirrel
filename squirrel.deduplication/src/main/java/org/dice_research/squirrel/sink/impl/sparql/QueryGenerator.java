@@ -58,7 +58,7 @@ public class QueryGenerator {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH ?g {");
-        stringBuilder.append("?subject sq:containsDataOf <");
+        stringBuilder.append("?subject "+Squirrel.containsDataOf +" <");
         stringBuilder.append(uriCrawled);
         stringBuilder.append(">} ");
         stringBuilder.append("}");
@@ -79,7 +79,7 @@ public class QueryGenerator {
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
-        stringBuilder.append("?subject sq:crawled <");
+        stringBuilder.append("?subject "+Squirrel.crawled +" <");
         stringBuilder.append(uriCrawled);
         stringBuilder.append(">} ");
         stringBuilder.append("}");
@@ -111,7 +111,7 @@ public class QueryGenerator {
 
     /**
      * Return a select query for generated Hash values from metadata graph for the respective activity uri.
-     *
+     * The query assumes that the hashvalues are stored in the form of RDF literal
      * @param hashValue The uri of the activity for which generated uris has to be selected.
      * @return select query string.
      */
@@ -139,7 +139,7 @@ public class QueryGenerator {
      * @param defaultGraph Identify if query is for the default graph
      * @return All triples contained in the graph.
      */
-    public Query getSelectQuery(String graphID, boolean defaultGraph) {
+    public Query getTriplesFromGraphUriQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { ");
@@ -153,12 +153,17 @@ public class QueryGenerator {
             stringBuilder.append("} ");
         }
         stringBuilder.append("}");
-        LOGGER.info("Dedup_Testing: query getSelectQuery: " + stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getTriplesFromGraphUriQuery: " + stringBuilder.toString());
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
 
-    public Query getDeleteQuery(String graphID) {
+    /**
+     * Query to delete the triples from the given graphUri
+     * @param graphID
+     * @return the query
+     */
+    public Query getDeleteTriplesFromGraphQuery(String graphID) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("DELETE WHERE {");
@@ -167,7 +172,7 @@ public class QueryGenerator {
         stringBuilder.append("> { ");
         stringBuilder.append("?subject ?predicate ?object ");
         stringBuilder.append("}}");
-        LOGGER.info("Dedup_Testing: query getDeleteQuery: " + stringBuilder.toString());
+        LOGGER.info("Dedup_Testing: query getDeleteTriplesFromGraphQuery: " + stringBuilder.toString());
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
     }
@@ -177,14 +182,14 @@ public class QueryGenerator {
         stringBuilder.append(getPrefixes());
         stringBuilder.append("DELETE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
-        stringBuilder.append("> { ?subject sq:containsDataOf <");
+        stringBuilder.append("> { ?subject "+Squirrel.containsDataOf +" <");
         stringBuilder.append(newUri);
         stringBuilder.append("> }}");
         stringBuilder.append("INSERT { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append(oldGraphId.toString());
-        stringBuilder.append(" sq:containsDataOf <");
+        stringBuilder.append(" "+Squirrel.containsDataOf+" <");
         stringBuilder.append(newUri);
         stringBuilder.append("> } }");
         stringBuilder.append(" WHERE { GRAPH <");

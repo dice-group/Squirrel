@@ -33,7 +33,7 @@ public class Squirrel {
     public static final Property approxNumberOfTriples = property("approxNumberOfTriples");
     public static final Property crawled = property("crawled");
     public static final Property containsDataOf = property("containsDataOf");
-    public static final Property generatedURIs = property("GeneratedURIs");
+    public static final Property generatedURIs = property("generatedURIs");
 
     public static final Resource ResultGraph = resource("ResultGraph");
     public static final Resource ResultFile = resource("ResultFile");

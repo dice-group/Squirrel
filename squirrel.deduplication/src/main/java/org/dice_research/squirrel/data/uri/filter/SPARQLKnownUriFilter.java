@@ -19,6 +19,7 @@ import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.sink.SparqlBasedSinkDedup;
 import org.dice_research.squirrel.sink.impl.sparql.QueryGenerator;
+import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +87,8 @@ public class SPARQLKnownUriFilter implements UriHashCustodian {
                 if (uri.getData(Constants.URI_HASH_KEY) != null) {
                     HashValue tempHash = (HashValue) uri.getData(Constants.URI_HASH_KEY);
                     Node subjectNode = NodeFactory.createURI(uri.getUri().toString());
-                    Node predicateNode = NodeFactory.createURI(QueryGenerator.COLUMN_PREDICATE_ID);
                     Node objectNode = NodeFactory.createURI(tempHash.encodeToString());
-                    Triple triple = new Triple(subjectNode, predicateNode, objectNode);
+                    Triple triple = new Triple(subjectNode, Squirrel.hashValue.asNode(), objectNode);
 
                     QuadDataAcc quads = new QuadDataAcc();
                     quads.addQuad(new Quad(graph, triple));
