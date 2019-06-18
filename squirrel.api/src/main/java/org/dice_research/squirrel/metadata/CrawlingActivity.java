@@ -131,7 +131,7 @@ public class CrawlingActivity implements Serializable {
             Set<String> generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
             Iterator<String> itr = generatedURIs.iterator();
             while (itr.hasNext()){
-                model.add(generatedUris, PROV_O.value, itr.next());
+                model.add(generatedUris, PROV_O.value, model.createResource(itr.next()));
             }
         } else {
             model.add(generatedUris, PROV_O.value, "");
