@@ -42,7 +42,7 @@ public final class PredictorImpl implements Predictor {
 
     public RegressionModel model;
     public RegressionClassifier classifier;
-    private static final String TRAINING_SET_PATH = "trainDataSet.txt";
+    public String TRAINING_SET_PATH = "trainDataSet.txt";
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
 
@@ -65,7 +65,7 @@ public final class PredictorImpl implements Predictor {
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2<<2));
+                2<<4));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
