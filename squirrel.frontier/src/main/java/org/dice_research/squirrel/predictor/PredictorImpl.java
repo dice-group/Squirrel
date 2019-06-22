@@ -3,18 +3,22 @@ package org.dice_research.squirrel.predictor;
 
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.activation.ActivationFunction;
 import de.jungblut.math.activation.SigmoidActivationFunction;
-import de.jungblut.math.dense.DenseDoubleVector;
 import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
+import de.jungblut.math.loss.LossFunction;
+import de.jungblut.math.minimize.CostGradientTuple;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
-import de.jungblut.online.ml.FeatureOutcomePair;
-import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.minimizer.StochasticGradientDescent;
 import de.jungblut.online.minimizer.StochasticGradientDescent.StochasticGradientDescentBuilder;
-import de.jungblut.online.regression.*;
-
+import de.jungblut.online.ml.FeatureOutcomePair;
+import de.jungblut.online.regression.RegressionClassifier;
+import de.jungblut.online.regression.RegressionModel;
+import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
+import de.jungblut.online.regularization.CostWeightTuple;
+import de.jungblut.online.regularization.WeightUpdater;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
@@ -22,13 +26,22 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 
 public final class PredictorImpl implements Predictor {
+
+    private ActivationFunction activationFunction;
+    private LossFunction lossFunction;
+    public RegressionClassifier classifier;
+    public WeightUpdater updater;
+
+    public RegressionLearn learner;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
     private static final double beta = 0;
@@ -45,7 +58,6 @@ public final class PredictorImpl implements Predictor {
     public String TRAINING_SET_PATH = "trainDataSet.txt";
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
-
 
 
     @Override
@@ -111,24 +123,22 @@ public final class PredictorImpl implements Predictor {
     }
 
 
-
     @Override
-    public void train (){
-
+    public void train() {
+        updater = new AdaptiveFTRLRegularizer(1, 1, 1);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
             .holdoutValidationPercentage(0.05d) // 5% as validation set
             .historySize(10_000) // keep 10k samples to compute relative improvement
-            .weightUpdater(new AdaptiveFTRLRegularizer(beta, l1, l2)) // FTRL updater
+            .weightUpdater(updater) // FTRL updater
             .progressReportInterval(1_000) // report every n iterations
             .build();
 
         // simple regression with Sigmoid and LogLoss
-        RegressionLearner learner = new RegressionLearner(sgd,
+        learner = new RegressionLearn(sgd,
             new SigmoidActivationFunction(), new LogLoss());
         learner.setNumPasses(2);
         // train the model
-
         model = learner.train(() -> setupStream());
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
@@ -185,8 +195,33 @@ public final class PredictorImpl implements Predictor {
     }
 
     @Override
-    public void weightUpdate(CrawleableUri uri) {
+    public void weightUpdate(CrawleableUri curi) {
+        // Learning Rate used at runtime
+        double learningRate = 0.7;
+        try {
+            if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
+                Object featureArray = curi.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
 
+                Object real_value = curi.getData(Constants.URI_TRUE_LABEL);
+                int rv = (int) real_value;
+                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+                DoubleVector nextExample = features;
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector);// realoutcome
+                CostGradientTuple observed = learner.observeExample(realResult, model.getWeights());
+
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+                // update model and classifier
+                model = new RegressionModel(update.getWeight(), model.getActivationFunction());
+            } else {
+                LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
+            }
+        } catch (Exception e) {
+            LOGGER.info("Error while updating the weight " + e);
+        }
     }
 
 

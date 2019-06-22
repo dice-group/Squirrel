@@ -296,6 +296,15 @@ public class FrontierImpl implements Frontier {
 //        if (graphLogger != null) {
 //            graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
 //        }
+        // Update the prediction model
+        try {
+            for (CrawleableUri uri : uris) {
+                comp.pred.weightUpdate(uri);
+            }
+
+        } catch (Exception e) {
+            LOGGER.info("!!!!!!!**********Exception handles while updating weight******!!!"+ e.toString());
+        }
         // If we should give the crawled IPs to the queue
         if (queue instanceof IpAddressBasedQueue) {
             Set<InetAddress> ips = new HashSet<>();
