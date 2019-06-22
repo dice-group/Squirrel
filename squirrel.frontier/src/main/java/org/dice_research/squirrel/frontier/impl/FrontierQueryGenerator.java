@@ -91,22 +91,40 @@ public class FrontierQueryGenerator {
     }
     public Query getTimeStampQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("PREFIX prov:  <http://www.w3.org/ns/prov#> PREFIX sq:  <http://w3id.org/squirrel/vocab#> "
-        		+ "SELECT ?url (MAX(?timestamp) AS ?endtime) WHERE { ");
+        stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" + 
+        		"PREFIX  prov: <http://www.w3.org/ns/prov#>\n" + 
+        		"PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
+        		+ "SELECT ?url ?endtime ?diff  WHERE { \n ");
+        // + "SELECT ?url  WHERE { \n ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
             stringBuilder.append(graphID);
             stringBuilder.append("> { ");
         }
-        stringBuilder.append("?s sq:crawled ?url;\n" + 
-        		"    prov:endedAtTime ?timestamp");
+        stringBuilder.append("{\n" + 
+        		"SELECT ?url ?endtime (NOW() - (?endtime) AS ?diff)\n" + 
+        		"WHERE{\n" + 
+        		"\n" + 
+        		"  {\n" + 
+        		"    SELECT  ?url  (MAX(?timestamp) as ?endtime)\n" + 
+        		"    WHERE\n" + 
+        		"    { \n" + 
+        		"        ?s  sq:crawled  ?url ;\n" + 
+        		"        prov:endedAtTime  ?timestamp.\n" + 
+        		"\n" + 
+        		"    }\n" + 
+        		"    GROUP BY ?url\n" + 
+        		"  } \n" + 
+        		"}\n" + 
+        		"}\n" + 
+        		"FILTER(?diff > \"604800\"^^xsd:double)\n" + 
+        		"");
         if (!defaultGraph) {
             stringBuilder.append("}");
         }
        
-        stringBuilder.append("}GROUP BY ?url\n" + 
-        		"HAVING (COUNT (?url) > 1) \n" + 
-        		"ORDER BY ?url DESC (?endtime)");
+        stringBuilder.append("}GROUP BY ?url");
+        //  stringBuilder.append("}GROUP BY ?url ?endtime ?diff");
        
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
