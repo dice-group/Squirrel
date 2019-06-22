@@ -12,6 +12,7 @@ import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
+import org.dice_research.squirrel.predictor.PredictorImpl;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 
@@ -60,9 +61,10 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param queue          {@link UriQueue} used to manage the URIs that should be
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
+     * @param predictor      PredictorImpl object used for prediction
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling) {
-        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling, PredictorImpl predictor) {
+        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling, predictor);
     }
 
     @Override

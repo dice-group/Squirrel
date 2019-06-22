@@ -66,7 +66,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
     public static final boolean RECRAWLING_ACTIVE = true;
-    public  PredictorImpl pred = new PredictorImpl();
+    public PredictorImpl pred = new PredictorImpl();
 
     @Override
     public void init() throws Exception {
@@ -101,7 +101,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, pred);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -130,6 +130,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     + webConfiguration.isVisualizationOfCrawledGraphEnabled()
                     + ". No WebServiceSenderThread will be started!");
         }
+        // Training the URI predictor model with a training dataset
+        pred.train();
+
     }
 
     @Override
@@ -188,7 +191,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         if (deserializedData != null) {
-            LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
+            //LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
@@ -197,6 +200,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
                 LOGGER.warn("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
+                LOGGER.info("!!!!!!!!***********THESE ARE THE CRAWLED URIS*****!!!!!!!!!!!!!!!");
+                for (CrawleableUri uri : crawlingResult.uris){
+                    LOGGER.info("" +uri.getUri());
+                    //pred.weightUpdate2(uri);
+                }
+
                 frontier.crawlingDone(crawlingResult.uris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
@@ -234,6 +243,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected void processSeedFile(String seedFile) {
         try {
             List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
+            LOGGER.info("!!!!!******The seed uris are added*****!!!!!");
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);

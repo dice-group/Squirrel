@@ -69,11 +69,6 @@ public class FrontierImpl implements Frontier {
     protected GraphLogger graphLogger;
 
     /**
-     * To call the URI predictor in Frontier component
-     */
-
-    protected  FrontierComponent comp = new FrontierComponent();
-    /**
      * Indicates whether recrawling is active.
      */
     private boolean doesRecrawling;
@@ -102,7 +97,12 @@ public class FrontierImpl implements Frontier {
      * Default value for {@link #timerPeriod}.
      */
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
-        
+
+    /**
+     * Object for Predictor
+     */
+    PredictorImpl predictor;
+    /**
     /**
      * Constructor.
      *
@@ -145,9 +145,11 @@ public class FrontierImpl implements Frontier {
      * @param queue          {@link UriQueue} used to manage the URIs that should be
      *                       crawled.
      * @param doesRecrawling Value for {@link #doesRecrawling}.
+     * @param  predictor     object of PredictorImpl class used for prediction
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, PredictorImpl predictor) {
         this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+        this.predictor = predictor;
     }
 
     /**
@@ -204,8 +206,6 @@ public class FrontierImpl implements Frontier {
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
         FrontierImpl.generalRecrawlTime = generalRecrawlTime;
-        // calling training URI predictor
-        comp.pred.train();
         if (this.doesRecrawling) {
             timerRecrawling = new Timer();
             timerRecrawling.schedule(new TimerTask() {
@@ -243,10 +243,10 @@ public class FrontierImpl implements Frontier {
         // UriProcessor
 
         try {
-
-            comp.pred.featureHashing(uri);
-            //Update uri key with the predicted value
-            double p = comp.pred.predict(uri);
+            //generate the feature vector of the uri for prediction purpose
+            predictor.featureHashing(uri);
+            //predict and update uri key with the predicted value
+            double p = predictor.predict(uri);
             uri.addData(Constants.URI_PREDICTED_LABEL, p);
             }catch (Exception e){
             LOGGER.info("Exception happened while predicting" +e);
@@ -299,7 +299,7 @@ public class FrontierImpl implements Frontier {
         // Update the prediction model
         try {
             for (CrawleableUri uri : uris) {
-                comp.pred.weightUpdate(uri);
+                predictor.weightUpdate(uri);
             }
 
         } catch (Exception e) {

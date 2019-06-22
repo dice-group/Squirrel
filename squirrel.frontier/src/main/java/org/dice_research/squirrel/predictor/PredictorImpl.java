@@ -37,7 +37,6 @@ public final class PredictorImpl implements Predictor {
 
     private ActivationFunction activationFunction;
     private LossFunction lossFunction;
-    public RegressionClassifier classifier;
     public WeightUpdater updater;
 
     public RegressionLearn learner;
@@ -77,7 +76,7 @@ public final class PredictorImpl implements Predictor {
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2<<4));
+                2<<7));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
@@ -153,11 +152,11 @@ public final class PredictorImpl implements Predictor {
     }
 
     private FeatureOutcomePair parseFeature(String line) {
-        String[] split = line.split("\t");
+        String[] split = line.split(",");
 
         URI furi = null;
         try {
-            furi = new URI(split[0]);
+            furi = new URI(split[1]);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -166,7 +165,7 @@ public final class PredictorImpl implements Predictor {
         Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-        return new FeatureOutcomePair(features, split[1].equals("sparql")? POSITIVE_CLASS : NEGATIVE_CLASS);
+        return new FeatureOutcomePair(features, split[0].equals("RDF")? POSITIVE_CLASS : NEGATIVE_CLASS);
     }
 
     @Override
@@ -178,9 +177,8 @@ public final class PredictorImpl implements Predictor {
                 Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
+                //initialize the regression classifier with updated model and predict
                 classifier = new RegressionClassifier(model);
-                // add the bias to the feature and predict it
                 DoubleVector prediction = classifier.predict(features);
                 double[] predictVal = prediction.toArray();
                 pred = predictVal[0];
