@@ -1,11 +1,8 @@
 package org.dice_research.squirrel.configurator;
 
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
@@ -26,22 +23,14 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.filter.UriFilter;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.frontier.impl.FrontierQueryGenerator;
-import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.model.Filters;
-
 @SuppressWarnings("deprecation")
-public  class SparqlConfiguration implements AdvancedTripleBasedSink{
+public  class SparqlConfiguration implements  KnownUriFilter{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SparqlConfiguration.class);
 
@@ -49,11 +38,11 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 	 * The Query factory used to query the SPARQL endpoint.
 	 */
 	protected static QueryExecutionFactory queryExecFactory = null;
-
 	protected UpdateExecutionFactory updateExecFactory = null;
 	protected static CrawleableUri metadataGraphUri = null;
-	private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000;
-
+	private static RDFNode subject, predicate, object;
+	private static ResultSet rs;
+	private static QuerySolution sol ;
 
 	public SparqlConfiguration(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
 		this.queryExecFactory = queryExecFactory;
@@ -105,68 +94,71 @@ public  class SparqlConfiguration implements AdvancedTripleBasedSink{
 		return new SparqlConfiguration(queryExecFactory, updateExecFactory);
 	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws URISyntaxException {
 		SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123");
-		Query selectQuery = FrontierQueryGenerator.getInstance().getTimeStampQuery();
-		System.out.println(selectQuery);
-		QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
-		ResultSet rs = qe.execSelect();
+		Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
+		System.out.println(getOutdatedUrisQuery);
+		QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
+		rs = qe.execSelect();
 		List<Triple> triplesFound = new ArrayList<>();
 		while (rs.hasNext()) {
-			QuerySolution sol = rs.nextSolution();
-			RDFNode subject = sol.get("url");
-			RDFNode predicate = sol.get("endtime");
-			RDFNode object = sol.get("diff");
-			triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
-			System.out.println(subject);
+			sol = rs.nextSolution();
+			subject = sol.get("uri");
+			predicate = sol.get("endtime");
+			object = sol.get("diff");
+			triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));	
 		}
 		qe.close();
+
+
 	}
 
-	 
 	@Override
-	public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-		Query selectQuery = null;
-		// if (uri.equals(metaDataGraphUri)) {
-		selectQuery = FrontierQueryGenerator.getInstance().getSelectQuery();
-		// } else {
-		// selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
-		// }
-
-		QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
-		ResultSet rs = qe.execSelect();
-		List<Triple> triplesFound = new ArrayList<>();
+	public List<CrawleableUri> getOutdatedUris() {
+		List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 		while (rs.hasNext()) {
-			QuerySolution sol = rs.nextSolution();
-			RDFNode subject = sol.get("subject");
-			RDFNode predicate = sol.get("predicate");
-			RDFNode object = sol.get("object");
-			triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+			try {
+				urisToRecrawl.add(new CrawleableUri(new URI((subject.toString()))));
+			} catch (URISyntaxException e) {
+				LOGGER.warn(e.toString());
+			}
 		}
-		qe.close();
-		return triplesFound;
+		return urisToRecrawl;
 	}
-	
 
 	@Override
-	public void addTriple(CrawleableUri uri, Triple triple) {
+	public boolean isUriGood(CrawleableUri uri) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void add(CrawleableUri uri, long nextCrawlTimestamp) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void openSinkForUri(CrawleableUri uri) {
+	public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void closeSinkForUri(CrawleableUri uri) {
+	public long count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void open() {
 		// TODO Auto-generated method stub
 
 	}
 
-	
+
+
+
 
 }
 

@@ -86,34 +86,34 @@ public class FrontierQueryGenerator {
      * @return All triples with time stamp in the default graph.
      */
   
-    public Query getTimeStampQuery() {
-        return getTimeStampQuery(null, true);
+    public Query getOutdatedUrisQuery() {
+        return getOutdatedUrisQuery(null, true);
     }
-    public Query getTimeStampQuery(String graphID, boolean defaultGraph) {
+    public Query getOutdatedUrisQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" + 
         		"PREFIX  prov: <http://www.w3.org/ns/prov#>\n" + 
         		"PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
-        		+ "SELECT ?url ?endtime ?diff  WHERE { \n ");
-        // + "SELECT ?url  WHERE { \n ");
+        		+ "SELECT ?uri ?endtime ?diff  WHERE { \n ");
+        // + "SELECT ?uri  WHERE { \n ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
             stringBuilder.append(graphID);
             stringBuilder.append("> { ");
         }
         stringBuilder.append("{\n" + 
-        		"SELECT ?url ?endtime (NOW() - (?endtime) AS ?diff)\n" + 
+        		"SELECT ?uri ?endtime (NOW() - (?endtime) AS ?diff)\n" + 
         		"WHERE{\n" + 
         		"\n" + 
         		"  {\n" + 
-        		"    SELECT  ?url  (MAX(?timestamp) as ?endtime)\n" + 
+        		"    SELECT  ?uri  (MAX(?timestamp) as ?endtime)\n" + 
         		"    WHERE\n" + 
         		"    { \n" + 
-        		"        ?s  sq:crawled  ?url ;\n" + 
+        		"        ?s  sq:crawled  ?uri ;\n" + 
         		"        prov:endedAtTime  ?timestamp.\n" + 
         		"\n" + 
         		"    }\n" + 
-        		"    GROUP BY ?url\n" + 
+        		"    GROUP BY ?uri\n" + 
         		"  } \n" + 
         		"}\n" + 
         		"}\n" + 
@@ -123,8 +123,8 @@ public class FrontierQueryGenerator {
             stringBuilder.append("}");
         }
        
-        stringBuilder.append("}GROUP BY ?url");
-        //  stringBuilder.append("}GROUP BY ?url ?endtime ?diff");
+       // stringBuilder.append("}GROUP BY ?uri");
+          stringBuilder.append("}GROUP BY ?uri ?endtime ?diff");
        
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
