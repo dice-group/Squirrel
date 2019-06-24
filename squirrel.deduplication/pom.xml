@@ -11,9 +11,6 @@
 	<artifactId>squirrel.deduplication</artifactId>
 	<packaging>jar</packaging>
 	<name>Squirrel Deduplication</name>
-	<properties>
-		<version.jena>2.11.1</version.jena>
-	</properties>
 
 	<dependencies>
 		<dependency>

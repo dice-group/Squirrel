@@ -1,9 +1,10 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.RDF;
+import org.dice_research.squirrel.vocab.PROV_O;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,7 @@ public class QueryGenerator {
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
-        stringBuilder.append("?subject "+Squirrel.crawled +" <");
+        stringBuilder.append("?subject "+ Squirrel.crawled +" <");
         stringBuilder.append(uriCrawled);
         stringBuilder.append(">} ");
         stringBuilder.append("}");
@@ -102,8 +103,10 @@ public class QueryGenerator {
         stringBuilder.append("> {");
         stringBuilder.append("<");
         stringBuilder.append(activityUri + "_generatedURIs");
-        stringBuilder.append("> prov:value ?object }");
-        stringBuilder.append("}");
+        stringBuilder.append("> " + PROV_O.value + " ?object ; ");
+        stringBuilder.append(RDF.type + " " + Squirrel.generatedURIs + ";");
+        stringBuilder.append(PROV_O.wasGeneratedBy + " " + activityUri);
+        stringBuilder.append("} }");
         LOGGER.info("Dedup_Testing: query getGeneratedUrisQuery: " + stringBuilder.toString());
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
@@ -177,24 +180,34 @@ public class QueryGenerator {
         return query;
     }
 
+    /**
+     * This method returns a query to delete the graphUri of the duplicate uri (newUri)
+     * and update its graphUri with the already present ones (oldGraphId)
+     * @param newUri duplicate uri
+     * @param oldGraphId graph uri of the already present old uri
+     * @return query
+     */
     public Query getUpdateTriplesGraphIdQuery(String newUri, RDFNode oldGraphId) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("DELETE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
-        stringBuilder.append("> { ?subject "+Squirrel.containsDataOf +" <");
+        stringBuilder.append("> { ?subject "+ Squirrel.containsDataOf  +" <");
         stringBuilder.append(newUri);
         stringBuilder.append("> }}");
         stringBuilder.append("INSERT { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
         stringBuilder.append(oldGraphId.toString());
-        stringBuilder.append(" "+Squirrel.containsDataOf+" <");
+        stringBuilder.append(" "+ Squirrel.containsDataOf +" <");
         stringBuilder.append(newUri);
         stringBuilder.append("> } }");
         stringBuilder.append(" WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
-        stringBuilder.append("> { ?subject ?object ?predicate } }");
+        stringBuilder.append("> { ?subject ");
+        stringBuilder.append(Squirrel.containsDataOf + " <");
+        stringBuilder.append(newUri);
+        stringBuilder.append("> } }");
         LOGGER.info("Dedup_Testing: query getUpdateTriplesGraphIdQuery: " + stringBuilder.toString());
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;

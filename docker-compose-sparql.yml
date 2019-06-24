@@ -43,16 +43,16 @@ services:
       - Driver=/usr/local/lib/virtodbc_32.so
       - DBA_PASSWORD=123pwd
 
-  sparqlhost:
-    image: stain/jena-fuseki
-    container_name: sparqlhost
-    ports:
-      - "3030:3030"
-    volumes:
-      - ./data/sparqlhost/sparqlhost_data:/fuseki
-    environment:
-      - ADMIN_PASSWORD=pw123
-      - JVM_ARGS=-Xmx2g
+#  sparqlhost:
+#    image: stain/jena-fuseki
+#    container_name: sparqlhost
+#    ports:
+#      - "3030:3030"
+#    volumes:
+#      - ./data/sparqlhost/sparqlhost_data:/fuseki
+#    environment:
+#      - ADMIN_PASSWORD=pw123
+#      - JVM_ARGS=-Xmx2g
 
   mongodb:
     image: mongo:4.0.0
@@ -143,18 +143,16 @@ services:
     image: squirrel.deduplication
     container_name: deduplicator
     environment:
-      - DEDUPLICATION_ACTIVE: "true"
-      - HOBBIT_RABBIT_HOST: rabbit
-      - OUTPUT_FOLDER: /var/squirrel/data
-      - CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
-      - MDB_HOST_NAME: mongodb
-      - MDB_PORT: 27017
-#      SPARQL_HOST_NAME: sparqlhost
-#      SPARQL_HOST_PORT: 3030
-      - SPARQL_QUERY_URL: http://virtuosohost:8890/sparql-auth/
-      - SPARQL_UPDATE_URL: http://virtuosohost:8890/sparql-auth/
-      - SPARQL_HOST_USER: dba
-      - SPARQL_HOST_PASSWD: pw123
-      - SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
+      DEDUPLICATION_ACTIVE: "true"
+      HOBBIT_RABBIT_HOST: rabbit
+      OUTPUT_FOLDER: /var/squirrel/data
+      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
+      MDB_HOST_NAME: mongodb
+      MDB_PORT: 27017
+      SPARQL_QUERY_URL: http://virtuosohost:8890/sparql-auth/
+      SPARQL_UPDATE_URL: http://virtuosohost:8890/sparql-auth/
+      SPARQL_HOST_USER: dba
+      SPARQL_HOST_PASSWD: pw123
+      SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
     volumes:
     - ./data/deduplicator:/var/squirrel/data
