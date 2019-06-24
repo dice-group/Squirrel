@@ -41,7 +41,7 @@ services:
       - ./data/sparqlhost/sparqlhost_data:/virtuoso
     environment:
       - Driver=/usr/local/lib/virtodbc_32.so
-      - DBA_PASSWORD=pw123
+      - DBA_PASSWORD=123pwd
 
   sparqlhost:
     image: stain/jena-fuseki
@@ -78,7 +78,7 @@ services:
       - "8081:15672"
       # Forwarding the port for testing
       - "5672:5672"
-      
+
   worker1:
     image: squirrel.worker:latest
     container_name: worker1
@@ -87,11 +87,9 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
-#      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
-#      - SPARQL_HOST_USER=dba
-      - SPARQL_QUERY_URL=http://sparqlhost:3030/squirrel/query
-      - SPARQL_UPDATE_URL=http://sparqlhost:3030/squirrel/update
-      - SPARQL_HOST_USER=admin
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_PORT=8890
+      - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
@@ -109,11 +107,9 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
-#      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
-#      - SPARQL_HOST_USER=dba
-      - SPARQL_QUERY_URL=http://sparqlhost:3030/squirrel/query
-      - SPARQL_UPDATE_URL=http://sparqlhost:3030/squirrel/update
-      - SPARQL_HOST_USER=admin
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_PORT=8890
+      - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
@@ -131,11 +127,9 @@ services:
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
-#      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
-#      - SPARQL_HOST_USER=dba
-      - SPARQL_QUERY_URL=http://sparqlhost:3030/squirrel/query
-      - SPARQL_UPDATE_URL=http://sparqlhost:3030/squirrel/update
-      - SPARQL_HOST_USER=admin
+      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_PORT=8890
+      - SPARQL_HOST_USER=dba
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
       - JVM_ARGS=-Xmx8g
@@ -149,18 +143,18 @@ services:
     image: squirrel.deduplication
     container_name: deduplicator
     environment:
-      DEDUPLICATION_ACTIVE: "true"
-      HOBBIT_RABBIT_HOST: rabbit
-      OUTPUT_FOLDER: /var/squirrel/data
-      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
-      MDB_HOST_NAME: mongodb
-      MDB_PORT: 27017
+      - DEDUPLICATION_ACTIVE: "true"
+      - HOBBIT_RABBIT_HOST: rabbit
+      - OUTPUT_FOLDER: /var/squirrel/data
+      - CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
+      - MDB_HOST_NAME: mongodb
+      - MDB_PORT: 27017
 #      SPARQL_HOST_NAME: sparqlhost
 #      SPARQL_HOST_PORT: 3030
-      SPARQL_QUERY_URL: http://virtuosohost:8890/sparql-auth/
-      SPARQL_UPDATE_URL: http://virtuosohost:8890/sparql-auth/
-      SPARQL_HOST_USER: dba
-      SPARQL_HOST_PASSWD: pw123
-      SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
+      - SPARQL_QUERY_URL: http://virtuosohost:8890/sparql-auth/
+      - SPARQL_UPDATE_URL: http://virtuosohost:8890/sparql-auth/
+      - SPARQL_HOST_USER: dba
+      - SPARQL_HOST_PASSWD: pw123
+      - SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
     volumes:
     - ./data/deduplicator:/var/squirrel/data
