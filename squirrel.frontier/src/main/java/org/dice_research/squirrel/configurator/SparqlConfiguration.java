@@ -24,13 +24,14 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.filter.KnownOutDatedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.frontier.impl.FrontierQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
-public  class SparqlConfiguration implements  KnownUriFilter{
+public class SparqlConfiguration implements KnownOutDatedUriFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SparqlConfiguration.class);
 
@@ -40,13 +41,14 @@ public  class SparqlConfiguration implements  KnownUriFilter{
 	protected static QueryExecutionFactory queryExecFactory = null;
 	protected UpdateExecutionFactory updateExecFactory = null;
 	protected static CrawleableUri metadataGraphUri = null;
-	private static RDFNode subject, predicate, object;
 	private static ResultSet rs;
-	private static QuerySolution sol ;
+	private static QuerySolution sol;
+	RDFNode outdatedUri;
 
 	public SparqlConfiguration(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
 		this.queryExecFactory = queryExecFactory;
 		this.updateExecFactory = updateExecFactory;
+		LOGGER.info("Connected");
 	}
 
 	public static SparqlConfiguration create(String sparqlEndpointUrl) {
@@ -94,8 +96,13 @@ public  class SparqlConfiguration implements  KnownUriFilter{
 		return new SparqlConfiguration(queryExecFactory, updateExecFactory);
 	}
 
-	public static void main(String args[]) throws URISyntaxException {
-		SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123");
+	public static void main(String args[]) {
+
+		/*
+		 * SparqlConfiguration.create(System.getenv("SPARQL_URL"),
+		 * System.getenv("SPARQL_HOST_USER"), System.getenv("SPARQL_HOST_PASSWD"));
+		 */
+		SparqlConfiguration.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 		Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
 		System.out.println(getOutdatedUrisQuery);
 		QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
@@ -103,22 +110,36 @@ public  class SparqlConfiguration implements  KnownUriFilter{
 		List<Triple> triplesFound = new ArrayList<>();
 		while (rs.hasNext()) {
 			sol = rs.nextSolution();
-			subject = sol.get("uri");
-			predicate = sol.get("endtime");
-			object = sol.get("diff");
-			triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));	
+			sol.get("uri");
+
 		}
 		qe.close();
 
-
 	}
 
+	
+//	  private RDFNode getOutDatedUri(String uriCrawled){
+//	  
+//	  SparqlConfiguration.create(System.getenv("SPARQL_URL"),
+//	  System.getenv("SPARQL_HOST_USER"), System.getenv("SPARQL_HOST_PASSWD"));
+//	  
+//	  SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123")
+//	  ; Query getOutdatedUrisQuery =
+//	  FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
+//	  System.out.println(getOutdatedUrisQuery); QueryExecution qe =
+//	  queryExecFactory.createQueryExecution(getOutdatedUrisQuery); rs =
+//	  qe.execSelect(); while (rs.hasNext()) { sol = rs.nextSolution(); outdatesUri
+//	  = sol.get("uri"); } qe.close();
+//	  
+//	  LOGGER.info("Outdated Uri: "+ outdatedUri); return outdatesUri; }
+	 
+	
 	@Override
-	public List<CrawleableUri> getOutdatedUris() {
+	public List<CrawleableUri> getUriToRecrawl() {
 		List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 		while (rs.hasNext()) {
 			try {
-				urisToRecrawl.add(new CrawleableUri(new URI((subject.toString()))));
+				urisToRecrawl.add(new CrawleableUri(new URI((outdatedUri.toString()))));
 			} catch (URISyntaxException e) {
 				LOGGER.warn(e.toString());
 			}
@@ -126,39 +147,4 @@ public  class SparqlConfiguration implements  KnownUriFilter{
 		return urisToRecrawl;
 	}
 
-	@Override
-	public boolean isUriGood(CrawleableUri uri) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void add(CrawleableUri uri, long nextCrawlTimestamp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void open() {
-		// TODO Auto-generated method stub
-
-	}
-
-
-
-
-
 }
-

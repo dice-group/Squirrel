@@ -94,7 +94,7 @@ public class FrontierQueryGenerator {
         stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" + 
         		"PREFIX  prov: <http://www.w3.org/ns/prov#>\n" + 
         		"PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
-        		+ "SELECT ?uri ?endtime ?diff  WHERE { \n ");
+        		+ "SELECT ?uri  WHERE { \n ");
         // + "SELECT ?uri  WHERE { \n ");
         if (!defaultGraph) {
             stringBuilder.append("GRAPH <");
@@ -124,7 +124,7 @@ public class FrontierQueryGenerator {
         }
        
        // stringBuilder.append("}GROUP BY ?uri");
-          stringBuilder.append("}GROUP BY ?uri ?endtime ?diff");
+          stringBuilder.append("}");
        
         Query query = QueryFactory.create(stringBuilder.toString());
         return query;
