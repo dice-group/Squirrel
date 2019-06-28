@@ -74,9 +74,6 @@ public class WorkerImpl implements Worker, Closeable {
     private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
 
-    private double pred;
-    private final double epsilon = 0.8;
-
     /**
      * Constructor.
      *
@@ -196,12 +193,8 @@ public class WorkerImpl implements Worker, Closeable {
             } else if (uri.getUri() == null) {
                 LOGGER.error("Got a CrawleableUri object with getUri()=null. It will be ignored.");
             } else {
-                // crawl based on the prediction
                 try {
-                    pred = getPrediction(uri);
-                    if (pred == 1 || Math.random() < epsilon) {
-                        performCrawling(uri);
-                    }
+                    performCrawling(uri);
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while crawling \"" + uri.getUri().toString()
                             + "\". It will be ignored.", e);
@@ -377,22 +370,5 @@ public class WorkerImpl implements Worker, Closeable {
 	public int getId() {
 		return this.id;
 	}
-    /**
-     * Return the predicted value of the URI type prediction
-     *
-     */
-    private double getPrediction(CrawleableUri curi) {
-        double p = 0.0;
-        try {
-            if (curi.getData(Constants.URI_PREDICTED_LABEL).equals(null)) {
-                p = 0.0;
-            } else {
-                p = (double) curi.getData(Constants.URI_PREDICTED_LABEL);
-            }
-        } catch (Exception e) {
-            LOGGER.error("An error occurred when retrieving the Time out value, ", e);
-        }
-        return p;
-    }
 
 }

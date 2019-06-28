@@ -99,7 +99,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
-
+        // Training the URI predictor model with a training dataset
+        pred.train();
         // Build frontier
         frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, pred);
 
@@ -130,8 +131,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     + webConfiguration.isVisualizationOfCrawledGraphEnabled()
                     + ". No WebServiceSenderThread will be started!");
         }
-        // Training the URI predictor model with a training dataset
-        pred.train();
+
 
     }
 
