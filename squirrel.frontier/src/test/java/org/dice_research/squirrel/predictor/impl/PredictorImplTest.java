@@ -22,19 +22,33 @@ public class PredictorImplTest {
     @Test
     public void train() throws Exception {
         // //Initialization
-        curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
+        curi = new CrawleableUri(new URI("https://mcloud.de/web/guest/suche/-/results/search/55?_mcloudsearchportlet_sort=latest"));
+        CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
+        CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
+
         predictor = new PredictorImpl();
         predictor.TRAINING_SET_PATH = "trainDataset.txt";
 
         // train the learner on two URIs: one RDF and one non RDF
         predictor.train();
 
-        // predict for new URI
+        // predict for a random URI(HTML) example
         predictor.featureHashing(curi);
         double pred = predictor.predict(curi);
         double pround = Math.round(pred*100.0)/100.0;
+        Assert.assertEquals(0.41,pround,0.1);
 
-        Assert.assertEquals(0.56, pround,1e-4);
+        // predict for a Positive (RDF) example
+        predictor.featureHashing(curiPos);
+        double pred2 = predictor.predict(curiPos);
+        double pround2 = Math.round(pred2*100.0)/100.0;
+        Assert.assertEquals(0.45, pround2,0.1);
+
+        // predict for a negative (non RDF) example
+        predictor.featureHashing(curiNeg);
+        double pred3 = predictor.predict(curiNeg);
+        double pround3 = Math.round(pred3*100.0)/100.0;
+        Assert.assertEquals(0.43, pround3,0.1);
     }
 
     @Test

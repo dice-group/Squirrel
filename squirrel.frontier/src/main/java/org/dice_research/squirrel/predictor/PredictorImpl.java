@@ -137,6 +137,7 @@ public final class PredictorImpl implements Predictor {
         learner = new RegressionLearn(sgd,
             new SigmoidActivationFunction(), new LogLoss());
         learner.setNumPasses(2);
+        learner.verbose();
         // train the model
         model = learner.train(() -> setupStream());
         // output the weights

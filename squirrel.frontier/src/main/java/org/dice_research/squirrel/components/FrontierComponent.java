@@ -191,7 +191,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         if (deserializedData != null) {
-            //LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
+            LOGGER.warn("Got a message (\"{}\").", deserializedData.toString());
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
@@ -200,11 +200,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
                 LOGGER.warn("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
-                LOGGER.info("!!!!!!!!***********THESE ARE THE CRAWLED URIS*****!!!!!!!!!!!!!!!");
-                for (CrawleableUri uri : crawlingResult.uris){
-                    LOGGER.info("" +uri.getUri());
-                    //pred.weightUpdate2(uri);
-                }
 
                 frontier.crawlingDone(crawlingResult.uris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.uris);
@@ -243,7 +238,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected void processSeedFile(String seedFile) {
         try {
             List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
-            LOGGER.info("!!!!!******The seed uris are added*****!!!!!");
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
