@@ -14,14 +14,17 @@ import java.util.concurrent.Semaphore;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.base.Sys;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
+import org.dice_research.squirrel.configurator.SparqlConfiguration;
 import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.KnownOutDatedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
@@ -66,6 +69,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 	@Qualifier("knowUriFilterBean")
 	@Autowired
 	private KnownUriFilter knownUriFilter;
+	private KnownOutDatedUriFilter  knownOutDatedUriFilter;
 	private URIReferences uriReferences = null;
 	private Frontier frontier;
 	private RabbitQueue rabbitQueue;
@@ -96,8 +100,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 		serializer = new GzipJavaUriSerializer();
 		MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 		WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+	    SparqlConfiguration sp = SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123");
 		hasUrisToCrawl = new HashMap<String,Boolean>();
 
+		
 		if (mongoConfiguration != null) {
 
 			queue.open();
@@ -122,8 +128,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 		}
 
 		// Build frontier
-		frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
-
+		frontier = new ExtendedFrontierImpl(new NormalizerImpl(),knownOutDatedUriFilter, knownUriFilter, uriReferences, queue, doRecrawling);
 		rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
 		receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
 				.maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
@@ -151,7 +156,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 					+ webConfiguration.isVisualizationOfCrawledGraphEnabled()
 					+ ". No WebServiceSenderThread will be started!");
 		}
-
+		
 	}
 
 

@@ -40,10 +40,7 @@ public class SparqlConfiguration implements KnownOutDatedUriFilter {
 	 */
 	protected static QueryExecutionFactory queryExecFactory = null;
 	protected UpdateExecutionFactory updateExecFactory = null;
-	protected static CrawleableUri metadataGraphUri = null;
-	private static ResultSet rs;
-	private static QuerySolution sol;
-	RDFNode outdatedUri;
+	List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
 	public SparqlConfiguration(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
 		this.queryExecFactory = queryExecFactory;
@@ -96,55 +93,28 @@ public class SparqlConfiguration implements KnownOutDatedUriFilter {
 		return new SparqlConfiguration(queryExecFactory, updateExecFactory);
 	}
 
-	public static void main(String args[]) {
-
-		/*
-		 * SparqlConfiguration.create(System.getenv("SPARQL_URL"),
-		 * System.getenv("SPARQL_HOST_USER"), System.getenv("SPARQL_HOST_PASSWD"));
-		 */
+	@Override
+	public List<CrawleableUri> getUriToRecrawl() {
 		SparqlConfiguration.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 		Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
 		System.out.println(getOutdatedUrisQuery);
 		QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
-		rs = qe.execSelect();
-		List<Triple> triplesFound = new ArrayList<>();
+		ResultSet rs = qe.execSelect();
 		while (rs.hasNext()) {
-			sol = rs.nextSolution();
-			sol.get("uri");
-
-		}
-		qe.close();
-
-	}
-
-	
-//	  private RDFNode getOutDatedUri(String uriCrawled){
-//	  
-//	  SparqlConfiguration.create(System.getenv("SPARQL_URL"),
-//	  System.getenv("SPARQL_HOST_USER"), System.getenv("SPARQL_HOST_PASSWD"));
-//	  
-//	  SparqlConfiguration.create("http://localhost:8890/sparql-auth","dba","pw123")
-//	  ; Query getOutdatedUrisQuery =
-//	  FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
-//	  System.out.println(getOutdatedUrisQuery); QueryExecution qe =
-//	  queryExecFactory.createQueryExecution(getOutdatedUrisQuery); rs =
-//	  qe.execSelect(); while (rs.hasNext()) { sol = rs.nextSolution(); outdatesUri
-//	  = sol.get("uri"); } qe.close();
-//	  
-//	  LOGGER.info("Outdated Uri: "+ outdatedUri); return outdatesUri; }
-	 
-	
-	@Override
-	public List<CrawleableUri> getUriToRecrawl() {
-		List<CrawleableUri> urisToRecrawl = new ArrayList<>();
-		while (rs.hasNext()) {
-			try {
-				urisToRecrawl.add(new CrawleableUri(new URI((outdatedUri.toString()))));
-			} catch (URISyntaxException e) {
-				LOGGER.warn(e.toString());
-			}
-		}
-		return urisToRecrawl;
-	}
-
+			QuerySolution sol = rs.nextSolution();
+			RDFNode outdatedUri = sol.get("uri");
+			System.out.println(outdatedUri);
+				try {
+					urisToRecrawl.add(new CrawleableUri(new URI((outdatedUri.toString()))));
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+				}qe.close();
+	return urisToRecrawl;
 }
+
+
+}	
+	
+	
+	
