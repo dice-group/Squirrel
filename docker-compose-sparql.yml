@@ -48,24 +48,24 @@ services:
       - "3030:3030"
         volumes:
           - ./data/sparqlhost/sparqlhost_data:/fuseki
-#    environment:
-#      - ADMIN_PASSWORD=pw123
-#      - JVM_ARGS=-Xmx2g
+        environment:
+        - ADMIN_PASSWORD=pw123
+        - JVM_ARGS=-Xmx2g
 
-  # mongodb:
-   # image: mongo:4.0.0
-    #volumes:
-     # - ./data/mongodb:/data
-    #ports:
-     # - "27017:27017"
+ mongodb:
+    image: mongo:4.0.0
+    volumes:
+      - ./data/mongodb:/data
+    ports:
+      - "27017:27017"
 
-  #rethinkdb:
-   # image: rethinkdb:2.3.5
-    #volumes:
-     # - ./data/rethinkdb:/data
-    #ports:
-     # - "8080:8080"
-    #command: rethinkdb --bind all
+ rethinkdb:
+    image: rethinkdb:2.3.5
+    volumes:
+      - ./data/rethinkdb:/data
+    ports:
+      - "8080:8080"
+    command: rethinkdb --bind all
 
   # message bus
  rabbit:
@@ -144,7 +144,7 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
  # deduplicator:
-    image: squirrel
+ image: squirrel
     container_name: deduplicator
     environment:
       DEDUPLICATION_ACTIVE: "true"
