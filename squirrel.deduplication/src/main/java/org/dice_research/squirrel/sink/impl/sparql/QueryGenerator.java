@@ -88,10 +88,9 @@ public class QueryGenerator {
         stringBuilder.append("SELECT ?object WHERE { GRAPH <");
         stringBuilder.append(METADATA_GRAPH_ID);
         stringBuilder.append("> {");
-        stringBuilder.append("<");
-        stringBuilder.append(activityUri + "_generatedURIs");
-        stringBuilder.append("> " + PROV_O.value + " ?object ; ");
-        stringBuilder.append(RDF.type + " " + Squirrel.generatedURIs + ";");
+        stringBuilder.append("?subject ");
+        stringBuilder.append(PROV_O.value + " ?object ; ");
+        stringBuilder.append(RDF.type + " " + Squirrel.generatedURIs + "; ");
         stringBuilder.append(PROV_O.wasGeneratedBy + " " + activityUri);
         stringBuilder.append("} }");
         LOGGER.info("Dedup_Testing: query getGeneratedUrisQuery: " + stringBuilder.toString());
