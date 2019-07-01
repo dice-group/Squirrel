@@ -139,7 +139,7 @@ public final class PredictorImpl implements Predictor {
         learner.setNumPasses(2);
         learner.verbose();
         // train the model
-        model = learner.train(() -> setupStream());
+        this.model = learner.train(() -> setupStream());
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
@@ -209,12 +209,17 @@ public final class PredictorImpl implements Predictor {
 
                 DoubleVector nextExample = features;
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector);// realoutcome
-                CostGradientTuple observed = learner.observeExample(realResult, model.getWeights());
+                CostGradientTuple observed = this.learner.observeExample(realResult, this.model.getWeights());
 
                 // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+                CostWeightTuple update = this.updater.computeNewWeights(this.model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+
+                //update weights using the updated parameters
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+
                 // update model and classifier
-                model = new RegressionModel(update.getWeight(), model.getActivationFunction());
+                this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
+
             } else {
                 LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
