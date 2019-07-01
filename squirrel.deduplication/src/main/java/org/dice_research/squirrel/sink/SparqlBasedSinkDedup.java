@@ -95,7 +95,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
      * @return activity uri
      */
     private RDFNode getActivityUri(String uriCrawled){
-        Query activityIdQuery = QueryGenerator.getInstance().getActivityUriQuery(uriCrawled);
+        Query activityIdQuery = QueryGenerator.getActivityUriQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(activityIdQuery);
         ResultSet rs = qe.execSelect();
         RDFNode activityId = null;
@@ -117,7 +117,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
         List<CrawleableUri> generatedUris = new ArrayList<>();
         RDFNode activityUri = getActivityUri(uri.getUri().toString());
         if (activityUri != null) {
-            Query generatedUrisQuery = QueryGenerator.getInstance().getGeneratedUrisQuery(activityUri.toString());
+            Query generatedUrisQuery = QueryGenerator.getGeneratedUrisQuery(activityUri.toString());
             QueryExecution qe = this.queryExecFactory.createQueryExecution(generatedUrisQuery);
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
@@ -143,7 +143,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
      * @return graph uri
      */
     private RDFNode getGraphUri(String uriCrawled){
-        Query graphIdQuery = QueryGenerator.getInstance().getTriplesGraphIdQuery(uriCrawled);
+        Query graphIdQuery = QueryGenerator.getTriplesGraphIdQuery(uriCrawled);
         QueryExecution qe = this.queryExecFactory.createQueryExecution(graphIdQuery);
         ResultSet rs = qe.execSelect();
         RDFNode graphId = null;
@@ -161,7 +161,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
         List<Triple> triplesFound = new ArrayList<>();
         RDFNode graphId = getGraphUri(uri.getUri().toString());
         if (graphId != null) {
-            Query triplesQuery = QueryGenerator.getInstance().getTriplesFromGraphUriQuery(graphId.toString(),
+            Query triplesQuery = QueryGenerator.getTriplesFromGraphUriQuery(graphId.toString(),
                 false);
             QueryExecution qe = this.queryExecFactory.createQueryExecution(triplesQuery);
             ResultSet rs = qe.execSelect();
@@ -189,7 +189,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
         LOGGER.info("Deleting triples for uri - " + uri);
         RDFNode graphId = getGraphUri(uri);
         LOGGER.info("Deleting triples from graph - " + graphId.toString());
-        Query deleteQuery = QueryGenerator.getInstance().getDeleteTriplesFromGraphQuery(graphId.toString());
+        Query deleteQuery = QueryGenerator.getDeleteTriplesFromGraphQuery(graphId.toString());
         UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(deleteQuery.toString());
         processor.execute();
     }
@@ -202,7 +202,7 @@ public class SparqlBasedSinkDedup implements AdvancedTripleBasedSink {
     public void updateGraphIdForActivity(CrawleableUri newUri, CrawleableUri oldUri){
         RDFNode graphId = getGraphUri(oldUri.getUri().toString());
         LOGGER.info("Updating the graph id of triples in uri - " + newUri.getUri().toString() + ", to: " + graphId.toString());
-        Query updateTriplesGraphIdQuery = QueryGenerator.getInstance().getUpdateTriplesGraphIdQuery(newUri.getUri().toString(), graphId);
+        Query updateTriplesGraphIdQuery = QueryGenerator.getUpdateTriplesGraphIdQuery(newUri.getUri().toString(), graphId);
         UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(updateTriplesGraphIdQuery.toString());
         processor.execute();
     }

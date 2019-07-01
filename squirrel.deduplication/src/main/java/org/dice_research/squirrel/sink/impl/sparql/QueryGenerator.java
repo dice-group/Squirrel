@@ -9,21 +9,17 @@ import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class contains static methods that generates SPARQL queries.
+ */
 public class QueryGenerator {
 
-    /**
-     * The instance of the class QueryGenerator.
-     */
-    private static final QueryGenerator instance = new QueryGenerator();
     public static final String METADATA_GRAPH_ID = "http://w3id.org/squirrel/metadata";
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryGenerator.class);
 
-    private QueryGenerator() {
-    }
-
-    private String getPrefixes() {
+    private static String getPrefixes() {
         StringBuilder sb = new StringBuilder();
         sb.append("PREFIX sq-s:  <http://w3id.org/squirrel/status#>\n");
         sb.append("PREFIX owl:  <http://www.w3.org/2002/07/owl#>\n");
@@ -41,21 +37,12 @@ public class QueryGenerator {
     }
 
     /**
-     * Getter for {@link #instance}.
-     *
-     * @return instannce of the class.
-     */
-    public static QueryGenerator getInstance() {
-        return instance;
-    }
-
-    /**
      * Return a select query to find the graph id of the crawled uri.
      *
      * @param uriCrawled The crawled uri for which graph id has to be selected.
      * @return select query string.
      */
-    public Query getTriplesGraphIdQuery(String uriCrawled) {
+    public static Query getTriplesGraphIdQuery(String uriCrawled) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH ?g {");
@@ -74,7 +61,7 @@ public class QueryGenerator {
      * @param uriCrawled The crawled uri for which activity uri has to be selected.
      * @return select query string.
      */
-    public Query getActivityUriQuery(String uriCrawled) {
+    public static Query getActivityUriQuery(String uriCrawled) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
@@ -95,7 +82,7 @@ public class QueryGenerator {
      * @param activityUri The uri of the activity for which generated uris has to be selected.
      * @return select query string.
      */
-    public Query getGeneratedUrisQuery(String activityUri){
+    public static Query getGeneratedUrisQuery(String activityUri){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?object WHERE { GRAPH <");
@@ -118,7 +105,7 @@ public class QueryGenerator {
      * @param hashValue The uri of the activity for which generated uris has to be selected.
      * @return select query string.
      */
-    public Query getHashQuery(String hashValue) {
+    public static Query getHashQuery(String hashValue) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
@@ -142,7 +129,7 @@ public class QueryGenerator {
      * @param defaultGraph Identify if query is for the default graph
      * @return All triples contained in the graph.
      */
-    public Query getTriplesFromGraphUriQuery(String graphID, boolean defaultGraph) {
+    public static Query getTriplesFromGraphUriQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("SELECT ?subject ?predicate ?object WHERE { ");
@@ -166,7 +153,7 @@ public class QueryGenerator {
      * @param graphID
      * @return the query
      */
-    public Query getDeleteTriplesFromGraphQuery(String graphID) {
+    public static Query getDeleteTriplesFromGraphQuery(String graphID) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("DELETE WHERE {");
@@ -187,7 +174,7 @@ public class QueryGenerator {
      * @param oldGraphId graph uri of the already present old uri
      * @return query
      */
-    public Query getUpdateTriplesGraphIdQuery(String newUri, RDFNode oldGraphId) {
+    public static Query getUpdateTriplesGraphIdQuery(String newUri, RDFNode oldGraphId) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getPrefixes());
         stringBuilder.append("DELETE { GRAPH <");

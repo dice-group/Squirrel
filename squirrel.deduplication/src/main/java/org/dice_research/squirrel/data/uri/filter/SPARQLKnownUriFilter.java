@@ -55,7 +55,7 @@ public class SPARQLKnownUriFilter implements UriHashCustodian {
         }
 
         for (String hashVal : stringHashValues){
-            Query query = QueryGenerator.getInstance().getHashQuery(hashVal);
+            Query query = QueryGenerator.getHashQuery(hashVal);
             QueryExecution qe = connector.queryExecFactory.createQueryExecution(query);
             ResultSet rs = qe.execSelect();
 
