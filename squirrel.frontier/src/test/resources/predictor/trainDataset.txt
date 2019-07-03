@@ -1,2 +1,4 @@
 RDF,https://mcloud.de/export/datasets/f5311403-007d-48b7-a372-159c210d1ba0
-nonRDF,erty://bfs.270a.info/erth
+HTML,https://europeandataportal.eu/set/data/71be4f37-908f-4204-8398-9ac74184ef40
+RDF,https://mcloud.de/export/datasets/7b9710be-d756-429b-bc92-51572d38a1e2
+HTML,https://europeandataportal.eu/set/data/0fe56a8a-6877-4e60-8a5d-8d0024bf63c7

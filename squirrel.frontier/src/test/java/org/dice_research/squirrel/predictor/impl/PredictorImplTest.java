@@ -21,33 +21,50 @@ public class PredictorImplTest {
     @Test
     public void train() throws Exception {
         // //Initialization
-        curi = new CrawleableUri(new URI("https://mcloud.de/web/guest/suche/-/results/search/55?_mcloudsearchportlet_sort=latest"));
+        curi = new CrawleableUri(new URI("https://ckan.govdata.de/organization"));
         CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-        CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
+        CrawleableUri curiNeg = new CrawleableUri(new URI("https://europeandataportal.eu/set/data/2b947c37-6103-463d-89e3-7e8d525c9e39"));
+        String uriType1 = null;
+        String uriType2 = null;
+        String uriType3 = null;
+        int accuracy = 0;
 
         predictor = new PredictorImpl();
-        predictor.TRAINING_SET_PATH = "trainDataset.txt";
+        predictor.TRAINING_SET_PATH = "predictor/trainDataset.txt";
 
         // train the learner on two URIs: one RDF and one non RDF
         predictor.train();
 
-        // predict for a random URI(HTML) example
+        // predict for a random URI(CKAN-non RDF) example
         predictor.featureHashing(curi);
         double pred = predictor.predict(curi);
-        double pround = Math.round(pred*100.0)/100.0;
-        Assert.assertEquals(0.41,pround,0.1);
-
+        if (pred<=0.5) {
+            uriType1 = "nonRDF";
+            accuracy+=1;
+        }
         // predict for a Positive (RDF) example
         predictor.featureHashing(curiPos);
         double pred2 = predictor.predict(curiPos);
-        double pround2 = Math.round(pred2*100.0)/100.0;
-        Assert.assertEquals(0.45, pround2,0.1);
-
+        if (pred2>=0.5) {
+            uriType2 = "RDF";
+            accuracy+=1;
+        }
         // predict for a negative (non RDF) example
         predictor.featureHashing(curiNeg);
-        double pred3 = predictor.predict(curiNeg);
-        double pround3 = Math.round(pred3*100.0)/100.0;
-        Assert.assertEquals(0.43, pround3,0.1);
+        double pred3;
+        pred3 = predictor.predict(curiNeg);
+        if (pred3<=0.5) {
+            uriType3 = "nonRDF";
+            accuracy+=1;
+        }
+        // Classificarion accuracy is the ratio of number of correct predictions to the total number of input samples
+        double Classificationacc =  (1.0*accuracy/3)*100.0;
+        System.out.print("Classification Accuracy: "+Math.round(Classificationacc*100.00/100.00)+"%");
+
+        assertEquals("nonRDF",uriType1);
+        assertEquals("RDF",uriType2);
+        assertEquals("nonRDF",uriType3);
+
     }
 
     @Test
@@ -89,7 +106,7 @@ public class PredictorImplTest {
         //Initialization
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         predictor = new PredictorImpl();
-        String uriType = "notRDF";
+        String uriType = null;
 
         // Weight Intialized with the train weight
         DenseDoubleVector weights = new DenseDoubleVector(new double[] {
