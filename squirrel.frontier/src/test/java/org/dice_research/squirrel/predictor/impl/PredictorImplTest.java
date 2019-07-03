@@ -2,7 +2,6 @@ package org.dice_research.squirrel.predictor.impl;
 
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.dense.DenseDoubleVector;
-import de.jungblut.online.regression.RegressionClassifier;
 import de.jungblut.online.regression.RegressionModel;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -90,6 +89,7 @@ public class PredictorImplTest {
         //Initialization
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         predictor = new PredictorImpl();
+        String uriType = "notRDF";
 
         // Weight Intialized with the train weight
         DenseDoubleVector weights = new DenseDoubleVector(new double[] {
@@ -97,15 +97,16 @@ public class PredictorImplTest {
 
         // Model and Classifier set up
         predictor.model = new RegressionModel(weights,  new SigmoidActivationFunction());
-        RegressionClassifier classifier = new RegressionClassifier(predictor.model);
 
         // Generate feature vector
         predictor.featureHashing(curi);
 
         // Prediction
         double pred = predictor.predict(curi);
-
-        Assert.assertEquals(0.5587385795221708, pred, 1e-4);
+        if (pred > 0.5) {
+            uriType = "RDF";
+        }
+        Assert.assertEquals("RDF", uriType);
 
     }
 

@@ -3,11 +3,9 @@ package org.dice_research.squirrel.predictor;
 
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
-import de.jungblut.math.activation.ActivationFunction;
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
-import de.jungblut.math.loss.LossFunction;
 import de.jungblut.math.minimize.CostGradientTuple;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
@@ -35,25 +33,21 @@ import java.util.stream.Stream;
 
 public final class PredictorImpl implements Predictor {
 
-    private ActivationFunction activationFunction;
-    private LossFunction lossFunction;
-    public WeightUpdater updater;
 
+    public WeightUpdater updater;
     public RegressionLearn learner;
+    public RegressionModel model;
+    public RegressionClassifier classifier;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
-    private static final double beta = 0;
-    private static final double l1 = 0;
-    private static final double l2 = 0;
+    private static final double beta = 1;
+    private static final double l1 = 1;
+    private static final double l2 = 1;
 
-    private FeatureOutcomePair featureOutcome;
-    private DoubleVector features;
 
     protected CrawleableUri uri;
 
-    public RegressionModel model;
-    public RegressionClassifier classifier;
     public String TRAINING_SET_PATH = "trainDataSet.txt";
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
@@ -124,7 +118,7 @@ public final class PredictorImpl implements Predictor {
 
     @Override
     public void train() {
-        updater = new AdaptiveFTRLRegularizer(1, 1, 1);
+        updater = new AdaptiveFTRLRegularizer(beta,l1 ,l2);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
             .holdoutValidationPercentage(0.05d) // 5% as validation set

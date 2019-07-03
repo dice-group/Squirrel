@@ -1,6 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
-import de.jungblut.math.DoubleVector;
+
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -14,7 +14,7 @@ import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
-import org.dice_research.squirrel.components.FrontierComponent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dice_research.squirrel.predictor.*;
