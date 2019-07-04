@@ -64,7 +64,7 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
                 // JSON
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 ActivityUtil.addStep(uri, getClass());
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "CKAN_API");
+                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, Constants.URI_TYPE_VALUE_CKAN);
                 return dataFile;
             } catch (CkanException e) {
                 LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
@@ -102,7 +102,7 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
     public static void main(String[] args) throws URISyntaxException, IOException {
         PaginatedCkanFetcher fetcher = new PaginatedCkanFetcher();
         fetcher.setCheckForUriType(false);
-        File datafile = fetcher.fetch(new CrawleableUri(new URI("https://ckan.govdata.de")));
+        File datafile = fetcher.fetch(new CrawleableUri(new URI("https://open.alberta.ca/")));
         System.out.println(datafile != null ? datafile.toString() : "null");
         fetcher.close();
     }

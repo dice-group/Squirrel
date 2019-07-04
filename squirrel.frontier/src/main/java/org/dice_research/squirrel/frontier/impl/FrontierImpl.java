@@ -1,5 +1,15 @@
 package org.dice_research.squirrel.frontier.impl;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -10,15 +20,12 @@ import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.graph.GraphLogger;
+import org.dice_research.squirrel.queue.DomainBasedQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -259,6 +266,11 @@ public class FrontierImpl implements Frontier {
             LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }
     }
+    
+    public static String getDomainName(URI uri) throws URISyntaxException {
+        String domain = uri.getHost();
+        return domain.startsWith("www.") ? domain.substring(4) : domain;
+    }
 
     @Override
     public void crawlingDone(List<CrawleableUri> uris) {
@@ -289,6 +301,18 @@ public class FrontierImpl implements Frontier {
                 }
             }
             ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
+        }else if (queue instanceof DomainBasedQueue) {
+            Set<String> domains = new HashSet<>();
+            String domain = "";
+            for (CrawleableUri uri : uris) {
+                try {
+                    domain = getDomainName(uri.getUri());
+                } catch (URISyntaxException e) {
+                    LOGGER.info("Could not obtain domain data");
+                }
+                domains.add(domain);
+            }
+            domains.forEach(d -> ((DomainBasedQueue) queue).markDomainAsAccessible(d));
         }
         // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : uris) {

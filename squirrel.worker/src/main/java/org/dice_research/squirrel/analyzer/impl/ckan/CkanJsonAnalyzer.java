@@ -13,7 +13,6 @@ import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.Analyzer;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;

@@ -21,10 +21,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.JackanModule;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 
 /**
  * Simple Java-based CKAN Fetcher.
@@ -74,9 +76,8 @@ public class SimpleCkanFetcher implements Fetcher {
                     out.write(NEWLINE_CHAR);
                 }
                 // If we reached this point, we should add a flag that the file contains CKAN JSON
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
+                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, Constants.URI_TYPE_VALUE_CKAN);
                 ActivityUtil.addStep(uri, getClass());
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY,"CKAN_API");
                 return dataFile;
             } catch(CkanException e) {
                 LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
@@ -133,10 +134,27 @@ public class SimpleCkanFetcher implements Fetcher {
     }
 
     public static void main(String[] args) throws URISyntaxException, IOException {
-        SimpleCkanFetcher fetcher = new SimpleCkanFetcher();
-        fetcher.setCheckForUriType(false);
-        File datafile = fetcher.fetch(new CrawleableUri(new URI("https://demo.ckan.org")));
-        System.out.println(datafile != null ? datafile.toString() : "null");
-        fetcher.close();
+//        SimpleCkanFetcher fetcher = new SimpleCkanFetcher();
+//        fetcher.setCheckForUriType(false);
+//        File datafile = fetcher.fetch(new CrawleableUri(new URI("http://localhost:80/")));
+//        System.out.println(datafile != null ? datafile.toString() : "null");
+//        fetcher.close();
+        
+        CheckedCkanClient client = new CheckedCkanClient("http://localhost:5000/", "951f4046-7cf7-42c1-aa7e-b468f3288ead");
+        try {
+        CkanDatasetBase dataset = new CkanDatasetBase();
+        dataset.setTitle("titulo");
+        dataset.setName("ds1");
+        dataset.setOwnerOrg("dice-group");
+        dataset.setAuthor("ldcbench");
+        
+        client.createDataset(dataset);
+        }catch (CkanException e) {
+            
+            if(e.getMessage().contains("Solr returned an error"))
+                System.out.println("Solr Error");
+            
+        }
+        
     }
 }

@@ -196,6 +196,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
                 new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
         mongoDB.getCollection(COLLECTION_URIS).deleteMany(
                 new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
+        
+        LOGGER.info("NEXT URIS -----------------");
+        
+        listUris.forEach(x -> LOGGER.info(x.getUri().toString()));
 
         return listUris;
     }

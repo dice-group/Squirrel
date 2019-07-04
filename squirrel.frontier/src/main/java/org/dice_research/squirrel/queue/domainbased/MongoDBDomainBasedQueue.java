@@ -86,6 +86,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     }
 
     public long length() {
+     
         return mongoDB.getCollection(COLLECTION_QUEUE).count();
     }
 
@@ -286,12 +287,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
                 .find(new Document("domain", pair.getDomain()).append("type", pair.getType().toString())).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
-
+        
         try {
             while (uriDocs.hasNext()) {
 
                 Document doc = uriDocs.next();
-
+                
                 listUris.add(serializer.deserialize(((Binary) doc.get("uri")).getData()));
 
             }
@@ -299,11 +300,13 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         } catch (Exception e) {
             LOGGER.error("Error while retrieving uri from MongoDBQueue", e);
         }
+        
+        
 
         mongoDB.getCollection(COLLECTION_QUEUE)
-                .deleteOne(new Document("ipAddress", pair.getDomain()).append("type", pair.getType().toString()));
+                .deleteMany(new Document("domain", pair.getDomain()).append("type", pair.getType().toString()));
         mongoDB.getCollection(COLLECTION_URIS)
-                .deleteMany(new Document("ipAddress", pair.getDomain()).append("type", pair.getType().toString()));
+                .deleteMany(new Document("domain", pair.getDomain()).append("type", pair.getType().toString()));
 
         return listUris;
     }

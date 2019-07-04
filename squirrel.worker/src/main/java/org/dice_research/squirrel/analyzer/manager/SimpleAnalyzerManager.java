@@ -41,7 +41,6 @@ public class SimpleAnalyzerManager implements Analyzer{
 	 * @param uriCollector The collector used to create a new Analyzer
 	 * @param analyzers Array of Strings, containing the full class name used to create a new instance of an Analyzer
 	 */
-	
 	@Deprecated
 	public SimpleAnalyzerManager(UriCollector uriCollector,String... analyzers) {
 		this.analyzers = new HashMap<String, Analyzer>();
@@ -97,11 +96,13 @@ public class SimpleAnalyzerManager implements Analyzer{
 	 */
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-		
+	    LOGGER.info(">> Analyzing");
+	
 		Iterator<byte[]> iterator = null;
 		
 		for(Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
 			if(analyzerEntry.getValue().isElegible(curi, data)) {
+		         LOGGER.info(">> Analyzer " + analyzerEntry.getValue().getClass().getName() + " is elegible for the uri: " + curi.getUri().toString());
 				if(curi.getData().containsKey(LIST_ANALYZERS)) {
 					@SuppressWarnings("unchecked")
 					List<String> analyzers = (List<String>) curi.getData().get(LIST_ANALYZERS);
@@ -114,9 +115,8 @@ public class SimpleAnalyzerManager implements Analyzer{
 				}
 				
 				ActivityUtil.addStep(curi, analyzerEntry.getValue().getClass());
-				
+                LOGGER.info(">> Using analyzer " + analyzerEntry.getValue().getClass().getName() + ".");
 				iterator = analyzerEntry.getValue().analyze(curi, data, sink);
-				LOGGER.info(">> Using analyzer " + analyzerEntry.getValue().getClass().getName() + ".");
 			}
 		}
 		return iterator;

@@ -138,6 +138,7 @@ public class WorkerImpl implements Worker, Closeable {
                     }
                 } else {
                     // perform work
+                    
                     crawl(urisToCrawl);
                 }
             }
@@ -259,7 +260,7 @@ public class WorkerImpl implements Worker, Closeable {
                             LOGGER.info("Found " + fileList.size() + " files after decompression ");
                             int cont = 1;
                             for (File file : fileList) {
-                            	LOGGER.info("Analyzing file " + cont + " of " + fileList.size());
+                            	LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
                                 Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
                                 sendNewUris(resultUris);
                                 cont++;

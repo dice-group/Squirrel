@@ -23,7 +23,7 @@ public abstract class AbstractDomainBasedQueue implements DomainBasedQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDomainBasedQueue.class);
     
     private Semaphore queueMutex = new Semaphore(1);
-    private Set<DomainUriTypePair> blockedDomains = new HashSet<DomainUriTypePair>();
+    private Set<String> blockedDomains = new HashSet<String>();
 
 
     @Override
@@ -51,6 +51,7 @@ public abstract class AbstractDomainBasedQueue implements DomainBasedQueue {
             throw new IllegalStateException("Interrupted while waiting for mutex.", e);
         }
         DomainUriTypePair domain;
+                
         try {
             Iterator<DomainUriTypePair> iterator = getIterator();
             do {
@@ -58,8 +59,9 @@ public abstract class AbstractDomainBasedQueue implements DomainBasedQueue {
                     return null;
                 }
                 domain = iterator.next();
-            } while (blockedDomains.contains(domain));
-            blockedDomains.add(domain);
+                
+            } while (blockedDomains.contains(domain.getDomain()));
+            blockedDomains.add(domain.getDomain());
         } finally {
             queueMutex.release();
         }
