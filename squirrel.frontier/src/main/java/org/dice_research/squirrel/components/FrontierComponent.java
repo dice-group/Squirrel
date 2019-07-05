@@ -292,11 +292,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
 		@Override
 		public void run() {
-		    
-            LOGGER.info("Has uris to crawl: " + hasUrisToCrawl.values().contains(true));
-            LOGGER.info("Queue is empty: " + terminationCheck.shouldFrontierTerminate(queue));
 
-		    
 			if(!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
 			    LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
 	        	terminationMutex.release();
