@@ -128,7 +128,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 		}
 
 		// Build frontier
-		frontier = new ExtendedFrontierImpl(new NormalizerImpl(),knownOutDatedUriFilter, knownUriFilter, uriReferences, queue, doRecrawling);
+		frontier = new ExtendedFrontierImpl(new NormalizerImpl(),knownUriFilter, uriReferences, queue, doRecrawling, knownOutDatedUriFilter);
 		rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
 		receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
 				.maxParallelProcessedMsgs(100).queue(rabbitQueue).build();

@@ -93,6 +93,7 @@ public class SparqlConfiguration implements KnownOutDatedUriFilter {
 		return new SparqlConfiguration(queryExecFactory, updateExecFactory);
 	}
 
+
 	@Override
 	public List<CrawleableUri> getUriToRecrawl() {
 		SparqlConfiguration.create("http://localhost:8890/sparql-auth", "dba", "pw123");
@@ -103,7 +104,6 @@ public class SparqlConfiguration implements KnownOutDatedUriFilter {
 		while (rs.hasNext()) {
 			QuerySolution sol = rs.nextSolution();
 			RDFNode outdatedUri = sol.get("uri");
-			System.out.println(outdatedUri);
 				try {
 					urisToRecrawl.add(new CrawleableUri(new URI((outdatedUri.toString()))));
 				} catch (URISyntaxException e) {
@@ -114,7 +114,7 @@ public class SparqlConfiguration implements KnownOutDatedUriFilter {
 }
 
 
+
 }	
-	
 	
 	

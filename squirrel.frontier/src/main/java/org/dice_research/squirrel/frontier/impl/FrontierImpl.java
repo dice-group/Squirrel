@@ -96,11 +96,11 @@ public class FrontierImpl implements Frontier {
 	/**
 	 * Default value for {@link #generalRecrawlTime} (one week).
 	 */
-	public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
+	public static final long DEFAULT_GENERAL_RECRAWL_TIME =18000 ;
     /**
      * Default value for {@link #timerPeriod}.
      */
-    private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
+    private static final long DEFAULT_TIMER_PERIOD = 18000;
 
 	/**
 	 * Constructor.
@@ -118,11 +118,10 @@ public class FrontierImpl implements Frontier {
 	 *                           used.
 	 * @param timerPeriod        used to select if URIs should be recrawled.
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
-			KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
-			long generalRecrawlTime, long timerPeriod) {
-		this(normalizer, knownOutDatedUriFilter, knownUriFilter, null, queue, graphLogger, doesRecrawling,
-				generalRecrawlTime, timerPeriod);
+	public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
+			long generalRecrawlTime, long timerPeriod,KnownOutDatedUriFilter knownOutDatedUriFilter) {
+		this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling,
+				generalRecrawlTime, timerPeriod,knownOutDatedUriFilter);
 	}
 
 	/**
@@ -140,11 +139,11 @@ public class FrontierImpl implements Frontier {
 	 *                           used.
 	 * @param timerPeriod        used to select if URIs should be recrawled.
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
+	public FrontierImpl(UriNormalizer normalizer, 
 			KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime,
-			long timerPeriod, UriHashCustodian uriHashCustodian) {
-		this(normalizer, knownOutDatedUriFilter, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime,
-				timerPeriod);
+			long timerPeriod, UriHashCustodian uriHashCustodian, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+		this(normalizer,  knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime,
+				timerPeriod, knownOutDatedUriFilter);
 	}
 
 	/**
@@ -159,10 +158,10 @@ public class FrontierImpl implements Frontier {
 	 *                       crawled.
 	 * @param doesRecrawling Value for {@link #doesRecrawling}.
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
-			KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
-		this(normalizer, knownOutDatedUriFilter, knownUriFilter, uriReferences, queue, null, doesRecrawling,
-				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+	public FrontierImpl(UriNormalizer normalizer, 
+			KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling,KnownOutDatedUriFilter knownOutDatedUriFilter) {
+		this(normalizer,  knownUriFilter, uriReferences, queue, null, doesRecrawling,
+				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, knownOutDatedUriFilter);
 	}
 
 	/**
@@ -176,10 +175,10 @@ public class FrontierImpl implements Frontier {
 	 *                       crawled.
 	 * @param doesRecrawling Value for {@link #doesRecrawling}.
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
-			KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling) {
-		this(normalizer, knownOutDatedUriFilter, knownUriFilter, queue, null, doesRecrawling,
-				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+	public FrontierImpl(UriNormalizer normalizer,
+			KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+		this(normalizer,  knownUriFilter, queue, null, doesRecrawling,
+				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, knownOutDatedUriFilter);
 	}
 
 	/**
@@ -192,10 +191,10 @@ public class FrontierImpl implements Frontier {
 	 * @param queue          {@link UriQueue} used to manage the URIs that should be
 	 *                       crawled.
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
-			KnownUriFilter knownUriFilter, UriQueue queue) {
-		this(normalizer, knownOutDatedUriFilter, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME,
-				DEFAULT_TIMER_PERIOD);
+	public FrontierImpl(UriNormalizer normalizer,
+			KnownUriFilter knownUriFilter, UriQueue queue, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+		this(normalizer,  knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME,
+				DEFAULT_TIMER_PERIOD, knownOutDatedUriFilter);
 	}
 
 	/**
@@ -214,10 +213,11 @@ public class FrontierImpl implements Frontier {
 	 *                           be recrawled. If Value is null the default Time is
 	 *                           used.
 	 * @param timerPeriod        used to select if URIs should be recrawled.
+	 * @param knownOutDatedUriFilter 
 	 */
-	public FrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,
+	public FrontierImpl(UriNormalizer normalizer, 
 			KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger,
-			boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+			boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, KnownOutDatedUriFilter knownOutDatedUriFilter) {
 		this.normalizer = normalizer;
 		this.knownUriFilter = knownUriFilter;
 		this.uriReferences = uriReferences;
@@ -237,9 +237,8 @@ public class FrontierImpl implements Frontier {
 				@Override
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = knownOutDatedUriFilter.getUriToRecrawl();
-					// LOGGER.error("recrawl uri: ", urisToRecrawl);
+					System.out.println("Frontier uri to recrawl: " +urisToRecrawl);
 					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
-					// LOGGER.error("URI to recrawl: ", urisToRecrawl);
 				}
 			}, this.timerPeriod, this.timerPeriod);
 		}

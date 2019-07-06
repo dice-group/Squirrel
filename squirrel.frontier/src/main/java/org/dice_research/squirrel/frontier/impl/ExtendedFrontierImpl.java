@@ -32,9 +32,9 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param uriHashCustodian   used to access and write hash values for uris.
      */
     @SuppressWarnings("unused")
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
-                                long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        super(normalizer, knownOutDatedUriFilter, knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
+                                long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+        super(normalizer, knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian, knownOutDatedUriFilter);
     }
 
     /**
@@ -47,8 +47,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                         crawled.
      * @param doesRecrawling   used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling) {
-        super(normalizer, knownOutDatedUriFilter, knownUriFilter, queue, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+        super(normalizer,  knownUriFilter, queue, doesRecrawling, knownOutDatedUriFilter);
     }
 
     /**
@@ -62,8 +62,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownOutDatedUriFilter knownOutDatedUriFilter,KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
-        super(normalizer, knownOutDatedUriFilter,knownUriFilter, uriReferences, queue, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, KnownOutDatedUriFilter knownOutDatedUriFilter) {
+        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling,knownOutDatedUriFilter);
     }
 
     @Override

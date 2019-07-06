@@ -117,7 +117,7 @@ public class FrontierQueryGenerator {
         		"  } \n" + 
         		"}\n" + 
         		"}\n" + 
-        		"FILTER(?diff > \"604800\"^^xsd:double)\n" + 
+        		"FILTER(?diff > \"18000\"^^xsd:double)\n" +
         		"");
         if (!defaultGraph) {
             stringBuilder.append("}");

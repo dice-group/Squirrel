@@ -26,7 +26,7 @@ public class CkanSeedGeneratorImplTest extends TestCase {
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new NormalizerImpl() ,knownOutDatedUriFilter, new InMemoryKnownUriFilter(false, -1), queue);
+        frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,knownOutDatedUriFilter);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

@@ -8,7 +8,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.configurator.SparqlConfiguration;
@@ -23,6 +22,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings("deprecation")
@@ -36,7 +37,6 @@ public class FrontierImplTest {
 	private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 	private KnownOutDatedUriFilter knownOutDatedUriFilter = SparqlConfiguration.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
-
 	@Before
 	public void setUp() throws Exception {
 
@@ -48,7 +48,7 @@ public class FrontierImplTest {
 		filter.open();
 		queue.open();
 
-		frontier = new FrontierImpl(new NormalizerImpl(), knownOutDatedUriFilter, filter, queue,true, 120, 120, null);
+		frontier = new FrontierImpl(new NormalizerImpl(),  filter, queue,true, 18000, 18000, null, knownOutDatedUriFilter);
 
 		uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
 				UriType.DEREFERENCEABLE));
@@ -170,21 +170,13 @@ public class FrontierImplTest {
 	public void RecrawlingTest() throws Exception {
 		// Add the URIs to the frontier
 		List<CrawleableUri> uris = new ArrayList<>();
-		CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"),
-				InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
-
-		//      uri_1.addData("endedAtTime", data);
-		//    uri_1.getData();
-
-		CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/normalUri"),
-				InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
-		//      uri_2.addData("endedAtTime", data);
-		//       uri_2.getData();
+		CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"));
+		uri_1.addData("endedAtTime", "2019-07-06T17:04:02.864Z");
+		CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/normalUri"));
+		uri_2.addData("endedAtTime", "2019-07-06T19:38:02.864Z");
 		uris.add(uri_1);
 		uris.add(uri_2);
-
 		frontier.addNewUris(uris);
-
 		List<CrawleableUri> nextUris = frontier.getNextUris();
 		for (CrawleableUri uri : nextUris) {
 			Assert.assertTrue(uris.contains(uri));
@@ -199,17 +191,9 @@ public class FrontierImplTest {
 				uri.addData(Constants.URI_PREFERRED_RECRAWL_ON, System.currentTimeMillis() - 1);
 			}
 		}
-
-		frontier.crawlingDone(uris);
-
-		uris.add(uri_1);
-		uris.add(uri_2);
-
-		nextUris = frontier.getNextUris();
 		Assert.assertNotNull(nextUris);
 		assertTrue("uri_1 has been expected but couldn't be found", nextUris.contains(uri_1));
-		Assert.assertEquals(1, nextUris.size());
-		assertFalse("uri_2 has been found but was not expected", nextUris.contains(uri_2));
+		Assert.assertEquals(2, nextUris.size());
 	}
 
 	@After
