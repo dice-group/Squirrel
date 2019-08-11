@@ -58,6 +58,12 @@ public abstract class AbstractIpAddressBasedQueue implements IpAddressBasedQueue
                     return null;
                 }
                 pair = iterator.next();
+                
+                LOGGER.info("Ip Pair: " + pair.getIp().getHostAddress() + " - " + pair.getType().toString());
+                LOGGER.info("Blocked Contains IP: " + blockedIps.contains(pair.getIp()));
+                LOGGER.info("Blocked Ips: ");
+                blockedIps.forEach(x -> LOGGER.info(x.getHostAddress()));
+                
             } while (blockedIps.contains(pair.getIp()));
             blockedIps.add(pair.getIp());
         } finally {

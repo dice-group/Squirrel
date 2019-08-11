@@ -138,6 +138,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
+        LOGGER.info("Closing Sink for URI: " + uri.getUri().toString());
         super.closeSinkForUri(uri);
         if (!uri.equals(metadataGraphUri)) {
             CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
@@ -177,6 +178,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
                     .replaceAll("\\{\\}", ""
                             + "{ SELECT * {OPTIONAL {?s ?p ?o} } LIMIT 1}")
                     );
+            LOGGER.info("Storing " + triples.size() + " triples for URI: " + uri.getUri().toString());
             processor.execute();
         } catch (Exception e) {
             LOGGER.error("Exception while sending update query.", e);
