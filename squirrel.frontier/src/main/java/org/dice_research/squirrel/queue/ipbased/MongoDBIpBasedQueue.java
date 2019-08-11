@@ -88,6 +88,11 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     }
 
     public long length() {
+//        LOGGER.info("Still have: ");
+//        MongoCursor<Document> docs = mongoDB.getCollection(COLLECTION_QUEUE).find().iterator();
+//        while(docs.hasNext())
+//            LOGGER.info(docs.next().toJson());
+        
         return mongoDB.getCollection(COLLECTION_QUEUE).count();
     }
 
@@ -197,10 +202,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         mongoDB.getCollection(COLLECTION_URIS).deleteMany(
                 new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
         
-        LOGGER.info("NEXT URIS -----------------");
-        
-        listUris.forEach(x -> LOGGER.info(x.getUri().toString()));
-
         return listUris;
     }
 
