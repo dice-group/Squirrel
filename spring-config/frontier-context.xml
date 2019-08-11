@@ -41,7 +41,7 @@
     <bean id="serializerBean"
         class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer" />
     
-    <bean id = "queueBean" class="org.dice_research.squirrel.queue.domainbased.MongoDBDomainBasedQueue">
+    <bean id = "queueBean" class="org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue">
         <constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
         <constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
         <constructor-arg index="2" ref="serializerBean" />
