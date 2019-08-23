@@ -211,8 +211,12 @@ public class WorkerImpl implements Worker, Closeable {
         uri.addData(Constants.UUID_KEY, UUID.randomUUID().toString());
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
+
+        //The time out set up for this URI
+        long timeout = manager.getMinWaitingTime(uri.getUri());
+        uri.addData(Constants.URI_TIMEOUT_KEY, timeout);
+
         try {
-        
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
             // Make sure that there is a delay between the fetching of two URIs 

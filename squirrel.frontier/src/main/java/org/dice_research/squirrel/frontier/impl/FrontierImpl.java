@@ -241,7 +241,7 @@ public class FrontierImpl implements Frontier {
                 // Make sure that the IP is known
                 try {
                     uri = this.uriProcessor.recognizeInetAddress(uri);
-                    
+
                 } catch (UnknownHostException e) {
                     LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
                 }
@@ -254,7 +254,7 @@ public class FrontierImpl implements Frontier {
             } else {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only " + schemeUriFilter.getSchemes() + ". Will not added!");
             }
-            
+
         } else {
             LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + knownUriFilter + "]. Will not be added!");
         }

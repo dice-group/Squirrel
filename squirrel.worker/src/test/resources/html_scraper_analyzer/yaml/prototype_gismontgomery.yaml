@@ -1,0 +1,31 @@
+file_descriptor:
+    check:
+        domain: prototype-gismontgomery.opendata.arcgis.com
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": a:contains(Boundaries)
+
+    search-result-page:
+        regex: datasets?q=
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link": .card-title a
+                "http://projekt-opal.de/dataset#pagination": .pagination-results li a
+
+    detail-page:
+        regex: datasets
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": div#main-message
+                "http://purl.org/dc/terms/description": span#dataset-description
+                "http://purl.org/dc/terms/publisher": span[itemprop="author"]
+                "http://purl.org/dc/terms/issued": span[itemprop="datePublished"]
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": ul#dataset-meta-list li:eq(0) a
+                "http://www.w3.org/ns/dcat#accessURL": ul#dataset-meta-list li:eq(1) a
+                "http://purl.org/dc/terms/license": ul#dataset-meta-list li:eq(2)
+                "http://purl.org/dc/terms/modified": li[itemprop="dateModified"]
+                "http://www.w3.org/ns/dcat#downloadURL": .dl-links a
+

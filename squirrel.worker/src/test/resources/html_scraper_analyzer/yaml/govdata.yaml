@@ -5,11 +5,23 @@ file_descriptor:
  search-result-page:
   regex: searchresult
   resources:
- 
+      "javascript":
+          button:
+              id: searchresults-more-btn
+              action: click
+              disable_id: searchresults-more-block
+
  download_page:
   regex: details
   resources:
-   "http://schema.org/downloadUrl":
-    - .resource-list li dd a[id^=resource]
-    - ul li:contains(RDF) a
-   "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
+      "http://schema.org/downloadUrl":
+      - .resource-list li dd a[id^=resource]
+      - ul li:contains(RDF) a
+      "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
+
+
+
+
+
+
+

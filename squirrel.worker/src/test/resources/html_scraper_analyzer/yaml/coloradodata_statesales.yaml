@@ -1,0 +1,27 @@
+file_descriptor:
+    check:
+        domain: coloradodata.statesales.opendata.arcgis.com
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "http://projekt-opal.de/dataset#pagination": .dropdown-menu li a
+
+    search-result-page:
+        regex: datasets
+        resources:
+            "http://projekt-opal.de/dataset#link":  .card-title a
+
+    detail-page:
+        regex: datasets
+        resources:
+            "http://purl.org/dc/terms/title": div#main-message
+            "http://purl.org/dc/terms/description": span#dataset-description
+            "http://purl.org/dc/terms/publisher": div#org-content span#dataset-org-name
+            "http://purl.org/dc/terms/modified": div#org-content ul#dataset-meta-stamps li
+            "http://purl.org/dsnotify/vocab/eventset/sourceDataset": div#dataset-info-card-region ul#dataset-meta-list span.info-wrapper a
+            "http://dbpedia.org/ontology/dateLastUpdated": div#org-content ul#dataset-meta-stamps li
+            "http://purl.org/dc/terms/license": div#dataset-info-card-region ul#dataset-meta-list span.info-wrapper a
+            "http://purl.org/dc/terms/created": div#org-content span#dataset-org-name
+            "http://www.w3.org/ns/dcat#downloadURL": div#show-banner-region .banner-main.map-bar-banner.map-bar-title div#dataset-download-container span

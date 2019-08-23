@@ -47,36 +47,36 @@ public class SparqlDatasetFetcher implements Fetcher {
      */
 
     protected String dataSetQuery = "select ?s where {?s a <http://www.w3.org/ns/dcat#Dataset>.} " ;
-    protected String graphQuery = 
-			"construct { ?s ?p ?o. " + 
-			"?o ?p2 ?o2. } " + 
-			"where { " + 
-			"graph ?g { " + 
-			"?s ?p ?o. " + 
-			"OPTIONAL { ?o ?p2 ?o2.} " + 
-			"} " + 
-			"}";
-    
+    protected String graphQuery =
+        "construct { ?s ?p ?o. " +
+            "?o ?p2 ?o2. } " +
+            "where { " +
+            "graph ?g { " +
+            "?s ?p ?o. " +
+            "OPTIONAL { ?o ?p2 ?o2.} " +
+            "} " +
+            "}";
+
 
 
     protected int delay;
     protected int limit = 0;
     protected File dataDirectory = FileUtils.getTempDirectory();
-    
+
     public SparqlDatasetFetcher() {
-    	
+
     }
-    
-    
+
+
     public SparqlDatasetFetcher(int delay, int begin, int limit) {
-    	this.delay = delay;
-    	dataSetQuery += "OFFSET " + begin;
-    	this.limit = limit;
-    	
+        this.delay = delay;
+        dataSetQuery += "OFFSET " + begin;
+        this.limit = limit;
+
     }
-    
+
     public SparqlDatasetFetcher(int delay){
-    	this.delay = delay;
+        this.delay = delay;
     }
 
     @Override
@@ -92,66 +92,66 @@ public class SparqlDatasetFetcher implements Fetcher {
             qef = initQueryExecution(uri.getUri().toString());
             // create temporary file
             try {
-            	dataFile = File.createTempFile("fetched_", "", dataDirectory);
+                dataFile = File.createTempFile("fetched_", "", dataDirectory);
                 out = new BufferedOutputStream(new FileOutputStream(dataFile));
             } catch (IOException e) {
                 LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
                 return null;
             }
-            
+
             execution = qef.createQueryExecution(dataSetQuery);
             ResultSet resultSet = execution.execSelect();
-            
-            int i = 0;
-            
-            while(resultSet.hasNext()) {
-            	
-            	 if(limit != 0 && i>limit) {
-            		 LOGGER.info("LIMIT REACHED, STOPING EXECUTION");
-            		 execution.close();
-            		 break;
-            	 }
-                 	
-            	
-              QuerySolution soln = resultSet.nextSolution() ;
-  		      String dataSetResource = soln.get("s").toString() ;       // Get a result variable by name.
-  		      LOGGER.info("- Now Fetching - " + i + ": " + dataSetResource);
-           
-		      Query query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">")) ;
-		      
-		      
-			  boolean tryAgain = true;
-			  
-		      while(tryAgain) {
-		    	  
-		    	try {
-		  			Thread.sleep(delay);
-		  		} catch (InterruptedException e) {
-		  			LOGGER.error("An error occurred when fetching URI: " + uri.getUri().toString()
-		  					,e);
-		  		}
-		      
-		      try {	      
-		      QueryExecution qexecGraph = org.apache.jena.query.QueryExecutionFactory.createServiceRequest(uri.getUri().toString(), query);
-		    	  
-		    	  Iterator<Triple> triples = qexecGraph.execConstructTriples();
-		    	  
-		    	  RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
-		    	  tryAgain = false;
 
-		    	  i++;
-		      }catch(QueryExceptionHTTP e) {
-		    	  
-		    	  if(e.getResponseCode() == 404 || e.getResponseCode() == 500) {
-		    		 tryAgain = true; 
-		    		 LOGGER.info("Error while fetching " +dataSetResource + ". Trying again...");
-		    	  }
-		  
-		      	}
-		      }        
+            int i = 0;
+
+            while(resultSet.hasNext()) {
+
+                if(limit != 0 && i>limit) {
+                    LOGGER.info("LIMIT REACHED, STOPING EXECUTION");
+                    execution.close();
+                    break;
+                }
+
+
+                QuerySolution soln = resultSet.nextSolution() ;
+                String dataSetResource = soln.get("s").toString() ;       // Get a result variable by name.
+                LOGGER.info("- Now Fetching - " + i + ": " + dataSetResource);
+
+                Query query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">")) ;
+
+
+                boolean tryAgain = true;
+
+                while(tryAgain) {
+
+                    try {
+                        Thread.sleep(delay);
+                    } catch (InterruptedException e) {
+                        LOGGER.error("An error occurred when fetching URI: " + uri.getUri().toString()
+                            ,e);
+                    }
+
+                    try {
+                        QueryExecution qexecGraph = org.apache.jena.query.QueryExecutionFactory.createServiceRequest(uri.getUri().toString(), query);
+
+                        Iterator<Triple> triples = qexecGraph.execConstructTriples();
+
+                        RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
+                        tryAgain = false;
+
+                        i++;
+                    }catch(QueryExceptionHTTP e) {
+
+                        if(e.getResponseCode() == 404 || e.getResponseCode() == 500) {
+                            tryAgain = true;
+                            LOGGER.info("Error while fetching " +dataSetResource + ". Trying again...");
+                        }
+
+                    }
+                }
             }
-            
-            
+
+
 //            RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
         } catch (Throwable e) {
             // If this should have worked, print a message, otherwise silently return null
@@ -178,11 +178,11 @@ public class SparqlDatasetFetcher implements Fetcher {
         qef = new QueryExecutionFactoryHttp(uri);
         qef = new QueryExecutionFactoryDelay(qef, delay);
         try {
-        	LOGGER.info("Starting to Query uri:" + uri);
+            LOGGER.info("Starting to Query uri:" + uri);
             return new QueryExecutionFactoryPaginated(qef, 2000);
         } catch (Exception e) {
             LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
-                    e.getLocalizedMessage());
+                e.getLocalizedMessage());
             return qef;
         }
     }

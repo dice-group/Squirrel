@@ -1,0 +1,826 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:fontawesome.css;select2.css" />
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:styles/jquery.fancybox.css;styles/main.css" />
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.5.9" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Parking — Stations - Datasets | Brisbane City Council Data Directory</title>
+
+
+
+  <link rel="shortcut icon" href="/sites/default/files/favicon.ico" type="image/vnd.microsoft.icon" />
+
+
+
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html start -->
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-26442705-1', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html end -->
+
+
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+
+
+
+
+  <link rel="stylesheet" href="/data/styles/jquery-ui.css" />
+  <link rel="stylesheet" href="/data/styles/new.css" />
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,300' rel='stylesheet' type='text/css'>
+
+
+
+
+
+
+
+
+  <meta property="og:title" content="Parking — Stations - Data | Brisbane City Council">
+  <meta property="og:description" content="Number of vacant spaces at Brisbane City Council’s 2 parking stations.
+Brisbane City Council operates two car parks in the Brisbane Central Business District (CBD) at King George Square and Wickham...">
+  <style>
+    .select-area{z-index:0;!important}
+    .nav-tabs { margin-top: 27px; }
+    body header.navbar { padding-bottom: 20px; }
+
+  </style>
+
+</head>
+
+
+<body data-site-root="https://www.data.brisbane.qld.gov.au/data/" data-locale-root="https://www.data.brisbane.qld.gov.au/data/" >
+
+
+<div id="skip-link">
+  <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+</div>
+<div id="data-wrapper">
+
+  <div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <header class="navbar navbar-static-top masthead">
+
+
+
+
+
+    <div class="container header-area">
+      <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar collapsed" type="button">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <div class="logo-holder">
+
+
+        <a href="/home" class="mobile-logo">
+          <img src="/sites/all/themes/ckan/html/images/Mobile_Logo.png" alt="data.brisbane.qld.gov.au">
+        </a>
+        <a href="/home">
+          <img src="https://www.data.brisbane.qld.gov.au/data/images/logo-new-hq.png" alt="data.brisbane.qld.gov.au" height="54">
+        </a>
+
+
+
+
+
+
+      </div>
+      <div class="nav-collapse collapse">
+
+
+        <nav class="section navigation">
+          <ul class="nav nav-pills">
+
+
+
+
+            <li id=""  class=""><a href="/">Home</a></li>
+
+
+
+            <li id=""  class="active"><a href="/data/dataset">Data</a></li>
+
+
+
+            <li id=""  class=""><a href="/blog">Blog</a></li>
+
+
+
+            <li id=""  class=""><a href="/contact">Contact</a></li>
+
+
+
+            <li id="stats-nav"  class=""><a href="/data/stats#total-datasets">Stats</a></li>
+
+
+
+            <li id=""  class=""><a href="/about">About</a></li>
+
+
+
+          </ul>
+        </nav>
+
+
+
+      </div>
+    </div>
+
+
+
+    <form class="section site-search simple-input" name='search-form' action="/data/dataset" method="get">
+      <div class="field">
+        <label for="field-sitewide-search">
+          Search Datasets
+        </label>
+        <input id="field-sitewide-search" type="text" name="q" value="" placeholder="Search for data..." title="Enter the terms you wish to search for." onkeydown='goSearchKey(event)'>
+        <button class="btn-search" id='go-search' type="submit" title='Search button'>
+          <i class="icon-search" ></i>
+        </button>
+      </div>
+    </form>
+
+  </header>
+
+
+  <div role="main" id='main-content'><div class="social-blcok">
+    <strong>share</strong>
+    <ul>
+      <li class="envelope"><a href='javascript:void(0)'    onclick="window.location='mailto:?subject=QQQ&amp;body='+window.location.href">envelope</a></li>
+      <li class="twitter"><a href='javascript:void(0)'    onclick="window.location='http://www.twitter.com/share?url='+window.location.href">twitter</a></li>
+      <li class="facebook"><a href='javascript:void(0)'    onclick="window.location='https://www.facebook.com/sharer/sharer.php?u='+window.location.href">facebook</a></li>
+      <li class="linkedin"><a href='javascript:void(0)'    onclick="window.location='https://www.linkedin.com/shareArticle?mini=true&amp;url='+window.location.href">linkedin</a></li>
+      <li class="google-plus"><a href='javascript:void(0)'    onclick="window.location='https://plus.google.com/share?url='+window.location.href">google-plus</a></li>
+    </ul>
+  </div>
+    <div id="content" class="container">
+
+
+      <div class="flash-messages">
+
+
+
+      </div>
+
+
+
+      <div class="toolbar">
+
+
+        <ol class="breadcrumb">
+
+          <!-- Snippet snippets/home_breadcrumb_item.html start -->
+          <li class="home"><a href="/" title="Home" ><i class="icon-home"></i><span> Home</span></a></li>
+          <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+
+
+          <li><a href="/data/dataset">Datasets</a></li>
+          <li class="active"><a class=" active" href="/data/dataset/brisbane-parking-stations">Parking — Stations</a></li>
+
+
+        </ol>
+
+
+        <div id='sr-home' style="
+                                      position: absolute;
+                                      width: 20px;
+                                      height: 20px;
+                                      opacity: 0;
+                                      overflow: hidden;
+                                      cursor: pointer;
+                                      " onclick=" window.location = '/' ">
+          Home
+        </div>
+      </div>
+
+
+      <div class="row wrapper">
+
+
+
+
+
+
+        <div class="primary span9">
+
+
+
+
+
+
+
+          <section class="module">
+
+            <header class="module-content page-header">
+
+
+              <div class="image aside-image">
+                <a href="None">
+
+                  <img src="https://www.data.brisbane.qld.gov.au/data/images/img15.png" alt="" width="102" height="102">
+
+                </a>
+              </div>
+
+              <h1 id='dataset-mobile-title'>
+                Parking — Stations
+
+              </h1>
+
+
+              <ul class="add-nav">
+
+
+                <li class="active"><a href="/data/dataset/brisbane-parking-stations">Dataset</a></li>
+                <li><a href="/data/dataset/groups/brisbane-parking-stations">Categories</a></li>
+                <li><a href="/data/dataset/activity/brisbane-parking-stations">Activity Stream</a></li>
+
+
+              </ul>
+            </header>
+
+            <div class="module-content">
+
+
+
+
+
+
+
+
+
+              <div class='text-holder'>
+                <h1 id='dataset-title'>
+
+                  Parking — Stations
+
+
+                </h1>
+
+
+                <div class="notes embedded-content user-block-holder">
+                  <p>Number of vacant spaces at Brisbane City Council’s 2 parking stations.</p>
+                  <p>Brisbane City Council operates two car parks in the Brisbane Central Business District (CBD) at King George Square and Wickham Terrace. Both car parks operate with extended hours throughout the year and are open on most public holidays and during some special events.</p>
+                  <p>See the <a href="https://www.brisbane.qld.gov.au/traffic-transport/parking-permits/car-parks">Brisbane City Council website</a> for information on the car parks including location, opening hours, fees and to see if there are any special offers currently available.</p>
+                </div>
+
+
+              </div>
+
+              <span class="insert-comment-thread"></span>
+
+
+
+
+              <!-- Snippet package/snippets/resources_list.html start -->
+
+              <section id="dataset-resources" class="resources">
+                <h2>Data and Resources</h2>
+
+
+                <div class="user-block-holder">
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+
+                  <div class="frame">
+                    <div class="info resource-item" data-id="82991cc6-0739-43de-a164-e62126c26f95">
+
+                      <p>
+
+                        Parking — Stations — Available spaces — TXT<br/>
+
+
+                      </p>
+
+
+                      <a class="format">TXT<span class='only-for-screen'> format</span></a>
+
+
+
+
+
+
+
+                      <ul class="btn-holder">
+
+
+
+                        <li>
+                          <a href="/data/dataset/brisbane-parking-stations/resource/82991cc6-0739-43de-a164-e62126c26f95">
+                            Preview
+                          </a>
+                        </li>
+
+                        <li tabindex=0>
+                          <a  class='resource-download resource-url-analytics' href='https://www.data.brisbane.qld.gov.au/data/dataset/b2dbc243-0705-4757-9acf-30f48d6957a0/resource/82991cc6-0739-43de-a164-e62126c26f95/download/counts.014' >
+
+                            Download
+
+
+                          </a>
+                        </li>
+
+
+                      </ul>
+
+
+
+                    </div>
+                  </div>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+
+                  <div class="frame">
+                    <div class="info resource-item" data-id="91b087a1-8d3c-463a-94c0-d3577be6a0dc">
+
+                      <p>
+
+                        Parking — Stations — Parking log — 10-30 Mar 2016 — CSV<br/>
+
+
+                      </p>
+
+
+                      <a class="format">CSV<span class='only-for-screen'> format</span></a>
+
+
+
+
+
+
+
+                      <ul class="btn-holder">
+
+
+
+                        <li>
+                          <a href="/data/dataset/brisbane-parking-stations/resource/91b087a1-8d3c-463a-94c0-d3577be6a0dc">
+                            Preview
+                          </a>
+                        </li>
+
+                        <li tabindex=0>
+                          <a  class='resource-download resource-url-analytics' href='https://www.data.brisbane.qld.gov.au/data/dataset/b2dbc243-0705-4757-9acf-30f48d6957a0/resource/91b087a1-8d3c-463a-94c0-d3577be6a0dc/download/bcccarpark-2016-03-10th-30th.csv' >
+
+                            Download
+
+
+                          </a>
+                        </li>
+
+
+                      </ul>
+
+
+
+                    </div>
+                  </div>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                </div>
+
+
+              </section>
+
+
+              <!-- Snippet package/snippets/resources_list.html end -->
+
+
+
+
+
+              <!-- Snippet package/snippets/tags.html start -->
+
+              <section class="tags">
+
+                <!-- Snippet snippets/tag_list.html start -->
+
+
+
+                <ul class="tag-list well">
+
+                  <li>
+                    <a class="tag" href="/data/dataset?tags=api">api</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/data/dataset?tags=motor+vehicle">motor vehicle</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/data/dataset?tags=parking">parking</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/data/dataset?tags=transport">transport</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/data/dataset?tags=travel">travel</a>
+                  </li>
+
+                </ul>
+
+                <!-- Snippet snippets/tag_list.html end -->
+
+              </section>
+
+              <!-- Snippet package/snippets/tags.html end -->
+
+
+
+
+              <section class="additional-info" prefix="dc: http://purl.org/dc/elements/1.1/ dcat: http://www.w3.org/ns/dcat#
+         dcam: http://purl.org/dc/dcam/
+         aglsterms: http://www.agls.gov.au/agls/terms/
+         agentterms: http://www.agls.gov.au/agls/agentterms/
+         availterms: http://www.agls.gov.au/agls/availterms/
+         adminterms: http://www.agls.gov.au/agls/adminterms/
+         v: http://www.w3.org/2006/vcard/ns#
+         dct: http://purl.org/dc/terms/">
+                <h2>Additional information</h2>
+                <table class="alt">
+                  <tr>
+                    <td scope="col">Field</td>
+                    <td scope="col">Value</td>
+                  </tr>
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Date Published</th>
+                    <td class="dataset-details" property="dct:issued">2015-11-13</td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row" class="dataset-label">License</th>
+
+                    <td>
+                      <!-- Snippet snippets/license.html start -->
+
+
+
+
+
+
+
+
+
+
+
+                      <a href="http://creativecommons.org/licenses/by/4.0" rel="dc:rights">Creative Commons Attribution 4.0
+
+                        <br><img src="/data/images/cc-by.png" alt="Creative Commons Attribution 4.0">
+
+                      </a>
+
+
+
+
+
+                      <!-- Snippet snippets/license.html end -->
+                    </td>
+
+                  </tr>
+
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Attribution</th>
+                    <td class="dataset-details"> See resource preview            </td>
+                  </tr>
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Update Frequency</th>
+                    <td class="dataset-details"> Real Time</td>
+                  </tr>
+
+
+
+
+
+
+
+
+
+                </table>
+              </section>
+
+
+
+
+
+            </div>
+
+          </section>
+
+
+          <!-- Snippet snippets/mobile_info_footer.html start -->
+          <div class="mobile package-bottom-details">
+            <div class="module context-info">
+              <div class="module-content">
+                <h1 class="heading">Parking — Stations</h1>
+
+
+              </div>
+            </div>
+            <div class="nums">
+              Followers:
+              <span>0</span>
+            </div>
+
+
+            <section class="module module-shallow license">
+              <div class="sub-title">License</div>
+              <p class="module-footer">
+
+
+                <a href="http://creativecommons.org/licenses/by/4.0" rel="dc:rights">Creative Commons Attribution 4.0
+                </a>
+
+
+              </p>
+            </section>
+
+
+          </div>
+          <!-- Snippet snippets/mobile_info_footer.html end -->
+
+
+        </div>
+
+
+
+        <aside class="secondary span3">
+
+
+
+
+          <div class="filters">
+            <div>
+              <div class="aside-image">
+
+                <img src="https://www.data.brisbane.qld.gov.au/data/images/img15.png" alt="" width="102" height="102">
+
+              </div>
+
+
+
+
+              <!-- Snippet package/snippets/info.html start -->
+
+              <section class="module module-narrow">
+                <div class="module context-info">
+                  <div class="module-content">
+                    <h1 class="heading">Parking — Stations</h1>
+
+
+                  </div>
+                </div>
+              </section>
+
+              <!-- Snippet package/snippets/info.html end -->
+
+
+
+
+
+
+
+
+              <!-- Snippet snippets/license.html start -->
+
+
+
+
+
+
+
+
+
+              <section class="module module-narrow module-shallow license">
+                <div class="sub-title">License</div>
+                <p class="module-footer">
+
+
+
+                  <a href="http://creativecommons.org/licenses/by/4.0" rel="dc:rights">Creative Commons Attribution 4.0
+
+                    <br><img src="/data/images/cc-by.png" alt="Creative Commons Attribution 4.0">
+
+                  </a>
+
+
+
+                </p>
+              </section>
+
+
+
+              <!-- Snippet snippets/license.html end -->
+
+
+            </div>
+          </div>
+
+
+        </aside>
+
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+
+      <nav class="footer-links">
+
+
+        <div class="row">
+          <div class="span12">
+
+
+            <ul class="list">
+
+              <li><a href="/accessibility">Accessibility</a></li>
+
+              <li><a href="/contact">Contact</a></li>
+
+              <li><a href="/suggest_a_dataset_form">Suggest a Dataset</a></li>
+
+              <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+
+              <li><a href="/data/user/login">Member login</a></li>
+
+              <li><a href="/data/user/register">Register as user</a></li>
+
+            </ul>
+
+            <div id="items-left">
+              <div class="item-list">
+                <ul class="footer-mobile">
+                  <!-- <li class="first"><a href="/about-us">About Us</a></li> -->
+                  <!--        <li><a href="/terms-of-use">Terms of Use</a>
+                         </li> -->
+                  <!-- <li><a href="/privacy">Privacy</a> -->
+                  <!-- </li>
+                  <li class="last"><a href="/copyright-and-attribution">Copyright and Attribution</a>
+                </li> -->
+
+                  <li><a href="/accessibility">Accessibility</a></li>
+
+                  <li><a href="/contact">Contact</a></li>
+
+                  <li><a href="/suggest_a_dataset_form">Suggest a Dataset</a></li>
+
+
+
+                </ul>
+              </div>
+            </div>
+            <div class="item-list">
+              <ul class="footer-mobile">
+
+                <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+
+                <li><a href="/data/user/login">Member login</a></li>
+
+                <li><a href="/data/user/register">Register as user</a></li>
+
+              </ul>
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+
+
+        <div class="row footer-logos-section">
+          <div class="span12">
+            <div class="powered">
+              <span>Powered by</span>
+              <a href="http://ckan.org/">
+                <img class="footer-ckan-logo" src="https://www.data.brisbane.qld.gov.au/data/images/ckan-logo-footer.png" alt="CKAN" width="68" height="20">
+                <img class="mobile-footer-ckan-logo" src="https://www.data.brisbane.qld.gov.au/data/images/ckan-logo-footer.png" alt="CKAN" width="68" height="20">
+              </a>
+            </div>
+            <div class="footer-logo">
+              <a href="/">
+                <img alt="Brisbane City. Dedicated to a better Brisbane." src="https://www.data.brisbane.qld.gov.au/data/images/logo-new-hq-foot.png">
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </nav>
+
+</div>
+
+
+
+
+</footer>
+
+</div>
+
+<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/jquery.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/base/:version:2018-07-03T14:08:04.24/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:styles/selectt.js;styles/analytics-include.js;styles/select.js;styles/jquery-ui.js;js/change_group_icons.js;js/filters_mobile.js;js/stats_mobile.js;js/bcc_mobile_stats.js;js/bcc_form_enchantments.js;js/change_dataset_info.js;js/bcc_paginator.js;js/bcc_datepicker.js;js/custom-checkbox-click.js"></script>
+<script type="text/javascript" src="/data/fanstatic/ckanext-googleanalytics/:version:2017-08-02T20:14:31.68/googleanalytics_event_tracking.js"></script></body>
+</html>

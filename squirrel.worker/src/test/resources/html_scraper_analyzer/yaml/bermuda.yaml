@@ -1,0 +1,19 @@
+file_descriptor:
+    check:
+        domain: bermuda.io
+        ignore-request: true
+
+    search-result-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": .module-content h1:eq(0)
+                "http://purl.org/dc/terms/description": .notes p
+                "http://purl.org/dc/terms/creator": table tr:contains(Author) td
