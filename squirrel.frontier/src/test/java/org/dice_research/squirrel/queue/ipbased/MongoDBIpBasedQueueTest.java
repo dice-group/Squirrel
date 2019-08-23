@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.queue;
+package org.dice_research.squirrel.queue.ipbased;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,21 +7,23 @@ import static org.junit.Assert.assertTrue;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings("deprecation")
 public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private Set<InetAddress> expectedIps;
     private MongoDBIpBasedQueue mongodbQueue;
 
     @Before
@@ -29,16 +31,21 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027);
     	
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
-
+    	
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
-        uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
+        uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("dbpedia.org"),
                 UriType.DEREFERENCEABLE));
-        uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
+        uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("dbpedia.org"),
                 UriType.DEREFERENCEABLE));
         // Added this to check https://github.com/AKSW/Squirrel/issues/17
         uris.add(cuf.create(new URI("http://danbri.org/foaf.rdf"),
                 InetAddress.getByName((new URI("http://danbri.org/foaf.rdf")).toURL().getHost()), UriType.DUMP));
+        
+        expectedIps = new HashSet<InetAddress>();
+        expectedIps.add(InetAddress.getByName("127.0.0.1"));
+        expectedIps.add(InetAddress.getByName("dbpedia.org"));
+        expectedIps.add(InetAddress.getByName((new URI("http://danbri.org/foaf.rdf")).toURL().getHost()));
     }
 
     @Test
@@ -57,31 +64,12 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     }
 
     @Test
-    public void packTuple() throws Exception {
-        List rArray = mongodbQueue.packTuple("192.168.1.1", "http://localhost");
-        assertTrue(rArray.contains("192.168.1.1"));
-        assertTrue(rArray.contains("http://localhost"));
-        rArray = mongodbQueue.packTuple("192.168.1.1", "DUMP");
-        assertTrue(rArray.contains("192.168.1.1"));
-        assertTrue(rArray.contains("DUMP"));
-    }
-
-    @Test
-    public void getIpAddressTypeKey() throws Exception {
-        List rArray = mongodbQueue.getIpAddressTypeKey(uris.get(0));
-        String arrayString = rArray.toString();
-        assertTrue(arrayString, rArray.contains("127.0.0.1"));
-        assertFalse(arrayString, rArray.contains("http://danbri.org/foaf.rdf"));
-        assertTrue(arrayString, rArray.contains("SPARQL"));
-    }
-
-    @Test
-    public void queueContainsIpAddressTypeKey() throws Exception {
+    public void queueContainsIpAddress() throws Exception {
         mongodbQueue.open();
-        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(0));
-        assertFalse(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
-        mongodbQueue.addToQueue(uris.get(0));
-        assertTrue(mongodbQueue.queueContainsIpAddressTypeKey(null,iatKey));
+        mongodbQueue.purge();
+        assertFalse(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
+        mongodbQueue.addUri(uris.get(0));
+        assertTrue(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
         mongodbQueue.close();
     }
 
@@ -91,7 +79,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
         mongodbQueue.purge();
         assertEquals(0, mongodbQueue.length());
         for (CrawleableUri uri : uris) {
-            mongodbQueue.addToQueue(uri);
+            mongodbQueue.addUri(uri);
         }
         assertEquals(3, mongodbQueue.length());
         mongodbQueue.purge();
@@ -103,10 +91,9 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void addCrawleableUri() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        mongodbQueue.addCrawleableUri(uris.get(1));
+        mongodbQueue.addUri(uris.get(1));
         assertEquals(1, mongodbQueue.length());
-        List iatKey = mongodbQueue.getIpAddressTypeKey(uris.get(2));
-        mongodbQueue.addCrawleableUri(uris.get(2), iatKey);
+        mongodbQueue.addUri(uris.get(2));
         assertEquals(1, mongodbQueue.length());
         mongodbQueue.close();
     }
@@ -114,8 +101,9 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     @Test
     public void addToQueue() throws Exception {
         mongodbQueue.open();
+        mongodbQueue.purge();
         for (CrawleableUri uri : uris) {
-            mongodbQueue.addToQueue(uri);
+            mongodbQueue.addUri(uri);
         }
         assertEquals(3, mongodbQueue.length());
         mongodbQueue.close();
@@ -125,31 +113,36 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     @Test
     public void getIterator() throws Exception {
         mongodbQueue.open();
+        mongodbQueue.purge();
         for (CrawleableUri uri : uris) {
-            mongodbQueue.addToQueue(uri);
+            mongodbQueue.addUri(uri);
         }
-        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
+        Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
+        int ipCount = 0;
         while (iter.hasNext()) {
-            IpUriTypePair pair = iter.next();
-            System.out.println(pair.toString());
+            assertTrue(expectedIps.contains( iter.next()));
+            ++ipCount;
         }
-        mongodbQueue.close();
+        assertEquals(expectedIps.size(), ipCount);
     }
 
     @Test
     public void getUris() throws Exception {
         mongodbQueue.open();
+        mongodbQueue.purge();
         for (CrawleableUri uri : uris) {
-            mongodbQueue.addToQueue(uri);
+            mongodbQueue.addUri(uri);
         }
-        Iterator<IpUriTypePair> iter = mongodbQueue.getIterator();
+        Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
+        int count = 0;
         while (iter.hasNext()) {
-            IpUriTypePair pair = iter.next();
-            List<CrawleableUri> uriList = mongodbQueue.getUris(pair);
+            List<CrawleableUri> uriList = mongodbQueue.getUris(iter.next());
             for (CrawleableUri uri : uriList) {
                 assertTrue(uris.contains(uri));
+                ++count;
             }
         }
+        assertEquals(uris.size(), count);
         mongodbQueue.close();
     }
 }

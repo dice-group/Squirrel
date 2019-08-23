@@ -17,7 +17,9 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  * 
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
+ * @deprecated Use the more general {@link BlockingQueue}&lt;{@link InetAddress}&gt; interface instead.
  */
+@Deprecated
 public interface IpAddressBasedQueue extends UriQueue {
 
     /**
@@ -39,5 +41,5 @@ public interface IpAddressBasedQueue extends UriQueue {
      *
      * @return a IP-address-iterator with the list of uris for each IP-address
      */
-    Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
+    public Iterator<AbstractMap.SimpleEntry<InetAddress, List<CrawleableUri>>> getIPURIIterator();
 }
