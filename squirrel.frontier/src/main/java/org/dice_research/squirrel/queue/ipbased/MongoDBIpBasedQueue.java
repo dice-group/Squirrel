@@ -286,10 +286,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         // remove the ID field
         query.remove("_id");
         // if there are no more URIs left of the given domain
-        if (mongoDB.getCollection(COLLECTION_URIS).find().first() == null) {
+        if (mongoDB.getCollection(COLLECTION_URIS).find(query).first() == null) {
             // remove the domain from the queue
             mongoDB.getCollection(COLLECTION_QUEUE)
-                    .deleteMany(new Document("ipAddress", ipAddress).append("type", DEFAULT_TYPE));
+                    .deleteMany(query);
         }
     }
 

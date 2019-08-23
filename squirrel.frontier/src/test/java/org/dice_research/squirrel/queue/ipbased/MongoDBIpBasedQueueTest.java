@@ -2,6 +2,7 @@ package org.dice_research.squirrel.queue.ipbased;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
@@ -143,6 +144,31 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
             }
         }
         assertEquals(uris.size(), count);
+        mongodbQueue.close();
+    }
+
+    @Test
+    public void deleteUris() throws Exception {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        mongodbQueue.addUri(uris.get(1));
+        List<CrawleableUri> retrievedUris = mongodbQueue.getNextUris();
+        assertEquals(1, retrievedUris.size());
+        assertTrue(uris.get(1).equals(retrievedUris.get(0)));
+        mongodbQueue.addUri(uris.get(2));
+        // The retrieval should fail 
+        assertNull(mongodbQueue.getNextUris());
+        // Give back the first URI
+        mongodbQueue.markUrisAsAccessible(retrievedUris);
+        // Although we returned it, the queue shouldn't be empty!
+        assertEquals(1, mongodbQueue.length());
+        retrievedUris = mongodbQueue.getNextUris();
+        assertEquals(1, retrievedUris.size());
+        assertTrue(uris.get(2).equals(retrievedUris.get(0)));
+        // Give back the second URI
+        mongodbQueue.markUrisAsAccessible(retrievedUris);
+        // Now, the queue should be empty
+        assertEquals(0, mongodbQueue.length());
         mongodbQueue.close();
     }
 }

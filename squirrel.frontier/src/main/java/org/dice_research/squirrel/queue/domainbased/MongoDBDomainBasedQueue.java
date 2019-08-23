@@ -221,7 +221,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
         return listUris;
     }
-    
+
     @Override
     protected void deleteUris(String domain, List<CrawleableUri> uris) {
         // remove all URIs from the list
@@ -236,17 +236,16 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         // remove the ID field
         query.remove("_id");
         // if there are no more URIs left of the given domain
-        if (mongoDB.getCollection(COLLECTION_URIS).find().first() == null) {
+        if (mongoDB.getCollection(COLLECTION_URIS).find(query).first() == null) {
             // remove the domain from the queue
-            mongoDB.getCollection(COLLECTION_QUEUE)
-                    .deleteMany(new Document("domain", domain).append("type", DEFAULT_TYPE));
+            mongoDB.getCollection(COLLECTION_QUEUE).deleteMany(query);
         }
     }
 
     protected boolean containsDomain(String domain) {
         return containsDomain(getDomainDocument(domain));
     }
-    
+
     protected boolean containsDomain(Document domainDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(domainDoc).first() != null;
     }
