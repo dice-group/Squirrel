@@ -2,9 +2,7 @@ package org.dice_research.squirrel.components;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -251,9 +247,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     }
 
     protected void processSeedFile(String seedFile) {
-        try {
-            
-           
+        try {  
             List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
             if(!listSeeds.isEmpty())
                 frontier.addNewUris(listSeeds);
@@ -292,8 +286,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
 		@Override
 		public void run() {
-		    
 
+		    
 			if(!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
 			    LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
 	        	terminationMutex.release();
