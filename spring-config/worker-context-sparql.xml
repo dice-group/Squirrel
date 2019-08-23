@@ -45,14 +45,13 @@
 	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
 		<constructor-arg index="0">
             <list>
+                 <ref bean="ckanAnalyzerBean"/>        
                  <ref bean="rdfAnalyzerBean"/>
-                 <ref bean="ckananalyzerBean"/> <!--         
-                 <ref bean="rdfaAnalyzerBean"/>    
+                 <ref bean="htmlscraperanalyzerBean"/>          
                  <ref bean="microdataanalyzerBean"/>          
                  <ref bean="microformatanalyzerBean"/>          
                  <ref bean="hdtanalyzerBean"/>          
-                 <ref bean="htmlscraperanalyzerBean"/>          
-                          -->
+                 
                        
             </list>
 		</constructor-arg>
@@ -83,7 +82,7 @@
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
-    <bean id="ckananalyzerBean" class="org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer">
+    <bean id="ckanAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer">
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
@@ -92,12 +91,14 @@
 		class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
-				<ref bean="httpFetcherBean" />
-				<ref bean="ckanFetcherBean" /> 
-				<ref bean="sparqlDatasetFetcherBean" />
+                 <ref bean="sparqlFetcherBean" />
+                 <ref bean="ckanFetcherBean" />
+                 <ref bean="httpFetcherBean" />
+                 <ref bean="ftpFetcherBean" />
+                 
+    
 				<!-- 
-				<ref bean="sparqlFetcherBean" />
-				<ref bean="ftpFetcherBean" />
+                <ref bean="sparqlDatasetFetcherBean" />
 				-->
  				
 			</list>
@@ -114,10 +115,10 @@
 		class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
 		<constructor-arg index="0" value="20"></constructor-arg>
 		<constructor-arg index="1" value="0"></constructor-arg>
-		<constructor-arg index="2" value="200000"></constructor-arg>
+		<constructor-arg index="2" value="10"></constructor-arg>
 	</bean>
 	<bean id="ckanFetcherBean"
-		class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />
+		class="org.dice_research.squirrel.fetcher.ckan.java.PaginatedCkanFetcher" />
 
 
 
@@ -133,8 +134,8 @@
 		<constructor-arg name="outputDirectory"
 			ref="outputFolderBean" />
 		<constructor-arg name="useCompression" value="false" />
-	</bean>-->
-
+	</bean>
+-->
 
 	<!-- HDT File Based Sink implementation <bean id="sinkBean" class="org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink"> 
 		<constructor-arg name="outputDirectory" ref="outputFolderBean" /> </bean> -->

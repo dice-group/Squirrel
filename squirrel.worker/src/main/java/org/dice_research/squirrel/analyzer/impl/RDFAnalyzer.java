@@ -87,9 +87,7 @@ public class RDFAnalyzer extends AbstractAnalyzer {
 //    @Override
     public boolean isElegible(CrawleableUri curi, File data) {
         // Check the content type first
-        LOGGER.info("Checking if RDF Analyzer is elegible ...");
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-        LOGGER.info("Content Type: " + contentType);
         if ((contentType != null) && (contentType.equals("application/rdf+xml") || contentType.equals("text/plain")
                 || contentType.equals("application/x-turtle") || contentType.equals("application/n-triples"))) {
             return true;

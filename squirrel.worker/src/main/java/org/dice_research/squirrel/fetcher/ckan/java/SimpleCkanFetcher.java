@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -21,12 +19,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import eu.trentorise.opendata.jackan.CheckedCkanClient;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.JackanModule;
 import eu.trentorise.opendata.jackan.exceptions.CkanException;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
-import eu.trentorise.opendata.jackan.model.CkanDatasetBase;
 
 /**
  * Simple Java-based CKAN Fetcher.
@@ -133,28 +129,4 @@ public class SimpleCkanFetcher implements Fetcher {
         this.dataDirectory = dataDirectory;
     }
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
-//        SimpleCkanFetcher fetcher = new SimpleCkanFetcher();
-//        fetcher.setCheckForUriType(false);
-//        File datafile = fetcher.fetch(new CrawleableUri(new URI("http://localhost:80/")));
-//        System.out.println(datafile != null ? datafile.toString() : "null");
-//        fetcher.close();
-        
-        CheckedCkanClient client = new CheckedCkanClient("http://localhost:5000/", "951f4046-7cf7-42c1-aa7e-b468f3288ead");
-        try {
-        CkanDatasetBase dataset = new CkanDatasetBase();
-        dataset.setTitle("titulo");
-        dataset.setName("ds1");
-        dataset.setOwnerOrg("dice-group");
-        dataset.setAuthor("ldcbench");
-        
-        client.createDataset(dataset);
-        }catch (CkanException e) {
-            
-            if(e.getMessage().contains("Solr returned an error"))
-                System.out.println("Solr Error");
-            
-        }
-        
-    }
 }
