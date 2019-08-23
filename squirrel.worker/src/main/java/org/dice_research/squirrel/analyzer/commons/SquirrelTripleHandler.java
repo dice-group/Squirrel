@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * Triple handler for Any23 RDF extraction
+ * Triple handler for Clerezza
  * 
  * @author Geraldo de Souza Junior
  *
@@ -36,7 +36,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 		this.collector = collector;
 		this.sink = sink;
 		this.curi = curi;
-		LOGGER.info(">> Staring SquirrelTripleWriter for URI: " + curi.getUri().toString());
 	}
 
 	@Override
@@ -64,9 +63,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 			Node obj = isUri1 ? NodeFactory.createURI(o.stringValue()) : NodeFactory.createLiteral(o.stringValue());
 			
 			Triple t = new Triple(r,pr,obj);
-			
-			LOGGER.info(">> Storing Triple: " + t);
-
 			
 			sink.addTriple(curi, t);
 			collector.addTriple(curi, t);

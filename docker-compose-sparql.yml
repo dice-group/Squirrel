@@ -37,8 +37,6 @@ services:
     container_name: virtuosohost
     ports:
       - "8890:8890"
-    volumes:
-      - ./data/sparqlhost/sparqlhost_data:/virtuoso
     environment:
       - Driver=/usr/local/lib/virtodbc_32.so
       - DBA_PASSWORD=pw123
@@ -48,8 +46,6 @@ services:
 #    container_name: sparqlhost
 #    ports:
 #      - "3030:3030"
-#    volumes:
-#      - ./data/sparqlhost/sparqlhost_data:/fuseki
 #    environment:
 #      - ADMIN_PASSWORD=pw123
 #      - JVM_ARGS=-Xmx2g
