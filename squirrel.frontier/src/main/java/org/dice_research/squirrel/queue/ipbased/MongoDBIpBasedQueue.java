@@ -88,11 +88,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     }
 
     public long length() {
-//        LOGGER.info("Still have: ");
-//        MongoCursor<Document> docs = mongoDB.getCollection(COLLECTION_QUEUE).find().iterator();
-//        while(docs.hasNext())
-//            LOGGER.info(docs.next().toJson());
-        
         return mongoDB.getCollection(COLLECTION_QUEUE).count();
     }
 
@@ -201,7 +196,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
                 new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
         mongoDB.getCollection(COLLECTION_URIS).deleteMany(
                 new Document("ipAddress", pair.getIp().getHostAddress()).append("type", pair.getType().toString()));
-        
+      
         return listUris;
     }
 
@@ -240,7 +235,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         try {
             mongoDB.getCollection(COLLECTION_QUEUE).insertOne(crawleableUriToMongoDocument(uri)[0]);
             mongoDB.getCollection(COLLECTION_URIS).insertOne(crawleableUriToMongoDocument(uri)[1]);
-            LOGGER.warn("Added " + uri.getUri().toString() + " to the queue");
         } catch (MongoWriteException e) {
             LOGGER.info("Uri: " + uri.getUri().toString() + " already in queue. Ignoring...");
 
