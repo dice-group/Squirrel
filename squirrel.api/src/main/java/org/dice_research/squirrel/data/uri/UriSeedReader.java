@@ -55,7 +55,6 @@ public class UriSeedReader {
                 
                 System.out.println(mapRecords.get(URI));
                 CrawleableUri curi = new CrawleableUri(new URI(mapRecords.get(URI)));
-                curi.setType(UriType.SPARQL);
                 curi.addData(Constants.URI_TYPE_KEY, mapRecords.get(TYPE));
                 
                 for(Entry<String, String> entry : mapRecords.entrySet()) {
