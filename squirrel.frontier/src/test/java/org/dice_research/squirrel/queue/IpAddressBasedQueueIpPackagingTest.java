@@ -31,6 +31,10 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class IpAddressBasedQueueIpPackagingTest {
 
+    private CrawleableUri uris[];
+    private InetAddress expectedChunks[];
+    private String expectedChunkUris[][];
+
     @SuppressWarnings("deprecation")
     @Parameters
     public static Collection<Object[]> data() throws Exception {
@@ -94,10 +98,6 @@ public class IpAddressBasedQueueIpPackagingTest {
                                 { "http://example.org/dump_3", "http://example.org/dump_4",
                                         "http://example.org/sparql_1" } } } });
     }
-
-    private CrawleableUri uris[];
-    private InetAddress expectedChunks[];
-    private String expectedChunkUris[][];
 
     public IpAddressBasedQueueIpPackagingTest(CrawleableUri[] uris, InetAddress[] expectedChunks,
             String[][] expectedChunkUris) {

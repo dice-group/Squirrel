@@ -82,12 +82,14 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     @Override
     public void markUrisAsAccessible(Collection<CrawleableUri> uris) {
-        for (Entry<T, List<CrawleableUri>> uriGroup : groupByOperator.groupByKey(uris).entrySet()) {
-            blockedKeys.remove(uriGroup.getKey());
-            deleteUris(uriGroup.getKey(), uriGroup.getValue());
+        synchronized (this) {
+            for (Entry<T, List<CrawleableUri>> uriGroup : groupByOperator.groupByKey(uris).entrySet()) {
+                blockedKeys.remove(uriGroup.getKey());
+                deleteUris(uriGroup.getKey(), uriGroup.getValue());
+            }
         }
     }
-    
+
     @Override
     public Iterator<SimpleEntry<T, List<CrawleableUri>>> getIterator() {
         return new Iterator<AbstractMap.SimpleEntry<T, List<CrawleableUri>>>() {
@@ -117,16 +119,19 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     /**
      * Returns all URIs of the given group key
      * 
-     * @param groupKey key of the selected URI group
-     * @return all URIs of the given group key 
+     * @param groupKey
+     *            key of the selected URI group
+     * @return all URIs of the given group key
      */
     protected abstract List<CrawleableUri> getUris(T groupKey);
-    
+
     /**
      * Removes the given set of URIs from the queue
      * 
-     * @param groupKey key of the given URI group
-     * @param uris set of URIs which should be removed
+     * @param groupKey
+     *            key of the given URI group
+     * @param uris
+     *            set of URIs which should be removed
      */
     protected abstract void deleteUris(T groupKey, List<CrawleableUri> uris);
 

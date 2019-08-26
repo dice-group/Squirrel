@@ -38,30 +38,35 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
     protected List<CrawleableUri> getUris(InetAddress address) {
         List<CrawleableUri> uris = null;
         if (queue.containsKey(address)) {
-            uris = queue.get(address);
+            // Create a new list to make sure that the internal list can not be changed from
+            // outside and that internal changes do not take effect in the list that is
+            // retrieved by this method.
+            uris = new ArrayList<>(queue.get(address));
         }
         return uris;
     }
 
     @Override
     public void open() {
+        // nothing to do
     }
 
     @Override
     public void close() {
+        // nothing to do
     }
-    
-	@Override
-	public boolean isEmpty() {
-		return queue.isEmpty();
-	}
+
+    @Override
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
 
     @Override
     protected void deleteUris(InetAddress address, List<CrawleableUri> uris) {
         if (queue.containsKey(address)) {
             List<CrawleableUri> queuedUris = queue.get(address);
             queuedUris.removeAll(uris);
-            if(queuedUris.isEmpty()) {
+            if (queuedUris.isEmpty()) {
                 queue.remove(address);
             }
         }
@@ -72,9 +77,9 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
         byte[] ip1 = a1.getAddress();
         byte[] ip2 = a2.getAddress();
         for (int i = 0; i < ip1.length; ++i) {
-            if(ip1[i] < ip2[i]) {
+            if (ip1[i] < ip2[i]) {
                 return -1;
-            } else if(ip1[i] > ip2[i]) {
+            } else if (ip1[i] > ip2[i]) {
                 return 1;
             }
         }
