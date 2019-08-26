@@ -52,9 +52,7 @@ public class UriSeedReader {
                 
                 if(mapRecords.get(URI).isEmpty() || mapRecords.get(TYPE).isEmpty())
                     continue;
-                
-                System.out.println(mapRecords.get(URI));
-                CrawleableUri curi = new CrawleableUri(new URI(mapRecords.get(URI)));
+                                CrawleableUri curi = new CrawleableUri(new URI(mapRecords.get(URI)));
                 curi.addData(Constants.URI_TYPE_KEY, mapRecords.get(TYPE));
                 
                 for(Entry<String, String> entry : mapRecords.entrySet()) {
