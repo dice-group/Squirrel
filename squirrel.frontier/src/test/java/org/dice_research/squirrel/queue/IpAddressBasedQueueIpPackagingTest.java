@@ -50,9 +50,8 @@ public class IpAddressBasedQueueIpPackagingTest {
                                 UriType.DUMP),
                         factory.create(new URI("http://example.org/dump_6"), InetAddress.getByName("192.168.100.3"),
                                 UriType.DUMP) },
-                        new IpUriTypePair[] { new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.2"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.3"), UriType.DUMP) },
+                        new InetAddress[] { InetAddress.getByName("192.168.100.1"),
+                                InetAddress.getByName("192.168.100.2"), InetAddress.getByName("192.168.100.3") },
                         new String[][] { { "http://example.org/dump_1", "http://example.org/dump_2" },
                                 { "http://example.org/dump_3" },
                                 { "http://example.org/dump_4", "http://example.org/dump_5",
@@ -71,13 +70,10 @@ public class IpAddressBasedQueueIpPackagingTest {
                                 UriType.DUMP),
                         factory.create(new URI("http://example.org/resource_3"), InetAddress.getByName("192.168.100.1"),
                                 UriType.DEREFERENCEABLE) },
-                        new IpUriTypePair[] { new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.SPARQL),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.DEREFERENCEABLE) },
-                        new String[][] { { "http://example.org/dump_1", "http://example.org/dump_2" },
-                                { "http://example.org/sparql_1" },
-                                { "http://example.org/resource_1", "http://example.org/resource_2",
-                                        "http://example.org/resource_3" } } },
+                        new InetAddress[] { InetAddress.getByName("192.168.100.1") },
+                        new String[][] { { "http://example.org/dump_1", "http://example.org/dump_2",
+                                "http://example.org/sparql_1", "http://example.org/resource_1",
+                                "http://example.org/resource_2", "http://example.org/resource_3" } } },
                 // different IPs and different UriTypes
                 { new CrawleableUri[] {
                         factory.create(new URI("http://example.org/dump_1"), InetAddress.getByName("192.168.100.1"),
@@ -92,31 +88,27 @@ public class IpAddressBasedQueueIpPackagingTest {
                                 UriType.DUMP),
                         factory.create(new URI("http://example.org/sparql_1"), InetAddress.getByName("192.168.100.3"),
                                 UriType.SPARQL) },
-                        new IpUriTypePair[] { new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.2"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.3"), UriType.DUMP),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.1"), UriType.DEREFERENCEABLE),
-                                new IpUriTypePair(InetAddress.getByName("192.168.100.3"), UriType.SPARQL) },
-                        new String[][] { { "http://example.org/dump_1" }, { "http://example.org/dump_2" },
-                                { "http://example.org/dump_3", "http://example.org/dump_4" },
-                                { "http://example.org/resource_1" }, { "http://example.org/sparql_1" } } } });
+                        new InetAddress[] { InetAddress.getByName("192.168.100.1"),
+                                InetAddress.getByName("192.168.100.2"), InetAddress.getByName("192.168.100.3") },
+                        new String[][] { { "http://example.org/dump_1" ,  "http://example.org/resource_1" }, { "http://example.org/dump_2" },
+                                { "http://example.org/dump_3", "http://example.org/dump_4",
+                                        "http://example.org/sparql_1" } } } });
     }
 
     private CrawleableUri uris[];
-    private IpUriTypePair expectedChunks[];
+    private InetAddress expectedChunks[];
     private String expectedChunkUris[][];
 
-    public IpAddressBasedQueueIpPackagingTest(CrawleableUri[] uris, IpUriTypePair[] expectedChunks,
+    public IpAddressBasedQueueIpPackagingTest(CrawleableUri[] uris, InetAddress[] expectedChunks,
             String[][] expectedChunkUris) {
         this.uris = uris;
         this.expectedChunks = expectedChunks;
         this.expectedChunkUris = expectedChunkUris;
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void test() throws Exception {
-        IpAddressBasedQueue queue = new InMemoryQueue();
+        BlockingQueue<InetAddress> queue = new InMemoryQueue();
 
         for (int i = 0; i < uris.length; ++i) {
             queue.addUri(uris[i]);
@@ -128,12 +120,12 @@ public class IpAddressBasedQueueIpPackagingTest {
         while ((chunk != null) && (chunk.size() > 0)) {
             chunkId = 0;
             while ((chunkId < expectedChunks.length)
-                    && ((!expectedChunks[chunkId].getIp().equals(chunk.get(0).getIpAddress()))
-                            || (expectedChunks[chunkId].getType() != chunk.get(0).getType()))) {
+                    && (!expectedChunks[chunkId].equals(chunk.get(0).getIpAddress()))) {
                 ++chunkId;
             }
-            Assert.assertTrue("Couldn't find a matching chunk with the IP " + chunk.get(0).getIpAddress().toString()
-                    + " and type " + chunk.get(0).getType() + ".", chunkId < expectedChunks.length);
+            Assert.assertTrue(
+                    "Couldn't find a matching chunk with the IP " + chunk.get(0).getIpAddress().toString() + ".",
+                    chunkId < expectedChunks.length);
             Assert.assertEquals("Expected another number of URIs in this set of URIs.",
                     expectedChunkUris[chunkId].length, chunk.size());
             Set<String> expectedUris = new HashSet<String>();
@@ -145,7 +137,7 @@ public class IpAddressBasedQueueIpPackagingTest {
             }
             chunksFound.set(chunkId);
             // mark the ip as accessible
-            queue.markIpAddressAsAccessible(chunk.get(0).getIpAddress());
+            queue.markUrisAsAccessible(chunk);
 
             chunk = queue.getNextUris();
         }

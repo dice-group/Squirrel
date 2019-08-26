@@ -10,16 +10,12 @@ import java.util.TreeMap;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
-public class InMemoryQueue extends AbstractIpAddressBasedQueue {
+public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Comparator<InetAddress> {
 
     protected SortedMap<InetAddress, List<CrawleableUri>> queue;
 
     public InMemoryQueue() {
-        queue = new TreeMap<InetAddress, List<CrawleableUri>>();
-    }
-
-    public InMemoryQueue(Comparator<InetAddress> comparator) {
-        queue = new TreeMap<InetAddress, List<CrawleableUri>>(comparator);
+        queue = new TreeMap<InetAddress, List<CrawleableUri>>(this);
     }
 
     @Override
@@ -69,6 +65,20 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue {
                 queue.remove(address);
             }
         }
+    }
+
+    @Override
+    public int compare(InetAddress a1, InetAddress a2) {
+        byte[] ip1 = a1.getAddress();
+        byte[] ip2 = a2.getAddress();
+        for (int i = 0; i < ip1.length; ++i) {
+            if(ip1[i] < ip2[i]) {
+                return -1;
+            } else if(ip1[i] > ip2[i]) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
 }
