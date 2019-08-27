@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 public class UriSeedReader {
 
-    private Iterable<CSVRecord> records;
     private static final String URI = "uri";
     private static final String TYPE = "type";
     private boolean isCsv = true;
@@ -50,12 +49,11 @@ public class UriSeedReader {
        
     }
 
-    @SuppressWarnings("deprecation")
     public List<CrawleableUri> getUris() throws Exception{
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
 
-        if(isCsv)
+        if(isCsv) {
             for (CSVRecord record : records) {
                 Map<String,String> mapRecords= new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 mapRecords.putAll(record.toMap());
@@ -78,6 +76,9 @@ public class UriSeedReader {
                 listUris.add(curi);
                 
             }
+        }else {
+            LOGGER.error("Seed file is not a CSV file, queue will be empty");
+        }
 
         return listUris;
     }
