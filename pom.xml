@@ -47,7 +47,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<slf4j-version>1.7.10</slf4j-version>
+        <slf4j-version>1.7.10</slf4j-version>
+        <jackan-version>0.4.2</jackan-version>
 	</properties>
 
 	<repositories>
