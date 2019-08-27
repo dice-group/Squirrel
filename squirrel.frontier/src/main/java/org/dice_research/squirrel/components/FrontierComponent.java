@@ -146,7 +146,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, hasUrisToCrawl);
         Timer timer = new Timer();
         timer.schedule(terminatorTask, 5000,5000);
         terminationMutex.acquire();
@@ -273,15 +273,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         return workerGuard;
     }
     
-    private class TerminatorTask extends TimerTask{
+    private static class TerminatorTask extends TimerTask{
     	
     	private UriQueue queue;
     	private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
     	private Semaphore terminationMutex;
+    	private Map<String, Boolean> hasUrisToCrawl;
     	
-    	public TerminatorTask(UriQueue queue, Semaphore terminationMutex) {
+    	public TerminatorTask(UriQueue queue, Semaphore terminationMutex,Map<String, Boolean> hasUrisToCrawl) {
     		this.queue = queue;
     		this.terminationMutex = terminationMutex;
+    		this.hasUrisToCrawl = hasUrisToCrawl;
 		}
 
 		@Override
