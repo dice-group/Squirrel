@@ -177,9 +177,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             return Collections.EMPTY_LIST;
         }
 
-        mongoDB.getCollection(COLLECTION_QUEUE).deleteOne(query);
-        mongoDB.getCollection(COLLECTION_URIS).deleteMany(query);
-
         return listUris;
     }
 

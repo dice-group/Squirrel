@@ -3,8 +3,10 @@ package org.dice_research.squirrel.analyzer.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -18,7 +20,6 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.sink.Sink;
-import org.apache.jena.riot.WebContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +37,11 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private List<Lang> listLangs = new ArrayList<Lang>();
+    private Set<String> jenaContentTypes = new HashSet<String>();
+
 
     public RDFAnalyzer(UriCollector collector) {
+        
     	super(collector);
         listLangs.add(Lang.NT);
         listLangs.add(Lang.NQUADS);
@@ -49,6 +53,13 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         listLangs.add(Lang.TRIX);
         listLangs.add(Lang.TTL);
         listLangs.add(Lang.TURTLE);
+        
+        for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
+            if (!RDFLanguages.RDFNULL.equals(lang)) {
+                jenaContentTypes.add(lang.getContentType().getContentType());
+                jenaContentTypes.addAll(lang.getAltContentTypes());
+            }
+        }
     }
 
     @Override
@@ -89,9 +100,9 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     public boolean isElegible(CrawleableUri curi, File data) {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+
         
-        if ((contentType != null) && (contentType.equals(WebContent.contentTypeRDFXML) || contentType.equals(WebContent.contentTypeTextPlain)
-                || contentType.equals(WebContent.contentTypeTurtleAlt2) || contentType.equals(WebContent.contentTypeNTriples))) {
+        if ((contentType != null) && jenaContentTypes.contains(contentType)) {
             return true;
         }
 //        // Try to get the tika mime type
