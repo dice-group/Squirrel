@@ -1,0 +1,20 @@
+file_descriptor:
+ check:
+  domain: opendatamonitor.eu
+  ignore-request: false
+ search-result-page:
+  regex: r=datacatalogue%2Flist&DatacatalogueSearch%5Bcountry_code%5D=&DatacatalogueSearch%5Btitle%5D=&DatacatalogueSearch%5Bsource_type%5D%5B0%5D=ckan&DatacatalogueSearch%5Bactive%5D=&page
+  resources:
+   "$uri": 
+    "http://project-opal.de/catalog": table tbody a
+    "http://project-opal.de/pagination": .pagination a
+ catalog-page:
+  regex: r=datacatalogue%2Findex&id=
+  resources:
+   "$uri": 
+    "http://project-opal.de/seed": h3 a:eq(1)
+    
+
+
+     
+        

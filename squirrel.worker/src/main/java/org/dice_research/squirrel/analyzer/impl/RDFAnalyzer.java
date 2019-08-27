@@ -18,6 +18,7 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.sink.Sink;
+import org.apache.jena.riot.WebContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,8 +89,9 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     public boolean isElegible(CrawleableUri curi, File data) {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-        if ((contentType != null) && (contentType.equals("application/rdf+xml") || contentType.equals("text/plain")
-                || contentType.equals("application/x-turtle") || contentType.equals("application/n-triples"))) {
+        
+        if ((contentType != null) && (contentType.equals(WebContent.contentTypeRDFXML) || contentType.equals(WebContent.contentTypeTextPlain)
+                || contentType.equals(WebContent.contentTypeTurtleAlt2) || contentType.equals(WebContent.contentTypeNTriples))) {
             return true;
         }
 //        // Try to get the tika mime type
