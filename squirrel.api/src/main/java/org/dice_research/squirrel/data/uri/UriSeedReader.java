@@ -2,17 +2,19 @@ package org.dice_research.squirrel.data.uri;
 
 import java.io.FileReader;
 import java.io.Reader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.net.URI;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CSV Parser for CSV Seed files.
@@ -28,20 +30,31 @@ public class UriSeedReader {
     private static final String URI = "uri";
     private static final String TYPE = "type";
     private boolean isCsv = true;
+    private Reader in;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(UriSeedReader.class);
 
 
-    public UriSeedReader(String seedFile) throws Exception {
+
+    public UriSeedReader(String seedFile) {
         Tika tika = new Tika();
         String mimetype = tika.detect(seedFile);
         isCsv = mimetype.equals("text/csv");
         
-        Reader in = new FileReader(seedFile);
-        records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+        try {
+            in =   new FileReader(seedFile);
 
+        } catch (Exception e) {
+            LOGGER.error("Could not load seed file: " + seedFile);
+         }
+       
     }
 
+    @SuppressWarnings("deprecation")
     public List<CrawleableUri> getUris() throws Exception{
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+
         if(isCsv)
             for (CSVRecord record : records) {
                 Map<String,String> mapRecords= new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);

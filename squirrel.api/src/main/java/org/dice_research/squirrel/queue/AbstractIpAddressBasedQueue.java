@@ -18,7 +18,7 @@ import org.dice_research.squirrel.data.uri.group.UriGroupByOperator;
  */
 @SuppressWarnings("deprecation")
 public abstract class AbstractIpAddressBasedQueue extends AbstractGroupingQueue<InetAddress> implements IpAddressBasedQueue {
-
+}
     public AbstractIpAddressBasedQueue() {
         super(new UriGroupByOperator<InetAddress>() {
             @Override
@@ -31,6 +31,31 @@ public abstract class AbstractIpAddressBasedQueue extends AbstractGroupingQueue<
     @Override
     public int getNumberOfBlockedIps() {
         return getNumberOfBlockedKeys();
+    }
+  
+    public List<CrawleableUri> getNextUris() {
+        try {
+            queueMutex.acquire();
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while waiting for mutex. Throwing exception.", e);
+            throw new IllegalStateException("Interrupted while waiting for mutex.", e);
+        }
+        IpUriTypePair pair;
+        try {
+            Iterator<IpUriTypePair> iterator = getIterator();
+            do {
+                if (!iterator.hasNext()) {
+                    return null;
+                }
+                pair = iterator.next();
+                
+            } while (blockedIps.contains(pair.getIp()));
+            blockedIps.add(pair.getIp());
+        } finally {
+            queueMutex.release();
+        }
+        return getUris(pair);
+
     }
     
     @Override
