@@ -53,7 +53,7 @@ public class FrontierImplTest {
 
     @Test
     public void getNextUris() throws Exception {
-        queue.addCrawleableUri(uris.get(1));
+        queue.addUri(uris.get(1));
 
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
