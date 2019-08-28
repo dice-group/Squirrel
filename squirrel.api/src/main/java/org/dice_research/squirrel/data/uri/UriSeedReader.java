@@ -1,8 +1,10 @@
 package org.dice_research.squirrel.data.uri;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ public class UriSeedReader {
     public UriSeedReader(String seedFile) {
         Tika tika = new Tika();
         String mimetype = tika.detect(seedFile);
-        isCsv = mimetype.equals("text/csv");
+        isCsv = "text/csv".equals(mimetype);
         
         try {
             in =   new FileReader(seedFile);
@@ -47,7 +49,7 @@ public class UriSeedReader {
        
     }
 
-    public List<CrawleableUri> getUris() throws Exception{
+    public List<CrawleableUri> getUris() throws IllegalArgumentException, IOException, URISyntaxException{
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
 
@@ -56,7 +58,7 @@ public class UriSeedReader {
                 Map<String,String> mapRecords= new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 mapRecords.putAll(record.toMap());
                 if(!mapRecords.containsKey(URI) ) {
-                    throw new Exception("The header <uri> is missing");
+                    throw new IllegalArgumentException("The header <uri> is missing");
                 }
                 
                 if(mapRecords.get(URI).isEmpty())
