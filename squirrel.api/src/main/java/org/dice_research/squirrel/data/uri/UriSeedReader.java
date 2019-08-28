@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.tika.Tika;
-import org.dice_research.squirrel.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
 public class UriSeedReader {
 
     private static final String URI = "uri";
-    private static final String TYPE = "type";
     private boolean isCsv = true;
     private Reader in;
     
@@ -57,17 +55,16 @@ public class UriSeedReader {
             for (CSVRecord record : records) {
                 Map<String,String> mapRecords= new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
                 mapRecords.putAll(record.toMap());
-                if(!mapRecords.containsKey(URI) || !mapRecords.containsKey(TYPE)) {
-                    throw new Exception("CSV seed files must contains at least uri and type as headers");
+                if(!mapRecords.containsKey(URI) ) {
+                    throw new Exception("The header <uri> is missing");
                 }
                 
-                if(mapRecords.get(URI).isEmpty() || mapRecords.get(TYPE).isEmpty())
+                if(mapRecords.get(URI).isEmpty())
                     continue;
-                                CrawleableUri curi = new CrawleableUri(new URI(mapRecords.get(URI)));
-                curi.addData(Constants.URI_TYPE_KEY, mapRecords.get(TYPE));
+                CrawleableUri curi = new CrawleableUri(new URI(mapRecords.get(URI)));
                 
                 for(Entry<String, String> entry : mapRecords.entrySet()) {
-                    if(entry.getKey().equalsIgnoreCase(URI) || entry.getKey().equalsIgnoreCase(TYPE))
+                    if(entry.getKey().equalsIgnoreCase(URI))
                         continue;
                     
                     curi.addData(entry.getKey(), entry.getValue());
