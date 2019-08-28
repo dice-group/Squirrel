@@ -1,11 +1,15 @@
 package org.dice_research.squirrel.analyzer.impl.ckan;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -242,15 +246,26 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
 
     protected void store(Resource s, Property p, RDFNode o) {
         Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
+        URL url = null;
+        try {
+             url = new URL(o.toString());
+        } catch (MalformedURLException e) {
+
+        }
+        if (url != null) {
+          t = new Triple(s.asNode(), p.asNode(), NodeFactory.createURI(url.toString()));   
+        }
         sink.addTriple(curi, t);
         // We already know most of the Resources, so make sure that they are not part of
         // our current dataset
-        if (!s.getURI().startsWith(curiString)) {
-            collector.addNewUri(curi, s.getURI());
-        }
-        if (o.isURIResource() && (!s.getURI().startsWith(curiString))) {
-            collector.addNewUri(curi, t.getObject());
-        }
+        
+        collector.addTriple(curi, t);
+//        if (!s.getURI().startsWith(curiString)) {
+//            collector.addNewUri(curi, s.getURI());
+//        }
+//        if (o.isURIResource() && (!s.getURI().startsWith(curiString))) {
+//            collector.addNewUri(curi, t.getObject());
+//        }
     }
 
 }

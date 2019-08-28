@@ -11,27 +11,29 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class checks whether some {@link org.dice_research.squirrel.worker.Worker} has died and propagates the
+ * This class checks whether some
+ * {@link org.dice_research.squirrel.worker.Worker} has died and propagates the
  * information to the {@link FrontierComponent}.
  *
  * @author Philip Frerk
+ * 
  */
 public class WorkerGuard {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WorkerGuard.class);
-	
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkerGuard.class);
+
     /**
-     * A map from {@link org.dice_research.squirrel.worker.Worker} id to {@link WorkerInfo} containing information about the
+     * A map from {@link org.dice_research.squirrel.worker.Worker} id to
+     * {@link WorkerInfo} containing information about the
      * {@link org.dice_research.squirrel.worker.Worker}.
      */
-    private Map<Integer, WorkerInfo> mapWorkerInfo = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, WorkerInfo> mapWorkerInfo = Collections.synchronizedMap(new HashMap<>());
 
     /**
-     * After this period of time (in seconds), a worker is considered to be dead if he has not sent
-     * an {@link AliveMessage} since.
+     * After this period of time (in seconds), a worker is considered to be dead if
+     * he has not sent an {@link AliveMessage} since.
      */
     public final static long TIME_WORKER_DEAD = 10;
-
 
     /**
      * Counting the number of workers that already died.
@@ -43,25 +45,26 @@ public class WorkerGuard {
      */
     private final Timer timer = new Timer();
 
-
     /**
-     * Create an object of this class and provide an instance of {@link FrontierComponent} that it can contact.
+     * Create an object of this class and provide an instance of
+     * {@link FrontierComponent} that it can contact.
      *
-     * @param frontierComponent The instance of {@link FrontierComponent}.
+     * @param frontierComponent
+     *            The instance of {@link FrontierComponent}.
      */
     public WorkerGuard(FrontierComponent frontierComponent) {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                List<Integer> lstIdsToBeRemoved = new ArrayList<>();
-                for (int idWorker : mapWorkerInfo.keySet()) {
+                List<String> lstIdsToBeRemoved = new ArrayList<>();
+                for (String idWorker : mapWorkerInfo.keySet()) {
 
                     if (mapWorkerInfo.get(idWorker).getDateLastAlive() == null) {
                         continue;
                     }
 
                     boolean currentWorkerSendsAliveMessages = mapWorkerInfo.get(idWorker).workerSendsAliveMessages();
-                    // if a worker does not alive messages in general he will not be removed
+                    // if a worker is not able to send alive messages he will not be removed
                     if (currentWorkerSendsAliveMessages) {
                         long duration = new Date().getTime() - mapWorkerInfo.get(idWorker).getDateLastAlive().getTime();
                         if (TimeUnit.MILLISECONDS.toSeconds(duration) > TIME_WORKER_DEAD + 10) {
@@ -86,9 +89,10 @@ public class WorkerGuard {
     /**
      * Put a new date for the worker identified by the given id.
      *
-     * @param idOfWorker the given id.
+     * @param idOfWorker
+     *            the given id.
      */
-    public void putNewTimestamp(int idOfWorker) {
+    public void putNewTimestamp(String idOfWorker) {
         WorkerInfo workerInfo;
         if (mapWorkerInfo.containsKey(idOfWorker)) {
             workerInfo = mapWorkerInfo.get(idOfWorker);
@@ -102,14 +106,18 @@ public class WorkerGuard {
     /**
      * Put the given uris for the given worker so that he can crawl them.
      *
-     * @param idOfWorker The id of the worker for which to put the uris.
-     * @param lstUris    The uris to put.
+     * @param idOfWorker
+     *            The id of the worker for which to put the uris.
+     * @param lstUris
+     *            The uris to put.
      */
-    public void putUrisForWorker(int idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
+    public void putUrisForWorker(String idOfWorker, boolean workerSendsAliveMessages, List<CrawleableUri> lstUris) {
         WorkerInfo workerInfo;
         if (mapWorkerInfo.containsKey(idOfWorker)) {
             workerInfo = mapWorkerInfo.get(idOfWorker);
-            workerInfo.getUrisCrawling().addAll(lstUris);
+            synchronized (workerInfo) {
+                workerInfo.getUrisCrawling().addAll(lstUris);
+            }
         } else {
             workerInfo = new WorkerInfo(workerSendsAliveMessages, lstUris, new Date());
         }
@@ -119,17 +127,27 @@ public class WorkerGuard {
     /**
      * Remove the given uris for the given worker.
      *
-     * @param idOfWorker      The id of the worker.
-     * @param lstUrisToRemove The uris to be removed.
+     * @param idOfWorker
+     *            The id of the worker.
+     * @param lstUrisToRemove
+     *            The uris to be removed.
      */
     public void removeUrisForWorker(String idOfWorker, List<CrawleableUri> lstUrisToRemove) {
         if (!mapWorkerInfo.containsKey(idOfWorker)) {
-        	LOGGER.warn("Illegal call. Worker with id " + idOfWorker + " should be contained in the info map.");
-        }
-        if (mapWorkerInfo.get(idOfWorker) != null && mapWorkerInfo.get(idOfWorker).getUrisCrawling() == null || mapWorkerInfo.get(idOfWorker).getUrisCrawling().size() == 0) {
+            LOGGER.warn("Got a message from an unknown worker ({}). The Guard will ignore it.", idOfWorker);
             return;
         }
-        mapWorkerInfo.get(idOfWorker).getUrisCrawling().removeAll(lstUrisToRemove);
+        if (mapWorkerInfo.get(idOfWorker) == null) {
+            LOGGER.error("Couldn't find a WorkerInfo instance for {}. The Guard will ignore it.", idOfWorker);
+            return;
+        }
+        WorkerInfo info = mapWorkerInfo.get(idOfWorker);
+        synchronized (info) {
+            if ((info.getUrisCrawling() == null) || (info.getUrisCrawling().size() == 0)) {
+                return;
+            }
+            info.getUrisCrawling().removeAll(lstUrisToRemove);
+        }
     }
 
     /**
@@ -139,7 +157,7 @@ public class WorkerGuard {
         timer.cancel();
     }
 
-    public Map<Integer, WorkerInfo> getMapWorkerInfo() {
+    public Map<String, WorkerInfo> getMapWorkerInfo() {
         return mapWorkerInfo;
     }
 
@@ -160,6 +178,5 @@ public class WorkerGuard {
     public int getNumberOfDeadWorker() {
         return numberOfDeadWorkers;
     }
-
 
 }

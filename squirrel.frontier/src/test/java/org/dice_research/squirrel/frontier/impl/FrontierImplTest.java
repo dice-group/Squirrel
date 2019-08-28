@@ -4,14 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
@@ -20,23 +16,22 @@ import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
-import org.dice_research.squirrel.queue.MongoDBQueue;
+import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
+@SuppressWarnings("deprecation")
 public class FrontierImplTest {
 
 
-    static FrontierImpl frontier;
-    static MongoDBQueue queue;
-    static MongoDBKnowUriFilter filter;
-    static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
-    static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+    private static FrontierImpl frontier;
+    private static MongoDBIpBasedQueue queue;
+    private static MongoDBKnowUriFilter filter;
+    private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
+    private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +40,7 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBQueue("localhost", 58027);
+        queue = new MongoDBIpBasedQueue("localhost", 58027);
          filter.open();
          queue.open();
         frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true);
@@ -58,7 +53,7 @@ public class FrontierImplTest {
 
     @Test
     public void getNextUris() throws Exception {
-        queue.addCrawleableUri(uris.get(1));
+        queue.addUri(uris.get(1));
 
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
@@ -97,7 +92,6 @@ public class FrontierImplTest {
     @Test
     public void crawlingDone() throws Exception {
         List<CrawleableUri> crawledUris = new ArrayList<>();
-        Map<CrawleableUri,List<CrawleableUri>> map = new HashMap<CrawleableUri,List<CrawleableUri>>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"),
                 InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"),

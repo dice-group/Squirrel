@@ -40,7 +40,11 @@ public class SparqlBasedFetcher implements Fetcher {
      */
     private static final int DELAY = 1000;
 
-    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o {?s ?p ?o}";
+    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o\r\n" + 
+            "WHERE  {\r\n" + 
+            "GRAPH ?g {\r\n" + 
+            "?s ?p ?o\r\n" + 
+            "}} ";
 
     protected int delay = DELAY;
     protected File dataDirectory = FileUtils.getTempDirectory();
@@ -67,6 +71,8 @@ public class SparqlBasedFetcher implements Fetcher {
             execution = qef.createQueryExecution(SELECT_ALL_TRIPLES_QUERY);
             ResultSet resultSet = execution.execSelect();
             RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
+            uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "application/n-triples");
+            LOGGER.info("Added: " +  uri.getData(Constants.URI_HTTP_MIME_TYPE_KEY));
         } catch (Throwable e) {
             // If this should have worked, print a message, otherwise silently return null
             if (shouldBeSparql) {
@@ -121,7 +127,8 @@ public class SparqlBasedFetcher implements Fetcher {
         @Override
         public Triple next() {
             QuerySolution solution = resultSet.next();
-            return new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode());
+            Triple t = new Triple(solution.get("s").asNode(), solution.get("p").asNode(), solution.get("o").asNode());
+            return t;
         }
 
     }

@@ -10,10 +10,10 @@ import java.util.Set;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.queue.InMemoryQueue;
-import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -42,30 +42,34 @@ import org.junit.Test;
  *
  */
 public class IpAddressBasedQueueIpBlockingTest {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(IpAddressBasedQueueIpBlockingTest.class);
 
     private static final long DELAY_BETWEEN_URI_GENERATIONS = 10;
     private static final long IP_BLOCKING_DURATION = 1000;
     private static final long DELAY_BETWEEN_WORKPACKAGE_REQUESTS = 60;
 
     protected Throwable t;
-    protected IpAddressBasedQueue queue;
 
     @Test
     public void test() throws Exception {
         // This is a test of parallelization, thus, we should run it several
         // times
         for (int i = 0; i < 3; ++i) {
-            queue = new InMemoryQueue();
-            startTestRun(queue);
+            try {
+            startTestRun(new InMemoryQueue());
+            } catch(AssertionError e) {
+                throw new AssertionError("Catched an AssertionError in test run #" + i + ".", e);
+            }
         }
     }
 
-    private void startTestRun(IpAddressBasedQueue queue) throws Exception {
-        UriAdder adder = new UriAdder(
+    private void startTestRun(BlockingQueue<InetAddress> queue) throws Exception {
+        UriAdder adder = new UriAdder(queue,
                 new InetAddress[] { InetAddress.getByName("192.168.100.1"), InetAddress.getByName("192.168.200.1") },
                 this);
-        RegularUriConsumer regConsumer = new RegularUriConsumer(this);
-        LongDelayUriConsumer longConsumer = new LongDelayUriConsumer(this, adder, regConsumer);
+        RegularUriConsumer regConsumer = new RegularUriConsumer(queue, this);
+        LongDelayUriConsumer longConsumer = new LongDelayUriConsumer(queue, this, adder, regConsumer);
         Thread threads[] = new Thread[] { new Thread(adder), new Thread(longConsumer), new Thread(regConsumer) };
         for (int i = 0; i < threads.length; ++i) {
             threads[i].start();
@@ -87,6 +91,7 @@ public class IpAddressBasedQueueIpBlockingTest {
      */
     public static class UriAdder implements Runnable {
 
+        private BlockingQueue<InetAddress> queue;
         private InetAddress ips[];
         private int uriCounter = 0;
         private int ipAddressCounter = 0;
@@ -94,16 +99,20 @@ public class IpAddressBasedQueueIpBlockingTest {
         private IpAddressBasedQueueIpBlockingTest testClassInstance;
         private boolean run = true;
 
-        public UriAdder(InetAddress[] ips, IpAddressBasedQueueIpBlockingTest testClassInstance) {
+        public UriAdder(BlockingQueue<InetAddress> queue, InetAddress[] ips, IpAddressBasedQueueIpBlockingTest testClassInstance) {
+            this.queue = queue;
             this.ips = ips;
             this.testClassInstance = testClassInstance;
         }
 
         @Override
         public void run() {
+            LOGGER.debug("UriAdder started.");
             try {
                 while (run) {
-                    testClassInstance.queue.addUri(generateNextUri());
+                    CrawleableUri uri = generateNextUri();
+                    LOGGER.debug("Adding URI {}", uri);
+                    queue.addUri(uri);
                     try {
                         Thread.sleep(DELAY_BETWEEN_URI_GENERATIONS);
                     } catch (InterruptedException e) {
@@ -111,8 +120,10 @@ public class IpAddressBasedQueueIpBlockingTest {
                     }
                 }
             } catch (Throwable t) {
+                LOGGER.error("Error in UriAdder.", t);
                 testClassInstance.t = t;
             }
+            LOGGER.debug("UriAdder stops.");
         }
 
         public void stop() {
@@ -145,12 +156,14 @@ public class IpAddressBasedQueueIpBlockingTest {
      */
     public static class LongDelayUriConsumer implements Runnable {
 
+        private BlockingQueue<InetAddress> queue;
         private IpAddressBasedQueueIpBlockingTest testClassInstance;
         private UriAdder adder;
         private RegularUriConsumer regConsumer;
 
-        public LongDelayUriConsumer(IpAddressBasedQueueIpBlockingTest testClassInstance, UriAdder adder,
+        public LongDelayUriConsumer(BlockingQueue<InetAddress> queue, IpAddressBasedQueueIpBlockingTest testClassInstance, UriAdder adder,
                 RegularUriConsumer regConsumer) {
+            this.queue = queue;
             this.testClassInstance = testClassInstance;
             this.adder = adder;
             this.regConsumer = regConsumer;
@@ -158,17 +171,21 @@ public class IpAddressBasedQueueIpBlockingTest {
 
         @Override
         public void run() {
+            LOGGER.debug("LongDelayUriConsumer started.");
             try {
                 Thread.sleep(DELAY_BETWEEN_WORKPACKAGE_REQUESTS);
                 // request URI and set it inside the RegularUriConsumer
-                List<CrawleableUri> uris = testClassInstance.queue.getNextUris();
+                List<CrawleableUri> uris = queue.getNextUris();
                 Assert.assertNotNull("Shouldn't get null.", uris);
                 Assert.assertNotEquals("Shouldn't get an empty list.", 0, uris.size());
+                LOGGER.debug("LongDelayUriConsumer got {}", uris.toString());
                 regConsumer.blockedAddress = uris.get(0).getIpAddress();
                 // sleep for a long time
                 Thread.sleep(IP_BLOCKING_DURATION);
-                testClassInstance.queue.markIpAddressAsAccessible(uris.get(0).getIpAddress());
+                LOGGER.debug("LongDelayUriConsumer released URIs.");
+                queue.markUrisAsAccessible(uris);
             } catch (Throwable t) {
+                LOGGER.error("Error in LongDelayUriConsumer.", t);
                 testClassInstance.t = t;
             } finally {
                 // Stop the adder and report the termination of this thread to
@@ -176,6 +193,7 @@ public class IpAddressBasedQueueIpBlockingTest {
                 adder.stop();
                 regConsumer.longDelayThreadIsDead = true;
             }
+            LOGGER.debug("LongDelayUriConsumer stops.");
         }
 
     }
@@ -201,30 +219,35 @@ public class IpAddressBasedQueueIpBlockingTest {
      */
     public static class RegularUriConsumer implements Runnable {
 
+        private BlockingQueue<InetAddress> queue;
         private IpAddressBasedQueueIpBlockingTest testClassInstance;
         private InetAddress blockedAddress = null;
         private boolean longDelayThreadIsDead = false;
 
-        public RegularUriConsumer(IpAddressBasedQueueIpBlockingTest testClassInstance) {
+        public RegularUriConsumer(BlockingQueue<InetAddress> queue, IpAddressBasedQueueIpBlockingTest testClassInstance) {
+            this.queue = queue;
             this.testClassInstance = testClassInstance;
         }
 
         @Override
         public void run() {
+            LOGGER.debug("RegularUriConsumer started.");
             try {
                 // give the other thread the time to block one of the addresses
                 Thread.sleep(2 * DELAY_BETWEEN_WORKPACKAGE_REQUESTS);
                 Assert.assertNotNull("The blocked IP address should have been set.", blockedAddress);
                 List<CrawleableUri> uris;
+                // While the other consumer is not dead
                 while (!longDelayThreadIsDead) {
-                    uris = testClassInstance.queue.getNextUris();
+                    uris = queue.getNextUris();
                     Assert.assertNotNull("Shouldn't get null.", uris);
                     Assert.assertNotEquals("Shouldn't get an empty list.", 0, uris.size());
+                    LOGGER.debug("RegularUriConsumer got {}", uris);
                     for (CrawleableUri uri : uris) {
                         Assert.assertNotEquals("The retrieved URI should not have the IP blocked by another thread.",
                                 blockedAddress, uri.getIpAddress());
                     }
-                    testClassInstance.queue.markIpAddressAsAccessible(uris.get(0).getIpAddress());
+                    queue.markUrisAsAccessible(uris);
                     Thread.sleep(DELAY_BETWEEN_WORKPACKAGE_REQUESTS);
                 }
                 // wait a short time
@@ -232,7 +255,8 @@ public class IpAddressBasedQueueIpBlockingTest {
                 // request two additional chunks
                 Set<InetAddress> ips = new HashSet<InetAddress>();
                 for (int i = 0; i < 2; ++i) {
-                    uris = testClassInstance.queue.getNextUris();
+                    uris = queue.getNextUris();
+                    LOGGER.debug("RegularUriConsumer got {}", uris);
                     if (uris != null) {
                         for (CrawleableUri uri : uris) {
                             ips.add(uri.getIpAddress());
@@ -241,10 +265,12 @@ public class IpAddressBasedQueueIpBlockingTest {
                 }
                 Assert.assertTrue("The set " + ips.toString() + " should have contained the former blocked IP "
                         + blockedAddress.toString(), ips.contains(blockedAddress));
-                Assert.assertNull("Expected the queue to be empty.", testClassInstance.queue.getNextUris());
+                Assert.assertNull("Expected the queue to be empty.", queue.getNextUris());
             } catch (Throwable t) {
+                LOGGER.error("Error in RegularUriConsumer.", t);
                 testClassInstance.t = t;
             }
+            LOGGER.debug("RegularUriConsumer stops.");
         }
     }
 }

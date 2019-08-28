@@ -38,7 +38,12 @@ public interface KnownUriFilter extends UriFilter {
 
     /**
      * count the numbers of known URIs
-     * @return the number of lines in that database
+     * @return the number of entries from a open queue
      */
     long count();
+    
+    /**
+     * Opens the queue and allocates necessary resources.
+     */
+    public void open();
 }
