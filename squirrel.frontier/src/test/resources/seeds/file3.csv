@@ -1,4 +1,4 @@
-uri
+type
 http://abdera.watson.ibm.com:8080/sparql,sparql
 http://api.talis.com/stores/periodicals/services/sparql,sparql
 http://bbc.openlinksw.com/sparql,

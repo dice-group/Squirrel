@@ -45,7 +45,7 @@ public class CsvSeedTest {
     
     @Test
     public void testFile2() throws Exception {
-        int expected = 120;
+        int expected = 130;
         List<CrawleableUri> listUris = new UriSeedReader(seedFile2).getUris();
         Assert.assertEquals(expected, listUris.size());
     }
@@ -58,7 +58,7 @@ public class CsvSeedTest {
     @Test
     public void testFile3() throws Exception {
         exceptionRule.expect(Exception.class);
-        exceptionRule.expectMessage("CSV seed files must contains at least uri and type as headers");
+        exceptionRule.expectMessage("The header <uri> is missing");
         new UriSeedReader(seedFile3).getUris();
         
     }
