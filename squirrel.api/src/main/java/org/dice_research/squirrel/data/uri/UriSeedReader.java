@@ -77,7 +77,7 @@ public class UriSeedReader {
                 
             }
         }else {
-            LOGGER.error("Seed file is not a CSV file, queue will be empty");
+            LOGGER.error("Seed file is not a CSV file");
         }
 
         return listUris;
