@@ -17,6 +17,7 @@ import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.data.uri.UriUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +65,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     public void queueContainsDomain() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        String domain = MongoDBDomainBasedQueue.getDomainName(uris.get(0).getUri());
+        String domain = UriUtils.getDomainName(uris.get(0).getUri().toString());
         assertFalse(mongodbQueue.containsDomain(domain));
         mongodbQueue.addDomain(domain);
         assertTrue(mongodbQueue.containsDomain(domain));

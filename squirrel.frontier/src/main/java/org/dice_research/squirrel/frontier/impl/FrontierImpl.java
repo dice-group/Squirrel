@@ -1,7 +1,5 @@
 package org.dice_research.squirrel.frontier.impl;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
@@ -308,10 +306,6 @@ public class FrontierImpl implements Frontier {
         }
     }
 
-    public static String getDomainName(URI uri) throws URISyntaxException {
-        String domain = uri.getHost();
-        return domain.startsWith("www.") ? domain.substring(4) : domain;
-    }
 
     @Override
     public void crawlingDone(List<CrawleableUri> uris) {

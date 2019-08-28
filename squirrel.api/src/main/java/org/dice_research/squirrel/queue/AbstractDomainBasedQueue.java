@@ -1,9 +1,9 @@
 package org.dice_research.squirrel.queue;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.group.UriGroupByOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public abstract class AbstractDomainBasedQueue extends AbstractGroupingQueue<Str
             @Override
             public String retrieveKey(CrawleableUri uri) {
                 try {
-                return getDomainName(uri.getUri());
+                return UriUtils.getDomainName(uri.getUri().toString());
                 } catch (URISyntaxException e) {
                     LOGGER.error("Could not obtain domain from URI: " + uri.getUri().toString() + ". Using Default");
                     return DEFAULT_DOMAIN;
@@ -36,8 +36,4 @@ public abstract class AbstractDomainBasedQueue extends AbstractGroupingQueue<Str
         });
     }
 
-    public static String getDomainName(URI uri) throws URISyntaxException {
-        String domain = uri.getHost();
-        return domain.startsWith("www.") ? domain.substring(4) : domain;
-    }
 }
