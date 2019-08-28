@@ -39,10 +39,9 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     private List<Lang> listLangs = new ArrayList<Lang>();
     private Set<String> jenaContentTypes = new HashSet<String>();
 
-
     public RDFAnalyzer(UriCollector collector) {
-        
-    	super(collector);
+
+        super(collector);
         listLangs.add(Lang.NT);
         listLangs.add(Lang.NQUADS);
         listLangs.add(Lang.RDFJSON);
@@ -53,7 +52,7 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         listLangs.add(Lang.TRIX);
         listLangs.add(Lang.TTL);
         listLangs.add(Lang.TURTLE);
-        
+
         for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
             if (!RDFLanguages.RDFNULL.equals(lang)) {
                 jenaContentTypes.add(lang.getContentType().getContentType());
@@ -101,23 +100,10 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
 
-        
-        if ((contentType != null) && jenaContentTypes.contains(contentType)) {
+        if ((contentType != null) && jenaContentTypes.contains(contentType))
             return true;
-        }
-//        // Try to get the tika mime type
-//        // TODO it might be better to do that once and add it to the URIs data
-//        try (InputStream is = new FileInputStream(data)) {
-//            String mimeType = tika.detect(is);
-//            if (mimeType.equals("application/rdf+xml") || mimeType.equals("text/plain")
-//                    || mimeType.equals("application/x-turtle")) {
-//                return true;
-//            }
-//
-//        } catch (Exception e) {
-//            LOGGER.error("An error was found when trying to analyze ", e);
-//        }
-        return false;
+        else
+            return false;
     }
 
 }
