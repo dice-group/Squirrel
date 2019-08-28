@@ -4,9 +4,9 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
@@ -44,6 +44,7 @@ import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
 import org.dice_research.squirrel.worker.AliveMessage;
+import org.dice_research.squirrel.worker.WorkerInfo;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
@@ -76,11 +77,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
-    
-    private Map<String, Boolean> hasUrisToCrawl;
 
     public static final boolean RECRAWLING_ACTIVE = true;
-    
 
     @Override
     public void init() throws Exception {
@@ -88,12 +86,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        hasUrisToCrawl = new HashMap<String,Boolean>();
         if (mongoConfiguration != null) {
 
             queue.open();
             knownUriFilter.open();
-
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
@@ -146,9 +142,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, hasUrisToCrawl);
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
         Timer timer = new Timer();
-        timer.schedule(terminatorTask, 5000,5000);
+        timer.schedule(terminatorTask, 5000, 5000);
         terminationMutex.acquire();
         timer.cancel();
     }
@@ -156,11 +152,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Override
     public void close() throws IOException {
         LOGGER.info("Closing Frontier Component.");
-        if (receiver != null) 
+        if (receiver != null)
             // Force the receiver to close
             receiver.close();
 //         receiver.closeWhenFinished();
-      
+
         if (queue != null)
             queue.close();
         if (uriReferences != null)
@@ -232,11 +228,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                         uris == null ? "null" : Integer.toString(uris.size()));
                 handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                 if (uris != null && uris.size() > 0) {
-                    hasUrisToCrawl .put(uriSetRequest.getWorkerId(), true);
-                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(),
-                            uriSetRequest.workerSendsAliveMessages(), uris);
-                }else {
-                    hasUrisToCrawl .put(uriSetRequest.getWorkerId(), false);
+                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(), uriSetRequest.workerSendsAliveMessages(),
+                            uris);
                 }
             } catch (IOException e) {
                 LOGGER.error("Couldn't serialize new URI set.", e);
@@ -247,11 +240,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     }
 
     protected void processSeedFile(String seedFile) {
-        try {  
+        try {
             List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
-            if(!listSeeds.isEmpty())
+            if (!listSeeds.isEmpty())
                 frontier.addNewUris(listSeeds);
-            
+
             List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
@@ -272,29 +265,38 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public WorkerGuard getWorkerGuard() {
         return workerGuard;
     }
-    
-    private static class TerminatorTask extends TimerTask{
-    	
-    	private UriQueue queue;
-    	private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
-    	private Semaphore terminationMutex;
-    	private Map<String, Boolean> hasUrisToCrawl;
-    	
-    	public TerminatorTask(UriQueue queue, Semaphore terminationMutex,Map<String, Boolean> hasUrisToCrawl) {
-    		this.queue = queue;
-    		this.terminationMutex = terminationMutex;
-    		this.hasUrisToCrawl = hasUrisToCrawl;
-		}
 
-		@Override
-		public void run() {
+    private static class TerminatorTask extends TimerTask {
 
-		    
-			if(!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
+        private UriQueue queue;
+        private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
+        private Semaphore terminationMutex;
+        private WorkerGuard workerGuard;
+
+        public TerminatorTask(UriQueue queue, Semaphore terminationMutex, WorkerGuard workerGuard) {
+            this.queue = queue;
+            this.terminationMutex = terminationMutex;
+            this.workerGuard = workerGuard;
+        }
+
+        @Override
+        public void run() {
+
+            Map<String, WorkerInfo> mapWorkers = this.workerGuard.getMapWorkerInfo();
+
+            boolean stillHasUris = false;
+            for (Entry<String, WorkerInfo> entry : mapWorkers.entrySet()) {
+                if (entry.getValue().getUrisCrawling().size() > 0) {
+                    stillHasUris = true;
+                    break;
+                }
+            }
+
+			if(!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
 			    LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
 	        	terminationMutex.release();
 	        }			
-		}
-    	
+        }
+
     }
 }
