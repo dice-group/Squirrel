@@ -11,14 +11,35 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Simple in-memory implementation of the {@link UriCollector} interface based
+ * on the given {@link Serializer}.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class SimpleUriCollector implements UriCollector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleUriCollector.class);
+    /**
+     * Number of all URIs collected.
+     */
     private long total_uris = 0;
-
+    /**
+     * Mapping from URIs to the new URIs that have been found.
+     */
     protected Map<String, Map<String, byte[]>> urisOfUris = new HashMap<String, Map<String, byte[]>>();
+    /**
+     * {@link Serializer} used to serialize the given URIs.
+     */
     protected Serializer serializer;
 
+    /**
+     * Constructor.
+     * 
+     * @param serializer
+     *            the serializer that is used to serialize the new URIs.
+     */
     public SimpleUriCollector(Serializer serializer) {
         this.serializer = serializer;
     }
@@ -54,6 +75,11 @@ public class SimpleUriCollector implements UriCollector {
         }
     }
 
+    /**
+     * Returns the total number of new URIs that have been added to this collector.
+     * 
+     * @return the total number of new URIs that have been added to this collector.
+     */
     public long getSize() {
         return total_uris;
     }
@@ -63,11 +89,14 @@ public class SimpleUriCollector implements UriCollector {
         urisOfUris.remove(uri.getUri().toString());
     }
 
-	@Override
-	public long getSize(CrawleableUri uri) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public long getSize(CrawleableUri uri) {
+        String uriString = uri.getUri().toString();
+        if(urisOfUris.containsKey(uriString)) {
+           return urisOfUris.get(uriString).size();
+        } else {
+            return 0;
+        }
+    }
 
 }
-
