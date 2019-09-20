@@ -220,6 +220,7 @@ public class WorkerImpl implements Worker, Closeable {
             try {
                 long delay = timeStampLastUriFetched
                         - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
+                LOGGER.debug("Waiting for {} ms because of robots.txt delay.", delay);
                 if (delay > 0) {
                     Thread.sleep(delay);
                 }

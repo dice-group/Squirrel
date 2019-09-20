@@ -33,6 +33,11 @@ public class RobotsManagerImplTest extends AbstractServerMockUsingTest {
             + "Crawl-delay: 10\n# Directories\nDisallow: /includes/\n" + "# Files\nDisallow: /INSTALL.txt\n"
             + "# Paths (clean URLs)\nDisallow: /admin/\n" + "# Paths (no clean URLs)\nDisallow: /?q=admin/\n";
 
+    /**
+     * Example of a generated robots.txt file
+     */
+    private static final String ROBOTS_TXT_FILE3 = "User-agent: *\nCrawl-delay: 5\nDisallow: /dataset-0/resource-5";
+
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         return Arrays.asList(new Object[][] { { ROBOTS_TXT_FILE1, new URI(HTTP_SERVER_ADDRESS + "/test"), true, 2000 },
@@ -44,7 +49,9 @@ public class RobotsManagerImplTest extends AbstractServerMockUsingTest {
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/includes/Berlin"), false, 10000 },
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/INSTALL.txt"), false, 10000 },
                 { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/admin/pwd.txt"), false, 10000 },
-                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/?q=admin/"), false, 10000 } });
+                { ROBOTS_TXT_FILE2, new URI(HTTP_SERVER_ADDRESS + "/?q=admin/"), false, 10000 },
+                { ROBOTS_TXT_FILE3, new URI(HTTP_SERVER_ADDRESS + "/dataset-0/resource-0"), true, 5000 },
+                { ROBOTS_TXT_FILE3, new URI(HTTP_SERVER_ADDRESS + "/dataset-0/resource-5"), false, 5000 } });
     }
 
     private URI uri;
