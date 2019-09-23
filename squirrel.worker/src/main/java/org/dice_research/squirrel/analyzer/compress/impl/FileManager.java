@@ -20,7 +20,8 @@ public class FileManager {
             String mime_type = detectMimeType(inputFile);
             if (MimeTypeEnum.TAR.mime_type().equals(mime_type)) {
                 return new TarDecompressor().decompress(inputFile);
-            } else if (MimeTypeEnum.TAR_GZ.mime_type().equals(mime_type)) {
+            } else if (MimeTypeEnum.GZ.mime_type().equals(mime_type)) {
+            	LOGGER.info("GZIP DETECTED");
                 return new GzDecompressor().decompress(inputFile);
             } else if (MimeTypeEnum.ZIP.mime_type().equals(mime_type)) {
                 return new ZipDecompressor().decompress(inputFile);
