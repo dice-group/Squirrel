@@ -122,7 +122,7 @@
         class="org.dice_research.squirrel.fetcher.http.HTTPFetcher">
         <!-- Define the Accept header value of the HTTP fetcher -->
         <property name="acceptHeader">
-            <value>application/rdf+xml,application/n-triples,text/turtle,text/n3,application/ld+jsonapplication/n-quads;q=0.9,application/trig;q=0.9,*/*;q=0.5
+            <value>application/rdf+xml,application/n-triples,text/turtle,text/n3,application/ld+jsonapplication/n-quads;q=0.9,application/trig;q=0.9,application/vnd.hdt;q=0.9,*/*;q=0.5
             </value>
         </property>
     </bean>
