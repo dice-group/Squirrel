@@ -193,6 +193,16 @@ public class HTTPFetcher implements Fetcher {
         return outputFile;
     }
 
+    /**
+     * The value of the HTTP Accept header field that is used if the given
+     * {@link CrawleableUri} instance does not define this. <b>Note</b> that the
+     * given string has to follow
+     * <a href="https://tools.ietf.org/html/rfc7231#page-38">section 5.3.2 of
+     * RFC-7231</a>.
+     * 
+     * @param acceptHeader
+     *            the new value of the accept header as defined in RFC-7231.
+     */
     public void setAcceptHeader(String acceptHeader) {
         this.acceptHeader = acceptHeader;
     }
@@ -200,7 +210,7 @@ public class HTTPFetcher implements Fetcher {
     public void setAcceptCharset(String acceptCharset) {
         this.acceptCharset = acceptCharset;
     }
-    
+
     public void setDataDirectory(File dataDirectory) {
         this.dataDirectory = dataDirectory;
     }
