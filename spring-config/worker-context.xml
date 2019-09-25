@@ -50,10 +50,10 @@
             <list>
                 <ref bean="ckanAnalyzerBean" />
                 <ref bean="rdfAnalyzerBean" />
-                <ref bean="htmlscraperanalyzerBean" />
-                <ref bean="microdataanalyzerBean" />
-                <ref bean="microformatanalyzerBean" />
-                <ref bean="hdtanalyzerBean" />
+                <ref bean="htmlScraperAnalyzerBean" />
+                <ref bean="microdataAnalyzerBean" />
+                <ref bean="microformatAnalyzerBean" />
+                <ref bean="hdtAnalyzerBean" />
             </list>
         </constructor-arg>
     </bean>
@@ -71,31 +71,31 @@
             ref="uriCollectorBean" />
     </bean>
 
-    <bean id="microdataanalyzerBean"
+    <bean id="microdataAnalyzerBean"
         class="org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer">
         <constructor-arg index="0"
             ref="uriCollectorBean" />
     </bean>
 
-    <bean id="microformatanalyzerBean"
+    <bean id="microformatAnalyzerBean"
         class="org.dice_research.squirrel.analyzer.impl.MicroformatMF2JAnalyzer">
         <constructor-arg index="0"
             ref="uriCollectorBean" />
     </bean>
 
-    <bean id="hdtanalyzerBean"
+    <bean id="hdtAnalyzerBean"
         class="org.dice_research.squirrel.analyzer.impl.HDTAnalyzer">
         <constructor-arg index="0"
             ref="uriCollectorBean" />
     </bean>
 
-    <bean id="htmlscraperanalyzerBean"
+    <bean id="htmlScraperAnalyzerBean"
         class="org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer">
         <constructor-arg index="0"
             ref="uriCollectorBean" />
     </bean>
 
-    <bean id="ckananalyzerBean"
+    <bean id="ckanAnalyzerBean"
         class="org.dice_research.squirrel.analyzer.impl.ckan.CkanJsonAnalyzer">
         <constructor-arg index="0"
             ref="uriCollectorBean" />
