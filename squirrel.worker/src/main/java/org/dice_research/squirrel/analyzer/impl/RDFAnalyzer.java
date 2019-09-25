@@ -2,7 +2,6 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
@@ -70,8 +68,8 @@ public class RDFAnalyzer extends AbstractAnalyzer {
 			// First, try to get the language of the data
 			LOGGER.info("Starting the RDF Analyzer");
 			Lang lang = null;
-			String contentType = ((String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY)).equals("text/plain") ? null
-					: (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+            String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+
 			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
 			if (contentType != null) {
 				lang = RDFLanguages.contentTypeToLang(contentType);
@@ -107,27 +105,14 @@ public class RDFAnalyzer extends AbstractAnalyzer {
 
 	// @Override
 	public boolean isElegible(CrawleableUri curi, File data) {
-		// Check the content type first
-		String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-		Tika tika = new Tika();
-		
-		LOGGER.info("Content Type Detected: " + contentType);
+        // Check the content type first
+        String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
 
+        if ((contentType != null) && jenaContentTypes.contains(contentType))
+            return true;
+        else
+            return false;
+    }
 
-		if ("*/*".equals(contentType) || "text/plain".equals(contentType)) {
-			try {
-				contentType = tika.detect(data);
-				curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, contentType);
-
-			} catch (IOException e) {
-				LOGGER.info("Could not Detect Mimetype using Tika, using from Fetcher");
-			}
-		}
-
-		if ((contentType != null) && jenaContentTypes.contains(contentType))
-			return true;
-		else
-			return false;
-	}
 
 }

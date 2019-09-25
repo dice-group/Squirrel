@@ -15,6 +15,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
-public class TDBSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
+public class TDBSink extends AbstractBufferingSink implements AdvancedTripleBasedSink, Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TDBSink.class);
     /**
@@ -171,6 +172,12 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
 
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
+    }
+
+    @Override
+    protected void sendQuads(CrawleableUri uri, Collection<Quad> buffer) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
