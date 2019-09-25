@@ -11,7 +11,7 @@ public class SimpleHTTPServerConfiguration extends Configuration {
     private static final String SERVER_PORT_KEY = "PORT";
     private static final String DUMP_FILE_NAME_KEY = "DUMP_FILE_NAME";
     private static final String USE_DEREF_KEY = "USE_DEREF";
-    private static final String ROBOTS_TXT = "USE_DEREF";
+    private static final String ROBOTS_TXT_KEY = "ROBOTS_TXT";
 
     private String modelFile;
     private String modelLang;
@@ -71,7 +71,7 @@ public class SimpleHTTPServerConfiguration extends Configuration {
     }
 
     private static String getEnvRobotsTxt() {
-        return getEnv(ROBOTS_TXT, LOGGER);
+        return getEnv(ROBOTS_TXT_KEY, LOGGER);
     }
 
     public String getModelFile() {

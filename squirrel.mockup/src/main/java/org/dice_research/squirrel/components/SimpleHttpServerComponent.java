@@ -61,7 +61,7 @@ public class SimpleHttpServerComponent implements Component {
                 resources.add(
                         new SimpleStringResource("/robots.txt", FileUtils.readWholeFileAsUTF8(conf.getRobotsTxt())));
             } catch (Exception e) {
-                LOGGER.error("Error while reading robots.txt file.");
+                LOGGER.error("Error while reading robots.txt file.", e);
             }
         }
 
