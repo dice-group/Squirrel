@@ -2,7 +2,6 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,7 +12,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
@@ -36,96 +34,85 @@ import org.slf4j.LoggerFactory;
 
 public class RDFAnalyzer extends AbstractAnalyzer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
-    private List<Lang> listLangs = new ArrayList<Lang>();
-    private Set<String> jenaContentTypes = new HashSet<String>();
+	private List<Lang> listLangs = new ArrayList<Lang>();
+	private Set<String> jenaContentTypes = new HashSet<String>();
 
-    public RDFAnalyzer(UriCollector collector) {
+	public RDFAnalyzer(UriCollector collector) {
 
-        super(collector);
-        listLangs.add(Lang.NT);
-        listLangs.add(Lang.NQUADS);
-        listLangs.add(Lang.RDFJSON);
-        listLangs.add(Lang.RDFTHRIFT);
-        listLangs.add(Lang.RDFXML);
-        listLangs.add(Lang.JSONLD);
-        listLangs.add(Lang.TRIG);
-        listLangs.add(Lang.TRIX);
-        listLangs.add(Lang.TTL);
-        listLangs.add(Lang.TURTLE);
+		super(collector);
+		listLangs.add(Lang.NT);
+		listLangs.add(Lang.NQUADS);
+		listLangs.add(Lang.RDFJSON);
+		listLangs.add(Lang.RDFTHRIFT);
+		listLangs.add(Lang.RDFXML);
+		listLangs.add(Lang.JSONLD);
+		listLangs.add(Lang.TRIG);
+		listLangs.add(Lang.TRIX);
+		listLangs.add(Lang.TTL);
+		listLangs.add(Lang.TURTLE);
 
-        for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
-            if (!RDFLanguages.RDFNULL.equals(lang)) {
-                jenaContentTypes.add(lang.getContentType().getContentType());
-                jenaContentTypes.addAll(lang.getAltContentTypes());
-            }
-        }
-    }
+		for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
+			if (!RDFLanguages.RDFNULL.equals(lang)) {
+				jenaContentTypes.add(lang.getContentType().getContentType());
+				jenaContentTypes.addAll(lang.getAltContentTypes());
+			}
+		}
+	}
 
-    @Override
-    public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-        FileInputStream fin = null;
-        try {
-            // First, try to get the language of the data
-            LOGGER.info("Starting the RDF Analyzer");
-            Lang lang = null;
-            String contentType = ((String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY)).equals("text/plain") ? null
-                    : (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+	@Override
+	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
+		FileInputStream fin = null;
+		try {
+			// First, try to get the language of the data
+			LOGGER.info("Starting the RDF Analyzer");
+			Lang lang = null;
+            String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
 
-            StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
-            if (contentType != null) {
-                lang = RDFLanguages.contentTypeToLang(contentType);
-                LOGGER.info("Received content type: " + contentType);
-                LOGGER.info("Lang : " + lang);
+			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
+			if (contentType != null) {
+				lang = RDFLanguages.contentTypeToLang(contentType);
+				LOGGER.info("Received content type: " + contentType);
+				LOGGER.info("Lang : " + lang);
 
-                try {
-                    RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
-                } catch (Exception e) {
-                    LOGGER.warn("Could not parse file as " + lang.getName());
-                }
-            } else {
-                LOGGER.info("Content Type is null");
-                for (Lang l : listLangs) {
-                    try {
-                        RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
-                        break;
-                    } catch (Exception e) {
-                        LOGGER.warn("Could not parse file as " + l.getName());
-                    }
-                }
-            }
-            ActivityUtil.addStep(curi, getClass());
-            return collector.getUris(curi);
-        } catch (Exception e) {
-            LOGGER.error("Exception while analyzing. Aborting. ", e);
-            ActivityUtil.addStep(curi, getClass(), e.getMessage());
-            return null;
-        } finally {
-            IOUtils.closeQuietly(fin);
-        }
-    }
+				try {
+					RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
+				} catch (Exception e) {
+					LOGGER.warn("Could not parse file as " + lang.getName());
+				}
+			} else {
+				LOGGER.info("Content Type is null");
+				for (Lang l : listLangs) {
+					try {
+						RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+						break;
+					} catch (Exception e) {
+						LOGGER.warn("Could not parse file as " + l.getName());
+					}
+				}
+			}
+			ActivityUtil.addStep(curi, getClass());
+			return collector.getUris(curi);
+		} catch (Exception e) {
+			LOGGER.error("Exception while analyzing. Aborting. ", e);
+			ActivityUtil.addStep(curi, getClass(), e.getMessage());
+			return null;
+		} finally {
+			IOUtils.closeQuietly(fin);
+		}
+	}
 
-    // @Override
-    public boolean isElegible(CrawleableUri curi, File data) {
+	// @Override
+	public boolean isElegible(CrawleableUri curi, File data) {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-        Tika tika = new Tika();
-
-        LOGGER.info("Content Type Detected: " + contentType);
-
-        if ("*/*".equals(contentType) || "text/plain".equals(contentType)) {
-            try {
-                contentType = tika.detect(data);
-                curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, contentType);
-            } catch (IOException e) {
-                LOGGER.info("Could not Detect Mimetype using Tika, using from Fetcher");
-            }
-        }
 
         if ((contentType != null) && jenaContentTypes.contains(contentType))
             return true;
         else
             return false;
     }
+
+
 }
