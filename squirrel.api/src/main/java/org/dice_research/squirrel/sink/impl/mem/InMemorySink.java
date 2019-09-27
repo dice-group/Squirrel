@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.sparql.core.Quad;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
@@ -156,5 +157,11 @@ public class InMemorySink implements Sink {
         } catch (IOException e) {
             LOGGER.error("Error while reading data from stream. The data won't be stored.", e);
         }
+    }
+
+    @Override
+    public void addQuad(CrawleableUri uri, Quad quad) {
+        // TODO Auto-generated method stub
+        
     }
 }

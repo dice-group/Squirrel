@@ -16,6 +16,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWriter;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -203,5 +204,11 @@ public class FileBasedSink implements Sink {
             Closer.close(tripleOutputStream, LOGGER);
             Closer.close(dataOutputStream, LOGGER);
         }
+    }
+
+    @Override
+    public void addQuad(CrawleableUri uri, Quad quad) {
+        // TODO Auto-generated method stub
+        
     }
 }
