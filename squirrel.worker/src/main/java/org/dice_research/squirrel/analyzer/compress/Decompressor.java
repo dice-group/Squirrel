@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+
 
 /**
  * Interface for a Decompressor class
@@ -13,6 +15,6 @@ import java.util.List;
  */
 public interface Decompressor {
 
-    public List<File> decompress(File inputFile) throws IOException;
+    public List<File> decompress(CrawleableUri curi, File inputFile) throws IOException;
 
 }

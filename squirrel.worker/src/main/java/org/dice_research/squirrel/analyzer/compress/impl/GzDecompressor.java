@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.compress.Decompressor;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,7 @@ public class GzDecompressor extends TarDecompressor implements Decompressor {
     }
 
     @Override
-    public List<File> decompress(File inputFile) throws IOException {
+    public List<File> decompress(CrawleableUri curi, File inputFile) throws IOException {
         File outputFile = File.createTempFile("tempFile", Long.toString(System.nanoTime()));
         
         byte[] buffer = new byte[1024];
@@ -56,6 +58,8 @@ public class GzDecompressor extends TarDecompressor implements Decompressor {
         	
         List<File> listFiles = new ArrayList<>();
         listFiles.add(outputFile);
+        curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "text/plain");
+
         return listFiles;
 
     }

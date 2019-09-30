@@ -185,7 +185,6 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
             quads.setGraph(graph);
             UpdateProcessor processor = updateExecFactory.createUpdateProcessor(new UpdateRequest(insert).toString()
                     .replaceAll("\\{\\}", "" + "{ SELECT * {OPTIONAL {?s ?p ?o} } LIMIT 1}"));
-            LOGGER.info("Storing " + triples.size() + " triples for URI: " + uri.getUri().toString());
             processor.execute();
         } catch (Exception e) {
             LOGGER.error("Exception while sending update query.", e);
