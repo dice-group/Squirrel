@@ -1,13 +1,16 @@
 package org.dice_research.squirrel.analyzer.compress.impl;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.dice_research.squirrel.analyzer.compress.Decompressor;
-import org.dice_research.squirrel.utils.TempPathUtils;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.analyzer.compress.Decompressor;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 public class BzipDecompressor extends TarDecompressor implements Decompressor {
 
@@ -16,15 +19,16 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor {
     }
 
     @Override
-    public List<File> decompress(File inputFile) throws IOException {
+    public List<File> decompress(CrawleableUri curi, File inputFile) throws IOException {
 
-        File outputFile = createOutputFile();
+        File outputFile = File.createTempFile("tempFile", Long.toString(System.nanoTime()));
 
-        InputStream fin = Files.newInputStream(Paths.get(inputFile.getAbsolutePath()));
-        BufferedInputStream in = new BufferedInputStream(fin);
-        OutputStream out = Files.newOutputStream(Paths.get(outputFile + ".tar"));
+        int buffersize = 1024;
+
+        FileInputStream in = new FileInputStream(inputFile);
+        FileOutputStream out = new FileOutputStream(outputFile);
         BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
-        final byte[] buffer = new byte[1000];
+        final byte[] buffer = new byte[buffersize];
         int n = 0;
         while (-1 != (n = bzIn.read(buffer))) {
             out.write(buffer, 0, n);
@@ -32,13 +36,12 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor {
         out.close();
         bzIn.close();
 
-        File tempoutputFile = new File(outputFile + ".tar");
+        List<File> listFiles = new ArrayList<File>();
+        listFiles.add(outputFile);
+        curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "text/plain");
+        return listFiles;
 
-        if (tempoutputFile.exists() && tempoutputFile.isFile()) {
-            return new TarDecompressor().decompress(tempoutputFile);
-        }
-
-        return TempPathUtils.searchPath4Files(outputFile);
     }
+
 
 }
