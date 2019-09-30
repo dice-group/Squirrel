@@ -324,6 +324,12 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+            <!-- System rules for setting environment variables -->
+            <dependency>
+              <groupId>com.github.stefanbirkner</groupId>
+              <artifactId>system-rules</artifactId>
+              <scope>test</scope>
+            </dependency>
             <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
             <!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->

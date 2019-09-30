@@ -47,10 +47,10 @@
             <list>
                  <ref bean="ckanAnalyzerBean"/>        
                  <ref bean="rdfAnalyzerBean"/>
-                 <ref bean="htmlscraperanalyzerBean"/>          
-                 <ref bean="microdataanalyzerBean"/>          
-                 <ref bean="microformatanalyzerBean"/>          
-                 <ref bean="hdtanalyzerBean"/>          
+                 <ref bean="htmlScraperAnalyzerBean"/>          
+                 <ref bean="microdataAnalyzerBean"/>          
+                 <ref bean="microformatAnalyzerBean"/>          
+                 <ref bean="hdtAnalyzerBean"/>          
                  
                        
             </list>
@@ -66,19 +66,19 @@
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
-    <bean id="microdataanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer">
+    <bean id="microdataAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicrodataAnalyzer">
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
-    <bean id="microformatanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicroformatMF2JAnalyzer">
+    <bean id="microformatAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.MicroformatMF2JAnalyzer">
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
-    <bean id="hdtanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.HDTAnalyzer">
+    <bean id="hdtAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.HDTAnalyzer">
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
-    <bean id="htmlscraperanalyzerBean" class="org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer">
+    <bean id="htmlScraperAnalyzerBean" class="org.dice_research.squirrel.analyzer.impl.html.scraper.HTMLScraperAnalyzer">
             <constructor-arg index="0" ref="uriCollectorBean" />
     </bean>
     
@@ -105,8 +105,14 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="httpFetcherBean"
-		class="org.dice_research.squirrel.fetcher.http.HTTPFetcher" />
+    <bean id="httpFetcherBean"
+        class="org.dice_research.squirrel.fetcher.http.HTTPFetcher">
+        <!-- Define the Accept header value of the HTTP fetcher -->
+        <property name="acceptHeader">
+            <value>application/rdf+xml,application/n-triples,text/turtle,text/n3,application/ld+jsonapplication/n-quads;q=0.9,application/trig;q=0.9,application/vnd.hdt;q=0.9,*/*;q=0.5
+            </value>
+        </property>
+    </bean>
 	<bean id="ftpFetcherBean"
 		class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
 	<bean id="sparqlFetcherBean"

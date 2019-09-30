@@ -95,8 +95,8 @@ public class WorkerImpl implements Worker, Closeable {
      *            The directory to which a domain log will be written (or
      *            {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier,Fetcher fetcher, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
-            UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
+    public WorkerImpl(Frontier frontier, Fetcher fetcher, Sink sink, Analyzer analyzer, RobotsManager manager,
+            Serializer serializer, UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
         this.frontier = frontier;
         this.sink = sink;
         this.fetcher = fetcher;
@@ -116,9 +116,10 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         this.collector = collector;
-//        fetcher = new SimpleOrderedFetcherManager(
-//                // new SparqlBasedFetcher(),
-//        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
+        // fetcher = new SimpleOrderedFetcherManager(
+        // // new SparqlBasedFetcher(),
+        // new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new
+        // HTTPFetcher());
     }
 
     @Override
@@ -138,7 +139,7 @@ public class WorkerImpl implements Worker, Closeable {
                     }
                 } else {
                     // perform work
-                    
+
                     crawl(urisToCrawl);
                 }
             }
@@ -213,85 +214,87 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
-        
-        // Check robots.txt
-        if (manager.isUriCrawlable(uri.getUri())) {
-            // Make sure that there is a delay between the fetching of two URIs 
-            try {
-                long delay = timeStampLastUriFetched
-                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
-                if (delay > 0) {
-                    Thread.sleep(delay);
-                }
-            } catch (InterruptedException e) {
-                LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
-            }
-            
-            // Fetch the URI content
-            LOGGER.debug("I start crawling {} now...", uri);
-            File fetched = null;
-            try {
-                fetched = fetcher.fetch(uri);
-            } catch (Exception e) {
-                LOGGER.error("Exception while Fetching Data. Skipping...", e);
-                activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
-            }
-            timeStampLastUriFetched = System.currentTimeMillis();
-            List<File> fetchedFiles = new ArrayList<>();
-            if (fetched != null && fetched.isDirectory()) {
-                fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
-            } else {
-                fetchedFiles.add(fetched);
-            }
 
-            // If there is at least one file
-            if (fetchedFiles.size() > 0) {
-                FileManager fm = new FileManager();
-                List<File> fileList;
+            // Check robots.txt
+            if (manager.isUriCrawlable(uri.getUri())) {
+                // Make sure that there is a delay between the fetching of two URIs
                 try {
-                    // open the sink only if a fetcher has been found
-                    sink.openSinkForUri(uri);
-                    collector.openSinkForUri(uri);
-                    // Go over all files and analyze them
-                    LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
-                    for (File data : fetchedFiles) {
-                        if (data != null) {
+                    long delay = (timeStampLastUriFetched + manager.getMinWaitingTime(uri.getUri()))
+                            - System.currentTimeMillis();
+                    LOGGER.debug("Waiting for {} ms because of robots.txt delay.", delay);
+                    if (delay > 0) {
+                        Thread.sleep(delay);
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
+                }
+
+                // Fetch the URI content
+                LOGGER.debug("I start crawling {} now...", uri);
+                File fetched = null;
+                try {
+                    fetched = fetcher.fetch(uri);
+                } catch (Exception e) {
+                    LOGGER.error("Exception while Fetching Data. Skipping...", e);
+                    activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
+                }
+                timeStampLastUriFetched = System.currentTimeMillis();
+                List<File> fetchedFiles = new ArrayList<>();
+                if (fetched != null && fetched.isDirectory()) {
+                    fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+                } else {
+                    fetchedFiles.add(fetched);
+                }
+
+                // If there is at least one file
+                if (fetchedFiles.size() > 0) {
+                    FileManager fm = new FileManager();
+                    List<File> fileList;
+                    try {
+                        // open the sink only if a fetcher has been found
+                        sink.openSinkForUri(uri);
+                        collector.openSinkForUri(uri);
+                        // Go over all files and analyze them
+                        LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
+                        for (File data : fetchedFiles) {
+                            if (data != null) {
                             fileList = fm.decompressFile(uri,data);
-                            LOGGER.info("Found " + fileList.size() + " files after decompression ");
-                            int cont = 1;
-                            for (File file : fileList) {
-                            	LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
-                                Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-                                sendNewUris(resultUris);
-                                cont++;
+                                LOGGER.info("Found " + fileList.size() + " files after decompression ");
+                                int cont = 1;
+                                for (File file : fileList) {
+                                    LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
+                                    Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                                    sendNewUris(resultUris);
+                                    cont++;
+                                }
+
                             }
                         }
+                    } catch (Exception e) {
+                        activity.addStep(getClass(), "Unhandled exception while Fetching Data. " + e.getMessage());
+                        activity.setState(CrawlingURIState.FAILED);
+                        activity.finishActivity(sink);
+                        throw e;
+                    } finally {
+                        // We don't want to handle any exception. Just make sure that sink and collector
+                        // do not handle this uri anymore.
+                        sink.closeSinkForUri(uri);
+                        collector.closeSinkForUri(uri);
                     }
-                } catch (Exception e) {
-                    activity.addStep(getClass(), "Unhandled exception while Fetching Data. " + e.getMessage());
+                    // If we reach this point, the crawling was successful
+                    activity.setState(CrawlingURIState.SUCCESSFUL);
+                } else {
+                    // There are no files
+                    activity.addStep(getClass(), "No files for analysis available.");
                     activity.setState(CrawlingURIState.FAILED);
-                    activity.finishActivity(sink);
-                    throw e;
-                } finally {
-                    // We don't want to handle any exception. Just make sure that sink and collector
-                    // do not handle this uri anymore.
-                    sink.closeSinkForUri(uri);
-                    collector.closeSinkForUri(uri);
                 }
-                // If we reach this point, the crawling was successful
-                activity.setState(CrawlingURIState.SUCCESSFUL);
             } else {
-                // There are no files
-                activity.addStep(getClass(), "No files for analysis available.");
-                activity.setState(CrawlingURIState.FAILED);
+                LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
+                activity.addStep(manager.getClass(), "Decided to reject this URI.");
             }
-        } else {
-            LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
-            activity.addStep(manager.getClass(), "Decided to reject this URI.");
-        }
-        activity.finishActivity(sink);
-        // LOGGER.debug("Fetched {} triples", count);
-        setSpecificRecrawlTime(uri);
+            activity.finishActivity(sink);
+            // LOGGER.debug("Fetched {} triples", count);
+            setSpecificRecrawlTime(uri);
 
         } finally {
             // Remove the activity since we don't want to send it back to the Frontier
@@ -359,9 +362,9 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Deprecated
-	@Override
-	public int getId() {
-		return this.id;
-	}
+    @Override
+    public int getId() {
+        return this.id;
+    }
 
 }
