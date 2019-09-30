@@ -256,7 +256,7 @@ public class WorkerImpl implements Worker, Closeable {
                     LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
                     for (File data : fetchedFiles) {
                         if (data != null) {
-                            fileList = fm.decompressFile(data);
+                            fileList = fm.decompressFile(uri,data);
                             LOGGER.info("Found " + fileList.size() + " files after decompression ");
                             int cont = 1;
                             for (File file : fileList) {
