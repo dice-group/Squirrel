@@ -2,6 +2,7 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
