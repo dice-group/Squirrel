@@ -218,16 +218,12 @@ public class WorkerImpl implements Worker, Closeable {
             // Check robots.txt
             if (manager.isUriCrawlable(uri.getUri())) {
                 // Make sure that there is a delay between the fetching of two URIs
-                try {
-                    long delay = (timeStampLastUriFetched + manager.getMinWaitingTime(uri.getUri()))
+                
+                long delay = (timeStampLastUriFetched + manager.getMinWaitingTime(uri.getUri()))
                             - System.currentTimeMillis();
-                    LOGGER.debug("Waiting for {} ms because of robots.txt delay.", delay);
-                    if (delay > 0) {
-                        Thread.sleep(delay);
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
-                }
+                
+                uri.addData(Constants.DELAY_TIME, delay);
+                    
 
                 // Fetch the URI content
                 LOGGER.debug("I start crawling {} now...", uri);
