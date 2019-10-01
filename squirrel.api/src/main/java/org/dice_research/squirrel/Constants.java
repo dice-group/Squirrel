@@ -65,8 +65,6 @@ public class Constants {
 
     public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
     
-    public static final String DELAY_TIME = "DELAY_TIME";
-    
     public static final String RDB_PORT_KEY = "RDB_PORT";
 
     public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = false;

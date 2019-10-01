@@ -3,9 +3,9 @@ package org.dice_research.squirrel.fetcher.manage;
 import java.io.File;
 import java.io.IOException;
 
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.fetcher.ftp.FTPFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +40,13 @@ public class SimpleOrderedFetcherManager implements Fetcher {
     }
 
     @Override
-    public File fetch(CrawleableUri uri) {
-        
-        int delay = Integer.parseInt(uri.getData(Constants.DELAY_TIME).toString());
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         
         File resultFile = null;
         int fetcherId = 0;
         while ((resultFile == null) && (fetcherId < fetchers.length)) {
             try {
-            resultFile = fetchers[fetcherId].fetch(uri);
-            wait(uri,delay);
+            resultFile = fetchers[fetcherId].fetch(uri, delayer);
             }catch (Exception e) {
                 LOGGER.info("Could not fetch using " + fetchers[fetcherId].getClass().getSimpleName());
             }

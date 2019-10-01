@@ -16,6 +16,8 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
+import org.dice_research.squirrel.fetcher.delay.StaticDelayer;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.metadata.CrawlingActivity.CrawlingURIState;
@@ -67,7 +69,6 @@ public class WorkerImpl implements Worker, Closeable {
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime;
-    protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
     @Deprecated
@@ -77,23 +78,17 @@ public class WorkerImpl implements Worker, Closeable {
     /**
      * Constructor.
      *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
-     * @param logDir
-     *            The directory to which a domain log will be written (or
-     *            {@code null} if no log should be written).
+     * @param frontier    Frontier implementation used by this worker to get URI
+     *                    sets and send new URIs to.
+     * @param sink        Sink used by this worker to store crawled data.
+     * @param manager     RobotsManager for handling robots.txt files.
+     * @param serializer  Serializer for serializing and deserializing URIs.
+     * @param collector   The UriCollector implementation used by this worker.
+     * @param waitingTime Time (in ms) the worker waits when the given frontier
+     *                    couldn't provide any URIs before requesting new URIs
+     *                    again.
+     * @param logDir      The directory to which a domain log will be written (or
+     *                    {@code null} if no log should be written).
      */
     public WorkerImpl(Frontier frontier, Fetcher fetcher, Sink sink, Analyzer analyzer, RobotsManager manager,
             Serializer serializer, UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
@@ -218,23 +213,18 @@ public class WorkerImpl implements Worker, Closeable {
             // Check robots.txt
             if (manager.isUriCrawlable(uri.getUri())) {
                 // Make sure that there is a delay between the fetching of two URIs
-                
-                long delay = (timeStampLastUriFetched + manager.getMinWaitingTime(uri.getUri()))
-                            - System.currentTimeMillis();
-                
-                uri.addData(Constants.DELAY_TIME, delay);
-                    
+                Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri.getUri()),
+                        System.currentTimeMillis());
 
                 // Fetch the URI content
                 LOGGER.debug("I start crawling {} now...", uri);
                 File fetched = null;
                 try {
-                    fetched = fetcher.fetch(uri);
+                    fetched = fetcher.fetch(uri, delayer);
                 } catch (Exception e) {
                     LOGGER.error("Exception while Fetching Data. Skipping...", e);
                     activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
                 }
-                timeStampLastUriFetched = System.currentTimeMillis();
                 List<File> fetchedFiles = new ArrayList<>();
                 if (fetched != null && fetched.isDirectory()) {
                     fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
@@ -254,7 +244,7 @@ public class WorkerImpl implements Worker, Closeable {
                         LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
                         for (File data : fetchedFiles) {
                             if (data != null) {
-                            fileList = fm.decompressFile(uri,data);
+                                fileList = fm.decompressFile(uri, data);
                                 LOGGER.info("Found " + fileList.size() + " files after decompression ");
                                 int cont = 1;
                                 for (File file : fileList) {
@@ -323,8 +313,7 @@ public class WorkerImpl implements Worker, Closeable {
     /**
      * Sends the given URIs to the frontier.
      * 
-     * @param uriIterator
-     *            an iterator used to iterate over all new URIs
+     * @param uriIterator an iterator used to iterate over all new URIs
      */
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);

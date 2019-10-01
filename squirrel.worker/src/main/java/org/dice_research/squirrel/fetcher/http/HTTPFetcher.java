@@ -30,6 +30,7 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +100,7 @@ public class HTTPFetcher implements Fetcher {
     }
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // Check whether this fetcher can handle the given URI
         if ((uri == null) || (uri.getUri() == null) || (!ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;
@@ -113,6 +114,7 @@ public class HTTPFetcher implements Fetcher {
             return null;
         }
         try {
+            delayer.getRequestPermission();
             dataFile = requestData(uri, dataFile);
         } catch (ClientProtocolException e) {
             LOGGER.debug("HTTP Exception while requesting uri \"{}\". Returning null. Exception: {}", uri,
@@ -127,6 +129,13 @@ public class HTTPFetcher implements Fetcher {
             LOGGER.error("Couldn't fetched data. Returning null.", e);
             ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while waiting for request permission. Returning null.");
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
+            return null;
+        } finally {
+            // Inform the delayer that the request is done
+            delayer.requestFinished();
         }
         ActivityUtil.addStep(uri, getClass());
         return dataFile;
@@ -200,8 +209,8 @@ public class HTTPFetcher implements Fetcher {
      * <a href="https://tools.ietf.org/html/rfc7231#page-38">section 5.3.2 of
      * RFC-7231</a>.
      * 
-     * @param acceptHeader
-     *            the new value of the accept header as defined in RFC-7231.
+     * @param acceptHeader the new value of the accept header as defined in
+     *                     RFC-7231.
      */
     public void setAcceptHeader(String acceptHeader) {
         this.acceptHeader = acceptHeader;
