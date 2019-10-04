@@ -73,6 +73,7 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
 		this.queryExecFactory = queryExecFactory;
 		this.updateExecFactory = updateExecFactory;
 		setMetadataGraphUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
+		this.attempts = 1;
 	}
 
 	public static SparqlBasedSink create(String sparqlEndpointUrl) {
