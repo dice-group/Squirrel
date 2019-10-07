@@ -13,6 +13,7 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +37,14 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
     private final int PAGESIZE = 100;
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         LOGGER.info("Fetching " + uri.getUri().toString());
         CkanClient client = null;
         OutputStream out = null;
         if (!checkForUriType || Constants.URI_TYPE_VALUE_CKAN.equals(uri.getData(Constants.URI_TYPE_KEY))) {
 
             try {
+                delayer.getRequestPermission();
 
                 client = new CkanClient(uri.getUri().toString());
 
@@ -74,8 +76,13 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
                 LOGGER.error("Error while writing result file. Returning null.", e);
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
+            } catch (InterruptedException e) {
+                LOGGER.error("Interrupted while waiting for request permission. Returning null.");
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
+                return null;
             } finally {
                 IOUtils.closeQuietly(out);
+                delayer.requestFinished();
             }
 
         }
