@@ -77,10 +77,10 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
 	}
 
 	public static SparqlBasedSink create(String sparqlEndpointUrl) {
-		return create(sparqlEndpointUrl, null, null);
+		return create(sparqlEndpointUrl, null, null,0,0);
 	}
 
-	public static SparqlBasedSink create(String sparqlEndpointUrl, String username, String password) {
+	public static SparqlBasedSink create(String sparqlEndpointUrl, String username, String password, int delay, int attempts) {
 		QueryExecutionFactory queryExecFactory = null;
 		UpdateExecutionFactory updateExecFactory = null;
 		if (username != null && password != null) {
@@ -120,7 +120,7 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
 			queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
 			updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
 		}
-		return new SparqlBasedSink(queryExecFactory, updateExecFactory);
+		return new SparqlBasedSink(queryExecFactory, updateExecFactory,delay,attempts);
 	}
 
 	@Override
