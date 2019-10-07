@@ -44,7 +44,6 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
         if (!checkForUriType || Constants.URI_TYPE_VALUE_CKAN.equals(uri.getData(Constants.URI_TYPE_KEY))) {
 
             try {
-                delayer.getRequestPermission();
 
                 client = new CkanClient(uri.getUri().toString());
 
@@ -57,6 +56,7 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
                 int totalPages = datasets.size() / PAGESIZE;
 
                 do {
+                    delayer.getRequestPermission();
                     LOGGER.info("Fetching Page: " + String.valueOf(offset / PAGESIZE) + " of " + totalPages);
                     fetchDataset(client, PAGESIZE, offset, out);
                     offset = offset + PAGESIZE;
