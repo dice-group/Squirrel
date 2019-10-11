@@ -45,9 +45,19 @@
 	<bean id="analyzerBean"    class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
         <constructor-arg index="0">
             <list>
+<<<<<<< HEAD
                  <ref bean="ckanAnalyzerBean"/>        
                  <ref bean="rdfAnalyzerBean"/>
                  <ref bean="htmlscraperanalyzerBean"/>          
+=======
+                 <ref bean="rdfAnalyzerBean"/>          
+                                   
+            <!-- 
+                 <ref bean="htmlscraperanalyzerBean"/>
+            
+                 <ref bean="rdfAnalyzerBean"/>          
+                 <ref bean="rdfaAnalyzerBean"/>    
+>>>>>>> 98250b4cbed5c441b6c05b561ee7c07c76aadbfa
                  <ref bean="microdataanalyzerBean"/>          
                  <ref bean="microformatanalyzerBean"/>          
                  <ref bean="hdtanalyzerBean"/>                  

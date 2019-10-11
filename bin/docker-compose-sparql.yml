@@ -15,10 +15,14 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+<<<<<<< HEAD
+    # - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
+=======
       - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
+>>>>>>> 26bb54a0debdb8e8695329a0c0659fb85a0a1858
       - SEED_FILE=/var/squirrel/seeds.txt
-      - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
-      - SPARQL_HOST_USER=dba
+      - SPARQL_URL=http://sparqlhost:3030/Metadata/query
+      - SPARQL_HOST_USER=admin
       - SPARQL_HOST_PASSWD=pw123
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
@@ -35,12 +39,29 @@ services:
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
 
-  virtuosohost:
-    image: openlink/virtuoso-opensource-7:latest
-    container_name: virtuosohost
+#  virtuosohost:
+#    image: openlink/virtuoso-opensource-7:latest
+#    container_name: virtuosohost
+#    ports:
+#      - "8890:8890"
+#    volumes:
+#      - ./data/sparqlhost/sparqlhost_data:/virtuoso
+#    environment:
+#      - Driver=/usr/local/lib/virtodbc_32.so
+#      - DBA_PASSWORD=123pwd
+
+  sparqlhost:
+    image: stain/jena-fuseki
+    container_name: sparqlhost
     ports:
-      - "8890:8890"
+      - "3030:3030"
+    volumes:
+      - ./data/sparqlhost/sparqlhost_data:/fuseki
     environment:
+<<<<<<< HEAD
+      - ADMIN_PASSWORD=pw123
+      - JVM_ARGS=-Xmx2g
+=======
       - Driver=/usr/local/lib/virtodbc_32.so
       - DBA_PASSWORD=pw123
 
@@ -49,9 +70,12 @@ services:
 #    container_name: sparqlhost
 #    ports:
 #      - "3030:3030"
+#    volumes:
+#      - ./data/sparqlhost/sparqlhost_data:/fuseki
 #    environment:
 #      - ADMIN_PASSWORD=pw123
 #      - JVM_ARGS=-Xmx2g
+>>>>>>> 26bb54a0debdb8e8695329a0c0659fb85a0a1858
 
   mongodb:
     image: mongo:4.0.0
@@ -85,11 +109,19 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+<<<<<<< HEAD
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
+      - SPARQL_URL=http://sparqlhost:3030/Metadata/update
+      - SPARQL_HOST_USER=admin
+=======
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
       - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
       - SPARQL_HOST_USER=dba
+>>>>>>> 26bb54a0debdb8e8695329a0c0659fb85a0a1858
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker1:/var/squirrel/data
@@ -104,11 +136,19 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+<<<<<<< HEAD
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
+      - SPARQL_URL=http://sparqlhost:3030/Metadata/update
+      - SPARQL_HOST_USER=admin
+=======
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
       - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
       - SPARQL_HOST_USER=dba
+>>>>>>> 26bb54a0debdb8e8695329a0c0659fb85a0a1858
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker2:/var/squirrel/data
@@ -123,11 +163,19 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - OUTPUT_FOLDER=/var/squirrel/data
       - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+<<<<<<< HEAD
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/context-sparql.xml
+      - SPARQL_URL=http://sparqlhost:3030/Metadata/update
+      - SPARQL_HOST_USER=admin
+=======
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context-sparql.xml
       - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
       - SPARQL_HOST_USER=dba
+>>>>>>> 26bb54a0debdb8e8695329a0c0659fb85a0a1858
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
     volumes:
         - ./data/worker3:/var/squirrel/data
@@ -136,17 +184,17 @@ services:
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
 #  deduplicator:
-#    image: squirrel.deduplication
-#    container_name: deduplicator
-#    environment:
-#      DEDUPLICATION_ACTIVE: "true"
-#      HOBBIT_RABBIT_HOST: rabbit
-#      OUTPUT_FOLDER: /var/squirrel/data
-#      CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
-#      MDB_HOST_NAME: mongodb
+#   image: squirrel.deduplication
+#  container_name: deduplicator
+# environment:
+#     DEDUPLICATION_ACTIVE: "true"
+#    HOBBIT_RABBIT_HOST: rabbit
+#   OUTPUT_FOLDER: /var/squirrel/data
+#  CONTEXT_CONFIG_FILE: /var/squirrel/spring-config/context-deduplicator.xml
+# MDB_HOST_NAME: mongodb
 #      MDB_PORT: 27017
-#      SPARQL_HOST_NAME: sparqlhost
-#      SPARQL_HOST_PORT: 3030
-#      SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
-#    volumes:
-#    - ./data/deduplicator:/var/squirrel/data
+#     SPARQL_HOST_NAME: sparqlhost
+#    SPARQL_HOST_PORT: 3030
+#   SERVICE_PRECONDITION: "mongodb:27017 rabbit:5672"
+#volumes:
+#  - ./data/deduplicator:/var/squirrel/data
