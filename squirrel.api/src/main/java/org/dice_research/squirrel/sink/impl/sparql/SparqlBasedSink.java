@@ -176,7 +176,7 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
 	 *            the list of {@link Triple}s regarding that uri
 	 */
 	protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
-		for (int i = 0; i < attempts; i++) {
+		for (int i = 1; i <= attempts; i++) {
 			try {
 				Node graph;
 				if (uri.equals(metadataGraphUri)) {
@@ -198,8 +198,10 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
 				processor.execute();
 				break;
 			} catch (Exception e) {
-				LOGGER.error("Exception while sending update query.", e);
-				LOGGER.info("An error was caught while inserting triples, trying again");
+			    if(i == attempts)
+			        LOGGER.error("Exception while sending update query.", e);
+			    else
+			        LOGGER.info("An error was caught while inserting triples, trying again, Attempt " + i +" of " + attempts);
 				try {
 					Thread.sleep(delay);
 				} catch (InterruptedException e1) {
