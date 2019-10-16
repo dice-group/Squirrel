@@ -77,7 +77,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        SparqlConnector sp = SparqlConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        SparqlhostConnector sp = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         hasUrisToCrawl = new HashMap<String, Boolean>();
         if (mongoConfiguration != null) {
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
-import org.dice_research.squirrel.configurator.SparqlConnector;
+import org.dice_research.squirrel.configurator.SparqlhostConnector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
@@ -34,7 +34,7 @@ public class FrontierImplTest {
     private static MongoDBKnowUriFilter filter;
     private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
-    private OutDatedUris outDatedUris = SparqlConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+    private OutDatedUris outDatedUris = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
     @Before
     public void setUp() throws Exception {

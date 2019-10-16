@@ -16,7 +16,6 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
@@ -25,15 +24,14 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
-import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.frontier.impl.FrontierQueryGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
-public class SparqlConnector implements OutDatedUris {
+public class SparqlhostConnector implements OutDatedUris {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlConnector.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlhostConnector.class);
 
     /**
      * The Query factory used to query the SPARQL endpoint.
@@ -42,17 +40,17 @@ public class SparqlConnector implements OutDatedUris {
     protected UpdateExecutionFactory updateExecFactory = null;
     List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
-    public SparqlConnector(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+    public SparqlhostConnector(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
         this.updateExecFactory = updateExecFactory;
         LOGGER.info("Connected");
     }
 
-    public static SparqlConnector create(String sparqlEndpointUrl) {
+    public static SparqlhostConnector create(String sparqlEndpointUrl) {
         return create(sparqlEndpointUrl, null, null);
     }
 
-    public static SparqlConnector create(String sparqlEndpointUrl, String username, String password) {
+    public static SparqlhostConnector create(String sparqlEndpointUrl, String username, String password) {
         QueryExecutionFactory queryExecFactory = null;
         UpdateExecutionFactory updateExecFactory = null;
         if (username != null && password != null) {
@@ -89,13 +87,13 @@ public class SparqlConnector implements OutDatedUris {
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
         }
-        return new SparqlConnector(queryExecFactory, updateExecFactory);
+        return new SparqlhostConnector(queryExecFactory, updateExecFactory);
     }
 
 
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
-        SparqlConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
         System.out.println(getOutdatedUrisQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
