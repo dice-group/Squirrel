@@ -1,6 +1,8 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+import org.dice_research.squirrel.configurator.SparqlhostConnector;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
@@ -20,10 +22,11 @@ public class CkanSeedGeneratorImplTest extends TestCase {
     private CkanSeedGeneratorImpl ckanSeedGenerator;
     private IpAddressBasedQueue queue;
     private Frontier frontier;
+    private OutDatedUris outDatedUris = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue);
+        frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue, outDatedUris);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

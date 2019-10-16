@@ -21,7 +21,6 @@ import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -33,15 +32,13 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 
 /**
- * 
  * Filter implementation for use with MongoDB
- * 
+ * <p>
  * * @author Geraldo Souza Junior (gsjunior@mail.uni-paderborn.de)
- *
  */
 
 @SuppressWarnings("deprecation")
-public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
+public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable, UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
 
@@ -50,7 +47,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public static final String DB_NAME = "squirrel";
     private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; // in miiliseconds
     public static final String COLLECTION_NAME = "knownurifilter";
-    
     public static final String COLUMN_TIMESTAMP_LAST_CRAWL = "timestampLastCrawl";
     public static final String COLUMN_URI = "uri";
     public static final String COLUMN_CRAWLING_IN_PROCESS = "crawlingInProcess";
@@ -65,32 +61,24 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     private static final String DUMMY_HASH_VALUE = "dummyValue";
 
     public MongoDBKnowUriFilter(String hostName, Integer port) {
- 
         LOGGER.info("Filter Persistance: " + PERSIST);
-
-    	
-    	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+        MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
-	
-		if(mongoConfiguration != null &&(mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null)) {
-			optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
-			optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
-			optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
-			
-			MongoClientOptions options = optionsBuilder.build();
-
-			client = new MongoClient(new ServerAddress(hostName, port),options);
-			
-		}else {
-			client = new MongoClient(hostName, port);
-		}
+        if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null)) {
+            optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
+            optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
+            optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
+            MongoClientOptions options = optionsBuilder.build();
+            client = new MongoClient(new ServerAddress(hostName, port), options);
+        } else {
+            client = new MongoClient(hostName, port);
+        }
     }
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         MongoCursor<Document> cursor = mongoDB.getCollection(COLLECTION_NAME)
-                .find(new Document("uri", uri.getUri().toString())).iterator();
-
+            .find(new Document("uri", uri.getUri().toString())).iterator();
         if (cursor.hasNext()) {
             LOGGER.debug("URI {} is not good", uri.toString());
             Document doc = cursor.next();
@@ -111,20 +99,18 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     @Override
     public void add(CrawleableUri uri, long nextCrawlTimestamp) {
-    	add(uri, System.currentTimeMillis(), nextCrawlTimestamp);
+        add(uri, System.currentTimeMillis(), nextCrawlTimestamp);
     }
 
     public Document crawleableUriToMongoDocument(CrawleableUri uri) {
-
         UriType uriType = uri.getType();
-
         return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
 
     }
 
     @Override
     public void close() throws IOException {
-        if(!PERSIST) {
+        if (!PERSIST) {
             mongoDB.getCollection(COLLECTION_NAME).drop();
 
         }
@@ -153,38 +139,37 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     @Override
     public void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp) {
-    	 mongoDB.getCollection(COLLECTION_NAME)
-         .insertOne(crawleableUriToMongoDocument(uri)
-        		 .append(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp)
-        		 .append(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
-        		 .append(COLUMN_CRAWLING_IN_PROCESS, false)
-        		 .append(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE)
-        		 );
-    	 LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
+        mongoDB.getCollection(COLLECTION_NAME)
+            .insertOne(crawleableUriToMongoDocument(uri)
+                .append(COLUMN_TIMESTAMP_LAST_CRAWL, lastCrawlTimestamp)
+                .append(COLUMN_TIMESTAMP_NEXT_CRAWL, nextCrawlTimestamp)
+                .append(COLUMN_CRAWLING_IN_PROCESS, false)
+                .append(COLUMN_HASH_VALUE, DUMMY_HASH_VALUE)
+            );
+        LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
-    
+
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
 
     }
-    
-    
+
     public void purge() {
-    	mongoDB.getCollection(COLLECTION_NAME).drop();
+        mongoDB.getCollection(COLLECTION_NAME).drop();
     }
 
     @Override
     public List<CrawleableUri> getOutdatedUris() {
-    	// get all uris with the following property:
+        // get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
-    	
-    	long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
 
-    	Bson filter = Filters.and(Filters.eq("COLUMN_TIMESTAMP_NEXT_CRAWL", System.currentTimeMillis()),
-    			Filters.or(
-	    			Filters.eq("COLUMN_CRAWLING_IN_PROCESS", false),
-	    			Filters.eq("COLUMN_TIMESTAMP_LAST_CRAWL", System.currentTimeMillis() - generalRecrawlTime * 3)
-    			));
+        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+
+        Bson filter = Filters.and(Filters.eq("COLUMN_TIMESTAMP_NEXT_CRAWL", System.currentTimeMillis()),
+            Filters.or(
+                Filters.eq("COLUMN_CRAWLING_IN_PROCESS", false),
+                Filters.eq("COLUMN_TIMESTAMP_LAST_CRAWL", System.currentTimeMillis() - generalRecrawlTime * 3)
+            ));
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_NAME).find(filter).iterator();
 
@@ -204,14 +189,11 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
         // mark that the uris are in process now
         for (CrawleableUri uri : urisToRecrawl) {
-        	
-        	BasicDBObject newDocument = new BasicDBObject();
-        	newDocument.append("$set", new BasicDBObject().append(COLUMN_CRAWLING_IN_PROCESS, true));
-        	
-        	BasicDBObject searchQuery = new BasicDBObject().append(COLUMN_URI,  uri.getUri().toString());
-        	
-        	 mongoDB.getCollection(COLLECTION_NAME).updateMany(searchQuery, newDocument);
-        	
+            BasicDBObject newDocument = new BasicDBObject();
+            newDocument.append("$set", new BasicDBObject().append(COLUMN_CRAWLING_IN_PROCESS, true));
+            BasicDBObject searchQuery = new BasicDBObject().append(COLUMN_URI, uri.getUri().toString());
+            mongoDB.getCollection(COLLECTION_NAME).updateMany(searchQuery, newDocument);
+
         }
 
 //        cursor.close();
@@ -224,10 +206,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         return 0;
     }
 
-	@Override
-	public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

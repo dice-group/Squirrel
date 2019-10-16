@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.components;
 
+<<<<<<< HEAD
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -11,17 +12,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+=======
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.configurator.SeedConfiguration;
-import org.dice_research.squirrel.configurator.WebConfiguration;
-import org.dice_research.squirrel.configurator.WhiteListConfiguration;
+import org.dice_research.squirrel.configurator.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
@@ -29,12 +32,7 @@ import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
-import org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
-import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
-import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
-import org.dice_research.squirrel.frontier.impl.TerminationCheck;
-import org.dice_research.squirrel.frontier.impl.WorkerGuard;
+import org.dice_research.squirrel.frontier.impl.*;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
@@ -53,19 +51,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 
 @Component
 @Qualifier("frontierComponent")
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
+    public static final boolean RECRAWLING_ACTIVE = true;
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
-
+    protected static QueryExecutionFactory queryExecFactory = null;
+    private final Semaphore terminationMutex = new Semaphore(0);
+    private final WorkerGuard workerGuard = new WorkerGuard(this);
+    private final boolean doRecrawling = true;
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
+    protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
+    protected UpdateExecutionFactory updateExecFactory = null;
     @Qualifier("knowUriFilterBean")
     @Autowired
     private KnownUriFilter knownUriFilter;
+    private OutDatedUris outDatedUris;
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -73,31 +84,40 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("serializerBean")
     @Autowired
     private Serializer serializer;
-    private final Semaphore terminationMutex = new Semaphore(0);
-    private final WorkerGuard workerGuard = new WorkerGuard(this);
-    private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
+<<<<<<< HEAD
     private Timer timerTerminator;
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
+=======
+    private Map<String, Boolean> hasUrisToCrawl;
+
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     @Override
     public void init() throws Exception {
         super.init();
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+<<<<<<< HEAD
+=======
+        SparqlhostConnector sp = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        hasUrisToCrawl = new HashMap<String, Boolean>();
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         if (mongoConfiguration != null) {
 
             queue.open();
             knownUriFilter.open();
+<<<<<<< HEAD
 
+=======
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
                 knownUriFilter = RegexBasedWhiteListFilter.create(knownUriFilter, whitelistFile);
             }
-
             // TODO Reactivate me but with a different configuration
             // if (webConfiguration.isVisualizationOfCrawledGraphEnabled()) {
             // uriReferences = new RDBURIReferences(rdbHostName, rdbPort);
@@ -108,13 +128,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue = new InMemoryQueue();
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
-
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
-
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, outDatedUris);
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
-                .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
+            .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
 
         SeedConfiguration seedConfiguration = SeedConfiguration.getSeedConfiguration();
         if (seedConfiguration != null) {
@@ -125,36 +143,51 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
             final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-                    workerGuard, queue, knownUriFilter, uriReferences);
+                workerGuard, queue, knownUriFilter, uriReferences);
             LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
-                    + webConfiguration.isVisualizationOfCrawledGraphEnabled());
+                + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
             senderThread.setName("Sender to the Webservice via RabbitMQ (current information from the Frontier)");
             senderThread.start();
             LOGGER.info("Started thread [" + senderThread.getName() + "] <ID " + senderThread.getId() + " in the state "
-                    + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
+                + senderThread.getState() + " with the priority " + senderThread.getPriority() + ">");
         } else {
             LOGGER.info("webConfiguration.isCommunicationWithWebserviceEnabled is set to "
-                    + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
-                    + webConfiguration.isVisualizationOfCrawledGraphEnabled()
-                    + ". No WebServiceSenderThread will be started!");
+                + webConfiguration.isCommunicationWithWebserviceEnabled() + "/"
+                + webConfiguration.isVisualizationOfCrawledGraphEnabled()
+                + ". No WebServiceSenderThread will be started!");
         }
+
     }
+
 
     @Override
     public void run() throws Exception {
+<<<<<<< HEAD
         
+=======
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
+        Timer timer = new Timer();
+        timer.schedule(terminatorTask, 5000, 5000);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         terminationMutex.acquire();
     }
 
     @Override
     public void close() throws IOException {
         LOGGER.info("Closing Frontier Component.");
+<<<<<<< HEAD
         timerTerminator.cancel();
         if (receiver != null)
             // Force the receiver to close
             receiver.close();
 //         receiver.closeWhenFinished();
+=======
+        if (receiver != null)
+            // Force the receiver to close
+            receiver.close();
+        //         receiver.closeWhenFinished();
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 
         if (queue != null)
             queue.close();
@@ -200,6 +233,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
+<<<<<<< HEAD
             	
             	if(timerTerminator == null) {
             		LOGGER.info("Initializing Terminator task...");
@@ -208,6 +242,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     timerTerminator.schedule(terminatorTask, 5000, 5000);
             	}
 //                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+=======
+                //                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
@@ -226,17 +263,25 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     }
 
     private void responseToUriSetRequest(ResponseHandler handler, String responseQueueName, String correlId,
-            UriSetRequest uriSetRequest) {
+                                         UriSetRequest uriSetRequest) {
         if (handler != null) {
             // get next UriSet
             try {
                 List<CrawleableUri> uris = frontier.getNextUris();
                 LOGGER.trace("Responding with a list of {} uris.",
-                        uris == null ? "null" : Integer.toString(uris.size()));
+                    uris == null ? "null" : Integer.toString(uris.size()));
                 handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                 if (uris != null && uris.size() > 0) {
+<<<<<<< HEAD
                     workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(), uriSetRequest.workerSendsAliveMessages(),
                             uris);
+=======
+                    hasUrisToCrawl.put(uriSetRequest.getWorkerId(), true);
+                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(),
+                        uriSetRequest.workerSendsAliveMessages(), uris);
+                } else {
+                    hasUrisToCrawl.put(uriSetRequest.getWorkerId(), false);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
                 }
             } catch (IOException e) {
                 LOGGER.error("Couldn't serialize new URI set.", e);
@@ -273,21 +318,33 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         return workerGuard;
     }
 
+<<<<<<< HEAD
     private static class TerminatorTask extends TimerTask {
+=======
+    private class TerminatorTask extends TimerTask {
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 
         private UriQueue queue;
         private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
         private Semaphore terminationMutex;
+<<<<<<< HEAD
         private WorkerGuard workerGuard;
 
         public TerminatorTask(UriQueue queue, Semaphore terminationMutex, WorkerGuard workerGuard) {
             this.queue = queue;
             this.terminationMutex = terminationMutex;
             this.workerGuard = workerGuard;
+=======
+
+        public TerminatorTask(UriQueue queue, Semaphore terminationMutex) {
+            this.queue = queue;
+            this.terminationMutex = terminationMutex;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         }
 
         @Override
         public void run() {
+<<<<<<< HEAD
 
             Map<String, WorkerInfo> mapWorkers = this.workerGuard.getMapWorkerInfo();
 
@@ -304,6 +361,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 			if(!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
 	        	terminationMutex.release();
 	        }			
+=======
+            if (!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
+                LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
+                terminationMutex.release();
+            }
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         }
 
     }
