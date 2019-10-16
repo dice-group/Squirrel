@@ -1,13 +1,24 @@
 package org.dice_research.squirrel.frontier.impl;
 
+<<<<<<< HEAD
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+=======
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
@@ -40,6 +51,8 @@ public class FrontierImpl implements Frontier {
      * {@link KnownUriFilter} used to identify URIs that already have been crawled.
      */
     protected KnownUriFilter knownUriFilter;
+
+    protected OutDatedUris outDatedUris;
 
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
@@ -90,16 +103,20 @@ public class FrontierImpl implements Frontier {
     /**
      * Default value for {@link #generalRecrawlTime} (one week).
      */
-    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
-
+    public static final long DEFAULT_GENERAL_RECRAWL_TIME =18000 ;
     /**
      * Default value for {@link #timerPeriod}.
      */
+<<<<<<< HEAD
     private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
+=======
+    private static final long DEFAULT_TIMER_PERIOD = 18000;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -121,11 +138,31 @@ public class FrontierImpl implements Frontier {
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
             GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
+=======
+     * @param normalizer         {@link UriNormalizer} used to transform given URIs
+     *                           into a normal form
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that
+     *                           already have been crawled.
+     * @param queue              {@link UriQueue} used to manage the URIs that
+     *                           should be crawled.
+     * @param graphLogger        {@link GraphLogger} used to log graphs.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
+     * @param generalRecrawlTime used to select the general Time after URIs should
+     *                           be recrawled. If Value is null the default Time is
+     *                           used.
+     * @param timerPeriod        used to select if URIs should be recrawled.
+     */
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
+                        long generalRecrawlTime, long timerPeriod,OutDatedUris outDatedUris) {
+        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling,
+            generalRecrawlTime, timerPeriod,outDatedUris);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     }
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -145,11 +182,31 @@ public class FrontierImpl implements Frontier {
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
             long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+=======
+     * @param normalizer         {@link UriNormalizer} used to transform given URIs
+     *                           into a normal form
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that
+     *                           already have been crawled.
+     * @param queue              {@link UriQueue} used to manage the URIs that
+     *                           should be crawled.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
+     * @param generalRecrawlTime used to select the general Time after URIs should
+     *                           be recrawled. If Value is null the default Time is
+     *                           used.
+     * @param timerPeriod        used to select if URIs should be recrawled.
+     */
+    public FrontierImpl(UriNormalizer normalizer,
+                        KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime,
+                        long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUris knownOutDatedUriFilter) {
+        this(normalizer,  knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime,
+            timerPeriod, knownOutDatedUriFilter);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     }
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -167,11 +224,27 @@ public class FrontierImpl implements Frontier {
             UriQueue queue, boolean doesRecrawling) {
         this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
+=======
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into
+     *                       a normal form
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already
+     *                       have been crawled.
+     * @param uriReferences  {@link URIReferences} used to manage URI references
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param doesRecrawling Value for {@link #doesRecrawling}.
+     */
+    public FrontierImpl(UriNormalizer normalizer,
+                        KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling,OutDatedUris outDatedUris) {
+        this(normalizer,  knownUriFilter, uriReferences, queue, null, doesRecrawling,
+            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUris);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     }
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -187,11 +260,26 @@ public class FrontierImpl implements Frontier {
             boolean doesRecrawling) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
+=======
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into
+     *                       a normal form
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already
+     *                       have been crawled.
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+     * @param doesRecrawling Value for {@link #doesRecrawling}.
+     */
+    public FrontierImpl(UriNormalizer normalizer,
+                        KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, OutDatedUris outDatedUris) {
+        this(normalizer,  knownUriFilter, queue, null, doesRecrawling,
+            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUris);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     }
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -200,14 +288,25 @@ public class FrontierImpl implements Frontier {
      *            crawled.
      * @param queue
      *            {@link UriQueue} used to manage the URIs that should be crawled.
+=======
+     * @param normalizer     {@link UriNormalizer} used to transform given URIs into
+     *                       a normal form
+     * @param knownUriFilter {@link UriFilter} used to identify URIs that already
+     *                       have been crawled.
+     * @param queue          {@link UriQueue} used to manage the URIs that should be
+     *                       crawled.
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(UriNormalizer normalizer,
+                        KnownUriFilter knownUriFilter, UriQueue queue, OutDatedUris outDatedUris) {
+        this(normalizer,  knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME,
+            DEFAULT_TIMER_PERIOD, outDatedUris);
     }
 
     /**
      * Constructor.
      *
+<<<<<<< HEAD
      * @param normalizer
      *            {@link UriNormalizer} used to transform given URIs into a normal
      *            form
@@ -231,12 +330,36 @@ public class FrontierImpl implements Frontier {
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
             UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
             long timerPeriod) {
+=======
+     * @param normalizer         {@link UriNormalizer} used to transform given URIs
+     *                           into a normal form
+     * @param knownUriFilter     {@link UriFilter} used to identify URIs that
+     *                           already have been crawled.
+     * @param uriReferences      {@link URIReferences} used to manage URI references
+     * @param queue              {@link UriQueue} used to manage the URIs that
+     *                           should be crawled.
+     * @param graphLogger        {@link GraphLogger} used to log graphs.
+     * @param doesRecrawling     used to select if URIs should be recrawled.
+     * @param generalRecrawlTime used to select the general Time after URIs should
+     *                           be recrawled. If Value is null the default Time is
+     *                           used.
+     * @param timerPeriod        used to select if URIs should be recrawled.
+     * @param outDatedUris
+     */
+    public FrontierImpl(UriNormalizer normalizer,
+                        KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger,
+                        boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, OutDatedUris outDatedUris) {
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
+<<<<<<< HEAD
+=======
+        this.outDatedUris = outDatedUris;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 
         this.queue.open();
         this.doesRecrawling = doesRecrawling;
@@ -248,7 +371,8 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
+                    List<CrawleableUri> urisToRecrawl = outDatedUris.getUriToRecrawl();
+                    System.out.println("Frontier uri to recrawl: " +urisToRecrawl);
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
             }, this.timerPeriod, this.timerPeriod);
@@ -257,11 +381,17 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public List<CrawleableUri> getNextUris() {
+<<<<<<< HEAD
 
         // if(terminationCheck.shouldFrontierTerminate(this)) {
         // LOGGER.error("FRONTIER IS TERMINATING!", new Exception());
         // }
 
+=======
+//        if(terminationCheck.shouldFrontierTerminate(this)) {
+//        	LOGGER.error("FRONTIER IS TERMINATING!", new Exception());
+//        }
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         return queue.getNextUris();
     }
 
@@ -298,7 +428,11 @@ public class FrontierImpl implements Frontier {
                 knownUriFilter.add(uri, System.currentTimeMillis());
             } else {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
+<<<<<<< HEAD
                         + schemeUriFilter.getSchemes() + ". Will not added!");
+=======
+                    + schemeUriFilter.getSchemes() + ". Will not added!");
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
             }
 
         } else {
@@ -310,6 +444,7 @@ public class FrontierImpl implements Frontier {
     @Override
     public void crawlingDone(List<CrawleableUri> uris) {
         LOGGER.info("One worker finished his work and crawled " + uris.size() + " URIs.");
+<<<<<<< HEAD
 
         // List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
         // for (CrawleableUri uri : uriMap.keySet()) {
@@ -325,6 +460,21 @@ public class FrontierImpl implements Frontier {
         // if (graphLogger != null) {
         // graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
         // }
+=======
+//        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+//        for (CrawleableUri uri : uriMap.keySet()) {
+//            newUris.addAll(uriMap.get(uri));
+//            knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
+//            if (uriReferences != null) {
+//                uriReferences.add(uri, uriMap.get(uri));
+//            }
+//        }
+
+//        // If there is a graph logger, log the data
+//        if (graphLogger != null) {
+//            graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
+//        }
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         // If we should give the crawled IPs to the queue
         if (queue instanceof BlockingQueue) {
             ((BlockingQueue<?>) queue).markUrisAsAccessible(uris);
@@ -379,4 +529,8 @@ public class FrontierImpl implements Frontier {
         return queue;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
