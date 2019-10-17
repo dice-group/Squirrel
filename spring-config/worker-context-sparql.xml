@@ -96,10 +96,8 @@
                  
                 <ref bean="ckanFetcherBean" />
                  <ref bean="sparqlFetcherBean" />
-                 <ref bean="httpFetcherBean" /> 
-                 <ref bean="ckanFetcherBean" />
-                 <ref bean="httpFetcherBean" /> 
-                 <ref bean="ftpFetcherBean" /><!-- -->
+                 <ref bean="httpFetcherBean" /><!-- 
+                 <ref bean="ftpFetcherBean" />-->
 
 				<!-- 
                 <ref bean="sparqlDatasetFetcherBean" />
