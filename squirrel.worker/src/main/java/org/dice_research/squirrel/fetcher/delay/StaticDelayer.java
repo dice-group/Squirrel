@@ -48,7 +48,7 @@ public class StaticDelayer implements Delayer {
     public void getRequestPermission() throws InterruptedException {
         long sleep = (lastRequestTimeStamp + delay) - System.currentTimeMillis();
         if(sleep > 0) {
-            Thread.sleep(sleep);
+            Thread.sleep(delay);
         }
     }
 

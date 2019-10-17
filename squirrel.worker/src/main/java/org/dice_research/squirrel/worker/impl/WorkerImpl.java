@@ -74,6 +74,7 @@ public class WorkerImpl implements Worker, Closeable {
     @Deprecated
     private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
+    private boolean storeMetadata;
 
     /**
      * Constructor.
@@ -91,7 +92,7 @@ public class WorkerImpl implements Worker, Closeable {
      *                    {@code null} if no log should be written).
      */
     public WorkerImpl(Frontier frontier, Fetcher fetcher, Sink sink, Analyzer analyzer, RobotsManager manager,
-            Serializer serializer, UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
+            Serializer serializer, UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages,boolean storeMetadata) {
         this.frontier = frontier;
         this.sink = sink;
         this.fetcher = fetcher;
@@ -100,6 +101,7 @@ public class WorkerImpl implements Worker, Closeable {
         this.serializer = serializer;
         this.waitingTime = waitingTime;
         this.sendAliveMessages = sendAliveMessages;
+        this.storeMetadata = storeMetadata;
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
@@ -278,7 +280,8 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
                 activity.addStep(manager.getClass(), "Decided to reject this URI.");
             }
-            activity.finishActivity(sink);
+            if(storeMetadata)
+                activity.finishActivity(sink);
             // LOGGER.debug("Fetched {} triples", count);
             setSpecificRecrawlTime(uri);
 

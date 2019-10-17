@@ -39,18 +39,19 @@
 		<constructor-arg index="7" value="2000" />
 		<constructor-arg index="8"
 			value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
-		<constructor-arg index="9" value="false" /><!-- Logging -->
+        <constructor-arg index="9" value="true" /><!-- Logging -->
+        <constructor-arg index="10" value="#{systemEnvironment['STORE_METADATA']}" /> 
 	</bean>
 
 	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
 		<constructor-arg index="0">
             <list>
-                 <ref bean="ckanAnalyzerBean"/>        
+                 <ref bean="ckanAnalyzerBean"/>         
                  <ref bean="rdfAnalyzerBean"/>
                  <ref bean="htmlScraperAnalyzerBean"/>          
                  <ref bean="microdataAnalyzerBean"/>          
                  <ref bean="microformatAnalyzerBean"/>          
-                 <ref bean="hdtAnalyzerBean"/>          
+                 <ref bean="hdtAnalyzerBean"/>          <!-- -->
                  
                        
             </list>
@@ -91,12 +92,15 @@
 		class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
-                 <ref bean="sparqlFetcherBean" />
-                 <ref bean="ckanFetcherBean" />
-                 <ref bean="httpFetcherBean" />
-                 <ref bean="ftpFetcherBean" />
+            
                  
-    
+                <ref bean="ckanFetcherBean" />
+                 <ref bean="sparqlFetcherBean" />
+                 <ref bean="httpFetcherBean" /> 
+                 <ref bean="ckanFetcherBean" />
+                 <ref bean="httpFetcherBean" /> 
+                 <ref bean="ftpFetcherBean" /><!-- -->
+
 				<!-- 
                 <ref bean="sparqlDatasetFetcherBean" />
 				-->
@@ -113,6 +117,7 @@
             </value>
         </property>
     </bean>
+    
 	<bean id="ftpFetcherBean"
 		class="org.dice_research.squirrel.fetcher.ftp.FTPFetcher" />
 	<bean id="sparqlFetcherBean"
@@ -121,7 +126,7 @@
 		class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
 		<constructor-arg index="0" value="20"></constructor-arg>
 		<constructor-arg index="1" value="0"></constructor-arg>
-		<constructor-arg index="2" value="10"></constructor-arg>
+		<constructor-arg index="2" value="100000"></constructor-arg>
 	</bean>
 	<bean id="ckanFetcherBean"
 		class="org.dice_research.squirrel.fetcher.ckan.java.PaginatedCkanFetcher" />
@@ -152,8 +157,7 @@
 		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}" />
 		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />
 		<constructor-arg index="3" value="1000" />
-		<constructor-arg index="4" value="3" />	
-			
+		<constructor-arg index="4" value="10" /> 
 	 </bean> 
 	<!-- <bean id="uriCollectorBean" class="org.dice_research.squirrel.collect.SimpleUriCollector" 
 		> <constructor-arg index="0" ref="serializerBean" /> </bean> -->
