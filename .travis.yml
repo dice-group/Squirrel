@@ -12,6 +12,6 @@ script:
   - mvn jacoco:prepare-agent test -B jacoco:report
 
 after_success:
-  - mvn jacoco:report-aggregate com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco-aggregate/jacoco.xml -DprojectToken=$CODACY_PROJECT_TOKEN -DapiToken=$CODACY_PROJECT_TOKEN
+  - mvn jacoco:report-aggregate com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco-aggregate/jacoco.xml -DprojectToken=$CODACY_PROJECT_TOKEN -DapiToken=$CODACY_API_TOKEN
 
 
