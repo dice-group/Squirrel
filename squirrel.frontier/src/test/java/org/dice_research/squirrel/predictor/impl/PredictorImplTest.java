@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,10 +26,10 @@ public class PredictorImplTest {
         // //Initialization
         curi = new CrawleableUri(new URI("https://mcloud.de/web/guest/suche/-/results/search/55?_mcloudsearchportlet_sort=latest"));
         CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-        CrawleableUri curiNeg = new CrawleableUri(new URI("abcdfgerlktreunfgfdksosssfggg.xyz"));
+        CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
 
         predictor = new PredictorImpl();
-        predictor.TRAINING_SET_PATH = "predictor/trainDataset.txt";
+        predictor.TRAINING_SET_PATH = "trainDataset.txt";
 
         // train the learner on two URIs: one RDF and one non RDF
         predictor.train();
@@ -38,35 +37,32 @@ public class PredictorImplTest {
         // predict for a random URI(HTML) example
         predictor.featureHashing(curi);
         double pred = predictor.predict(curi);
-        System.out.println(pred);
         double pround = Math.round(pred*100.0)/100.0;
-        //Assert.assertEquals(0.41,pround,0.1);
+        Assert.assertEquals(0.41,pround,0.1);
 
         // predict for a Positive (RDF) example
         predictor.featureHashing(curiPos);
         double pred2 = predictor.predict(curiPos);
         double pround2 = Math.round(pred2*100.0)/100.0;
-        System.out.println(pred2);
-        //Assert.assertEquals(0.45, pround2,0.1);
+        Assert.assertEquals(0.45, pround2,0.1);
 
         // predict for a negative (non RDF) example
         predictor.featureHashing(curiNeg);
         double pred3 = predictor.predict(curiNeg);
         double pround3 = Math.round(pred3*100.0)/100.0;
-        System.out.println(pred3);
-        //Assert.assertEquals(0.43, pround3,0.1);
+        Assert.assertEquals(0.43, pround3,0.1);
     }
 
     @Test
-    public void evaluation() throws Exception{
+    public  void evaluation() throws  Exception{
         predictor = new PredictorImpl();
         predictor.TRAINING_SET_PATH = "predictor/trainData.txt";
+        Integer uriCount = 0;
+        Integer correctCount = 0;
+        double accuracy;
         // train the learner on two URIs: one RDF and one non RDF
         predictor.train();
-        double accuracy;
-        Integer uriCount = 0;
-        Integer correctPrediction = 0;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("predictor/evalDataSet.txt")))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("predictor/evalDataSet.txt")) ))       {
             String line;
             while ((line = br.readLine()) != null) {
                 uriCount ++;
@@ -80,23 +76,22 @@ public class PredictorImplTest {
                 CrawleableUri uri = new CrawleableUri(furi);
                 predictor.featureHashing(uri);
                 double pred = predictor.predict(uri);
-                if(split[0].equals("RDF")) {
-                    if (pred >= 0.5) {
-                        correctPrediction++;
+                if(split[0].equals("RDF")){
+                    if(pred >= 0.5){
+                        correctCount ++;
                     }
                 }
-                else {
-                     if(pred < 0.5) {
-                         correctPrediction ++;
-                     }
+                else{
+                    if(pred < 0.5){
+                        correctCount ++;
+                    }
                 }
             }
         }
-        accuracy =  correctPrediction.floatValue() / uriCount.floatValue();
-        System.out.println("total count of uris is : " + uriCount);
-        System.out.println("total number of correct prediction is: " + correctPrediction);
-
-        System.out.println("the accuracy rate is : " + accuracy);
+        accuracy = correctCount.floatValue() / uriCount.floatValue();
+        System.out.println(" The total number of URIs is: " + uriCount);
+        System.out.println(" The total number of correct predictions  is: " + correctCount);
+        System.out.println(" The accuracy of the predictor is: " + accuracy);
     }
 
     @Test
