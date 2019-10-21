@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.dice-research</groupId>
+		<artifactId>squirrel</artifactId>
+		<version>0.4.0</version>
+	</parent>
+
+	<artifactId>squirrel.reports</artifactId>
+	<packaging>jar</packaging>
+	<name>Build reports collecting dummy</name>
+
+	<dependencies>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.api</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.deduplication</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.frontier</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.mockup</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web-api</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.worker</artifactId>
+            </dependency>
+	</dependencies>
+
+</project>

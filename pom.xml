@@ -34,12 +34,13 @@
 
     <!-- MODULES -->
     <modules>
-        <module>squirrel.web-api</module>
-        <module>squirrel.web</module>
         <module>squirrel.api</module>
         <module>squirrel.deduplication</module>
         <module>squirrel.frontier</module>
         <module>squirrel.mockup</module>
+        <module>squirrel.reports</module>
+        <module>squirrel.web</module>
+        <module>squirrel.web-api</module>
         <module>squirrel.worker</module>
     </modules>
 
@@ -88,12 +89,32 @@
             </dependency>
             <dependency>
                 <groupId>org.dice-research</groupId>
-                <artifactId>squirrel.web-api</artifactId>
+                <artifactId>squirrel.deduplication</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.frontier</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dice-research</groupId>
                 <artifactId>squirrel.mockup</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.worker</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -326,9 +347,9 @@
             </dependency>
             <!-- System rules for setting environment variables -->
             <dependency>
-              <groupId>com.github.stefanbirkner</groupId>
-              <artifactId>system-rules</artifactId>
-              <scope>test</scope>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <scope>test</scope>
             </dependency>
             <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
@@ -428,7 +449,29 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.gavinmogan</groupId>
+                <artifactId>codacy-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <!-- <apiToken>${env.CODACY_API_TOKEN}</apiToken> <projectToken>${env.CODACY_PROJECT_TOKEN}</projectToken> -->
+                    <coverageReportFile>${project.reporting.outputDirectory}/jacoco-aggregate/jacoco.xml</coverageReportFile>
+                    <commit>${env.TRAVIS_COMMIT}</commit>
+                    <codacyApiBaseUrl>https://api.codacy.com</codacyApiBaseUrl>
+                    <failOnMissingReportFile>false</failOnMissingReportFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>post-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>coverage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
