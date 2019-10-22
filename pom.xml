@@ -449,7 +449,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>com.gavinmogan</groupId>
                 <artifactId>codacy-maven-plugin</artifactId>
                 <version>1.2.0</version>
@@ -470,7 +470,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
 
         <pluginManagement>
