@@ -212,10 +212,12 @@ public class WorkerImpl implements Worker, Closeable {
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
 
-            // Check robots.txt
-            if (manager.isUriCrawlable(uri.getUri())) {
+            
+            
+            if (manager.isUriCrawlable(uri)) {
                 // Make sure that there is a delay between the fetching of two URIs
-                Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri.getUri()),
+                
+                Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri),
                         System.currentTimeMillis());
 
                 // Fetch the URI content
