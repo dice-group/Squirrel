@@ -10,7 +10,11 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 
 public class FrontierQueryGenerator {
+<<<<<<< HEAD
 	   /**
+=======
+    /**
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
      * The instance of the class QueryGenerator.
      */
     private static final FrontierQueryGenerator instance = new FrontierQueryGenerator();
@@ -24,7 +28,11 @@ public class FrontierQueryGenerator {
     /**
      * Getter for {@link #instance}.
      *
+<<<<<<< HEAD
      * @return instannce of the class.
+=======
+     * @return instance of the class.
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
      */
     public static FrontierQueryGenerator getInstance() {
         return instance;
@@ -84,6 +92,7 @@ public class FrontierQueryGenerator {
      * Return a time stamp query for the default graph.
      * It will return triples with time stamp contained in the default graph.
      * @return All triples with time stamp in the default graph.
+<<<<<<< HEAD
      */
   
     public Query getOutdatedUrisQuery() {
@@ -176,6 +185,50 @@ public class FrontierQueryGenerator {
      * <p>
      * Note: Should be updated in relation to the robustness of parsing.
      */
+=======
+     * @param
+     */
+
+    public Query getOutdatedUrisQuery() {
+        return getOutdatedUrisQuery(null,true);
+    }
+    public Query getOutdatedUrisQuery(String graphUri, boolean defaultGraph) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" +
+            "PREFIX  prov: <http://www.w3.org/ns/prov#>\n" +
+            "PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
+            + "SELECT ?uri  WHERE { \n ");
+        // + "SELECT ?uri  WHERE { \n ");
+        if (graphUri == null) {
+            stringBuilder.append("GRAPH <");
+            stringBuilder.append(defaultGraph);
+            stringBuilder.append("> { ");
+        }
+        stringBuilder.append("{\n" +
+            "SELECT ?uri ?endtime (NOW() - (?endtime) AS ?diff)\n" +
+            "WHERE{\n" +
+            "\n" +
+            "  {\n" +
+            "    SELECT  ?uri  (MAX(?timestamp) as ?endtime)\n" +
+            "    WHERE\n" +
+            "    { \n" +
+            "        ?s  sq:crawled  ?uri ;\n" +
+            "        prov:endedAtTime  ?timestamp.\n" +
+            "\n" +
+            "    }\n" +
+            "    GROUP BY ?uri\n" +
+            "  } \n" +
+            "}\n" +
+            "}\n" +
+            "FILTER(?diff > \"18000\"^^xsd:double)\n" +
+            "");
+        stringBuilder.append("}");
+
+        Query query = QueryFactory.create(stringBuilder.toString());
+        return query;
+    }
+    @Deprecated
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
     public static String formatNodeToString(Node node) {
         StringBuilder stringBuilder = new StringBuilder();
         if (node.isURI()) {
