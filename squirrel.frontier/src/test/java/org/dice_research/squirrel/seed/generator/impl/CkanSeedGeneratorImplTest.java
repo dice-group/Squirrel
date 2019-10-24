@@ -1,8 +1,14 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+<<<<<<< HEAD
 import org.dice_research.squirrel.configurator.SparqlConfiguration;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownOutDatedUriFilter;
+=======
+import org.dice_research.squirrel.configurator.SparqlhostConnector;
+import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
@@ -22,11 +28,19 @@ public class CkanSeedGeneratorImplTest extends TestCase {
     private CkanSeedGeneratorImpl ckanSeedGenerator;
     private IpAddressBasedQueue queue;
     private Frontier frontier;
+<<<<<<< HEAD
     private KnownOutDatedUriFilter knownOutDatedUriFilter = SparqlConfiguration.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
     public void setUp() {
         queue = new InMemoryQueue();
         frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,knownOutDatedUriFilter);
+=======
+    private OutDatedUris outDatedUris = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+
+    public void setUp() {
+        queue = new InMemoryQueue();
+        frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue, outDatedUris);
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

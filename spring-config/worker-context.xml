@@ -46,10 +46,13 @@
         <constructor-arg index="0">
             <list>
 <<<<<<< HEAD
+<<<<<<< HEAD
                  <ref bean="ckanAnalyzerBean"/>        
                  <ref bean="rdfAnalyzerBean"/>
                  <ref bean="htmlscraperanalyzerBean"/>          
 =======
+=======
+>>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
                  <ref bean="rdfAnalyzerBean"/>          
                                    
             <!-- 
