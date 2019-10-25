@@ -3,11 +3,9 @@ package org.dice_research.squirrel.predictor;
 
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
-import de.jungblut.math.activation.ActivationFunction;
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
-import de.jungblut.math.loss.LossFunction;
 import de.jungblut.math.minimize.CostGradientTuple;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
@@ -35,25 +33,21 @@ import java.util.stream.Stream;
 
 public final class PredictorImpl implements Predictor {
 
-    private ActivationFunction activationFunction;
-    private LossFunction lossFunction;
-    public WeightUpdater updater;
 
+    public WeightUpdater updater;
     public RegressionLearn learner;
+    public RegressionModel model;
+    public RegressionClassifier classifier;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
-    private static final double beta = 0;
-    private static final double l1 = 0;
-    private static final double l2 = 0;
+    private static final double beta = 1;
+    private static final double l1 = 1;
+    private static final double l2 = 1;
 
-    private FeatureOutcomePair featureOutcome;
-    private DoubleVector features;
 
     protected CrawleableUri uri;
 
-    public RegressionModel model;
-    public RegressionClassifier classifier;
     public String TRAINING_SET_PATH = "trainDataSet.txt";
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
@@ -76,10 +70,11 @@ public final class PredictorImpl implements Predictor {
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2<<7));
+                2<<14));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
+
         }catch (Exception e){
             LOGGER.info("Exception caused while adding the feature vector to the URI map"+e);
         }
@@ -124,7 +119,7 @@ public final class PredictorImpl implements Predictor {
 
     @Override
     public void train() {
-        updater = new AdaptiveFTRLRegularizer(1, 1, 1);
+        updater = new AdaptiveFTRLRegularizer(beta,l1 ,l2);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
             .holdoutValidationPercentage(0.05d) // 5% as validation set
@@ -139,7 +134,7 @@ public final class PredictorImpl implements Predictor {
         learner.setNumPasses(2);
         learner.verbose();
         // train the model
-        model = learner.train(() -> setupStream());
+        this.model = learner.train(() -> setupStream());
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
@@ -183,7 +178,7 @@ public final class PredictorImpl implements Predictor {
                 DoubleVector prediction = classifier.predict(features);
                 double[] predictVal = prediction.toArray();
                 pred = predictVal[0];
-            }else {
+                }else {
                 LOGGER.info("Feature vector of this "+ uri.getUri().toString() +" is null");
             }
         } catch (Exception e) {
@@ -208,14 +203,19 @@ public final class PredictorImpl implements Predictor {
                 DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
 
                 DoubleVector nextExample = features;
-                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector);// realoutcome
-                CostGradientTuple observed = learner.observeExample(realResult, model.getWeights());
-
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+                CostGradientTuple observed = this.learner.observeExample(realResult, this.model.getWeights());
                 // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+                CostWeightTuple update = this.updater.computeNewWeights(this.model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+
+                //update weights using the updated parameters
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+
+
                 // update model and classifier
-                model = new RegressionModel(update.getWeight(), model.getActivationFunction());
-            } else {
+                //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
+                model = new RegressionModel(new_weights, model.getActivationFunction());
+                } else {
                 LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
         } catch (Exception e) {
