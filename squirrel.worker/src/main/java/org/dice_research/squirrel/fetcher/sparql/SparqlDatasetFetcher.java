@@ -161,6 +161,7 @@ public class SparqlDatasetFetcher implements Fetcher {
                 }
             }
             ActivityUtil.addStep(uri, getClass());
+            uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "application/n-triples");
             return dataFile;
         }
         return null;
