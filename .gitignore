@@ -7,7 +7,8 @@ target
 .idea
 *.iml
 /deployment/data
-/deployment/scenarios/1/worker1
+/deployment/scenarios/1/data
+/deployment/scenarios/2/data
 scenarios/1/worker*
 /dependency-reduced-pom.xml
 */dependency-reduced-pom.xml
@@ -15,3 +16,4 @@ scenarios/1/worker*
 /foundUris.properties
 /foundUris.script
 /bin/
+/

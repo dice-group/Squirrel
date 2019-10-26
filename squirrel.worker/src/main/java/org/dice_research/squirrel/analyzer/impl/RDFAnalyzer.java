@@ -2,10 +2,12 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -37,9 +39,11 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
     private List<Lang> listLangs = new ArrayList<Lang>();
+    private Set<String> jenaContentTypes = new HashSet<String>();
 
     public RDFAnalyzer(UriCollector collector) {
-    	super(collector);
+
+        super(collector);
         listLangs.add(Lang.NT);
         listLangs.add(Lang.NQUADS);
         listLangs.add(Lang.RDFJSON);
@@ -50,6 +54,13 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         listLangs.add(Lang.TRIX);
         listLangs.add(Lang.TTL);
         listLangs.add(Lang.TURTLE);
+
+        for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
+            if (!RDFLanguages.RDFNULL.equals(lang)) {
+                jenaContentTypes.add(lang.getContentType().getContentType());
+                jenaContentTypes.addAll(lang.getAltContentTypes());
+            }
+        }
     }
 
     @Override
@@ -57,13 +68,28 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         FileInputStream fin = null;
         try {
             // First, try to get the language of the data
+            LOGGER.info("Starting the RDF Analyzer");
             Lang lang = null;
-            String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+            Object httpMimeTypeObject = curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+            String contentType = null;
+            // Make sure the mime type is available before using it AND check that it is not
+            // text/plain (the latter is a workaround)
+            if ((httpMimeTypeObject != null) && (!"text/plain".equals(httpMimeTypeObject.toString()))) {
+                contentType = httpMimeTypeObject.toString();
+            }
             StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
-                RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
+                LOGGER.info("Received content type: " + contentType);
+                LOGGER.info("Lang : " + lang);
+
+                try {
+                    RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
+                } catch (Exception e) {
+                    LOGGER.warn("Could not parse file as " + lang.getName());
+                }
             } else {
+                LOGGER.info("Content Type is null");
                 for (Lang l : listLangs) {
                     try {
                         RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
@@ -84,28 +110,28 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         }
     }
 
-//    @Override
+    // @Override
     public boolean isElegible(CrawleableUri curi, File data) {
-        Tika tika = new Tika();
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-        if ((contentType != null) && (contentType.equals("application/rdf+xml") || contentType.equals("text/plain")
-                || contentType.equals("application/x-turtle"))) {
-            return true;
-        }
-        // Try to get the tika mime type
-        // TODO it might be better to do that once and add it to the URIs data
-        try (InputStream is = new FileInputStream(data)) {
-            String mimeType = tika.detect(is);
-            if (mimeType.equals("application/rdf+xml") || mimeType.equals("text/plain")
-                    || mimeType.equals("application/x-turtle")) {
-                return true;
-            }
+        Tika tika = new Tika();
 
-        } catch (Exception e) {
-            LOGGER.error("An error was found when trying to analyze ", e);
+        LOGGER.info("Content Type Detected: " + contentType);
+
+        if ("*/*".equals(contentType) || "text/plain".equals(contentType)) {
+            try {
+                contentType = tika.detect(data);
+                curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, contentType);
+
+            } catch (IOException e) {
+                LOGGER.info("Could not Detect Mimetype using Tika, using from Fetcher");
+            }
         }
-        return false;
+
+        if ((contentType != null) && jenaContentTypes.contains(contentType))
+            return true;
+        else
+            return false;
     }
 
 }

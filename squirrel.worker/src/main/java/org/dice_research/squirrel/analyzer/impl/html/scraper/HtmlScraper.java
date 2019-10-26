@@ -184,8 +184,8 @@ public class HtmlScraper {
     				newTriples = updatedTriples.get(o);
     			}
     			
-    			Node s = new NodeFactory().createURI(tt.getSubject().toString()+"_" + cont);
-    			Node p = new NodeFactory().createURI(tt.getPredicate().toString().substring(0, tt.getPredicate().toString().length()-1));
+                Node s =  NodeFactory.createURI(tt.getSubject().toString()+"_" + cont);
+    			Node p = NodeFactory.createURI(tt.getPredicate().toString().substring(0, tt.getPredicate().toString().length()-1));
     		
     			newTriples.add(new Triple(s,p,tt.getObject()));
     			

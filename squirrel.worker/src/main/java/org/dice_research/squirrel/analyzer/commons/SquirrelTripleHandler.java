@@ -1,9 +1,5 @@
 package org.dice_research.squirrel.analyzer.commons;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import org.apache.any23.extractor.ExtractionContext;
 import org.apache.any23.writer.TripleHandler;
 import org.apache.any23.writer.TripleHandlerException;
@@ -21,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 
- * Triple handler for Any23 RDF extraction
+ * Triple handler for Clerezza
  * 
  * @author Geraldo de Souza Junior
  *
@@ -40,7 +36,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 		this.collector = collector;
 		this.sink = sink;
 		this.curi = curi;
-		LOGGER.info(">> Staring SquirrelTripleWriter for URI: " + curi.getUri().toString());
 	}
 
 	@Override
@@ -61,19 +56,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 		boolean isUri1 = true;
 		boolean isUri2 = true;
 
-		URL uri1 = null;
-		try {
-			uri1 = new URL(o.stringValue());
-		} catch (Exception e) {
-			isUri1 = false;
-		}
-		
-		URL uri2 = null;
-		try {
-			uri2 = new URL(s.stringValue());
-		} catch (Exception e) {
-			isUri2 = false;
-		}
 		
 		if(isUri2) {
 			Node r = NodeFactory.createURI(s.stringValue());
@@ -81,9 +63,6 @@ public class SquirrelTripleHandler implements TripleHandler {
 			Node obj = isUri1 ? NodeFactory.createURI(o.stringValue()) : NodeFactory.createLiteral(o.stringValue());
 			
 			Triple t = new Triple(r,pr,obj);
-			
-			LOGGER.info(">> Storing Triple: " + t);
-
 			
 			sink.addTriple(curi, t);
 			collector.addTriple(curi, t);

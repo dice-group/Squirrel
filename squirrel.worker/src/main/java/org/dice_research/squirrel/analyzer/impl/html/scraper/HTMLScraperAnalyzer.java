@@ -16,6 +16,15 @@ import org.dice_research.squirrel.sink.Sink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * 
+ * Analyzer that scrapes HTML files based on preset setup from yaml files.
+ * 
+ * * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
+ *
+ */
+
 public class HTMLScraperAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTMLScraperAnalyzer.class);

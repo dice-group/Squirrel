@@ -45,5 +45,6 @@ public interface CrawleableUriFactory {
      *         instance and the given {@link UriType} or null, if the given
      *         {@link URI} did not fulfill the requirements of a crawleable URI.
      */
+    @SuppressWarnings("deprecation")
     public CrawleableUri create(URI uri, UriType type);
 }

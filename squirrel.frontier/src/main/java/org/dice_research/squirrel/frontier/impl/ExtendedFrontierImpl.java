@@ -63,8 +63,10 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param doesRecrawling used to select if URIs should be recrawled.
      * @param predictor      PredictorImpl object used for prediction
      */
+
     public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling, PredictorImpl predictor) {
         super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling, predictor);
+
     }
 
     @Override

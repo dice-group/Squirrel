@@ -29,6 +29,7 @@ import com.rethinkdb.net.Cursor;
 /**
  * Created by ivan on 8/18/16.
  */
+@SuppressWarnings("deprecation")
 public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
