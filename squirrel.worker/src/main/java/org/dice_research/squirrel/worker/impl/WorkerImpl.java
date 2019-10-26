@@ -257,7 +257,7 @@ public class WorkerImpl implements Worker, Closeable {
                                 for (File file : fileList) {
                                     LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
                                     Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-                                    sendNewUris(resultUris);
+                                    sendNewUris(resultUris,uri);
                                     cont++;
                                 }
 
@@ -287,10 +287,7 @@ public class WorkerImpl implements Worker, Closeable {
                 activity.addStep(manager.getClass(), "Decided to reject this URI.");
             }
 
-        } else {
-            LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
-            activity.addStep(manager.getClass(), "Decided to reject this URI.");
-        }
+
         // Adding true label value for the prediction in uri map
         if (activity.getNumberOfTriples()>0) {
             uri.addData(Constants.URI_TRUE_LABEL,1);
