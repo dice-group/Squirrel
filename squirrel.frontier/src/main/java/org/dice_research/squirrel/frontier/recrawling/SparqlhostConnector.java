@@ -1,9 +1,4 @@
-package org.dice_research.squirrel.configurator;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+package org.dice_research.squirrel.frontier.recrawling;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
@@ -23,13 +18,18 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.filter.OutDatedUris;
-import org.dice_research.squirrel.frontier.impl.FrontierQueryGenerator;
+import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("deprecation")
-public class SparqlhostConnector implements OutDatedUris {
+public class SparqlhostConnector implements OutDatedUriRetreiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlhostConnector.class);
 
@@ -93,7 +93,7 @@ public class SparqlhostConnector implements OutDatedUris {
 
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
-        SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        //   SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
         System.out.println(getOutdatedUrisQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
@@ -112,5 +112,9 @@ public class SparqlhostConnector implements OutDatedUris {
     }
 
 
+    @Override
+    public void close() throws IOException {
+        getUriToRecrawl();
+    }
 }
 

@@ -44,14 +44,14 @@ services:
       - Driver=/usr/local/lib/virtodbc_32.so
       - DBA_PASSWORD=pw123
 
-#  sparqlhost:
-#    image: stain/jena-fuseki
-#    container_name: sparqlhost
-#    ports:
-#      - "3030:3030"
-#    environment:
-#      - ADMIN_PASSWORD=pw123
-#      - JVM_ARGS=-Xmx2g
+  #  sparqlhost:
+  #    image: stain/jena-fuseki
+  #    container_name: sparqlhost
+  #    ports:
+  #      - "3030:3030"
+  #    environment:
+  #      - ADMIN_PASSWORD=pw123
+  #      - JVM_ARGS=-Xmx2g
 
   mongodb:
     image: mongo:4.0.0
@@ -77,7 +77,7 @@ services:
       - "8081:15672"
       # Forwarding the port for testing
       - "5672:5672"
-      
+
   worker1:
     image: squirrel.worker:latest
     container_name: worker1
@@ -92,9 +92,9 @@ services:
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
     volumes:
-        - ./data/worker1:/var/squirrel/data
-        - ./yaml:/var/squirrel/yaml
-        - ./spring-config:/var/squirrel/spring-config
+      - ./data/worker1:/var/squirrel/data
+      - ./yaml:/var/squirrel/yaml
+      - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker2:
@@ -111,9 +111,9 @@ services:
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
     volumes:
-        - ./data/worker2:/var/squirrel/data
-        - ./yaml:/var/squirrel/yaml
-        - ./spring-config:/var/squirrel/spring-config
+      - ./data/worker2:/var/squirrel/data
+      - ./yaml:/var/squirrel/yaml
+      - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker3:
@@ -130,9 +130,9 @@ services:
       - DEDUPLICATION_ACTIVE=true
       - JVM_ARGS=-Xmx8g
     volumes:
-        - ./data/worker3:/var/squirrel/data
-        - ./yaml:/var/squirrel/yaml
-        - ./spring-config:/var/squirrel/spring-config
+      - ./data/worker3:/var/squirrel/data
+      - ./yaml:/var/squirrel/yaml
+      - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
 #  deduplicator:
