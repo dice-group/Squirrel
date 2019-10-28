@@ -299,8 +299,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                 }
             }
             
-            LOGGER.info("Still has Uris: " + stillHasUris);
-
 			if(!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
 	        	terminationMutex.release();
 	        }			
