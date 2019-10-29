@@ -2,8 +2,11 @@ sudo: required
 
 language: java
 
+jdk: oraclejdk8
+
 services:
   - docker
 
 before_install:
 - docker pull rethinkdb:2.3.5
+
