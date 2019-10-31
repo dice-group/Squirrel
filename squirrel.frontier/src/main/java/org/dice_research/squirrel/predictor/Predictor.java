@@ -27,7 +27,7 @@ public interface Predictor {
      * Train a new model using the supplied streams.
      */
 
-    public void train();
+    public void train(String filePath);
     /**
      * Return a prediction value of the type of the given URI, the prediction should be between 0 and 1.
      * e.g. In case of RDF type prediction, the more the predicted value is close to 1

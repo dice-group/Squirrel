@@ -23,11 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -83,13 +88,17 @@ public final class PredictorImpl implements Predictor {
 
     public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens){
 
-        String authority, scheme, userInfo, host, path, query, fragment;
+        String authority, scheme, host, path, query;
         URI furi = null;
+        String[] uriToken;
+        uriToken = uri.getUri().toString().split("/|.");
+        tokens.addAll(Arrays.asList(uriToken));
         try {
             furi = new URI(uri.getUri().toString());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
         if (furi != null) {
             authority = furi.getAuthority();
             if(authority != null)
@@ -97,28 +106,25 @@ public final class PredictorImpl implements Predictor {
             scheme = furi.getScheme();
             if(scheme != null)
                 tokens.add(scheme);
-            userInfo = furi.getUserInfo();
-            if(userInfo != null)
-                tokens.add(userInfo);
+
             host = furi.getHost();
             if(host != null)
                 tokens.add(host);
             path = furi.getPath();
+
             if(path != null) ;
                 tokens.add(path);
             query = furi.getQuery();
             if(query != null)
                 tokens.add(query);
-            fragment = furi.getFragment();
-            if(fragment != null)
-                tokens.add(fragment);
+
         }
         return tokens;
     }
 
 
     @Override
-    public void train() {
+    public void train(String filePath) {
         updater = new AdaptiveFTRLRegularizer(beta,l1 ,l2);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
             .create(0.01) // learning rate
@@ -134,17 +140,39 @@ public final class PredictorImpl implements Predictor {
         learner.setNumPasses(2);
         learner.verbose();
         // train the model
-        this.model = learner.train(() -> setupStream());
+        this.model = learner.train(() -> setUpStream(filePath));
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
     }
 
-    private Stream<FeatureOutcomePair> setupStream(){
+    /*private Stream<FeatureOutcomePair> setupStream(){
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(TRAINING_SET_PATH)
             , Charset.defaultCharset()));
         return reader.lines().map((s) -> parseFeature(s));
+    }*/
+
+    private Stream<FeatureOutcomePair> setUpStream(String filePath) {
+        URL url = null;
+
+        try {
+            url = new URL(filePath);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader((new InputStreamReader(url.openStream())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            String line = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return br.lines().map((s) -> parseFeature(s));
     }
 
     private FeatureOutcomePair parseFeature(String line) {
@@ -152,7 +180,7 @@ public final class PredictorImpl implements Predictor {
 
         URI furi = null;
         try {
-            furi = new URI(split[1]);
+            furi = new URI(split[0]);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -161,7 +189,7 @@ public final class PredictorImpl implements Predictor {
         Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-        return new FeatureOutcomePair(features, split[0].equals("RDF")? POSITIVE_CLASS : NEGATIVE_CLASS);
+        return new FeatureOutcomePair(features, split[1].equals("dereferenceable")? POSITIVE_CLASS : NEGATIVE_CLASS);
     }
 
     @Override

@@ -116,7 +116,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Training the URI predictor model with a training dataset
-        pred.train();
+        pred.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
         // Build frontier
         frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, pred);
 

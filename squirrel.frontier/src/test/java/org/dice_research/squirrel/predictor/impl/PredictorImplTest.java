@@ -32,7 +32,7 @@ public class PredictorImplTest {
         predictor.TRAINING_SET_PATH = "trainDataset.txt";
 
         // train the learner on two URIs: one RDF and one non RDF
-        predictor.train();
+        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
 
         // predict for a random URI(HTML) example
         predictor.featureHashing(curi);
@@ -61,7 +61,7 @@ public class PredictorImplTest {
         Integer correctCount = 0;
         double accuracy;
         // train the learner on two URIs: one RDF and one non RDF
-        predictor.train();
+        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("predictor/evalDataSet.txt")) ))       {
             String line;
             while ((line = br.readLine()) != null) {
@@ -157,7 +157,7 @@ public class PredictorImplTest {
 
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         predictor = new PredictorImpl();
-        predictor.train();
+        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
 
         // Weight Intialized with the train weight
         DenseDoubleVector test_weights = new DenseDoubleVector(new double[]{
