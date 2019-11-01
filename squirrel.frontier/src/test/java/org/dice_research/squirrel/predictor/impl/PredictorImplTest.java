@@ -29,7 +29,7 @@ public class PredictorImplTest {
         CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
 
         predictor = new PredictorImpl();
-        predictor.TRAINING_SET_PATH = "trainDataset.txt";
+        
 
         // train the learner on two URIs: one RDF and one non RDF
         predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
@@ -56,7 +56,7 @@ public class PredictorImplTest {
     @Test
     public  void evaluation() throws  Exception{
         predictor = new PredictorImpl();
-        predictor.TRAINING_SET_PATH = "predictor/trainData.txt";
+
         Integer uriCount = 0;
         Integer correctCount = 0;
         double accuracy;

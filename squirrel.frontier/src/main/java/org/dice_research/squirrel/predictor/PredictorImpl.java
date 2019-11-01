@@ -53,7 +53,7 @@ public final class PredictorImpl implements Predictor {
 
     protected CrawleableUri uri;
 
-    public String TRAINING_SET_PATH = "trainDataSet.txt";
+
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
 
@@ -180,9 +180,15 @@ public final class PredictorImpl implements Predictor {
 
         URI furi = null;
         try {
-            furi = new URI(split[0]);
+            //System.out.println(split[0].replace("\"", ""));
+            furi = new URI(split[0].replace("\"", ""));
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            try {
+                furi = new URI("http://scoreboard.lod2.eu/data/scoreboardDataCube.rdf");
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            }
+            //e.printStackTrace();
         }
         CrawleableUri uri = new CrawleableUri(furi);
         featureHashing(uri);
