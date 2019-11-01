@@ -53,46 +53,8 @@ public class PredictorImplTest {
         Assert.assertEquals(0.43, pround3,0.1);
     }
 
-    @Test
-    public  void evaluation() throws  Exception{
-        predictor = new PredictorImpl();
 
-        Integer uriCount = 0;
-        Integer correctCount = 0;
-        double accuracy;
-        // train the learner on two URIs: one RDF and one non RDF
-        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("predictor/evalDataSet.txt")) ))       {
-            String line;
-            while ((line = br.readLine()) != null) {
-                uriCount ++;
-                String[] split = line.split(",");
-                URI furi = null;
-                try {
-                    furi = new URI(split[1]);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-                CrawleableUri uri = new CrawleableUri(furi);
-                predictor.featureHashing(uri);
-                double pred = predictor.predict(uri);
-                if(split[0].equals("RDF")){
-                    if(pred >= 0.5){
-                        correctCount ++;
-                    }
-                }
-                else{
-                    if(pred < 0.5){
-                        correctCount ++;
-                    }
-                }
-            }
-        }
-        accuracy = correctCount.floatValue() / uriCount.floatValue();
-        System.out.println(" The total number of URIs is: " + uriCount);
-        System.out.println(" The total number of correct predictions  is: " + correctCount);
-        System.out.println(" The accuracy of the predictor is: " + accuracy);
-    }
+
 
     @Test
     public void featureHashing() throws Exception {

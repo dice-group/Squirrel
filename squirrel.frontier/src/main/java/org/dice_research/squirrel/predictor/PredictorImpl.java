@@ -91,7 +91,7 @@ public final class PredictorImpl implements Predictor {
         String authority, scheme, host, path, query;
         URI furi = null;
         String[] uriToken;
-        uriToken = uri.getUri().toString().split("/|.");
+        uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
         try {
             furi = new URI(uri.getUri().toString());

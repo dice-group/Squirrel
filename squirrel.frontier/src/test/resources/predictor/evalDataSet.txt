@@ -1,140 +1,63 @@
-RDF,https://mcloud.de/export/datasets/e2932050-d8f4-4258-8464-33587d42bd33
-RDF,https://mcloud.de/export/datasets/e56955e5-69ea-40dd-8bcb-664a12faa516
-RDF,https://mcloud.de/export/datasets/ed6b46a2-3b45-4099-bd4d-b327fb8797a8
-RDF,https://mcloud.de/export/datasets/f672b22d-a7c5-443a-aac0-23e52c413275
-RDF,https://mcloud.de/export/datasets/1c669080-c804-11e4-8731-1681e6b88ec1
-RDF,https://mcloud.de/export/datasets/22565c7a-c7da-11e4-8731-1681e6b88ec1
-RDF,https://mcloud.de/export/datasets/289d4172-cc8d-11e4-8731-1681e6b88ec1
-RDF,https://mcloud.de/export/datasets/685443d6-cbae-11e4-8731-1681e6b88ec1
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnkfzbestandkoeln
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnlkwverbindungenkoeln
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnlkwverbotszonekoeln
-RDF,https://mcloud.de/export/datasets/_mcloudde_gvu-gewsserverunreinigung
-RDF,https://mcloud.de/export/datasets/_mcloudde_historischeradiosondenmessungen
-RDF,https://mcloud.de/export/datasets/_mcloudde_homogenisierteradiosondenmessungen
-RDF,https://mcloud.de/export/datasets/_mcloudde_kfz-kennzeichendeutschland
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandaten1halbjahr2014
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenaprilbisdezember2016
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenaugustbisoktober2014
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatendezember2015bisdezember2016
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenendejunibisdezember2016
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenjanuar2015bisdezember2015
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatennovember2015bisdezember2016
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenoktoberbisdezember2014
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-gtfs-datenjun-dez2013
-RDF,https://mcloud.de/export/datasets/_mcloudde_cloudtopheight
-RDF,https://mcloud.de/export/datasets/_mcloudde_nrwstraennetzlandesbetriebstraenbaunrw
-RDF,https://mcloud.de/export/datasets/_mcloudde_opendrivetestfelda9
-RDF,https://mcloud.de/export/datasets/_mcloudde_pollenflug-gefahrenindexbeifu
-RDF,https://mcloud.de/export/datasets/_mcloudde_pollenflug-gefahrenindexbirke
-RDF,https://mcloud.de/export/datasets/_mcloudde_pollenflug-gefahrenindexgrser
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnkfzzaehlstellenundwertekoeln
-RDF,https://mcloud.de/export/datasets/_mcloudde_vbb-fahrplandatenjuni2017bisdezember2017
-RDF,https://mcloud.de/export/datasets/d7ca2be0-1a83-4490-b249-9488c50d971f
-RDF,https://mcloud.de/export/datasets/_mcloudde_jahresmittelderrasterdermonatlichgemitteltenlufttemperaturmaxima2mfrdeutschland
-RDF,https://mcloud.de/export/datasets/_mcloudde_jahresmittelderrasterdermonatlichgemitteltenlufttemperaturminima2mfrdeutschland
-RDF,https://mcloud.de/export/datasets/_mcloudde_jahresrasterderanzahlderfrosttagefrdeutschland
-RDF,https://mcloud.de/export/datasets/08fc5788-9645-4205-a5c0-d04d5386b798
-RDF,https://mcloud.de/export/datasets/1cc0f0c6-f0fd-45a6-97f7-ca2061dc0eef
-RDF,https://mcloud.de/export/datasets/26cc2bf8-fe73-4d40-8c1f-563685bbfae7
-RDF,https://mcloud.de/export/datasets/6c6ed95f-06f9-4f93-890e-8f2d39ce1952
-RDF,https://mcloud.de/export/datasets/7e3365a2-a379-4764-ade8-871c68d637ec
-RDF,https://mcloud.de/export/datasets/0bea9aa5-3b8e-493d-b859-927a4e3eae48
-RDF,https://mcloud.de/export/datasets/16732444-7309-4022-95e2-bb20b2439324
-RDF,https://mcloud.de/export/datasets/2b8f6a7d-f92a-4a91-9b73-175c02d0c894
-RDF,https://mcloud.de/export/datasets/45543cbc-d0fa-47e8-887a-fe3af4e8e54c
-RDF,https://mcloud.de/export/datasets/_mcloudde_fahrradabstellanlagen
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtbonnelektrotankstellene-ladesulenlivedaten
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtbonnstandortederelektrotankstellen
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnampelanlageninklngk
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnampelanlageninklnwsg84
-RDF,https://mcloud.de/export/datasets/4ace75ee-f1ce-412e-9e9b-0e3741c57b72
-RDF,https://mcloud.de/export/datasets/79d65294-9cee-4f2c-800d-b9e05f8ca60f
-RDF,https://mcloud.de/export/datasets/_mcloudde_berlinaktuelleradverkehrsplanungen
-RDF,https://mcloud.de/export/datasets/_mcloudde_berlinaufgrabeverboteinberlin
-RDF,https://mcloud.de/export/datasets/_mcloudde_berlinradverkehrsinfrastrukturundihrebewertung
-RDF,https://mcloud.de/export/datasets/a5297166-db91-4708-8287-393c54bd69d9
-RDF,https://mcloud.de/export/datasets/aa339669-1aea-49e5-8437-e2c7eb6bc4b7
-RDF,https://mcloud.de/export/datasets/c7d748c9-e12f-4038-a556-b1698eb4033e
-RDF,https://mcloud.de/export/datasets/f34d156f-ba7c-4c9d-8b47-4cbca156be52
-RDF,https://mcloud.de/export/datasets/fe68e74c-f2d2-4645-b789-015f204f2df6
-RDF,https://mcloud.de/export/datasets/_mcloudde_listederverfgbarenwetterstationenhauptamtlichesundnebenamtlichesmessnetz
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtbonnco2klimabilanzstadtgebietbonn
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtbonnstrassenklnbonn
-RDF,https://mcloud.de/export/datasets/_mcloudde_stadtklnbugelddatenkoeln2017
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/994b2117-cf62-438c-80e1-08cb9d510376?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/0470dfc7-7900-479f-95a6-0e7c51b97e27?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/fc05b2ad-6779-4ec6-bb7c-f79df91c2f73?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/7cc44618-f44e-40e3-a8ac-4006cd42f2a4?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/031d2188-dd95-41b3-9517-03e2ee0268ae?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_datensatzbundesfernstraennetz?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_openrouteservice?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_mdmarbeitsstellenlngererdaueraufbabinsachsen-anhalt?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D8%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/10?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_sge-sedimentprobenprozessiertedaten?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtbonnbestandszahlenfahrzeugzulassungenkfz2015?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnkfzbestandkoeln?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnlkwverbindungenkoeln?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnlkwverbotszonekoeln?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnfahrradverkehrsdatenkoeln2015?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnbugelddatenkoeln2015json?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnzugelassenekraftfahrzeuge?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnverkehrsunfallentwicklungstadtgebietkoeln2015?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnverkehrsunfallentwicklungstadtgebietkoeln2015json?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D100%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/99?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/98?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baysisverkehrsmengen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baysisstraennetz?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baysisbedarfsplan?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baysisstraennetznachasb?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baysisstraenbestand?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_statistikenordnungsamtwuppertal2016?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtbonnparkhuserparkhausbelegungechtzeitdaten?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_vbb-fahrplandatenfebruar2017bisdezember2017?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnsperrzonelkwkarnevalkoeln2017?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D93%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_monatlicherasterdersummederpotentiellenevapotranspirationbergras?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_monatlicherasterdermaximalenmonatlichenfrosteindringtiefebeiunbewachsenembodenummittag?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_rasterdatendermonatssummenfrdiediffusestrahlungaufdiehorizontaleebenefrdeutschlandbasierendaufbode?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_monatlicherasterdermittlerenbodenfeuchteuntergrasundsandigemlehm?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_vieljhrigemittlererasterdermonatlichgemitteltenlufttemperaturminima2mfrdeutschland?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_vieljhrigerasterderpotentiellenevapotranspirationbergrasperkalendermonat?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_vieljhrigesmittelderrasterderanzahldertagemitniederschlag30mmfrdeutschland?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_1kmx1kmrasterdatendermittlerenjhrlichenwindgeschwindigkeitenin10mbis100mhhein10mstufenundweibullpa?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_jahreszeitenmitteldestrockenheitsindexnachdemartonnefrdeutschland?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_regnie-rasterdermonatlichenniederschlagshhefrdeutschland?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D17%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/19?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche?p_p_id=mcloudsearchportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_mcloudsearchportlet_mvcRenderCommandName=%2Fsearch%2Fdetail&_mcloudsearchportlet_mvcPath=%2Fdetail.jsp&_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D32%26_mcloudsearchportlet_sort%3Dlatest&_mcloudsearchportlet_id=de.dwd.klm.cdc.general.GRD_DEU_P30Y_TM_P1Y
-HTML,https://mcloud.de/web/guest/suche?p_p_id=mcloudsearchportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_mcloudsearchportlet_mvcRenderCommandName=%2Fsearch%2Fdetail&_mcloudsearchportlet_mvcPath=%2Fdetail.jsp&_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D32%26_mcloudsearchportlet_sort%3Dlatest&_mcloudsearchportlet_id=de.dwd.klm.cdc.general.GRD_DEU_P30Y_SD_P1Y
-HTML,https://mcloud.de/web/guest/suche?p_p_id=mcloudsearchportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_mcloudsearchportlet_mvcRenderCommandName=%2Fsearch%2Fdetail&_mcloudsearchportlet_mvcPath=%2Fdetail.jsp&_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D32%26_mcloudsearchportlet_sort%3Dlatest&_mcloudsearchportlet_id=de.dwd.geoserver.fach.RBSN_FF
-HTML,https://mcloud.de/web/guest/suche?p_p_id=mcloudsearchportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_mcloudsearchportlet_mvcRenderCommandName=%2Fsearch%2Fdetail&_mcloudsearchportlet_mvcPath=%2Fdetail.jsp&_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D32%26_mcloudsearchportlet_sort%3Dlatest&_mcloudsearchportlet_id=de.dwd.geoserver.fach.RBSN_RH
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_nrwverkehrslagelos?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D32%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/34?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_anteilverkehrsflcheansiedlungs-undverkehrsflche?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_anteilstraenverkehrsflcheangebietsflche?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_verkehrsflchennutzungsdichte?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_automatischezhlstellenaufautobahnenundbundesstraen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_automatischezhlstellenaufautobahnenundbundesstraen-stundenwerte?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_vbb-fahrplandatendezember2017bisdezember2018?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/7e3365a2-a379-4764-ade8-871c68d637ec?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/6c6ed95f-06f9-4f93-890e-8f2d39ce1952?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/1cc0f0c6-f0fd-45a6-97f7-ca2061dc0eef?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/b07f4050-2150-4f39-959c-16d0c12edf85?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D76%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/75?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/74?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_stadtklnvertriebsstellenansprechpartnerkvbkoeln?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D37%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/f1796a3b-c710-467c-93b2-1269a1bd0d3a?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D37%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/2678a6f8-dfcb-4dee-9c54-409c68ceaa21?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D37%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_statischedatenzumlkw-parkenaufbundesdeutschenautobahnen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D37%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_kraftfahrzeugeinhamburg?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D37%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/39?_mcloudsearchportlet_sort=latest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_hvv-haltestellennamenmitkoordinatehamburg?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_straen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_radmonitore?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_lichtsignalanlagen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_radwegegishamburg?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_zebzustandsklassenhamburg?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_baustellen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_verkehrszeichen?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_parkandrideanlagenwuppertal?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/detail/_mcloudde_ladestationene-autoswuppertal?_mcloudsearchportlet_backURL=https%3A%2F%2Fmcloud.de%2Fweb%2Fguest%2Fsuche%2F-%2Fresults%2FsearchAction%3F_mcloudsearchportlet_page%3D38%26_mcloudsearchportlet_sort%3Dlatest
-HTML,https://mcloud.de/web/guest/suche/-/results/search/40?_mcloudsearchportlet_sort=latest
+http://abdera.watson.ibm.com:8080/sparql sparql
+http://bbc.openlinksw.com/sparql sparql
+http://beta.sparql.uniprot.org/sparql sparql
+http://bio2rdf.org/sparql sparql
+http://bnb.data.bl.uk/sparql sparql
+http://collection.britishart.yale.edu/openrdf-sesame/repositories/ycba sparql
+http://collection.britishart.yale.edu/sparql sparql
+http://collection.britishmuseum.org/sparql sparql
+http://dannyayers.com:8888/ontoworld/ sparql
+http://data.allie.dbcls.jp/sparql sparql
+http://data.archaeologydataservice.ac.uk/sparql/repositories/archives sparql
+http://data.archiveshub.ac.uk/sparql sparql
+http://data.bnf.fr/sparql/ sparql
+http://data.cervantesvirtual.com/openrdf-sesame/repositories/data sparql
+http://data.digitalculture.tw/taichung/sparql sparql
+http://data.gov.uk/sparql sparql
+http://data.linkedmdb.org/sparql sparql
+http://data.mimo-db.eu/sparql sparql
+http://data.nationallibrary.fi/bib/sparql sparql
+http://data.odw.tw/sparql sparql
+http://data.ordnancesurvey.co.uk/datasets/os-linked-data/apis/sparql sparql
+http://dati.camera.it/sparql sparql
+http://datos.bne.es/sparql sparql
+http://dblp.l3s.de/d2r/sparql sparql
+http://dbpedia-live.openlinksw.com/sparql/ sparql
+http://dbpedia.org/sparql sparql
+http://dbtune.org/bbc/peel/sparql sparql
+http://dbtune.org/bbc/playcount/sparql sparql
+http://dbtune.org/jamendo/sparql sparql
+http://dbtune.org/musicbrainz/sparql sparql
+http://de.dbpedia.org/sparql sparql
+http://demo.openlinksw.com/sparql/ sparql
+http://es.dbpedia.org/sparql sparql
+http://factforge.net/repositories/ff-news sparql
+http://hcls.deri.org/sparql/ sparql
+http://id.nlm.nih.gov/mesh/sparql sparql
+http://ieee.rkbexplorer.com/sparql/ sparql
+http://jena.hpl.hp.com:3040/backstage sparql
+http://ldf.fi/folklore/sparql sparql
+https://data.seattle.gov/api/views/y7u8-vad7/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.cityofchicago.org/api/views/8dps-5d4x/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.cityofchicago.org/api/views/i9rk-duva/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.cityofnewyork.us/api/views/fzv4-jan3/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.hawaii.gov/api/views/gb78-jhh6/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.illinois.gov/api/views/ws4h-cuji/rows.rdf?accessType=DOWNLOAD dereferenceable
+http://dati.opendataground.it:80/comunealbanolaziale/1347.rdf dereferenceable
+https://data.ok.gov/api/views/iazg-6avi/rows.rdf?accessType=DOWNLOAD dereferenceable
+http://dati.opendataground.it:80/comunealbanolaziale/1550.rdf dereferenceable
+https://data.ok.gov/api/views/7yui-a476/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.ny.gov/api/views/epvz-8pyh/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.sfgov.org/api/views/w969-5mn4/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://datacatalog.cookcountyil.gov/api/views/cztm-9h6n/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.cityofnewyork.us/api/views/heam-nsms/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.baltimorecity.gov/api/views/9kmn-g49z/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://datacatalog.cookcountyil.gov/api/views/6biq-7ju6/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.lacity.org/api/views/g3qu-7q2u/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.baltimorecity.gov/api/views/5xsg-uc29/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.ok.gov/api/views/aa3c-eyw3/rows.rdf?accessType=DOWNLOAD dereferenceable
+http://www.bbsrc.ac.uk/web/files/statistics/bbsrc-transparency-staff-mar11.rdf dereferenceable
+https://data.kingcounty.gov/api/views/7hhu-mb3d/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://www.dati.lombardia.it/api/views/wvzw-hzbt/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.baltimorecity.gov/api/views/iub8-xy78/rows.rdf?accessType=DOWNLOAD dereferenceable
+https://data.baltimorecity.gov/api/views/t8n4-my4m/rows.rdf?accessType=DOWNLOAD dereferenceable
