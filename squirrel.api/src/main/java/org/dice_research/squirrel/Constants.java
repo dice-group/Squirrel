@@ -46,14 +46,27 @@ public class Constants {
      */
     public static final String URI_PREFERRED_RECRAWL_ON = "recrawl-on";
 
-    /**
+    /*
      * The data related to the predictor
      */
+    /**
+     * This key stores the value predicted by the Predictor for each URI denoting
+     * the class it belongs to (Positive class or Negative class)
+     */
     public static final String URI_PREDICTED_LABEL = "predicted-label";
+    /**
+     * This key stores the value denoting the true class of each URI
+     */
     public static final String URI_TRUE_LABEL = "true-label";
+    /**
+     * This key stores the feature vector generated for each URI for prediction purpose
+     */
     public static final String FEATURE_VECTOR = "feature-vector";
+    /**
+     * This key stores the parent URI of each crawled URI
+     */
     public static final String REFERRING_URI = "referring-uri";
-    public static final String URI_TYPE = "uri-type";
+
 
     //////////////////////////////////////////////////
     // URIs

@@ -107,8 +107,8 @@ public class FrontierImpl implements Frontier {
     /**
      * Object for Predictor
      */
-    PredictorImpl predictor;
-    /**
+    protected Predictor predictor;
+
 
     /**
      * Constructor.
