@@ -4,16 +4,12 @@ import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.configurator.SeedConfiguration;
-import org.dice_research.squirrel.configurator.WebConfiguration;
-import org.dice_research.squirrel.configurator.WhiteListConfiguration;
+import org.dice_research.squirrel.configurator.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
@@ -22,6 +18,7 @@ import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.*;
+import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
@@ -31,7 +28,6 @@ import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
 import org.dice_research.squirrel.worker.AliveMessage;
-import org.dice_research.squirrel.worker.WorkerInfo;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
@@ -40,13 +36,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
 @Component
@@ -59,7 +53,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
-    @Qualifier("sparqlBean")
+    @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
     protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
@@ -67,7 +61,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("knowUriFilterBean")
     @Autowired
     private KnownUriFilter knownUriFilter;
-    OutDatedUriRetreiver outDatedUriRetreiver;
+    private OutDatedUriRetreiver outDatedUriRetreiver;
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -76,10 +70,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Autowired
     private Serializer serializer;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
-
-
-    // public static final boolean RECRAWLING_ACTIVE = true;
-
     private Map<String, Boolean> hasUrisToCrawl;
 
     @Override
@@ -88,7 +78,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        //  SparqlhostConnector sp = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        SparqlhostConnector sp = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         hasUrisToCrawl = new HashMap<String, Boolean>();
         if (mongoConfiguration != null) {
 
@@ -144,7 +134,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
         Timer timer = new Timer();
         timer.schedule(terminatorTask, 5000, 5000);
         terminationMutex.acquire();
@@ -157,13 +147,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (receiver != null)
             // Force the receiver to close
             receiver.close();
-/*
-<<<<<<< HEAD
-//         receiver.closeWhenFinished();
-=======
         //         receiver.closeWhenFinished();
->>>>>>> bb00ad4b8e0cfdb89738f43afc01ce482e016bd6
-*/
 
         if (queue != null)
             queue.close();
@@ -236,10 +220,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     uris == null ? "null" : Integer.toString(uris.size()));
                 handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                 if (uris != null && uris.size() > 0) {
-
-                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(), uriSetRequest.workerSendsAliveMessages(),
-                        uris);
-
                     hasUrisToCrawl.put(uriSetRequest.getWorkerId(), true);
                     workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(),
                         uriSetRequest.workerSendsAliveMessages(), uris);
@@ -256,10 +236,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     protected void processSeedFile(String seedFile) {
         try {
-            List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
-            if (!listSeeds.isEmpty())
-                frontier.addNewUris(listSeeds);
-
             List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
             frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
@@ -281,33 +257,20 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         return workerGuard;
     }
 
-    private static class TerminatorTask extends TimerTask {
+    private class TerminatorTask extends TimerTask {
 
         private UriQueue queue;
         private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
         private Semaphore terminationMutex;
-        private WorkerGuard workerGuard;
 
-        public TerminatorTask(UriQueue queue, Semaphore terminationMutex, WorkerGuard workerGuard) {
+        public TerminatorTask(UriQueue queue, Semaphore terminationMutex) {
             this.queue = queue;
             this.terminationMutex = terminationMutex;
-            this.workerGuard = workerGuard;
         }
 
         @Override
         public void run() {
-
-            Map<String, WorkerInfo> mapWorkers = this.workerGuard.getMapWorkerInfo();
-
-            boolean stillHasUris = false;
-            for (Entry<String, WorkerInfo> entry : mapWorkers.entrySet()) {
-                if (entry.getValue().getUrisCrawling().size() > 0) {
-                    stillHasUris = true;
-                    break;
-                }
-            }
-
-            if (!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
+            if (!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
                 LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
                 terminationMutex.release();
             }

@@ -12,6 +12,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 /**
  * This is the main method creating and starting an instance of a
  * {@link Component} with the given class name.
+ *
  */
 
 public class FrontierComponentStarter {
@@ -25,6 +26,8 @@ public class FrontierComponentStarter {
     private static boolean closed = false;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponentStarter.class);
+
+
 
     public static void main(String[] args) {
         addShutdownHook();
@@ -41,6 +44,7 @@ public class FrontierComponentStarter {
         } finally {
             closeComponent();
         }
+
         if (!success) {
             System.exit(ERROR_EXIT_CODE);
         }
@@ -51,7 +55,7 @@ public class FrontierComponentStarter {
         if (!closed) {
             Closer.close(component, LOGGER);
             closed = true;
-            context.close();
+            Closer.close(context, LOGGER);
         }
     }
 

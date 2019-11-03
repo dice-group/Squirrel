@@ -64,11 +64,15 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
         super.init();
 
         UriSetRequest uriSetReq = new UriSetRequest(worker.getUri(), false);
+
         uriSetRequest = serializer.serialize(uriSetReq);
+
         deduplicationActive = EnvVariables.getBoolean(Constants.DEDUPLICATION_ACTIVE_KEY,
             Constants.DEFAULT_DEDUPLICATION_ACTIVE, LOGGER);
+
         senderFrontier = DataSenderImpl.builder().queue(outgoingDataQueuefactory, Constants.FRONTIER_QUEUE_NAME)
             .build();
+
         if (deduplicationActive) {
             senderDeduplicator = DataSenderImpl.builder()
                 .queue(outgoingDataQueuefactory, Constants.DEDUPLICATOR_QUEUE_NAME).build();

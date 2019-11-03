@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
@@ -33,8 +33,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      */
     @SuppressWarnings("unused")
     public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
-
-     long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUriRetreiver outDatedUriRetreiver) {
+                                long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUriRetreiver outDatedUriRetreiver) {
         super(normalizer, knownUriFilter, queue, doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian, outDatedUriRetreiver);
     }
 
@@ -48,7 +47,6 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                         crawled.
      * @param doesRecrawling   used to select if URIs should be recrawled.
      */
-
     public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, IpAddressBasedQueue queue, boolean doesRecrawling, OutDatedUriRetreiver outDatedUriRetreiver) {
         super(normalizer,  knownUriFilter, queue, doesRecrawling, outDatedUriRetreiver);
     }
@@ -64,9 +62,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-
     public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, OutDatedUriRetreiver outDatedUriRetreiver) {
-        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling, outDatedUriRetreiver);
+        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling,outDatedUriRetreiver);
     }
 
     @Override

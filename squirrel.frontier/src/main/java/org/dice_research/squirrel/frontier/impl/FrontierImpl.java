@@ -3,7 +3,7 @@ package org.dice_research.squirrel.frontier.impl;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
@@ -222,9 +222,9 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = outDatedUriRetreiver.getUriToRecrawl();
-                    System.out.println("Frontier uri to recrawl: " + urisToRecrawl);
-                    urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+//                    List<CrawleableUri> urisToRecrawl = outDatedUriRetreiver.getUriToRecrawl();
+//                    System.out.println("Frontier uri to recrawl: " + urisToRecrawl);
+//                    urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
             }, this.timerPeriod, this.timerPeriod);
         }

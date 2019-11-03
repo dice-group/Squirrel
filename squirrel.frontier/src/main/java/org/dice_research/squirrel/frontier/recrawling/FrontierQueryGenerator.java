@@ -7,20 +7,10 @@ import org.slf4j.LoggerFactory;
 
 public class FrontierQueryGenerator {
 
-    private static final FrontierQueryGenerator instance = new FrontierQueryGenerator();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
 
     private FrontierQueryGenerator() {
     }
-
-    /**
-     * Getter for {@link #instance}.
-     */
-    public static FrontierQueryGenerator getInstance() {
-        return instance;
-    }
-
 
     /**
      * Return a time stamp query for the default graph.
@@ -29,11 +19,11 @@ public class FrontierQueryGenerator {
      * @return All triples with time stamp in the default graph.
      */
 
-    public Query getOutdatedUrisQuery() {
+    public static Query getOutdatedUrisQuery() {
         return getOutdatedUrisQuery(null, true);
     }
 
-    public Query getOutdatedUrisQuery(String graphID, boolean defaultGraph) {
+    public static Query getOutdatedUrisQuery(String graphID, boolean defaultGraph) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" +
             "PREFIX  prov: <http://www.w3.org/ns/prov#>\n" +
@@ -71,6 +61,7 @@ public class FrontierQueryGenerator {
         stringBuilder.append("}");
 
         Query query = QueryFactory.create(stringBuilder.toString());
+        LOGGER.info("Outdated uri query:" + query);
         return query;
     }
 

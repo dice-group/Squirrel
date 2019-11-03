@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.data.uri.filter;
+package org.dice_research.squirrel.frontier.recrawling;
 
 import java.io.Closeable;
 import java.util.List;

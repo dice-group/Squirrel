@@ -15,7 +15,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 
-import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;

@@ -18,7 +18,6 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.filter.OutDatedUriRetreiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,8 +92,8 @@ public class SparqlhostConnector implements OutDatedUriRetreiver {
 
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
-        //   SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
-        Query getOutdatedUrisQuery = FrontierQueryGenerator.getInstance().getOutdatedUrisQuery();
+           SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery();
         System.out.println(getOutdatedUrisQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
         ResultSet rs = qe.execSelect();
