@@ -19,22 +19,20 @@ public class FrontierQueryGenerator {
      * @return All triples with time stamp in the default graph.
      */
 
-    public static Query getOutdatedUrisQuery() {
-        return getOutdatedUrisQuery(null, true);
-    }
 
-    public static Query getOutdatedUrisQuery(String graphID, boolean defaultGraph) {
+
+    public static Query getOutdatedUrisQuery() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" +
             "PREFIX  prov: <http://www.w3.org/ns/prov#>\n" +
             "PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
             + "SELECT ?uri  WHERE { \n ");
         // + "SELECT ?uri  WHERE { \n ");
-        if (!defaultGraph) {
-            stringBuilder.append("GRAPH <");
-            stringBuilder.append(graphID);
-            stringBuilder.append("> { ");
-        }
+        //if (!defaultGraph) {
+        //    stringBuilder.append("GRAPH <");
+        //    stringBuilder.append(graphID);
+        //    stringBuilder.append("> { ");
+        //}
         stringBuilder.append("{\n" +
             "SELECT ?uri ?endtime (NOW() - (?endtime) AS ?diff)\n" +
             "WHERE{\n" +
@@ -51,11 +49,11 @@ public class FrontierQueryGenerator {
             "  } \n" +
             "}\n" +
             "}\n" +
-            "FILTER(?diff > \"18000\"^^xsd:double)\n" +
+            "FILTER(?diff > \"60\"^^xsd:double)\n" +
             "");
-        if (!defaultGraph) {
-            stringBuilder.append("}");
-        }
+        //if (!defaultGraph) {
+        //    stringBuilder.append("}");
+        //}
 
         // stringBuilder.append("}GROUP BY ?uri");
         stringBuilder.append("}");

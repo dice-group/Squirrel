@@ -58,7 +58,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
-    @Qualifier("queueBean")
+    @Qualifier("sparqlBean")
+    //@Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
     protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
@@ -83,7 +84,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-        SparqlhostConnector sp = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         hasUrisToCrawl = new HashMap<String, Boolean>();
         if (mongoConfiguration != null) {
 

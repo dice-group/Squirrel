@@ -16,7 +16,6 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -222,9 +221,9 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-//                    List<CrawleableUri> urisToRecrawl = outDatedUriRetreiver.getUriToRecrawl();
-//                    System.out.println("Frontier uri to recrawl: " + urisToRecrawl);
-//                    urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+                    List<CrawleableUri> urisToRecrawl = outDatedUriRetreiver.getUriToRecrawl();
+                    LOGGER.info("URI to recrawl" + urisToRecrawl);
+                    urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
             }, this.timerPeriod, this.timerPeriod);
         }
