@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class FrontierQueryGenerator {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
 
     private FrontierQueryGenerator() {
     }

@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:jee="http://www.springframework.org/schema/jee"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://www.springframework.org/schema/aop
-                            http://www.springframework.org/schema/aop/spring-aop.xsd
-                            http://www.springframework.org/schema/beans
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation=" http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd
                             http://www.springframework.org/schema/context
-                            http://www.springframework.org/schema/context/spring-context.xsd
-                            http://www.springframework.org/schema/tx
-                            http://www.springframework.org/schema/tx/spring-tx.xsd">
+                            http://www.springframework.org/schema/context/spring-context.xsd">
 
 
 	<context:component-scan
@@ -45,14 +38,13 @@
 	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
 		<constructor-arg index="0">
 			<list>
+				<ref bean="ckananalyzerBean"/>
 				<ref bean="rdfAnalyzerBean"/>
-				<ref bean="ckananalyzerBean"/> <!--
-                 <ref bean="rdfaAnalyzerBean"/>
-                 <ref bean="microdataanalyzerBean"/>
-                 <ref bean="microformatanalyzerBean"/>
-                 <ref bean="hdtanalyzerBean"/>
-                 <ref bean="htmlscraperanalyzerBean"/>
-                          -->
+				<ref bean="htmlscraperanalyzerBean"/>
+				<ref bean="microdataanalyzerBean"/>
+				<ref bean="microformatanalyzerBean"/>
+				<ref bean="hdtanalyzerBean"/>
+
 
 			</list>
 		</constructor-arg>
@@ -92,14 +84,11 @@
 		  class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
-				<ref bean="httpFetcherBean" />
-				<ref bean="ckanFetcherBean" />
-				<ref bean="sparqlDatasetFetcherBean" />
-				<!--
 				<ref bean="sparqlFetcherBean" />
+				<ref bean="ckanFetcherBean" />
+				<ref bean="httpFetcherBean" />
 				<ref bean="ftpFetcherBean" />
-				-->
-
+				<ref bean="sparqlDatasetFetcherBean" />
 			</list>
 		</constructor-arg>
 	</bean>
@@ -114,10 +103,10 @@
 		  class="org.dice_research.squirrel.fetcher.sparql.SparqlDatasetFetcher">
 		<constructor-arg index="0" value="20"></constructor-arg>
 		<constructor-arg index="1" value="0"></constructor-arg>
-		<constructor-arg index="2" value="200000"></constructor-arg>
+		<constructor-arg index="2" value="10"></constructor-arg>
 	</bean>
 	<bean id="ckanFetcherBean"
-		  class="org.dice_research.squirrel.fetcher.ckan.java.SimpleCkanFetcher" />
+		  class="org.dice_research.squirrel.fetcher.ckan.java.PaginatedCkanFetcher" />
 
 
 

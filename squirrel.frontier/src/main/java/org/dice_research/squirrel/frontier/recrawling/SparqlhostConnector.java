@@ -92,7 +92,7 @@ public class SparqlhostConnector implements OutDatedUriRetreiver {
 
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
-           SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+        //SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery();
         System.out.println(getOutdatedUrisQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);

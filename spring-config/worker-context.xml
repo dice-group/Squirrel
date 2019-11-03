@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:jee="http://www.springframework.org/schema/jee"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
 	   xsi:schemaLocation="http://www.springframework.org/schema/aop
                             http://www.springframework.org/schema/aop/spring-aop.xsd
                             http://www.springframework.org/schema/beans
@@ -27,15 +24,16 @@
 
 	<!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> -->
 
-	<bean id="workerBean" class="org.dice_research.squirrel.worker.impl.WorkerImpl">
-		<constructor-arg index="0" ref="workerComponent" />
-		<constructor-arg index="1" ref="fetcherBean" />
-		<constructor-arg index="2" ref="sinkBean" />
-		<constructor-arg index="3" ref="analyzerBean" />
-		<constructor-arg index="4" ref="robotsManagerBean" />
-		<constructor-arg index="5" ref="serializerBean" />
-		<constructor-arg index="6" ref="uriCollectorBean" />
-		<constructor-arg index="7" value="2000" />
+	<bean id="workerBean"
+		  class="org.dice_research.squirrel.worker.impl.WorkerImpl">
+		<constructor-arg index="0" ref="workerComponent"/>
+		<constructor-arg index="1" ref="fetcherBean"/>
+		<constructor-arg index="2" ref="sinkBean"/>
+		<constructor-arg index="3" ref="analyzerBean"/>
+		<constructor-arg index="4" ref="robotsManagerBean"/>
+		<constructor-arg index="5" ref="serializerBean"/>
+		<constructor-arg index="6" ref="uriCollectorBean"/>
+		<constructor-arg index="7" value="2000"/>
 		<constructor-arg index="8"
 						 value="#{systemEnvironment['OUTPUT_FOLDER']}/log" /><!-- Logging -->
 		<constructor-arg index="9" value="false" /><!-- Logging -->
@@ -45,17 +43,12 @@
 		<constructor-arg index="0">
 			<list>
 				<ref bean="rdfAnalyzerBean"/>
+				<ref bean="htmlscraperanalyzerBean"/>
+				<ref bean="microdataanalyzerBean"/>
+				<ref bean="microformatanalyzerBean"/>
+				<ref bean="hdtanalyzerBean"/>
+				<ref bean="ckananalyzerBean"/>
 
-				<!--
-                     <ref bean="htmlscraperanalyzerBean"/>
-
-                     <ref bean="rdfAnalyzerBean"/>
-                     <ref bean="rdfaAnalyzerBean"/>
-                     <ref bean="microdataanalyzerBean"/>
-                     <ref bean="microformatanalyzerBean"/>
-                     <ref bean="hdtanalyzerBean"/>
-                     <ref bean="ckananalyzerBean"/>
-                      -->
 			</list>
 		</constructor-arg>
 	</bean>
@@ -94,11 +87,11 @@
 		<constructor-arg>
 			<list>
 
-				<ref bean="httpFetcherBean" />
-				<ref bean="ftpFetcherBean" />
-				<ref bean="ckanFetcherBean" />
+				<ref bean="sparqlFetcherBean"/>
+				<ref bean="ckanFetcherBean"/>
+				<ref bean="httpFetcherBean"/>
+				<ref bean="ftpFetcherBean"/>
 				<ref bean="sparqlDatasetFetcherBean" />
-				<ref bean="sparqlFetcherBean" />
 
 			</list>
 		</constructor-arg>

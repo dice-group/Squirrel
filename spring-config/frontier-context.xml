@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:jee="http://www.springframework.org/schema/jee"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://www.springframework.org/schema/aop
-                            http://www.springframework.org/schema/aop/spring-aop.xsd
-                            http://www.springframework.org/schema/beans
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd
                             http://www.springframework.org/schema/context
-                            http://www.springframework.org/schema/context/spring-context.xsd
-                            http://www.springframework.org/schema/tx
-                            http://www.springframework.org/schema/tx/spring-tx.xsd">
+                            http://www.springframework.org/schema/context/spring-context.xsd">
+
 
 
 	<context:component-scan
@@ -39,7 +33,7 @@
     </bean> -->
 
 	<bean id="serializerBean"
-		  class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer" />
+		  class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
 
 	<bean id = "queueBean" class="org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue">
 		<constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
@@ -51,7 +45,13 @@
 		<constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
 		<constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
 	</bean>
-
+	<!-- Triple Store sparql implementation  -->
+	<!-- <bean id="sparqlBean" class="org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector">
+		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}"/>
+		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}"/>
+		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}"/>
+	</bean>
+	-->
 
 
 </beans>

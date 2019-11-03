@@ -4,12 +4,14 @@ import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.*;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
+import org.dice_research.squirrel.configurator.SeedConfiguration;
+import org.dice_research.squirrel.configurator.WebConfiguration;
+import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
@@ -18,6 +20,7 @@ import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.*;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -28,6 +31,7 @@ import org.dice_research.squirrel.rabbit.msgs.CrawlingResult;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
 import org.dice_research.squirrel.rabbit.msgs.UriSetRequest;
 import org.dice_research.squirrel.worker.AliveMessage;
+import org.dice_research.squirrel.worker.WorkerInfo;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
@@ -36,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -134,7 +139,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex);
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
         Timer timer = new Timer();
         timer.schedule(terminatorTask, 5000, 5000);
         terminationMutex.acquire();
@@ -146,8 +151,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         LOGGER.info("Closing Frontier Component.");
         if (receiver != null)
             // Force the receiver to close
-            receiver.close();
-        //         receiver.closeWhenFinished();
+            // receiver.close();
+            receiver.closeWhenFinished();
 
         if (queue != null)
             queue.close();
@@ -262,19 +267,29 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         private UriQueue queue;
         private TerminationCheck terminationCheck = new QueueBasedTerminationCheck();
         private Semaphore terminationMutex;
+        private WorkerGuard workerGuard;
 
-        public TerminatorTask(UriQueue queue, Semaphore terminationMutex) {
+        public TerminatorTask(UriQueue queue, Semaphore terminationMutex, WorkerGuard workerGuard) {
             this.queue = queue;
             this.terminationMutex = terminationMutex;
+            this.workerGuard = workerGuard;
         }
 
         @Override
         public void run() {
-            if (!hasUrisToCrawl.values().contains(true) && terminationCheck.shouldFrontierTerminate(queue)) {
-                LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
-                terminationMutex.release();
-            }
-        }
 
-    }
-}
+            Map<String, WorkerInfo> mapWorkers = this.workerGuard.getMapWorkerInfo();
+
+            boolean stillHasUris = false;
+            for (Map.Entry<String, WorkerInfo> entry : mapWorkers.entrySet()) {
+                if (entry.getValue().getUrisCrawling().size() > 0) {
+                    stillHasUris = true;
+                    break;
+                }
+            }
+            if (!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
+                LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
+            }
+            terminationMutex.release();
+        }
+    }}
