@@ -1,11 +1,7 @@
 package org.dice_research.squirrel.metadata;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
@@ -124,6 +120,23 @@ public class CrawlingActivity implements Serializable {
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
         model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
 
+        Resource generatedUris = model.createResource(activityUri + "_generatedURIs");
+
+        if (getCrawleableUri().getData(Constants.GENERATED_URIS) != null) {
+            model.add(generatedUris, RDF.type, PROV_O.Entity);
+            model.add(generatedUris, RDF.type, Squirrel.generatedURIs);
+            model.add(generatedUris, PROV_O.wasDerivedFrom, crawledUri);
+            model.add(generatedUris, PROV_O.wasGeneratedBy, activity);
+
+            Set<String> generatedURIs = (Set<String>) getCrawleableUri().getData(Constants.GENERATED_URIS);
+            Iterator<String> itr = generatedURIs.iterator();
+            while (itr.hasNext()){
+                model.add(generatedUris, PROV_O.value, model.createResource(itr.next()));
+            }
+        } else {
+            model.add(generatedUris, PROV_O.value, "");
+        }
+
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);
         model.add(activity, PROV_O.qualifiedAssociation, association);
@@ -134,6 +147,7 @@ public class CrawlingActivity implements Serializable {
 
         if (workerUri != null) {
             model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));
+            model.add(generatedUris, PROV_O.wasAttributedTo, model.createResource(workerUri));
         }
         if (outputResource != null) {
             // write all the output resources to the model

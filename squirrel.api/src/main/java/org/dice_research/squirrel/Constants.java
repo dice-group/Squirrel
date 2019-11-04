@@ -67,6 +67,9 @@ public class Constants {
     
     public static final String RDB_PORT_KEY = "RDB_PORT";
 
+    public static final String MDB_HOST_NAME_KEY = "MDB_HOST_NAME";
+    public static final String MDB_PORT_KEY = "MDB_PORT";
+
     public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = false;
 
     public static final String DEDUPLICATOR_QUEUE_NAME = "squirrel.deduplicator";
@@ -78,4 +81,5 @@ public class Constants {
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final String DEFAULT_USER_AGENT = "Squirrel";
+    public static final String GENERATED_URIS = "GENERATED_URIS";
 }

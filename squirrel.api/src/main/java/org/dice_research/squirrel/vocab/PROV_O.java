@@ -29,15 +29,22 @@ public class PROV_O {
     }
     
     public static final Resource Activity = resource("Activity");
-    public static final Resource Association = property("Association");
-    public static final Resource Plan = property("Plan");
-
     public static final Property agent = property("agent");
+    public static final Resource Association = property("Association");
+
     public static final Property endedAtTime = property("endedAtTime");
+    public static final Resource Entity = resource("Entity");
+
     public static final Property hadPlan = property("hadPlan");
+    public static final Resource Plan = property("Plan");
     public static final Property qualifiedAssociation = property("qualifiedAssociation");
     public static final Property startedAtTime = property("startedAtTime");
+
+    public static final Property value = property("value");
+
     public static final Property wasAssociatedWith = property("wasAssociatedWith");
+    public static final Property wasAttributedTo = property("wasAttributedTo");
+    public static final Property wasDerivedFrom = property("wasDerivedFrom");
     public static final Property wasGeneratedBy = property("wasGeneratedBy");
 
 }
