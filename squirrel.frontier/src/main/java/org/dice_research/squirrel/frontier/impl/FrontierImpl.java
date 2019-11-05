@@ -3,22 +3,24 @@ package org.dice_research.squirrel.frontier.impl;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.graph.GraphLogger;
-import org.dice_research.squirrel.queue.IpAddressBasedQueue;
+import org.dice_research.squirrel.queue.BlockingQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.InetAddress;
+
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -31,17 +33,18 @@ public class FrontierImpl implements Frontier {
     /**
      * Default value for {@link #generalRecrawlTime} (one week).
      */
-    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 18000;
+    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierImpl.class);
     /**
      * Default value for {@link #timerPeriod}.
      */
-    private static final long DEFAULT_TIMER_PERIOD = 18000;
+    private static final long DEFAULT_TIMER_PERIOD = 1000 * 60 * 60;
+    public long generalRecrawlTime;
     /**
      * Time (in milliseconds) after which uris will be recrawled (only used if no
      * specific time is configured for a URI).
      */
-    private static long generalRecrawlTime;
+
     /**
      * {@link UriNormalizer} used to transform given URIs into a normal form.
      */
@@ -50,7 +53,10 @@ public class FrontierImpl implements Frontier {
      * {@link KnownUriFilter} used to identify URIs that already have been crawled.
      */
     protected KnownUriFilter knownUriFilter;
-    protected OutDatedUriRetreiver outDatedUriRetreiver;
+    /**
+     * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
+     */
+    protected OutDatedUriRetriever outDatedUriRetriever;
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
      * identify URIs that already have been crawled.
@@ -104,9 +110,9 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod        used to select if URIs should be recrawled.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
-                        long generalRecrawlTime, long timerPeriod, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        long generalRecrawlTime, long timerPeriod, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling,
-            generalRecrawlTime, timerPeriod, outDatedUriRetreiver);
+            generalRecrawlTime, timerPeriod, outDatedUriRetriever);
     }
 
     /**
@@ -126,9 +132,9 @@ public class FrontierImpl implements Frontier {
      */
     public FrontierImpl(UriNormalizer normalizer,
                         KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, long generalRecrawlTime,
-                        long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime,
-            timerPeriod, outDatedUriRetreiver);
+            timerPeriod, outDatedUriRetriever);
     }
 
     /**
@@ -144,9 +150,9 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(UriNormalizer normalizer,
-                        KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling,
-            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUriRetreiver);
+            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUriRetriever);
     }
 
     /**
@@ -161,9 +167,9 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(UriNormalizer normalizer,
-                        KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling,
-            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUriRetreiver);
+            DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUriRetriever);
     }
 
     /**
@@ -177,9 +183,9 @@ public class FrontierImpl implements Frontier {
      *                       crawled.
      */
     public FrontierImpl(UriNormalizer normalizer,
-                        KnownUriFilter knownUriFilter, UriQueue queue, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        KnownUriFilter knownUriFilter, UriQueue queue, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME,
-            DEFAULT_TIMER_PERIOD, outDatedUriRetreiver);
+            DEFAULT_TIMER_PERIOD, outDatedUriRetriever);
     }
 
     /**
@@ -198,30 +204,30 @@ public class FrontierImpl implements Frontier {
      *                             be recrawled. If Value is null the default Time is
      *                             used.
      * @param timerPeriod          used to select if URIs should be recrawled.
-     * @param outDatedUriRetreiver
+     * @param outDatedUriRetriever
      */
     public FrontierImpl(UriNormalizer normalizer,
                         KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, GraphLogger graphLogger,
-                        boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, OutDatedUriRetreiver outDatedUriRetreiver) {
+                        boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, OutDatedUriRetriever outDatedUriRetriever) {
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
-        this.outDatedUriRetreiver = outDatedUriRetreiver;
+        this.outDatedUriRetriever = outDatedUriRetriever;
 
         this.queue.open();
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
-        FrontierImpl.generalRecrawlTime = generalRecrawlTime;
+        this.generalRecrawlTime = generalRecrawlTime;
 
         if (this.doesRecrawling) {
             timerRecrawling = new Timer();
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = outDatedUriRetreiver.getUriToRecrawl();
+                    List<CrawleableUri> urisToRecrawl = outDatedUriRetriever.getUriToRecrawl();
                     LOGGER.info("URI to recrawl" + urisToRecrawl);
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
@@ -229,7 +235,7 @@ public class FrontierImpl implements Frontier {
         }
     }
 
-    public static long getGeneralRecrawlTime() {
+    public  long getGeneralRecrawlTime() {
         return generalRecrawlTime;
     }
 
@@ -285,30 +291,24 @@ public class FrontierImpl implements Frontier {
     @Override
     public void crawlingDone(List<CrawleableUri> uris) {
         LOGGER.info("One worker finished his work and crawled " + uris.size() + " URIs.");
-//        List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
-//        for (CrawleableUri uri : uriMap.keySet()) {
-//            newUris.addAll(uriMap.get(uri));
-//            knownUriFilter.add(uri, System.currentTimeMillis(), uri.getTimestampNextCrawl());
-//            if (uriReferences != null) {
-//                uriReferences.add(uri, uriMap.get(uri));
-//            }
-//        }
 
-//        // If there is a graph logger, log the data
-//        if (graphLogger != null) {
-//            graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
-//        }
+        // List<CrawleableUri> newUris = new ArrayList<>(uriMap.size());
+        // for (CrawleableUri uri : uriMap.keySet()) {
+        // newUris.addAll(uriMap.get(uri));
+        // knownUriFilter.add(uri, System.currentTimeMillis(),
+        // uri.getTimestampNextCrawl());
+        // if (uriReferences != null) {
+        // uriReferences.add(uri, uriMap.get(uri));
+        // }
+        // }
+
+        // // If there is a graph logger, log the data
+        // if (graphLogger != null) {
+        // graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
+        // }
         // If we should give the crawled IPs to the queue
-        if (queue instanceof IpAddressBasedQueue) {
-            Set<InetAddress> ips = new HashSet<>();
-            InetAddress ip;
-            for (CrawleableUri uri : uris) {
-                ip = uri.getIpAddress();
-                if (ip != null) {
-                    ips.add(ip);
-                }
-            }
-            ips.forEach(_ip -> ((IpAddressBasedQueue) queue).markIpAddressAsAccessible(_ip));
+        if (queue instanceof BlockingQueue) {
+            ((BlockingQueue<?>) queue).markUrisAsAccessible(uris);
         }
         // send list of crawled URIs to the knownUriFilter
         for (CrawleableUri uri : uris) {
@@ -328,8 +328,10 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public int getNumberOfPendingUris() {
-        if (queue instanceof IpAddressBasedQueue) {
-            return ((IpAddressBasedQueue) queue).getNumberOfBlockedIps();
+        // TODO this implementation does not fit to the semantics of the method name
+        // since it returns the number of URI groups instead of the number of URIs
+        if (queue instanceof BlockingQueue) {
+            return ((BlockingQueue<?>) queue).getNumberOfBlockedKeys();
         } else {
             return 0;
         }

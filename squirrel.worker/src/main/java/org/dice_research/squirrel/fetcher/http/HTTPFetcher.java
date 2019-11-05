@@ -165,6 +165,4 @@ public class HTTPFetcher implements Fetcher {
     public void close() throws IOException {
         client.close();
     }
-//setter
-
 }

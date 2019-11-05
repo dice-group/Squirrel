@@ -15,7 +15,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 
-import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
@@ -37,7 +37,7 @@ public class FrontierImplTest {
     private static MongoDBKnowUriFilter filter;
     private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
-    private OutDatedUriRetreiver outDatedUriRetreiver = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
+    private OutDatedUriRetriever outDatedUriRetriever = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +46,7 @@ public class FrontierImplTest {
         queue = new MongoDBIpBasedQueue("localhost", 58027);
         filter.open();
         queue.open();
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null, outDatedUriRetreiver);
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null, outDatedUriRetriever);
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),

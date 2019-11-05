@@ -41,6 +41,7 @@ import com.mongodb.client.model.Indexes;
 public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable, UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
+    FrontierImpl frontierImpl;
 
     private MongoClient client;
     private MongoDatabase mongoDB;
@@ -163,7 +164,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         // get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
 
-        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+        long generalRecrawlTime = Math.max(frontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, frontierImpl.getGeneralRecrawlTime());
 
         Bson filter = Filters.and(Filters.eq("COLUMN_TIMESTAMP_NEXT_CRAWL", System.currentTimeMillis()),
             Filters.or(

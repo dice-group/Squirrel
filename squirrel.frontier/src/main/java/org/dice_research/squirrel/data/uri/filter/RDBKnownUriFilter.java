@@ -32,7 +32,7 @@ import com.rethinkdb.net.Cursor;
 @SuppressWarnings("deprecation")
 public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
-
+    FrontierImpl frontierImpl;
     private RDBConnector connector = null;
     private RethinkDB r;
 
@@ -125,7 +125,7 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         // get all uris with the following property:
         // (nextCrawlTimestamp has passed) AND (crawlingInProcess==false OR lastCrawlTimestamp is 3 times older than generalRecrawlTime)
 
-        long generalRecrawlTime = Math.max(FrontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, FrontierImpl.getGeneralRecrawlTime());
+        long generalRecrawlTime = Math.max(frontierImpl.DEFAULT_GENERAL_RECRAWL_TIME, frontierImpl.getGeneralRecrawlTime());
 
         Cursor<HashMap> cursor = r.db(DATABASE_NAME)
             .table(TABLE_NAME)
@@ -177,10 +177,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         try {
             // FIXME Fix this implementation
 //            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
-                r.db(DATABASE_NAME)
-                    .table(TABLE_NAME)
-                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
-                    .run(connector.connection);
+            r.db(DATABASE_NAME)
+                .table(TABLE_NAME)
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
+                .run(connector.connection);
 //            } else {
 //                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
 //                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));

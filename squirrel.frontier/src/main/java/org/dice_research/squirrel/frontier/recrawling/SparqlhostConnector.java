@@ -27,20 +27,18 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SparqlhostConnector implements OutDatedUriRetreiver {
+public class SparqlhostConnector implements OutDatedUriRetriever {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlhostConnector.class);
 
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
-    protected static QueryExecutionFactory queryExecFactory = null;
-    protected UpdateExecutionFactory updateExecFactory = null;
+    protected QueryExecutionFactory queryExecFactory = null;
     List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
     public SparqlhostConnector(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
-        this.updateExecFactory = updateExecFactory;
         LOGGER.info("Connected");
     }
 
@@ -91,7 +89,6 @@ public class SparqlhostConnector implements OutDatedUriRetreiver {
 
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
-        //SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
         Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery();
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
         ResultSet rs = qe.execSelect();
@@ -107,7 +104,6 @@ public class SparqlhostConnector implements OutDatedUriRetreiver {
         qe.close();
         return urisToRecrawl;
     }
-
 
     @Override
     public void close() throws IOException {

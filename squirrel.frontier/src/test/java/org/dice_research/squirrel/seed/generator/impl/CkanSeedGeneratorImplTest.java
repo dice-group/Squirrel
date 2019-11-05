@@ -24,8 +24,6 @@ public class CkanSeedGeneratorImplTest extends TestCase {
     private Frontier frontier;
 
 
- //   private OutDatedUriRetreiver outDatedUriRetreiver = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
-
     public void setUp() {
         queue = new InMemoryQueue();
         frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,null);

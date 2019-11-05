@@ -20,8 +20,7 @@ import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.*;
-import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetreiver;
-import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
@@ -58,8 +57,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
-    @Qualifier("sparqlBean")
-    //@Qualifier("queueBean")
+    @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
     protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
@@ -67,7 +65,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("knowUriFilterBean")
     @Autowired
     private KnownUriFilter knownUriFilter;
-    private OutDatedUriRetreiver outDatedUriRetreiver;
+    private OutDatedUriRetriever outDatedUriRetriever;
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -105,7 +103,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, outDatedUriRetreiver);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, outDatedUriRetriever);
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
             .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
@@ -197,7 +195,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
-                //                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
+                //  LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
@@ -225,11 +223,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     uris == null ? "null" : Integer.toString(uris.size()));
                 handler.sendResponse(serializer.serialize(new UriSet(uris)), responseQueueName, correlId);
                 if (uris != null && uris.size() > 0) {
-                    hasUrisToCrawl.put(uriSetRequest.getWorkerId(), true);
-                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(),
-                        uriSetRequest.workerSendsAliveMessages(), uris);
-                } else {
-                    hasUrisToCrawl.put(uriSetRequest.getWorkerId(), false);
+                    workerGuard.putUrisForWorker(uriSetRequest.getWorkerId(), uriSetRequest.workerSendsAliveMessages(),
+                        uris);
                 }
             } catch (IOException e) {
                 LOGGER.error("Couldn't serialize new URI set.", e);
@@ -238,6 +233,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
+
 
     protected void processSeedFile(String seedFile) {
         try {
