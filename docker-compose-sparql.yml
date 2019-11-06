@@ -15,7 +15,7 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
-      - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
+      - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context-sparql.xml
       - SEED_FILE=/var/squirrel/seeds.txt
       - SPARQL_URL=http://virtuosohost:8890/sparql-auth/
       - SPARQL_HOST_USER=dba

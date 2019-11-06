@@ -37,7 +37,6 @@ public class FrontierImplTest {
     private static MongoDBKnowUriFilter filter;
     private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
-    private OutDatedUriRetriever outDatedUriRetriever = SparqlhostConnector.create("http://localhost:8890/sparql-auth", "dba", "pw123");
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +45,7 @@ public class FrontierImplTest {
         queue = new MongoDBIpBasedQueue("localhost", 58027);
         filter.open();
         queue.open();
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null, outDatedUriRetriever);
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),

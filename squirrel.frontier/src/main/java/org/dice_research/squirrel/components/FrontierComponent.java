@@ -1,7 +1,6 @@
 package org.dice_research.squirrel.components;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -61,7 +60,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Autowired
     protected UriQueue queue;
     protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
-    protected UpdateExecutionFactory updateExecFactory = null;
     @Qualifier("knowUriFilterBean")
     @Autowired
     private KnownUriFilter knownUriFilter;
@@ -74,6 +72,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Autowired
     private Serializer serializer;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
+    @Qualifier("sparqlBean")
+    @Autowired
     private Map<String, Boolean> hasUrisToCrawl;
 
     @Override
