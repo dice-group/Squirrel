@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.AbstractKnownUriFilterDecorator;
@@ -22,39 +24,44 @@ public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
     public static RegexBasedWhiteListFilter create(KnownUriFilter decorated, File whitelistfile) {
         try {
             Set<String> whiteList = loadWhiteList(whitelistfile);
-            return new RegexBasedWhiteListFilter(decorated, whiteList);
+            Set<Pattern> whitePatterns = new HashSet<Pattern>();
+            if (whiteList != null) {
+                for (String s : whiteList) {
+                    try {
+                        whitePatterns.add(Pattern.compile(s));
+                    } catch (PatternSyntaxException e) {
+                        LOGGER.error("Got an incorrect regex pattern. It will be ignored.", e);
+                    }
+                }
+            }
+            return new RegexBasedWhiteListFilter(decorated, whitePatterns);
         } catch (IOException e) {
             LOGGER.error("A problem was found when loading the WhiteList");
         }
         return null;
     }
 
-    private Set<String> whiteList;
+    private Set<Pattern> whiteList;
 
-    public RegexBasedWhiteListFilter(KnownUriFilter decorated, Set<String> whiteList) {
+    public RegexBasedWhiteListFilter(KnownUriFilter decorated, Set<Pattern> whiteList) {
         super(decorated);
         this.whiteList = whiteList;
     }
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
-        if (super.isUriGood(uri) && (whiteList == null || whiteList.isEmpty())) {
-            return true;
+        if (!super.isUriGood(uri)) {
+            return false;
         }
-
-        else if (super.isUriGood(uri) && whiteList != null && !whiteList.isEmpty()) {
-
-            for (String s : whiteList) {
-
-                Pattern p = Pattern.compile(s.toLowerCase());
+        if (whiteList == null || whiteList.isEmpty()) {
+            return true;
+        } else {
+            for (Pattern p : whiteList) {
                 Matcher m = p.matcher(uri.getUri().toString().toLowerCase());
-
                 if (m.find()) {
                     return true;
                 }
-
             }
-
         }
         return false;
     }
@@ -76,7 +83,6 @@ public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
         return list;
     }
 
-
     @Override
     public void add(CrawleableUri uri, long timestamp) {
         super.add(uri, timestamp);
@@ -85,8 +91,7 @@ public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
 
     @Override
     public void open() {
-        // TODO Auto-generated method stub
-        
+        // nothing to do
     }
 
 }
