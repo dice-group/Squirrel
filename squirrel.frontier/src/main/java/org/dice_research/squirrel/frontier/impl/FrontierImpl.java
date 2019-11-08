@@ -173,7 +173,7 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling Value for {@link #doesRecrawling}.
      * @param  predictor     object of PredictorImpl class used for prediction
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, PredictorImpl predictor) {
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, Predictor predictor) {
         this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
         this.predictor = predictor;
 
@@ -285,15 +285,19 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // Normalize the URI
         uri = normalizer.normalize(uri);
-        // Prediction of URI type
-        try {
-            //generate the feature vector of the uri for prediction purpose
-            predictor.featureHashing(uri);
-            //predict and update uri key with the predicted value
-            double p = predictor.predict(uri);
-            uri.addData(Constants.URI_PREDICTED_LABEL, p);
-        }catch (Exception e){
-            LOGGER.info("Exception happened while predicting" +e);
+        if(predictor != null) {
+            // Prediction of URI type
+            try {
+                //generate the feature vector of the uri for prediction purpose
+                predictor.featureHashing(uri);
+                //predict and update uri key with the
+                //
+                //predicted value
+                double p = predictor.predict(uri);
+                uri.addData(Constants.URI_PREDICTED_LABEL, p);
+            } catch (Exception e) {
+                LOGGER.info("Exception happened while predicting", e);
+            }
         }
         // After knownUriFilter uri should be classified according to
         // UriProcessor
@@ -354,7 +358,7 @@ public class FrontierImpl implements Frontier {
             }
 
         } catch (Exception e) {
-            LOGGER.info("!!!!!!!**********Exception handles while updating weight******!!!"+ e.toString());
+            LOGGER.info("Exception handles while updating weight",e);
         }
 
         // If we should give the crawled IPs to the queue

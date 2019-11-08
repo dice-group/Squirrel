@@ -12,6 +12,7 @@ import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
+import org.dice_research.squirrel.predictor.Predictor;
 import org.dice_research.squirrel.predictor.PredictorImpl;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -64,7 +65,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param predictor      PredictorImpl object used for prediction
      */
 
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling, PredictorImpl predictor) {
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, IpAddressBasedQueue queue, boolean doesRecrawling, Predictor predictor) {
         super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling, predictor);
 
     }

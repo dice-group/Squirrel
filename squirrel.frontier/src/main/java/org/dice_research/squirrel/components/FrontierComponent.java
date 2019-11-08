@@ -35,6 +35,7 @@ import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
 import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
+import org.dice_research.squirrel.predictor.Predictor;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -86,7 +87,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
 
     public static final boolean RECRAWLING_ACTIVE = true;
-    public PredictorImpl pred = new PredictorImpl();
+    //
+     protected Predictor pred = new PredictorImpl();
 
     @Override
     public void init() throws Exception {

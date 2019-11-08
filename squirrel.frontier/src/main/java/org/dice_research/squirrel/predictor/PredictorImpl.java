@@ -50,10 +50,6 @@ public final class PredictorImpl implements Predictor {
     private static final double l1 = 1;
     private static final double l2 = 1;
 
-
-    protected CrawleableUri uri;
-
-
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
 
@@ -88,12 +84,12 @@ public final class PredictorImpl implements Predictor {
 
     public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens){
 
-        String authority, scheme, host, path, query;
-        URI furi = null;
+        //String authority, scheme, host, path, query;
+        //URI furi = null;
         String[] uriToken;
         uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
-        try {
+        /*try {
             furi = new URI(uri.getUri().toString());
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -118,7 +114,7 @@ public final class PredictorImpl implements Predictor {
             if(query != null)
                 tokens.add(query);
 
-        }
+        }*/
         return tokens;
     }
 

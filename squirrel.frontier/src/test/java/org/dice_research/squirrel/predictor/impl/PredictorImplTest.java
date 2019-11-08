@@ -74,15 +74,11 @@ public class PredictorImplTest {
         double[] featureArray2 = ((double[]) feature2);
         double[] featureArray3 = ((double[]) feature3);
         for(int i=0; i<featureArray2.length; i++){
-            if(featureArray2[i] == featureArray1[i]) {
-                if(featureArray1[i] != 0.0) {
-                    flag1 = 1;
-                }
+            if(featureArray2[i] == featureArray1[i] && featureArray1[i] != 0.0) {
+                flag1 = 1;
             }
-            if(featureArray1[i] == featureArray3[i] ){
-                if(featureArray1[i]!= 0.0){
-                    flag2 = 1;
-                }
+            if(featureArray1[i] == featureArray3[i] && featureArray1[i]!= 0.0 ){
+                flag2 = 1;
             }
         }
         assertEquals(1, flag1);
