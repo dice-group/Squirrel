@@ -88,7 +88,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final boolean RECRAWLING_ACTIVE = true;
     //
-     protected Predictor pred = new PredictorImpl();
+     //protected Predictor pred = new PredictorImpl();
+     @Qualifier("predictorBean")
+     protected Predictor predictor;
 
     @Override
     public void init() throws Exception {
@@ -118,9 +120,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Training the URI predictor model with a training dataset
-        pred.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
+        predictor = new PredictorImpl();
+        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, pred);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, predictor);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
