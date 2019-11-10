@@ -22,18 +22,9 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
 
 
 public final class PredictorImpl implements Predictor {
@@ -43,7 +34,8 @@ public final class PredictorImpl implements Predictor {
     public RegressionLearn learner;
     public RegressionModel model;
     public RegressionClassifier classifier;
-
+    private static final double DEFAULT_LEARNING_RATE = 0.01;
+    protected double learningRate = DEFAULT_LEARNING_RATE;
     public TrainingDataProvider trainingDataProvider;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
@@ -124,7 +116,7 @@ public final class PredictorImpl implements Predictor {
     public void train(String filePath) {
         updater = new AdaptiveFTRLRegularizer(beta,l1 ,l2);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
-            .create(0.01) // learning rate
+            .create(learningRate) // learning rate
             .holdoutValidationPercentage(0.05d) // 5% as validation set
             .historySize(10_000) // keep 10k samples to compute relative improvement
             .weightUpdater(updater) // FTRL updater
@@ -141,6 +133,13 @@ public final class PredictorImpl implements Predictor {
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
+    }
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    public double getLearningRate() {
+        return learningRate;
     }
 
     @Override
