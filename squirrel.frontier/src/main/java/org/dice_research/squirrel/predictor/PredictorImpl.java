@@ -44,6 +44,7 @@ public final class PredictorImpl implements Predictor {
     public RegressionModel model;
     public RegressionClassifier classifier;
 
+    public TrainingDataProvider trainingDataProvider;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
     private static final double beta = 1;
@@ -136,62 +137,10 @@ public final class PredictorImpl implements Predictor {
         learner.setNumPasses(2);
         learner.verbose();
         // train the model
-        this.model = learner.train(() -> setUpStream(filePath));
+        this.model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
-    }
-
-    /*private Stream<FeatureOutcomePair> setupStream(){
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(TRAINING_SET_PATH)
-            , Charset.defaultCharset()));
-        return reader.lines().map((s) -> parseFeature(s));
-    }*/
-
-    private Stream<FeatureOutcomePair> setUpStream(String filePath) {
-        URL url = null;
-
-        try {
-            url = new URL(filePath);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader((new InputStreamReader(url.openStream())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            String line = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return br.lines().map((s) -> parseFeature(s));
-    }
-
-    private FeatureOutcomePair parseFeature(String line) {
-        String[] split = line.split(",");
-
-        URI furi = null;
-        try {
-            //System.out.println(split[0].replace("\"", ""));
-            furi = new URI(split[0].replace("\"", ""));
-        } catch (URISyntaxException e) {
-            try {
-                furi = new URI("http://scoreboard.lod2.eu/data/scoreboardDataCube.rdf");
-            } catch (URISyntaxException ex) {
-                ex.printStackTrace();
-            }
-            //e.printStackTrace();
-        }
-        CrawleableUri uri = new CrawleableUri(furi);
-        featureHashing(uri);
-        Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-        double[] doubleFeatureArray = (double[]) featureArray;
-        DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-        return new FeatureOutcomePair(features, split[1].equals("dereferenceable")? POSITIVE_CLASS : NEGATIVE_CLASS);
     }
 
     @Override
