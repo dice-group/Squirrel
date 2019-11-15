@@ -16,6 +16,8 @@ import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
+import org.dice_research.squirrel.fetcher.delay.StaticDelayer;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.metadata.CrawlingActivity.CrawlingURIState;
@@ -67,36 +69,30 @@ public class WorkerImpl implements Worker, Closeable {
     protected Serializer serializer;
     protected String domainLogFile = null;
     protected long waitingTime;
-    protected long timeStampLastUriFetched = 0;
     protected boolean terminateFlag;
     private final String uri = Constants.DEFAULT_WORKER_URI_PREFIX + UUID.randomUUID().toString();
     @Deprecated
     private final int id = (int) Math.floor(Math.random() * 100000);
     private boolean sendAliveMessages;
+    private boolean storeMetadata;
 
     /**
      * Constructor.
      *
-     * @param frontier
-     *            Frontier implementation used by this worker to get URI sets and
-     *            send new URIs to.
-     * @param sink
-     *            Sink used by this worker to store crawled data.
-     * @param manager
-     *            RobotsManager for handling robots.txt files.
-     * @param serializer
-     *            Serializer for serializing and deserializing URIs.
-     * @param collector
-     *            The UriCollector implementation used by this worker.
-     * @param waitingTime
-     *            Time (in ms) the worker waits when the given frontier couldn't
-     *            provide any URIs before requesting new URIs again.
-     * @param logDir
-     *            The directory to which a domain log will be written (or
-     *            {@code null} if no log should be written).
+     * @param frontier    Frontier implementation used by this worker to get URI
+     *                    sets and send new URIs to.
+     * @param sink        Sink used by this worker to store crawled data.
+     * @param manager     RobotsManager for handling robots.txt files.
+     * @param serializer  Serializer for serializing and deserializing URIs.
+     * @param collector   The UriCollector implementation used by this worker.
+     * @param waitingTime Time (in ms) the worker waits when the given frontier
+     *                    couldn't provide any URIs before requesting new URIs
+     *                    again.
+     * @param logDir      The directory to which a domain log will be written (or
+     *                    {@code null} if no log should be written).
      */
-    public WorkerImpl(Frontier frontier,Fetcher fetcher, Sink sink,Analyzer analyzer, RobotsManager manager, Serializer serializer,
-            UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages) {
+    public WorkerImpl(Frontier frontier, Fetcher fetcher, Sink sink, Analyzer analyzer, RobotsManager manager,
+            Serializer serializer, UriCollector collector, long waitingTime, String logDir, boolean sendAliveMessages,boolean storeMetadata) {
         this.frontier = frontier;
         this.sink = sink;
         this.fetcher = fetcher;
@@ -105,6 +101,7 @@ public class WorkerImpl implements Worker, Closeable {
         this.serializer = serializer;
         this.waitingTime = waitingTime;
         this.sendAliveMessages = sendAliveMessages;
+        this.storeMetadata = storeMetadata;
         if (logDir != null) {
             domainLogFile = logDir + File.separator + "domain.log";
         }
@@ -116,9 +113,10 @@ public class WorkerImpl implements Worker, Closeable {
             }
         }
         this.collector = collector;
-//        fetcher = new SimpleOrderedFetcherManager(
-//                // new SparqlBasedFetcher(),
-//        		new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new HTTPFetcher());
+        // fetcher = new SimpleOrderedFetcherManager(
+        // // new SparqlBasedFetcher(),
+        // new SparqlBasedFetcher(), new SimpleCkanFetcher(), new FTPFetcher(),new
+        // HTTPFetcher());
     }
 
     @Override
@@ -138,7 +136,7 @@ public class WorkerImpl implements Worker, Closeable {
                     }
                 } else {
                     // perform work
-                    
+
                     crawl(urisToCrawl);
                 }
             }
@@ -213,85 +211,79 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
-        
-        // Check robots.txt
-        if (manager.isUriCrawlable(uri.getUri())) {
-            // Make sure that there is a delay between the fetching of two URIs 
-            try {
-                long delay = timeStampLastUriFetched
-                        - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
-                if (delay > 0) {
-                    Thread.sleep(delay);
-                }
-            } catch (InterruptedException e) {
-                LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
-            }
-            
-            // Fetch the URI content
-            LOGGER.debug("I start crawling {} now...", uri);
-            File fetched = null;
-            try {
-                fetched = fetcher.fetch(uri);
-            } catch (Exception e) {
-                LOGGER.error("Exception while Fetching Data. Skipping...", e);
-                activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
-            }
-            timeStampLastUriFetched = System.currentTimeMillis();
-            List<File> fetchedFiles = new ArrayList<>();
-            if (fetched != null && fetched.isDirectory()) {
-                fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
-            } else {
-                fetchedFiles.add(fetched);
-            }
 
-            // If there is at least one file
-            if (fetchedFiles.size() > 0) {
-                FileManager fm = new FileManager();
-                List<File> fileList;
+            // Check robots.txt
+            if (manager.isUriCrawlable(uri.getUri())) {
+                // Make sure that there is a delay between the fetching of two URIs
+                Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri.getUri()),
+                        System.currentTimeMillis());
+
+                // Fetch the URI content
+                LOGGER.debug("I start crawling {} now...", uri);
+                File fetched = null;
                 try {
-                    // open the sink only if a fetcher has been found
-                    sink.openSinkForUri(uri);
-                    collector.openSinkForUri(uri);
-                    // Go over all files and analyze them
-                    LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
-                    for (File data : fetchedFiles) {
-                        if (data != null) {
-                            fileList = fm.decompressFile(data);
-                            LOGGER.info("Found " + fileList.size() + " files after decompression ");
-                            int cont = 1;
-                            for (File file : fileList) {
-                            	LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
-                                Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-                                sendNewUris(resultUris);
-                                cont++;
+                    fetched = fetcher.fetch(uri, delayer);
+                } catch (Exception e) {
+                    LOGGER.error("Exception while Fetching Data. Skipping...", e);
+                    activity.addStep(getClass(), "Exception while Fetching Data. " + e.getMessage());
+                }
+                List<File> fetchedFiles = new ArrayList<>();
+                if (fetched != null && fetched.isDirectory()) {
+                    fetchedFiles.addAll(TempPathUtils.searchPath4Files(fetched));
+                } else {
+                    fetchedFiles.add(fetched);
+                }
+
+                // If there is at least one file
+                if (fetchedFiles.size() > 0) {
+                    FileManager fm = new FileManager();
+                    List<File> fileList;
+                    try {
+                        // open the sink only if a fetcher has been found
+                        sink.openSinkForUri(uri);
+                        collector.openSinkForUri(uri);
+                        // Go over all files and analyze them
+                        LOGGER.info(" -- Processing URI: " + uri.getUri().toString());
+                        for (File data : fetchedFiles) {
+                            if (data != null) {
+                                fileList = fm.decompressFile(uri, data);
+                                LOGGER.info("Found " + fileList.size() + " files after decompression ");
+                                int cont = 1;
+                                for (File file : fileList) {
+                                    LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
+                                    Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                                    sendNewUris(resultUris);
+                                    cont++;
+                                }
+
                             }
                         }
+                    } catch (Exception e) {
+                        activity.addStep(getClass(), "Unhandled exception while Fetching Data. " + e.getMessage());
+                        activity.setState(CrawlingURIState.FAILED);
+                        activity.finishActivity(sink);
+                        throw e;
+                    } finally {
+                        // We don't want to handle any exception. Just make sure that sink and collector
+                        // do not handle this uri anymore.
+                        sink.closeSinkForUri(uri);
+                        collector.closeSinkForUri(uri);
                     }
-                } catch (Exception e) {
-                    activity.addStep(getClass(), "Unhandled exception while Fetching Data. " + e.getMessage());
+                    // If we reach this point, the crawling was successful
+                    activity.setState(CrawlingURIState.SUCCESSFUL);
+                } else {
+                    // There are no files
+                    activity.addStep(getClass(), "No files for analysis available.");
                     activity.setState(CrawlingURIState.FAILED);
-                    activity.finishActivity(sink);
-                    throw e;
-                } finally {
-                    // We don't want to handle any exception. Just make sure that sink and collector
-                    // do not handle this uri anymore.
-                    sink.closeSinkForUri(uri);
-                    collector.closeSinkForUri(uri);
                 }
-                // If we reach this point, the crawling was successful
-                activity.setState(CrawlingURIState.SUCCESSFUL);
             } else {
-                // There are no files
-                activity.addStep(getClass(), "No files for analysis available.");
-                activity.setState(CrawlingURIState.FAILED);
+                LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
+                activity.addStep(manager.getClass(), "Decided to reject this URI.");
             }
-        } else {
-            LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
-            activity.addStep(manager.getClass(), "Decided to reject this URI.");
-        }
-        activity.finishActivity(sink);
-        // LOGGER.debug("Fetched {} triples", count);
-        setSpecificRecrawlTime(uri);
+            if(storeMetadata)
+                activity.finishActivity(sink);
+            // LOGGER.debug("Fetched {} triples", count);
+            setSpecificRecrawlTime(uri);
 
         } finally {
             // Remove the activity since we don't want to send it back to the Frontier
@@ -324,8 +316,7 @@ public class WorkerImpl implements Worker, Closeable {
     /**
      * Sends the given URIs to the frontier.
      * 
-     * @param uriIterator
-     *            an iterator used to iterate over all new URIs
+     * @param uriIterator an iterator used to iterate over all new URIs
      */
     public void sendNewUris(Iterator<byte[]> uriIterator) {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
@@ -359,9 +350,9 @@ public class WorkerImpl implements Worker, Closeable {
     }
 
     @Deprecated
-	@Override
-	public int getId() {
-		return this.id;
-	}
+    @Override
+    public int getId() {
+        return this.id;
+    }
 
 }

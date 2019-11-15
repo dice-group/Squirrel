@@ -216,8 +216,7 @@
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <scope>test</scope>
+            <artifactId>apache-log4j-extras</artifactId>            
         </dependency>
         <!-- make Logging with java.util.Logging possible -->
         <dependency>

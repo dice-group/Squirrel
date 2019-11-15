@@ -8,16 +8,45 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
+/**
+ * Implements the iteration over an SQL table using the given
+ * {@link PreparedStatement} instance. Note that the statement has to return a
+ * byte array as result and support pagination. The prepared statement should
+ * accept two variables. The first variable will be used as first result ID of
+ * the selected page (inclusive) while the second variable is the last result ID
+ * for the page (exclusive).
+ */
 public class SqlBasedIterator implements Iterator<byte[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedIterator.class);
 
+    /**
+     * Prepared statement used for the retrieval of results.
+     */
     protected PreparedStatement ps;
+    /**
+     * The current result set.
+     */
     protected ResultSet rs;
+    /**
+     * Flag whether the current result set has been consumed.
+     */
     protected boolean consumed = true;
+    /**
+     * Flag whether the current result set has a next result.
+     */
     protected boolean hasNext = true;
+    /**
+     * Start of the result page.
+     */
     private int start = 0;
+    /**
+     * End ID of the selected page (exclusive).
+     */
     private int next = 100;
+    /**
+     * Size of the page.
+     */
     private int page = 100;
 
     public SqlBasedIterator(PreparedStatement ps) {
@@ -31,7 +60,6 @@ public class SqlBasedIterator implements Iterator<byte[]> {
             LOGGER.error("Exception while iterating over the results. Returning false.", e);
         }
     }
-    
 
     @Override
     public boolean hasNext() {
@@ -74,12 +102,12 @@ public class SqlBasedIterator implements Iterator<byte[]> {
                     consumed = false;
                 }
             }
-            
-            if(!hasNext) {
-            	rs.close();
-            	ps.close();
+
+            if (!hasNext) {
+                rs.close();
+                ps.close();
             }
-            
+
             return hasNext;
         } catch (SQLException e) {
             LOGGER.error("Exception while iterating over the results. Returning null.", e);

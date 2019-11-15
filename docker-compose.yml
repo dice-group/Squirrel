@@ -67,6 +67,7 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -85,6 +86,7 @@ services:
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true  
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -101,6 +103,7 @@ services:
       - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
       - DEDUPLICATION_ACTIVE=true
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true  
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml

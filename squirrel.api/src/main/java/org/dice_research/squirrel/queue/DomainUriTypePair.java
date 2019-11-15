@@ -2,6 +2,10 @@ package org.dice_research.squirrel.queue;
 
 import org.dice_research.squirrel.data.uri.UriType;
 
+/**
+ * Pair comprising a domain and a type.
+ *
+ */
 @SuppressWarnings("deprecation")
 public class DomainUriTypePair implements Comparable<DomainUriTypePair> {
     

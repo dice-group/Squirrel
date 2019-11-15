@@ -20,6 +20,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.fetcher.http.HTTPFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class DereferencingFetcher implements Fetcher, Closeable {
     }
 
     @Override
-    public File fetch(CrawleableUri uri/*, Sink sink*/) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         if (uri == null) {
             return null;
         }

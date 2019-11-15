@@ -2,6 +2,12 @@ package org.dice_research.squirrel.rabbit.msgs;
 
 import java.io.Serializable;
 
+/**
+ * Simple structure representing the request of a Worker for a set of URIs.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class UriSetRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;

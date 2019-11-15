@@ -16,7 +16,7 @@ services:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
-      - SEED_FILE=/var/squirrel/seeds.txt
+      - SEED_FILE=/var/squirrel/seeds.csv
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - MDB_CONNECTION_TIME_OUT=5000
@@ -25,10 +25,11 @@ services:
       - QUEUE_FILTER_PERSIST=true
       - COMMUNICATION_WITH_WEBSERVICE=false
       - VISUALIZATION_OF_CRAWLED_GRAPH=false
-      - JVM_ARGS=-Xmx8g
+      - JVM_ARGS=-Xmx8g 
+      
     volumes:
       - ./data/frontier:/var/squirrel/data
-      - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
+      - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
 
@@ -88,6 +89,7 @@ services:
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -107,6 +109,7 @@ services:
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=false
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -126,6 +129,7 @@ services:
       - SPARQL_HOST_PASSWD=pw123
       - DEDUPLICATION_ACTIVE=true
       - JVM_ARGS=-Xmx8g
+      - STORE_METADATA=true
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml

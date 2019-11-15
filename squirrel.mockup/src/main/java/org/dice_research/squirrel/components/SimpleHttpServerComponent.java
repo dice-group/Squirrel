@@ -1,13 +1,26 @@
 package org.dice_research.squirrel.components;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.jena.rdf.model.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.util.FileUtils;
 import org.dice_research.squirrel.configurator.SimpleHTTPServerConfiguration;
 import org.dice_research.squirrel.simulation.CrawleableResource;
 import org.dice_research.squirrel.simulation.CrawleableResourceContainer;
 import org.dice_research.squirrel.simulation.DumpResource;
+import org.dice_research.squirrel.simulation.SimpleStringResource;
 import org.dice_research.squirrel.simulation.StringResource;
+import org.dice_research.squirrel.utils.Closer;
 import org.hobbit.core.components.Component;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
@@ -16,13 +29,6 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimpleHttpServerComponent implements Component {
 
@@ -36,8 +42,7 @@ public class SimpleHttpServerComponent implements Component {
     public void init() throws Exception {
         SimpleHTTPServerConfiguration conf = SimpleHTTPServerConfiguration.getSimpleHTTPServerConfiguration();
 
-        Model model = readModel(conf.getModelFile(),
-            conf.getModelLang());
+        Model model = readModel(conf.getModelFile(), conf.getModelLang());
         if (model == null) {
             throw new IllegalArgumentException("Couldn't read model file.");
         }
@@ -51,6 +56,15 @@ public class SimpleHttpServerComponent implements Component {
             addDeref(resources, model);
         }
 
+        if (conf.getRobotsTxt() != null) {
+            try {
+                resources.add(
+                        new SimpleStringResource("/robots.txt", FileUtils.readWholeFileAsUTF8(conf.getRobotsTxt())));
+            } catch (Exception e) {
+                LOGGER.error("Error while reading robots.txt file.", e);
+            }
+        }
+
         container = new CrawleableResourceContainer(resources.toArray(new CrawleableResource[resources.size()]));
         server = new ContainerServer(container);
         connection = new SocketConnection(server);
@@ -62,15 +76,11 @@ public class SimpleHttpServerComponent implements Component {
 
     protected Model readModel(String modelFile, String modelLang) {
         Model model = ModelFactory.createDefaultModel();
-        FileInputStream fin = null;
-        try {
-            fin = new FileInputStream(modelFile);
+        try (FileInputStream fin = new FileInputStream(modelFile)) {
             model.read(fin, "", modelLang);
         } catch (Exception e) {
             LOGGER.error("Couldn't read model file. Returning null.", e);
             return null;
-        } finally {
-            IOUtils.closeQuietly(fin);
         }
         return model;
     }
@@ -106,7 +116,7 @@ public class SimpleHttpServerComponent implements Component {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(connection);
+        Closer.closeQuietly(connection);
         if (server != null) {
             server.stop();
         }

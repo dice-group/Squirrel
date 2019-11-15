@@ -2,7 +2,7 @@ package org.dice_research.squirrel.rabbit;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
+import org.dice_research.squirrel.utils.Closer;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataHandler;
 import org.hobbit.core.rabbit.DataReceiverImpl;
@@ -18,6 +18,9 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataReceiverImpl.class);
 
+    /**
+     * {@link Channel} used for sending responses.
+     */
     protected Channel responseChannel;
 
     protected RPCServer(RabbitQueue queue, RespondingDataHandler handler, int maxParallelProcessedMsgs,
@@ -50,9 +53,21 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
         return new MsgProcessingTask(delivery, this);
     }
 
+    /**
+     * A task which is created for processing a single incoming messages.
+     * 
+     * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+     *
+     */
     protected class MsgProcessingTask implements Runnable {
 
+        /**
+         * Delivery which will be handled by this task.
+         */
         private Delivery delivery;
+        /**
+         * The response handler to which the content of the {@link Delivery} will be forwarded.
+         */
         private ResponseHandler responseHandler;
 
         public MsgProcessingTask(Delivery delivery, ResponseHandler responseHandler) {
@@ -78,8 +93,17 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
 
     }
 
+    /**
+     * Builder for creating an {@link RPCServer} instance.
+     * 
+     * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+     *
+     */
     public static class Builder extends DataReceiverImpl.Builder {
 
+        /**
+         * Factory for creating response queues.
+         */
         private RabbitQueueFactory responseFactory = null;
 
         public Builder() {
@@ -173,7 +197,7 @@ public class RPCServer extends DataReceiverImpl implements ResponseHandler {
                 return new RPCServer(queue, (RespondingDataHandler) dataHandler, maxParallelProcessedMsgs,
                         responseChannel);
             } catch (IOException e) {
-                IOUtils.closeQuietly(queue);
+                Closer.close(queue);
                 throw e;
             }
         }

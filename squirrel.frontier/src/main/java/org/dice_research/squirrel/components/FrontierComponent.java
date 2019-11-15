@@ -77,6 +77,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
+    private Timer timerTerminator;
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
@@ -142,16 +143,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
-        Timer timer = new Timer();
-        timer.schedule(terminatorTask, 5000, 5000);
+        
         terminationMutex.acquire();
-        timer.cancel();
     }
 
     @Override
     public void close() throws IOException {
         LOGGER.info("Closing Frontier Component.");
+        timerTerminator.cancel();
         if (receiver != null)
             // Force the receiver to close
             receiver.close();
@@ -178,6 +177,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
+    	
         Object deserializedData;
         try {
             deserializedData = serializer.deserialize(data);
@@ -200,6 +200,13 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
+            	
+            	if(timerTerminator == null) {
+            		LOGGER.info("Initializing Terminator task...");
+                	TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
+                    timerTerminator = new Timer();
+                    timerTerminator.schedule(terminatorTask, 5000, 5000);
+            	}
 //                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
@@ -291,9 +298,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     break;
                 }
             }
+            
+            LOGGER.info("Still has Uris: " + stillHasUris);
 
 			if(!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
-			    LOGGER.info(" << FRONTIER IS TERMINATING! >> ");
 	        	terminationMutex.release();
 	        }			
         }
