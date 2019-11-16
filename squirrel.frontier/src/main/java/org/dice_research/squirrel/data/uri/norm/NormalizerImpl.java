@@ -2,6 +2,7 @@ package org.dice_research.squirrel.data.uri.norm;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +78,19 @@ public class NormalizerImpl implements UriNormalizer {
         // OR use URI.normalize()
 
         // Check whether the query part of a URI has to be sorted
+        String query = uriObject.getQuery();
+        if((query != null)&& query.length() > 0) {
+            String[] queryList = query.split("&");
+            Arrays.sort(queryList);
+            query = String.join("&", queryList);
+            URIBuilder builder1 = new URIBuilder(uriObject);
+            builder1.setCustomQuery(query);
+            try {
+                uri = new CrawleableUri(builder1.build());
+            } catch (URISyntaxException e) {
+                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+            }
+        }
 
         // Filter fragments (i.e., delete them)
         String fragment = uriObject.getFragment();

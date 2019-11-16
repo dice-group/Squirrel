@@ -43,7 +43,10 @@ public class NormalizerImplTest {
         }
         Assert.assertEquals("The normalized URI seems to have a different amount of appended data elemenets.",
                 expectedData.size(), normData.size());
+
+
     }
+
 
     @Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
@@ -69,6 +72,11 @@ public class NormalizerImplTest {
         originalUri = new CrawleableUri(new URI("http://example.org/dump.gz#Resource1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/dump.gz"));
         testConfigs.add(new Object[] { originalUri, expectedUri });
+
+        // Add query and make sure the parameters are sorted
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
         
         return testConfigs;
     }
