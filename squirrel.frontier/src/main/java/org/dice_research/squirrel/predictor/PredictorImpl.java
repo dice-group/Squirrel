@@ -36,12 +36,16 @@ public final class PredictorImpl implements Predictor {
     public RegressionClassifier classifier;
     private static final double DEFAULT_LEARNING_RATE = 0.01;
     protected double learningRate = DEFAULT_LEARNING_RATE;
+    private static final double DEFAULT_BETA = 1;
+    protected  double beta = DEFAULT_BETA;
+    private  static final  double DEFAULT_L1 = 1;
+    protected  double l1 = DEFAULT_L1;
+    private static final double DEFAULT_L2 = 1;
+    protected  double l2 = DEFAULT_L2;
     public TrainingDataProvider trainingDataProvider;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
-    private static final double beta = 1;
-    private static final double l1 = 1;
-    private static final double l2 = 1;
+
 
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
@@ -135,13 +139,7 @@ public final class PredictorImpl implements Predictor {
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
     }
-    public void setLearningRate(double learningRate) {
-        this.learningRate = learningRate;
-    }
 
-    public double getLearningRate() {
-        return learningRate;
-    }
 
     @Override
     public double predict(CrawleableUri uri) {
@@ -202,5 +200,43 @@ public final class PredictorImpl implements Predictor {
         }
     }
 
+    @Override
+    public void setL1Parameter (double l1){
+        this.l1 = l1;
+    }
 
+    @Override
+    public double getL1Parameter(){
+        return this.l1;
+    }
+
+    @Override
+    public void setL2Parameter (double l2){
+        this.l2 = l2;
+    }
+
+    @Override
+    public double getL2Parameter(){
+        return this.l2;
+    }
+
+    @Override
+    public void setBetaParameter(double beta){
+        this.beta = beta;
+    }
+
+    @Override
+    public double getBetaParameter(){
+        return this.beta;
+    }
+
+    @Override
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    @Override
+    public double getLearningRate() {
+        return learningRate;
+    }
 }
