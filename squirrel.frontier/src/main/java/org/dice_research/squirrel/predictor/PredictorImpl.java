@@ -129,6 +129,7 @@ public final class PredictorImpl implements Predictor {
         learner.setNumPasses(2);
         learner.verbose();
         // train the model
+        trainingDataProvider = new TrainingDataProviderImpl();
         this.model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
