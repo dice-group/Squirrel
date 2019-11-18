@@ -46,4 +46,52 @@ public interface Predictor {
      *          {@link CrawleableUri} URI whose feature vector is used to update weights
      */
     public void weightUpdate(CrawleableUri uri);
+
+    /**
+     * Method to set regularizing parameter L1
+     * @param l1
+     */
+    public void setL1Parameter (double l1);
+    /**
+     * Method that returns regularizing parameter L1
+     * @return l1
+     */
+    public double getL1Parameter();
+
+    /**
+     * Method to set regularizing parameter L2
+      * @param l2
+     */
+    public void setL2Parameter (double l2);
+
+    /**
+     * Method that returns the regularizing parameter L2
+     * @return l2
+     */
+    public double getL2Parameter();
+
+    /**
+     * Method to set Beta parameter
+     * @param beta
+     */
+    public void setBetaParameter(double beta);
+
+    /**
+     * Method that returns Beta parameter
+     * @return beta
+     */
+    public double getBetaParameter();
+
+    /**
+     * Method to set learning rate
+     * @param learningRate
+     */
+    public void setLearningRate(double learningRate);
+
+    /**
+     * Method that returns the learning rate
+     * @return learningRate
+     */
+    public double getLearningRate();
+
 }
