@@ -153,10 +153,11 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      *
      * @param uri
      *            the crawled {@link CrawleableUri}
-     * @param tripleList
+     * @param triples
      *            the list of {@link Triple}s regarding that uri
      */
-    protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
+    @Override
+    public void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
         try {
             Node graph;
             if (uri.equals(metadataGraphUri)) {

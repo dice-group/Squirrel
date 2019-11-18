@@ -100,7 +100,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             String sparqlHostName = null;
             String sparqlHostPort = null;
 //            FIXME Fix the following code
-//            
+//
 //            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
 //                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
 //                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
@@ -140,10 +140,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value);
         }
-
         compareNewUrisWithOldUris(uris);
         uriHashCustodian.addHashValuesForUris(uris);
-
     }
 
     @Override
@@ -167,7 +165,6 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
         }
         Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
-        outer:
         for (CrawleableUri uriNew : uris) {
             for (CrawleableUri uriOld : oldUrisForComparison) {
                 if (!uriOld.equals(uriNew)) {
@@ -176,9 +173,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                     List<Triple> listNew = sink.getTriplesForGraph(uriNew);
 
                     if (tripleComparator.triplesAreEqual(listOld, listNew)) {
-                        // TODO: delete duplicate, this means Delete the triples from the new uris and
-                        // replace them by a link to the old uris which has the same content
-                        continue outer;
+                        sink.sendTriples(uriNew, listOld);
+                        break;
                     }
 
                 }
@@ -209,8 +205,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         } catch (IOException e) {
             LOGGER.error("Error while trying to deserialize incoming data. It will be ignored.", e);
         }
-        LOGGER.info("Deduplicator got a message (\"{}\").", object.toString());
         if (object != null) {
+            LOGGER.info("Deduplicator got a message (\"{}\").", object);
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
                 handleNewUris(uriSet.uris);

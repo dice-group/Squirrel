@@ -109,11 +109,11 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
      *
      * @param uri
      *            the crawled {@link CrawleableUri}
-     * @param tripleList
+     * @param triples
      *            the list of {@link Triple}s regarding that uri
      */
     @Override
-    protected void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
+    public void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
         String stringQuery = null;
         String sparqlEndpoint;
         if (uri.equals(metaDataGraphUri)) {
@@ -172,5 +172,4 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
     }
-
 }
