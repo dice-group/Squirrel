@@ -36,6 +36,8 @@ import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
 import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.predictor.Predictor;
+import org.dice_research.squirrel.predictor.TrainingDataProvider;
+import org.dice_research.squirrel.predictor.TrainingDataProviderImpl;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -121,7 +123,16 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
         // Training the URI predictor model with a training dataset
         predictor = new PredictorImpl();
-        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
+        if(predictor != null){
+            try {
+                TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
+                dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
+                predictor.train("trainDataFile.txt");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        //predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
         // Build frontier
         frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, predictor);
 
