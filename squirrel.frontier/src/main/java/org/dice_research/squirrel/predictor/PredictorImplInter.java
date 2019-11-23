@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public final class PredictorImplInter implements Predictor {
+public final class PredictorImplInter {
 
     public WeightUpdater updater;
     public RegressionLearn learner;
