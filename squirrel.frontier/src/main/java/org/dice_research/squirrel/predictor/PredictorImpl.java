@@ -13,10 +13,15 @@ import de.jungblut.online.minimizer.StochasticGradientDescent;
 import de.jungblut.online.minimizer.StochasticGradientDescent.StochasticGradientDescentBuilder;
 import de.jungblut.online.ml.FeatureOutcomePair;
 import de.jungblut.online.regression.RegressionClassifier;
+import de.jungblut.online.regression.RegressionLearner;
 import de.jungblut.online.regression.RegressionModel;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionLearner;
 import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
+import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
+import de.jungblut.reader.Dataset;
+import de.jungblut.reader.MNISTReader;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
@@ -25,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.IntFunction;
 
 
 public final class PredictorImpl implements Predictor {
@@ -138,6 +144,28 @@ public final class PredictorImpl implements Predictor {
         // output the weights
         //model.getWeights().iterateNonZero().forEachRemaining(System.out::println);
 
+    }
+
+    public void multiNomialTrain(){
+        //Dataset trainingdataset = MNISTReader.readMNISTTrainImages("/home/user/datasets/mnist/kaggle/train.csv");
+        IntFunction<RegressionLearner> factory = (i) -> {
+            // take care of not sharing any state from the outside, since classes are trained in parallel
+            StochasticGradientDescent minimizer = StochasticGradientDescentBuilder
+                .create(0.01)
+                .holdoutValidationPercentage(0.1d)
+                .weightUpdater(new L2Regularizer(0.1))
+                .progressReportInterval(1_000_000)
+                .build();
+            RegressionLearner learner = new RegressionLearner(minimizer,
+                new SigmoidActivationFunction(), new LogLoss());
+            learner.setNumPasses(50);
+            learner.verbose();
+            return learner;
+        };
+
+        MultinomialRegressionLearner learner = new MultinomialRegressionLearner(factory);
+        learner.verbose();
+        //this.model = learner.train(() -> trainingdataset.asStream());
     }
 
 
