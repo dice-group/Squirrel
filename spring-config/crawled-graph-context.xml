@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+	<context:component-scan
+		base-package="org.dice_research.squirrel" />
+
+	<!-- Triple Store sparql implementation  -->
+	<bean id="sparqlBean" class="org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector">
+		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}"/>
+		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}"/>
+		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}"/>
+	</bean>
+
+
+</beans>
