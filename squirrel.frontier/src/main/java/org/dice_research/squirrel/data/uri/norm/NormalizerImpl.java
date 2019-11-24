@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
  * "https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_in_a_URI">
  * percent-encoding</a> in URL paths</li>
  * <li>sort query parameters</li>
+ * <li>add "/" for empty paths</li>
  * <li>filter parts of the URI</li>
  * </ul>
  */
@@ -90,6 +91,31 @@ public class NormalizerImpl implements UriNormalizer {
             } catch (URISyntaxException e) {
                 LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
             }
+        }
+
+        //Remove default ports
+        int port = uriObject.getPort();
+        if(port == 80 || port == 443){
+            URIBuilder builder2 = new URIBuilder(uriObject);
+            builder2.setPort(-1);
+            try {
+                uri = new CrawleableUri(builder2.build());
+            } catch (URISyntaxException e) {
+                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+            }
+        }
+
+        //Add '/' for empty paths
+        String path = uriObject.getPath();
+        if(path.equals("")){
+            URIBuilder builder3 = new URIBuilder(uriObject);
+            builder3.setPath("/");
+            try {
+                uri = new CrawleableUri(builder3.build());
+            } catch (URISyntaxException e) {
+                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+            }
+
         }
 
         // Filter fragments (i.e., delete them)

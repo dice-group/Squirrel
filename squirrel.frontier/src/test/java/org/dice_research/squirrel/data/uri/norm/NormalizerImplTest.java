@@ -77,7 +77,16 @@ public class NormalizerImplTest {
         originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2"));
         expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
-        
+
+        //Add port and make sure the default ports are removed
+        originalUri = new CrawleableUri(new URI("http://www.example.com:80/"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        //Check for empty paths and add a '/' for path in such cases
+        originalUri = new CrawleableUri(new URI("http://www.example.com"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
         return testConfigs;
     }
 }
