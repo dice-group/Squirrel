@@ -87,6 +87,19 @@ public class NormalizerImplTest {
         originalUri = new CrawleableUri(new URI("http://www.example.com"));
         expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        //Check for path resolving
+        //originalUri = new CrawleableUri(new URI("http://www.example.com/a/./b/../c"));
+        //expectedUri = new CrawleableUri(new URI("http://www.example.com/a/c"));
+        //testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        //Check for percent encoding
+        //originalUri = new CrawleableUri(new URI("http://www.example.com/%41"));
+        //expectedUri = new CrawleableUri(new URI("http://www.example.com/A"));
+        //testConfigs.add(new Object[] { originalUri, expectedUri});
+
         return testConfigs;
+
+
     }
 }

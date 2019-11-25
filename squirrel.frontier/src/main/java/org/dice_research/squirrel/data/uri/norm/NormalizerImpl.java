@@ -68,7 +68,7 @@ public class NormalizerImpl implements UriNormalizer {
 //        String path = uriObject.getPath();
 //        if (path != null) {
 //            String temp = normalizePath(path);
-//            if (temp != path) {
+//            if (temp != path1) {
 //                path = temp;
 //                changed = true;
 //            }
@@ -84,25 +84,14 @@ public class NormalizerImpl implements UriNormalizer {
             String[] queryList = query.split("&");
             Arrays.sort(queryList);
             query = String.join("&", queryList);
-            URIBuilder builder1 = new URIBuilder(uriObject);
-            builder1.setCustomQuery(query);
-            try {
-                uri = new CrawleableUri(builder1.build());
-            } catch (URISyntaxException e) {
-                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
-            }
+            changed = true;
         }
 
         //Remove default ports
         int port = uriObject.getPort();
         if(port == 80 || port == 443){
-            URIBuilder builder2 = new URIBuilder(uriObject);
-            builder2.setPort(-1);
-            try {
-                uri = new CrawleableUri(builder2.build());
-            } catch (URISyntaxException e) {
-                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
-            }
+            port = -1;
+            changed = true;
         }
 
         //Add '/' for empty paths
@@ -131,7 +120,9 @@ public class NormalizerImpl implements UriNormalizer {
             // create new URI object;
             URIBuilder builder = new URIBuilder(uriObject);
             builder.setFragment(null);
-//            builder.setPath(path);
+   //        builder.setPath(path);
+            builder.setCustomQuery(query);
+            builder.setPort(port);
             try {
                 uri = new CrawleableUri(builder.build());
             } catch (URISyntaxException e) {
@@ -151,7 +142,7 @@ public class NormalizerImpl implements UriNormalizer {
      * @return the normalized path or the given path object if no changes have been
      *         made.
      */
-    protected String normalizePath(String path) {
+    public String normalizePath(String path) {
         // Check for encoded parts
         Matcher matcher = UNESCAPE_RULE_PATTERN.matcher(path);
         StringBuffer changedPath = null;
