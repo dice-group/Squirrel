@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -29,20 +30,28 @@ public class PredictorEvaluation {
      * Indicates the path to the file containing the evaluation data.
      */
     String testFilePath;
+    /**
+     * List cf four classes of the URIs
+     */
+    private static final ArrayList<String> classList = new ArrayList<>();
+    static{
+        classList.add("OTHER");
+        classList.add("SPARQL");
+        classList.add("ZIPPED_DUMP");
+        classList.add("DUMP");
+    }
 
     /**
      * Constructor.
      *
      * @param trainFilePath
      *            Indicates the path to the file containing train data.
-     * @param positiveClass
-     *             Indicates the name of the type which should be used as positive class while training.
      * @param testFilePath
      *             Indicates the path to the file containing the test data.
      */
-    public PredictorEvaluation(String trainFilePath, String testFilePath, String positiveClass){
+    public PredictorEvaluation(String trainFilePath, String testFilePath){
         this.trainFilePath = trainFilePath;
-        this.positiveClass = positiveClass;
+
         this.testFilePath = testFilePath;
     }
 
@@ -54,10 +63,6 @@ public class PredictorEvaluation {
         Integer uriCount = 0;
         Integer correctCount = 0;
         double accuracy;
-        Integer truePos =0;
-        Integer falsePos = 0;
-        Integer falseNeg = 0;
-        Integer trueNeg = 0;
         BufferedReader br = null;
         try (FileReader in = new FileReader(testFilePath)){
             br = new BufferedReader(in);
@@ -77,26 +82,12 @@ public class PredictorEvaluation {
                 }
                 CrawleableUri uri = new CrawleableUri(furi);
                 predictor.featureHashing(uri);
-                double pred = predictor.predict(uri);
+                int pred = predictor.predict(uri);
+                //System.out.println("predicted values: "+ pred);
                 split[1] = split[1].replace("\"", "");
-                if(split[1].equals(positiveClass)){
-                    //System.out.println("the class is: " + split[1]);
-                    if(pred >= 0.5){
-                        correctCount ++;
-                        truePos ++;
-                    }
-                    else{
-                        falseNeg ++;
-                    }
-                }
-                else{
-                    if(pred < 0.5){
-                        correctCount ++;
-                        trueNeg ++;
-                    }
-                    else{
-                        falsePos ++;
-                    }
+                //System.out.println("the classList index: "+classList.indexOf(split[1]));
+                if(pred ==  classList.indexOf(split[1])){
+                    correctCount++;
                 }
             }
         } catch (IOException e) {
@@ -107,10 +98,6 @@ public class PredictorEvaluation {
         System.out.println(" The total number of URIs is: " + uriCount);
         System.out.println(" The total number of correct predictions  is: " + correctCount);
         System.out.println(" The accuracy of the predictor is: " + accuracy);
-        System.out.println("True Positive is: " + truePos);
-        System.out.println("False Positive is: " + falsePos);
-        System.out.println("False Negative is: " + falseNeg);
-        System.out.println("True Negative is: " + trueNeg);
         return accuracy;
     }
 
@@ -128,9 +115,11 @@ public class PredictorEvaluation {
         int folds = 10;
         int chunk;
         try {
-            url = new URL(trainFilePath);
+            //url = new URL(trainFilePath);
 
-            br = new BufferedReader((new InputStreamReader(url.openStream())));
+            //br = new BufferedReader((new InputStreamReader(url.openStream())));
+            br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(trainFilePath)
+                , Charset.defaultCharset()));
             line = br.readLine();
             while( ( line = br.readLine()) != null){
                 lineList.add(line);
@@ -170,7 +159,9 @@ public class PredictorEvaluation {
                 }
                 writerTrain.close();
                 writerTest.close();
-                predictor.train("trainFile.txt");
+                //predictor.train("trainFile.txt");
+                System.out.println("calling multinomial train function");
+                predictor.multiNomialTrain("trainFile.txt");
                 evaluation();
             }
         } catch (IOException e) {
@@ -179,7 +170,7 @@ public class PredictorEvaluation {
     }
 
     public static void main(String[] args) {
-        PredictorEvaluation evaluate = new PredictorEvaluation("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "testFile.txt","dereferenceable");
+        PredictorEvaluation evaluate = new PredictorEvaluation("multiNomialTrainData", "testFile.txt");
         evaluate.crossValidation();
         }
 }

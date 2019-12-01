@@ -26,7 +26,13 @@ public interface Predictor {
      * Trains the model with positive and negative examples of the URIs.
      */
 
-    public void train(String filePath);
+    public void train(String filepath);
+
+    /**
+     * Trains a multinomial regression model with URLs of 4 different types
+     * @param filepath
+     */
+    void multiNomialTrain(String filepath);
     /**
      * Return a prediction value of the type of the given URI, the prediction should be between 0 and 1.
      * e.g. In case of RDF type prediction, the more the predicted value is close to 1
@@ -37,7 +43,7 @@ public interface Predictor {
      *
      *  @return the predicted value.
      */
-    public double predict(CrawleableUri uri);
+    public int predict(CrawleableUri uri);
     /**
      * Update the weight of the model. It uses the predicted value and the true label value
      * with the feature vector from the URI map to calculate the new weight.

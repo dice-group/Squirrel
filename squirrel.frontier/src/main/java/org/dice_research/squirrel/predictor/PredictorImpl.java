@@ -15,7 +15,9 @@ import de.jungblut.online.ml.FeatureOutcomePair;
 import de.jungblut.online.regression.RegressionClassifier;
 import de.jungblut.online.regression.RegressionLearner;
 import de.jungblut.online.regression.RegressionModel;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionClassifier;
 import de.jungblut.online.regression.multinomial.MultinomialRegressionLearner;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionModel;
 import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
 import de.jungblut.online.regularization.L2Regularizer;
@@ -40,6 +42,9 @@ public final class PredictorImpl implements Predictor {
     public RegressionLearn learner;
     public RegressionModel model;
     public RegressionClassifier classifier;
+    public MultinomialRegressionModel multinomialModel;
+    public MultinomialRegressionLearner multinomialLearner;
+    public MultinomialRegressionClassifier multinomialClassifier;
     private static final double DEFAULT_LEARNING_RATE = 0.01;
     protected double learningRate = DEFAULT_LEARNING_RATE;
     private static final double DEFAULT_BETA = 1;
@@ -49,13 +54,7 @@ public final class PredictorImpl implements Predictor {
     private static final double DEFAULT_L2 = 1;
     protected  double l2 = DEFAULT_L2;
     public TrainingDataProvider trainingDataProvider;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
-
-
-    private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
-    private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
-
 
     @Override
     public void featureHashing(CrawleableUri uri)  {
@@ -86,38 +85,9 @@ public final class PredictorImpl implements Predictor {
     }
 
     public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens){
-
-        //String authority, scheme, host, path, query;
-        //URI furi = null;
         String[] uriToken;
         uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
-        /*try {
-            furi = new URI(uri.getUri().toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        if (furi != null) {
-            authority = furi.getAuthority();
-            if(authority != null)
-                tokens.add(authority);
-            scheme = furi.getScheme();
-            if(scheme != null)
-                tokens.add(scheme);
-
-            host = furi.getHost();
-            if(host != null)
-                tokens.add(host);
-            path = furi.getPath();
-
-            if(path != null) ;
-                tokens.add(path);
-            query = furi.getQuery();
-            if(query != null)
-                tokens.add(query);
-
-        }*/
         return tokens;
     }
 
@@ -146,32 +116,33 @@ public final class PredictorImpl implements Predictor {
 
     }
 
-    public void multiNomialTrain(){
-        //Dataset trainingdataset = MNISTReader.readMNISTTrainImages("/home/user/datasets/mnist/kaggle/train.csv");
-        IntFunction<RegressionLearner> factory = (i) -> {
-            // take care of not sharing any state from the outside, since classes are trained in parallel
-            StochasticGradientDescent minimizer = StochasticGradientDescentBuilder
-                .create(0.01)
-                .holdoutValidationPercentage(0.1d)
-                .weightUpdater(new L2Regularizer(0.1))
-                .progressReportInterval(1_000_000)
-                .build();
-            RegressionLearner learner = new RegressionLearner(minimizer,
-                new SigmoidActivationFunction(), new LogLoss());
-            learner.setNumPasses(50);
-            learner.verbose();
-            return learner;
-        };
 
-        MultinomialRegressionLearner learner = new MultinomialRegressionLearner(factory);
-        learner.verbose();
-        //this.model = learner.train(() -> trainingdataset.asStream());
+    public void multiNomialTrain(String filepath){
+        trainingDataProvider = new TrainingDataProviderImpl();
+        multinomialLearner = new MultinomialRegressionLearner(factory);
+        multinomialLearner.verbose();
+        this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
+        //System.out.println("the number of classes: "+ multinomialModel.getModels().length);
     }
 
+    IntFunction<RegressionLearner> factory = (i) -> {
+        // take care of not sharing any state from the outside, since classes are trained in parallel
+        StochasticGradientDescent minimizer = StochasticGradientDescentBuilder
+            .create(0.01)
+            .holdoutValidationPercentage(0.1d)
+            .weightUpdater(new L2Regularizer(0.1))
+            .progressReportInterval(1_000)
+            .build();
+        RegressionLearner learner =  new RegressionLearner(minimizer,
+            new SigmoidActivationFunction(), new LogLoss());
+        learner.setNumPasses(1);
+        learner.verbose();
+        return learner;
+    };
 
     @Override
-    public double predict(CrawleableUri uri) {
-        double pred = 0.0;
+    public int predict(CrawleableUri uri) {
+        int pred = 0;
         try {
             //Get the feature vector
             if (uri.getData(Constants.FEATURE_VECTOR) != null) {
@@ -180,15 +151,17 @@ public final class PredictorImpl implements Predictor {
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
                 //initialize the regression classifier with updated model and predict
                 classifier = new RegressionClassifier(model);
+                //multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
                 DoubleVector prediction = classifier.predict(features);
-                double[] predictVal = prediction.toArray();
-                pred = predictVal[0];
+                //DoubleVector prediction = multinomialClassifier.predict(features);
+                pred = prediction.maxIndex();
+
                 }else {
                 LOGGER.info("Feature vector of this "+ uri.getUri().toString() +" is null");
             }
         } catch (Exception e) {
             LOGGER.warn("Prediction for this "+ uri.getUri().toString() +" failed " + e);
-            pred = 0.0;
+            pred = 0;
         }
         return  pred ;
     }

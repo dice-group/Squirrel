@@ -1,6 +1,7 @@
 package org.dice_research.squirrel.predictor;
 
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.dense.DenseDoubleVector;
 import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.online.ml.FeatureOutcomePair;
@@ -20,10 +21,17 @@ import java.util.stream.Stream;
 
 public class TrainingDataProviderImpl implements TrainingDataProvider {
 
-    private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
-    private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
+    //private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
+    //private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
     private Predictor predictor = new PredictorImpl();
+    private static final ArrayList<String> classList = new ArrayList<>();
+    static {
+        classList.add("OTHER");
+        classList.add("SPARQL");
+        classList.add("ZIPPED_DUMP");
+        classList.add("DUMP");
+    }
 
 
     @Override
@@ -49,8 +57,7 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-            System.out.println("Inside setupstream function" + br.readLine());
-        }catch (IOException e){
+            }catch (Exception e){
             e.printStackTrace();
         }
         return br.lines().map((s) -> parseFeature(s));
@@ -58,13 +65,14 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
 
 
     public FeatureOutcomePair parseFeature(String line) {
+        DoubleVector[] classes = new DoubleVector[4];
+        for (int i = 0; i < classes.length; i++) {
+            classes[i] = new DenseDoubleVector(classes.length);
+            classes[i].set(i, 1d);
+        }
         String[] split = line.split(",");
-        //System.out.println(split[0]);
-        //System.out.println(split[1]);
-
         URI furi = null;
         try {
-            //System.out.println(split[0].replace("\"", ""));
             furi = new URI(split[0].replace("\"", ""));
         } catch (URISyntaxException e) {
             try {
@@ -72,7 +80,6 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
             } catch (URISyntaxException ex) {
                 ex.printStackTrace();
             }
-            //e.printStackTrace();
         }
         CrawleableUri uri = new CrawleableUri(furi);
         predictor.featureHashing(uri);
@@ -80,7 +87,13 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
         split[1] = split[1].replace("\"", "");
-        return new FeatureOutcomePair(features, split[1].equals("dereferenceable") ? POSITIVE_CLASS : NEGATIVE_CLASS);
+        DoubleVector predVector;
+        if(classList.indexOf(split[1]) != -1)
+            predVector = classes[classList.indexOf(split[1])];
+        else
+            predVector = classes[0];
+
+        return new FeatureOutcomePair(features, predVector);
     }
 
 }

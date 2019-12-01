@@ -9,6 +9,8 @@ public  interface TrainingDataProvider{
 
     Stream<FeatureOutcomePair> setUpStream(String filePath);
 
-    public void createTrainDataFile(String dataUri, String trainFilePath);
+    void createTrainDataFile(String dataUri, String trainFilePath);
+
+
 
 }
