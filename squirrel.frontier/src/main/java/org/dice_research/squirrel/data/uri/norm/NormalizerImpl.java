@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,19 +62,33 @@ public class NormalizerImpl implements UriNormalizer {
         UNESCAPED_CHARS.set(0x7E);
     }
 
+    /**
+     * map containing schemes and their default ports
+     */
+    private static final Map<String, Integer> defaultPortMap = new HashMap<>();
+    static {
+        defaultPortMap.put("http", 80);
+        defaultPortMap.put("https", 443);
+        defaultPortMap.put("ftp", 21);
+        defaultPortMap.put("dns", 53);
+
+    }
+
     @Override
     public CrawleableUri normalize(CrawleableUri uri) {
         URI uriObject = uri.getUri();
         boolean changed = false;
         // normalize path
-//        String path = uriObject.getPath();
-//        if (path != null) {
-//            String temp = normalizePath(path);
-//            if (temp != path1) {
-//                path = temp;
-//                changed = true;
-//            }
-//        }
+        String path = uriObject.getRawPath();
+        System.out.println("the path is: " +path);
+        if (path != null) {
+            String temp = normalizePath(path);
+            if (temp != path) {
+                path = temp;
+                changed = true;
+            }
+        }
+
 
         // Copy Normalization from
         // https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java
@@ -89,24 +105,15 @@ public class NormalizerImpl implements UriNormalizer {
 
         //Remove default ports
         int port = uriObject.getPort();
-        if(port == 80 || port == 443){
-            port = -1;
-            changed = true;
-        }
-
-        //Add '/' for empty paths
-        String path = uriObject.getPath();
-        if(path.equals("")){
-            URIBuilder builder3 = new URIBuilder(uriObject);
-            builder3.setPath("/");
-            try {
-                uri = new CrawleableUri(builder3.build());
-            } catch (URISyntaxException e) {
-                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+        String scheme = uriObject.getScheme();
+        if(port != -1){
+            if(defaultPortMap.containsKey(scheme)){
+                if(port == defaultPortMap.get(scheme)){
+                    port = -1;
+                    changed = true;
+                }
             }
-
         }
-
         // Filter fragments (i.e., delete them)
         String fragment = uriObject.getFragment();
         if ((fragment != null) && (fragment.length() > 0)) {
@@ -120,7 +127,7 @@ public class NormalizerImpl implements UriNormalizer {
             // create new URI object;
             URIBuilder builder = new URIBuilder(uriObject);
             builder.setFragment(null);
-   //        builder.setPath(path);
+            builder.setPath(path);
             builder.setCustomQuery(query);
             builder.setPort(port);
             try {
@@ -144,10 +151,16 @@ public class NormalizerImpl implements UriNormalizer {
      */
     public String normalizePath(String path) {
         // Check for encoded parts
+        if(path.equals("")){
+            System.out.println("path is empty");
+            path = "/";
+            System.out.println(path);
+            return path;
+        }
         Matcher matcher = UNESCAPE_RULE_PATTERN.matcher(path);
         StringBuffer changedPath = null;
         if (matcher.find()) {
-            changedPath = new StringBuffer(path);
+            changedPath = new StringBuffer("");
             int hex, pos = 0;
             do {
                 changedPath.append(path.substring(pos, matcher.start()));
