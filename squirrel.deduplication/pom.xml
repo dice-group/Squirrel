@@ -23,6 +23,18 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.dice-research</groupId>
+			<artifactId>squirrel.worker</artifactId>
+			<version>0.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dice-research</groupId>
+			<artifactId>squirrel.frontier</artifactId>
+			<version>0.4.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

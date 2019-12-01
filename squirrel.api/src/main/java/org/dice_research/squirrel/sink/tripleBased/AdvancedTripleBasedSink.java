@@ -3,7 +3,6 @@ package org.dice_research.squirrel.sink.tripleBased;
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,11 +19,7 @@ public interface AdvancedTripleBasedSink extends TripleBasedSink {
      */
     List<Triple> getTriplesForGraph(CrawleableUri uri);
 
-    /**
-     * Send all {@link Triple}s to the database.
-     *
-     * @param uri The given uri.
-     * @param triples {@link Triple}s to be sent to the database.
-     */
-    void sendTriples(CrawleableUri uri, Collection<Triple> triples);
+    void removeTriplesForGraph(CrawleableUri uri);
+
+    void linkDuplicateUri(CrawleableUri uriNew, CrawleableUri uriOld);
 }

@@ -24,9 +24,8 @@ public class DeduplicationImpl {
 
     private TripleHashFunction tripleHashFunction;
 
-    public DeduplicationImpl(UriHashCustodian uriHashCustodian, AdvancedTripleBasedSink sink,
+    public DeduplicationImpl(AdvancedTripleBasedSink sink,
                              TripleComparator tripleComparator,TripleHashFunction tripleHashFunction){
-        this.uriHashCustodian = uriHashCustodian;
         this.sink = sink;
         this.tripleComparator = tripleComparator;
         this.tripleHashFunction = tripleHashFunction;
@@ -47,7 +46,11 @@ public class DeduplicationImpl {
         for (CrawleableUri uri : uris) {
             hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
         }
-        Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
+        Set<CrawleableUri> oldUrisForComparison = new HashSet<>();
+        //TODO: Implement Sparql based solution to fetch olduriswithsamehashvalues
+        for(CrawleableUri uri:uris){
+            oldUrisForComparison.add(uri);
+        }
         for (CrawleableUri uriNew : uris) {
             for (CrawleableUri uriOld : oldUrisForComparison) {
                 if (!uriOld.equals(uriNew)) {
@@ -55,30 +58,16 @@ public class DeduplicationImpl {
                     List<Triple> listOld = sink.getTriplesForGraph(uriOld);
                     List<Triple> listNew = sink.getTriplesForGraph(uriNew);
 
-//                    for(Triple triple: listNew) {
-//                        sink.delete();
-//                    }
-//                    listOld.get(0).
-
                     if (tripleComparator.triplesAreEqual(listOld, listNew)) {
                         // TODO: delete duplicate, this means Delete the triples from the new uris and
                         // replace them by a link to the old uris which has the same content
-
-//                        uriOld.setData();
-
-                        addToMetadata();
+                        sink.removeTriplesForGraph(uriNew);
+                        sink.linkDuplicateUri(uriNew, uriOld);
                         break;
                     }
                 }
             }
         }
-    }
-
-    private void addToMetadata() {
-    }
-
-    private void deleteDuplicateUri() {
-
     }
 
     public void handleNewUris(List<CrawleableUri> uris) {
@@ -87,9 +76,6 @@ public class DeduplicationImpl {
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value);
         }
-
         compareNewUrisWithOldUris(uris);
-        uriHashCustodian.addHashValuesForUris(uris);
-
     }
 }

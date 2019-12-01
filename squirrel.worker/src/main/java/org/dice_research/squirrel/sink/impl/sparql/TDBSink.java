@@ -1,10 +1,5 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
@@ -25,6 +20,11 @@ import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A sink which stores the data in different graphs in a sparql based db.
@@ -171,5 +171,13 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
 
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
+    }
+
+    @Override
+    public void removeTriplesForGraph(CrawleableUri uri) {
+    }
+
+    @Override
+    public void linkDuplicateUri(CrawleableUri uriNew, CrawleableUri uriOld) {
     }
 }

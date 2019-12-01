@@ -1,13 +1,13 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import java.util.Collection;
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * This class is used to provides querys for basic SPARQL commands needed in this project.
@@ -168,5 +168,23 @@ public class QueryGenerator {
         }
         stringBuilder.append(" ");
         return stringBuilder.toString();
+    }
+
+    public Query getDeleteQuery(String graphID) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("delete ?subject ?predicate ?object WHERE { ");
+        //if (!defaultGraph) {
+        stringBuilder.append("GRAPH <");
+        stringBuilder.append(graphID);
+        stringBuilder.append("> { ");
+        //}
+        //stringBuilder.append("?subject ?predicate ?object ");
+        //if (!defaultGraph) {
+        //    stringBuilder.append("} ");
+        //}
+        stringBuilder.append("}");
+        Query query = QueryFactory.create(stringBuilder.toString());
+        return query;
+
     }
 }

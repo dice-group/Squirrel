@@ -1,10 +1,10 @@
 package org.dice_research.squirrel;
 
+import org.apache.http.HttpHeaders;
+
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.http.HttpHeaders;
 
 /**
  * This class contains constant values of the Squirrel project.
@@ -40,6 +40,8 @@ public class Constants {
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
 
+    public static final String URI_DUPLICATE = "duplicate-uri";
+
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms
      * from 1st January 1970).
@@ -60,11 +62,11 @@ public class Constants {
     //////////////////////////////////////////////////
     // Component constants
     //////////////////////////////////////////////////
-    
+
     public static final String DEDUPLICATION_ACTIVE_KEY = "DEDUPLICATION_ACTIVE";
 
     public static final String RDB_HOST_NAME_KEY = "RDB_HOST_NAME";
-    
+
     public static final String RDB_PORT_KEY = "RDB_PORT";
 
     public static final boolean DEFAULT_DEDUPLICATION_ACTIVE = false;

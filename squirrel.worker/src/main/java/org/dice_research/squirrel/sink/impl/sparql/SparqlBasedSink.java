@@ -1,12 +1,5 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryHttp;
@@ -29,9 +22,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadAcc;
-import org.apache.jena.sparql.modify.request.QuadDataAcc;
-import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
+import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
@@ -43,10 +35,17 @@ import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
-@SuppressWarnings("deprecation")
+
 public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
@@ -60,7 +59,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
 
     protected CrawleableUri metadataGraphUri = null;
 
-    protected SparqlBasedSink(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+    public SparqlBasedSink(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
         this.updateExecFactory = updateExecFactory;
         setMetadataGraphUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
@@ -104,7 +103,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
                 }
             };
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl, new DatasetDescription(),
-                    authenticator);
+                authenticator);
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl, authenticator);
         } else {
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
@@ -116,11 +115,11 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     @Override
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         Query selectQuery = null;
-        // if (uri.equals(metaDataGraphUri)) {
-        selectQuery = QueryGenerator.getInstance().getSelectQuery();
-        // } else {
-        // selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
-        // }
+        if (uri.equals(metadataGraphUri)) {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
+        } else {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
+        }
 
         QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
         ResultSet rs = qe.execSelect();
@@ -151,10 +150,8 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     /**
      * Method to send all buffered triples to the database
      *
-     * @param uri
-     *            the crawled {@link CrawleableUri}
-     * @param triples
-     *            the list of {@link Triple}s regarding that uri
+     * @param uri     the crawled {@link CrawleableUri}
+     * @param triples the list of {@link Triple}s regarding that uri
      */
     @Override
     public void sendTriples(CrawleableUri uri, Collection<Triple> triples) {
@@ -163,22 +160,22 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             if (uri.equals(metadataGraphUri)) {
                 graph = NodeFactory.createURI(uri.getUri().toString());
             } else {
-                 graph = NodeFactory.createURI(getGraphId(uri));
+                graph = NodeFactory.createURI(getGraphId(uri));
             }
 
             UpdateDeleteInsert insert = new UpdateDeleteInsert();
             insert.setHasInsertClause(true);
             insert.setHasDeleteClause(false);
             QuadAcc quads = insert.getInsertAcc();
-            for(Triple triple : triples){
-               quads.addQuad(new Quad(graph, triple));
+            for (Triple triple : triples) {
+                quads.addQuad(new Quad(graph, triple));
             }
             quads.setGraph(graph);
             UpdateProcessor processor = updateExecFactory.createUpdateProcessor(
-                    new UpdateRequest(insert).toString()
+                new UpdateRequest(insert).toString()
                     .replaceAll("\\{\\}", ""
-                            + "{ SELECT * {OPTIONAL {?s ?p ?o} } LIMIT 1}")
-                    );
+                        + "{ SELECT * {OPTIONAL {?s ?p ?o} } LIMIT 1}")
+            );
             LOGGER.info("Storing " + triples.size() + " triples for URI: " + uri.getUri().toString());
             processor.execute();
         } catch (Exception e) {
@@ -194,8 +191,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     /**
      * Get the id of the graph in which the given uri is stored.
      *
-     * @param uri
-     *            The given uri.
+     * @param uri The given uri.
      * @return The id of the graph.
      */
     public static String getGraphId(CrawleableUri uri) {
@@ -223,5 +219,26 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             updateExecFactory.close();
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public void removeTriplesForGraph(CrawleableUri uri) {
+        String querybuilder = "DROP GRAPH <" + SparqlBasedSink.getGraphId(uri) + "> ;";
+        UpdateRequest request = UpdateFactory.create(querybuilder.toString());
+        updateExecFactory.createUpdateProcessor(request).execute();
+    }
+
+    @Override
+    public void linkDuplicateUri(CrawleableUri uriNew, CrawleableUri uriOld) {
+        openSinkForUri(uriNew);
+        uriNew.addData(Constants.URI_DUPLICATE, uriOld);
+        uriNew.addData(Constants.UUID_KEY, getGraphId(uriOld));
+        closeSinkForUri(uriNew);
+    }
+
+    private void setHashForUri(CrawleableUri uri, String hash) {
+        openSinkForUri(uri);
+        uri.addData(Constants.URI_HASH_KEY, uri.hashCode());
+        closeSinkForUri(uri);
     }
 }

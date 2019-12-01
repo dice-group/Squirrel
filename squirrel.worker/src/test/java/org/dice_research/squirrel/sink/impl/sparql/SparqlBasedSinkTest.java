@@ -1,9 +1,5 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
@@ -27,6 +23,10 @@ import org.dice_research.squirrel.vocab.Squirrel;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class SparqlBasedSinkTest {
 
     @Test
@@ -38,7 +38,7 @@ public class SparqlBasedSinkTest {
 
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/dataset"));
         uri.addData(Constants.UUID_KEY, "123");
-        
+
         CrawlingActivity activity = new CrawlingActivity(uri, "http://example.org/testWorker");
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try (SparqlBasedSink sink = new SparqlBasedSink(queryExecFactory, updateExecFactory)) {
