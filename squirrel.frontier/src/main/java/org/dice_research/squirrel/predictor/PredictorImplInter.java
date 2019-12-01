@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.predictor;
 
-
 import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
@@ -10,7 +9,6 @@ import de.jungblut.math.minimize.CostGradientTuple;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
 import de.jungblut.online.minimizer.StochasticGradientDescent;
-import de.jungblut.online.minimizer.StochasticMinimizer;
 import de.jungblut.online.ml.FeatureOutcomePair;
 import de.jungblut.online.regression.RegressionClassifier;
 import de.jungblut.online.regression.RegressionModel;
@@ -25,102 +23,55 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
+public class PredictorImplInter {
 
-public final class PredictorImplInter {
-
-    public WeightUpdater updater;
-    public RegressionLearn learner;
+    private WeightUpdater updater;
+    private RegressionLearn learner;
     public RegressionModel model;
     public RegressionClassifier classifier;
-
+    private String filepath;
+    private double learningRate;
+    private double l2;
+    private double l1;
+    private double beta;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
 
-
     public static class PredictorImplBuilder {
+        private String filepath;
+
         protected TrainingDataProvider trainingDataProvider;
-        private String filePath;
 
-        //Beta
-        private static final double DEFAULT_BETA = 1;
-        protected double beta = DEFAULT_BETA;
+        protected StochasticGradientDescent sgd; //Minimizer
 
-        //L1
-        private static final double DEFAULT_L1 = 1;
-        protected double l1 = DEFAULT_L1;
+        private RegressionLearn learner; //Learner
 
-        //L2
-        private static final double DEFAULT_L2 = 1;
-        protected double l2 = DEFAULT_L2;
+        public RegressionModel model; //Model
 
-        //Updater
-        private final WeightUpdater DEFAULT_UPDATER = new AdaptiveFTRLRegularizer(beta, l1, l2);
-        protected WeightUpdater updater = DEFAULT_UPDATER;
+        public RegressionClassifier classifier;   //Classifier
 
-        public WeightUpdater getUpdater() {
-            return updater;
-        }
+        private WeightUpdater updater; //Updater
 
-        public void setUpdater(WeightUpdater updater) {
+        protected double learningRate = 0.01;//Learning rate
+
+        protected double beta;   //Beta
+
+        protected double l1;   //L1
+
+        protected double l2;  //L2
+
+        private String filePath; //filepath to train
+
+        public PredictorImplBuilder(RegressionLearn learner, RegressionModel model, RegressionClassifier classifier, WeightUpdater updater) {
+            this.learner = learner;
+            this.model = model;
+            this.classifier = classifier;
             this.updater = updater;
         }
 
-        //Learning rate
-        private final double DEFAULT_LEARNING_RATE = 0.01;
-        protected double learningRate = DEFAULT_LEARNING_RATE;
-
-        //Minimizer
-        protected final StochasticGradientDescent DEFAULT_MINIMIZER = StochasticGradientDescent.StochasticGradientDescentBuilder
-            .create(learningRate) // learning rate
-            .holdoutValidationPercentage(0.05d) // 5% as validation set
-            .historySize(10_000) // keep 10k samples to compute relative improvement
-            .weightUpdater(updater) // FTRL updater
-            .progressReportInterval(1_000) // report every n iterations
-            .build();
-        protected StochasticMinimizer sgd = DEFAULT_MINIMIZER;
-
-        public StochasticGradientDescent getDEFAULT_MINIMIZER() {
-            return DEFAULT_MINIMIZER;
-        }
-
-        //Learner
-        private final RegressionLearn DEFAULT_LEARNER =new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss());
-        private RegressionLearn learner = DEFAULT_LEARNER;            ;
-
-        public RegressionLearn getLearner() {
-            return learner;
-        }
-
-        public void setLearner(RegressionLearn learner) {
-            this.learner = learner;
-        }
-
-        //Model
-        public RegressionModel model;
-
-        public RegressionModel getModel() {
-            return model;
-        }
-
-        public void setModel(RegressionModel model) {
-            this.model = model;
-        }
-
-        //Classifier
-        public RegressionClassifier classifier;
-
-        public RegressionClassifier getClassifier() {
-            return classifier;
-        }
-
-        public void setClassifier(RegressionClassifier classifier) {
-            this.classifier = classifier;
-        }
-
-
-        public PredictorImplBuilder(String filepath) {
-            this.filePath = filepath;
+        public PredictorImplBuilder() {
         }
 
         public PredictorImplBuilder withUpdater(WeightUpdater updater) {
@@ -138,25 +89,75 @@ public final class PredictorImplInter {
             return this;
         }
 
-        public PredictorImpl build() {
-            PredictorImpl predictor = new PredictorImpl();
-            predictor.learner = this.learner;
-            predictor.updater = this.updater;
-            predictor.model = this.model;
-            model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
-            return predictor;
+        public PredictorImplBuilder withClassifier(RegressionClassifier regressionClassifier) {
+            this.classifier = regressionClassifier;
+            return this;
+        }
+
+        public PredictorImplBuilder withFile(String filepath) {
+            this.filepath = filepath;
+            return this;
 
         }
 
-        public void train(String filePath) {
+        public PredictorImplInter build() {
+            PredictorImplInter predictor = new PredictorImplInter();
+
+
+            sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
+                .create(learningRate) // learning rate
+                .holdoutValidationPercentage(0.05d) // 5% as validation set
+                .historySize(10_000) // keep 10k samples to compute relative improvement
+                .weightUpdater(updater) // FTRL updater
+                .progressReportInterval(1_000) // report every n iterations
+                .build();
+
+            //learner
+            if (this.learner == null)
+                predictor.learner = new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss());
+
+            if (this.learningRate == 0)
+                predictor.learningRate = 0.7;
+
+            if (this.beta == 0)
+                predictor.setBetaParameter(1);
+
+            if (this.l1 == 0)
+                predictor.setL1Parameter(1);
+
+            if (this.l2 == 0)
+                predictor.setL2Parameter(1);
+
+            //model
+            if (this.model == null)
+                predictor.model = new RegressionModel();
+
+            //classifier
+            if (this.classifier == null)
+                if (model != null) {
+                    predictor.classifier = new RegressionClassifier(model);
+                }
+
+            //updater
+            if (this.updater == null) {
+                predictor.updater = new AdaptiveFTRLRegularizer(beta, l1, l2);
+            }
+
+            if (this.filepath == null) {
+                predictor.filepath = " ";
+            }
+            train(filePath);
+            return predictor;
+        }
+
+        protected void train(String filePath) {
             learner.setNumPasses(2);
             learner.verbose();
-            model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
+            this.model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
         }
-
     }
 
-    public void featureHashing (CrawleableUri uri){
+    public void featureHashing(CrawleableUri uri) {
         ArrayList<String> tokens1 = new ArrayList<String>();
         tokens1 = tokenCreation(uri, tokens1);
         CrawleableUri referUri;
@@ -183,7 +184,7 @@ public final class PredictorImplInter {
 
     }
 
-    public double predict (CrawleableUri uri){
+    public double predict(CrawleableUri uri) {
         double pred = 0.0;
         try {
             //Get the feature vector
@@ -196,7 +197,8 @@ public final class PredictorImplInter {
                 DoubleVector prediction = classifier.predict(features);
                 double[] predictVal = prediction.toArray();
                 pred = predictVal[0];
-            } else {
+            }
+            else {
                 LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
             }
         } catch (Exception e) {
@@ -207,7 +209,7 @@ public final class PredictorImplInter {
     }
 
 
-    public void weightUpdate (CrawleableUri curi){
+    public void weightUpdate(CrawleableUri curi) {
         // Learning Rate used at runtime
         double learningRate = 0.7;
         try {
@@ -233,7 +235,8 @@ public final class PredictorImplInter {
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
                 model = new RegressionModel(new_weights, model.getActivationFunction());
-            } else {
+            }
+            else {
                 LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
         } catch (Exception e) {
@@ -243,8 +246,53 @@ public final class PredictorImplInter {
 
     }
 
+    public String getFilepath() {
+        return filepath;
+    }
 
-    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens){
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public void setL1Parameter(double l1) {
+        this.l1 = l1;
+    }
+
+    public double getL1Parameter() {
+        return l1;
+    }
+
+
+    public void setL2Parameter(double l2) {
+        this.l2 = l2;
+    }
+
+
+    public double getL2Parameter() {
+        return l2;
+    }
+
+
+    public void setBetaParameter(double beta) {
+        this.beta = beta;
+    }
+
+    public double getBetaParameter() {
+        return beta;
+    }
+
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+
+    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
 
         //String authority, scheme, host, path, query;
         //URI furi = null;
@@ -281,12 +329,6 @@ public final class PredictorImplInter {
     }
 
 }
-
-//
-//    public PredictorImpl(PredictorBuilderImpl builder){
-//    }package org.dice_research.squirrel.predictor;
-
-
 
 
 
