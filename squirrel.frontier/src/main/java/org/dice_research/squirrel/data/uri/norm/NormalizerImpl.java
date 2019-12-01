@@ -95,11 +95,17 @@ public class NormalizerImpl implements UriNormalizer {
 
         // Check whether the query part of a URI has to be sorted
         String query = uriObject.getQuery();
-        if((query != null)&& query.length() > 0) {
-            String[] queryList = query.split("&");
-            Arrays.sort(queryList);
-            query = String.join("&", queryList);
-            changed = true;
+        if(query != null){
+            if(query.length() > 0) {
+                String[] queryList = query.split("&");
+                Arrays.sort(queryList);
+                query = String.join("&", queryList);
+                changed = true;
+            }
+            else{
+                query = null;
+                changed = true;
+            }
         }
 
         //Remove default ports

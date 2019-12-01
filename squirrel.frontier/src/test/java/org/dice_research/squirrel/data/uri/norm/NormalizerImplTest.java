@@ -54,7 +54,7 @@ public class NormalizerImplTest {
         CrawleableUri originalUri;
         CrawleableUri expectedUri;
         
-//        // Very simple first test case
+        // Very simple first test case
         originalUri = new CrawleableUri(new URI("http://example.org/test1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/test1"));
         testConfigs.add(new Object[] { originalUri, expectedUri });
@@ -74,8 +74,8 @@ public class NormalizerImplTest {
         testConfigs.add(new Object[] { originalUri, expectedUri });
 
         // Add query and make sure the parameters are sorted
-        originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2"));
-        expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2&a=1"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=1&a=2&b=1"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
 
         //Add port and make sure the default ports are removed
@@ -93,10 +93,19 @@ public class NormalizerImplTest {
         expectedUri = new CrawleableUri(new URI("http://www.example.com/a/c"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
 
+        originalUri = new CrawleableUri(new URI("http://www.example.com/some//path"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/some/path"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
         //Check for percent encoding
         originalUri = new CrawleableUri(new URI("http://www.example.com/%7euser"));
         expectedUri = new CrawleableUri(new URI("http://www.example.com/~user"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        // Check for empty query
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
+        testConfigs.add(new Object[] {originalUri, expectedUri});
 
         return testConfigs;
 
