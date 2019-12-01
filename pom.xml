@@ -42,6 +42,8 @@
 		<module>squirrel.mockup</module>
 		<module>squirrel.worker</module>
 		<module>squirrel.crawled.graph</module>
+		<module>crawled.data.graph</module>
+		<module>squirrel.crawled-data-graph</module>
 	</modules>
 
 	<properties>
