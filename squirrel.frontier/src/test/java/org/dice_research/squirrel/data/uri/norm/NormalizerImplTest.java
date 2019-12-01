@@ -54,11 +54,11 @@ public class NormalizerImplTest {
         CrawleableUri originalUri;
         CrawleableUri expectedUri;
         
-        // Very simple first test case
+//        // Very simple first test case
         originalUri = new CrawleableUri(new URI("http://example.org/test1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/test1"));
         testConfigs.add(new Object[] { originalUri, expectedUri });
-        
+
         // Make sure attached data is not lost
         originalUri = new CrawleableUri(new URI("http://example.org/test1"));
         originalUri.addData(Constants.URI_TYPE_KEY, "some type");
@@ -67,7 +67,7 @@ public class NormalizerImplTest {
         expectedUri.addData(Constants.URI_TYPE_KEY, "some type");
         expectedUri.addData("My own key", "My own value");
         testConfigs.add(new Object[] { originalUri, expectedUri });
-        
+
         // Add a fragment and make sure that it is deleted
         originalUri = new CrawleableUri(new URI("http://example.org/dump.gz#Resource1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/dump.gz"));
@@ -89,14 +89,14 @@ public class NormalizerImplTest {
         testConfigs.add(new Object[] { originalUri, expectedUri});
 
         //Check for path resolving
-        //originalUri = new CrawleableUri(new URI("http://www.example.com/a/./b/../c"));
-        //expectedUri = new CrawleableUri(new URI("http://www.example.com/a/c"));
-        //testConfigs.add(new Object[] { originalUri, expectedUri});
+        originalUri = new CrawleableUri(new URI("http://www.example.com/a/./b/../c"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/a/c"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
 
         //Check for percent encoding
-        //originalUri = new CrawleableUri(new URI("http://www.example.com/%41"));
-        //expectedUri = new CrawleableUri(new URI("http://www.example.com/A"));
-        //testConfigs.add(new Object[] { originalUri, expectedUri});
+        originalUri = new CrawleableUri(new URI("http://www.example.com/%7euser"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/~user"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
 
         return testConfigs;
 

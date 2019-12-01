@@ -80,7 +80,6 @@ public class NormalizerImpl implements UriNormalizer {
         boolean changed = false;
         // normalize path
         String path = uriObject.getRawPath();
-        System.out.println("the path is: " +path);
         if (path != null) {
             String temp = normalizePath(path);
             if (temp != path) {
@@ -150,13 +149,12 @@ public class NormalizerImpl implements UriNormalizer {
      *         made.
      */
     public String normalizePath(String path) {
-        // Check for encoded parts
+        // Check for empty paths
         if(path.equals("")){
-            System.out.println("path is empty");
             path = "/";
-            System.out.println(path);
             return path;
         }
+        // Check for encoded parts
         Matcher matcher = UNESCAPE_RULE_PATTERN.matcher(path);
         StringBuffer changedPath = null;
         if (matcher.find()) {
