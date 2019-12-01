@@ -116,7 +116,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     public List<Triple> getTriplesForGraph(CrawleableUri uri) {
         Query selectQuery = null;
         if (uri.equals(metadataGraphUri)) {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
+            selectQuery = QueryGenerator.getInstance().getSelectQuery();
         } else {
             selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
         }
@@ -223,8 +223,9 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
 
     @Override
     public void removeTriplesForGraph(CrawleableUri uri) {
-        String querybuilder = "DROP GRAPH <" + SparqlBasedSink.getGraphId(uri) + "> ;";
-        UpdateRequest request = UpdateFactory.create(querybuilder.toString());
+        LOGGER.info("Dropping Graph: " + getGraphId(uri));
+        String querybuilder = "DROP GRAPH <" + getGraphId(uri) + "> ;";
+        UpdateRequest request = UpdateFactory.create(querybuilder);
         updateExecFactory.createUpdateProcessor(request).execute();
     }
 
@@ -234,11 +235,5 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
         uriNew.addData(Constants.URI_DUPLICATE, uriOld);
         uriNew.addData(Constants.UUID_KEY, getGraphId(uriOld));
         closeSinkForUri(uriNew);
-    }
-
-    private void setHashForUri(CrawleableUri uri, String hash) {
-        openSinkForUri(uri);
-        uri.addData(Constants.URI_HASH_KEY, uri.hashCode());
-        closeSinkForUri(uri);
     }
 }
