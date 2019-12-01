@@ -9,13 +9,13 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class TrainingDataProviderImpl implements TrainingDataProvider {
@@ -25,23 +25,32 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
     private Predictor predictor = new PredictorImpl();
 
+
+    @Override
+    public void createTrainDataFile(String dataUri, String trainFilePath){
+        URL url = null;
+        BufferedReader br = null;
+        String line;
+        try {
+            PrintWriter writer = new PrintWriter(trainFilePath, "UTF-8");
+            url = new URL(dataUri);
+            br = new BufferedReader((new InputStreamReader(url.openStream())));
+            br.readLine();
+            while((line = br.readLine()) != null){
+                writer.println(line);
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath) {
-        URL url = null;
-        try {
-            url = new URL(filePath);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
         BufferedReader br = null;
         try {
-            br = new BufferedReader((new InputStreamReader(url.openStream())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            String line = br.readLine();
-        } catch (IOException e) {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            System.out.println("Inside setupstream function" + br.readLine());
+        }catch (IOException e){
             e.printStackTrace();
         }
         return br.lines().map((s) -> parseFeature(s));
@@ -50,6 +59,8 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
 
     public FeatureOutcomePair parseFeature(String line) {
         String[] split = line.split(",");
+        //System.out.println(split[0]);
+        //System.out.println(split[1]);
 
         URI furi = null;
         try {
