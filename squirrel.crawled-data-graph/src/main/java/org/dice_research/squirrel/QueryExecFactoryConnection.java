@@ -1,6 +1,5 @@
 package org.dice_research.squirrel;
 
-import com.sun.jndi.toolkit.url.Uri;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryHttp;
@@ -22,17 +21,15 @@ import org.apache.jena.sparql.core.DatasetDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.cert.LDAPCertStoreParameters;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class QueryExecFactoryConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryExecFactoryConnection.class);
+
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
@@ -93,47 +90,66 @@ public class QueryExecFactoryConnection {
         return new QueryExecFactoryConnection(queryExecFactory, updateExecFactory);
     }
 
-    public static List<String> getSubDomain(String host) {
+    public static List<String> getDomainLevels(String host) {
         Preconditions.checkNotNull(host);
         Joiner joiner = Joiner.on(".");
         List<String> domainParts = Lists.newLinkedList(Arrays.asList(host.split("\\.")));
-        List<String> subdomain = Lists.newLinkedList();
+        List<String> domainLevels = Lists.newLinkedList();
         while (!domainParts.isEmpty()) {
-            subdomain.add(joiner.join(domainParts));
+            domainLevels.add(joiner.join(domainParts));
             domainParts.remove(0);
         }
-        LOGGER.info(String.valueOf(subdomain));
-        return subdomain;
+        return domainLevels;
+    }
+    public static StringBuilder getPath(String fullPath) {
+        String[] path = fullPath.split("/");
+        List<String> a = new ArrayList<String>();
+        for (String s : path) {
+            a.add(s);
+        }
+        StringBuilder sb2 = new StringBuilder();
+        for(int i=0;i<a.size();i++) {
+            sb2.append( a.get(i) + "/");
+            LOGGER.info(String.valueOf(sb2));
+        }
+        return sb2;
+
     }
 
     public static void main(String args[]) throws URISyntaxException {
         QueryExecFactoryConnection.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
         Query domainQuery = SparqlQueryGenerator.getDomain();
         Query query = QueryFactory.create(domainQuery);
+        LOGGER.info("Query: " + query);
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
             RDFNode uri = sol.get("uri");
+            LOGGER.info("URI: " + uri);
             URI url = new URI(uri.toString());
 
-            String hostname = url.getHost();
-            String baseDomain = InternetDomainName.from(hostname).topPrivateDomain().toString();
-            String temp1 = hostname.replace("." + baseDomain, "");
-            getSubDomain(hostname);
-            LOGGER.info(temp1);
+            // URI parent = url.getPath().endsWith("/") ? url.resolve("..") : url.resolve(".");
 
+            String hostname = url.getHost();
+            String segments = url.getPath();
+            String urlQuery = url.getQuery();
+            String baseDomain = InternetDomainName.from(hostname).topPrivateDomain().toString();
             LOGGER.info(baseDomain);
+            String fullPath = baseDomain+segments;
+            String subdomain = hostname.replace("." + baseDomain, "");
+            LOGGER.info(subdomain);
+
+            getDomainLevels(hostname);
+            getPath(fullPath);
+
             hostname = String.valueOf(InternetDomainName.from(hostname).topPrivateDomain());
             InternetDomainName it = InternetDomainName.from(hostname);
             String domainname = String.valueOf(it.publicSuffix());
-            LOGGER.info(domainname);
             String temp = hostname.replaceAll("." + domainname, "");
-            LOGGER.info(temp);
+            LOGGER.info("domain name: "+temp);
 
         }
         qe.close();
     }
-
-
 }
