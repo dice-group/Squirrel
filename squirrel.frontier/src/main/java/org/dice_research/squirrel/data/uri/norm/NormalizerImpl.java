@@ -2,10 +2,7 @@ package org.dice_research.squirrel.data.uri.norm;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,6 +72,17 @@ public class NormalizerImpl implements UriNormalizer {
 
     }
 
+    /**
+     * list containing querry parameters for session ids     *
+     */
+    private static final List<String> sessionIDs = new ArrayList<>();
+    static {
+        sessionIDs.add("sessionid");
+        sessionIDs.add("jsessionids");
+        sessionIDs.add("phpsessid");
+        sessionIDs.add("sid");
+    }
+
     @Override
     public CrawleableUri normalize(CrawleableUri uri) {
         URI uriObject = uri.getUri();
@@ -100,7 +108,15 @@ public class NormalizerImpl implements UriNormalizer {
             if(query.length() > 0) {
                 String[] queryList = query.split("&");
                 Arrays.sort(queryList);
-                query = String.join("&", queryList);
+                List<String> queries = new ArrayList<>(Arrays.asList(queryList));
+                List<String> toRemove = new ArrayList<>();
+                for(String queryParameter : queries){
+                    if(sessionIDs.contains(queryParameter.split("=")[0].toLowerCase())){
+                        toRemove.add(queryParameter);
+                    }
+                }
+                queries.removeAll(toRemove);
+                query = String.join("&", queries);
                 changed = true;
             }
             else{

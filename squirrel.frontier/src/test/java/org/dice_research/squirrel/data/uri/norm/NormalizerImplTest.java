@@ -107,6 +107,11 @@ public class NormalizerImplTest {
         expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
         testConfigs.add(new Object[] {originalUri, expectedUri});
 
+        // Check if session ids are handled
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2&SESSIONID=12345678896"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
         return testConfigs;
 
 
