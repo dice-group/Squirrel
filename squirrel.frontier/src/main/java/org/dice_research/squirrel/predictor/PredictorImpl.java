@@ -22,8 +22,6 @@ import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
 import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
-import de.jungblut.reader.Dataset;
-import de.jungblut.reader.MNISTReader;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
@@ -122,7 +120,6 @@ public final class PredictorImpl implements Predictor {
         multinomialLearner = new MultinomialRegressionLearner(factory);
         multinomialLearner.verbose();
         this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
-        //System.out.println("the number of classes: "+ multinomialModel.getModels().length);
     }
 
     IntFunction<RegressionLearner> factory = (i) -> {
@@ -135,7 +132,7 @@ public final class PredictorImpl implements Predictor {
             .build();
         RegressionLearner learner =  new RegressionLearner(minimizer,
             new SigmoidActivationFunction(), new LogLoss());
-        learner.setNumPasses(1);
+        learner.setNumPasses(5);
         learner.verbose();
         return learner;
     };
@@ -150,10 +147,10 @@ public final class PredictorImpl implements Predictor {
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
                 //initialize the regression classifier with updated model and predict
-                classifier = new RegressionClassifier(model);
-                //multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
-                DoubleVector prediction = classifier.predict(features);
-                //DoubleVector prediction = multinomialClassifier.predict(features);
+                //classifier = new RegressionClassifier(model);
+                multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+                ////DoubleVector prediction = classifier.predict(features);
+                DoubleVector prediction = multinomialClassifier.predict(features);
                 pred = prediction.maxIndex();
 
                 }else {

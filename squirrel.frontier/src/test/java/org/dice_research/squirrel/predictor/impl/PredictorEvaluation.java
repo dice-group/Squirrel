@@ -35,11 +35,12 @@ public class PredictorEvaluation {
      */
     private static final ArrayList<String> classList = new ArrayList<>();
     static{
-        classList.add("OTHER");
         classList.add("SPARQL");
-        classList.add("ZIPPED_DUMP");
         classList.add("DUMP");
+        classList.add("CKAN");
     }
+
+    Integer[][] confusionMatrix = new Integer[3][3];
 
     /**
      * Constructor.
@@ -51,8 +52,12 @@ public class PredictorEvaluation {
      */
     public PredictorEvaluation(String trainFilePath, String testFilePath){
         this.trainFilePath = trainFilePath;
-
         this.testFilePath = testFilePath;
+        for(int i=0; i<3; i++){
+            for(int j=0; j<3; j++){
+                confusionMatrix[i][j] = 0;
+            }
+        }
     }
 
     /**
@@ -86,6 +91,8 @@ public class PredictorEvaluation {
                 //System.out.println("predicted values: "+ pred);
                 split[1] = split[1].replace("\"", "");
                 //System.out.println("the classList index: "+classList.indexOf(split[1]));
+                if(classList.indexOf(split[1]) != -1)
+                    confusionMatrix[classList.indexOf(split[1])][pred]++;
                 if(pred ==  classList.indexOf(split[1])){
                     correctCount++;
                 }
@@ -94,7 +101,12 @@ public class PredictorEvaluation {
             e.printStackTrace();
         }
         accuracy = correctCount.floatValue() / uriCount.floatValue();
-
+        for(int i=0; i<3; i++){
+            for(int j=0; j<3; j++){
+                System.out.print(" " +confusionMatrix[i][j]);
+            }
+            System.out.println();
+        }
         System.out.println(" The total number of URIs is: " + uriCount);
         System.out.println(" The total number of correct predictions  is: " + correctCount);
         System.out.println(" The accuracy of the predictor is: " + accuracy);
@@ -115,12 +127,7 @@ public class PredictorEvaluation {
         int folds = 10;
         int chunk;
         try {
-            //url = new URL(trainFilePath);
-
-            //br = new BufferedReader((new InputStreamReader(url.openStream())));
-            br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(trainFilePath)
-                , Charset.defaultCharset()));
-            line = br.readLine();
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(trainFilePath)));
             while( ( line = br.readLine()) != null){
                 lineList.add(line);
             }
@@ -148,13 +155,17 @@ public class PredictorEvaluation {
                     }
                 }
             }
-            for(int i=0; i<folds-1; i++){
+            for(int i=0; i<folds ; i++){
                 PrintWriter writerTrain = new PrintWriter("trainFile.txt", "UTF-8");
                 PrintWriter writerTest = new PrintWriter("testFile.txt", "UTF-8");
                 for(int p=0; p<chunk; p++){
+                    if(p == test[i].length)
+                        break;
                     writerTest.println(lineList.get(test[i][p]));
                 }
                 for(int q=0; q<(lineList.size() - chunk); q++){
+                    if(q == train[i].length)
+                        break;
                     writerTrain.println(lineList.get(train[i][q]));
                 }
                 writerTrain.close();
@@ -169,8 +180,24 @@ public class PredictorEvaluation {
         }
     }
 
+    public void writeConfusionMatrix(){
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("confusionMatrix.txt"));
+            bw.write("Sparql\tDump\tCkan");
+            bw.newLine();
+            for (int i = 0; i < confusionMatrix.length; i++) {
+                for (int j = 0; j < confusionMatrix[i].length; j++) {
+                    bw.write(confusionMatrix[i][j] + "\t");
+                }
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (IOException e) {}
+    }
+
     public static void main(String[] args) {
         PredictorEvaluation evaluate = new PredictorEvaluation("multiNomialTrainData", "testFile.txt");
         evaluate.crossValidation();
+        evaluate.writeConfusionMatrix();
         }
 }

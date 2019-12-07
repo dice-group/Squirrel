@@ -91,7 +91,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public static final boolean RECRAWLING_ACTIVE = true;
     //
      //protected Predictor pred = new PredictorImpl();
-     @Qualifier("predictorBean")
+     //@Qualifier("predictorBean")
      protected Predictor predictor;
 
     @Override
@@ -125,9 +125,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         predictor = new PredictorImpl();
         if(predictor != null){
             try {
-                TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
-                dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
-                predictor.train("trainDataFile.txt");
+                //TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
+                //dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
+                //predictor.train("trainDataFile.txt");
+                predictor.multiNomialTrain("multiNomialTrainData");
             }catch (Exception e){
                 e.printStackTrace();
             }

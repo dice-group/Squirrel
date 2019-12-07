@@ -27,10 +27,11 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
     private Predictor predictor = new PredictorImpl();
     private static final ArrayList<String> classList = new ArrayList<>();
     static {
-        classList.add("OTHER");
+
         classList.add("SPARQL");
-        classList.add("ZIPPED_DUMP");
         classList.add("DUMP");
+        classList.add("CKAN");
+
     }
 
 
@@ -65,7 +66,7 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
 
 
     public FeatureOutcomePair parseFeature(String line) {
-        DoubleVector[] classes = new DoubleVector[4];
+        DoubleVector[] classes = new DoubleVector[3];
         for (int i = 0; i < classes.length; i++) {
             classes[i] = new DenseDoubleVector(classes.length);
             classes[i].set(i, 1d);
