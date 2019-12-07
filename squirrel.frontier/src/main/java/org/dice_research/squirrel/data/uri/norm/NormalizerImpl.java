@@ -70,7 +70,8 @@ public class NormalizerImpl implements UriNormalizer {
         defaultPortMap.put("http", 80);
         defaultPortMap.put("https", 443);
         defaultPortMap.put("ftp", 21);
-        defaultPortMap.put("dns", 53);
+        defaultPortMap.put("ftps", 990);
+        defaultPortMap.put("sftp", 22);
 
     }
 
