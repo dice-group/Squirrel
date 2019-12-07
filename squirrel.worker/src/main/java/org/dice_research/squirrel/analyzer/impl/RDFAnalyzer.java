@@ -100,6 +100,9 @@ public class RDFAnalyzer extends AbstractAnalyzer {
                 }
             }
             ActivityUtil.addStep(curi, getClass());
+            if(curi.getData(Constants.URI_TRUE_CLASS) == null){
+                curi.addData(Constants.URI_TRUE_CLASS, 1);
+            }
             return collector.getUris(curi);
         } catch (Exception e) {
             LOGGER.error("Exception while analyzing. Aborting. ", e);

@@ -69,6 +69,7 @@ public class HDTAnalyzer extends AbstractAnalyzer {
                 sink.addTriple(curi, t);
             }
             ActivityUtil.addStep(curi, getClass());
+            curi.addData(Constants.URI_TRUE_CLASS, 1);
             return collector.getUris(curi);
         } catch (IOException | org.rdfhdt.hdt.exceptions.NotFoundException e) {
             LOGGER.error("An error occured when processing the HDT file", e);

@@ -59,6 +59,10 @@ public class Constants {
      */
     public static final String URI_TRUE_LABEL = "true-label";
     /**
+     * This key stores an integer denoting the true class of the URI
+     */
+    public static final String URI_TRUE_CLASS = "true_class";
+    /**
      * This key stores the feature vector generated for each URI for prediction purpose
      */
     public static final String FEATURE_VECTOR = "feature-vector";
