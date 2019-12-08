@@ -11,9 +11,14 @@ import de.jungblut.nlp.VectorizerUtils;
 import de.jungblut.online.minimizer.StochasticGradientDescent;
 import de.jungblut.online.ml.FeatureOutcomePair;
 import de.jungblut.online.regression.RegressionClassifier;
+import de.jungblut.online.regression.RegressionLearner;
 import de.jungblut.online.regression.RegressionModel;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionClassifier;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionLearner;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionModel;
 import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
+import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -23,14 +28,20 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.IntFunction;
 
 public class PredictorImplInter {
+
 
     private WeightUpdater updater;
     private RegressionLearn learner;
     public RegressionModel model;
     public RegressionClassifier classifier;
+    public MultinomialRegressionClassifier multinomialClassifier;
+    public MultinomialRegressionModel multinomialModel;
+    public MultinomialRegressionLearner multinomialLearner;
     private String filepath;
     private double learningRate;
     private double l2;
@@ -38,6 +49,7 @@ public class PredictorImplInter {
     private double beta;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
+
 
     public static class PredictorImplBuilder {
         private String filepath;
@@ -62,12 +74,25 @@ public class PredictorImplInter {
 
         protected double l2;  //L2
 
-        private String filePath; //filepath to train
+        public String filePath; //filepath to train
+
+        public MultinomialRegressionModel multinomialModel;
+
+        public MultinomialRegressionLearner multinomialLearner;
+
+        public MultinomialRegressionClassifier multinomialClassifier;
 
         public PredictorImplBuilder(RegressionLearn learner, RegressionModel model, RegressionClassifier classifier, WeightUpdater updater) {
             this.learner = learner;
             this.model = model;
             this.classifier = classifier;
+            this.updater = updater;
+        }
+
+        public PredictorImplBuilder(MultinomialRegressionLearner learner, MultinomialRegressionModel model, MultinomialRegressionClassifier classifier, WeightUpdater updater) {
+            this.multinomialLearner = learner;
+            this.multinomialModel = model;
+            this.multinomialClassifier = classifier;
             this.updater = updater;
         }
 
@@ -84,13 +109,28 @@ public class PredictorImplInter {
             return this;
         }
 
+        public PredictorImplBuilder withLearner(MultinomialRegressionLearner multinomialLearner) {
+            this.multinomialLearner = multinomialLearner;
+            return this;
+        }
+
         public PredictorImplBuilder withModel(RegressionModel model) {
             this.model = model;
             return this;
         }
 
+        public PredictorImplBuilder withModel(MultinomialRegressionModel multinomialModel) {
+            this.multinomialModel = multinomialModel;
+            return this;
+        }
+
         public PredictorImplBuilder withClassifier(RegressionClassifier regressionClassifier) {
             this.classifier = regressionClassifier;
+            return this;
+        }
+
+        public PredictorImplBuilder withClassifier(MultinomialRegressionClassifier multinomialClassifier) {
+            this.multinomialClassifier = multinomialClassifier;
             return this;
         }
 
@@ -103,7 +143,6 @@ public class PredictorImplInter {
         public PredictorImplInter build() {
             PredictorImplInter predictor = new PredictorImplInter();
 
-
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
                 .create(learningRate) // learning rate
                 .holdoutValidationPercentage(0.05d) // 5% as validation set
@@ -111,10 +150,6 @@ public class PredictorImplInter {
                 .weightUpdater(updater) // FTRL updater
                 .progressReportInterval(1_000) // report every n iterations
                 .build();
-
-            //learner
-            if (this.learner == null)
-                predictor.learner = new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss());
 
             if (this.learningRate == 0)
                 predictor.learningRate = 0.7;
@@ -132,11 +167,25 @@ public class PredictorImplInter {
             if (this.model == null)
                 predictor.model = new RegressionModel();
 
+            //multi=class model
+            if (this.multinomialModel == null)
+                predictor.multinomialModel = new MultinomialRegressionModel();
+
             //classifier
             if (this.classifier == null)
-                if (model != null) {
-                    predictor.classifier = new RegressionClassifier(model);
-                }
+                if (model != null) predictor.classifier = new RegressionClassifier(model);
+
+            //multi-class classifier
+            if (this.multinomialClassifier == null)
+                if (multinomialModel != null) predictor.multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+
+            //learner
+            if (this.learner == null)
+                predictor.learner = new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss());
+
+            //multi-class classifier
+            if (this.multinomialLearner == null)
+                predictor. multinomialLearner = new MultinomialRegressionLearner(factory);
 
             //updater
             if (this.updater == null) {
@@ -146,7 +195,13 @@ public class PredictorImplInter {
             if (this.filepath == null) {
                 predictor.filepath = " ";
             }
-            train(filePath);
+
+            if (Objects.equals(model, new RegressionModel()))
+                train(filePath);
+
+            else if (Objects.equals(multinomialModel, new MultinomialRegressionModel()))
+                multinomialTrain(filepath);
+
             return predictor;
         }
 
@@ -155,6 +210,26 @@ public class PredictorImplInter {
             learner.verbose();
             this.model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
         }
+
+        protected void multinomialTrain(String filepath) {
+            multinomialLearner.verbose();
+            this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
+        }
+
+        IntFunction<RegressionLearner> factory = (i) -> {
+            // take care of not sharing any state from the outside, since classes are trained in parallel
+            StochasticGradientDescent minimizer = StochasticGradientDescent.StochasticGradientDescentBuilder
+                .create(0.01)
+                .holdoutValidationPercentage(0.1d)
+                .weightUpdater(new L2Regularizer(0.1))
+                .progressReportInterval(1_000)
+                .build();
+            RegressionLearner learner = new RegressionLearner(minimizer,
+                new SigmoidActivationFunction(), new LogLoss());
+            learner.setNumPasses(1);
+            learner.verbose();
+            return learner;
+        };
     }
 
     public void featureHashing(CrawleableUri uri) {
@@ -224,6 +299,7 @@ public class PredictorImplInter {
 
                 DoubleVector nextExample = features;
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+
                 CostGradientTuple observed = this.learner.observeExample(realResult, this.model.getWeights());
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(this.model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
@@ -242,7 +318,40 @@ public class PredictorImplInter {
         } catch (Exception e) {
             LOGGER.info("Error while updating the weight " + e);
         }
+    }
 
+    public void multinomialModelWeightUpdate(CrawleableUri uri){
+
+        double learningRate = 0.7;
+        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_LABEL) != null) {
+
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
+            Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
+            int rv = (int) real_value;
+            DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+            FeatureOutcomePair realResult = new FeatureOutcomePair(features, rv_DoubleVector); // real outcome
+
+            for(RegressionModel s : multinomialModel.getModels()){
+                CostGradientTuple observed = this.learner.observeExample(realResult, s.getWeights());
+
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(s.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+
+                //update weights using the updated parameters
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+
+                // update model and classifier
+                s = new RegressionModel(new_weights, s.getActivationFunction());
+            }
+            //create a new multinomial model with the update weights
+            multinomialModel = new MultinomialRegressionModel(multinomialModel.getModels());
+        }
+        else
+            LOGGER.info("URI is null");
 
     }
 
@@ -329,6 +438,3 @@ public class PredictorImplInter {
     }
 
 }
-
-
-
