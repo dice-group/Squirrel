@@ -54,6 +54,15 @@ public interface Predictor {
     public void weightUpdate(CrawleableUri uri);
 
     /**
+     * Update the weight of the multinomial model. It updates the individual models and then
+     * generates a new multinomial model.
+     * @param uri
+     * {@link CrawleableUri} URI whose class is to be predicted.
+     */
+
+    public void multinomialModelWeightUpdate(CrawleableUri uri);
+
+    /**
      * Method to set regularizing parameter L1
      * @param l1
      */

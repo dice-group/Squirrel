@@ -22,11 +22,15 @@ import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
 import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
+import de.jungblut.reader.Dataset;
+import de.jungblut.reader.MNISTReader;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,6 +124,7 @@ public final class PredictorImpl implements Predictor {
         multinomialLearner = new MultinomialRegressionLearner(factory);
         multinomialLearner.verbose();
         this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
+        //System.out.println("the number of classes: "+ multinomialModel.getModels().length);
     }
 
     IntFunction<RegressionLearner> factory = (i) -> {
@@ -132,7 +137,7 @@ public final class PredictorImpl implements Predictor {
             .build();
         RegressionLearner learner =  new RegressionLearner(minimizer,
             new SigmoidActivationFunction(), new LogLoss());
-        learner.setNumPasses(5);
+        learner.setNumPasses(1);
         learner.verbose();
         return learner;
     };
@@ -147,13 +152,13 @@ public final class PredictorImpl implements Predictor {
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
                 //initialize the regression classifier with updated model and predict
-                //classifier = new RegressionClassifier(model);
-                multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
-                ////DoubleVector prediction = classifier.predict(features);
-                DoubleVector prediction = multinomialClassifier.predict(features);
+                classifier = new RegressionClassifier(model);
+                //multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+                DoubleVector prediction = classifier.predict(features);
+//                DoubleVector prediction = multinomialClassifier.predict(features);
                 pred = prediction.maxIndex();
 
-                }else {
+            }else {
                 LOGGER.info("Feature vector of this "+ uri.getUri().toString() +" is null");
             }
         } catch (Exception e) {
@@ -180,23 +185,60 @@ public final class PredictorImpl implements Predictor {
                 DoubleVector nextExample = features;
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
                 CostGradientTuple observed = this.learner.observeExample(realResult, this.model.getWeights());
+
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(this.model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
 
                 //update weights using the updated parameters
                 DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
 
-
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
                 model = new RegressionModel(new_weights, model.getActivationFunction());
-                } else {
+            } else {
                 LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
         } catch (Exception e) {
             LOGGER.info("Error while updating the weight " + e);
         }
     }
+
+    public void multinomialModelWeightUpdate(CrawleableUri uri){
+
+        double learningRate = 0.7;
+        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_LABEL) != null) {
+
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
+            Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
+            int rv = (int) real_value;
+            DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+            FeatureOutcomePair realResult = new FeatureOutcomePair(features, rv_DoubleVector); // real outcome
+
+            for(RegressionModel s : multinomialModel.getModels()){
+                CostGradientTuple observed = this.learner.observeExample(realResult, s.getWeights());
+
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(s.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
+
+                //update weights using the updated parameters
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+
+                // update model and classifier
+                s = new RegressionModel(new_weights, s.getActivationFunction());
+            }
+
+            //create a new multinomial model with the updated models
+            multinomialModel = new MultinomialRegressionModel(multinomialModel.getModels());
+        }
+        else
+            LOGGER.info("URI is null");
+
+    }
+
 
     @Override
     public void setL1Parameter (double l1){
