@@ -25,6 +25,13 @@
 			<version>1.7.5</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j</artifactId>
+			<version>3.5.13</version>
+		</dependency>
+
 	</dependencies>
 
 
