@@ -119,12 +119,14 @@ public class SparqlBasedUriFilterTest {
         // Check the content of the activity
         Assert.assertEquals(2, activity.getNumberOfTriples());
 
-        Query query = QueryFactory.create("SELECT * WHERE { <http://w3id.org/squirrel/vocab#ResultGraph> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?val}");
+        //Query query = QueryFactory.create("SELECT ?uri WHERE { ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ?term. FILTER (str(?term) = \"150964577\") }");
+
+        Query query = QueryFactory.create("SELECT ?subject ?predicate ?object WHERE { }");
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
         while (rs.hasNext()) {
             QuerySolution qs = rs.next();
-            //Assert.assertEquals(Squirrel.ResultGraph, qs.getSubject());
+            //Assert.assertEquals(Squirrel.ResultGraph, qs.get);
             //Assert.assertEquals(RDFS.Class, s.getObject());
         }
     }

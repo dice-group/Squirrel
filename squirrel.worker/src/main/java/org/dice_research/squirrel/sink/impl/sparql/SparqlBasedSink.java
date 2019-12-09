@@ -11,7 +11,6 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -20,7 +19,6 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadAcc;
@@ -28,7 +26,6 @@ import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
-import org.apache.jena.vocabulary.RDF;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
@@ -164,9 +161,6 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
                 graph = NodeFactory.createURI(uri.getUri().toString());
             } else {
                 graph = NodeFactory.createURI(getGraphId(uri));
-                Triple triple = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
-                    ResourceFactory.createTypedLiteral(String.valueOf(uri.hashCode()), XSDDatatype.XSDint).asNode());
-                triples.add(triple);
             }
 
             UpdateDeleteInsert insert = new UpdateDeleteInsert();

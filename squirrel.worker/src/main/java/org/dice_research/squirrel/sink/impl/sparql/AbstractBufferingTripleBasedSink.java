@@ -1,10 +1,5 @@
 package org.dice_research.squirrel.sink.impl.sparql;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -12,6 +7,11 @@ import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.tripleBased.TripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSink {
 
@@ -38,7 +38,7 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
     public void addTriple(CrawleableUri uri, Triple triple) {
         TripleBuffer status = buffers.get(uri);
         if (status == null) {
-            LOGGER.warn("Sink has not been opened for the uri, sink will be opened.");
+            LOGGER.warn("");
             openSinkForUri(uri);
             status = buffers.get(uri);
         }
@@ -46,6 +46,10 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
     }
 
     protected abstract void sendTriples(CrawleableUri uri, Collection<Triple> buffer);
+
+    public void sendTriplesDirect(CrawleableUri uri, Collection<Triple> buffer) {
+
+    }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {

@@ -50,8 +50,7 @@ public class SparqlBasedSinkTest {
         }
 
         Model model = dataset.getNamedModel(SparqlBasedSink.getGraphId(uri));
-        //HashValue is added as a triple. Hence the expected number of triples is 1 more than the number added here.
-        Assert.assertEquals(3, model.size());
+        Assert.assertEquals(2, model.size());
         StmtIterator iterator = model.listStatements(null, RDF.type, (RDFNode) null);
         Statement s;
         while (iterator.hasNext()) {
@@ -64,12 +63,11 @@ public class SparqlBasedSinkTest {
             s = iterator.next();
             Assert.assertEquals(Squirrel.ResultGraph, s.getSubject());
             Assert.assertTrue(s.getObject().isLiteral());
-            //Temporarily commented.
-//            Assert.assertEquals(new Double(3.14), s.getObject().asLiteral().getValue());
+            Assert.assertEquals(new Double(3.14), s.getObject().asLiteral().getValue());
         }
 
         // Check the content of the activity
         //HashValue is added as a triple. Hence the expected number of triples is 1 more than the number added here.
-        Assert.assertEquals(3, activity.getNumberOfTriples());
+        Assert.assertEquals(2, activity.getNumberOfTriples());
     }
 }

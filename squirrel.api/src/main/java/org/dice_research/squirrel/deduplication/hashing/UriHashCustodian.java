@@ -1,9 +1,9 @@
 package org.dice_research.squirrel.deduplication.hashing;
 
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+
 import java.util.List;
 import java.util.Set;
-
-import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * This component maintains {@link HashValue}s for uris. It provides methods for getting uris with some desired hash values,
@@ -21,7 +21,9 @@ public interface UriHashCustodian {
      */
     Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison);
 
-    /**
+    Set<CrawleableUri> getUrisWithSameHashValues(String hashValue);
+
+    /**<
      * Add the given hash values for the given uris. Hash values are contained in the uris.
      *
      * @param uris The given uris.

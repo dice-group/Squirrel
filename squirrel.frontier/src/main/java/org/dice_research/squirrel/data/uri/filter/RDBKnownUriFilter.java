@@ -1,16 +1,8 @@
 package org.dice_research.squirrel.data.uri.filter;
 
-import java.io.Closeable;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
@@ -22,9 +14,12 @@ import org.dice_research.squirrel.model.RDBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Cursor;
+import java.io.Closeable;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * Created by ivan on 8/18/16.
@@ -228,6 +223,11 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         }
         cursor.close();
         return urisToReturn;
+    }
+
+    @Override
+    public Set<CrawleableUri> getUrisWithSameHashValues(String hashValue) {
+        return null;
     }
 
     @Override

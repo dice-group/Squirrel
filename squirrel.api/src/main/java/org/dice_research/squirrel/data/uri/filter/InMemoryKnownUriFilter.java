@@ -1,10 +1,10 @@
 package org.dice_research.squirrel.data.uri.filter;
 
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * A simple in-memory implementation of the {@link KnownUriFilter} interface.
@@ -114,6 +114,6 @@ public class InMemoryKnownUriFilter implements KnownUriFilter {
     @Override
     public void open() {
         // TODO Auto-generated method stub
-        
+
     }
 }
