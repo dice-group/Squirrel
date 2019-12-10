@@ -50,7 +50,7 @@ public final class BinomialPredictor{
 
         private WeightUpdater updater; //Updater
 
-        private double learningRate = 0.01;//Learning rate
+        private double learningRate ;//Learning rate
 
         private double beta;   //Beta
 

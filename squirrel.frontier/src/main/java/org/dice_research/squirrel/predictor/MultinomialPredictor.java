@@ -51,7 +51,7 @@ public final class MultinomialPredictor {
 
         private TrainingDataProvider trainingDataProvider; //Training Data Provider
 
-        private StochasticGradientDescent sgd; //Minimizer
+        protected StochasticGradientDescent sgd; //Minimizer
 
         private RegressionModel model; //Model
 
