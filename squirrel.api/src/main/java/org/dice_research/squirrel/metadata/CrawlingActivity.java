@@ -134,7 +134,8 @@ public class CrawlingActivity implements Serializable {
 
 
         if (workerUri != null) {
-            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));
+            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));  
+            model.add(model.createResource(workerUri), RDF.type, PROV_O.agent);
         }
         if (outputResource != null) {
             // write all the output resources to the model
