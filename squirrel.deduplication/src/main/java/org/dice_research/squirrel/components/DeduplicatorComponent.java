@@ -97,7 +97,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
             }
 
-            deduplication = new DeduplicationImpl(sink,tripleComparator,tripleHashFunction);
+            deduplication = new DeduplicationImpl(uriHashCustodian, sink,tripleComparator,tripleHashFunction);
 
             String sparqlHostName = null;
             String sparqlHostPort = null;

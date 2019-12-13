@@ -47,10 +47,6 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
 
     protected abstract void sendTriples(CrawleableUri uri, Collection<Triple> buffer);
 
-    public void sendTriplesDirect(CrawleableUri uri, Collection<Triple> buffer) {
-
-    }
-
     @Override
     public void closeSinkForUri(CrawleableUri uri) {
         TripleBuffer status = buffers.remove(uri);
@@ -64,5 +60,4 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
             activity.setNumberOfTriples(status.getNumberOfTriples());
         }
     }
-
 }

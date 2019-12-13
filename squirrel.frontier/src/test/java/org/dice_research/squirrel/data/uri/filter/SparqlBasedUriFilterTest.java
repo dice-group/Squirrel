@@ -80,6 +80,10 @@ public class SparqlBasedUriFilterTest {
         p.waitFor();
     }
 
+    @Test
+    public void testAddHashValuesForUris() {
+
+    }
 
     @Test
     public void test() throws IOException, InterruptedException, URISyntaxException {
