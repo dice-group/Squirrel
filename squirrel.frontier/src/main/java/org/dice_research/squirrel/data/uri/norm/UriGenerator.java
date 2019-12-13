@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * An interface to generate different variants of a given URI
  */
-public interface UriVariants {
+public interface UriGenerator {
     /**
      * Generate a list of uris that are variants of the input uri
      * @param uri
