@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
  * <li>sort query parameters</li>
  * <li>add "/" for empty paths</li>
  * <li>filter parts of the URI</li>
+ * <li>Convert host and scheme to lower case</li>
  * </ul>
  */
 @Component
@@ -73,7 +74,7 @@ public class NormalizerImpl implements UriNormalizer {
     }
 
     /**
-     * list containing querry parameters for session ids     *
+     * list containing query parameters for session ids     *
      */
     private static final List<String> sessionIDs = new ArrayList<>();
     static {
@@ -142,6 +143,14 @@ public class NormalizerImpl implements UriNormalizer {
             changed = true;
         }
 
+        // convert host and scheme to lower case
+        String host = uriObject.getHost();
+        if(!scheme.equals(scheme.toLowerCase()) || !host.equals(host.toLowerCase())){
+            scheme = scheme.toLowerCase();
+            host = host.toLowerCase();
+            changed = true;
+        }
+
         // Filter attributes of the URI
         // uriObject.getQuery();
 
@@ -152,6 +161,8 @@ public class NormalizerImpl implements UriNormalizer {
             builder.setPath(path);
             builder.setCustomQuery(query);
             builder.setPort(port);
+            builder.setHost(host);
+            builder.setScheme(scheme);
             try {
                 uri = new CrawleableUri(builder.build());
             } catch (URISyntaxException e) {

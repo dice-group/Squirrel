@@ -112,6 +112,11 @@ public class NormalizerImplTest {
         expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
         testConfigs.add(new Object[] { originalUri, expectedUri});
 
+        // Convert the scheme and host to lower case
+        originalUri = new CrawleableUri(new URI("http://WWW.EXAMPLE.com/"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
         return testConfigs;
 
 
