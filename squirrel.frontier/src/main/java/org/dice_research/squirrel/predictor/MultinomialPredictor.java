@@ -10,7 +10,6 @@ import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.nlp.VectorizerUtils;
 import de.jungblut.online.minimizer.StochasticGradientDescent;
 import de.jungblut.online.ml.FeatureOutcomePair;
-import de.jungblut.online.regression.RegressionClassifier;
 import de.jungblut.online.regression.RegressionLearner;
 import de.jungblut.online.regression.RegressionModel;
 import de.jungblut.online.regression.multinomial.MultinomialRegressionClassifier;
@@ -31,31 +30,25 @@ import java.util.function.IntFunction;
 
 public final class MultinomialPredictor {
 
-    private RegressionModel model;
-    private RegressionClassifier classifier;
-    private WeightUpdater updater;
-    private RegressionLearn learner;
-
-    public static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
 
     private MultinomialRegressionModel multinomialModel;
     private MultinomialRegressionLearner multinomialLearner;
     private MultinomialRegressionClassifier multinomialClassifier;
+    private WeightUpdater updater;
+    private RegressionLearn learner;
     private String filepath;
-    private double learningRate;
-    private double l2;
-    private double l1;
-    private double beta;
+    private Double learningRate;
+    private Double l2;
+    private Double l1;
+    private Double beta;
+    private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
     public static class MultinomialPredictorBuilder {
 
         private TrainingDataProvider trainingDataProvider; //Training Data Provider
 
         protected StochasticGradientDescent sgd; //Minimizer
-
-        private RegressionModel model; //Model
-
-        private RegressionClassifier classifier;//Classifier
 
         private RegressionLearn learner; //Learner
 
@@ -67,13 +60,15 @@ public final class MultinomialPredictor {
 
         private MultinomialRegressionClassifier multinomialClassifier; //Multinomial Classifier
 
-        private double learningRate; //Learning rate
+        private Double learningRate; //Learning rate
 
-        private double beta;   //Beta
+        private Double beta;   //Beta
 
-        private double l1;   //L1
+        private Double l1;   //L1
 
-        private double l2;  //L2
+        private Double l2;  //L2
+
+        private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
         private String filePath; //filepath to train
 
@@ -113,22 +108,22 @@ public final class MultinomialPredictor {
 
         }
 
-        public MultinomialPredictorBuilder withLearningRate(Double learningRate){
+        public MultinomialPredictorBuilder withLearningRate(Double learningRate) {
             this.setLearningRate(learningRate);
             return this;
         }
 
-        public MultinomialPredictorBuilder withL1(Double L1){
+        public MultinomialPredictorBuilder withL1(Double L1) {
             this.setL1(L1);
             return this;
         }
 
-        public MultinomialPredictorBuilder withL2(Double L2){
+        public MultinomialPredictorBuilder withL2(Double L2) {
             this.setL2(L2);
             return this;
         }
 
-        public MultinomialPredictorBuilder withBeta(Double Beta){
+        public MultinomialPredictorBuilder withBeta(Double Beta) {
             this.setBeta(Beta);
             return this;
         }
@@ -137,22 +132,22 @@ public final class MultinomialPredictor {
             MultinomialPredictor predictor = new MultinomialPredictor();
 
             //Learning Rate
-            if (this.getLearningRate() == 0)
+            if (this.getLearningRate() == null)
                 this.setLearningRate(0.7);
             predictor.setLearningRate(this.getLearningRate());
 
             //Beta
-            if (this.getBeta() == 0)
+            if (this.getBeta() == null)
                 this.setBeta(1);
             predictor.setBeta(this.getBeta());
 
             //L1
-            if (this.getL1() == 0)
+            if (this.getL1() == null)
                 this.setL1(1);
             predictor.setL1(this.getL1());
 
             //L2
-            if (this.getL2() == 0)
+            if (this.getL2() == null)
                 this.setL2(1);
             predictor.setL2(this.getL2());
 
@@ -162,9 +157,15 @@ public final class MultinomialPredictor {
             }
             predictor.setUpdater(this.getUpdater());
 
+            //holdout validation percentage
+            if (this.getHoldoutValidationPercentage() == null) {
+                this.setHoldoutValidationPercentage(0.05d);
+            }
+            predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
+
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
                 .create(this.getLearningRate()) // learning rate
-                .holdoutValidationPercentage(0.05d) // 5% as validation set
+                .holdoutValidationPercentage(this.getHoldoutValidationPercentage())// 5% as validation set
                 .historySize(10_000) // keep 10k samples to compute relative improvement
                 .weightUpdater(this.getUpdater()) // FTRL updater
                 .progressReportInterval(1_000) // report every n iterations
@@ -197,7 +198,7 @@ public final class MultinomialPredictor {
 
             if (this.getMultinomialLearner() == null)
                 this.setMultinomialLearner(new MultinomialRegressionLearner(factory));
-                predictor.setMultinomialLearner(this.getMultinomialLearner());
+            predictor.setMultinomialLearner(this.getMultinomialLearner());
 
             if (this.getFilePath() == null)
                 if (this.getMultinomialModel() != null)
@@ -259,7 +260,7 @@ public final class MultinomialPredictor {
             this.multinomialLearner = multinomialRegressionLearner;
         }
 
-        public double getLearningRate() {
+        public Double getLearningRate() {
             return learningRate;
         }
 
@@ -267,7 +268,7 @@ public final class MultinomialPredictor {
             this.learningRate = learningRate;
         }
 
-        private double getBeta() {
+        private Double getBeta() {
             return beta;
         }
 
@@ -275,7 +276,7 @@ public final class MultinomialPredictor {
             this.beta = beta;
         }
 
-        private double getL1() {
+        private Double getL1() {
             return l1;
         }
 
@@ -283,7 +284,7 @@ public final class MultinomialPredictor {
             this.l1 = l1;
         }
 
-        private double getL2() {
+        private Double getL2() {
             return l2;
         }
 
@@ -298,6 +299,15 @@ public final class MultinomialPredictor {
         private void setFilePath(String filePath) {
             this.filePath = filePath;
         }
+
+        private Double getHoldoutValidationPercentage() {
+            return holdoutValidationPercentage;
+        }
+
+        private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+            this.holdoutValidationPercentage = holdoutValidationPercentage;
+        }
+
     }
 
     public void featureHashing(CrawleableUri uri) {
@@ -340,14 +350,14 @@ public final class MultinomialPredictor {
                 DoubleVector prediction = multinomialClassifier.predict(features);
                 pred = prediction.maxIndex();
 
-            }else {
-                LOGGER.info("Feature vector of this "+ uri.getUri().toString() +" is null");
+            } else {
+                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
             }
         } catch (Exception e) {
-            LOGGER.warn("Prediction for this "+ uri.getUri().toString() +" failed " + e);
+            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
             pred = 0;
         }
-        return  pred ;
+        return pred;
     }
 
 
@@ -510,6 +520,16 @@ public final class MultinomialPredictor {
     protected void setMultinomialClassifier(MultinomialRegressionClassifier multinomialClassifier) {
         this.multinomialClassifier = multinomialClassifier;
     }
+
+
+    public Double getHoldoutValidationPercentage() {
+        return holdoutValidationPercentage;
+    }
+
+    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+        this.holdoutValidationPercentage = holdoutValidationPercentage;
+    }
+
 
 
 }

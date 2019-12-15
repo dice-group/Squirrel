@@ -20,12 +20,11 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class BinomialPredictor{
+public final class BinomialPredictor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
     private WeightUpdater updater;
@@ -33,10 +32,11 @@ public final class BinomialPredictor{
     private RegressionModel model;
     private RegressionClassifier classifier;
     private String filepath;
-    private double learningRate;
-    private double l2;
-    private double l1;
-    private double beta;
+    private Double learningRate;
+    private Double l2;
+    private Double l1;
+    private Double beta;
+    private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
     public static class BinomialPredictorBuilder {
 
@@ -50,13 +50,15 @@ public final class BinomialPredictor{
 
         private WeightUpdater updater; //Updater
 
-        private double learningRate ;//Learning rate
+        private Double learningRate;//Learning rate
 
-        private double beta;   //Beta
+        private Double beta;   //Beta
 
-        private double l1;   //L1
+        private Double l1;   //L1
 
-        private double l2;  //L2
+        private Double l2;  //L2
+
+        private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
         private RegressionClassifier classifier;   //Classifier
 
@@ -97,19 +99,22 @@ public final class BinomialPredictor{
             return this;
         }
 
-        public BinomialPredictorBuilder withLearningRate(Double learningRate){
+        public BinomialPredictorBuilder withLearningRate(Double learningRate) {
             this.setLearningRate(learningRate);
             return this;
         }
-        public BinomialPredictorBuilder withL1(Double L1){
+
+        public BinomialPredictorBuilder withL1(Double L1) {
             this.setL1(L1);
             return this;
         }
-        public BinomialPredictorBuilder withL2(Double L2){
+
+        public BinomialPredictorBuilder withL2(Double L2) {
             this.setL2(L2);
             return this;
         }
-        public BinomialPredictorBuilder withBeta(Double Beta){
+
+        public BinomialPredictorBuilder withBeta(Double Beta) {
             this.setBeta(Beta);
             return this;
         }
@@ -117,33 +122,39 @@ public final class BinomialPredictor{
         public BinomialPredictor build() {
             BinomialPredictor predictor = new BinomialPredictor();
 
-            if (this.getLearningRate() == 0)
+            if (this.getLearningRate() == null)
                 this.setLearningRate(0.7);
-            predictor.setLearningRate(learningRate);
+            predictor.setLearningRate(this.learningRate);
 
-            if (this.getBeta() == 0)
+            if (this.getBeta() == null)
                 this.setBeta(1);
-            predictor.setBeta(beta);
+            predictor.setBeta(this.beta);
 
-            if (this.getL1() == 0) {
+            if (this.getL1() == null) {
                 this.setL1(1);
             }
-            predictor.setL1(l1);
+            predictor.setL1(this.l1);
 
-            if (this.getL2() == 0)
+            if (this.getL2() == null)
                 this.setL2(1);
 
             predictor.setL2(this.getL2());
 
             //updater
             if (this.getUpdater() == null) {
-                this.setUpdater(new AdaptiveFTRLRegularizer(beta, l1, l2));
+                this.setUpdater(new AdaptiveFTRLRegularizer(this.getBeta(), this.getL1(), this.getL2()));
             }
-            predictor.setUpdater(updater);
+            predictor.setUpdater(this.getUpdater());
+
+            //holdout validation percentage
+            if (this.getHoldoutValidationPercentage() == null) {
+                this.setHoldoutValidationPercentage(0.05d);
+            }
+            predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
 
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
-                .create(learningRate) // learning rate
-                .holdoutValidationPercentage(0.05d) // 5% as validation set
+                .create(this.getLearningRate()) // learning rate
+                .holdoutValidationPercentage(this.getHoldoutValidationPercentage()) // 5% as validation set
                 .historySize(10_000) // keep 10k samples to compute relative improvement
                 .weightUpdater(updater) // FTRL updater
                 .progressReportInterval(1_000) // report every n iterations
@@ -152,18 +163,18 @@ public final class BinomialPredictor{
             //model
             if (this.getModel() == null)
                 this.setModel(new RegressionModel());
-            predictor.setModel(model);
+            predictor.setModel(this.getModel());
 
             //classifier
             if (this.getClassifier() == null)
                 if (this.getModel() != null)
                     this.setClassifier(new RegressionClassifier(this.getModel()));
-            predictor.setClassifier(classifier);
+            predictor.setClassifier(this.getClassifier());
 
             //learner
             if (this.getLearner() == null)
                 this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
-            predictor.setLearner(learner);
+            predictor.setLearner(this.getLearner());
 
             //filepath
             if (this.getFilePath() == null)
@@ -215,7 +226,7 @@ public final class BinomialPredictor{
             this.updater = updater;
         }
 
-        private double getLearningRate() {
+        private Double getLearningRate() {
             return learningRate;
         }
 
@@ -223,7 +234,7 @@ public final class BinomialPredictor{
             this.learningRate = learningRate;
         }
 
-        private double getBeta() {
+        private Double getBeta() {
             return beta;
         }
 
@@ -231,7 +242,7 @@ public final class BinomialPredictor{
             this.beta = beta;
         }
 
-        private double getL1() {
+        private Double getL1() {
             return l1;
         }
 
@@ -239,7 +250,7 @@ public final class BinomialPredictor{
             this.l1 = l1;
         }
 
-        private double getL2() {
+        private Double getL2() {
             return l2;
         }
 
@@ -255,6 +266,13 @@ public final class BinomialPredictor{
             this.filePath = filePath;
         }
 
+        private Double getHoldoutValidationPercentage() {
+            return holdoutValidationPercentage;
+        }
+
+        private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+            this.holdoutValidationPercentage = holdoutValidationPercentage;
+        }
 
     }
 
@@ -316,7 +334,7 @@ public final class BinomialPredictor{
         double learningRate = 0.7;
         try {
             if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
-                Object featureArray = curi.getData(Constants.FEATURE_VECTOR);//                DoubleVector prediction = multinomialClassifier.predict(features);
+                Object featureArray = curi.getData(Constants.FEATURE_VECTOR);
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
 
@@ -345,34 +363,6 @@ public final class BinomialPredictor{
             LOGGER.info("Error while updating the weight " + e);
         }
     }
-
-    public WeightUpdater getUpdater() {
-        return updater;
-    }
-
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public double getL1Parameter() {
-        return l1;
-    }
-
-
-    public double getL2Parameter() {
-        return l2;
-    }
-
-
-    public double getBetaParameter() {
-        return beta;
-    }
-
-
-    public double getLearningRate() {
-        return learningRate;
-    }
-
 
     protected void setUpdater(WeightUpdater updater) {
         this.updater = updater;
@@ -410,7 +400,7 @@ public final class BinomialPredictor{
         this.learningRate = learningRate;
     }
 
-    public double getL2() {
+    public Double getL2() {
         return l2;
     }
 
@@ -418,7 +408,7 @@ public final class BinomialPredictor{
         this.l2 = l2;
     }
 
-    public double getL1() {
+    public Double getL1() {
         return l1;
     }
 
@@ -426,12 +416,28 @@ public final class BinomialPredictor{
         this.l1 = l1;
     }
 
-    public double getBeta() {
+    public Double getBeta() {
         return beta;
     }
 
     protected void setBeta(double beta) {
         this.beta = beta;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public Double getLearningRate() {
+        return learningRate;
+    }
+
+    private Double getHoldoutValidationPercentage() {
+        return holdoutValidationPercentage;
+    }
+
+    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+        this.holdoutValidationPercentage = holdoutValidationPercentage;
     }
 
 
