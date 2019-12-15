@@ -45,16 +45,6 @@ public class DeduplicationImplTest {
         sparqlBasedUriFilter = new SparqlBasedUriFilter(queryExecFactory, updateExecFactory);
     }
 
-    /*@After
-    public void teardown() throws IOException, InterruptedException {
-        String rethinkDockerStopCommand = "docker stop squirrel-test-rethinkdb";
-        Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
-        p.waitFor();
-        String rethinkDockerRmCommand = "docker rm -f squirrel-test-rethinkdb";
-        p = Runtime.getRuntime().exec(rethinkDockerRmCommand);
-        p.waitFor();
-    }*/
-
     @Test
     public void testHandlingNewUris() throws URISyntaxException {
 
@@ -95,6 +85,7 @@ public class DeduplicationImplTest {
 
         Assert.assertEquals(3, sparqlBasedSink.getTriplesForGraph(uri1).size());
 
+        System.out.println(((CrawlingActivity)uri1.getData(Constants.URI_CRAWLING_ACTIVITY)).getHashValue());
         for(Triple obj:sparqlBasedSink.getTriplesForGraph(uri1)) {
             System.out.println(obj);
         }

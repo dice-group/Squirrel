@@ -14,7 +14,7 @@ public class Squirrel {
 
     /**
      * returns the URI for this schema
-     * 
+     *
      * @return the URI for this schema
      */
     public static String getURI() {
@@ -37,5 +37,7 @@ public class Squirrel {
     public static final Property uriHostedOn = property("uriHostedOn");
     public static final Property status = property("status");
     public static final Property containsDataOf = property("containsDataOf");
-    
+    public static final Property graphID = property("graphID");
+    public static final Property hash = property("hash");
+
 }

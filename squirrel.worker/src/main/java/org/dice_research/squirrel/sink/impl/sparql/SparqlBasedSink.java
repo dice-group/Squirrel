@@ -195,7 +195,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @return The id of the graph.
      */
     public static String getGraphId(CrawleableUri uri) {
-        return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
+        return uri.getData(Constants.URI_GRAPH).toString();
     }
 
     public void setMetadataGraphUri(CrawleableUri metadataGraphUri) {

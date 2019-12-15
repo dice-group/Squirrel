@@ -1,12 +1,5 @@
 package org.dice_research.squirrel.metadata;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -20,6 +13,13 @@ import org.dice_research.squirrel.vocab.PROV_O;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.dice_research.squirrel.worker.Worker;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Representation of Crawling activity. A crawling activity is started by a
  * single worker, and sends this data to the sink. So, it contains a bunch of
@@ -27,7 +27,7 @@ import org.dice_research.squirrel.worker.Worker;
  * crawling activity.
  */
 public class CrawlingActivity implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
     // /**
@@ -74,6 +74,13 @@ public class CrawlingActivity implements Serializable {
     private List<String> steps = new ArrayList<String>();
 
     /**
+     * The graph associated with the crawled triples
+     * */
+    private  String graphID;
+
+    private String hashValue;
+
+    /**
      * Constructor.
      *
      * @param uri
@@ -87,7 +94,9 @@ public class CrawlingActivity implements Serializable {
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         activityUri = Constants.DEFAULT_ACTIVITY_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
+        graphID = Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
         uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, activityUri);
+        uri.addData(Constants.URI_GRAPH,graphID);
     }
 
     public void setState(CrawlingURIState state) {
@@ -104,12 +113,12 @@ public class CrawlingActivity implements Serializable {
 
     /**
      * Prepare the metadata model and returns it.
-     * 
+     *
      * @return the RDF model representing this metadata
      */
     public Model prepareMetadataModel() {
         Model model = ModelFactory.createDefaultModel();
-        
+
         Resource activity = model.createResource(activityUri);
         model.add(activity, RDF.type, PROV_O.Activity);
         Resource crawledUri = model.createResource(getCrawleableUri().getUri().toString());
@@ -118,11 +127,16 @@ public class CrawlingActivity implements Serializable {
             Resource ip = model.createResource("ip:" + getCrawleableUri().getIpAddress().getHostAddress());
             model.add(activity, Squirrel.uriHostedOn, ip);
         }
-       
+
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
+        model.add(activity, Squirrel.graphID, model.createResource(graphID));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
         model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
+
+        if(!StringUtils.isEmpty(hashValue)) {
+            model.add(activity, Squirrel.hash, model.createTypedLiteral(hashValue));
+        }
 
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);
@@ -198,12 +212,20 @@ public class CrawlingActivity implements Serializable {
     public void setNumberOfTriples(long numberOfTriples) {
         this.numberOfTriples = numberOfTriples;
     }
-    
+
     public long getNumberOfTriples() {
         return numberOfTriples;
     }
 
     public void addOutputResource(String outputResource, Resource resourceType) {
         this.outputResource.put(outputResource, resourceType);
+    }
+
+    public String getHashValue() {
+        return hashValue;
+    }
+
+    public void setHashValue(String hashValue) {
+        this.hashValue = hashValue;
     }
 }

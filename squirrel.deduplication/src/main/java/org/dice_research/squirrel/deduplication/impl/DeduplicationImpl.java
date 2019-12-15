@@ -42,7 +42,7 @@ public class DeduplicationImpl {
             Set<CrawleableUri> oldUris = uriHashCustodian.getUrisWithSameHashValues(String.valueOf(uriNew.getData(Constants.URI_HASH_KEY)));
             if(!CollectionUtils.isEmpty(oldUris)) {
                 sink.removeTriplesForGraph(uriNew);
-                sink.linkDuplicateUri(uriNew, oldUris.iterator().next());
+//                sink.updateGraphForUri(uriOld,uriNew);
             }
         }
     }

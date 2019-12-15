@@ -39,7 +39,7 @@ public class Constants {
 
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
-
+    public static final String URI_GRAPH = "graphID";
     public static final String URI_DUPLICATE = "duplicate-uri";
 
     /**
