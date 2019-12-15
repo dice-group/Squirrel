@@ -10,8 +10,10 @@ import org.dice_research.squirrel.predictor.PredictorImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -29,10 +31,10 @@ public class PredictorImplTest {
         CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
 
         predictor = new PredictorImpl();
-        
+
 
         // train the learner on two URIs: one RDF and one non RDF
-        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
+        //predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
 
         // predict for a random URI(HTML) example
         predictor.featureHashing(curi);
@@ -53,6 +55,37 @@ public class PredictorImplTest {
         Assert.assertEquals(0.43, pround3,0.1);
     }
 
+    @Test
+    public void multiNomialTrain(){
+        Integer predictedClass;
+        boolean flag = true;
+        predictor = new PredictorImpl();
+        try {
+            predictor.multiNomialTrain("multiNomialTrainData.txt");
+            CrawleableUri testUri1 = new CrawleableUri(new URI("http://ckan.gobex.es"));
+            CrawleableUri testUri2 = new CrawleableUri(new URI("https://data.medicare.gov/api/views/rs6n-9qwg/rows.rdf?accessType=DOWNLOAD"));
+            CrawleableUri testUri3 = new CrawleableUri(new URI("http://lod.euscreen.eu/sparql"));
+            predictor.featureHashing(testUri1);
+            predictor.featureHashing(testUri2);
+            predictor.featureHashing(testUri3);
+            predictedClass = predictor.predict(testUri1);
+            System.out.println(predictedClass);
+            if(predictedClass != 2)
+                flag = false;
+            predictedClass = predictor.predict(testUri2);
+            System.out.println(predictedClass);
+            if(predictedClass != 1)
+                flag = false;
+            predictedClass = predictor.predict(testUri3);
+            System.out.println(predictedClass);
+            if(predictedClass != 0)
+                flag = false;
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(flag);
+    }
 
 
 
@@ -115,7 +148,7 @@ public class PredictorImplTest {
 
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         predictor = new PredictorImpl();
-        predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
+        //predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
 
         // Weight Intialized with the train weight
         DenseDoubleVector test_weights = new DenseDoubleVector(new double[]{
