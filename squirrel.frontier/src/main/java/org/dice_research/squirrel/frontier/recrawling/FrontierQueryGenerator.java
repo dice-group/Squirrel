@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 public class FrontierQueryGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
+    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
+
 
     private FrontierQueryGenerator() {
     }
@@ -41,7 +43,8 @@ public class FrontierQueryGenerator {
             "  } \n" +
             "}\n" +
             "}\n" +
-            "FILTER(?diff > \"60\"^^xsd:double)}\n" +
+            "FILTER(?diff >"+DEFAULT_GENERAL_RECRAWL_TIME +
+            ")}\n" +
             "");
 
         Query query = QueryFactory.create(stringBuilder.toString());

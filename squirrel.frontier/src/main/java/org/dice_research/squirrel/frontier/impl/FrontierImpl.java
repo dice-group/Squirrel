@@ -10,6 +10,7 @@ import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
+import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.BlockingQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -17,10 +18,13 @@ import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.sun.xml.internal.ws.policy.sourcemodel.wspolicy.XmlToken.Uri;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -57,6 +61,7 @@ public class FrontierImpl implements Frontier {
      * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
      */
     protected OutDatedUriRetriever outDatedUriRetriever;
+    protected SparqlhostConnector sparqlhostConnector;
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
      * identify URIs that already have been crawled.
@@ -227,7 +232,7 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = outDatedUriRetriever.getUriToRecrawl();
+                    List<CrawleableUri> urisToRecrawl = sparqlhostConnector.getUriToRecrawl();
                     LOGGER.info("URI to recrawl" + urisToRecrawl);
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
