@@ -81,9 +81,9 @@ public class DeduplicationImplTest {
         uris.add(uri1);
 //        uris.add(uri2);
         deduplicationImpl.handleNewUris(uris);
-        Assert.assertEquals(3, activity1.getNumberOfTriples());
+        Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-        Assert.assertEquals(3, sparqlBasedSink.getTriplesForGraph(uri1).size());
+        Assert.assertEquals(2, sparqlBasedSink.getTriplesForGraph(uri1).size());
 
         System.out.println(((CrawlingActivity)uri1.getData(Constants.URI_CRAWLING_ACTIVITY)).getHashValue());
         for(Triple obj:sparqlBasedSink.getTriplesForGraph(uri1)) {
