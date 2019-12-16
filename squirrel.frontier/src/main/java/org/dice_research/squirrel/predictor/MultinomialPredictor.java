@@ -379,23 +379,29 @@ public final class MultinomialPredictor {
 
                 Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
                 int rv = (int) real_value;
+                DoubleVector zero = new SingleEntryDoubleVector(0); //To initialize perCoordinateWeights and squaredPreviousGradient
+
+                DoubleVector old_weights = this.updater.prePredictionWeightUpdate( new FeatureOutcomePair(zero,zero), s.getWeights(),learningRate,0);
+
                 DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
 
                 DoubleVector nextExample = features;
+
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
 
-                DoubleVector old_weights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
                 CostGradientTuple observed = this.learner.observeExample(realResult, s.getWeights());
 
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(s.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
 
+                CostGradientTuple newCostGradientTuple = this.updater.updateGradient(s.getWeights(),observed.getGradient(),0,0,observed.getCost());
+
                 //update weights using the updated parameters
-                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+//                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
 
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
-                s = new RegressionModel(new_weights, s.getActivationFunction());
+                s = new RegressionModel(update.getWeight(), s.getActivationFunction());
             }
             //create a new multinomial model with the update weights
             multinomialModel = new MultinomialRegressionModel(multinomialModel.getModels());
