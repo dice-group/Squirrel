@@ -401,7 +401,7 @@ public final class MultinomialPredictor {
 
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
-                s = new RegressionModel(update.getWeight(), s.getActivationFunction());
+                s = new RegressionModel(new_weights, s.getActivationFunction());
             }
             //create a new multinomial model with the update weights
             multinomialModel = new MultinomialRegressionModel(multinomialModel.getModels());
