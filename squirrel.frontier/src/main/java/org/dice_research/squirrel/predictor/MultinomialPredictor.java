@@ -370,14 +370,17 @@ public final class MultinomialPredictor {
     public void weightUpdate(CrawleableUri uri) {
 
         double learningRate = 0.7;
-        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_LABEL) != null) {
+        RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
+        int i=0;
+        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_CLASS) != null) {
 
-            for (RegressionModel s : multinomialModel.getModels()) {
+            for (RegressionModel s : this.getMultinomialModel().getModels()) {
                 Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
 
-                Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
+                Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
+
                 int rv = (int) real_value;
                 DoubleVector zero = new SingleEntryDoubleVector(0); //To initialize perCoordinateWeights and squaredPreviousGradient
 
@@ -401,10 +404,11 @@ public final class MultinomialPredictor {
 
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
-                s = new RegressionModel(update.getWeight(), s.getActivationFunction());
+                newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
+                i++;
             }
             //create a new multinomial model with the update weights
-            multinomialModel = new MultinomialRegressionModel(multinomialModel.getModels());
+            this.setMultinomialModel(new MultinomialRegressionModel(newModels));
         } else
             LOGGER.info("URI is null");
 

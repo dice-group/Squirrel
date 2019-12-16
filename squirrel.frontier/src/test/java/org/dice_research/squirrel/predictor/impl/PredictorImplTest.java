@@ -186,7 +186,7 @@ public class PredictorImplTest {
 
         predictor.featureHashing(curi);
 
-        curi.addData(Constants.URI_TRUE_LABEL, 0);
+        curi.addData(Constants.URI_TRUE_CLASS, 0);
 
         predictor.weightUpdate(curi);
 
