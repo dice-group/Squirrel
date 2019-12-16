@@ -46,7 +46,6 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     public RDFAnalyzer(UriCollector collector) {
 
         super(collector);
-        listLangs.add(Lang.NT);
         listLangs.add(Lang.NQUADS);
         listLangs.add(Lang.RDFJSON);
         listLangs.add(Lang.RDFTHRIFT);
