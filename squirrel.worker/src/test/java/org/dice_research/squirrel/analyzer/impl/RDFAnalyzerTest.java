@@ -38,16 +38,20 @@ public class RDFAnalyzerTest {
 
     @Parameters
     public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[][] { { "rdf_analyzer/new_york/new_york_jsonld", 8603 },
-                { "rdf_analyzer/new_york/new_york_n3", 8603 }, { "rdf_analyzer/new_york/new_york_rdf", 8603 },
-                { "rdf_analyzer/new_york/new_york_rdfjson", 8603 }, { "rdf_analyzer/new_york/new_york_ttl", 8603 },
+        return Arrays.asList(new Object[][] {
+                { "rdf_analyzer/new_york/new_york_jsonld", 8603 },
+                { "rdf_analyzer/new_york/new_york_n3", 8603 },
+                { "rdf_analyzer/new_york/new_york_rdf", 8603 },
+                { "rdf_analyzer/new_york/new_york_rdfjson", 8603 },
+                { "rdf_analyzer/new_york/new_york_ttl", 8603 },
                 { "rdf_analyzer/new_york/new_york_turtle", 8603 },
-
                 { "rdf_analyzer/genders_en/genders_en_jsonld", 8408 },
                 { "rdf_analyzer/genders_en/genders_en_rdf", 8408 },
                 { "rdf_analyzer/genders_en/genders_en_rdfjson", 8408 },
-                { "rdf_analyzer/genders_en/genders_en_tql", 8408 }, { "rdf_analyzer/genders_en/genders_en_ttl", 8408 },
-                { "rdf_analyzer/genders_en/genders_en_turtle", 8408 } });
+                { "rdf_analyzer/genders_en/genders_en_tql", 8408 },
+                { "rdf_analyzer/genders_en/genders_en_ttl", 8408 },
+                { "rdf_analyzer/genders_en/genders_en_turtle", 8408 },
+        });
     }
 
     @Test
