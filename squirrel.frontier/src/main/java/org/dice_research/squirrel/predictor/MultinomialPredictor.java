@@ -17,6 +17,7 @@ import de.jungblut.online.regression.multinomial.MultinomialRegressionLearner;
 import de.jungblut.online.regression.multinomial.MultinomialRegressionModel;
 import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
+import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -46,7 +47,7 @@ public final class MultinomialPredictor {
 
     public static class MultinomialPredictorBuilder {
 
-        private TrainingDataProvider trainingDataProvider; //Training Data Provider
+        private TrainingDataProvider trainingDataProvider = new TrainingDataProviderImpl(); //Training Data Provider
 
         protected StochasticGradientDescent sgd; //Minimizer
 
@@ -128,6 +129,21 @@ public final class MultinomialPredictor {
             return this;
         }
 
+        IntFunction<RegressionLearner> factory = (i) -> {
+            // take care of not sharing any state from the outside, since classes are trained in parallel
+            StochasticGradientDescent minimizer = StochasticGradientDescent.StochasticGradientDescentBuilder
+                .create(0.01)
+                .holdoutValidationPercentage(0.1d)
+                .weightUpdater(new L2Regularizer(0.1))
+                .progressReportInterval(1_000)
+                .build();
+            RegressionLearner learner =  new RegressionLearner(minimizer,
+                new SigmoidActivationFunction(), new LogLoss());
+            learner.setNumPasses(5);
+            learner.verbose();
+            return learner;
+        };
+
         public MultinomialPredictor build() {
             MultinomialPredictor predictor = new MultinomialPredictor();
 
@@ -163,6 +179,10 @@ public final class MultinomialPredictor {
             }
             predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
 
+            if (this.getFilePath() == null)
+                this.setFilePath("multiNomialTrainData.txt");
+            predictor.setFilepath(this.getFilePath());
+
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
                 .create(this.getLearningRate()) // learning rate
                 .holdoutValidationPercentage(this.getHoldoutValidationPercentage())// 5% as validation set
@@ -171,9 +191,20 @@ public final class MultinomialPredictor {
                 .progressReportInterval(1_000) // report every n iterations
                 .build();
 
+            //regression learner
+            if (this.getLearner() == null)
+                this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
+            predictor.setLearner(this.getLearner());
+
+            //multinomial learner
+            if (this.getMultinomialLearner() == null)
+                this.setMultinomialLearner(new MultinomialRegressionLearner(factory));
+            predictor.setMultinomialLearner(this.getMultinomialLearner());
+
+
             //model
             if (this.getMultinomialModel() == null)
-                this.setMultinomialModel(new MultinomialRegressionModel());
+                this.setMultinomialModel(multinomialLearner.train(() -> trainingDataProvider.setUpStream(this.getFilePath())));
             predictor.setMultinomialModel(this.getMultinomialModel());
 
             //classifier
@@ -182,38 +213,13 @@ public final class MultinomialPredictor {
                     this.setMultinomialRegressionClassifier(new MultinomialRegressionClassifier(this.getMultinomialModel()));
             predictor.setMultinomialClassifier(this.getMultinomialClassifier());
 
-            //learner
-            if (this.getLearner() == null)
-                this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
-            predictor.setLearner(this.getLearner());
-
-            //multi-class classifier
-            IntFunction<RegressionLearner> factory = (i) -> {
-                // take care of not sharing any state from the outside, since classes are trained in parallel
-//                RegressionLearner learner = new RegressionLearner(sgd, new SigmoidActivationFunction(), new LogLoss());
-                this.getLearner().setNumPasses(1);
-                this.getLearner().verbose();
-                return this.getLearner();
-            };
-
-            if (this.getMultinomialLearner() == null)
-                this.setMultinomialLearner(new MultinomialRegressionLearner(factory));
-            predictor.setMultinomialLearner(this.getMultinomialLearner());
-
-            if (this.getFilePath() == null)
-                if (this.getMultinomialModel() != null)
-                    this.setFilePath(" ");
-            predictor.setFilepath(this.getFilePath());
-
-            train(this.getFilePath());
-
             return predictor;
         }
 
-        private void train(String filepath) {
+        /*private void train(String filepath) {
             this.multinomialLearner.verbose();
             this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
-        }
+        }*/
 
         //Learner
         private RegressionLearn getLearner() {
