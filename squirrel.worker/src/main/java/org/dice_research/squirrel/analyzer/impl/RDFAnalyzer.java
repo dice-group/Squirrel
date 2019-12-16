@@ -54,7 +54,6 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         listLangs.add(Lang.JSONLD);
         listLangs.add(Lang.TRIG);
         listLangs.add(Lang.TRIX);
-        listLangs.add(Lang.TTL);
         listLangs.add(Lang.TURTLE);
 
         for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
