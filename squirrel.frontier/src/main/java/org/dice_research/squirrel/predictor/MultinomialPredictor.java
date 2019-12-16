@@ -372,26 +372,29 @@ public final class MultinomialPredictor {
         double learningRate = 0.7;
         if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_LABEL) != null) {
 
-            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-            double[] doubleFeatureArray = (double[]) featureArray;
-            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
-            Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
-            int rv = (int) real_value;
-            DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
-
-            FeatureOutcomePair realResult = new FeatureOutcomePair(features, rv_DoubleVector); // real outcome
-
             for (RegressionModel s : multinomialModel.getModels()) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
+                Object real_value = uri.getData(Constants.URI_TRUE_LABEL);
+                int rv = (int) real_value;
+                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+                DoubleVector nextExample = features;
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+
+                DoubleVector old_weights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
                 CostGradientTuple observed = this.learner.observeExample(realResult, s.getWeights());
 
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(s.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
 
                 //update weights using the updated parameters
-                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(), learningRate, 0);
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
 
                 // update model and classifier
+                //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
                 s = new RegressionModel(new_weights, s.getActivationFunction());
             }
             //create a new multinomial model with the update weights
