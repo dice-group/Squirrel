@@ -46,7 +46,7 @@ public class RDFAnalyzerTest {
 
     @AfterClass
     public static void afterClass() {
-        System.err.println(String.format("RDFAnalyzerTest %d", totalTime));
+        System.err.println(String.format("RDFAnalyzerTest total time: %d", totalTime));
     }
 
     private String resourceName;
@@ -106,8 +106,8 @@ public class RDFAnalyzerTest {
 
         // Check the result and close the sink and collector
         Assert.assertEquals("Number of triples in " + resourceName, expectedNumberOfTriples, collector.getSize());
-        Assert.assertTrue("Failed parse attempts for " + resourceName + ": " + ((RDFAnalyzer)analyzer).failedParseAttempts + " <= 5",
-                ((RDFAnalyzer)analyzer).failedParseAttempts <= 5);
+        Assert.assertTrue("Failed parse attempts for " + resourceName + ": " + ((RDFAnalyzer)analyzer).failedParseAttempts + " <= 2",
+                ((RDFAnalyzer)analyzer).failedParseAttempts <= 2);
         sink.closeSinkForUri(curi);
         collector.closeSinkForUri(curi);
     }

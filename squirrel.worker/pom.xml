@@ -23,6 +23,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.dice-research</groupId>
+			<artifactId>rdfdetector</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.trentorise.opendata</groupId>
 			<artifactId>jackan</artifactId>
 			<version>${jackan-version}</version>
