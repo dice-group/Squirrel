@@ -41,6 +41,8 @@ public class RDFAnalyzer extends AbstractAnalyzer {
     private List<Lang> listLangs = new ArrayList<Lang>();
     private Set<String> jenaContentTypes = new HashSet<String>();
 
+    protected long failedParseAttempts = 0;
+
     public RDFAnalyzer(UriCollector collector) {
 
         super(collector);
@@ -94,6 +96,7 @@ public class RDFAnalyzer extends AbstractAnalyzer {
                         break;
                     } catch (Exception e) {
                         LOGGER.warn("Could not parse file as " + l.getName());
+                        failedParseAttempts += 1;
                     }
                 }
             }

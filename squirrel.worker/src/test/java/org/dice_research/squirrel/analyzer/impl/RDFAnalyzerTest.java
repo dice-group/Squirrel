@@ -77,6 +77,8 @@ public class RDFAnalyzerTest {
         analyzer.analyze(curi, dataFile, sink);
         // Check the result and close the sink and collector
         Assert.assertEquals("Number of triples in " + resourceName, expectedNumberOfTriples, collector.getSize());
+        Assert.assertTrue("Failed parse attempts for " + resourceName + ": " + ((RDFAnalyzer)analyzer).failedParseAttempts + " <= 6",
+                ((RDFAnalyzer)analyzer).failedParseAttempts <= 6);
         sink.closeSinkForUri(curi);
         collector.closeSinkForUri(curi);
     }
