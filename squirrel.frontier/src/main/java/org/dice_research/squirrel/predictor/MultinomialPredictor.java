@@ -397,7 +397,7 @@ public final class MultinomialPredictor {
                 CostGradientTuple newCostGradientTuple = this.updater.updateGradient(s.getWeights(),observed.getGradient(),0,0,observed.getCost());
 
                 //update weights using the updated parameters
-//                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
 
                 // update model and classifier
                 //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
