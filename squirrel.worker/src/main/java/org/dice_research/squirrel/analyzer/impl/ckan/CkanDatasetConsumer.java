@@ -3,6 +3,8 @@ package org.dice_research.squirrel.analyzer.impl.ckan;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 
 /**
@@ -83,7 +86,8 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTextLiteral(datasetRes, DCTerms.provenance, true, extras.get("provenance"));
 
         storeResourceOrText(datasetRes, DCAT.landingPage, true, dataset.getUrl());
-        storeResourceOrText(datasetRes, DCTerms.license, true, dataset.getLicenseUrl(), dataset.getLicenseTitle());
+        if(dataset.getLicenseUrl()!= null || !dataset.getLicenseTitle().contentEquals(""))
+            storeResourceOrText(datasetRes, DCTerms.license, true, dataset.getLicenseUrl(), dataset.getLicenseTitle());
 
         storeTypedLiteral(datasetRes, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, extras.get("issued"),
                 dataset.getMetadataCreated());
@@ -91,6 +95,10 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
                 dataset.getMetadataModified());
         storeTypedLiteral(datasetRes, DCTerms.accrualPeriodicity, XSDDatatype.XSDinteger, true,
                 extras.get("frequency"));
+        
+        for(String theme: findTheme(dataset.getExtras())) {
+            storeResourceOrText(datasetRes, DCAT.theme, true, theme); 
+        }
 
         storePublisher(datasetRes, extras);
         storeContact(datasetRes, dataset, extras);
@@ -153,14 +161,33 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTextLiteral(resource, DCTerms.description, true, ckanResource.getDescription());
         storeTextLiteral(resource, DCAT.mediaType, true, ckanResource.getMimetype());
         storeTextLiteral(resource, DCTerms.format, true, ckanResource.getFormat());
+        
+        storeResourceOrText(resource, DCTerms.license, true, findLicense(ckanResource));
 
-        storeResourceOrText(resource, DCAT.accessURL, true, ckanResource.getUrl());
-        storeResourceOrText(resource, DCAT.downloadURL, true, ckanResource.getUrl());
+        storeResourceOrText(resource, DCAT.accessURL, true, ckanResource.getUrl().replaceAll("\\s+", "%20"));
+        storeResourceOrText(resource, DCAT.downloadURL, true, ckanResource.getUrl().replaceAll("\\s+", "%20"));
+        
 
         storeTypedLiteral(resource, DCAT.byteSize, XSDDatatype.XSDlong, true, ckanResource.getSize());
-        storeTypedLiteral(datasetRes, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, ckanResource.getCreated());
-        storeTypedLiteral(datasetRes, DCTerms.modified, XSDDatatype.XSDdateTimeStamp, true,
+        storeTypedLiteral(resource, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, ckanResource.getCreated());
+        storeTypedLiteral(resource, DCTerms.modified, XSDDatatype.XSDdateTimeStamp, true,
                 ckanResource.getLastModified());
+    }
+    
+    protected List<String> findTheme(List<CkanPair> pairList) {
+        String theme = "";
+        for (CkanPair pair: pairList) {
+            if("theme".equals(pair.getKey())){
+               theme = pair.getValue().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
+               break;
+            }
+        }
+        return Arrays.asList(theme.split(","));
+    }
+    
+    protected String findLicense(CkanResource resource) {
+        return resource.getOthers().get("license").toString();
+        
     }
 
     /**
