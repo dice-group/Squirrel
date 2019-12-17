@@ -100,19 +100,22 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
             storeResourceOrText(datasetRes, DCAT.theme, true, theme); 
         }
 
-        storePublisher(datasetRes, extras);
+        storePublisher(dataset,datasetRes, extras);
         storeContact(datasetRes, dataset, extras);
         storeResources(datasetRes, dataset);
     }
 
-    protected void storePublisher(Resource datasetRes, Map<String, String> extras) {
-        if (!extras.containsKey("publisher_uri")) {
-            return;
+    protected void storePublisher(CkanDataset dataset,Resource datasetRes, Map<String, String> extras) {
+//        if (!extras.containsKey("publisher_uri")) {
+//            return;
+//        }
+        String uri = curiString;
+        if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
+            uri += "/";
         }
-        String uri = extras.get("publisher_uri");
-        if (!URI.isWellFormedAddress(uri)) {
-            return;
-        }
+        uri += "organization/";
+        uri += dataset.getId();
+
         Resource publisher = ResourceFactory.createResource(uri);
         store(datasetRes, DCTerms.publisher, publisher);
         store(publisher, RDF.type, FOAF.Agent);
@@ -152,6 +155,7 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
             uri += "/";
         }
+        uri += "distribution/";
         uri += ckanResource.getId();
         Resource resource = ResourceFactory.createResource(uri);
         store(datasetRes, DCAT.distribution, resource);
