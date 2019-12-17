@@ -19,6 +19,7 @@ import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
 import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
+import org.apache.jena.base.Sys;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public final class MultinomialPredictor {
 
     public static class MultinomialPredictorBuilder {
 
-        private TrainingDataProvider trainingDataProvider = new TrainingDataProviderImpl(); //Training Data Provider
+        private TrainingDataProvider trainingDataProvider = new MultinomialTrainDataProviderImpl(); //Training Data Provider
 
         protected StochasticGradientDescent sgd; //Minimizer
 
@@ -415,38 +416,9 @@ public final class MultinomialPredictor {
     }
 
     public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
-
-        //String authority, scheme, host, path, query;
-        //URI furi = null;
         String[] uriToken;
         uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
-        /*try {
-            furi = new URI(uri.getUri().toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        if (furi != null) {
-            authority = furi.getAuthority();
-            if(authority != null)
-                tokens.add(authority);
-            scheme = furi.getScheme();
-            if(scheme != null)
-                tokens.add(scheme);
-
-            host = furi.getHost();
-            if(host != null)
-                tokens.add(host);
-            path = furi.getPath();
-
-            if(path != null) ;
-                tokens.add(path);
-            query = furi.getQuery();
-            if(query != null)
-                tokens.add(query);
-
-        }*/
         return tokens;
     }
 
