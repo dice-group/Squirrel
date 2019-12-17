@@ -60,6 +60,7 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
         Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+        split[1] = split[1].replace("\"", "");
         return new FeatureOutcomePair(features, split[1].equals("dereferenceable") ? POSITIVE_CLASS : NEGATIVE_CLASS);
     }
 
