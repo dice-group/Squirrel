@@ -1,15 +1,22 @@
 package org.dice_research.squirrel.data.uri.filter;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
-import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryDataset;
+import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryHttp;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
@@ -31,6 +38,7 @@ public class SparqlBasedUriFilterTest {
     private SparqlBasedSink sparqlBasedSink;
 
     private QueryExecutionFactory queryExecFactory;
+    private UpdateExecutionFactory updateExecFactory;
 
     private SparqlBasedUriFilter uriFilter;
 
@@ -38,16 +46,49 @@ public class SparqlBasedUriFilterTest {
 
     @Before
     public void init() throws IOException, InterruptedException {
-        dataset = DatasetFactory.create();
-        dataset.setDefaultModel(ModelFactory.createDefaultModel());
-        queryExecFactory = new QueryExecutionFactoryDataset(dataset);
-        UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sparqlBasedSink = new SparqlBasedSink(queryExecFactory, updateExecFactory);
+
+        String user = "dba";
+        String password = "dba";
+        String sparqlEndpointUrl1 = "http://localhost:8890/sparql";
+        String sparqlEndpointUrl2 = "http://localhost:8890/sparql";
+        if (user != null && password != null) {
+            // Create the factory with the credentials
+            final Credentials credentials = new UsernamePasswordCredentials(user, password);
+            HttpAuthenticator authenticator = new HttpAuthenticator() {
+                @Override
+                public void invalidate() {
+                    // unused method in this implementation
+                }
+
+                @Override
+                public void apply(AbstractHttpClient client, HttpContext httpContext, URI target) {
+                    client.setCredentialsProvider(new CredentialsProvider() {
+                        @Override
+                        public void clear() {
+                            // unused method in this implementation
+
+                        }
+
+                        @Override
+                        public Credentials getCredentials(AuthScope scope) {
+                            return credentials;
+                        }
+
+                        @Override
+                        public void setCredentials(AuthScope arg0, Credentials arg1) {
+                        }
+                    });
+                }
+            };
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl2, new DatasetDescription(),
+                authenticator);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl1, authenticator);
+        } else {
+            queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl2);
+            updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl1);
+        }
         uriFilter = new SparqlBasedUriFilter(queryExecFactory, updateExecFactory);
-
-        sparqlBasedSink = SparqlBasedSink.create("http://virtuosohost:8890", "dba", "pw123");
-
-
+        sparqlBasedSink = new SparqlBasedSink(queryExecFactory, updateExecFactory);
     }
 
     @Test
@@ -85,6 +126,35 @@ public class SparqlBasedUriFilterTest {
         uris.add(uri2);
         uri1.addData(Constants.URI_HASH_KEY, "123");
         uri2.addData(Constants.URI_HASH_KEY, "124");
-        uriFilter.addHashValuesForUris(uris);
+        //uriFilter.addHashValuesForUris(uris);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Most likely correct query
+/*        stringBuilder.append("SELECT * WHERE {\n" +
+            "  GRAPH <http://w3id.org/squirrel/metadata> {\n" +
+            "    {\n" +
+            "      SELECT ?x WHERE {\n" +
+            "        ?x ?p \"123\" .\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}");*/
+
+        stringBuilder.append("SELECT ?s ?p ?o WHERE { ?s ?p ?o }");
+
+        Query query = QueryFactory.create(stringBuilder.toString());
+
+        QueryExecution qe = queryExecFactory.createQueryExecution(query);
+        ResultSet rs = qe.execSelect();
+        List<Triple> triplesFound = new ArrayList<>();
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode subject = sol.get("s");
+            RDFNode predicate = sol.get("p");
+            RDFNode object = sol.get("o");
+            System.out.println(subject.toString()+"-------"+predicate.toString()+"-------"+object.toString());
+        }
+        qe.close();
     }
 }
