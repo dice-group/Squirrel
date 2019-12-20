@@ -86,7 +86,7 @@ public class BinomialPredictorTest {
         predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv").build();
         DoubleVector modelWeights = predictor.getModel().getWeights();
         predictor.featureHashing(curi);
-        curi.addData(Constants.URI_TRUE_CLASS, 0);
+        curi.addData(Constants.URI_TRUE_LABEL, 0);
         predictor.weightUpdate(curi);
         DoubleVector modelNewWeights = predictor.getModel().getWeights();
         if(!modelNewWeights.equals(modelWeights)){
