@@ -28,14 +28,14 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
         BufferedReader br1 = null;
         try {
             url = new URL(filePath);
-            PrintWriter writer = new PrintWriter(filePath, "UTF-8");
+            PrintWriter writer = new PrintWriter("binomialTrainData.txt", "UTF-8");
             br = new BufferedReader((new InputStreamReader(url.openStream())));
             String line = br.readLine();
             while((line = br.readLine()) != null){
                 writer.println(line);
             }
             writer.close();
-            br1 = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            br1 = new BufferedReader(new InputStreamReader(new FileInputStream("binomialTrainData.txt")));
 
         } catch (Exception e) {
             e.printStackTrace();

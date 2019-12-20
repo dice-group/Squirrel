@@ -40,7 +40,7 @@ public final class BinomialPredictor {
 
     public static class BinomialPredictorBuilder {
 
-        private TrainingDataProvider trainingDataProvider;
+        private TrainingDataProvider trainingDataProvider = new BinomialTrainDataProviderImpl();
 
         protected StochasticGradientDescent sgd; //Minimizer
 
@@ -160,16 +160,9 @@ public final class BinomialPredictor {
                 .progressReportInterval(1_000) // report every n iterations
                 .build();
 
-            //model
-            if (this.getModel() == null)
-                this.setModel(new RegressionModel());
-            predictor.setModel(this.getModel());
 
-            //classifier
-            if (this.getClassifier() == null)
-                if (this.getModel() != null)
-                    this.setClassifier(new RegressionClassifier(this.getModel()));
-            predictor.setClassifier(this.getClassifier());
+
+
 
             //learner
             if (this.getLearner() == null)
@@ -178,24 +171,34 @@ public final class BinomialPredictor {
 
             //filepath
             if (this.getFilePath() == null)
-                if (this.getModel() != null)
-                    this.setFilePath(" ");
+                     this.setFilePath(" ");
             predictor.setFilepath(this.getFilePath());
 
-            train(filePath);
+            //model
+            if (this.getModel() == null)
+                this.setModel(this.learner.train(() -> trainingDataProvider.setUpStream(this.filePath)));
+            predictor.setModel(this.getModel());
+
+            //this.train(filePath);
+
+            //classifier
+            if (this.getClassifier() == null)
+                if (this.getModel() != null)
+                    this.setClassifier(new RegressionClassifier(this.getModel()));
+            predictor.setClassifier(this.getClassifier());
 
             return predictor;
 
         }
 
         private void train(String filePath) {
-            learner.setNumPasses(2);
-            learner.verbose();
-            this.model = learner.train(() -> trainingDataProvider.setUpStream(filePath));
+            this.learner.setNumPasses(2);
+            this.learner.verbose();
+            this.model = this.learner.train(() -> this.trainingDataProvider.setUpStream(filePath));
         }
 
         private RegressionLearn getLearner() {
-            return learner;
+            return this.learner;
         }
 
         private void setLearner(RegressionLearn learner) {
@@ -203,7 +206,7 @@ public final class BinomialPredictor {
         }
 
         private RegressionModel getModel() {
-            return model;
+            return this.model;
         }
 
         private void setModel(RegressionModel model) {
@@ -211,7 +214,7 @@ public final class BinomialPredictor {
         }
 
         private RegressionClassifier getClassifier() {
-            return classifier;
+            return this.classifier;
         }
 
         private void setClassifier(RegressionClassifier classifier) {
@@ -219,7 +222,7 @@ public final class BinomialPredictor {
         }
 
         private WeightUpdater getUpdater() {
-            return updater;
+            return this.updater;
         }
 
         private void setUpdater(WeightUpdater updater) {
@@ -227,7 +230,7 @@ public final class BinomialPredictor {
         }
 
         private Double getLearningRate() {
-            return learningRate;
+            return this.learningRate;
         }
 
         private void setLearningRate(double learningRate) {
@@ -235,7 +238,7 @@ public final class BinomialPredictor {
         }
 
         private Double getBeta() {
-            return beta;
+            return this.beta;
         }
 
         private void setBeta(double beta) {
@@ -243,7 +246,7 @@ public final class BinomialPredictor {
         }
 
         private Double getL1() {
-            return l1;
+            return this.l1;
         }
 
         private void setL1(double l1) {
@@ -251,7 +254,7 @@ public final class BinomialPredictor {
         }
 
         private Double getL2() {
-            return l2;
+            return this.l2;
         }
 
         private void setL2(double l2) {
@@ -259,7 +262,7 @@ public final class BinomialPredictor {
         }
 
         private String getFilePath() {
-            return filePath;
+            return this.filePath;
         }
 
         private void setFilePath(String filePath) {
@@ -267,7 +270,7 @@ public final class BinomialPredictor {
         }
 
         private Double getHoldoutValidationPercentage() {
-            return holdoutValidationPercentage;
+            return this.holdoutValidationPercentage;
         }
 
         private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
@@ -304,7 +307,7 @@ public final class BinomialPredictor {
     }
 
     public double predict(CrawleableUri uri) {
-        int pred = 0;
+        double pred = 0;
         try {
             //Get the feature vector
             if (uri.getData(Constants.FEATURE_VECTOR) != null) {
@@ -312,17 +315,17 @@ public final class BinomialPredictor {
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
                 //initialize the regression classifier with updated model and predict
-                classifier = new RegressionClassifier(model);
+                this.setClassifier(new RegressionClassifier(this.getModel()));
+                DoubleVector prediction = this.classifier.predict(features);
 
-                DoubleVector prediction = classifier.predict(features);
-
-                pred = prediction.maxIndex();
+                pred = prediction.get(0);
 
             } else {
                 LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
             }
         } catch (Exception e) {
             LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
+            e.printStackTrace();
             pred = 0;
         }
         return pred;
@@ -443,37 +446,10 @@ public final class BinomialPredictor {
 
     public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
 
-        //String authority, scheme, host, path, query;
-        //URI furi = null;
         String[] uriToken;
         uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
-        /*try {
-            furi = new URI(uri.getUri().toString());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
-        if (furi != null) {
-            authority = furi.getAuthority();
-            if(authority != null)
-                tokens.add(authority);
-            scheme = furi.getScheme();
-            if(scheme != null)
-                tokens.add(scheme);
-
-            host = furi.getHost();
-            if(host != null)
-                tokens.add(host);
-            path = furi.getPath();
-
-            if(path != null) ;
-                tokens.add(path);
-            query = furi.getQuery();
-            if(query != null)
-                tokens.add(query);
-
-        }*/
         return tokens;
     }
 
