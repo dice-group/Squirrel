@@ -20,27 +20,17 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
-    private Predictor predictor = new PredictorImpl();
+    //private Predictor predictor = new PredictorImpl();
+    private BinomialPredictor predictor = new BinomialPredictor();
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath) {
-        URL url = null;
         BufferedReader br = null;
-        BufferedReader br1 = null;
         try {
-            url = new URL(filePath);
-            PrintWriter writer = new PrintWriter("binomialTrainData.txt", "UTF-8");
-            br = new BufferedReader((new InputStreamReader(url.openStream())));
-            String line = br.readLine();
-            while((line = br.readLine()) != null){
-                writer.println(line);
-            }
-            writer.close();
-            br1 = new BufferedReader(new InputStreamReader(new FileInputStream("binomialTrainData.txt")));
-
-        } catch (Exception e) {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return br1.lines().map((s) -> parseFeature(s));
+        return br.lines().map((s) -> parseFeature(s));
     }
 
     public FeatureOutcomePair parseFeature(String line) {
@@ -67,6 +57,20 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     @Override
     public void createTrainDataFile(String dataUri, String trainFilePath) {
-
+        URL url = null;
+        BufferedReader br = null;
+        String line;
+        try {
+            PrintWriter writer = new PrintWriter(trainFilePath, "UTF-8");
+            url = new URL(dataUri);
+            br = new BufferedReader((new InputStreamReader(url.openStream())));
+            br.readLine();
+            while((line = br.readLine()) != null){
+                writer.println(line);
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

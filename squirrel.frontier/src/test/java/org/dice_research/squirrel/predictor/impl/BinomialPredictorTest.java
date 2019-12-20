@@ -4,6 +4,8 @@ import de.jungblut.math.DoubleVector;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.predictor.BinomialPredictor;
+import org.dice_research.squirrel.predictor.BinomialTrainDataProviderImpl;
+import org.dice_research.squirrel.predictor.TrainingDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,18 +22,20 @@ public class BinomialPredictorTest {
     public void binomialTrain(){
         boolean flag = true;
         Double prediction;
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv").build();
+        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
+        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
         try {
             CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-            CrawleableUri curiNeg = new CrawleableUri(new URI("https://ckan.govdata.de"));
+            CrawleableUri curiNeg = new CrawleableUri(new URI("1234567.!!!!!!!.*****"));
             predictor.featureHashing(curiPos);
             predictor.featureHashing(curiNeg);
             prediction = predictor.predict(curiPos);
-            if(prediction <= 0.5){
+            if(prediction <= 0.7){
                 flag = false;
             }
             prediction = predictor.predict(curiNeg);
-            if(prediction > 0.5){
+            if(prediction > 0.7){
                 flag = false;
             }
 

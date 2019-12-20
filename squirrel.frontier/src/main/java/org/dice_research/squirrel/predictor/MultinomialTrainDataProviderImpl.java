@@ -9,18 +9,18 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
-    private Predictor predictor = new PredictorImpl();
+    //private Predictor predictor = new PredictorImpl();
+    private MultinomialPredictor predictor = new MultinomialPredictor();
     private static final ArrayList<String> classList = new ArrayList<>();
     static {
 
@@ -74,6 +74,20 @@ public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     @Override
     public void createTrainDataFile(String dataUri, String trainFilePath) {
-
+        BufferedReader br = null;
+        URL url = null;
+        String line;
+        try {
+            PrintWriter writer = new PrintWriter(trainFilePath, "UTF-8");
+            url = new URL(dataUri);
+            br = new BufferedReader((new InputStreamReader(url.openStream())));
+            br.readLine();
+            while((line = br.readLine()) != null){
+                writer.println(line);
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
