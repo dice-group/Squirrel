@@ -51,7 +51,9 @@ public class BinomialPredictorTest {
     public void featureHashing(){
         int flag1 = 0;
         int flag2 = 0;
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv").build();
+        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
+        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
         try {
             CrawleableUri uri1 = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
             CrawleableUri uri2 = new CrawleableUri(new URI("https://wikipedia.org/resource/New_York"));
@@ -84,6 +86,8 @@ public class BinomialPredictorTest {
     public void weightUpdate() throws URISyntaxException {
         boolean flag = false;
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
+        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
+        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
         predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
         DoubleVector modelWeights = predictor.getModel().getWeights();
         double[] oldWeights = Arrays.copyOf(modelWeights.toArray(), modelWeights.getLength());
