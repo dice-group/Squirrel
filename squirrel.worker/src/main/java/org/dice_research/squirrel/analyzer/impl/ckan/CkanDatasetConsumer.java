@@ -96,9 +96,10 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTypedLiteral(datasetRes, DCTerms.accrualPeriodicity, XSDDatatype.XSDinteger, true,
                 extras.get("frequency"));
         
-        for(String theme: findTheme(dataset.getExtras())) {
-            storeResourceOrText(datasetRes, DCAT.theme, true, theme); 
-        }
+        if(dataset.getExtras() != null)
+            for(String theme: findTheme(dataset.getExtras())) {
+                storeResourceOrText(datasetRes, DCAT.theme, true, theme); 
+            }
 
         storePublisher(dataset,datasetRes, extras);
         storeContact(datasetRes, dataset, extras);
@@ -180,6 +181,7 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
     
     protected List<String> findTheme(List<CkanPair> pairList) {
         String theme = "";
+         
         for (CkanPair pair: pairList) {
             if("theme".equals(pair.getKey())){
                theme = pair.getValue().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
