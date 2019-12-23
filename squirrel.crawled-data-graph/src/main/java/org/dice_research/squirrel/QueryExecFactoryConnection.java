@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class QueryExecFactoryConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryExecFactoryConnection.class);
@@ -35,7 +32,10 @@ public class QueryExecFactoryConnection {
      * The Query factory used to query the SPARQL endpoint.
      */
     protected static QueryExecutionFactory queryExecFactory = null;
+    static HashMap<String, Object> parameters = new HashMap<String, Object>();
 
+
+    static HashMap<String, Object> newParameters = new HashMap<String, Object>();
 
     public QueryExecFactoryConnection(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
@@ -103,6 +103,7 @@ public class QueryExecFactoryConnection {
         }
         return domainLevels;
     }
+
     public static String getPath(String fullPath) {
         String[] path = fullPath.split("/");
         List<String> a = new ArrayList<String>();
@@ -110,66 +111,68 @@ public class QueryExecFactoryConnection {
             a.add(s);
         }
         StringBuilder sb2 = new StringBuilder();
-        for(int i=0;i<2;i++) {
-            sb2.append( a.get(i) + "/");
+        for (int i = 0; i < 2; i++) {
+            sb2.append(a.get(i) + "/");
         }
         String p1 = sb2.toString();
-        LOGGER.info(p1);
         return p1;
 
     }
 
-    public static void main(String args[]) throws URISyntaxException {
+    public static void main(String[] args) throws URISyntaxException {
         QueryExecFactoryConnection.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
         Query domainQuery = SparqlQueryGenerator.getDomain();
         Query query = QueryFactory.create(domainQuery);
-        LOGGER.info("Query: " + query);
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
+        List<String> list = new ArrayList();
+        String hostname, fullHostName, subdomain;
+        URI url;
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
             RDFNode uri = sol.get("uri");
-            URI url = new URI(uri.toString());
-            String hostname = url.getHost();
+            url = new URI(uri.toString());
+            hostname = url.getHost();
+            fullHostName = hostname;
+
             String segments = url.getPath();
             String urlQuery = url.getQuery();
             String baseDomain = InternetDomainName.from(hostname).topPrivateDomain().toString();
-            LOGGER.info(baseDomain);
             String fullPath = baseDomain + segments;
-            String subdomain = hostname.replace("." + baseDomain, "");
-            LOGGER.info(subdomain);
-
+            subdomain = hostname.replace("." + baseDomain, "");
             getDomainLevels(hostname);
             getPath(fullPath);
             hostname = String.valueOf(InternetDomainName.from(hostname).topPrivateDomain());
             InternetDomainName it = InternetDomainName.from(hostname);
             String domainname = String.valueOf(it.publicSuffix());
             String domainName = hostname.replaceAll("." + domainname, "");
-            LOGGER.info(domainName);
+            //   LOGGER.info(String.valueOf(url));
+            //     LOGGER.info("full hostname: " + fullHostName);
+            //    LOGGER.info("Pay level domain: " + hostname);
+            list.add(hostname);
 
-            Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "neo4j"));
+
+        }
+        qe.close();
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        Set<String> domains = new HashSet<String>(list);
+        for (String word : domains) {
+            String pld = word;
+            int triples = Collections.frequency(list, word);
+
+            Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
             try (Session session = driver.session()) {
-                HashMap<String, Object> parameters = new HashMap<String, Object>();
-                parameters.put("nameOfDomain", domainName);
-                parameters.put("baseDomain", baseDomain);
-                parameters.put("subDomain", subdomain);
-                parameters.put("path", "dbpdeia.org/resource");
-                parameters.put("value", "value");
-                parameters.put("uri", url.toString());
 
-                String cypherQuery=
-                    "CREATE (m1:data1 { Node1:$nameOfDomain}),(m2:data2 {Node2:$baseDomain}),(m3:data3 {Node3:$subDomain}), " +
-                        "(m4:data4 {Node4:$path}),(m5:data5 {Node5:$value}),(m6:data6 {Node6:$uri})  "+
-                        "CREATE (m1)-[r1:baseDomain]->(m2), (m1)-[r2:subDomain]->(m3), (m1)-[r3:path]->(m4), (m1)-[r4:value]->(m5), (m1)-[r5:uri]->(m6)\n" +
-                        "RETURN m1,m2,m3,m4,m5,m6,r1,r2,r3,r4,r5";
+                parameters.put("plDomain", pld);
+                parameters.put("triples", triples);
+                String cypherQuery =
+                    "CREATE (m1:data1 { Node1:$plDomain}) -[r:triples]->(m2:data2 { Node2:$triples})" +
+                        "RETURN m1,r,m2";
+
                 StatementResult result = session.run(cypherQuery, parameters);
             }
             driver.close();
         }
-        qe.close();
-
     }
-
-
 }
 
