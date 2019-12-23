@@ -344,7 +344,7 @@ public final class MultinomialPredictor {
 
     }
 
-    public double predict(CrawleableUri uri) {
+    public Integer predict(CrawleableUri uri) {
         int pred = 0;
         try {
             //Get the feature vector
@@ -383,9 +383,6 @@ public final class MultinomialPredictor {
                 Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
 
                 int rv = (int) real_value;
-                DoubleVector zero = new SingleEntryDoubleVector(0); //To initialize perCoordinateWeights and squaredPreviousGradient
-
-                DoubleVector old_weights = this.updater.prePredictionWeightUpdate( new FeatureOutcomePair(zero,zero), s.getWeights(),learningRate,0);
 
                 DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
 
@@ -393,23 +390,20 @@ public final class MultinomialPredictor {
 
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
 
-                CostGradientTuple observed = this.learner.observeExample(realResult, s.getWeights());
+                //update weights using the updated parameters
+                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
+
+                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
 
                 // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(s.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
-
-                CostGradientTuple newCostGradientTuple = this.updater.updateGradient(s.getWeights(),observed.getGradient(),0,0,observed.getCost());
-
-                //update weights using the updated parameters
-                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(),learningRate,0);
+                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
 
                 // update model and classifier
-                //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
                 newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
                 i++;
             }
             //create a new multinomial model with the update weights
-            this.setMultinomialModel(new MultinomialRegressionModel(newModels));
+            this.multinomialModel = new MultinomialRegressionModel(newModels);
         } else
             LOGGER.info("URI is null");
 

@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -82,13 +83,16 @@ public class MultinomialPredictorTest {
     }
     @Test
     public void multiWeightUpdate() throws URISyntaxException {
-        boolean flag = true;
+        boolean flag = false;
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         MultinomialPredictor predictor = new MultinomialPredictor.MultinomialPredictorBuilder().build();
         int i = 0;
         DoubleVector[] modelWeights = new DoubleVector[3];
+        Integer numModels = predictor.getMultinomialModel().getModels().length;
+        double[][] oldWeights = new double[numModels][];
         for(RegressionModel model : predictor.getMultinomialModel().getModels()){
             modelWeights[i] = model.getWeights();
+            oldWeights[i] = Arrays.copyOf(model.getWeights().toArray(), model.getWeights().getLength());
             i++;
         }
         predictor.featureHashing(curi);
@@ -96,18 +100,14 @@ public class MultinomialPredictorTest {
         predictor.weightUpdate(curi);
         int j = 0;
         DoubleVector[] modelNewWeights = new DoubleVector[3];
+        double[][] newWeights = new double[numModels][];
         for(RegressionModel model : predictor.getMultinomialModel().getModels()){
             modelNewWeights[j] = model.getWeights();
+            newWeights[j] = Arrays.copyOf(model.getWeights().toArray(), model.getWeights().getLength());
             j++;
         }
-        if(modelWeights[0].equals(modelNewWeights[0]))
-            flag = false;
-
-        if(modelWeights[1].equals(modelNewWeights[1]))
-            flag = false;
-
-        if(modelWeights[2].equals(modelNewWeights[2]))
-            flag = false;
+        if(!oldWeights.equals(newWeights))
+           flag = true;
 
         Assert.assertTrue(flag);
     }

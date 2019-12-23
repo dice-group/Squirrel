@@ -348,17 +348,15 @@ public final class BinomialPredictor {
                 DoubleVector nextExample = features;
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
 
-                CostGradientTuple observed = this.learner.observeExample(realResult, this.model.getWeights());
-                // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(this.model.getWeights(), observed.getGradient(), learningRate, 0, observed.getCost());
-
                 //update weights using the updated parameters
-                DoubleVector new_weights = this.updater.prePredictionWeightUpdate(realResult, update.getWeight(), learningRate, 0);
 
+                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, this.model.getWeights(), learningRate, 0);
 
+                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
                 // update model and classifier
-                //this.model = new RegressionModel(new_weights, this.model.getActivationFunction());
-                model = new RegressionModel(new_weights, model.getActivationFunction());
+                this.model = new RegressionModel(update.getWeight(), this.model.getActivationFunction());
             } else {
                 LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
