@@ -146,9 +146,6 @@ public class QueryExecFactoryConnection {
             InternetDomainName it = InternetDomainName.from(hostname);
             String domainname = String.valueOf(it.publicSuffix());
             String domainName = hostname.replaceAll("." + domainname, "");
-            //   LOGGER.info(String.valueOf(url));
-            //     LOGGER.info("full hostname: " + fullHostName);
-            //    LOGGER.info("Pay level domain: " + hostname);
             domainList.add(hostname);
 
 
@@ -157,7 +154,6 @@ public class QueryExecFactoryConnection {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         Set<String> domains = new HashSet<String>(domainList);
         Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
-        List<Integer> tlist = new ArrayList();
         try (Session session = driver.session()) {
             for (String word : domains) {
                 String pld = word;
@@ -172,7 +168,6 @@ public class QueryExecFactoryConnection {
                     "WITH domain, n, del \n" +
                     "DELETE del \n";
                 StatementResult result = session.run(cypherQuery, parameters);
-                tlist.add(triples);
             }
 
             String NodeRelationQuery = "MATCH (m),(n)\n" +
