@@ -125,7 +125,7 @@ public class QueryExecFactoryConnection {
         Query query = QueryFactory.create(domainQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
-        List<String> list = new ArrayList();
+        List<String> domainList = new ArrayList();
         String hostname, fullHostName, subdomain;
         URI url;
         while (rs.hasNext()) {
@@ -149,30 +149,42 @@ public class QueryExecFactoryConnection {
             //   LOGGER.info(String.valueOf(url));
             //     LOGGER.info("full hostname: " + fullHostName);
             //    LOGGER.info("Pay level domain: " + hostname);
-            list.add(hostname);
+            domainList.add(hostname);
 
 
         }
         qe.close();
         HashMap<String, Object> parameters = new HashMap<String, Object>();
-        Set<String> domains = new HashSet<String>(list);
-        for (String word : domains) {
-            String pld = word;
-            int triples = Collections.frequency(list, word);
-
-            Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
-            try (Session session = driver.session()) {
-
-                parameters.put("plDomain", pld);
+        Set<String> domains = new HashSet<String>(domainList);
+        Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
+        List<Integer> tlist = new ArrayList();
+        try (Session session = driver.session()) {
+            for (String word : domains) {
+                String pld = word;
+                int triples= Collections.frequency(domainList, word);
                 parameters.put("triples", triples);
-                String cypherQuery =
-                    "CREATE (m1:data1 { Node1:$plDomain}) -[r:triples]->(m2:data2 { Node2:$triples})" +
-                        "RETURN m1,r,m2";
+                parameters.put("plDomain", pld);
 
+                String cypherQuery = "MERGE (domain:Individual {id:$plDomain}) \n" +
+                    "SET domain.name = $plDomain " +
+                    "WITH domain \n" +
+                    "OPTIONAL MATCH (domain)<-[del:triples]-(n)\n" +
+                    "WITH domain, n, del \n" +
+                    "DELETE del \n";
                 StatementResult result = session.run(cypherQuery, parameters);
+                tlist.add(triples);
             }
-            driver.close();
+
+            String NodeRelationQuery = "MATCH (m),(n)\n" +
+                "WHERE (ID(m) > ID(n)) AND ANY (k IN KEYS(m) \n" +
+                "WHERE k <> 'id' AND k IN KEYS(n))\n" +
+                "CREATE (m)-[:Has_Triples{triples:$triples}]->(n)\n" +
+                "RETURN m,n";
+            StatementResult result1 = session.run(NodeRelationQuery, parameters);
+
         }
+        driver.close();
+
     }
 }
 
