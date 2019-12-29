@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
  * <li>add "/" for empty paths</li>
  * <li>filter parts of the URI</li>
  * <li>Convert host and scheme to lower case</li>
+ * <li>Handle session ids</li>
  * </ul>
  */
 @Component
@@ -112,6 +113,7 @@ public class NormalizerImpl implements UriNormalizer {
                 List<String> queries = new ArrayList<>(Arrays.asList(queryList));
                 List<String> toRemove = new ArrayList<>();
                 for(String queryParameter : queries){
+                    //removing session ids
                     if(sessionIDs.contains(queryParameter.split("=")[0].toLowerCase())){
                         toRemove.add(queryParameter);
                     }
