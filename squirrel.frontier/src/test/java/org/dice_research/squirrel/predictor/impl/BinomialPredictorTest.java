@@ -33,11 +33,11 @@ public class BinomialPredictorTest {
             predictor.featureHashing(curiPos);
             predictor.featureHashing(curiNeg);
             prediction = predictor.predict(curiPos);
-            if(prediction <= 0.7){
+            if(prediction == 0){
                 flag = false;
             }
             prediction = predictor.predict(curiNeg);
-            if(prediction > 0.7){
+            if(prediction == 1){
                 flag = false;
             }
 
