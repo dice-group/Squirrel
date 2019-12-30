@@ -86,9 +86,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
 
     public static final boolean RECRAWLING_ACTIVE = true;
-    //
-     //protected Predictor pred = new PredictorImpl();
-     //@Qualifier("predictorBean")
+
+     @Qualifier("predictorBean")
      protected Predictor predictor;
 
     @Override
@@ -119,7 +118,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Training the URI predictor model with a training dataset
-        predictor =  new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
+        try {
+            predictor = new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 //        if(predictor != null){
 //            try {
 //                //TrainingDataProvider dataProvider = new TrainingDataProviderImpl();

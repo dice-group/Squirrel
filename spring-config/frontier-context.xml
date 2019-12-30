@@ -53,7 +53,7 @@
     </bean>
 
 	<bean id="predictorBean"
-		  class="org.dice_research.squirrel.predictor.PredictorImpl" />
+		  class="org.dice_research.squirrel.predictor.MultinomialPredictor" />
 
 
 </beans>
