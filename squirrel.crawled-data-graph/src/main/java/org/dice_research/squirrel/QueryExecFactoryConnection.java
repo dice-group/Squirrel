@@ -116,7 +116,6 @@ public class QueryExecFactoryConnection {
         }
         String p1 = sb2.toString();
         return p1;
-
     }
 
     public static void main(String[] args) throws URISyntaxException {
@@ -126,7 +125,9 @@ public class QueryExecFactoryConnection {
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
         List<String> domainList = new ArrayList();
-        String hostname, fullHostName, subdomain;
+        List<String> subdomainList = new ArrayList();
+
+        String hostname, fullHostName,subdomain,path;
         URI url;
         while (rs.hasNext()) {
             QuerySolution sol = rs.nextSolution();
@@ -141,45 +142,49 @@ public class QueryExecFactoryConnection {
             String fullPath = baseDomain + segments;
             subdomain = hostname.replace("." + baseDomain, "");
             getDomainLevels(hostname);
-            getPath(fullPath);
+            path = getPath(fullPath);
             hostname = String.valueOf(InternetDomainName.from(hostname).topPrivateDomain());
             InternetDomainName it = InternetDomainName.from(hostname);
             String domainname = String.valueOf(it.publicSuffix());
             String domainName = hostname.replaceAll("." + domainname, "");
             domainList.add(hostname);
-
+            subdomainList.add(fullHostName);
 
         }
+
         qe.close();
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         Set<String> domains = new HashSet<String>(domainList);
+        Set<String> subdomains = new HashSet<String>(subdomainList);
+        LOGGER.info(String.valueOf(subdomains));
         Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
         try (Session session = driver.session()) {
-            for (String word : domains) {
+            String DeleteQuery = "Match (n) detach delete (n)";
+            StatementResult deleteQuery = session.run(DeleteQuery, parameters);
+            for(String word:domains){
                 String pld = word;
                 int triples= Collections.frequency(domainList, word);
                 parameters.put("triples", triples);
                 parameters.put("plDomain", pld);
-
-                String cypherQuery = "MERGE (domain:Individual {id:$plDomain}) \n" +
-                    "SET domain.name = $plDomain " +
+                String cypherQuery = "CREATE (domain:name {id:$plDomain,triple:$triples})\n" +
+                    "SET domain.label = $plDomain\n" +
                     "WITH domain \n" +
-                    "OPTIONAL MATCH (domain)<-[del:triples]-(n)\n" +
-                    "WITH domain, n, del \n" +
-                    "DELETE del \n";
+                    "OPTIONAL MATCH (domain)<-[r:triples]-(n)\n" +
+                    "WITH domain,n,r \n" +
+                    "DELETE r \n";
                 StatementResult result = session.run(cypherQuery, parameters);
             }
 
             String NodeRelationQuery = "MATCH (m),(n)\n" +
                 "WHERE (ID(m) > ID(n)) AND ANY (k IN KEYS(m) \n" +
                 "WHERE k <> 'id' AND k IN KEYS(n))\n" +
-                "CREATE (m)-[:Has_Triples{triples:$triples}]->(n)\n" +
+                "CREATE (m)-[:hasTriples]->(n)\n" +
                 "RETURN m,n";
             StatementResult result1 = session.run(NodeRelationQuery, parameters);
-
         }
         driver.close();
 
     }
+
 }
 
