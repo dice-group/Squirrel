@@ -68,7 +68,7 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         FileInputStream fin = null;
         try {
             // First, try to get the language of the data
-            LOGGER.info("Starting the RDF Analyzer");
+            LOGGER.info("Starting the RDF Analyzer for URI: " + curi.getUri().toString());
             Lang lang = null;
             Object httpMimeTypeObject = curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
             String contentType = null;
@@ -80,8 +80,6 @@ public class RDFAnalyzer extends AbstractAnalyzer {
             StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
-                LOGGER.info("Received content type: " + contentType);
-                LOGGER.info("Lang : " + lang);
 
                 try {
                     RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
@@ -118,8 +116,6 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
         Tika tika = new Tika();
-
-        LOGGER.info("Content Type Detected: " + contentType);
 
         if ("*/*".equals(contentType) || "text/plain".equals(contentType)) {
             try {

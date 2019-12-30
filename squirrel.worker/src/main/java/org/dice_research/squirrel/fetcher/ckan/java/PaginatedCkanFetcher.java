@@ -64,12 +64,11 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
                 // If we reached this point, we should add a flag that the file contains CKAN
                 // JSON
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 ActivityUtil.addStep(uri, getClass());
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, Constants.URI_TYPE_VALUE_CKAN);
                 return dataFile;
             } catch (CkanException e) {
-                LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
+                LOGGER.info("The given URI: {} does not seems to be a CKAN URI. Returning null", uri.getUri().toString());
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } catch (IOException e) {
