@@ -35,9 +35,7 @@ import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
 import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
-import org.dice_research.squirrel.predictor.Predictor;
-import org.dice_research.squirrel.predictor.TrainingDataProvider;
-import org.dice_research.squirrel.predictor.TrainingDataProviderImpl;
+import org.dice_research.squirrel.predictor.*;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -54,7 +52,6 @@ import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dice_research.squirrel.predictor.PredictorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -122,17 +119,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Training the URI predictor model with a training dataset
-        predictor = new PredictorImpl();
-        if(predictor != null){
-            try {
-                //TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
-                //dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
-                //predictor.train("trainDataFile.txt");
-                predictor.multiNomialTrain("multiNomialTrainData");
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+        predictor =  new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
+//        if(predictor != null){
+//            try {
+//                //TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
+//                //dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
+//                //predictor.train("trainDataFile.txt");
+//                predictor.multiNomialTrain("multiNomialTrainData");
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//        }
         //predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
         // Build frontier
         frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, predictor);
@@ -170,7 +167,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void run() throws Exception {
-        
+
         terminationMutex.acquire();
     }
 
@@ -204,7 +201,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     @Override
     public void handleData(byte[] data, ResponseHandler handler, String responseQueueName, String correlId) {
-    	
+
         Object deserializedData;
         try {
             deserializedData = serializer.deserialize(data);
@@ -227,7 +224,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
-            	
+
             	if(timerTerminator == null) {
             		LOGGER.info("Initializing Terminator task...");
                 	TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
@@ -326,12 +323,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
                     break;
                 }
             }
-            
+
             LOGGER.info("Still has Uris: " + stillHasUris);
 
 			if(!stillHasUris && terminationCheck.shouldFrontierTerminate(queue)) {
 	        	terminationMutex.release();
-	        }			
+	        }
         }
 
     }

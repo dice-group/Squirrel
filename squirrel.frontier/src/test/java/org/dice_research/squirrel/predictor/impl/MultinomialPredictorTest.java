@@ -5,6 +5,7 @@ import de.jungblut.online.regression.RegressionModel;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.predictor.MultinomialPredictor;
+import org.dice_research.squirrel.predictor.Predictor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MultinomialPredictorTest {
     private CrawleableUri curi;
-    private MultinomialPredictor predictor;
+    private Predictor predictor;
 
     @Test
     public void multiNomialTrain(){
@@ -49,7 +50,6 @@ public class MultinomialPredictorTest {
     }
 
     @Test
-
     public void featureHashing(){
         int flag1 = 0;
         int flag2 = 0;

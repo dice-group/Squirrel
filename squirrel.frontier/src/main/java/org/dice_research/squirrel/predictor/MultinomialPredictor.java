@@ -19,18 +19,19 @@ import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
 import de.jungblut.online.regularization.CostWeightTuple;
 import de.jungblut.online.regularization.L2Regularizer;
 import de.jungblut.online.regularization.WeightUpdater;
-import org.apache.jena.base.Sys;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.IntFunction;
 
-public final class MultinomialPredictor {
+/**
+ * A MultinomialPredictor
+ */
+public final class MultinomialPredictor implements Predictor{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
 
@@ -46,6 +47,211 @@ public final class MultinomialPredictor {
     private Double beta;
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
+    public void featureHashing(CrawleableUri uri) {
+        ArrayList<String> tokens1 = new ArrayList<String>();
+        tokens1 = tokenCreation(uri, tokens1);
+        CrawleableUri referUri;
+        if (uri.getData(Constants.REFERRING_URI) != null) {
+            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
+            if (referUri != null)
+                tokens1 = tokenCreation(referUri, tokens1);
+        }
+        String[] tokens = new String[tokens1.size()];
+        for (int i = 0; i < tokens1.size(); i++) {
+            tokens[i] = tokens1.get(i);
+        }
+
+        try {
+            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
+                2 << 14));
+            double[] d;
+            d = feature.toArray();
+            uri.addData(Constants.FEATURE_VECTOR, d);
+
+        } catch (Exception e) {
+            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
+        }
+
+    }
+
+    public Integer predict(CrawleableUri uri) {
+        int pred = 0;
+        try {
+            //Get the feature vector
+            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+                //initialize the regression classifier with updated model and predict
+                multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+                DoubleVector prediction = multinomialClassifier.predict(features);
+                pred = prediction.maxIndex();
+
+            } else {
+                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
+            pred = 0;
+        }
+        return pred;
+    }
+
+
+    public void weightUpdate(CrawleableUri uri) {
+
+        RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
+        int i=0;
+        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_CLASS) != null) {
+
+            for (RegressionModel s : this.getMultinomialModel().getModels()) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
+                Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
+
+                int rv = (int) real_value;
+
+                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+                DoubleVector nextExample = features;
+
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+
+                //update weights using the updated parameters
+                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
+
+                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
+
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
+
+                // update model and classifier
+                newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
+                i++;
+            }
+            //create a new multinomial model with the update weights
+            this.multinomialModel = new MultinomialRegressionModel(newModels);
+        } else
+            LOGGER.info("URI is null");
+
+    }
+
+    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
+        String[] uriToken;
+        uriToken = uri.getUri().toString().split("/|\\.");
+        tokens.addAll(Arrays.asList(uriToken));
+        return tokens;
+    }
+
+    public RegressionModel getModel() {
+        return null;
+    }
+
+    //Learning rate
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    //L2
+    public double getL2() {
+        return l2;
+    }
+
+    public void setL2(double l2) {
+        this.l2 = l2;
+    }
+
+    //L1
+    public double getL1() {
+        return l1;
+    }
+
+    public void setL1(double l1) {
+        this.l1 = l1;
+    }
+
+    //Beta
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    //Learner
+    public RegressionLearn getLearner() {
+        return learner;
+    }
+
+    protected void setLearner(RegressionLearn learner) {
+        this.learner = learner;
+    }
+
+    //Filepath
+    public String getFilepath() {
+        return filepath;
+    }
+
+    protected void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    //Updater
+    public WeightUpdater getUpdater() {
+        return updater;
+    }
+
+    protected void setUpdater(WeightUpdater updater) {
+        this.updater = updater;
+    }
+
+    //Multinomial Model
+    public MultinomialRegressionModel getMultinomialModel() {
+        return multinomialModel;
+    }
+
+    protected void setMultinomialModel(MultinomialRegressionModel multinomialModel) {
+        this.multinomialModel = multinomialModel;
+    }
+
+
+    //Multinomial Learner
+    public MultinomialRegressionLearner getMultinomialLearner() {
+        return multinomialLearner;
+    }
+
+    protected void setMultinomialLearner(MultinomialRegressionLearner multinomialLearner) {
+        this.multinomialLearner = multinomialLearner;
+    }
+
+    //Multinomial Classifier
+    public MultinomialRegressionClassifier getMultinomialClassifier() {
+        return multinomialClassifier;
+    }
+
+    protected void setMultinomialClassifier(MultinomialRegressionClassifier multinomialClassifier) {
+        this.multinomialClassifier = multinomialClassifier;
+    }
+
+
+    public Double getHoldoutValidationPercentage() {
+        return holdoutValidationPercentage;
+    }
+
+    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+        this.holdoutValidationPercentage = holdoutValidationPercentage;
+    }
+
+    /**
+     * A builder pattern for the MultinomialPredictor, that uses Regression Model, Regression Learner along with default training data and other default hyperparameters
+     */
     public static class MultinomialPredictorBuilder {
 
         private TrainingDataProvider trainingDataProvider = new MultinomialTrainDataProviderImpl(); //Training Data Provider
@@ -217,11 +423,6 @@ public final class MultinomialPredictor {
             return predictor;
         }
 
-        /*private void train(String filepath) {
-            this.multinomialLearner.verbose();
-            this.multinomialModel = multinomialLearner.train(() -> trainingDataProvider.setUpStream(filepath));
-        }*/
-
         //Learner
         private RegressionLearn getLearner() {
             return learner;
@@ -316,205 +517,5 @@ public final class MultinomialPredictor {
         }
 
     }
-
-    public void featureHashing(CrawleableUri uri) {
-        ArrayList<String> tokens1 = new ArrayList<String>();
-        tokens1 = tokenCreation(uri, tokens1);
-        CrawleableUri referUri;
-        if (uri.getData(Constants.REFERRING_URI) != null) {
-            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
-            if (referUri != null)
-                tokens1 = tokenCreation(referUri, tokens1);
-        }
-        String[] tokens = new String[tokens1.size()];
-        for (int i = 0; i < tokens1.size(); i++) {
-            tokens[i] = tokens1.get(i);
-        }
-
-        try {
-            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 14));
-            double[] d;
-            d = feature.toArray();
-            uri.addData(Constants.FEATURE_VECTOR, d);
-
-        } catch (Exception e) {
-            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
-        }
-
-    }
-
-    public Integer predict(CrawleableUri uri) {
-        int pred = 0;
-        try {
-            //Get the feature vector
-            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
-                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-                //initialize the regression classifier with updated model and predict
-                multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
-                DoubleVector prediction = multinomialClassifier.predict(features);
-                pred = prediction.maxIndex();
-
-            } else {
-                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
-            pred = 0;
-        }
-        return pred;
-    }
-
-
-    public void weightUpdate(CrawleableUri uri) {
-
-        double learningRate = 0.7;
-        RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
-        int i=0;
-        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_CLASS) != null) {
-
-            for (RegressionModel s : this.getMultinomialModel().getModels()) {
-                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
-                Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
-
-                int rv = (int) real_value;
-
-                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
-
-                DoubleVector nextExample = features;
-
-                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
-
-                //update weights using the updated parameters
-                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
-
-                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
-
-                // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
-
-                // update model and classifier
-                newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
-                i++;
-            }
-            //create a new multinomial model with the update weights
-            this.multinomialModel = new MultinomialRegressionModel(newModels);
-        } else
-            LOGGER.info("URI is null");
-
-    }
-
-    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
-        String[] uriToken;
-        uriToken = uri.getUri().toString().split("/|\\.");
-        tokens.addAll(Arrays.asList(uriToken));
-        return tokens;
-    }
-
-    //Learning rate
-    public double getLearningRate() {
-        return learningRate;
-    }
-
-    public void setLearningRate(double learningRate) {
-        this.learningRate = learningRate;
-    }
-
-    //L2
-    public double getL2() {
-        return l2;
-    }
-
-    protected void setL2(double l2) {
-        this.l2 = l2;
-    }
-
-    //L1
-    public double getL1() {
-        return l1;
-    }
-
-    protected void setL1(double l1) {
-        this.l1 = l1;
-    }
-
-    //Beta
-    public double getBeta() {
-        return beta;
-    }
-
-    protected void setBeta(double beta) {
-        this.beta = beta;
-    }
-
-    //Learner
-    public RegressionLearn getLearner() {
-        return learner;
-    }
-
-    protected void setLearner(RegressionLearn learner) {
-        this.learner = learner;
-    }
-
-    //Filepath
-    public String getFilepath() {
-        return filepath;
-    }
-
-    protected void setFilepath(String filepath) {
-        this.filepath = filepath;
-    }
-
-    //Updater
-    public WeightUpdater getUpdater() {
-        return updater;
-    }
-
-    protected void setUpdater(WeightUpdater updater) {
-        this.updater = updater;
-    }
-
-    //Multinomial Model
-    public MultinomialRegressionModel getMultinomialModel() {
-        return multinomialModel;
-    }
-
-    protected void setMultinomialModel(MultinomialRegressionModel multinomialModel) {
-        this.multinomialModel = multinomialModel;
-    }
-
-    //Multinomial Learner
-    public MultinomialRegressionLearner getMultinomialLearner() {
-        return multinomialLearner;
-    }
-
-    protected void setMultinomialLearner(MultinomialRegressionLearner multinomialLearner) {
-        this.multinomialLearner = multinomialLearner;
-    }
-
-    //Multinomial Classifier
-    public MultinomialRegressionClassifier getMultinomialClassifier() {
-        return multinomialClassifier;
-    }
-
-    protected void setMultinomialClassifier(MultinomialRegressionClassifier multinomialClassifier) {
-        this.multinomialClassifier = multinomialClassifier;
-    }
-
-
-    public Double getHoldoutValidationPercentage() {
-        return holdoutValidationPercentage;
-    }
-
-    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
-        this.holdoutValidationPercentage = holdoutValidationPercentage;
-    }
-
-
 
 }

@@ -24,7 +24,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class BinomialPredictor {
+/**
+ * A BinomialPredictor that can be used for a BinaryClassification problem
+ */
+public final class BinomialPredictor implements Predictor{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
     private WeightUpdater updater;
@@ -38,6 +41,179 @@ public final class BinomialPredictor {
     private Double beta;
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
+    public void featureHashing(CrawleableUri uri) {
+        ArrayList<String> tokens1 = new ArrayList<String>();
+        tokens1 = tokenCreation(uri, tokens1);
+        CrawleableUri referUri;
+        if (uri.getData(Constants.REFERRING_URI) != null) {
+            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
+            if (referUri != null)
+                tokens1 = tokenCreation(referUri, tokens1);
+        }
+        String[] tokens = new String[tokens1.size()];
+        for (int i = 0; i < tokens1.size(); i++) {
+            tokens[i] = tokens1.get(i);
+        }
+
+        try {
+            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
+                2 << 14));
+            double[] d;
+            d = feature.toArray();
+            uri.addData(Constants.FEATURE_VECTOR, d);
+
+        } catch (Exception e) {
+            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
+        }
+
+    }
+
+    public Integer predict(CrawleableUri uri) {
+        int pred = 0;
+        try {
+            //Get the feature vector
+            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+                //initialize the regression classifier with updated model and predict
+                this.setClassifier(new RegressionClassifier(this.getModel()));
+                DoubleVector prediction = this.classifier.predict(features);
+
+                pred = (int) prediction.get(0);
+
+            } else {
+                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
+            e.printStackTrace();
+            pred = 0;
+        }
+        return pred;
+    }
+
+    public void weightUpdate(CrawleableUri curi) {
+        // Learning Rate used at runtime
+        double learningRate = 0.7;
+        try {
+            if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
+                Object featureArray = curi.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+
+                Object real_value = curi.getData(Constants.URI_TRUE_LABEL);
+                int rv = (int) real_value;
+                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+
+                DoubleVector nextExample = features;
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+
+                //update weights using the updated parameters
+
+                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, this.model.getWeights(), learningRate, 0);
+
+                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
+                // update model and classifier
+                this.model = new RegressionModel(update.getWeight(), this.model.getActivationFunction());
+            } else {
+                LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
+            }
+        } catch (Exception e) {
+            LOGGER.info("Error while updating the weight " + e);
+        }
+    }
+
+    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
+
+        String[] uriToken;
+        uriToken = uri.getUri().toString().split("/|\\.");
+        tokens.addAll(Arrays.asList(uriToken));
+
+        return tokens;
+    }
+
+    protected void setUpdater(WeightUpdater updater) {
+        this.updater = updater;
+    }
+
+    public RegressionLearn getLearner() {
+        return learner;
+    }
+
+    protected void setLearner(RegressionLearn learner) {
+        this.learner = learner;
+    }
+
+    public RegressionModel getModel() {
+        return model;
+    }
+
+    protected void setModel(RegressionModel model) {
+        this.model = model;
+    }
+
+    public RegressionClassifier getClassifier() {
+        return classifier;
+    }
+
+    protected void setClassifier(RegressionClassifier classifier) {
+        this.classifier = classifier;
+    }
+
+    protected void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    public double getL2() {
+        return l2;
+    }
+
+    public void setL2(double l2) {
+        this.l2 = l2;
+    }
+
+    public double getL1() {
+        return l1;
+    }
+
+    public void setL1(double l1) {
+        this.l1 = l1;
+    }
+
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    private Double getHoldoutValidationPercentage() {
+        return holdoutValidationPercentage;
+    }
+
+    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+        this.holdoutValidationPercentage = holdoutValidationPercentage;
+    }
+
+    /**
+     * A builder pattern for the Binomialpredictor, that uses Regression Model, Regression Learner along with default training data  and other default hyperparameters
+     */
     public static class BinomialPredictorBuilder {
 
         private TrainingDataProvider trainingDataProvider = new BinomialTrainDataProviderImpl();
@@ -161,9 +337,6 @@ public final class BinomialPredictor {
                 .build();
 
 
-
-
-
             //learner
             if (this.getLearner() == null)
                 this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
@@ -171,7 +344,7 @@ public final class BinomialPredictor {
 
             //filepath
             if (this.getFilePath() == null)
-                     this.setFilePath(" ");
+                this.setFilePath("trainDataSet.txt");
             predictor.setFilepath(this.getFilePath());
 
             //model
@@ -188,13 +361,6 @@ public final class BinomialPredictor {
             predictor.setClassifier(this.getClassifier());
 
             return predictor;
-
-        }
-
-        private void train(String filePath) {
-            this.learner.setNumPasses(2);
-            this.learner.verbose();
-            this.model = this.learner.train(() -> this.trainingDataProvider.setUpStream(filePath));
         }
 
         private RegressionLearn getLearner() {
@@ -278,178 +444,5 @@ public final class BinomialPredictor {
         }
 
     }
-
-    public void featureHashing(CrawleableUri uri) {
-        ArrayList<String> tokens1 = new ArrayList<String>();
-        tokens1 = tokenCreation(uri, tokens1);
-        CrawleableUri referUri;
-        if (uri.getData(Constants.REFERRING_URI) != null) {
-            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
-            if (referUri != null)
-                tokens1 = tokenCreation(referUri, tokens1);
-        }
-        String[] tokens = new String[tokens1.size()];
-        for (int i = 0; i < tokens1.size(); i++) {
-            tokens[i] = tokens1.get(i);
-        }
-
-        try {
-            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 14));
-            double[] d;
-            d = feature.toArray();
-            uri.addData(Constants.FEATURE_VECTOR, d);
-
-        } catch (Exception e) {
-            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
-        }
-
-    }
-
-    public double predict(CrawleableUri uri) {
-        double pred = 0;
-        try {
-            //Get the feature vector
-            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
-                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-                //initialize the regression classifier with updated model and predict
-                this.setClassifier(new RegressionClassifier(this.getModel()));
-                DoubleVector prediction = this.classifier.predict(features);
-
-                pred = prediction.get(0);
-
-            } else {
-                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
-            e.printStackTrace();
-            pred = 0;
-        }
-        return pred;
-    }
-
-
-    public void weightUpdate(CrawleableUri curi) {
-        // Learning Rate used at runtime
-        double learningRate = 0.7;
-        try {
-            if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
-                Object featureArray = curi.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
-                Object real_value = curi.getData(Constants.URI_TRUE_LABEL);
-                int rv = (int) real_value;
-                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
-
-                DoubleVector nextExample = features;
-                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
-
-                //update weights using the updated parameters
-
-                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, this.model.getWeights(), learningRate, 0);
-
-                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
-                // calculate new weights (note that the iteration count is not used)
-                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
-                // update model and classifier
-                this.model = new RegressionModel(update.getWeight(), this.model.getActivationFunction());
-            } else {
-                LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
-            }
-        } catch (Exception e) {
-            LOGGER.info("Error while updating the weight " + e);
-        }
-    }
-
-    protected void setUpdater(WeightUpdater updater) {
-        this.updater = updater;
-    }
-
-    public RegressionLearn getLearner() {
-        return learner;
-    }
-
-    protected void setLearner(RegressionLearn learner) {
-        this.learner = learner;
-    }
-
-    public RegressionModel getModel() {
-        return model;
-    }
-
-    protected void setModel(RegressionModel model) {
-        this.model = model;
-    }
-
-    public RegressionClassifier getClassifier() {
-        return classifier;
-    }
-
-    protected void setClassifier(RegressionClassifier classifier) {
-        this.classifier = classifier;
-    }
-
-    protected void setFilepath(String filepath) {
-        this.filepath = filepath;
-    }
-
-    protected void setLearningRate(double learningRate) {
-        this.learningRate = learningRate;
-    }
-
-    public Double getL2() {
-        return l2;
-    }
-
-    protected void setL2(double l2) {
-        this.l2 = l2;
-    }
-
-    public Double getL1() {
-        return l1;
-    }
-
-    protected void setL1(double l1) {
-        this.l1 = l1;
-    }
-
-    public Double getBeta() {
-        return beta;
-    }
-
-    protected void setBeta(double beta) {
-        this.beta = beta;
-    }
-
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public Double getLearningRate() {
-        return learningRate;
-    }
-
-    private Double getHoldoutValidationPercentage() {
-        return holdoutValidationPercentage;
-    }
-
-    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
-        this.holdoutValidationPercentage = holdoutValidationPercentage;
-    }
-
-
-    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
-
-        String[] uriToken;
-        uriToken = uri.getUri().toString().split("/|\\.");
-        tokens.addAll(Arrays.asList(uriToken));
-
-        return tokens;
-    }
-
 
 }

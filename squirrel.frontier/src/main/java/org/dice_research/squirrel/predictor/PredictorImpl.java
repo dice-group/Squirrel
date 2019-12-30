@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.function.IntFunction;
 
 
-public final class PredictorImpl implements Predictor {
+public final class PredictorImpl {
 
 
     public WeightUpdater updater;
@@ -55,7 +55,7 @@ public final class PredictorImpl implements Predictor {
     public TrainingDataProvider trainingDataProvider;
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class);
 
-    @Override
+
     public void featureHashing(CrawleableUri uri)  {
         ArrayList<String> tokens1 = new ArrayList<String>();
         tokens1 = tokenCreation(uri, tokens1);
@@ -91,7 +91,7 @@ public final class PredictorImpl implements Predictor {
     }
 
 
-    @Override
+
     public void train(String filePath) {
         updater = new AdaptiveFTRLRegularizer(beta,l1 ,l2);
         StochasticGradientDescent sgd = StochasticGradientDescentBuilder
@@ -138,7 +138,6 @@ public final class PredictorImpl implements Predictor {
         return learner;
     };
 
-    @Override
     public int predict(CrawleableUri uri) {
         int pred = 0;
         try {
@@ -164,7 +163,7 @@ public final class PredictorImpl implements Predictor {
         return  pred ;
     }
 
-    @Override
+
     public void weightUpdate(CrawleableUri curi) {
         // Learning Rate used at runtime
         double learningRate = 0.7;
@@ -236,42 +235,42 @@ public final class PredictorImpl implements Predictor {
     }
 
 
-    @Override
+
     public void setL1Parameter (double l1){
         this.l1 = l1;
     }
 
-    @Override
+
     public double getL1Parameter(){
         return this.l1;
     }
 
-    @Override
+
     public void setL2Parameter (double l2){
         this.l2 = l2;
     }
 
-    @Override
+
     public double getL2Parameter(){
         return this.l2;
     }
 
-    @Override
+
     public void setBetaParameter(double beta){
         this.beta = beta;
     }
 
-    @Override
+
     public double getBetaParameter(){
         return this.beta;
     }
 
-    @Override
+
     public void setLearningRate(double learningRate) {
         this.learningRate = learningRate;
     }
 
-    @Override
+
     public double getLearningRate() {
         return learningRate;
     }

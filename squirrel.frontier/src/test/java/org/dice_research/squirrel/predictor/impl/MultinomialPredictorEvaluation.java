@@ -15,7 +15,7 @@ public class MultinomialPredictorEvaluation {
     /**
      * {@link Predictor} used to initialize the object for Predictor to access the functions in PredictorImpl class
      */
-    protected Predictor predictor = new PredictorImpl();
+    protected Predictor predictor =  new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
     /**
      * Indicates the path to the file containing train data.
      */
@@ -169,8 +169,8 @@ public class MultinomialPredictorEvaluation {
                 writerTrain.close();
                 writerTest.close();
                 //predictor.train("trainFile.txt");
-                System.out.println("calling multinomial train function");
-                predictor.multiNomialTrain("trainFile.txt");
+//                System.out.println("calling multinomial train function");
+//                predictor.multiNomialTrain("trainFile.txt");
                 evaluation();
             }
         } catch (IOException e) {

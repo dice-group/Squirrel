@@ -1,10 +1,12 @@
 package org.dice_research.squirrel.predictor.impl;
 
+
 import de.jungblut.math.DoubleVector;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.predictor.BinomialPredictor;
 import org.dice_research.squirrel.predictor.BinomialTrainDataProviderImpl;
+import org.dice_research.squirrel.predictor.Predictor;
 import org.dice_research.squirrel.predictor.TrainingDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,13 +18,12 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
 public class BinomialPredictorTest {
-    private CrawleableUri curi;
-    private BinomialPredictor predictor;
+    private Predictor predictor;
 
     @Test
     public void binomialTrain(){
         boolean flag = true;
-        Double prediction;
+        Integer prediction;
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
         predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
@@ -85,7 +86,7 @@ public class BinomialPredictorTest {
     @Test
     public void weightUpdate() throws URISyntaxException {
         boolean flag = false;
-        curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
+        CrawleableUri curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
         predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();

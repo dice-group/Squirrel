@@ -2,7 +2,6 @@ package org.dice_research.squirrel.predictor;
 
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.dense.DenseDoubleVector;
-import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
 import de.jungblut.online.ml.FeatureOutcomePair;
 import org.dice_research.squirrel.Constants;
@@ -11,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -24,8 +21,9 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
     //private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     //private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
-    private Predictor predictor = new PredictorImpl();
+    private Predictor predictor = new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
     private static final ArrayList<String> classList = new ArrayList<>();
+
     static {
 
         classList.add("SPARQL");
@@ -36,7 +34,7 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
 
 
     @Override
-    public void createTrainDataFile(String dataUri, String trainFilePath){
+    public void createTrainDataFile(String dataUri, String trainFilePath) {
         URL url = null;
         BufferedReader br = null;
         String line;
@@ -45,7 +43,7 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
             url = new URL(dataUri);
             br = new BufferedReader((new InputStreamReader(url.openStream())));
             br.readLine();
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 writer.println(line);
             }
             writer.close();
@@ -53,12 +51,13 @@ public class TrainingDataProviderImpl implements TrainingDataProvider {
             e.printStackTrace();
         }
     }
+
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath) {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-            }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return br.lines().map((s) -> parseFeature(s));
