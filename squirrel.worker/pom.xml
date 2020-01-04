@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.dice-research</groupId>
 			<artifactId>squirrel.api</artifactId>
-			<!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId> 
+			<!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient-cache</artifactId> </exclusion> </exclusions> -->
 		</dependency>
 
@@ -172,6 +172,12 @@
 			<artifactId>jul-to-slf4j</artifactId>
 		</dependency>
 		<!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
+
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-client</artifactId>
+			<version>2.7.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
