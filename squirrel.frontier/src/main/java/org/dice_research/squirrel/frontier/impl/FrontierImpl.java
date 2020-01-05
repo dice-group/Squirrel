@@ -291,8 +291,6 @@ public class FrontierImpl implements Frontier {
                 //generate the feature vector of the uri for prediction purpose
                 predictor.featureHashing(uri);
                 //predict and update uri key with the
-                //
-                //predicted value
                 Integer p = predictor.predict(uri);
                 uri.addData(Constants.URI_PREDICTED_LABEL, p);
             } catch (Exception e) {

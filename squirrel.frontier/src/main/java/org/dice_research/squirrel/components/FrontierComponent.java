@@ -87,8 +87,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
-     @Qualifier("predictorBean")
-     protected Predictor predictor;
+    @Qualifier("predictorBean")
+    @Autowired
+    protected Predictor predictor;
 
     @Override
     public void init() throws Exception {
@@ -123,17 +124,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }catch (Exception e){
             e.printStackTrace();
         }
-//        if(predictor != null){
-//            try {
-//                //TrainingDataProvider dataProvider = new TrainingDataProviderImpl();
-//                //dataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "trainDataFile.txt");
-//                //predictor.train("trainDataFile.txt");
-//                predictor.multiNomialTrain("multiNomialTrainData");
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//        }
-        //predictor.train("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv");
+
         // Build frontier
         frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, (IpAddressBasedQueue) queue, doRecrawling, predictor);
 
