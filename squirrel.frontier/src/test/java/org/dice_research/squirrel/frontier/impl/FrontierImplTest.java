@@ -1,5 +1,10 @@
 package org.dice_research.squirrel.frontier.impl;
 
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -7,7 +12,9 @@ import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
+import org.dice_research.squirrel.frontier.recrawling.FrontierQueryGenerator;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
+import org.dice_research.squirrel.vocab.PROV_O;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +58,7 @@ public class FrontierImplTest {
 
         queue.addUri(uris.get(1));
 
-      //  queue.addCrawleableUri(uris.get(1));
+        //  queue.addCrawleableUri(uris.get(1));
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
         assertion.add(uris.get(1));

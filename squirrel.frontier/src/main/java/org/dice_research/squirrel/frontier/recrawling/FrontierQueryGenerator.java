@@ -7,12 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class FrontierQueryGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FrontierQueryGenerator.class);
-    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
-
-
-    private FrontierQueryGenerator() {
-    }
+    public  static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
 
     /**
      * Return outdated uris by comparing their endtime stamps.

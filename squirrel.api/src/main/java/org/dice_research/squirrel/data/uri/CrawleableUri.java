@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.data.uri;
 
+import org.apache.jena.rdf.model.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,7 @@ public class CrawleableUri implements Serializable {
 	private UriType type = UriType.UNKNOWN;
 
 	private Map<String, Object> data = new TreeMap<>();
+    private Map<Property, Object> prop = new TreeMap<>();
 	private long timestampNextCrawl;
 
 	public CrawleableUri(URI uri) {
@@ -144,6 +146,9 @@ public class CrawleableUri implements Serializable {
 	public void addData(String key, Object data) {
 		this.data.put(key, data);
 	}
+    public void addProperty(Property key, Object prop) {
+        this.prop.put(key, prop);
+    }
 
 	public Object getData(String key) {
 		if (data.containsKey(key)) {
@@ -152,14 +157,27 @@ public class CrawleableUri implements Serializable {
 			return null;
 		}
 	}
+    public Object getProperty(Property key) {
+        if (prop.containsKey(key)) {
+            return prop.get(key);
+        } else {
+            return null;
+        }
+    }
 
 	public Map<String, Object> getData() {
 		return data;
 	}
+    public Map<Property, Object> getProperty() {
+        return prop;
+    }
 
 	public void setData(Map<String, Object> data) {
 		this.data = data;
 	}
+    public void setProperty(Map<Property, Object> prop) {
+        this.prop = prop;
+    }
 
 	@Override
 	public int hashCode() {
@@ -245,4 +263,6 @@ public class CrawleableUri implements Serializable {
 	public void setTimestampNextCrawl(long timestampNextCrawl) {
 		this.timestampNextCrawl = timestampNextCrawl;
 	}
+
+
 }
