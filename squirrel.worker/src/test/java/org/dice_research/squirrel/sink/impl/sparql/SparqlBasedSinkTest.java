@@ -45,7 +45,7 @@ public class SparqlBasedSinkTest {
             sink.openSinkForUri(uri);
             sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.type.asNode(), RDFS.Class.asNode()));
             sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
-                    ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
+                ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
             sink.closeSinkForUri(uri);
         }
 
@@ -67,7 +67,6 @@ public class SparqlBasedSinkTest {
         }
 
         // Check the content of the activity
-        //HashValue is added as a triple. Hence the expected number of triples is 1 more than the number added here.
         Assert.assertEquals(2, activity.getNumberOfTriples());
     }
 }

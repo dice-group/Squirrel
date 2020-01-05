@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.deduplication.impl;
+package org.dice_research.squirrel.urifilter;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
@@ -14,9 +14,6 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.urifilter.SparqlBasedUriFilter;
-import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleComparator;
-import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.impl.sparql.SparqlBasedSink;
 import org.dice_research.squirrel.vocab.Squirrel;
@@ -24,32 +21,35 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class DeduplicationImplTest {
-
+public class SparqlBasedUriFilterTest {
     private SparqlBasedSink sparqlBasedSink;
 
-    private SparqlBasedUriFilter sparqlBasedUriFilter;
+    private QueryExecutionFactory queryExecFactory;
+    private UpdateExecutionFactory updateExecFactory;
+
+    private SparqlBasedUriFilter uriFilter;
+
+    Dataset dataset;
 
     @Before
-    public void init() {
+    public void init() throws IOException, InterruptedException {
         Dataset dataset = DatasetFactory.create();
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
-        QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
-        UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
+        queryExecFactory = new QueryExecutionFactoryDataset(dataset);
+        updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
         sparqlBasedSink = new SparqlBasedSink(queryExecFactory, updateExecFactory);
-        sparqlBasedUriFilter = new SparqlBasedUriFilter(queryExecFactory, updateExecFactory);
+        uriFilter = new SparqlBasedUriFilter(queryExecFactory, updateExecFactory);
     }
 
     @Test
-    public void testHandlingNewUris() throws URISyntaxException {
-
-        DeduplicationImpl deduplicationImpl = new DeduplicationImpl(sparqlBasedUriFilter, sparqlBasedSink, new SimpleTripleComparator(), new SimpleTripleHashFunction());
-
+    public void testAddHashValuesForUris() throws URISyntaxException {
         CrawleableUri uri1 = new CrawleableUri(new URI("http://example.org/dataset1"));
         uri1.addData(Constants.UUID_KEY, "123");
 
@@ -72,28 +72,26 @@ public class DeduplicationImplTest {
         sparqlBasedSink.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-//        sparqlBasedSink.openSinkForUri(uri2);
-//        sparqlBasedSink.addTriple(uri2, triple1);
-//        sparqlBasedSink.closeSinkForUri(uri2);
-//        Assert.assertEquals(1, activity2.getNumberOfTriples());
+        sparqlBasedSink.openSinkForUri(uri2);
+        sparqlBasedSink.addTriple(uri2, triple1);
+        sparqlBasedSink.addTriple(uri2, triple2);
+        sparqlBasedSink.closeSinkForUri(uri2);
+        Assert.assertEquals(2, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
-//        uris.add(uri2);
-        deduplicationImpl.handleNewUris(uris);
-        Assert.assertEquals(2, activity1.getNumberOfTriples());
+        uris.add(uri2);
+        uri1.addData(Constants.URI_HASH_KEY, "321");
+        uri2.addData(Constants.URI_HASH_KEY, "322");
+        uriFilter.addHashValuesForUris(uris);
 
-        Assert.assertEquals(2, sparqlBasedSink.getTriplesForGraph(uri1).size());
-
-        System.out.println(((CrawlingActivity)uri1.getData(Constants.URI_CRAWLING_ACTIVITY)).getHashValue());
-        for(Triple obj:sparqlBasedSink.getTriplesForGraph(uri1)) {
-            System.out.println(obj);
-        }
+        // Check if the Hash value is set in the activity
+        Assert.assertEquals("321", activity1.getHashValue());
+        Assert.assertEquals("322", activity2.getHashValue());
     }
 
     @Test
-    public void testHandlingDuplicateUris() throws URISyntaxException {
-        DeduplicationImpl deduplicationImpl = new DeduplicationImpl(sparqlBasedUriFilter, sparqlBasedSink, new SimpleTripleComparator(), new SimpleTripleHashFunction());
+    public void testGetUrisWithSameHashValues() throws URISyntaxException {
 
         CrawleableUri uri1 = new CrawleableUri(new URI("http://example.org/dataset1"));
         uri1.addData(Constants.UUID_KEY, "123");
@@ -126,7 +124,13 @@ public class DeduplicationImplTest {
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
         uris.add(uri2);
-        deduplicationImpl.handleNewUris(uris);
-        //Assert.assertEquals(0, activity1.getNumberOfTriples());
+        uri1.addData(Constants.URI_HASH_KEY, "555");
+        uri2.addData(Constants.URI_HASH_KEY, "555");
+        uriFilter.addHashValuesForUris(uris);
+
+        Set<CrawleableUri> sameHashUris = uriFilter.getUrisWithSameHashValues("555");
+
+        // Check if all the uris with same hash values are fetched.
+        Assert.assertTrue(sameHashUris.containsAll(uris));
     }
 }

@@ -169,22 +169,4 @@ public class QueryGenerator {
         stringBuilder.append(" ");
         return stringBuilder.toString();
     }
-
-    public Query getDeleteQuery(String graphID) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("delete ?subject ?predicate ?object WHERE { ");
-        //if (!defaultGraph) {
-        stringBuilder.append("GRAPH <");
-        stringBuilder.append(graphID);
-        stringBuilder.append("> { ");
-        //}
-        //stringBuilder.append("?subject ?predicate ?object ");
-        //if (!defaultGraph) {
-        //    stringBuilder.append("} ");
-        //}
-        stringBuilder.append("}");
-        Query query = QueryFactory.create(stringBuilder.toString());
-        return query;
-
-    }
 }

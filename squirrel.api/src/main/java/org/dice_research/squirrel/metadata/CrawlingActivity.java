@@ -134,10 +134,6 @@ public class CrawlingActivity implements Serializable {
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
         model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
 
-        if(!StringUtils.isEmpty(hashValue)) {
-            model.add(activity, Squirrel.hash, model.createTypedLiteral(hashValue));
-        }
-
         Resource association = model.createResource(activityUri + "_workerAssoc");
         model.add(association, RDF.type, PROV_O.Association);
         model.add(activity, PROV_O.qualifiedAssociation, association);
