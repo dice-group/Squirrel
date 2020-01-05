@@ -4,8 +4,10 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 
 public class SparqlQueryGenerator {
-
-    // query to get all the crawled URIs
+    /**
+     * Returns query to get all the crawled URIs
+     */
+    
     public static Query getDomain() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("PREFIX sq:  <http://w3id.org/squirrel/vocab#>" +

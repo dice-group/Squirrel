@@ -42,7 +42,7 @@ public class QueryExecFactoryConnection {
         LOGGER.info("Connected");
     }
 
-    public QueryExecFactoryConnection(QueryExecutionFactory queryExecFactory) {
+    public QueryExecFactoryConnection() {
         this.queryExecFactory = queryExecFactory;
         LOGGER.info("crawled data Connected");
     }
@@ -91,8 +91,11 @@ public class QueryExecFactoryConnection {
         }
         return new QueryExecFactoryConnection(queryExecFactory, updateExecFactory);
     }
-
-    public static List<String> getDomainLevels(String host) {
+    /**Returns levels of the domain
+     * @param host is the hostname from the URI
+     *
+     */
+    public List<String> getDomainLevels(String host) {
         Preconditions.checkNotNull(host);
         Joiner joiner = Joiner.on(".");
         List<String> domainParts = Lists.newLinkedList(Arrays.asList(host.split("\\.")));
@@ -104,7 +107,11 @@ public class QueryExecFactoryConnection {
         return domainLevels;
     }
 
-    public static String getPath(String fullPath) {
+    /**Returns path after the pay level domain
+     * @param fullPath baseDomain + segments of URI (subdomain, paz level domain, path and values)
+     *
+     */
+    public String getPath(String fullPath) {
         String[] path = fullPath.split("/");
         List<String> a = new ArrayList<String>();
         for (String s : path) {
@@ -118,49 +125,22 @@ public class QueryExecFactoryConnection {
         return p1;
     }
 
-    public static void main(String[] args) throws URISyntaxException {
-        QueryExecFactoryConnection.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
-        Query domainQuery = SparqlQueryGenerator.getDomain();
-        Query query = QueryFactory.create(domainQuery);
-        QueryExecution qe = queryExecFactory.createQueryExecution(query);
-        ResultSet rs = qe.execSelect();
-        List<String> domainList = new ArrayList();
-        List<String> subdomainList = new ArrayList();
+    /**Returns Neo4j graph - nodes(domain names) with property labels as no. of triples under one domain and relationship between nodes
+     * @param domainList list of all the pay level domains extracted from crawled URIs
+     * DeleteQuery - To delete already existed graph db before generating new graph
+     * cypherQuery - Generate nodes and property labels
+     * NodeRelationQuery - Create realtions between all the existing nodes in the graph
+     */
 
-        String hostname, fullHostName,subdomain,path;
-        URI url;
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode uri = sol.get("uri");
-            url = new URI(uri.toString());
-            hostname = url.getHost();
-            fullHostName = hostname;
-
-            String segments = url.getPath();
-            String urlQuery = url.getQuery();
-            String baseDomain = InternetDomainName.from(hostname).topPrivateDomain().toString();
-            String fullPath = baseDomain + segments;
-            subdomain = hostname.replace("." + baseDomain, "");
-            getDomainLevels(hostname);
-            path = getPath(fullPath);
-            hostname = String.valueOf(InternetDomainName.from(hostname).topPrivateDomain());
-            InternetDomainName it = InternetDomainName.from(hostname);
-            String domainname = String.valueOf(it.publicSuffix());
-            String domainName = hostname.replaceAll("." + domainname, "");
-            domainList.add(hostname);
-            subdomainList.add(fullHostName);
-
-        }
-
-        qe.close();
+    public static StatementResult getGraph(List<String> domainList){
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         Set<String> domains = new HashSet<String>(domainList);
-        Set<String> subdomains = new HashSet<String>(subdomainList);
-        LOGGER.info(String.valueOf(subdomains));
+        LOGGER.info("domains: "+domains);
         Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
         try (Session session = driver.session()) {
             String DeleteQuery = "Match (n) detach delete (n)";
             StatementResult deleteQuery = session.run(DeleteQuery, parameters);
+            LOGGER.info("Query1: "+DeleteQuery);
             for(String word:domains){
                 String pld = word;
                 int triples= Collections.frequency(domainList, word);
@@ -173,6 +153,7 @@ public class QueryExecFactoryConnection {
                     "WITH domain,n,r \n" +
                     "DELETE r \n";
                 StatementResult result = session.run(cypherQuery, parameters);
+                LOGGER.info("Query2: "+cypherQuery);
             }
 
             String NodeRelationQuery = "MATCH (m),(n)\n" +
@@ -181,8 +162,46 @@ public class QueryExecFactoryConnection {
                 "CREATE (m)-[:hasTriples]->(n)\n" +
                 "RETURN m,n";
             StatementResult result1 = session.run(NodeRelationQuery, parameters);
+            LOGGER.info("Query3: "+NodeRelationQuery);
         }
         driver.close();
+        return null;
+    }
+
+    public static void main(String[] args)throws URISyntaxException{
+        QueryExecFactoryConnection.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
+        Query domainQuery = SparqlQueryGenerator.getDomain();
+        Query query = QueryFactory.create(domainQuery);
+        QueryExecution qe = queryExecFactory.createQueryExecution(query);
+        ResultSet rs = qe.execSelect();
+        List<String> subdomainList = new ArrayList();
+        List<String> domainList = new ArrayList<>();
+        String payLevelD, fullHostName,subdomain,path;
+        URI url;
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode uri = sol.get("uri");
+            url = new URI(uri.toString());
+            String payLevelDomain = url.getHost();
+            payLevelD = String.valueOf(InternetDomainName.from(payLevelDomain).topPrivateDomain());
+            domainList.add(payLevelD);
+            payLevelD=url.getHost();
+            fullHostName = payLevelD;
+            String segments = url.getPath();
+            String urlQuery = url.getQuery();
+            String baseDomain = InternetDomainName.from(payLevelD).topPrivateDomain().toString();
+            String fullPath = baseDomain + segments;
+            subdomain = payLevelD.replace("." + baseDomain, "");
+            // getDomainLevels(payLevelD);
+            // path = getPath(fullPath);
+            InternetDomainName it = InternetDomainName.from(payLevelD);
+            String domainname = String.valueOf(it.publicSuffix());
+            String domainName = payLevelD.replaceAll("." + domainname, "");
+            subdomainList.add(fullHostName);
+
+        }
+        getGraph(domainList);
+        qe.close();
 
     }
 
