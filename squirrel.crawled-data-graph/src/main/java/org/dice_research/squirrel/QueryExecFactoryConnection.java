@@ -108,7 +108,7 @@ public class QueryExecFactoryConnection {
     }
 
     /**Returns path after the pay level domain
-     * @param fullPath baseDomain + segments of URI (subdomain, paz level domain, path and values)
+     * @param fullPath baseDomain + segments of URI (subdomain, pay level domain, path and values)
      *
      */
     public String getPath(String fullPath) {
@@ -140,7 +140,6 @@ public class QueryExecFactoryConnection {
         try (Session session = driver.session()) {
             String DeleteQuery = "Match (n) detach delete (n)";
             StatementResult deleteQuery = session.run(DeleteQuery, parameters);
-            LOGGER.info("Query1: "+DeleteQuery);
             for(String word:domains){
                 String pld = word;
                 int triples= Collections.frequency(domainList, word);
@@ -153,7 +152,6 @@ public class QueryExecFactoryConnection {
                     "WITH domain,n,r \n" +
                     "DELETE r \n";
                 StatementResult result = session.run(cypherQuery, parameters);
-                LOGGER.info("Query2: "+cypherQuery);
             }
 
             String NodeRelationQuery = "MATCH (m),(n)\n" +
@@ -162,7 +160,6 @@ public class QueryExecFactoryConnection {
                 "CREATE (m)-[:hasTriples]->(n)\n" +
                 "RETURN m,n";
             StatementResult result1 = session.run(NodeRelationQuery, parameters);
-            LOGGER.info("Query3: "+NodeRelationQuery);
         }
         driver.close();
         return null;
@@ -198,7 +195,6 @@ public class QueryExecFactoryConnection {
             String domainname = String.valueOf(it.publicSuffix());
             String domainName = payLevelD.replaceAll("." + domainname, "");
             subdomainList.add(fullHostName);
-
         }
         getGraph(domainList);
         qe.close();
