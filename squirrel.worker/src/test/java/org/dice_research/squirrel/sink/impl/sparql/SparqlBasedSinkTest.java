@@ -6,7 +6,8 @@ import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryDataset;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -20,8 +21,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SparqlBasedSinkTest {
 
@@ -37,13 +36,12 @@ public class SparqlBasedSinkTest {
 
         CrawlingActivity activity = new CrawlingActivity(uri, "http://example.org/testWorker");
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
-        try (SparqlBasedSink sink = new SparqlBasedSink(queryExecFactory, updateExecFactory)) {
-            sink.openSinkForUri(uri);
-            sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.type.asNode(), RDFS.Class.asNode()));
-            sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
-                ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
-            sink.closeSinkForUri(uri);
-        }
+        SparqlBasedSink sink = new SparqlBasedSink(queryExecFactory, updateExecFactory);
+        sink.openSinkForUri(uri);
+        sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.type.asNode(), RDFS.Class.asNode()));
+        sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
+            ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
+        sink.closeSinkForUri(uri);
 
         Model model = dataset.getNamedModel(SparqlBasedSink.getGraphId(uri));
         Assert.assertEquals(2, model.size());
@@ -132,25 +130,7 @@ public class SparqlBasedSinkTest {
         sink.closeSinkForUri(uri2);
         Assert.assertEquals(2, activity2.getNumberOfTriples());
 
-        activity1.finishActivity(sink);
-
         sink.updateGraphForUri(uri1, uri2);
         Assert.assertEquals(Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + "124", uri1.getData(Constants.UUID_KEY));
-        SparqlBasedSink.getGraphId(uri1);
-
-        String queryString = "SELECT ?subject ?predicate ?object WHERE { GRAPH <" + Constants.DEFAULT_META_DATA_GRAPH_URI + "> { ?subject ?predicate ?object } }";
-        Query query = QueryFactory.create(queryString);
-        QueryExecution qe = queryExecFactory.createQueryExecution(query);
-        ResultSet rs = qe.execSelect();
-        List<Triple> triplesFound = new ArrayList<>();
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode subject = sol.get("subject");
-            RDFNode predicate = sol.get("predicate");
-            RDFNode object = sol.get("object");
-            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
-        }
-        qe.close();
-
     }
 }

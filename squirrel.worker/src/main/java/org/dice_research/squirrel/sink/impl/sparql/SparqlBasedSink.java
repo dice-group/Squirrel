@@ -209,15 +209,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @return Graph Id of the URI
      */
     public String getGraphIdFromSparql(CrawleableUri uri) {
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("SELECT ?subject WHERE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        queryString.append("> {");
-        queryString.append("?subject <" + Squirrel.containsDataOf + ">" +" <");
-        queryString.append(uri.getUri().toString());
-        queryString.append(">} ");
-        queryString.append("}");
-        Query query = QueryFactory.create(queryString.toString());
+        Query query = QueryGenerator.getInstance().getGraphId(uri);
         QueryExecution qe = SparqlBasedSink.queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
         RDFNode graphId = null;
@@ -269,29 +261,13 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
         String graphId = "";
         if(StringUtils.isEmpty(getGraphId(uriOld))) {
             graphId = getGraphIdFromSparql(uriOld);
+        } else {
+            graphId = getGraphId(uriOld);
         }
         UpdateDeleteInsert update = new UpdateDeleteInsert();
         update.setHasInsertClause(true);
         update.setHasDeleteClause(true);
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("DELETE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        queryString.append("> { ?subject <"+ Squirrel.containsDataOf +"> <");
-        queryString.append(uriNew.getUri().toString());
-        queryString.append("> }}");
-        queryString.append("INSERT { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        queryString.append("> { <");
-        queryString.append(graphId);
-        queryString.append("> <"+ Squirrel.containsDataOf +"> <");
-        queryString.append(uriNew.getUri().toString());
-        queryString.append("> } }");
-        queryString.append(" WHERE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        queryString.append("> { ?subject <");
-        queryString.append(Squirrel.containsDataOf + "> <");
-        queryString.append(uriNew.getUri().toString());
-        queryString.append("> } }");
+        String queryString = QueryGenerator.getInstance().getUpdateHashQuery(uriNew.getUri().toString(), graphId);
         UpdateRequest request = UpdateFactory.create();
         request.add(String.valueOf(queryString));
         updateExecFactory.createUpdateProcessor(request).execute();

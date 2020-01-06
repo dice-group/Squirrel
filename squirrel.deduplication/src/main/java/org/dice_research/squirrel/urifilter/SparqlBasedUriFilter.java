@@ -53,14 +53,10 @@ public class SparqlBasedUriFilter implements UriHashCustodian {
         Set<CrawleableUri> duplicateUris = new HashSet<>();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT ?subject WHERE { GRAPH <");
-        stringBuilder.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
-        stringBuilder.append("> {");
-        stringBuilder.append("?subject ");
-        stringBuilder.append("<http://w3id.org/squirrel/vocab#hash>");
-        stringBuilder.append(" ");
+        stringBuilder.append(Constants.DEFAULT_META_DATA_GRAPH_URI + "> { ?subject ");
+        stringBuilder.append("<http://w3id.org/squirrel/vocab#hash> ");
         stringBuilder.append("\"" + hashValue + "\"");
-        stringBuilder.append(" ");
-        stringBuilder.append("}}");
+        stringBuilder.append(" }}");
         Query query = QueryFactory.create(stringBuilder.toString());
         QueryExecution qe = queryExecFactory.createQueryExecution(query);
         ResultSet rs = qe.execSelect();
