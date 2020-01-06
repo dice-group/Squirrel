@@ -104,6 +104,4 @@ public class SparqlBasedUriFilter implements UriHashCustodian {
             }
         }
     }
-
-
 }

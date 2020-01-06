@@ -72,23 +72,17 @@ public class DeduplicationImplTest {
         sparqlBasedSink.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-//        sparqlBasedSink.openSinkForUri(uri2);
-//        sparqlBasedSink.addTriple(uri2, triple1);
-//        sparqlBasedSink.closeSinkForUri(uri2);
-//        Assert.assertEquals(1, activity2.getNumberOfTriples());
+        sparqlBasedSink.openSinkForUri(uri2);
+        sparqlBasedSink.addTriple(uri2, triple1);
+        sparqlBasedSink.closeSinkForUri(uri2);
+        Assert.assertEquals(1, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
-//        uris.add(uri2);
+        uris.add(uri2);
         deduplicationImpl.handleNewUris(uris);
-        Assert.assertEquals(2, activity1.getNumberOfTriples());
-
         Assert.assertEquals(2, sparqlBasedSink.getTriplesForGraph(uri1).size());
-
-        System.out.println(((CrawlingActivity)uri1.getData(Constants.URI_CRAWLING_ACTIVITY)).getHashValue());
-        for(Triple obj:sparqlBasedSink.getTriplesForGraph(uri1)) {
-            System.out.println(obj);
-        }
+        Assert.assertEquals(1, sparqlBasedSink.getTriplesForGraph(uri2).size());
     }
 
     @Test
@@ -125,8 +119,11 @@ public class DeduplicationImplTest {
 
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
+        deduplicationImpl.handleNewUris(uris);
+        uris.clear();
         uris.add(uri2);
         deduplicationImpl.handleNewUris(uris);
-        //Assert.assertEquals(0, activity1.getNumberOfTriples());
+        Assert.assertEquals(0, sparqlBasedSink.getTriplesForGraph(uri2).size());
+        Assert.assertEquals(sparqlBasedSink.getGraphIdFromSparql(uri1), sparqlBasedSink.getGraphIdFromSparql(uri2));
     }
 }

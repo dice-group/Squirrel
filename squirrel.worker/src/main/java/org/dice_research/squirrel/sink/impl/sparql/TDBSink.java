@@ -174,10 +174,14 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
     }
 
     @Override
-    public void removeTriplesForGraph(CrawleableUri uri) {
+    public void dropGraph(CrawleableUri uri) {
     }
 
     @Override
-    public void linkDuplicateUri(CrawleableUri uriNew, CrawleableUri uriOld) {
+    public void updateGraphForUri(CrawleableUri uriNew, CrawleableUri uriOld) {
+    }
+
+    @Override
+    public void addGraphIdForURIs(List<CrawleableUri> uris) {
     }
 }

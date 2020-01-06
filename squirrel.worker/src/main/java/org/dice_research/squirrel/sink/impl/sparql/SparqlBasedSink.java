@@ -4,6 +4,7 @@ import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactoryHttp;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -14,14 +15,13 @@ import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadAcc;
+import org.apache.jena.sparql.modify.request.QuadDataAcc;
+import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateDeleteInsert;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -53,9 +53,9 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
-    protected QueryExecutionFactory queryExecFactory = null;
+    protected static QueryExecutionFactory queryExecFactory = null;
 
-    protected UpdateExecutionFactory updateExecFactory = null;
+    protected static UpdateExecutionFactory updateExecFactory = null;
 
     protected CrawleableUri metadataGraphUri = null;
 
@@ -195,7 +195,42 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
      * @return The id of the graph.
      */
     public static String getGraphId(CrawleableUri uri) {
-        return uri.getData(Constants.URI_GRAPH).toString();
+        if(uri.getData(Constants.UUID_KEY) != null) {
+            return Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    /**
+     * This method returns the graph id of the uri
+     *
+     * @param uri The uri for which the Graph Id has to be fetched
+     * @return Graph Id of the URI
+     */
+    public String getGraphIdFromSparql(CrawleableUri uri) {
+        StringBuilder queryString = new StringBuilder();
+        queryString.append("SELECT ?subject WHERE { GRAPH <");
+        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
+        queryString.append("> {");
+        queryString.append("?subject <" + Squirrel.containsDataOf + ">" +" <");
+        queryString.append(uri.getUri().toString());
+        queryString.append(">} ");
+        queryString.append("}");
+        Query query = QueryFactory.create(queryString.toString());
+        QueryExecution qe = SparqlBasedSink.queryExecFactory.createQueryExecution(query);
+        ResultSet rs = qe.execSelect();
+        RDFNode graphId = null;
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            graphId = sol.get("subject");
+        }
+        qe.close();
+        if(graphId != null) {
+            return graphId.toString();
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     public void setMetadataGraphUri(CrawleableUri metadataGraphUri) {
@@ -222,7 +257,7 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     }
 
     @Override
-    public void removeTriplesForGraph(CrawleableUri uri) {
+    public void dropGraph(CrawleableUri uri) {
         LOGGER.info("Dropping Graph: " + getGraphId(uri));
         String querybuilder = "DROP GRAPH <" + getGraphId(uri) + "> ;";
         UpdateRequest request = UpdateFactory.create(querybuilder);
@@ -230,10 +265,58 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
     }
 
     @Override
-    public void linkDuplicateUri(CrawleableUri uriNew, CrawleableUri uriOld) {
-        openSinkForUri(uriNew);
-        uriNew.addData(Constants.URI_DUPLICATE, uriOld);
+    public void updateGraphForUri(CrawleableUri uriNew, CrawleableUri uriOld) {
+        String graphId = "";
+        if(StringUtils.isEmpty(getGraphId(uriOld))) {
+            graphId = getGraphIdFromSparql(uriOld);
+        }
+        UpdateDeleteInsert update = new UpdateDeleteInsert();
+        update.setHasInsertClause(true);
+        update.setHasDeleteClause(true);
+        StringBuilder queryString = new StringBuilder();
+        queryString.append("DELETE { GRAPH <");
+        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
+        queryString.append("> { ?subject <"+ Squirrel.containsDataOf +"> <");
+        queryString.append(uriNew.getUri().toString());
+        queryString.append("> }}");
+        queryString.append("INSERT { GRAPH <");
+        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
+        queryString.append("> { <");
+        queryString.append(graphId);
+        queryString.append("> <"+ Squirrel.containsDataOf +"> <");
+        queryString.append(uriNew.getUri().toString());
+        queryString.append("> } }");
+        queryString.append(" WHERE { GRAPH <");
+        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI);
+        queryString.append("> { ?subject <");
+        queryString.append(Squirrel.containsDataOf + "> <");
+        queryString.append(uriNew.getUri().toString());
+        queryString.append("> } }");
+        UpdateRequest request = UpdateFactory.create();
+        request.add(String.valueOf(queryString));
+        updateExecFactory.createUpdateProcessor(request).execute();
         uriNew.addData(Constants.UUID_KEY, getGraphId(uriOld));
-        closeSinkForUri(uriNew);
+    }
+
+    @Override
+    public void addGraphIdForURIs(List<CrawleableUri> uris) {
+        Node graph = NodeFactory.createURI(Constants.DEFAULT_META_DATA_GRAPH_URI.toString());
+        for (CrawleableUri uri : uris) {
+            try {
+                if (!StringUtils.isEmpty(getGraphId(uri))) {
+                    Node sub = NodeFactory.createURI(getGraphId(uri));
+                    Node obj = NodeFactory.createURI(uri.getUri().toString());
+                    Triple triple = new Triple(sub, Squirrel.containsDataOf.asNode(), obj);
+                    QuadDataAcc quads = new QuadDataAcc();
+                    quads.addQuad(new Quad(graph, triple));
+                    quads.setGraph(graph);
+                    UpdateDataInsert insert = new UpdateDataInsert(quads);
+                    UpdateProcessor processor = this.updateExecFactory.createUpdateProcessor(new UpdateRequest(insert));
+                    processor.execute();
+                }
+            }catch (Exception ex) {
+                LOGGER.error("Exception during updating", ex);
+            }
+        }
     }
 }

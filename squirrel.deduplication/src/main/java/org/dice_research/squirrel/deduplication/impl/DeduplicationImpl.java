@@ -40,9 +40,11 @@ public class DeduplicationImpl {
     private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
         for(CrawleableUri uriNew:uris) {
             Set<CrawleableUri> oldUris = uriHashCustodian.getUrisWithSameHashValues(String.valueOf(uriNew.getData(Constants.URI_HASH_KEY)));
+            oldUris.remove(uriNew);
             if(!CollectionUtils.isEmpty(oldUris)) {
-                sink.removeTriplesForGraph(uriNew);
-//                sink.updateGraphForUri(uriOld,uriNew);
+                sink.dropGraph(uriNew);
+                CrawleableUri oldUri = oldUris.iterator().next();
+                sink.updateGraphForUri(uriNew, oldUri);
             }
         }
     }
@@ -54,6 +56,7 @@ public class DeduplicationImpl {
             nextUri.addData(Constants.URI_HASH_KEY, value.encodeToString());
         }
         uriHashCustodian.addHashValuesForUris(uris);
+        sink.addGraphIdForURIs(uris);
         compareNewUrisWithOldUris(uris);
     }
 }
