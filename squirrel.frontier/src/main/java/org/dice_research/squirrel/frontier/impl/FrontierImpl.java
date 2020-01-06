@@ -18,13 +18,10 @@ import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.sun.xml.internal.ws.policy.sourcemodel.wspolicy.XmlToken.Uri;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a

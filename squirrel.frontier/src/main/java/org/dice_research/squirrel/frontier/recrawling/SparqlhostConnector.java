@@ -21,20 +21,19 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SparqlhostConnector implements OutDatedUriRetriever {
+public class SparqlhostConnector implements OutDatedUriRetriever{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlhostConnector.class);
 
     /**
-     * The Query factory used to query the SPARQL endpoint.
+     * SparqlhostConnector creates a connection to the SPARQL endpoint and Query factory used to generate a query.
      */
-    protected QueryExecutionFactory queryExecFactory = null;
+    QueryExecutionFactory queryExecFactory;
     List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
     public SparqlhostConnector(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
@@ -42,13 +41,13 @@ public class SparqlhostConnector implements OutDatedUriRetriever {
         LOGGER.info("Connected");
     }
 
-    public static SparqlhostConnector create(String sparqlEndpointUrl) {
+    public SparqlhostConnector create(String sparqlEndpointUrl) {
         return create(sparqlEndpointUrl, null, null);
     }
 
-    public static SparqlhostConnector create(String sparqlEndpointUrl, String username, String password) {
-        QueryExecutionFactory queryExecFactory = null;
-        UpdateExecutionFactory updateExecFactory = null;
+    public SparqlhostConnector create(String sparqlEndpointUrl, String username, String password) {
+        QueryExecutionFactory queryExecFactory;
+        UpdateExecutionFactory updateExecFactory;
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
@@ -87,6 +86,9 @@ public class SparqlhostConnector implements OutDatedUriRetriever {
     }
 
 
+    /**
+     * @return list of outdated URIs
+     */
     @Override
     public List<CrawleableUri> getUriToRecrawl() {
         Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery();
@@ -105,9 +107,5 @@ public class SparqlhostConnector implements OutDatedUriRetriever {
         return urisToRecrawl;
     }
 
-    @Override
-    public void close() throws IOException {
-        getUriToRecrawl();
-    }
 }
 

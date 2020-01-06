@@ -8,8 +8,7 @@ import java.util.List;
 import com.sun.jndi.toolkit.url.Uri;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
-public interface OutDatedUriRetriever extends Closeable {
-
+public interface OutDatedUriRetriever{
 
     /**
      * Returns all {@link CrawleableUri}s which are crawled a week ago and have to be recrawled.
