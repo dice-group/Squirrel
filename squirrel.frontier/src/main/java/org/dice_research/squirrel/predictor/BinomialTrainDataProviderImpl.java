@@ -19,7 +19,7 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
+
     //private Predictor predictor = new PredictorImpl();
     private BinomialPredictor predictor = new BinomialPredictor();
     @Override
