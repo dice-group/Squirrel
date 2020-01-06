@@ -13,7 +13,6 @@ import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.predictor.Predictor;
-import org.dice_research.squirrel.predictor.PredictorImpl;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 
