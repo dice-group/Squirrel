@@ -37,12 +37,10 @@ public class HDFSSinkHelperTest {
         try {
             n.createNewFile();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("",e);
         }
 
-        boolean retrunValue = hdfsSinkHelper.placeFileIntoHDFS("");
-        Assert.assertTrue(retrunValue);
+        hdfsSinkHelper.placeFileIntoHDFS(srcFilePath);
         String hdfsLocaHostURI = "hdfs://localhost:50070/";
         String desthdfsDirectory = "hdfs://localhost:50070/user/dummyfile.txt";
         Configuration conf = new Configuration();
@@ -56,6 +54,7 @@ public class HDFSSinkHelperTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         File n2 = new File(srcFilePath);
         n2.delete();
