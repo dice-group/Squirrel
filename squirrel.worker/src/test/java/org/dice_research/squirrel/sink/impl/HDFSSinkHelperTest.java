@@ -10,8 +10,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dice_research.squirrel.sink.HDFSSinkHelper;
-
 import java.io.File;
+
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -31,7 +32,6 @@ public class HDFSSinkHelperTest {
     @Test
     public void testPlaceFileIntoHDFS() {
         String srcFilePath = "dummfile.txt";
-
         File n = new File(srcFilePath);
 
         try {
