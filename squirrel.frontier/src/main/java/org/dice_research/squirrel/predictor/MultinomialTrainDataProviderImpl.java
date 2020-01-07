@@ -18,8 +18,6 @@ import java.util.stream.Stream;
 
 public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
-    //private Predictor predictor = new PredictorImpl();
     private MultinomialPredictor predictor = new MultinomialPredictor();
     private static final ArrayList<String> classList = new ArrayList<>();
     static {
