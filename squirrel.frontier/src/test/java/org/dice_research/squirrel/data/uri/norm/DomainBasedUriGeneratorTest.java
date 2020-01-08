@@ -6,38 +6,30 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UriGeneratorImplTest {
+public class DomainBasedUriGeneratorTest {
 
 
-    UriGenerator variantUriObject = new UriGeneratorImpl();
+    UriGenerator variantUriObject = new DomainBasedUriGenerator();
 
     @Test
-    public void getUriVariants(){
+    public void getUriVariant(){
         CrawleableUri originalUri = null;
         try {
             originalUri = new CrawleableUri( new URI("http://www.example.com/a/./b/../c?b=1&a=2&a=1"));
             } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        List<CrawleableUri> actualUriVariants = variantUriObject.getUriVariants(originalUri);
-        boolean domainFlag = false, voidFlag = false;
+        CrawleableUri actualUriVariant = variantUriObject.getUriVariant(originalUri);
+        boolean domainFlag = false;
         try {
             // check if domain variant is generated
             CrawleableUri domainUri = new CrawleableUri( new URI("www.example.com"));
-            if(actualUriVariants.contains(domainUri))
+            if(actualUriVariant.equals(domainUri))
                 domainFlag = true;
-            // check if void variant is generated
-            CrawleableUri voidUri = new CrawleableUri( new URI("http://www.example.com/.well-known/void"));
-            if(actualUriVariants.contains(voidUri))
-                voidFlag = true;
-
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         Assert.assertTrue(domainFlag);
-        Assert.assertTrue(voidFlag);
     }
 }
