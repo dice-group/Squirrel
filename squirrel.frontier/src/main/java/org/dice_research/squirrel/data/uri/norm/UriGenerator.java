@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface UriGenerator {
     /**
-     * Generate a list of uris that are variants of the input uri
+     * Generate new variant of the input uri
      * @param uri
-     * @return list of variant uris
+     * @return new variant uri
      */
-    List<CrawleableUri> getUriVariants(CrawleableUri uri);
+    CrawleableUri getUriVariant(CrawleableUri uri);
 }
