@@ -147,9 +147,11 @@ public class NormalizerImpl implements UriNormalizer {
 
         // convert host and scheme to lower case
         String host = uriObject.getHost();
-        if(!scheme.equals(scheme.toLowerCase()) || !host.equals(host.toLowerCase())){
-            scheme = scheme.toLowerCase();
-            host = host.toLowerCase();
+        String lowerCaseHost = host.toLowerCase();
+        String lowerCaseScheme = scheme.toLowerCase();
+        if(!scheme.equals(lowerCaseScheme) || !host.equals(lowerCaseHost)){
+            scheme = lowerCaseScheme;
+            host = lowerCaseHost;
             changed = true;
         }
 
