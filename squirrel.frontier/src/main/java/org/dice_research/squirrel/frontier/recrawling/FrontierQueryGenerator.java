@@ -5,7 +5,7 @@ import org.apache.jena.query.QueryFactory;
 
 public class FrontierQueryGenerator {
 
-    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 1000 * 60 * 60 * 24 * 7;
+    public static final long DEFAULT_GENERAL_RECRAWL_TIME = 60 * 60 * 24 * 7;
 
     /**
      * Return outdated uris by comparing their endtime stamps.
@@ -15,8 +15,7 @@ public class FrontierQueryGenerator {
     public static Query getOutdatedUrisQuery() {
         Query query = QueryFactory.create("PREFIX  sq:   <http://w3id.org/squirrel/vocab#>\n" +
             "PREFIX  prov: <http://www.w3.org/ns/prov#>\n" +
-            "PREFIX  xsd:  <http://www.w3.org/2001/XMLSchema#>"
-            + "SELECT ?uri  WHERE { \n "+
+            "SELECT ?uri  WHERE { \n "+
             "{\n" +
             "SELECT ?uri ?endtime (NOW() - (?endtime) AS ?diff)\n" +
             "WHERE{\n" +
