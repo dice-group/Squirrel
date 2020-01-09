@@ -80,7 +80,7 @@ public final class BinomialPredictor implements Predictor{
                 this.setClassifier(new RegressionClassifier(this.getModel()));
                 DoubleVector prediction = this.classifier.predict(features);
 
-                if(prediction.get(0) >= 0.7)
+                if(prediction.get(0) >= 0.8)
                     pred = 1;
                 else
                     pred = 0;

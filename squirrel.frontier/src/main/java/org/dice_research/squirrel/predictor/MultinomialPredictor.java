@@ -347,7 +347,6 @@ public final class MultinomialPredictor implements Predictor{
             RegressionLearner learner =  new RegressionLearner(minimizer,
                 new SigmoidActivationFunction(), new LogLoss());
             learner.setNumPasses(5);
-            learner.verbose();
             return learner;
         };
 

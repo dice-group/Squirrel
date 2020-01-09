@@ -29,7 +29,7 @@ public class BinomialPredictorTest {
         predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
         try {
             CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-            CrawleableUri curiNeg = new CrawleableUri(new URI("1234567.!!!!!!!.*****"));
+            CrawleableUri curiNeg = new CrawleableUri(new URI("1234567!!!!!!!*****"));
             predictor.featureHashing(curiPos);
             predictor.featureHashing(curiNeg);
             prediction = predictor.predict(curiPos);
