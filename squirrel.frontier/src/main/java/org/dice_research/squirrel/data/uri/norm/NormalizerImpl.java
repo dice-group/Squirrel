@@ -119,8 +119,12 @@ public class NormalizerImpl implements UriNormalizer {
                     }
                 }
                 queries.removeAll(toRemove);
-                query = String.join("&", queries);
-                changed = true;
+                String newQuery = String.join("&", queries);
+                if(!query.equals(newQuery)) {
+                    query = newQuery;
+                    changed = true;
+
+                }
             }
             else{
                 query = null;
@@ -167,13 +171,20 @@ public class NormalizerImpl implements UriNormalizer {
             builder.setPort(port);
             builder.setHost(host);
             builder.setScheme(scheme);
+            CrawleableUri normalizedUri = null;
+
             try {
-                uri = new CrawleableUri(builder.build());
+                normalizedUri = new CrawleableUri(builder.build());
+                normalizedUri.setData(uri.getData());
             } catch (URISyntaxException e) {
                 LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+                return uri;
             }
+            return normalizedUri;
         }
-        return uri;
+        else
+            return uri;
+
     }
 
     /**
