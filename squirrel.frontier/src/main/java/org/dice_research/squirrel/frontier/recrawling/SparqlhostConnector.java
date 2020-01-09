@@ -36,7 +36,7 @@ public class SparqlhostConnector implements OutDatedUriRetriever{
     QueryExecutionFactory queryExecFactory;
     List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
-    public SparqlhostConnector(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+    public SparqlhostConnector(QueryExecutionFactory queryExecFactory) {
         this.queryExecFactory = queryExecFactory;
         LOGGER.info("Connected");
     }
@@ -82,7 +82,7 @@ public class SparqlhostConnector implements OutDatedUriRetriever{
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
         }
-        return new SparqlhostConnector(queryExecFactory, updateExecFactory);
+        return new SparqlhostConnector(queryExecFactory);
     }
 
 

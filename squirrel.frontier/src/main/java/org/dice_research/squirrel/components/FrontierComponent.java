@@ -59,7 +59,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
-    protected String dataSetQuery = "select ?s ?p ?o where {?s ?p ?o} LIMIT 100 ";
     @Qualifier("knowUriFilterBean")
     @Autowired
     private KnownUriFilter knownUriFilter;

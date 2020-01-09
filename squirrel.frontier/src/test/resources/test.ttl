@@ -11,7 +11,6 @@
 @prefix sq:  <http://w3id.org/squirrel/vocab#> .
 @prefix dc:  <http://purl.org/dc/terms/> .
 
-
 sq-a:f8a97b22-67a6-4fe5-8ff4-e2ccd1322797
         prov:startedAtTime         "2019-12-03T09:42:54.406Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         prov:endedAtTime           "2019-12-03T09:43:00.15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
