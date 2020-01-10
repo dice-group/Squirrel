@@ -26,7 +26,7 @@ public class BinomialPredictorTest {
         Integer prediction;
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withThreshold(0.8).build();
         try {
             CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
             CrawleableUri curiNeg = new CrawleableUri(new URI("1234567!!!!!!!*****"));

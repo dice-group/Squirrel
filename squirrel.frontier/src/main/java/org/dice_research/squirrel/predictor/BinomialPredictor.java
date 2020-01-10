@@ -40,6 +40,7 @@ public final class BinomialPredictor implements Predictor{
     private Double l1;
     private Double beta;
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
+    private Double threshold;
 
     public void featureHashing(CrawleableUri uri) {
         ArrayList<String> tokens1 = new ArrayList<String>();
@@ -80,7 +81,7 @@ public final class BinomialPredictor implements Predictor{
                 this.setClassifier(new RegressionClassifier(this.getModel()));
                 DoubleVector prediction = this.classifier.predict(features);
 
-                if(prediction.get(0) >= 0.8)
+                if(prediction.get(0) >= this.getThreshold())
                     pred = 1;
                 else
                     pred = 0;
@@ -213,6 +214,9 @@ public final class BinomialPredictor implements Predictor{
     private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
         this.holdoutValidationPercentage = holdoutValidationPercentage;
     }
+    public Double getThreshold(){ return this.threshold; }
+
+    public void setThreshold(Double threshold) { this.threshold = threshold; }
 
     /**
      * A builder pattern for the Binomialpredictor, that uses Regression Model, Regression Learner along with default training data  and other default hyperparameters
@@ -242,6 +246,8 @@ public final class BinomialPredictor implements Predictor{
         private RegressionClassifier classifier;   //Classifier
 
         private String filePath;
+
+        private double threshold;
 
         public BinomialPredictorBuilder(RegressionLearn learner, RegressionModel model, RegressionClassifier classifier, WeightUpdater updater) {
             this.learner = learner;
@@ -298,6 +304,11 @@ public final class BinomialPredictor implements Predictor{
             return this;
         }
 
+        public BinomialPredictorBuilder withThreshold(Double threshold) {
+            this.setThreshold(threshold);
+            return this;
+        }
+
         public BinomialPredictor build() {
             BinomialPredictor predictor = new BinomialPredictor();
 
@@ -318,6 +329,12 @@ public final class BinomialPredictor implements Predictor{
                 this.setL2(1);
 
             predictor.setL2(this.getL2());
+
+            if(this.getThreshold() == null) {
+                this.setThreshold(0.5);
+            }
+
+            predictor.setThreshold(this.getThreshold());
 
             //updater
             if (this.getUpdater() == null) {
@@ -344,11 +361,6 @@ public final class BinomialPredictor implements Predictor{
             if (this.getLearner() == null)
                 this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
             predictor.setLearner(this.getLearner());
-
-            //filepath
-            if (this.getFilePath() == null)
-                this.setFilePath("trainDataSet.txt");
-            predictor.setFilepath(this.getFilePath());
 
             //model
             if (this.getModel() == null)
@@ -445,6 +457,10 @@ public final class BinomialPredictor implements Predictor{
         private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
             this.holdoutValidationPercentage = holdoutValidationPercentage;
         }
+
+        private Double getThreshold(){ return this.threshold; }
+
+        private void setThreshold(Double threshold) { this.threshold = threshold; }
 
     }
 

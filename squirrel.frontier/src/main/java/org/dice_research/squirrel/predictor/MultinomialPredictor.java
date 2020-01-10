@@ -385,10 +385,6 @@ public final class MultinomialPredictor implements Predictor{
             }
             predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
 
-            if (this.getFilePath() == null)
-                this.setFilePath("multiNomialTrainData.txt");
-            predictor.setFilepath(this.getFilePath());
-
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
                 .create(this.getLearningRate()) // learning rate
                 .holdoutValidationPercentage(this.getHoldoutValidationPercentage())// 5% as validation set
