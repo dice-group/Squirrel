@@ -62,8 +62,8 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, OutDatedUriRetriever outDatedUriRetriever) {
-        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling, outDatedUriRetriever);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling) {
+        super(normalizer, knownUriFilter, uriReferences, queue, doesRecrawling);
     }
 
     @Override
