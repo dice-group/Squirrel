@@ -25,7 +25,7 @@ public class CrawledGraphQueryTest {
    // @Rule
    // public Neo4jRule neo4j = new Neo4jRule().withProcedure(CrawledGraphQueryTest.class);
 
-    @Test
+    //@Test
     public void getGraph() {
         List<String> domains = new ArrayList<>();
         domains.add("dbpedia.org");
