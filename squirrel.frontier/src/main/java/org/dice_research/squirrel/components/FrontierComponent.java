@@ -99,7 +99,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
         }
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling, outDatedUriRetriever);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
             .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
