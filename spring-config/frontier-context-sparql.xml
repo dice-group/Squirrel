@@ -46,7 +46,7 @@
 		<constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
 	</bean>
 	<!-- Triple Store sparql implementation  -->
-	<bean id="sparqlBean" class="org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector">
+	<bean id="sparqlBean" class="org.dice_research.squirrel.frontier.recrawling.SparqlBasedOutDatedUriRetriever">
 		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}"/>
 		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}"/>
 		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}"/>

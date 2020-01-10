@@ -10,7 +10,7 @@ import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
-import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
+import org.dice_research.squirrel.frontier.recrawling.SparqlBasedOutDatedUriRetriever;
 import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.BlockingQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -58,7 +58,7 @@ public class FrontierImpl implements Frontier {
      * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
      */
     protected OutDatedUriRetriever outDatedUriRetriever;
-    protected SparqlhostConnector sparqlhostConnector;
+    protected SparqlBasedOutDatedUriRetriever sparqlBasedOutDatedUriRetriever;
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
      * identify URIs that already have been crawled.
@@ -229,7 +229,7 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = sparqlhostConnector.getUriToRecrawl();
+                    List<CrawleableUri> urisToRecrawl = sparqlBasedOutDatedUriRetriever.getUriToRecrawl();
                     LOGGER.info("URI to recrawl" + urisToRecrawl);
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }

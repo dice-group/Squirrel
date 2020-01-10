@@ -10,25 +10,34 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
+
 import static org.junit.Assert.*;
 
 public class RecrawlingTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecrawlingTest.class);
 
     @Test
-    public void Recrawling() throws Exception {
+    public void Recrawling(){
         Dataset dataset = DatasetFactory.create();
         dataset.setDefaultModel(ModelFactory.createDefaultModel().read("test.ttl"));
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
-
-        Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery();
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.HOUR, 7);
+        date.set(Calendar.AM_PM, Calendar.AM);
+        date.set(Calendar.MONTH, Calendar.JANUARY);
+        date.set(Calendar.DAY_OF_MONTH, 3);
+        date.set(Calendar.YEAR, 2020);
+        Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery(date);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
         ResultSet rs = qe.execSelect();
         assertTrue("There should be at least one result", rs.hasNext());
         QuerySolution solu = rs.nextSolution();
-           RDFNode outdatedUri = solu.get("uri");
-            LOGGER.info(String.valueOf(outdatedUri));
-            assertEquals("Expected URI", outdatedUri.asResource().getURI(), "http://d-nb.info/gnd/4042012-7");
+        LOGGER.info("Solution: {}", solu);
+           RDFNode outdatedUri = solu.get("url");
+            assertEquals("Expected URI", "http://dbpedia.org/ontology/language", outdatedUri.asResource().getURI());
             assertFalse("Not expecting any URI", rs.hasNext());
 
         qe.close();

@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.components;
 
-import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -50,9 +49,7 @@ import java.util.concurrent.Semaphore;
 @Qualifier("frontierComponent")
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
 
-    public static final boolean RECRAWLING_ACTIVE = true;
     private static final Logger LOGGER = LoggerFactory.getLogger(FrontierComponent.class);
-    protected static QueryExecutionFactory queryExecFactory = null;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
