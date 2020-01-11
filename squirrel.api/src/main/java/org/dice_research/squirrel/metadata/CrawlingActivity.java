@@ -27,7 +27,7 @@ import org.dice_research.squirrel.worker.Worker;
  * crawling activity.
  */
 public class CrawlingActivity implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
     // /**
@@ -73,6 +73,7 @@ public class CrawlingActivity implements Serializable {
 
     private List<String> steps = new ArrayList<String>();
 
+    private String hdfsSourceFile = "";
     /**
      * Constructor.
      *
@@ -104,12 +105,12 @@ public class CrawlingActivity implements Serializable {
 
     /**
      * Prepare the metadata model and returns it.
-     * 
+     *
      * @return the RDF model representing this metadata
      */
     public Model prepareMetadataModel() {
         Model model = ModelFactory.createDefaultModel();
-        
+
         Resource activity = model.createResource(activityUri);
         model.add(activity, RDF.type, PROV_O.Activity);
         Resource crawledUri = model.createResource(getCrawleableUri().getUri().toString());
@@ -118,7 +119,7 @@ public class CrawlingActivity implements Serializable {
             Resource ip = model.createResource("ip:" + getCrawleableUri().getIpAddress().getHostAddress());
             model.add(activity, Squirrel.uriHostedOn, ip);
         }
-       
+
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
@@ -198,7 +199,7 @@ public class CrawlingActivity implements Serializable {
     public void setNumberOfTriples(long numberOfTriples) {
         this.numberOfTriples = numberOfTriples;
     }
-    
+
     public long getNumberOfTriples() {
         return numberOfTriples;
     }
@@ -206,4 +207,13 @@ public class CrawlingActivity implements Serializable {
     public void addOutputResource(String outputResource, Resource resourceType) {
         this.outputResource.put(outputResource, resourceType);
     }
+
+    public String getHdfsSourceFile() {
+        return hdfsSourceFile;
+    }
+
+    public void setHdfsSourceFile(String hdfsSourceFile) {
+        this.hdfsSourceFile = hdfsSourceFile;
+    }
+
 }
