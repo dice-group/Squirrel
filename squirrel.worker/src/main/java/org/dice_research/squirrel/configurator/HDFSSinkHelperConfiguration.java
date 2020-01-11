@@ -18,7 +18,7 @@ public class HDFSSinkHelperConfiguration extends Configuration {
         this.destinationDirectory = destdirectory;
     }
 
-    public static HDFSSinkHelperConfiguration getHDFSHelperConfguration() throws Exception {
+    public static HDFSSinkHelperConfiguration getHDFSHelperConfiguration() throws Exception {
         String hdfshost = getEnv(HDFS_REMOTE_KEY, LOGGER);
         String destinationdirectory = getEnv(HDFS_DESTINATION_DIRECTORY_KEY, LOGGER);
         if (hdfshost != null) {

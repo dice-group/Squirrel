@@ -18,17 +18,17 @@ public class HDFSSinkHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HDFSSinkHelper.class);
     private final ExecutorService EXECUTION_SERVICE = Executors.newScheduledThreadPool(100);
-    private String hdfshost;
+    private String hdfsHost;
     private String destinationDirectory;
 
     public void placeFileIntoHDFS(String srcFilePath) {
         try {
-            hdfshost = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getHDFSHost();
+            hdfsHost = HDFSSinkHelperConfiguration.getHDFSHelperConfiguration().getHDFSHost();
         } catch (Exception e) {
             LOGGER.error(e.toString());
         }
         try {
-            destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getDestinationdirectory();
+            destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfiguration().getDestinationdirectory();
         } catch (Exception e) {
             LOGGER.error(e.toString());
         }
@@ -54,18 +54,18 @@ public class HDFSSinkHelper {
 
 
         public void performAsyncAction() {
-            String desthdfsDirectory = hdfshost + "/" + destinationDirectory + "/";
+            String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
 
             Configuration conf = new Configuration();
             /*
              core-site.xml file should have the <Namenode-Host> and <Port> with cluster namenode and Port
              */
-            conf.set("fs.defaultFS",hdfshost);
+            conf.set("fs.defaultFS",hdfsHost);
 
             Path pSrc = new Path(srcFilePath);
             Path pDst = new Path(desthdfsDirectory);
             try {
-                FileSystem fs = FileSystem.get(URI.create(hdfshost),conf);
+                FileSystem fs = FileSystem.get(URI.create(hdfsHost),conf);
                 fs.copyFromLocalFile(pSrc, pDst);
             } catch (IOException e) {
                 LOGGER.error("",e);
