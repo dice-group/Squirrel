@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.dice_research.squirrel.configurator.HDFSSinkHelperConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,12 @@ public class HDFSSinkHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HDFSSinkHelper.class);
     private final ExecutorService EXECUTION_SERVICE = Executors.newScheduledThreadPool(100);
+    private String hdfshost;
+    private String destinationDirectory;
 
-
-    public void placeFileIntoHDFS(String srcFilePath) {
+    public void placeFileIntoHDFS(String srcFilePath) throws Exception {
+        hdfshost = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getHDFSHost();
+        destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getDestinationdirectory();
         EXECUTION_SERVICE.execute(new AsyncTask(srcFilePath));
         try {
             EXECUTION_SERVICE.awaitTermination(1, TimeUnit.SECONDS);
@@ -42,20 +46,18 @@ public class HDFSSinkHelper {
 
 
         public void performAsyncAction() {
-            String hdfsLocaHostURI = "hdfs://localhost:50070/";
-
-            String desthdfsDirectory = "hdfs://localhost:50070/user/";
+            String desthdfsDirectory = hdfshost + "/" + destinationDirectory + "/";
 
             Configuration conf = new Configuration();
             /*
              core-site.xml file should have the <Namenode-Host> and <Port> with cluster namenode and Port
              */
-            conf.set("fs.defaultFS","hdfs://<Namenode-Host>:<Port>");
+            conf.set("fs.defaultFS",hdfshost);
 
             Path pSrc = new Path(srcFilePath);
             Path pDst = new Path(desthdfsDirectory);
             try {
-                FileSystem fs = FileSystem.get(URI.create(hdfsLocaHostURI),conf);
+                FileSystem fs = FileSystem.get(URI.create(hdfshost),conf);
                 fs.copyFromLocalFile(pSrc, pDst);
             } catch (IOException e) {
                 LOGGER.error("",e);
