@@ -11,11 +11,11 @@ public class HDFSSinkHelperConfiguration extends Configuration {
     public static final String HDFS_DESTINATION_DIRECTORY_KEY = "HDFS_DESTINATION_DIRECTORY";
 
     private String hdfshost;
-    private String destinationdirectory;
+    private String destinationDirectory;
 
     public HDFSSinkHelperConfiguration(String remotehost, String destdirectory) {
         this.hdfshost = remotehost;
-        this.destinationdirectory = destdirectory;
+        this.destinationDirectory = destdirectory;
     }
 
     public static HDFSSinkHelperConfiguration getHDFSHelperConfguration() throws Exception {
@@ -38,7 +38,7 @@ public class HDFSSinkHelperConfiguration extends Configuration {
     }
 
     public String getDestinationdirectory() {
-        return destinationdirectory;
+        return destinationDirectory;
     }
 }
 
