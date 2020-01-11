@@ -21,9 +21,17 @@ public class HDFSSinkHelper {
     private String hdfshost;
     private String destinationDirectory;
 
-    public void placeFileIntoHDFS(String srcFilePath) throws Exception {
-        hdfshost = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getHDFSHost();
-        destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getDestinationdirectory();
+    public void placeFileIntoHDFS(String srcFilePath) {
+        try {
+            hdfshost = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getHDFSHost();
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+        }
+        try {
+            destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfguration().getDestinationdirectory();
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+        }
         EXECUTION_SERVICE.execute(new AsyncTask(srcFilePath));
         try {
             EXECUTION_SERVICE.awaitTermination(1, TimeUnit.SECONDS);
