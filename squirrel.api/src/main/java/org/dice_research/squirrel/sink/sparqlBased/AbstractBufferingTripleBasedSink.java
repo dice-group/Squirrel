@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
+package org.dice_research.squirrel.sink.sparqlBased;
 
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.Constants;
@@ -38,7 +38,7 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
     public void addTriple(CrawleableUri uri, Triple triple) {
         TripleBuffer status = buffers.get(uri);
         if (status == null) {
-            LOGGER.warn("");
+            LOGGER.warn("Sink has not been opened for the uri, sink will be opened.");
             openSinkForUri(uri);
             status = buffers.get(uri);
         }

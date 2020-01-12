@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
+package org.dice_research.squirrel.sink.sparqlBased;
 
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.Constants;

@@ -74,13 +74,6 @@ public class CrawlingActivity implements Serializable {
     private List<String> steps = new ArrayList<String>();
 
     /**
-     * The graph associated with the crawled triples
-     * */
-    private  String graphID;
-
-    private String hashValue;
-
-    /**
      * Constructor.
      *
      * @param uri
@@ -94,9 +87,7 @@ public class CrawlingActivity implements Serializable {
         this.uri = uri;
         this.state = CrawlingURIState.UNKNOWN;
         activityUri = Constants.DEFAULT_ACTIVITY_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
-        graphID = Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + uri.getData(Constants.UUID_KEY).toString();
         uri.addData(Constants.URI_CRAWLING_ACTIVITY_URI, activityUri);
-        uri.addData(Constants.URI_GRAPH,graphID);
     }
 
     public void setState(CrawlingURIState state) {
@@ -129,7 +120,6 @@ public class CrawlingActivity implements Serializable {
         }
 
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
-        model.add(activity, Squirrel.graphID, model.createResource(graphID));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
         model.add(activity, Squirrel.approxNumberOfTriples, model.createTypedLiteral(numberOfTriples));
@@ -215,13 +205,5 @@ public class CrawlingActivity implements Serializable {
 
     public void addOutputResource(String outputResource, Resource resourceType) {
         this.outputResource.put(outputResource, resourceType);
-    }
-
-    public String getHashValue() {
-        return hashValue;
-    }
-
-    public void setHashValue(String hashValue) {
-        this.hashValue = hashValue;
     }
 }

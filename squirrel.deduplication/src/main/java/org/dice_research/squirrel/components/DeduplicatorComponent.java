@@ -12,10 +12,10 @@ import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleComparator;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
 import org.dice_research.squirrel.deduplication.impl.DeduplicationImpl;
+import org.dice_research.squirrel.deduplication.sink.DeduplicationSink;
 import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
-import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
@@ -57,7 +57,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * Needed to access the {@link Triple}s.
      */
-    private AdvancedTripleBasedSink sink;
+    private DeduplicationSink sink;
 
     private Serializer serializer;
 
@@ -97,7 +97,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
             }
 
-            deduplication = new DeduplicationImpl(uriHashCustodian, sink,tripleComparator,tripleHashFunction);
+            deduplication = new DeduplicationImpl(uriHashCustodian, sink, tripleHashFunction);
 
             String sparqlHostName = null;
             String sparqlHostPort = null;

@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
+package org.dice_research.squirrel.sink.sparqlBased;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
@@ -171,17 +171,5 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
 
     public String getUpdateDatasetURI() {
         return updateDatasetURI;
-    }
-
-    @Override
-    public void dropGraph(CrawleableUri uri) {
-    }
-
-    @Override
-    public void updateGraphForUri(CrawleableUri uriNew, CrawleableUri uriOld) {
-    }
-
-    @Override
-    public void addGraphIdForURIs(List<CrawleableUri> uris) {
     }
 }

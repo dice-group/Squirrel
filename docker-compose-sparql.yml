@@ -50,7 +50,7 @@ services:
 #      - ADMIN_PASSWORD=pw123
 #      - JVM_ARGS=-Xmx2g
 
-  db:
+  mongodb:
     image: mongo:4.0.0
     volumes:
       - ./data/mongodb:/data

@@ -1,12 +1,9 @@
-package org.dice_research.squirrel.sink.impl.sparql;
+package org.dice_research.squirrel.sink.sparqlBased;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
-import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,44 +168,5 @@ public class QueryGenerator {
         }
         stringBuilder.append(" ");
         return stringBuilder.toString();
-    }
-
-    /**
-     * This methods builds a query to update the graph id of a URI
-     *
-     * @param uri the uri for which the graph id has to be updated
-     * @param graphId the graph id to be updated for the uri
-     * @return query string
-     */
-    public String getUpdateHashQuery(String uri, String graphId) {
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("DELETE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI + "> { ?subject <");
-        queryString.append(Squirrel.containsDataOf +"> <");
-        queryString.append(uri + "> }}");
-        queryString.append("INSERT { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI + "> { <");
-        queryString.append(graphId + "> <");
-        queryString.append(Squirrel.containsDataOf +"> <");
-        queryString.append(uri + "> } } WHERE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI + "> { ?subject <");
-        queryString.append(Squirrel.containsDataOf + "> <");
-        queryString.append(uri + "> } }");
-        return queryString.toString();
-    }
-
-    /**
-     * This method returns a query to fetch the graph id of the uri.
-     *
-     * @param uri the uri whose graph id is being queried
-     * @return query
-     */
-    public Query getGraphId(CrawleableUri uri) {
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("SELECT ?subject WHERE { GRAPH <");
-        queryString.append(Constants.DEFAULT_META_DATA_GRAPH_URI + "> { ?subject <");
-        queryString.append(Squirrel.containsDataOf + "> <");
-        queryString.append(uri.getUri().toString() + ">} }");
-        return QueryFactory.create(queryString.toString());
     }
 }

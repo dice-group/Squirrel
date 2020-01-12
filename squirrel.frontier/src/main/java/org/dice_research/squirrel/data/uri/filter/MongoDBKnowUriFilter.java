@@ -14,8 +14,6 @@ import org.bson.conversions.Bson;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.deduplication.hashing.HashValue;
-import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +27,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -40,7 +37,7 @@ import java.util.Set;
  */
 
 @SuppressWarnings("deprecation")
-public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
+public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
 
@@ -162,11 +159,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     	 LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
     }
 
-    @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-
-    }
-
 
     public void purge() {
     	mongoDB.getCollection(COLLECTION_NAME).drop();
@@ -222,16 +214,4 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
         // TODO Auto-generated method stub
         return 0;
     }
-
-	@Override
-	public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-    @Override
-    public Set<CrawleableUri> getUrisWithSameHashValues(String hashValue) {
-        return null;
-    }
-
 }
