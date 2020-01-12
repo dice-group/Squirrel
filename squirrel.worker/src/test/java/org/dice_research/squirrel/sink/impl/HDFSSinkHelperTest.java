@@ -1,9 +1,11 @@
 package org.dice_research.squirrel.sink.impl;
 
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.dice_research.squirrel.configurator.HDFSSinkHelperConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,40 +25,51 @@ public class HDFSSinkHelperTest {
     private static final long WAITING_TIME_BETWEEN_TRIPLES = 100;
 
     private HDFSSinkHelper hdfsSinkHelper = null;
+    private String hdfsHost;
+    private String destinationDirectory;
 
     @Before
-    public void findTempDir() {
+    public void initialize() {
         hdfsSinkHelper = new HDFSSinkHelper();
+        try {
+            hdfsHost = HDFSSinkHelperConfiguration.getHDFSHelperConfiguration().getHDFSHost();
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+        }
+        try {
+            destinationDirectory = HDFSSinkHelperConfiguration.getHDFSHelperConfiguration().getDestinationdirectory();
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+        }
+
     }
 
     @Test
     public void testPlaceFileIntoHDFS() {
-        String srcFilePath = "dummfile.txt";
-        File n = new File(srcFilePath);
-
-        try {
-            n.createNewFile();
-        } catch (IOException e) {
-            LOGGER.error("",e);
-        }
-
-        hdfsSinkHelper.placeFileIntoHDFS(srcFilePath);
-        String hdfsLocaHostURI = "hdfs://localhost:50070/";
-        String desthdfsDirectory = "hdfs://localhost:50070/user/dummyfile.txt";
+        File oldLocal = new File(getClass().getClassLoader().getResource("sample.ttl").getFile());
+        File newLocal = new File(getClass().getClassLoader().getResource("sample_hdfs.ttl").getFile());
+        hdfsSinkHelper.placeFileIntoHDFS(oldLocal.getAbsolutePath());
+        String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
         Configuration conf = new Configuration();
-        conf.addResource(new Path("file:///etc/hadoop/conf/core-site.xml"));
-        conf.addResource(new Path("file:///etc/hadoop/conf/hdfs-site.xml"));
-        Path pSrc = new Path(srcFilePath);
-        Path pDst = new Path(desthdfsDirectory);
+        conf.set("fs.defaultFS",hdfsHost);
+        Path plocalSrc = new Path(newLocal.getAbsolutePath());
+        Path pHDFSsrc = new Path(desthdfsDirectory);
         try {
-            FileSystem fs = FileSystem.get(URI.create(hdfsLocaHostURI),conf);
-            Assert.assertTrue(fs.exists(pDst));
+            FileSystem fs = FileSystem.get(URI.create(hdfsHost),conf);
+            if(fs.exists(pHDFSsrc)){
+                fs.copyToLocalFile(true,pHDFSsrc,plocalSrc);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        try {
+            boolean isTwoEqual = FileUtils.contentEquals(oldLocal, newLocal);
+            Assert.assertTrue(isTwoEqual);
+        } catch (IOException e) {
+            LOGGER.error(e.toString());
+        }
 
-        File n2 = new File(srcFilePath);
-        n2.delete();
+
     }
 }
