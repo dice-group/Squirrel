@@ -79,6 +79,8 @@ public class DeduplicationImplTest {
 
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
+        deduplicationImpl.handleNewUris(uris);
+        uris.clear();
         uris.add(uri2);
         deduplicationImpl.handleNewUris(uris);
 
