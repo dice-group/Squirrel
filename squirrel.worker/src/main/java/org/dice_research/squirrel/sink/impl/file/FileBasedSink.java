@@ -189,7 +189,7 @@ public class FileBasedSink implements Sink {
             CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
             if (activity != null) {
                 activity.addOutputResource(file.toURI().toString(), Squirrel.ResultFile);
-                activity.setHdfsSourceFile(file.getAbsolutePath());
+                uri.addData(Constants.HDFS_SOURCE_FILE, file.getAbsolutePath());
             }
             return outputStream;
         }

@@ -20,7 +20,6 @@ import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.metadata.CrawlingActivity.CrawlingURIState;
 import org.dice_research.squirrel.robots.RobotsManager;
-import org.dice_research.squirrel.sink.HDFSSinkHelper;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.dice_research.squirrel.uri.processing.UriProcessorInterface;
@@ -290,8 +289,6 @@ public class WorkerImpl implements Worker, Closeable {
             activity.addStep(manager.getClass(), "Decided to reject this URI.");
         }
         activity.finishActivity(sink);
-        HDFSSinkHelper hdfsSinkHelper = new HDFSSinkHelper();
-        hdfsSinkHelper.placeFileIntoHDFS(activity.getHdfsSourceFile());
         // LOGGER.debug("Fetched {} triples", count);
         setSpecificRecrawlTime(uri);
 

@@ -207,13 +207,4 @@ public class CrawlingActivity implements Serializable {
     public void addOutputResource(String outputResource, Resource resourceType) {
         this.outputResource.put(outputResource, resourceType);
     }
-
-    public String getHdfsSourceFile() {
-        return hdfsSourceFile;
-    }
-
-    public void setHdfsSourceFile(String hdfsSourceFile) {
-        this.hdfsSourceFile = hdfsSourceFile;
-    }
-
 }

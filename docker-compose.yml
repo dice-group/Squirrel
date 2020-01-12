@@ -69,6 +69,8 @@ services:
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
+      - HDFS_REMOTE_KEY = "hdfs://<Namenode-Host>:<Port>"
+      - HDFS_DESTINATION_DIRECTORY_KEY = sinkFolder
     volumes:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -89,6 +91,8 @@ services:
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
+      - HDFS_REMOTE_KEY = "hdfs://<Namenode-Host>:<Port>"
+      - HDFS_DESTINATION_DIRECTORY_KEY = sinkFolder
     volumes:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
@@ -109,6 +113,8 @@ services:
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
       - JVM_ARGS=-Xmx8g
+      - HDFS_REMOTE_KEY = "hdfs://<Namenode-Host>:<Port>"
+      - HDFS_DESTINATION_DIRECTORY_KEY = sinkFolder
     volumes:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
