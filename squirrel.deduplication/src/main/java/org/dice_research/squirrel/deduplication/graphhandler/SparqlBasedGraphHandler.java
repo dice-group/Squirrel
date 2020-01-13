@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.deduplication.sink;
+package org.dice_research.squirrel.deduplication.graphhandler;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
@@ -17,22 +17,24 @@ import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.sparqlbased.QueryGenerator;
 import org.dice_research.squirrel.sink.sparqlbased.SparqlBasedSink;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class is responsible for actions on graphs associated with {@link CrawleableUri}
  *
  */
-public class DeduplicationSink extends SparqlBasedSink {
+public class SparqlBasedGraphHandler extends SparqlBasedSink {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeduplicationSink.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedGraphHandler.class);
 
-    public DeduplicationSink(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+    public SparqlBasedGraphHandler(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         super(queryExecFactory, updateExecFactory);
     }
 
@@ -158,5 +160,33 @@ public class DeduplicationSink extends SparqlBasedSink {
         queryString.append(uri);
         queryString.append(">} }");
         return QueryFactory.create(queryString.toString());
+    }
+
+    /**
+     * Get all {@link Triple}s behind the given uri.
+     *
+     * @param uri The given uri.
+     * @return All {@link Triple}s behind the given uri.
+     */
+    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
+        Query selectQuery = null;
+        if (uri.equals(metadataGraphUri)) {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery();
+        } else {
+            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
+        }
+
+        QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
+        ResultSet rs = qe.execSelect();
+        List<Triple> triplesFound = new ArrayList<>();
+        while (rs.hasNext()) {
+            QuerySolution sol = rs.nextSolution();
+            RDFNode subject = sol.get("subject");
+            RDFNode predicate = sol.get("predicate");
+            RDFNode object = sol.get("object");
+            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
+        }
+        qe.close();
+        return triplesFound;
     }
 }

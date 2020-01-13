@@ -15,7 +15,7 @@ import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
-import org.dice_research.squirrel.deduplication.sink.DeduplicationSink;
+import org.dice_research.squirrel.deduplication.graphhandler.SparqlBasedGraphHandler;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.urifilter.SparqlBasedUriHashCustodian;
 import org.dice_research.squirrel.vocab.Squirrel;
@@ -30,9 +30,7 @@ import java.util.List;
 
 public class DeduplicationImplTest {
 
-    private DeduplicationSink sink;
-
-    private SparqlBasedUriHashCustodian uriFilter;
+    private SparqlBasedGraphHandler sink;
 
     private DeduplicationImpl deduplicationImpl;
 
@@ -42,8 +40,8 @@ public class DeduplicationImplTest {
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new DeduplicationSink(queryExecFactory, updateExecFactory);
-        uriFilter = new SparqlBasedUriHashCustodian(queryExecFactory, updateExecFactory);
+        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
+        SparqlBasedUriHashCustodian uriFilter = new SparqlBasedUriHashCustodian(queryExecFactory, updateExecFactory);
         deduplicationImpl = new DeduplicationImpl(uriFilter, sink, new SimpleTripleHashFunction());
     }
 

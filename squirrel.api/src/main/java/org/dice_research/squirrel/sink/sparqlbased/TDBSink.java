@@ -1,14 +1,8 @@
 package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -17,19 +11,16 @@ import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.Sink;
-import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
-public class TDBSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
+public class TDBSink extends AbstractBufferingTripleBasedSink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TDBSink.class);
     /**
@@ -79,29 +70,6 @@ public class TDBSink extends AbstractBufferingTripleBasedSink implements Advance
         queryDatasetURI = prefix + queryAppendix;
         updateMetaDataUri = prefix + updateMetaDataAppendix;
         queryMetaDataUri = prefix + queryMetaDataAppendix;
-    }
-
-    @Override
-    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        Query selectQuery = null;
-        if (uri.equals(metaDataGraphUri)) {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery();
-        } else {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
-        }
-
-        QueryExecution qe = QueryExecutionFactory.sparqlService(queryDatasetURI, selectQuery);
-        ResultSet rs = qe.execSelect();
-        List<Triple> triplesFound = new ArrayList<>();
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode subject = sol.get("subject");
-            RDFNode predicate = sol.get("predicate");
-            RDFNode object = sol.get("object");
-            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
-        }
-        qe.close();
-        return triplesFound;
     }
 
     /**

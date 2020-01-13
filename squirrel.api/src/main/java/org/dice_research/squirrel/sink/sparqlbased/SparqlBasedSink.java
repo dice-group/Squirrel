@@ -15,11 +15,6 @@ import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.modify.request.QuadAcc;
@@ -30,7 +25,6 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.Sink;
-import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +32,12 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A sink which stores the data in different graphs in a sparql based db.
  */
-public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements AdvancedTripleBasedSink, Sink {
+public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements Sink {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedSink.class);
 
@@ -109,29 +101,6 @@ public class SparqlBasedSink extends AbstractBufferingTripleBasedSink implements
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
         }
         return new SparqlBasedSink(queryExecFactory, updateExecFactory);
-    }
-
-    @Override
-    public List<Triple> getTriplesForGraph(CrawleableUri uri) {
-        Query selectQuery = null;
-        if (uri.equals(metadataGraphUri)) {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery();
-        } else {
-            selectQuery = QueryGenerator.getInstance().getSelectQuery(getGraphId(uri));
-        }
-
-        QueryExecution qe = queryExecFactory.createQueryExecution(selectQuery);
-        ResultSet rs = qe.execSelect();
-        List<Triple> triplesFound = new ArrayList<>();
-        while (rs.hasNext()) {
-            QuerySolution sol = rs.nextSolution();
-            RDFNode subject = sol.get("subject");
-            RDFNode predicate = sol.get("predicate");
-            RDFNode object = sol.get("object");
-            triplesFound.add(Triple.create(subject.asNode(), predicate.asNode(), object.asNode()));
-        }
-        qe.close();
-        return triplesFound;
     }
 
     @Override

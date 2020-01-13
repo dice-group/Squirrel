@@ -7,7 +7,7 @@ import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.TripleHashFunction;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
-import org.dice_research.squirrel.deduplication.sink.DeduplicationSink;
+import org.dice_research.squirrel.deduplication.graphhandler.SparqlBasedGraphHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -26,11 +26,11 @@ public class DeduplicationImpl {
 
     private UriHashCustodian uriHashCustodian;
 
-    private DeduplicationSink sink;
+    private SparqlBasedGraphHandler sink;
 
     private TripleHashFunction tripleHashFunction;
 
-    public DeduplicationImpl(UriHashCustodian uriHashCustodian ,DeduplicationSink sink, TripleHashFunction tripleHashFunction) {
+    public DeduplicationImpl(UriHashCustodian uriHashCustodian , SparqlBasedGraphHandler sink, TripleHashFunction tripleHashFunction) {
         this.sink = sink;
         this.tripleHashFunction = tripleHashFunction;
         this.uriHashCustodian = uriHashCustodian;

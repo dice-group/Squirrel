@@ -12,7 +12,7 @@ import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleComparator;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
 import org.dice_research.squirrel.deduplication.impl.DeduplicationImpl;
-import org.dice_research.squirrel.deduplication.sink.DeduplicationSink;
+import org.dice_research.squirrel.deduplication.graphhandler.SparqlBasedGraphHandler;
 import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
@@ -57,7 +57,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * Needed to access the {@link Triple}s.
      */
-    private DeduplicationSink sink;
+    private SparqlBasedGraphHandler sink;
 
     private Serializer serializer;
 

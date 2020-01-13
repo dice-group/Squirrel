@@ -14,7 +14,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.deduplication.sink.DeduplicationSink;
+import org.dice_research.squirrel.deduplication.graphhandler.SparqlBasedGraphHandler;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.junit.Assert;
@@ -30,19 +30,16 @@ import java.util.Set;
 
 public class SparqlBasedUriHashCustodianTest {
 
-    private DeduplicationSink sink;
-    private QueryExecutionFactory queryExecFactory;
-    private UpdateExecutionFactory updateExecFactory;
+    private SparqlBasedGraphHandler sink;
     private SparqlBasedUriHashCustodian uriHashCustodian;
-    private Dataset dataset;
 
     @Before
     public void init() throws IOException, InterruptedException {
-        dataset = DatasetFactory.create();
+        Dataset dataset = DatasetFactory.create();
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
-        queryExecFactory = new QueryExecutionFactoryDataset(dataset);
-        updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new DeduplicationSink(queryExecFactory, updateExecFactory);
+        QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
+        UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
+        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
         uriHashCustodian = new SparqlBasedUriHashCustodian(queryExecFactory, updateExecFactory);
     }
 

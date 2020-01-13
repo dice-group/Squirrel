@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.deduplication.sink;
+package org.dice_research.squirrel.deduplication.graphhandler;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
@@ -25,20 +25,17 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeduplicationSinkTest {
+public class SparqlBasedGraphHandlerTest {
 
-    private DeduplicationSink sink;
-    private QueryExecutionFactory queryExecFactory;
-    private UpdateExecutionFactory updateExecFactory;
-    private Dataset dataset;
+    private SparqlBasedGraphHandler sink;
 
     @Before
     public void init() {
-        dataset = DatasetFactory.create();
+        Dataset dataset = DatasetFactory.create();
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
-        queryExecFactory = new QueryExecutionFactoryDataset(dataset);
-        updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new DeduplicationSink(queryExecFactory, updateExecFactory);
+        QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
+        UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
+        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
     }
 
     @Test
