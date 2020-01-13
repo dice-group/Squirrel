@@ -57,7 +57,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * Needed to access the {@link Triple}s.
      */
-    private SparqlBasedGraphHandler sink;
+    private SparqlBasedGraphHandler graphHandler;
 
     private Serializer serializer;
 
@@ -97,7 +97,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
             }
 
-            deduplication = new DeduplicationImpl(uriHashCustodian, sink, tripleHashFunction);
+            deduplication = new DeduplicationImpl(uriHashCustodian, graphHandler, tripleHashFunction);
 
             String sparqlHostName = null;
             String sparqlHostPort = null;

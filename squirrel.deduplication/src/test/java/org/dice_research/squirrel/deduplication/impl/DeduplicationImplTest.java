@@ -30,7 +30,7 @@ import java.util.List;
 
 public class DeduplicationImplTest {
 
-    private SparqlBasedGraphHandler sink;
+    private SparqlBasedGraphHandler graphHandler;
 
     private DeduplicationImpl deduplicationImpl;
 
@@ -40,9 +40,9 @@ public class DeduplicationImplTest {
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
+        graphHandler = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
         SparqlBasedUriHashCustodian uriFilter = new SparqlBasedUriHashCustodian(queryExecFactory, updateExecFactory);
-        deduplicationImpl = new DeduplicationImpl(uriFilter, sink, new SimpleTripleHashFunction());
+        deduplicationImpl = new DeduplicationImpl(uriFilter, graphHandler, new SimpleTripleHashFunction());
     }
 
     @Test
@@ -64,15 +64,15 @@ public class DeduplicationImplTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-        sink.openSinkForUri(uri2);
-        sink.addTriple(uri2, triple1);
-        sink.closeSinkForUri(uri2);
+        graphHandler.openSinkForUri(uri2);
+        graphHandler.addTriple(uri2, triple1);
+        graphHandler.closeSinkForUri(uri2);
         Assert.assertEquals(1, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
@@ -83,8 +83,8 @@ public class DeduplicationImplTest {
         deduplicationImpl.handleNewUris(uris);
 
         // checks the adding of triples in case they aren't the same i.e. the uris are not duplicates.
-        Assert.assertEquals(2, sink.getTriplesForGraph(uri1).size());
-        Assert.assertEquals(1, sink.getTriplesForGraph(uri2).size());
+        Assert.assertEquals(2, graphHandler.getTriplesForGraph(uri1).size());
+        Assert.assertEquals(1, graphHandler.getTriplesForGraph(uri2).size());
     }
 
     @Test
@@ -106,16 +106,16 @@ public class DeduplicationImplTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-        sink.openSinkForUri(uri2);
-        sink.addTriple(uri2, triple1);
-        sink.addTriple(uri2, triple2);
-        sink.closeSinkForUri(uri2);
+        graphHandler.openSinkForUri(uri2);
+        graphHandler.addTriple(uri2, triple1);
+        graphHandler.addTriple(uri2, triple2);
+        graphHandler.closeSinkForUri(uri2);
         Assert.assertEquals(2, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
@@ -126,8 +126,8 @@ public class DeduplicationImplTest {
         deduplicationImpl.handleNewUris(uris);
 
         // check if the uri2 is found out as a duplicate uri and its triples deleted
-        Assert.assertEquals(0, sink.getTriplesForGraph(uri2).size());
+        Assert.assertEquals(0, graphHandler.getTriplesForGraph(uri2).size());
         // check if the graph id of uri2 is set to the graph id of uri1
-        Assert.assertEquals(sink.getGraphIdFromSparql(uri1.getUri().toString()), sink.getGraphIdFromSparql(uri2.getUri().toString()));
+        Assert.assertEquals(graphHandler.getGraphIdFromSparql(uri1.getUri().toString()), graphHandler.getGraphIdFromSparql(uri2.getUri().toString()));
     }
 }

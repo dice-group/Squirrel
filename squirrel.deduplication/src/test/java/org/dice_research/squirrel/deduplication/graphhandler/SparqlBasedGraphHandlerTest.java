@@ -27,7 +27,7 @@ import java.util.List;
 
 public class SparqlBasedGraphHandlerTest {
 
-    private SparqlBasedGraphHandler sink;
+    private SparqlBasedGraphHandler graphHandler;
 
     @Before
     public void init() {
@@ -35,7 +35,7 @@ public class SparqlBasedGraphHandlerTest {
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
+        graphHandler = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
     }
 
     @Test
@@ -50,15 +50,15 @@ public class SparqlBasedGraphHandlerTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
-        Assert.assertEquals(2, sink.getTriplesForGraph(uri1).size());
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
+        Assert.assertEquals(2, graphHandler.getTriplesForGraph(uri1).size());
 
-        sink.dropGraph(uri1);
+        graphHandler.dropGraph(uri1);
         // check if the triples associated with the graph have been deleted.
-        Assert.assertEquals(0, sink.getTriplesForGraph(uri1).size());
+        Assert.assertEquals(0, graphHandler.getTriplesForGraph(uri1).size());
     }
 
     @Test
@@ -73,18 +73,18 @@ public class SparqlBasedGraphHandlerTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
-        Assert.assertEquals(2, sink.getTriplesForGraph(uri1).size());
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
+        Assert.assertEquals(2, graphHandler.getTriplesForGraph(uri1).size());
 
         List<CrawleableUri> uris = new ArrayList<>();
         uris.add(uri1);
-        sink.addGraphIdForURIs(uris);
+        graphHandler.addGraphIdForURIs(uris);
 
-        sink.updateGraphForUri(uri1, Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + "124");
+        graphHandler.updateGraphForUri(uri1, Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + "124");
         // check if the graph id of the uri has been updated in the metadata graph
-        Assert.assertEquals(Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + "124", sink.getGraphIdFromSparql(uri1.getUri().toString()));
+        Assert.assertEquals(Constants.DEFAULT_RESULT_GRAPH_URI_PREFIX + "124", graphHandler.getGraphIdFromSparql(uri1.getUri().toString()));
     }
 }

@@ -26,12 +26,12 @@ public class DeduplicationImpl {
 
     private UriHashCustodian uriHashCustodian;
 
-    private SparqlBasedGraphHandler sink;
+    private SparqlBasedGraphHandler graphHandler;
 
     private TripleHashFunction tripleHashFunction;
 
-    public DeduplicationImpl(UriHashCustodian uriHashCustodian , SparqlBasedGraphHandler sink, TripleHashFunction tripleHashFunction) {
-        this.sink = sink;
+    public DeduplicationImpl(UriHashCustodian uriHashCustodian , SparqlBasedGraphHandler graphHandler, TripleHashFunction tripleHashFunction) {
+        this.graphHandler = graphHandler;
         this.tripleHashFunction = tripleHashFunction;
         this.uriHashCustodian = uriHashCustodian;
     }
@@ -46,8 +46,8 @@ public class DeduplicationImpl {
             Set<String> oldUris = uriHashCustodian.getUrisWithSameHashValues(String.valueOf(uriNew.getData(Constants.URI_HASH_KEY)));
             oldUris.remove(uriNew.getUri().toString());
             if(!CollectionUtils.isEmpty(oldUris)) {
-                sink.dropGraph(uriNew);
-                sink.updateGraphForUri(uriNew, sink.getGraphIdFromSparql(oldUris.iterator().next()));
+                graphHandler.dropGraph(uriNew);
+                graphHandler.updateGraphForUri(uriNew, graphHandler.getGraphIdFromSparql(oldUris.iterator().next()));
             }
         }
     }
@@ -59,9 +59,9 @@ public class DeduplicationImpl {
      * @param uris the newly crawled uris to be handled.
      */
     public void handleNewUris(List<CrawleableUri> uris) {
-        sink.addGraphIdForURIs(uris);
+        graphHandler.addGraphIdForURIs(uris);
         for (CrawleableUri nextUri : uris) {
-            List<Triple> triples = sink.getTriplesForGraph(nextUri);
+            List<Triple> triples = graphHandler.getTriplesForGraph(nextUri);
             HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
             nextUri.addData(Constants.URI_HASH_KEY, value.encodeToString());
         }

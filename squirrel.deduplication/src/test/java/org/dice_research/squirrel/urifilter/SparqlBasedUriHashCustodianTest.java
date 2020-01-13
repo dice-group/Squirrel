@@ -30,7 +30,7 @@ import java.util.Set;
 
 public class SparqlBasedUriHashCustodianTest {
 
-    private SparqlBasedGraphHandler sink;
+    private SparqlBasedGraphHandler graphHandler;
     private SparqlBasedUriHashCustodian uriHashCustodian;
 
     @Before
@@ -39,7 +39,7 @@ public class SparqlBasedUriHashCustodianTest {
         dataset.setDefaultModel(ModelFactory.createDefaultModel());
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         UpdateExecutionFactory updateExecFactory = new UpdateExecutionFactoryDataset(dataset);
-        sink = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
+        graphHandler = new SparqlBasedGraphHandler(queryExecFactory, updateExecFactory);
         uriHashCustodian = new SparqlBasedUriHashCustodian(queryExecFactory, updateExecFactory);
     }
 
@@ -61,16 +61,16 @@ public class SparqlBasedUriHashCustodianTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-        sink.openSinkForUri(uri2);
-        sink.addTriple(uri2, triple1);
-        sink.addTriple(uri2, triple2);
-        sink.closeSinkForUri(uri2);
+        graphHandler.openSinkForUri(uri2);
+        graphHandler.addTriple(uri2, triple1);
+        graphHandler.addTriple(uri2, triple2);
+        graphHandler.closeSinkForUri(uri2);
         Assert.assertEquals(2, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
@@ -107,16 +107,16 @@ public class SparqlBasedUriHashCustodianTest {
         Triple triple2 = new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
             ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode());
 
-        sink.openSinkForUri(uri1);
-        sink.addTriple(uri1, triple1);
-        sink.addTriple(uri1, triple2);
-        sink.closeSinkForUri(uri1);
+        graphHandler.openSinkForUri(uri1);
+        graphHandler.addTriple(uri1, triple1);
+        graphHandler.addTriple(uri1, triple2);
+        graphHandler.closeSinkForUri(uri1);
         Assert.assertEquals(2, activity1.getNumberOfTriples());
 
-        sink.openSinkForUri(uri2);
-        sink.addTriple(uri2, triple1);
-        sink.addTriple(uri2, triple2);
-        sink.closeSinkForUri(uri2);
+        graphHandler.openSinkForUri(uri2);
+        graphHandler.addTriple(uri2, triple1);
+        graphHandler.addTriple(uri2, triple2);
+        graphHandler.closeSinkForUri(uri2);
         Assert.assertEquals(2, activity2.getNumberOfTriples());
 
         List<CrawleableUri> uris = new ArrayList<>();
