@@ -1,36 +1,33 @@
 package org.dice_research.squirrel.components;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Semaphore;
-
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
-import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.TripleComparator;
 import org.dice_research.squirrel.deduplication.hashing.TripleHashFunction;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
-import org.dice_research.squirrel.deduplication.hashing.impl.IntervalBasedMinHashFunction;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleComparator;
 import org.dice_research.squirrel.deduplication.hashing.impl.SimpleTripleHashFunction;
+import org.dice_research.squirrel.deduplication.impl.DeduplicationImpl;
+import org.dice_research.squirrel.deduplication.graphhandler.SparqlBasedGraphHandler;
 import org.dice_research.squirrel.rabbit.RespondingDataHandler;
 import org.dice_research.squirrel.rabbit.ResponseHandler;
 import org.dice_research.squirrel.rabbit.msgs.UriSet;
-import org.dice_research.squirrel.sink.tripleBased.AdvancedTripleBasedSink;
 import org.hobbit.core.components.AbstractComponent;
 import org.hobbit.core.data.RabbitQueue;
 import org.hobbit.core.rabbit.DataReceiverImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /**
  * This component is responsible for deduplication.
@@ -60,7 +57,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     /**
      * Needed to access the {@link Triple}s.
      */
-    private AdvancedTripleBasedSink sink;
+    private SparqlBasedGraphHandler graphHandler;
 
     private Serializer serializer;
 
@@ -71,6 +68,8 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
     private UriHashCustodian uriHashCustodian;
 
     private TripleHashFunction tripleHashFunction = new SimpleTripleHashFunction();
+
+    private DeduplicationImpl deduplication;
 
     private final Semaphore terminationMutex = new Semaphore(0);
 
@@ -97,10 +96,13 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
             } else {
                 LOGGER.warn("Couldn't get {} from the environment. An in-memory queue will be used.", Constants.RDB_HOST_NAME_KEY);
             }
+
+            deduplication = new DeduplicationImpl(uriHashCustodian, graphHandler, tripleHashFunction);
+
             String sparqlHostName = null;
             String sparqlHostPort = null;
 //            FIXME Fix the following code
-//            
+//
 //            if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
 //                sparqlHostName = env.get(WorkerConfiguration.SPARQL_HOST_CONTAINER_NAME_KEY);
 //                if (env.containsKey(WorkerConfiguration.SPARQL_HOST_PORTS_KEY)) {
@@ -134,57 +136,13 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         }
     }
 
-    private void handleNewUris(List<CrawleableUri> uris) {
-        for (CrawleableUri nextUri : uris) {
-            List<Triple> triples = sink.getTriplesForGraph(nextUri);
-            HashValue value = (new IntervalBasedMinHashFunction(2, tripleHashFunction).hash(triples));
-            nextUri.addData(Constants.URI_HASH_KEY, value);
-        }
-
-        compareNewUrisWithOldUris(uris);
-        uriHashCustodian.addHashValuesForUris(uris);
-
-    }
-
     @Override
     public void run() throws InterruptedException {
         terminationMutex.acquire();
     }
 
-    /**
-     * Compare the hash values of the uris in  with the hash values of all uris contained
-     * in {@link #uriHashCustodian}.
-     * @param uris
-     */
-    private void compareNewUrisWithOldUris(List<CrawleableUri> uris) {
-//  FIXME fix this part!
-//        if (uriHashCustodian instanceof RDBKnownUriFilter) {
-//            ((RDBKnownUriFilter) uriHashCustodian).openConnector();
-//        }
 
-        Set<HashValue> hashValuesOfNewUris = new HashSet<>();
-        for (CrawleableUri uri : uris) {
-            hashValuesOfNewUris.add((HashValue) uri.getData(Constants.URI_HASH_KEY));
-        }
-        Set<CrawleableUri> oldUrisForComparison = uriHashCustodian.getUrisWithSameHashValues(hashValuesOfNewUris);
-        outer:
-        for (CrawleableUri uriNew : uris) {
-            for (CrawleableUri uriOld : oldUrisForComparison) {
-                if (!uriOld.equals(uriNew)) {
-                    // get triples from pair1 and pair2 and compare them
-                    List<Triple> listOld = sink.getTriplesForGraph(uriOld);
-                    List<Triple> listNew = sink.getTriplesForGraph(uriNew);
 
-                    if (tripleComparator.triplesAreEqual(listOld, listNew)) {
-                        // TODO: delete duplicate, this means Delete the triples from the new uris and
-                        // replace them by a link to the old uris which has the same content
-                        continue outer;
-                    }
-
-                }
-            }
-        }
-    }
 
     @Override
     public void close() {
@@ -213,7 +171,7 @@ public class DeduplicatorComponent extends AbstractComponent implements Respondi
         if (object != null) {
             if (object instanceof UriSet) {
                 UriSet uriSet = (UriSet) object;
-                handleNewUris(uriSet.uris);
+                deduplication.handleNewUris(uriSet.uris);
             } else {
                 LOGGER.info("Received an unknown object. It will be ignored.");
             }

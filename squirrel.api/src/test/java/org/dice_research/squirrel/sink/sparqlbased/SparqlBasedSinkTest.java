@@ -1,8 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
@@ -12,12 +8,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.dice_research.squirrel.Constants;
@@ -26,6 +17,10 @@ import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SparqlBasedSinkTest {
 
@@ -38,16 +33,15 @@ public class SparqlBasedSinkTest {
 
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/dataset"));
         uri.addData(Constants.UUID_KEY, "123");
-        
+
         CrawlingActivity activity = new CrawlingActivity(uri, "http://example.org/testWorker");
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
-        try (SparqlBasedSink sink = new SparqlBasedSink(queryExecFactory, updateExecFactory)) {
-            sink.openSinkForUri(uri);
-            sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.type.asNode(), RDFS.Class.asNode()));
-            sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
-                    ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
-            sink.closeSinkForUri(uri);
-        }
+        SparqlBasedSink sink = new SparqlBasedSink(queryExecFactory, updateExecFactory);
+        sink.openSinkForUri(uri);
+        sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.type.asNode(), RDFS.Class.asNode()));
+        sink.addTriple(uri, new Triple(Squirrel.ResultGraph.asNode(), RDF.value.asNode(),
+            ResourceFactory.createTypedLiteral("3.14", XSDDatatype.XSDdouble).asNode()));
+        sink.closeSinkForUri(uri);
 
         Model model = dataset.getNamedModel(SparqlBasedSink.getGraphId(uri));
         Assert.assertEquals(2, model.size());

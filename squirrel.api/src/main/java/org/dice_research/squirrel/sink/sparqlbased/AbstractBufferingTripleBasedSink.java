@@ -1,9 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.Constants;
@@ -12,6 +7,11 @@ import org.dice_research.squirrel.metadata.CrawlingActivity;
 import org.dice_research.squirrel.sink.tripleBased.TripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSink {
 
@@ -60,5 +60,4 @@ public abstract class AbstractBufferingTripleBasedSink implements TripleBasedSin
             activity.setNumberOfTriples(status.getNumberOfTriples());
         }
     }
-
 }

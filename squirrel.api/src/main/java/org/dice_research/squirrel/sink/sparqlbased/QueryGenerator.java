@@ -1,6 +1,4 @@
-package org.dice_research.squirrel.sink.impl.sparql;
-
-import java.util.Collection;
+package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -8,6 +6,8 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * This class is used to provides querys for basic SPARQL commands needed in this project.

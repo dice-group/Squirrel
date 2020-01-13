@@ -1,12 +1,5 @@
 package org.dice_research.squirrel.metadata;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -20,6 +13,13 @@ import org.dice_research.squirrel.vocab.PROV_O;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.dice_research.squirrel.worker.Worker;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Representation of Crawling activity. A crawling activity is started by a
  * single worker, and sends this data to the sink. So, it contains a bunch of
@@ -27,7 +27,7 @@ import org.dice_research.squirrel.worker.Worker;
  * crawling activity.
  */
 public class CrawlingActivity implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
     // /**
@@ -104,12 +104,12 @@ public class CrawlingActivity implements Serializable {
 
     /**
      * Prepare the metadata model and returns it.
-     * 
+     *
      * @return the RDF model representing this metadata
      */
     public Model prepareMetadataModel() {
         Model model = ModelFactory.createDefaultModel();
-        
+
         Resource activity = model.createResource(activityUri);
         model.add(activity, RDF.type, PROV_O.Activity);
         Resource crawledUri = model.createResource(getCrawleableUri().getUri().toString());
@@ -118,7 +118,7 @@ public class CrawlingActivity implements Serializable {
             Resource ip = model.createResource("ip:" + getCrawleableUri().getIpAddress().getHostAddress());
             model.add(activity, Squirrel.uriHostedOn, ip);
         }
-       
+
         model.add(activity, Squirrel.status, model.createTypedLiteral(getState().toString()));
         model.add(activity, PROV_O.startedAtTime, model.createTypedLiteral(dateStarted));
         model.add(activity, PROV_O.endedAtTime, model.createTypedLiteral(dateEnded));
@@ -198,7 +198,7 @@ public class CrawlingActivity implements Serializable {
     public void setNumberOfTriples(long numberOfTriples) {
         this.numberOfTriples = numberOfTriples;
     }
-    
+
     public long getNumberOfTriples() {
         return numberOfTriples;
     }

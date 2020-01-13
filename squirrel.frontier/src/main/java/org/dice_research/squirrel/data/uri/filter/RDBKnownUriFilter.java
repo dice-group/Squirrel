@@ -1,5 +1,17 @@
 package org.dice_research.squirrel.data.uri.filter;
 
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.deduplication.hashing.HashValue;
+import org.dice_research.squirrel.deduplication.hashing.impl.ArrayHashValue;
+import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.model.RDBConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Closeable;
 import java.net.InetAddress;
 import java.net.URI;
@@ -7,30 +19,13 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.deduplication.hashing.HashValue;
-import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
-import org.dice_research.squirrel.deduplication.hashing.impl.ArrayHashValue;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
-import org.dice_research.squirrel.model.RDBConnector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Cursor;
 
 /**
  * Created by ivan on 8/18/16.
  */
 @SuppressWarnings("deprecation")
-public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCustodian {
+public class RDBKnownUriFilter implements KnownUriFilter, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBKnownUriFilter.class);
 
     private RDBConnector connector = null;
@@ -191,50 +186,6 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
             LOGGER.debug("Adding URI {} to the known uri filter list", uri.toString());
         } catch (Exception e) {
             LOGGER.error("Failed to add the URI \"" + uri.toString() + "\" to the known uri filter list", e);
-        }
-    }
-
-    @Override
-    public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {
-
-        Set<String> stringHashValues = new HashSet<>();
-        for (HashValue value : hashValuesForComparison) {
-            stringHashValues.add(value.encodeToString());
-        }
-
-        Cursor<HashMap> cursor = r.db(DATABASE_NAME).table(TABLE_NAME).filter
-            (doc -> stringHashValues.contains(doc.getField(COLUMN_HASH_VALUE))).run(connector.connection);
-
-        Set<CrawleableUri> urisToReturn = new HashSet<>();
-
-        while (cursor.hasNext()) {
-            HashMap<String, Object> nextRow = cursor.next();
-            CrawleableUri newUri = null;
-            HashValue hashValue = null;
-            for (String key : nextRow.keySet()) {
-                if (key.equals(COLUMN_HASH_VALUE)) {
-                    String hashAsString = (String) nextRow.get(key);
-                    hashValue = hashValueForDecoding.decodeFromString(hashAsString);
-                } else if (key.equals(COLUMN_URI)) {
-                    try {
-                        newUri = new CrawleableUri(new URI((String) nextRow.get(key)));
-                    } catch (URISyntaxException e) {
-                        LOGGER.error("Error while constructing an uri: " + nextRow.get(key));
-                    }
-                }
-            }
-            newUri.addData(Constants.URI_HASH_KEY, hashValue);
-            urisToReturn.add(newUri);
-        }
-        cursor.close();
-        return urisToReturn;
-    }
-
-    @Override
-    public void addHashValuesForUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : uris) {
-            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
         }
     }
 

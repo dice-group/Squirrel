@@ -1,17 +1,17 @@
-package org.dice_research.squirrel.sink.impl.sparql;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TripleBuffer {
 
     protected final List<Triple> buffer;
     protected final int bufferSize;
     protected long numberOfTriples = 0;
-    
+
     public TripleBuffer() {
         this(AbstractBufferingTripleBasedSink.DEFAULT_BUFFER_SIZE);
     }

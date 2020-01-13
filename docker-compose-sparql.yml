@@ -74,7 +74,7 @@ services:
       - "8081:15672"
       # Forwarding the port for testing
       - "5672:5672"
-      
+
   worker1:
     image: squirrel.worker:latest
     container_name: worker1
