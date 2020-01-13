@@ -17,7 +17,7 @@ import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.sink.sparqlBased.SparqlBasedSink;
+import org.dice_research.squirrel.sink.sparqlbased.SparqlBasedSink;
 import org.dice_research.squirrel.vocab.Squirrel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

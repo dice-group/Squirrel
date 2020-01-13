@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.sparqlBased;
+package org.dice_research.squirrel.sink.sparqlbased;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;

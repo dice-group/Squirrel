@@ -141,7 +141,7 @@
 		<constructor-arg name="outputDirectory" ref="outputFolderBean" /> </bean> -->
 
 	<!-- Triple Store (JENA) Sink implementation -->
-	 <bean id="sinkBean" class="org.dice_research.squirrel.sink.sparqlBased.SparqlBasedSink" factory-method="create">
+	 <bean id="sinkBean" class="org.dice_research.squirrel.sink.sparqlbased.SparqlBasedSink" factory-method="create">
 		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}" />
 		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}" />
 		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />
