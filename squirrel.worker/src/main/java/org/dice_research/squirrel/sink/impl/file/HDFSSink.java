@@ -26,7 +26,7 @@ public class HDFSSink extends FileBasedSink{
     private final ExecutorService EXECUTION_SERVICE = Executors.newScheduledThreadPool(100);
     private String hdfsHost;
     private String destinationDirectory;
-
+    private CrawleableUri uri;
     public HDFSSink(File outputDirectory, boolean useCompression) {
         super(outputDirectory, useCompression);
     }
@@ -69,33 +69,48 @@ public class HDFSSink extends FileBasedSink{
 
         @Override
         public void run() {
-            performAsyncAction();
+
+            try(CloseableHDFSSink cHdfsSink = new CloseableHDFSSink()){
+                cHdfsSink.performAsyncAction();
+            } catch (Exception e) {
+                LOGGER.error(e.toString());
+                EXECUTION_SERVICE.shutdownNow();
+            }finally {
+                closeSink();
+            }
         }
 
+        protected class CloseableHDFSSink implements AutoCloseable{
 
-        public void performAsyncAction() {
-            EXECUTION_SERVICE.shutdown();
-            String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
+            public void performAsyncAction() {
+                EXECUTION_SERVICE.shutdown();
+                String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
 
-            Configuration conf = new Configuration();
+                Configuration conf = new Configuration();
             /*
              core-site.xml file should have the <Namenode-Host> and <Port> with cluster namenode and Port
              */
-            conf.set("fs.defaultFS",hdfsHost);
+                conf.set("fs.defaultFS",hdfsHost);
 
-            Path pSrc = new Path(srcFilePath);
-            Path pDst = new Path(desthdfsDirectory);
-            try {
-                FileSystem fs = FileSystem.get(URI.create(hdfsHost),conf);
-                fs.copyFromLocalFile(pSrc, pDst);
-            } catch (IOException e) {
-                LOGGER.error("",e);
+                Path pSrc = new Path(srcFilePath);
+                Path pDst = new Path(desthdfsDirectory);
+                try {
+                    FileSystem fs = FileSystem.get(URI.create(hdfsHost),conf);
+                    fs.copyFromLocalFile(pSrc, pDst);
+                } catch (IOException e) {
+                    LOGGER.error("",e);
+                }
+            }
+
+            @Override
+            public void close() throws Exception {
+                closeSink();
             }
         }
+
     }
 
-    @Override
-    public void closeSinkForUri(CrawleableUri uri) {
+    private void closeSink(){
         try{
             if (!EXECUTION_SERVICE.awaitTermination(60, TimeUnit.SECONDS)) {
                 EXECUTION_SERVICE.shutdownNow();
@@ -107,5 +122,10 @@ public class HDFSSink extends FileBasedSink{
             EXECUTION_SERVICE.shutdownNow();
         }
         super.closeSinkForUri(uri);
+    }
+
+    @Override
+    public void closeSinkForUri(CrawleableUri uri) {
+
     }
 }
