@@ -60,13 +60,13 @@ public final class BinomialPredictor implements Predictor{
 
         try {
             DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 14));
+                1 << 14));
             double[] d;
             d = feature.toArray();
             uri.addData(Constants.FEATURE_VECTOR, d);
 
         } catch (Exception e) {
-            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
+            LOGGER.info("Exception caused while adding the feature vector to the URI map" , e);
         }
 
     }
@@ -130,7 +130,6 @@ public final class BinomialPredictor implements Predictor{
         String[] uriToken;
         uriToken = uri.getUri().toString().split("/|\\.");
         tokens.addAll(Arrays.asList(uriToken));
-
         return tokens;
     }
 

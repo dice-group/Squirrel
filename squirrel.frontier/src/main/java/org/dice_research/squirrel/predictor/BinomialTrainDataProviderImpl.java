@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -28,7 +29,9 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
         String positiveClass = (String) classList.get(0);
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            //br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
+                , Charset.defaultCharset()));
         }catch (Exception e){
             e.printStackTrace();
         }
