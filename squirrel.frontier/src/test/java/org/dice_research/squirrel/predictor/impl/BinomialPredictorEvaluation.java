@@ -78,11 +78,11 @@ public class BinomialPredictorEvaluation {
                 }
                 CrawleableUri uri = new CrawleableUri(furi);
                 this.predictor.featureHashing(uri);
-                double pred = this.predictor.predict(uri);
+                String pred = this.predictor.predict(uri);
                 split[1] = split[1].replace("\"", "");
                 if(split[1].equals(positiveClass)){
                     //System.out.println("the class is: " + split[1]);
-                    if(pred >= 0.7){
+                    if(pred.equals("dereferencing")){
                         correctCount ++;
                         truePos ++;
                     }
@@ -91,7 +91,7 @@ public class BinomialPredictorEvaluation {
                     }
                 }
                 else{
-                    if(pred < 0.7){
+                    if(!pred.equals("dereferencing")){
                         correctCount ++;
                         trueNeg ++;
                     }

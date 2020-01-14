@@ -20,16 +20,8 @@ import java.util.stream.Stream;
 public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     private MultinomialPredictor predictor = new MultinomialPredictor();
-    private static final ArrayList<String> classList = new ArrayList<>();
-    static {
-
-        classList.add("SPARQL");
-        classList.add("DUMP");
-        classList.add("CKAN");
-
-    }
     @Override
-    public Stream<FeatureOutcomePair> setUpStream(String filePath) {
+    public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         BufferedReader br = null;
         try {
             //br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
@@ -38,11 +30,12 @@ public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return br.lines().map((s) -> parseFeature(s));
+        return br.lines().map((s) -> parseFeature(s, classList));
     }
 
-    public FeatureOutcomePair parseFeature(String line) {
-        DoubleVector[] classes = new DoubleVector[3];
+    public FeatureOutcomePair parseFeature(String line, ArrayList classList) {
+        DoubleVector[] classes = new DoubleVector[classList.size()];
+
         for (int i = 0; i < classes.length; i++) {
             classes[i] = new DenseDoubleVector(classes.length);
             classes[i].set(i, 1d);

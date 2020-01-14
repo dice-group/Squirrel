@@ -41,6 +41,8 @@ public final class BinomialPredictor implements Predictor{
     private Double beta;
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
     private Double threshold;
+    private String positiveClass;
+
 
     public void featureHashing(CrawleableUri uri) {
         ArrayList<String> tokens1 = new ArrayList<String>();
@@ -69,8 +71,9 @@ public final class BinomialPredictor implements Predictor{
 
     }
 
-    public Integer predict(CrawleableUri uri) {
-        int pred = 0;
+    public String predict(CrawleableUri uri) {
+
+        String predictedClass = null;
         try {
             //Get the feature vector
             if (uri.getData(Constants.FEATURE_VECTOR) != null) {
@@ -82,9 +85,9 @@ public final class BinomialPredictor implements Predictor{
                 DoubleVector prediction = this.classifier.predict(features);
 
                 if(prediction.get(0) >= this.getThreshold())
-                    pred = 1;
+                    predictedClass = this.getPositiveClass();
                 else
-                    pred = 0;
+                    predictedClass = "NEGATIVE_CLASS";
 
             } else {
                 LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
@@ -92,31 +95,23 @@ public final class BinomialPredictor implements Predictor{
         } catch (Exception e) {
             LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
             e.printStackTrace();
-            pred = 0;
         }
-        return pred;
+        return predictedClass;
     }
 
     public void weightUpdate(CrawleableUri curi) {
-        // Learning Rate used at runtime
-        double learningRate = 0.7;
         try {
             if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
                 Object featureArray = curi.getData(Constants.FEATURE_VECTOR);
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
                 Object real_value = curi.getData(Constants.URI_TRUE_LABEL);
                 int rv = (int) real_value;
                 DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
-
                 DoubleVector nextExample = features;
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
-
                 //update weights using the updated parameters
-
                 DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, this.model.getWeights(), learningRate, 0);
-
                 CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
@@ -218,6 +213,11 @@ public final class BinomialPredictor implements Predictor{
 
     public void setThreshold(Double threshold) { this.threshold = threshold; }
 
+    public String getPositiveClass() { return this.positiveClass; }
+
+    public void setPositiveClass(String positiveClass) { this.positiveClass = positiveClass; }
+
+
     /**
      * A builder pattern for the Binomialpredictor, that uses Regression Model, Regression Learner along with default training data  and other default hyperparameters
      */
@@ -248,6 +248,8 @@ public final class BinomialPredictor implements Predictor{
         private String filePath;
 
         private double threshold;
+
+        public String positiveClass;
 
         public BinomialPredictorBuilder(RegressionLearn learner, RegressionModel model, RegressionClassifier classifier, WeightUpdater updater) {
             this.learner = learner;
@@ -309,6 +311,11 @@ public final class BinomialPredictor implements Predictor{
             return this;
         }
 
+        public BinomialPredictorBuilder withPositiveClass(String positiveClass){
+            this.setPostiveClass(positiveClass);
+            return this;
+        }
+
         public BinomialPredictor build() {
             BinomialPredictor predictor = new BinomialPredictor();
 
@@ -335,6 +342,8 @@ public final class BinomialPredictor implements Predictor{
             }
 
             predictor.setThreshold(this.getThreshold());
+
+            predictor.setPositiveClass(this.getPositiveClass());
 
             //updater
             if (this.getUpdater() == null) {
@@ -363,8 +372,10 @@ public final class BinomialPredictor implements Predictor{
             predictor.setLearner(this.getLearner());
 
             //model
+            ArrayList<String> classList = new ArrayList<>();
+            classList.add(this.positiveClass);
             if (this.getModel() == null)
-                this.setModel(this.learner.train(() -> trainingDataProvider.setUpStream(this.filePath)));
+                this.setModel(this.learner.train(() -> trainingDataProvider.setUpStream(this.filePath, classList)));
             predictor.setModel(this.getModel());
 
             //this.train(filePath);
@@ -461,6 +472,10 @@ public final class BinomialPredictor implements Predictor{
         private Double getThreshold(){ return this.threshold; }
 
         private void setThreshold(Double threshold) { this.threshold = threshold; }
+
+        private String getPositiveClass() { return  this.positiveClass; }
+
+        private void setPostiveClass(String postiveClass) { this.positiveClass = postiveClass; }
 
     }
 

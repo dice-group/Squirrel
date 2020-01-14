@@ -56,7 +56,7 @@ public class SparqlBasedFetcher implements Fetcher {
         // Check whether we can be sure that it is a SPARQL endpoint
         boolean shouldBeSparql = Constants.URI_TYPE_VALUE_SPARQL.equals(uri.getData(Constants.URI_TYPE_KEY));
         if(shouldBeSparql){
-            uri.addData(Constants.URI_TRUE_CLASS,0 );
+            uri.addData(Constants.URI_TRUE_CLASS,"SPARQL" );
         }
         QueryExecutionFactory qef = null;
         QueryExecution execution = null;

@@ -1,2 +1,3 @@
-RDF,https://mcloud.de/export/datasets/f5311403-007d-48b7-a372-159c210d1ba0
-nonRDF,erty://bfs.270a.info/erth
+"http://ckan.gobex.es/","CKAN"
+"https://data.medicare.gov/api/views/rs6n-9qwg/rows.rdf?accessType=DOWNLOAD","DUMP"
+"http://lod.euscreen.eu/sparql","SPARQL"

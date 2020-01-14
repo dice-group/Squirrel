@@ -23,21 +23,21 @@ public class BinomialPredictorTest {
     @Test
     public void binomialTrain(){
         boolean flag = true;
-        Integer prediction;
+        String prediction;
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withThreshold(0.8).build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withThreshold(0.8).withPositiveClass("dereferenceable").build();
         try {
             CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
             CrawleableUri curiNeg = new CrawleableUri(new URI("1234567!!!!!!!*****"));
             predictor.featureHashing(curiPos);
             predictor.featureHashing(curiNeg);
             prediction = predictor.predict(curiPos);
-            if(prediction == 0){
+            if(!prediction.equals("dereferenceable")){
                 flag = false;
             }
             prediction = predictor.predict(curiNeg);
-            if(prediction == 1){
+            if(prediction.equals("dereferenceable")){
                 flag = false;
             }
 
@@ -54,7 +54,7 @@ public class BinomialPredictorTest {
         int flag2 = 0;
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
         try {
             CrawleableUri uri1 = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
             CrawleableUri uri2 = new CrawleableUri(new URI("https://wikipedia.org/resource/New_York"));
@@ -89,7 +89,7 @@ public class BinomialPredictorTest {
         CrawleableUri curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
         TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
         trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
         DoubleVector modelWeights = predictor.getModel().getWeights();
         double[] oldWeights = Arrays.copyOf(modelWeights.toArray(), modelWeights.getLength());
         predictor.featureHashing(curi);
