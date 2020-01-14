@@ -1,3 +1,0 @@
-"http://ckan.gobex.es/","CKAN"
-"https://data.medicare.gov/api/views/rs6n-9qwg/rows.rdf?accessType=DOWNLOAD","DUMP"
-"http://lod.euscreen.eu/sparql","SPARQL"
