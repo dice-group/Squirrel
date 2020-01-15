@@ -51,6 +51,7 @@ public class RDFAnalyzerTest {
                 { "rdf_analyzer/genders_en/genders_en_tql", 8408 },
                 { "rdf_analyzer/genders_en/genders_en_ttl", 8408 },
                 { "rdf_analyzer/genders_en/genders_en_turtle", 8408 },
+                { "rdf_analyzer/trig_example", 15 },
         });
     }
 
