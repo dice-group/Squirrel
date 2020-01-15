@@ -115,7 +115,7 @@ public class FrontierImplTest {
         assertEquals(1, numberOfPendingUris);
         
         numberOfPendingUris = frontier.getNumberOfPendingUris();
-        assertEquals(2, nextUris.size());
+        assertEquals(3, nextUris.size());
     }
 
     /*
