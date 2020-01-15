@@ -11,7 +11,10 @@ import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
+import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
+import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.graph.GraphLogger;
@@ -60,6 +63,14 @@ public class FrontierImpl implements Frontier {
      * SPARQL, DEREFERENCEABLE or UNKNOWN
      */
     protected UriProcessor uriProcessor;
+    /**
+     * {@link UriGenerator} used to generate additional domain variants of a URI
+     */
+    protected UriGenerator domainUriGenerator;
+    /**
+     * {@link UriGenerator} used to generate additional well-known VoID variant of a URI
+     */
+    protected UriGenerator wellKnownUriGenrator;
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
@@ -267,15 +278,25 @@ public class FrontierImpl implements Frontier {
 
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
+        domainUriGenerator = new DomainBasedUriGenerator();
+        wellKnownUriGenrator = new WellKnownPathUriGenerator();
+        CrawleableUri domainUri, wellKnownUri;
         for (CrawleableUri uri : uris) {
+            // Generate the domain variant of the URI
+            domainUri = domainUriGenerator.getUriVariant(uri);
+            // Generate the well-known variant of a URI
+            wellKnownUri = wellKnownUriGenrator.getUriVariant(uri);
+            // Normalize the URI
+            uri = normalizer.normalize(uri);
             addNewUri(uri);
+            addNewUri(domainUri);
+            addNewUri(wellKnownUri);
+
         }
     }
 
     @Override
     public void addNewUri(CrawleableUri uri) {
-        // Normalize the URI
-        uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
 
