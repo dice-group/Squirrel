@@ -83,7 +83,6 @@ public class HDFSSink extends FileBasedSink{
                     LOGGER.error(e.toString());
                 }
 
-                EXECUTION_SERVICE.shutdown();
                 String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
 
                 Configuration conf = new Configuration();
