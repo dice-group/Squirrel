@@ -54,7 +54,7 @@ public class FileBasedSink implements Sink {
     public FileBasedSink(File outputDirectory, boolean useCompression) {
         this(outputDirectory, DEFAULT_OUTPUT_LANG, useCompression);
     }
-    
+
     public FileBasedSink(File outputDirectory, Lang outputLang, boolean useCompression) {
         this.outputDirectory = outputDirectory;
         this.outputLang = outputLang;
@@ -117,7 +117,7 @@ public class FileBasedSink implements Sink {
         } else {
             LOGGER.error("Should close the sink for the URI \"" + uriString + "\" but couldn't find it.");
         }
-        // Add provenance information 
+        // Add provenance information
         CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
         if ((activity != null) && (status != null) && (status.tripleCount > 0)) {
             activity.setNumberOfTriples(status.tripleCount);
@@ -189,6 +189,7 @@ public class FileBasedSink implements Sink {
             CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
             if (activity != null) {
                 activity.addOutputResource(file.toURI().toString(), Squirrel.ResultFile);
+                uri.addData(Constants.HDFS_SOURCE_FILE, file.getAbsolutePath());
             }
             return outputStream;
         }

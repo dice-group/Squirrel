@@ -213,10 +213,10 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
-        
+
         // Check robots.txt
         if (manager.isUriCrawlable(uri.getUri())) {
-            // Make sure that there is a delay between the fetching of two URIs 
+            // Make sure that there is a delay between the fetching of two URIs
             try {
                 long delay = timeStampLastUriFetched
                         - (System.currentTimeMillis() + manager.getMinWaitingTime(uri.getUri()));
@@ -226,7 +226,7 @@ public class WorkerImpl implements Worker, Closeable {
             } catch (InterruptedException e) {
                 LOGGER.warn("Delay before crawling \"" + uri.getUri().toString() + "\" interrupted.", e);
             }
-            
+
             // Fetch the URI content
             LOGGER.debug("I start crawling {} now...", uri);
             File fetched = null;
@@ -323,7 +323,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Sends the given URIs to the frontier.
-     * 
+     *
      * @param uriIterator
      *            an iterator used to iterate over all new URIs
      */
