@@ -130,10 +130,12 @@ public class FrontierImpl implements Frontier {
      *            Value is null the default Time is used.
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
+     * @param predictor
+     *            {@link Predictor}Used to predict the type of the URI
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
-            GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
-        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
+            GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod, Predictor predictor) {
+        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod, predictor);
     }
 
     /**
@@ -154,10 +156,12 @@ public class FrontierImpl implements Frontier {
      *            Value is null the default Time is used.
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
+     * @param predictor
+     *            {@link Predictor}Used to predict the type of the URI
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
-            long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+            long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian, Predictor predictor) {
+        this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod, predictor);
     }
 
     /**
@@ -171,12 +175,10 @@ public class FrontierImpl implements Frontier {
      * @param queue          {@link UriQueue} used to manage the URIs that should be
      *                       crawled.
      * @param doesRecrawling Value for {@link #doesRecrawling}.
-     * @param  predictor     object of PredictorImpl class used for prediction
+     * @param  predictor     Used to predict the type of the URI.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences, UriQueue queue, boolean doesRecrawling, Predictor predictor) {
-        this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
-        this.predictor = predictor;
-
+        this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, predictor);
     }
 
     /**
@@ -192,11 +194,14 @@ public class FrontierImpl implements Frontier {
      *            {@link UriQueue} used to manage the URIs that should be crawled.
      * @param doesRecrawling
      *            Value for {@link #doesRecrawling}.
+     * @param predictor
+     *             {@link Predictor}Used to predict the type of the URI
+     *
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
-            boolean doesRecrawling) {
+            boolean doesRecrawling, Predictor predictor) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
-                DEFAULT_TIMER_PERIOD);
+                DEFAULT_TIMER_PERIOD, predictor);
     }
 
     /**
@@ -210,9 +215,12 @@ public class FrontierImpl implements Frontier {
      *            crawled.
      * @param queue
      *            {@link UriQueue} used to manage the URIs that should be crawled.
+     * @param predictor
+     *            {@link Predictor}Used to predict the type of the URI
+     *
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, Predictor predictor) {
+        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, predictor);
     }
 
     /**
@@ -237,10 +245,12 @@ public class FrontierImpl implements Frontier {
      *            Value is null the default Time is used.
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
+     * @param predictor
+     *            {@link Predictor}Used to predict the type of the URI
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
             UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
-            long timerPeriod) {
+            long timerPeriod, Predictor predictor) {
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
@@ -251,6 +261,7 @@ public class FrontierImpl implements Frontier {
         this.queue.open();
         this.doesRecrawling = doesRecrawling;
         this.timerPeriod = timerPeriod;
+        this.predictor = predictor;
         FrontierImpl.generalRecrawlTime = generalRecrawlTime;
         if (this.doesRecrawling) {
             timerRecrawling = new Timer();
@@ -291,7 +302,7 @@ public class FrontierImpl implements Frontier {
                 //generate the feature vector of the uri for prediction purpose
                 predictor.featureHashing(uri);
                 //predict and update uri key with the
-                Integer p = predictor.predict(uri);
+                String p = predictor.predict(uri);
                 uri.addData(Constants.URI_PREDICTED_LABEL, p);
             } catch (Exception e) {
                 LOGGER.info("Exception happened while predicting", e);

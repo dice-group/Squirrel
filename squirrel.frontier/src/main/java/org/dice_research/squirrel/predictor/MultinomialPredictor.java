@@ -23,7 +23,10 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.IntFunction;
@@ -35,17 +38,18 @@ public final class MultinomialPredictor implements Predictor{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
 
-    private MultinomialRegressionModel multinomialModel; //Multinomial model
-    private MultinomialRegressionLearner multinomialLearner; //Multinomial learner for the model
-    private MultinomialRegressionClassifier multinomialClassifier; //Multinomial classifier
-    private WeightUpdater updater; //Updater
-    private RegressionLearn learner; //Learner
-    private String filepath; //Filepath for the training data
-    private Double learningRate; //Learning rate for the Minimizer
-    private Double l2; //L2 regularizer
-    private Double l1; //L1 regularizer
-    private Double beta; //Beta in the neta value of the paper
+    private MultinomialRegressionModel multinomialModel;
+    private MultinomialRegressionLearner multinomialLearner;
+    private MultinomialRegressionClassifier multinomialClassifier;
+    private WeightUpdater updater;
+    private RegressionLearn learner;
+    private String filepath;
+    private Double learningRate;
+    private Double l2;
+    private Double l1;
+    private Double beta;
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
+    private ArrayList<String> classList = new ArrayList<>();
 
     public void featureHashing(CrawleableUri uri) {
         ArrayList<String> tokens1 = new ArrayList<String>();
@@ -74,15 +78,9 @@ public final class MultinomialPredictor implements Predictor{
 
     }
 
-    /**
-     * Predicts the type of the data for a given URI
-     * @param uri
-     *           {@link CrawleableUri} URI whose class is to be predicted.
-     *
-     * @return
-     */
-    public Integer predict(CrawleableUri uri) {
+    public String predict(CrawleableUri uri) {
         int pred = 0;
+        String predictedClass = null;
         try {
             //Get the feature vector
             if (uri.getData(Constants.FEATURE_VECTOR) != null) {
@@ -93,21 +91,17 @@ public final class MultinomialPredictor implements Predictor{
                 multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
                 DoubleVector prediction = multinomialClassifier.predict(features);
                 pred = prediction.maxIndex();
-
             } else {
                 LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
             }
         } catch (Exception e) {
             LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
-            pred = 0;
         }
-        return pred;
+        predictedClass = this.classList.get(pred);
+        return predictedClass;
     }
 
-    /**
-     * A method which updates the model depending on the current environment space
-     * @param uri for which the weights of the model has to be updated
-     */
+
     public void weightUpdate(CrawleableUri uri) {
 
         RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
@@ -168,7 +162,7 @@ public final class MultinomialPredictor implements Predictor{
         this.learningRate = learningRate;
     }
 
-    //L2Temporary values
+    //L2
     public double getL2() {
         return l2;
     }
@@ -259,6 +253,10 @@ public final class MultinomialPredictor implements Predictor{
         this.holdoutValidationPercentage = holdoutValidationPercentage;
     }
 
+    public ArrayList<String> getClassList(){
+        return this.classList;
+    }
+
     /**
      * A builder pattern for the MultinomialPredictor, that uses Regression Model, Regression Learner along with default training data and other default hyperparameters
      */
@@ -289,6 +287,8 @@ public final class MultinomialPredictor implements Predictor{
         private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
         private String filePath; //filepath to train
+
+        private ArrayList<String> classList = new ArrayList<>(); // list containing the names of the different classes of URI
 
         public MultinomialPredictorBuilder(MultinomialRegressionLearner learner, MultinomialRegressionModel model, MultinomialRegressionClassifier classifier, WeightUpdater updater) {
             this.multinomialLearner = learner;
@@ -357,7 +357,6 @@ public final class MultinomialPredictor implements Predictor{
             RegressionLearner learner =  new RegressionLearner(minimizer,
                 new SigmoidActivationFunction(), new LogLoss());
             learner.setNumPasses(5);
-            learner.verbose();
             return learner;
         };
 
@@ -396,10 +395,6 @@ public final class MultinomialPredictor implements Predictor{
             }
             predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
 
-            if (this.getFilePath() == null)
-                this.setFilePath("multiNomialTrainData.txt");
-            predictor.setFilepath(this.getFilePath());
-
             sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
                 .create(this.getLearningRate()) // learning rate
                 .holdoutValidationPercentage(this.getHoldoutValidationPercentage())// 5% as validation set
@@ -420,8 +415,26 @@ public final class MultinomialPredictor implements Predictor{
 
 
             //model
-            if (this.getMultinomialModel() == null)
-                this.setMultinomialModel(multinomialLearner.train(() -> trainingDataProvider.setUpStream(this.getFilePath())));
+            if (this.getMultinomialModel() == null) {
+                BufferedReader br = null;
+                String line;
+                try {
+                    br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
+                        , Charset.defaultCharset()));
+                    while((line = br.readLine()) != null){
+                        String[] split = line.split(",");
+                        split[1] = split[1].replace("\"", "");
+                        if(!this.classList.contains(split[1])){
+                            this.classList.add(split[1]);
+                        }
+                    }
+                    predictor.classList = this.classList;
+
+                }catch (Exception e){
+                    LOGGER.warn("Exception happened while finding the classes of the URI", e);
+                }
+                this.setMultinomialModel(multinomialLearner.train(() -> trainingDataProvider.setUpStream(this.getFilePath(), this.classList)));
+            }
             predictor.setMultinomialModel(this.getMultinomialModel());
 
             //classifier
@@ -524,6 +537,10 @@ public final class MultinomialPredictor implements Predictor{
 
         private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
             this.holdoutValidationPercentage = holdoutValidationPercentage;
+        }
+
+        private ArrayList<String> getClassList(){
+            return this.classList;
         }
 
     }

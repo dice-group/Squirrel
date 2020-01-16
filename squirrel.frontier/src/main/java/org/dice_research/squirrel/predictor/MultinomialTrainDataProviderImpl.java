@@ -13,35 +13,29 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingDataProviderImpl.class);
-    //private Predictor predictor = new PredictorImpl();
     private MultinomialPredictor predictor = new MultinomialPredictor();
-    private static final ArrayList<String> classList = new ArrayList<>();
-    static {
-
-        classList.add("SPARQL");
-        classList.add("DUMP");
-        classList.add("CKAN");
-
-    }
     @Override
-    public Stream<FeatureOutcomePair> setUpStream(String filePath) {
+    public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            //br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+            br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
+                , Charset.defaultCharset()));
         }catch (Exception e){
             e.printStackTrace();
         }
-        return br.lines().map((s) -> parseFeature(s));
+        return br.lines().map((s) -> parseFeature(s, classList));
     }
 
-    public FeatureOutcomePair parseFeature(String line) {
-        DoubleVector[] classes = new DoubleVector[3];
+    public FeatureOutcomePair parseFeature(String line, ArrayList classList) {
+        DoubleVector[] classes = new DoubleVector[classList.size()];
+
         for (int i = 0; i < classes.length; i++) {
             classes[i] = new DenseDoubleVector(classes.length);
             classes[i].set(i, 1d);

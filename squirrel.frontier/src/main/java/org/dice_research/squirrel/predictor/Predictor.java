@@ -31,9 +31,9 @@ public interface Predictor {
      * @param uri
      *           {@link CrawleableUri} URI whose class is to be predicted.
      *
-     *  @return the predicted value.
+     *  @return the predicted class.
      */
-    Integer predict(CrawleableUri uri);
+    String predict(CrawleableUri uri);
     /**
      * Update the weight of the model. It uses the predicted value and the true label value
      * with the feature vector from the URI map to calculate the new weight.

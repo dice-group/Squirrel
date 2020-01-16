@@ -87,8 +87,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
-    @Qualifier("predictorBean")
-    @Autowired
+
     protected Predictor predictor;
 
     @Override

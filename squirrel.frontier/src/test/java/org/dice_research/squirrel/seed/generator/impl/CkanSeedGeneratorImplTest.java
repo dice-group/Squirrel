@@ -4,6 +4,7 @@ import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.predictor.MultinomialPredictor;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.junit.Ignore;
@@ -23,7 +24,7 @@ public class CkanSeedGeneratorImplTest extends TestCase {
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue);
+        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue, new MultinomialPredictor());
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

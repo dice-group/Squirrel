@@ -52,8 +52,7 @@
         <constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
     </bean>
 
-	<bean id="predictorBean"
-		  class="org.dice_research.squirrel.predictor.MultinomialPredictor" />
+
 
 
 </beans>

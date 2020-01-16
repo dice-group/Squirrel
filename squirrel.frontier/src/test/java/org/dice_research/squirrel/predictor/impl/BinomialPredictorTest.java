@@ -5,9 +5,7 @@ import de.jungblut.math.DoubleVector;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.predictor.BinomialPredictor;
-import org.dice_research.squirrel.predictor.BinomialTrainDataProviderImpl;
 import org.dice_research.squirrel.predictor.Predictor;
-import org.dice_research.squirrel.predictor.TrainingDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,24 +21,21 @@ public class BinomialPredictorTest {
     @Test
     public void binomialTrain(){
         boolean flag = true;
-        Integer prediction;
-        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
-        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        String prediction;
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withThreshold(0.6).withPositiveClass("dereferenceable").build();
         try {
-            CrawleableUri curiPos = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-            CrawleableUri curiNeg = new CrawleableUri(new URI("1234567.!!!!!!!.*****"));
+            CrawleableUri curiPos = new CrawleableUri(new URI("https://data.cityofnewyork.us/api/views/qqsi-vm9f/rows.rdf?accessType=DOWNLOAD"));
+            CrawleableUri curiNeg = new CrawleableUri(new URI("1234567!!!!!!!*****"));
             predictor.featureHashing(curiPos);
             predictor.featureHashing(curiNeg);
             prediction = predictor.predict(curiPos);
-            if(prediction == 0){
+            if(!prediction.equals("dereferenceable")){
                 flag = false;
             }
             prediction = predictor.predict(curiNeg);
-            if(prediction == 1){
+            if(prediction.equals("dereferenceable")){
                 flag = false;
             }
-
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -52,9 +47,7 @@ public class BinomialPredictorTest {
     public void featureHashing(){
         int flag1 = 0;
         int flag2 = 0;
-        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
-        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
         try {
             CrawleableUri uri1 = new CrawleableUri(new URI("https://dbpedia.org/resource/New_York"));
             CrawleableUri uri2 = new CrawleableUri(new URI("https://wikipedia.org/resource/New_York"));
@@ -87,9 +80,7 @@ public class BinomialPredictorTest {
     public void weightUpdate() throws URISyntaxException {
         boolean flag = false;
         CrawleableUri curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-        TrainingDataProvider trainDataProvider = new BinomialTrainDataProviderImpl();
-        trainDataProvider.createTrainDataFile("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "binomialTrainData.txt");
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").build();
+        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
         DoubleVector modelWeights = predictor.getModel().getWeights();
         double[] oldWeights = Arrays.copyOf(modelWeights.toArray(), modelWeights.getLength());
         predictor.featureHashing(curi);
@@ -97,11 +88,9 @@ public class BinomialPredictorTest {
         predictor.weightUpdate(curi);
         DoubleVector modelNewWeights = predictor.getModel().getWeights();
         double[] newWeights = Arrays.copyOf(modelNewWeights.toArray(), modelNewWeights.getLength());
-
         if(!oldWeights.equals(newWeights)){
             flag = true;
         }
         Assert.assertTrue(flag);
     }
-
 }

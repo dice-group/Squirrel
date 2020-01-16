@@ -49,7 +49,7 @@ public class CkanJsonAnalyzer extends AbstractAnalyzer {
         // Make sure that the file contains the CKAN JSON objects we are expecting
         if (Constants.URI_TYPE_VALUE_CKAN.equals(curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY))) {
 
-            curi.addData(Constants.URI_TRUE_CLASS, 2);
+            curi.addData(Constants.URI_TRUE_CLASS, "CKAN");
 
             LOGGER.info("Starting the Ckan Json Analyzer for URI: " + curi.getUri().toString());
 

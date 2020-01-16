@@ -85,13 +85,13 @@ public class MultinomialPredictorEvaluation {
                 }
                 CrawleableUri uri = new CrawleableUri(furi);
                 predictor.featureHashing(uri);
-                int pred = predictor.predict(uri);
+                String pred = predictor.predict(uri);
                 //System.out.println("predicted values: "+ pred);
                 split[1] = split[1].replace("\"", "");
                 //System.out.println("the classList index: "+classList.indexOf(split[1]));
                 if(classList.indexOf(split[1]) != -1)
-                    confusionMatrix[classList.indexOf(split[1])][pred]++;
-                if(pred ==  classList.indexOf(split[1])){
+                    confusionMatrix[classList.indexOf(split[1])][classList.indexOf(pred)]++;
+                if(pred.equals(split[1])){
                     correctCount++;
                 }
             }

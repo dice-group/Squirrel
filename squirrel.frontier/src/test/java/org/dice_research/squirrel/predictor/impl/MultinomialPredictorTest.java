@@ -21,7 +21,7 @@ public class MultinomialPredictorTest {
 
     @Test
     public void multiNomialTrain(){
-        Integer predictedClass;
+        String predictedClass;
         boolean flag = true;
         predictor = new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
         try {
@@ -32,16 +32,13 @@ public class MultinomialPredictorTest {
             predictor.featureHashing(testUri2);
             predictor.featureHashing(testUri3);
             predictedClass = predictor.predict(testUri1);
-            System.out.println(predictedClass);
-            if(predictedClass != 2)
+            if(!predictedClass.equals("CKAN"))
                 flag = false;
             predictedClass = predictor.predict(testUri2);
-            System.out.println(predictedClass);
-            if(predictedClass != 1)
+            if(!predictedClass.equals("DUMP"))
                 flag = false;
             predictedClass = predictor.predict(testUri3);
-            System.out.println(predictedClass);
-            if(predictedClass != 0)
+            if(!predictedClass.equals("SPARQL"))
                 flag = false;
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -85,7 +82,7 @@ public class MultinomialPredictorTest {
     public void multiWeightUpdate() throws URISyntaxException {
         boolean flag = false;
         curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-        MultinomialPredictor predictor = new MultinomialPredictor.MultinomialPredictorBuilder().build();
+        MultinomialPredictor predictor = new MultinomialPredictor.MultinomialPredictorBuilder().withFile("multiNomialTrainData.txt").build();
         int i = 0;
         DoubleVector[] modelWeights = new DoubleVector[3];
         Integer numModels = predictor.getMultinomialModel().getModels().length;
