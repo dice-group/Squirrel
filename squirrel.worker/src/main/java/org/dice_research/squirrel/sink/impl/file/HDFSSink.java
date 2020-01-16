@@ -24,8 +24,6 @@ public class HDFSSink extends FileBasedSink{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HDFSSink.class);
     private final ExecutorService EXECUTION_SERVICE = Executors.newScheduledThreadPool(100);
-    private String hdfsHost;
-    private String destinationDirectory;
     private CrawleableUri uri;
     public HDFSSink(File outputDirectory, boolean useCompression) {
         super(outputDirectory, useCompression);
@@ -43,20 +41,14 @@ public class HDFSSink extends FileBasedSink{
         while (iterator.hasNext()) {
             addTriple(uri, iterator.next().asTriple());
         }
-        placeFileIntoHDFS((String)uri.getData(Constants.HDFS_SOURCE_FILE));
+        executeAsyncCopyTask((String)uri.getData(Constants.HDFS_SOURCE_FILE));
     }
 
-    public void placeFileIntoHDFS(String srcFilePath) {
-        try {
-            hdfsHost = HDFSSinkConfiguration.getHDFSHelperConfiguration().getHDFSHost();
-        } catch (Exception e) {
-            LOGGER.error(e.toString());
-        }
-        try {
-            destinationDirectory = HDFSSinkConfiguration.getHDFSHelperConfiguration().getDestinationdirectory();
-        } catch (Exception e) {
-            LOGGER.error(e.toString());
-        }
+    /*
+     * This method starts a asynchronous task to copy the given source file
+     * into HDFS
+     */
+    public void executeAsyncCopyTask(String srcFilePath) {
         EXECUTION_SERVICE.execute(new AsyncTask(srcFilePath));
     }
 
@@ -71,10 +63,9 @@ public class HDFSSink extends FileBasedSink{
         public void run() {
 
             try(CloseableHDFSSink cHdfsSink = new CloseableHDFSSink()){
-                cHdfsSink.performAsyncAction();
+                cHdfsSink.copyFilesInHDFS();
             } catch (Exception e) {
                 LOGGER.error(e.toString());
-                EXECUTION_SERVICE.shutdownNow();
             }finally {
                 closeSink();
             }
@@ -82,7 +73,16 @@ public class HDFSSink extends FileBasedSink{
 
         protected class CloseableHDFSSink implements AutoCloseable{
 
-            public void performAsyncAction() {
+            public void copyFilesInHDFS() {
+                String hdfsHost = "";
+                String destinationDirectory = "";
+                try {
+                    hdfsHost = HDFSSinkConfiguration.getHDFSHelperConfiguration().getHDFSHost();
+                    destinationDirectory = HDFSSinkConfiguration.getHDFSHelperConfiguration().getDestinationdirectory();
+                } catch (Exception e) {
+                    LOGGER.error(e.toString());
+                }
+
                 EXECUTION_SERVICE.shutdown();
                 String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
 

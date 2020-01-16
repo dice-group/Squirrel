@@ -48,7 +48,7 @@ public class HDFSSinkTest {
     public void testPlaceFileIntoHDFS() {
         File oldLocal = new File(getClass().getClassLoader().getResource("sample.ttl").getFile());
         File newLocal = new File(getClass().getClassLoader().getResource("sample_hdfs.ttl").getFile());
-        hdfsSink.placeFileIntoHDFS(oldLocal.getAbsolutePath());
+        hdfsSink.executeAsyncCopyTask(oldLocal.getAbsolutePath());
         String desthdfsDirectory = hdfsHost + "/" + destinationDirectory + "/";
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS",hdfsHost);
