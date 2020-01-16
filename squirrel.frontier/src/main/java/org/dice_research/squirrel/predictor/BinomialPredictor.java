@@ -30,16 +30,16 @@ import java.util.Arrays;
 public final class BinomialPredictor implements Predictor{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
-    private WeightUpdater updater;
-    private RegressionLearn learner;
-    private RegressionModel model;
-    private RegressionClassifier classifier;
-    private String filepath;
-    private Double learningRate;
-    private Double l2;
-    private Double l1;
-    private Double beta;
-    private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
+    private WeightUpdater updater; //Updater
+    private RegressionLearn learner; //Learner
+    private RegressionModel model; //Model
+    private RegressionClassifier classifier; //Classifier
+    private String filepath; //Filepath for the training data
+    private double learningRate; //Learning rate
+    private double l2; //L2 regularizer
+    private double l1; //L1 regularizer
+    private double beta; //Beta
+    private double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
     public void featureHashing(CrawleableUri uri) {
         ArrayList<String> tokens1 = new ArrayList<String>();
@@ -96,9 +96,11 @@ public final class BinomialPredictor implements Predictor{
         return pred;
     }
 
+    /**
+     * Updates the weight of the model with the available environment space
+     * @param curi based on which the weight of the model has to be updated
+     */
     public void weightUpdate(CrawleableUri curi) {
-        // Learning Rate used at runtime
-        double learningRate = 0.7;
         try {
             if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
                 Object featureArray = curi.getData(Constants.FEATURE_VECTOR);

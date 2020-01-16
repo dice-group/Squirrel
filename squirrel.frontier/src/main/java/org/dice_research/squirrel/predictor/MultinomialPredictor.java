@@ -35,16 +35,16 @@ public final class MultinomialPredictor implements Predictor{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
 
-    private MultinomialRegressionModel multinomialModel;
-    private MultinomialRegressionLearner multinomialLearner;
-    private MultinomialRegressionClassifier multinomialClassifier;
-    private WeightUpdater updater;
-    private RegressionLearn learner;
-    private String filepath;
-    private Double learningRate;
-    private Double l2;
-    private Double l1;
-    private Double beta;
+    private MultinomialRegressionModel multinomialModel; //Multinomial model
+    private MultinomialRegressionLearner multinomialLearner; //Multinomial learner for the model
+    private MultinomialRegressionClassifier multinomialClassifier; //Multinomial classifier
+    private WeightUpdater updater; //Updater
+    private RegressionLearn learner; //Learner
+    private String filepath; //Filepath for the training data
+    private Double learningRate; //Learning rate for the Minimizer
+    private Double l2; //L2 regularizer
+    private Double l1; //L1 regularizer
+    private Double beta; //Beta in the neta value of the paper
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
 
     public void featureHashing(CrawleableUri uri) {
@@ -74,6 +74,13 @@ public final class MultinomialPredictor implements Predictor{
 
     }
 
+    /**
+     * Predicts the type of the data for a given URI
+     * @param uri
+     *           {@link CrawleableUri} URI whose class is to be predicted.
+     *
+     * @return
+     */
     public Integer predict(CrawleableUri uri) {
         int pred = 0;
         try {
@@ -97,7 +104,10 @@ public final class MultinomialPredictor implements Predictor{
         return pred;
     }
 
-
+    /**
+     * A method which updates the model depending on the current environment space
+     * @param uri for which the weights of the model has to be updated
+     */
     public void weightUpdate(CrawleableUri uri) {
 
         RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
@@ -158,7 +168,7 @@ public final class MultinomialPredictor implements Predictor{
         this.learningRate = learningRate;
     }
 
-    //L2
+    //L2Temporary values
     public double getL2() {
         return l2;
     }
