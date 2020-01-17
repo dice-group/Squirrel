@@ -21,9 +21,8 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
 
     private static final SingleEntryDoubleVector POSITIVE_CLASS = new SingleEntryDoubleVector(1d);
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
-
-    //private Predictor predictor = new PredictorImpl();
-    private BinomialPredictor predictor = new BinomialPredictor();
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
+    Logger LOGGER = LoggerFactory.getLogger(BinomialTrainDataProviderImpl.class);
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         String positiveClass = (String) classList.get(0);
@@ -33,7 +32,7 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
             br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
                 , Charset.defaultCharset()));
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.warn("Exception happened while setting up train data stream", e);
         }
         return br.lines().map((s) -> parseFeature(s, positiveClass));
     }
@@ -51,7 +50,7 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
             }
         }
         CrawleableUri uri = new CrawleableUri(furi);
-        predictor.featureHashing(uri);
+        featureGenerator.featureHashing(uri);
         Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);

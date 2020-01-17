@@ -19,12 +19,13 @@ import java.util.stream.Stream;
 
 public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
 
-    private MultinomialPredictor predictor = new MultinomialPredictor();
+    Logger LOGGER = LoggerFactory.getLogger(MultinomialTrainDataProviderImpl.class);
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
+
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         BufferedReader br = null;
         try {
-            //br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
             br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
                 , Charset.defaultCharset()));
         }catch (Exception e){
@@ -48,11 +49,11 @@ public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
             try {
                 furi = new URI("http://scoreboard.lod2.eu/data/scoreboardDataCube.rdf");
             } catch (URISyntaxException ex) {
-                ex.printStackTrace();
+                LOGGER.warn("Exception happened while parsing train data file", ex);
             }
         }
         CrawleableUri uri = new CrawleableUri(furi);
-        predictor.featureHashing(uri);
+        featureGenerator.featureHashing(uri);
         Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
         double[] doubleFeatureArray = (double[]) featureArray;
         DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);

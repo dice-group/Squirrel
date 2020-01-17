@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -32,6 +33,9 @@ public class BinomialPredictorEvaluation {
      * Indicates the path to the file containing the test data.
      */
     String testFilePath;
+    /**
+     *  Used to generate the
+     */
 
     /**
      * Constructor.
@@ -77,7 +81,6 @@ public class BinomialPredictorEvaluation {
                     }
                 }
                 CrawleableUri uri = new CrawleableUri(furi);
-                this.predictor.featureHashing(uri);
                 String pred = this.predictor.predict(uri);
                 split[1] = split[1].replace("\"", "");
                 if(split[1].equals(positiveClass)){
@@ -130,13 +133,15 @@ public class BinomialPredictorEvaluation {
         int folds = 10;
         int chunk;
         try {
-            url = new URL(trainFilePath);
 
-            br = new BufferedReader((new InputStreamReader(url.openStream())));
+
+            br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("binomialTrainData.txt")
+                , Charset.defaultCharset()));
             line = br.readLine();
             while( ( line = br.readLine()) != null){
                 lineList.add(line);
             }
+            System.out.println(lineList.size());
             Collections.shuffle(lineList, new Random(113));
             chunk = lineList.size()/folds;
             train = new int[folds][];
@@ -185,7 +190,7 @@ public class BinomialPredictorEvaluation {
     }
 
     public static void main(String[] args) {
-        BinomialPredictorEvaluation evaluate = new BinomialPredictorEvaluation("https://hobbitdata.informatik.uni-leipzig.de/squirrel/lodstats-seeds.csv", "dereferenceable","testFile.txt");
+        BinomialPredictorEvaluation evaluate = new BinomialPredictorEvaluation("binomialTrainData.txt", "dereferenceable","testFile.txt");
         evaluate.crossValidation();
     }
 }

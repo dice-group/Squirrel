@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A BinomialPredictor that can be used for a BinaryClassification problem
+ * A binomial classifier that performs binary classification on the URIs
  */
 public final class BinomialPredictor implements Predictor{
 
@@ -40,64 +40,31 @@ public final class BinomialPredictor implements Predictor{
     private Double l1; //L1 regularizer
     private Double beta; //Beta
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
-    private Double threshold;
-    private String positiveClass;
-
-
-    public void featureHashing(CrawleableUri uri) {
-        ArrayList<String> tokens1 = new ArrayList<String>();
-        tokens1 = tokenCreation(uri, tokens1);
-        CrawleableUri referUri;
-        if (uri.getData(Constants.REFERRING_URI) != null) {
-            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
-            if (referUri != null)
-                tokens1 = tokenCreation(referUri, tokens1);
-        }
-        String[] tokens = new String[tokens1.size()];
-        for (int i = 0; i < tokens1.size(); i++) {
-            tokens[i] = tokens1.get(i);
-        }
-
-        try {
-            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                1 << 14));
-            double[] d;
-            d = feature.toArray();
-            uri.addData(Constants.FEATURE_VECTOR, d);
-
-        } catch (Exception e) {
-            LOGGER.info("Exception caused while adding the feature vector to the URI map" , e);
-        }
-
-    }
-
+    private Double threshold; // The threshold above which a URI is classified into positive class
+    private String positiveClass; // The positive class for the classification
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator(); // Used to generate the feature vector of the URI
 
     /**
      * Predicts the type of the URI
      * @param uri the URI to which the prediction has to be made
-     *           {@link CrawleableUri} URI whose class is to be predicted.
+     * @return  the type of the URI
      */
     public String predict(CrawleableUri uri) {
 
         String predictedClass = null;
         try {
-            //Get the feature vector
-            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
-                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-                //initialize the regression classifier with updated model and predict
-                this.setClassifier(new RegressionClassifier(this.getModel()));
-                DoubleVector prediction = this.classifier.predict(features);
+            featureGenerator.featureHashing(uri);
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+            //initialize the regression classifier with updated model and predict
+            this.setClassifier(new RegressionClassifier(this.getModel()));
+            DoubleVector prediction = this.classifier.predict(features);
 
-                if(prediction.get(0) >= this.getThreshold())
-                    predictedClass = this.getPositiveClass();
-                else
-                    predictedClass = "NEGATIVE_CLASS";
-
-            } else {
-                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
-            }
+            if(prediction.get(0) >= this.getThreshold())
+                predictedClass = this.getPositiveClass();
+            else
+                predictedClass = "NEGATIVE_CLASS";
         } catch (Exception e) {
             LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
             e.printStackTrace();
@@ -106,8 +73,8 @@ public final class BinomialPredictor implements Predictor{
     }
 
     /**
-     * Updates the model based on the this URI
-     * @param curi to which the weiht has to be made
+     * Updates the predictor model based on the this URI
+     * @param curi based on which the model weights has to be updated
      */
     public void weightUpdate(CrawleableUri curi) {
         try {
@@ -133,14 +100,6 @@ public final class BinomialPredictor implements Predictor{
         } catch (Exception e) {
             LOGGER.info("Error while updating the weight " + e);
         }
-    }
-
-    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
-
-        String[] uriToken;
-        uriToken = uri.getUri().toString().split("/|\\.");
-        tokens.addAll(Arrays.asList(uriToken));
-        return tokens;
     }
 
     protected void setUpdater(WeightUpdater updater) {
@@ -255,11 +214,11 @@ public final class BinomialPredictor implements Predictor{
 
         private RegressionClassifier classifier;   //Classifier
 
-        private String filePath;
+        private String filePath; // file path for the training data file
 
-        private double threshold;
+        private double threshold; // threshold above which a URI is classified into the positive class
 
-        public String positiveClass;
+        public String positiveClass; // the positive class of the binary classification
 
         public BinomialPredictorBuilder(RegressionLearn learner, RegressionModel model, RegressionClassifier classifier, WeightUpdater updater) {
             this.learner = learner;

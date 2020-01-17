@@ -105,7 +105,7 @@ public class FrontierImpl implements Frontier {
 
 
     /**
-     * Object for Predictor
+     * {@link Predictor Used to predict the type of the URI}
      */
     protected Predictor predictor;
 
@@ -296,12 +296,10 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // Normalize the URI
         uri = normalizer.normalize(uri);
-        if(predictor != null) {
-            // Prediction of URI type
+        // Predict the URI type
+        if(predictor != null && uri.getType().equals("UNKNOWN")) {
             try {
-                //generate the feature vector of the uri for prediction purpose
-                predictor.featureHashing(uri);
-                //predict and update uri key with the
+                //predict and update uri key with the predicted class
                 String p = predictor.predict(uri);
                 uri.addData(Constants.URI_PREDICTED_LABEL, p);
             } catch (Exception e) {
@@ -310,9 +308,6 @@ public class FrontierImpl implements Frontier {
         }
         // After knownUriFilter uri should be classified according to
         // UriProcessor
-
-
-
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {

@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.function.IntFunction;
 
 /**
- * A MultinomialPredictor
+ * A multinomial classifier that classifies URIs into multiple classes
  */
 public final class MultinomialPredictor implements Predictor{
 
@@ -49,97 +49,55 @@ public final class MultinomialPredictor implements Predictor{
     private Double l1; //L1 Regularization
     private Double beta; //Beta value (In paper)
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
-    private ArrayList<String> classList = new ArrayList<>();
-
-    public void featureHashing(CrawleableUri uri) {
-        ArrayList<String> tokens1 = new ArrayList<String>();
-        tokens1 = tokenCreation(uri, tokens1);
-        CrawleableUri referUri;
-        if (uri.getData(Constants.REFERRING_URI) != null) {
-            referUri = new CrawleableUri((URI) uri.getData(Constants.REFERRING_URI));
-            if (referUri != null)
-                tokens1 = tokenCreation(referUri, tokens1);
-        }
-        String[] tokens = new String[tokens1.size()];
-        for (int i = 0; i < tokens1.size(); i++) {
-            tokens[i] = tokens1.get(i);
-        }
-
-        try {
-            DoubleVector feature = VectorizerUtils.sparseHashVectorize(tokens, Hashing.murmur3_128(), () -> new SequentialSparseDoubleVector(
-                2 << 14));
-            double[] d;
-            d = feature.toArray();
-            uri.addData(Constants.FEATURE_VECTOR, d);
-
-        } catch (Exception e) {
-            LOGGER.info("Exception caused while adding the feature vector to the URI map" + e);
-        }
-
-    }
-
+    private ArrayList<String> classList = new ArrayList<>(); // A list storing the different classes of URIs obtained from the training data
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator(); // Used to generate the feature vector of a URI
 
     /**
      * Predicts the type of the URI
      * @param uri the URI to which the prediction has to be made
-     *           {@link CrawleableUri} URI whose class is to be predicted.
+     * @return the type of the URI
      */
     public String predict(CrawleableUri uri) {
         int pred = 0;
         String predictedClass = null;
         try {
-            //Get the feature vector
-            if (uri.getData(Constants.FEATURE_VECTOR) != null) {
-                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
-                double[] doubleFeatureArray = (double[]) featureArray;
-                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-                //initialize the regression classifier with updated model and predict
-                multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
-                DoubleVector prediction = multinomialClassifier.predict(features);
-                pred = prediction.maxIndex();
-            } else {
-                LOGGER.info("Feature vector of this " + uri.getUri().toString() + " is null");
-            }
+            featureGenerator.featureHashing(uri);
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+            //initialize the regression classifier with updated model and predict
+            multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+            DoubleVector prediction = multinomialClassifier.predict(features);
+            pred = prediction.maxIndex();
         } catch (Exception e) {
-            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " + e);
+            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " , e);
         }
         predictedClass = this.classList.get(pred);
         return predictedClass;
     }
 
     /**
-     * Updates the model based on the this URI
-     * @param uri to which the weiht has to be made
+     * Updates the predictor model based on the this URI
+     * @param uri based on which the model weights are updated
      */
     public void weightUpdate(CrawleableUri uri) {
-
         RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
         int i=0;
         if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_CLASS) != null) {
-
             for (RegressionModel s : this.getMultinomialModel().getModels()) {
                 Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
                 double[] doubleFeatureArray = (double[]) featureArray;
                 DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
-
                 Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
-
                 int rv = (int) real_value;
-
                 DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
-
                 DoubleVector nextExample = features;
-
                 FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
-
                 //update weights using the updated parameters
                 DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
-
                 CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
-
                 // calculate new weights (note that the iteration count is not used)
                 CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
-
                 // update model and classifier
                 newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
                 i++;
@@ -148,14 +106,6 @@ public final class MultinomialPredictor implements Predictor{
             this.multinomialModel = new MultinomialRegressionModel(newModels);
         } else
             LOGGER.info("URI is null");
-
-    }
-
-    public ArrayList tokenCreation(CrawleableUri uri, ArrayList tokens) {
-        String[] uriToken;
-        uriToken = uri.getUri().toString().split("/|\\.");
-        tokens.addAll(Arrays.asList(uriToken));
-        return tokens;
     }
 
     public RegressionModel getModel() {
@@ -425,6 +375,7 @@ public final class MultinomialPredictor implements Predictor{
 
             //model
             if (this.getMultinomialModel() == null) {
+                // Storing the names of the classes of the URI obtained from the training data
                 BufferedReader br = null;
                 String line;
                 try {

@@ -10,20 +10,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  */
 
 public interface Predictor {
-    /**
-     * Creates the feature vector that can be used in the prediction. It considers
-     * the intrinsic URI features and the intrinsic features of the
-     * referring URI.
-     * Feature hashing uses the hash function MurmurHash32
-     * to map the feature vectors into binary vectors. It uses a random sparse projection matrix
-     * (where n >> m ) in order to reduce the dimension of the data from n to m.
-     *
-     * @param uri
-     *          {@link CrawleableUri}  URI whose feature vector is to be created.
-     */
-    void featureHashing(CrawleableUri uri);
-
-    /**
+     /**
      * Return a prediction value of the type of the given URI, the prediction should be between 0 and 1.
      * e.g. In case of RDF type prediction, the more the predicted value is close to 1
      * the more the URI is of type RDF otherwise is not.

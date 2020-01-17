@@ -84,7 +84,6 @@ public class MultinomialPredictorEvaluation {
                     }
                 }
                 CrawleableUri uri = new CrawleableUri(furi);
-                predictor.featureHashing(uri);
                 String pred = predictor.predict(uri);
                 //System.out.println("predicted values: "+ pred);
                 split[1] = split[1].replace("\"", "");
