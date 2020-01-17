@@ -105,7 +105,7 @@ public final class MultinomialPredictor implements Predictor{
             //create a new multinomial model with the update weights
             this.multinomialModel = new MultinomialRegressionModel(newModels);
         } else
-            LOGGER.info("URI is null");
+            LOGGER.warn("URI is null");
     }
 
     public RegressionModel getModel() {
@@ -391,7 +391,7 @@ public final class MultinomialPredictor implements Predictor{
                     predictor.classList = this.classList;
 
                 }catch (Exception e){
-                    LOGGER.warn("Exception happened while finding the classes of the URI", e);
+                    LOGGER.warn("Exception happened while finding the classes of the URI from training data file", e);
                 }
                 this.setMultinomialModel(multinomialLearner.train(() -> trainingDataProvider.setUpStream(this.getFilePath(), this.classList)));
             }

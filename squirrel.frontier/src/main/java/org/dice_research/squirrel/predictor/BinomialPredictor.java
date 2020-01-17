@@ -95,10 +95,10 @@ public final class BinomialPredictor implements Predictor{
                 // update model and classifier
                 this.model = new RegressionModel(update.getWeight(), this.model.getActivationFunction());
             } else {
-                LOGGER.info("Feature vector or true label of this " + curi.getUri().toString() + " is null");
+                LOGGER.warn("Feature vector or true label of this " + curi.getUri().toString() + " is null");
             }
         } catch (Exception e) {
-            LOGGER.info("Error while updating the weight " + e);
+            LOGGER.warn("Exception happened while updating the weights for the URI type predictor model", e);
         }
     }
 

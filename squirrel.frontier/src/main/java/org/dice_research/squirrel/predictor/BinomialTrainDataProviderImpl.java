@@ -23,6 +23,13 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
     private static final SingleEntryDoubleVector NEGATIVE_CLASS = new SingleEntryDoubleVector(0d);
     private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
     Logger LOGGER = LoggerFactory.getLogger(BinomialTrainDataProviderImpl.class);
+
+    /**
+     * Used to convert the data in the training file into a stream which can be fed into the learner to learn
+     * @param filePath path of the file containing the training data
+     * @param classList list containing the class names of the URI
+     * @return
+     */
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         String positiveClass = (String) classList.get(0);
@@ -59,7 +66,11 @@ public class BinomialTrainDataProviderImpl implements TrainingDataProvider {
     }
 
 
-    @Override
+    /**
+     * Used to create a file using the data from an online source
+     * @param dataUri The location of the online source
+     * @param trainFilePath The location of the local file to which the data should be written
+     */
     public void createTrainDataFile(String dataUri, String trainFilePath) {
         URL url = null;
         BufferedReader br = null;

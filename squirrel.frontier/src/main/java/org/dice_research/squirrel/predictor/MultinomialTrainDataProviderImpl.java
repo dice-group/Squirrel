@@ -22,6 +22,12 @@ public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
     Logger LOGGER = LoggerFactory.getLogger(MultinomialTrainDataProviderImpl.class);
     private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
 
+    /**
+     * Used to convert the data in the training file into a stream which can be fed into the learner to learn
+     * @param filePath path of the file containing the training data
+     * @param classList list containing the class names of the URI
+     * @return
+     */
     @Override
     public Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList) {
         BufferedReader br = null;
@@ -67,7 +73,11 @@ public class MultinomialTrainDataProviderImpl implements TrainingDataProvider {
         return new FeatureOutcomePair(features, predVector);
     }
 
-    @Override
+    /**
+     * Used to create a file using the data from an online source
+     * @param dataUri The location of the online source
+     * @param trainFilePath The location of the local file to which the data should be written
+     */
     public void createTrainDataFile(String dataUri, String trainFilePath) {
         BufferedReader br = null;
         URL url = null;

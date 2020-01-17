@@ -18,14 +18,4 @@ public  interface TrainingDataProvider{
      * @return a stream of train data
      */
     Stream<FeatureOutcomePair> setUpStream(String filePath, ArrayList classList);
-
-    /**
-     * Function reads the data URIs in the given link (@dataUri) and writes it to a textfile (@trainFilePath)
-     * @param dataUri
-     * @param trainFilePath
-     */
-    void createTrainDataFile(String dataUri, String trainFilePath);
-
-
-
 }

@@ -355,15 +355,6 @@ public class FrontierImpl implements Frontier {
 //        if (graphLogger != null) {
 //            graphLogger.log(new ArrayList<>(uriMap.keySet()), newUris);
 //        }
-        // Update the prediction model
-        try {
-            for (CrawleableUri uri : uris) {
-                predictor.weightUpdate(uri);
-            }
-
-        } catch (Exception e) {
-            LOGGER.info("Exception handles while updating weight",e);
-        }
 
         // If we should give the crawled IPs to the queue
         if (queue instanceof BlockingQueue) {
@@ -383,6 +374,16 @@ public class FrontierImpl implements Frontier {
                 knownUriFilter.add(uri, System.currentTimeMillis());
             }
         }
+
+        // Update the URI type prediction model
+        try {
+            for (CrawleableUri uri : uris) {
+                predictor.weightUpdate(uri);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Exception happened while updating the weights for the URI type predictor model",e);
+        }
+
     }
 
     @Override

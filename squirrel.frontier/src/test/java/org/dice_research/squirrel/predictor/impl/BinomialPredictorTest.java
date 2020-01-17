@@ -45,7 +45,7 @@ public class BinomialPredictorTest {
     public void weightUpdate() throws URISyntaxException {
         boolean flag = false;
         CrawleableUri curi = new CrawleableUri(new URI("https://mcloud.de/export/datasets/037388ba-52a7-4d7e-8fbd-101a4202be7f"));
-        predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
+        BinomialPredictor predictor = new BinomialPredictor.BinomialPredictorBuilder().withFile("binomialTrainData.txt").withPositiveClass("dereferencing").build();
         DoubleVector modelWeights = predictor.getModel().getWeights();
         double[] oldWeights = Arrays.copyOf(modelWeights.toArray(), modelWeights.getLength());
         featureGenerator.featureHashing(curi);
