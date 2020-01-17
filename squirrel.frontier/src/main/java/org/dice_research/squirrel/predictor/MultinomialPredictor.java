@@ -38,16 +38,16 @@ public final class MultinomialPredictor implements Predictor{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
 
-    private MultinomialRegressionModel multinomialModel;
-    private MultinomialRegressionLearner multinomialLearner;
-    private MultinomialRegressionClassifier multinomialClassifier;
-    private WeightUpdater updater;
-    private RegressionLearn learner;
-    private String filepath;
-    private Double learningRate;
-    private Double l2;
-    private Double l1;
-    private Double beta;
+    private MultinomialRegressionModel multinomialModel; //Multinomial Regression model
+    private MultinomialRegressionLearner multinomialLearner; //Mutilnomial Learner
+    private MultinomialRegressionClassifier multinomialClassifier; //Multinomial Classifier
+    private WeightUpdater updater; //Weight updater
+    private RegressionLearn learner; //Learner
+    private String filepath; //Filepath to the training dataset
+    private Double learningRate; //Learning rate
+    private Double l2; //L2 Regularization
+    private Double l1; //L1 Regularization
+    private Double beta; //Beta value (In paper)
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
     private ArrayList<String> classList = new ArrayList<>();
 
@@ -78,6 +78,12 @@ public final class MultinomialPredictor implements Predictor{
 
     }
 
+
+    /**
+     * Predicts the type of the URI
+     * @param uri the URI to which the prediction has to be made
+     *           {@link CrawleableUri} URI whose class is to be predicted.
+     */
     public String predict(CrawleableUri uri) {
         int pred = 0;
         String predictedClass = null;
@@ -101,7 +107,10 @@ public final class MultinomialPredictor implements Predictor{
         return predictedClass;
     }
 
-
+    /**
+     * Updates the model based on the this URI
+     * @param uri to which the weiht has to be made
+     */
     public void weightUpdate(CrawleableUri uri) {
 
         RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];

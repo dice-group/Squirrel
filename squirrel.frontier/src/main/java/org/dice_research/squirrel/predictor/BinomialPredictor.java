@@ -30,15 +30,15 @@ import java.util.Arrays;
 public final class BinomialPredictor implements Predictor{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
-    private WeightUpdater updater;
-    private RegressionLearn learner;
-    private RegressionModel model;
-    private RegressionClassifier classifier;
-    private String filepath;
-    private Double learningRate;
-    private Double l2;
-    private Double l1;
-    private Double beta;
+    private WeightUpdater updater; //Model updater
+    private RegressionLearn learner; //Learner
+    private RegressionModel model; //Model
+    private RegressionClassifier classifier; //Classifier
+    private String filepath; //Filepath for the training dataset
+    private Double learningRate; //Learningrate
+    private Double l2; //L2 Regularizer
+    private Double l1; //L1 regularizer
+    private Double beta; //Beta
     private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
     private Double threshold;
     private String positiveClass;
@@ -71,6 +71,12 @@ public final class BinomialPredictor implements Predictor{
 
     }
 
+
+    /**
+     * Predicts the type of the URI
+     * @param uri the URI to which the prediction has to be made
+     *           {@link CrawleableUri} URI whose class is to be predicted.
+     */
     public String predict(CrawleableUri uri) {
 
         String predictedClass = null;
@@ -99,6 +105,10 @@ public final class BinomialPredictor implements Predictor{
         return predictedClass;
     }
 
+    /**
+     * Updates the model based on the this URI
+     * @param curi to which the weiht has to be made
+     */
     public void weightUpdate(CrawleableUri curi) {
         try {
             if (curi.getData(Constants.FEATURE_VECTOR) != null && curi.getData(Constants.URI_TRUE_LABEL) != null) {
@@ -218,7 +228,8 @@ public final class BinomialPredictor implements Predictor{
 
 
     /**
-     * A builder pattern for the Binomialpredictor, that uses Regression Model, Regression Learner along with default training data  and other default hyperparameters
+     * A builder pattern for the Binomialpredictor, that uses
+     * Regression Model, Regression Learner along with default training data  and other default hyperparameters
      */
     public static class BinomialPredictorBuilder {
 
