@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 
+/**
+ *  Class used to generate domain based variant of a given URI (i.e converting the URI to it's domain)
+ */
 public class DomainBasedUriGenerator implements UriGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(NormalizerImpl.class);
 

@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Class used to generate well-known/VoID variant of a given URI
+ */
 public class WellKnownPathUriGenerator implements UriGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(NormalizerImpl.class);
     @Override

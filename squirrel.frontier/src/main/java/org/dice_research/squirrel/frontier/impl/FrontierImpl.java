@@ -1,6 +1,7 @@
 package org.dice_research.squirrel.frontier.impl;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,6 +24,8 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -66,11 +69,7 @@ public class FrontierImpl implements Frontier {
     /**
      * {@link UriGenerator} used to generate additional domain variants of a URI
      */
-    protected UriGenerator domainUriGenerator;
-    /**
-     * {@link UriGenerator} used to generate additional well-known VoID variant of a URI
-     */
-    protected UriGenerator wellKnownUriGenrator;
+    List<UriGenerator> uriGenerator;
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
@@ -276,22 +275,23 @@ public class FrontierImpl implements Frontier {
         return queue.getNextUris();
     }
 
+    @Autowired
+    private void setGenerator(List<UriGenerator> uriGenerator){
+        this.uriGenerator = uriGenerator;
+    }
+
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
-        domainUriGenerator = new DomainBasedUriGenerator();
-        wellKnownUriGenrator = new WellKnownPathUriGenerator();
-        CrawleableUri domainUri, wellKnownUri;
         for (CrawleableUri uri : uris) {
-            // Generate the domain variant of the URI
-            domainUri = domainUriGenerator.getUriVariant(uri);
-            // Generate the well-known variant of a URI
-            wellKnownUri = wellKnownUriGenrator.getUriVariant(uri);
-            // Normalize the URI
-            uri = normalizer.normalize(uri);
             addNewUri(uri);
-            addNewUri(domainUri);
-            addNewUri(wellKnownUri);
-
+            try {
+                for (UriGenerator u : uriGenerator) {
+                    if (u.getUriVariant(uri) != null)
+                        addNewUri(u.getUriVariant(uri));
+                }
+            }catch (Exception e){
+                LOGGER.warn("Exception happened while generating additional URI variant", e);
+            }
         }
     }
 
@@ -299,7 +299,12 @@ public class FrontierImpl implements Frontier {
     public void addNewUri(CrawleableUri uri) {
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+        uri = normalizer.normalize(uri);
+        addNormalizedUri(uri);
 
+    }
+
+    protected void addNormalizedUri(CrawleableUri uri){
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
