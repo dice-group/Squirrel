@@ -16,6 +16,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
+import org.dice_research.squirrel.predictor.MultinomialPredictor;
+import org.dice_research.squirrel.predictor.Predictor;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -32,6 +34,7 @@ public class FrontierImplTest {
     private static MongoDBKnowUriFilter filter;
     private static List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private static CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
+    private static Predictor predictor;
 
     @Before
     public void setUp() throws Exception {
@@ -43,7 +46,8 @@ public class FrontierImplTest {
         queue = new MongoDBIpBasedQueue("localhost", 58027);
          filter.open();
          queue.open();
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true);
+        predictor = new MultinomialPredictor();
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true, predictor);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));

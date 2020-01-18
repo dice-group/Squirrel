@@ -224,6 +224,9 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.debug("I start crawling {} now...", uri);
                 File fetched = null;
                 try {
+
+                    
+
                     fetched = fetcher.fetch(uri, delayer);
                 } catch (Exception e) {
                     LOGGER.error("Exception while Fetching Data. Skipping...", e);
@@ -254,9 +257,10 @@ public class WorkerImpl implements Worker, Closeable {
                                 for (File file : fileList) {
                                     LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
                                     Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
-                                    sendNewUris(resultUris);
+                                    sendNewUris(resultUris,uri);
                                     cont++;
                                 }
+
 
                             }
                         }
@@ -282,10 +286,23 @@ public class WorkerImpl implements Worker, Closeable {
                 LOGGER.info("Crawling {} is not allowed by the RobotsManager.", uri);
                 activity.addStep(manager.getClass(), "Decided to reject this URI.");
             }
+
+
+        // Adding true label value for the prediction in uri map
+        if (activity.getNumberOfTriples()>0) {
+            uri.addData(Constants.URI_TRUE_LABEL,"dereferenceable");
+        } else {
+            uri.addData(Constants.URI_TRUE_LABEL, "NEGATIVE_CLASS");
+        }
+        //activity.finishActivity(sink);
+        // LOGGER.debug("Fetched {} triples", count);
+        //setSpecificRecrawlTime(uri);
+
             if(storeMetadata)
                 activity.finishActivity(sink);
             // LOGGER.debug("Fetched {} triples", count);
             setSpecificRecrawlTime(uri);
+
 
         } finally {
             // Remove the activity since we don't want to send it back to the Frontier
@@ -320,13 +337,14 @@ public class WorkerImpl implements Worker, Closeable {
      * 
      * @param uriIterator an iterator used to iterate over all new URIs
      */
-    public void sendNewUris(Iterator<byte[]> uriIterator) {
+    public void sendNewUris(Iterator<byte[]> uriIterator, CrawleableUri uri) {
         List<CrawleableUri> newUris = new ArrayList<>(MAX_URIS_PER_MESSAGE);
         CrawleableUri newUri;
         int packageCount = 0;
         while (uriIterator != null && uriIterator.hasNext()) {
             try {
                 newUri = serializer.deserialize(uriIterator.next());
+                newUri.addData(Constants.REFERRING_URI, uri.getUri());
                 uriProcessor.recognizeUriType(newUri);
                 newUris.add(newUri);
                 if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {

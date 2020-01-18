@@ -21,6 +21,12 @@
 			<groupId>org.dice-research</groupId>
 			<artifactId>squirrel.web-api</artifactId>
 		</dependency>
+		<!-- Online machine learning library used to implement better URI type prediction in crawler -->
+		<dependency>
+			<groupId>de.jungblut.ml</groupId>
+			<artifactId>tjungblut-online-ml</artifactId>
+			<version>0.5</version>
+		</dependency>
 
 		<!-- ~~~~~~~~~~~~~~~~~~~ Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- JUnit -->

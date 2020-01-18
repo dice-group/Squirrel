@@ -1,0 +1,544 @@
+package org.dice_research.squirrel.predictor;
+
+import de.jungblut.math.DoubleVector;
+import de.jungblut.math.activation.SigmoidActivationFunction;
+import de.jungblut.math.dense.SingleEntryDoubleVector;
+import de.jungblut.math.loss.LogLoss;
+import de.jungblut.math.minimize.CostGradientTuple;
+import de.jungblut.math.sparse.SequentialSparseDoubleVector;
+import de.jungblut.online.minimizer.StochasticGradientDescent;
+import de.jungblut.online.ml.FeatureOutcomePair;
+import de.jungblut.online.regression.RegressionLearner;
+import de.jungblut.online.regression.RegressionModel;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionClassifier;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionLearner;
+import de.jungblut.online.regression.multinomial.MultinomialRegressionModel;
+import de.jungblut.online.regularization.AdaptiveFTRLRegularizer;
+import de.jungblut.online.regularization.CostWeightTuple;
+import de.jungblut.online.regularization.L2Regularizer;
+import de.jungblut.online.regularization.WeightUpdater;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.function.IntFunction;
+
+/**
+ * A predictor that predicts the type of the URI by performing multi-class classification
+ */
+public final class MultinomialPredictor implements Predictor{
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
+    /**
+     * {@link MultinomialRegressionModel} Represents the multinomial regression model used for the prediction of the type of the URI
+     */
+    private MultinomialRegressionModel multinomialModel;
+    /**
+     * {@link MultinomialRegressionLearner} Used to train the model with training data
+     */
+    private MultinomialRegressionLearner multinomialLearner;
+    /**
+     * {@link MultinomialRegressionClassifier} Classifier for  multinomial regression model.
+     * Takes a model or the atomic parts of it and predicts the outcome for a given feature.
+     *
+     */
+    private MultinomialRegressionClassifier multinomialClassifier;
+    /**
+     * {@link WeightUpdater} Used to update the weights of the predictor model used.
+     */
+    private WeightUpdater updater;
+    /**
+     * {@link RegressionLearn} Used to train the model with training data
+     */
+    private RegressionLearn learner;
+    /**
+     *  Location of the file containing the training data
+     */
+    private String filepath;
+    /**
+     * The rate at which the model learns.
+     */
+    private Double learningRate;
+    /**
+     * Regularizing parameter L2
+     */
+    private Double l2;
+    /**
+     * Regularizing parameter L1
+     */
+    private Double l1;
+    /**
+     * Hyper parameter Beta
+     */
+    private Double beta;
+    /**
+     * Validation percentage which is between 0 and 1
+     */
+    private Double holdoutValidationPercentage;
+    /**
+     * A list storing the different classes of URIs obtained from the training data
+     */
+    private ArrayList<String> classList = new ArrayList<>();
+    /**
+     * Used to generate the feature vector of a URI
+     */
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
+
+    /**
+     * Predicts the type of the URI
+     * @param uri the URI to which the prediction has to be made
+     * @return the type of the URI
+     */
+    public String predict(CrawleableUri uri) {
+        int pred = 0;
+        String predictedClass = null;
+        try {
+            featureGenerator.featureHashing(uri);
+            Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+            double[] doubleFeatureArray = (double[]) featureArray;
+            DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+            //initialize the regression classifier with updated model and predict
+            multinomialClassifier = new MultinomialRegressionClassifier(multinomialModel);
+            DoubleVector prediction = multinomialClassifier.predict(features);
+            pred = prediction.maxIndex();
+        } catch (Exception e) {
+            LOGGER.warn("Prediction for this " + uri.getUri().toString() + " failed " , e);
+        }
+        predictedClass = this.classList.get(pred);
+        return predictedClass;
+    }
+
+    /**
+     * Updates the predictor model based on the this URI
+     * @param uri based on which the model weights are updated
+     */
+    public void weightUpdate(CrawleableUri uri) {
+        RegressionModel[] newModels = new RegressionModel[this.getMultinomialModel().getModels().length];
+        int i=0;
+        if (uri.getData(Constants.FEATURE_VECTOR) != null && uri.getData(Constants.URI_TRUE_CLASS) != null) {
+            for (RegressionModel s : this.getMultinomialModel().getModels()) {
+                Object featureArray = uri.getData(Constants.FEATURE_VECTOR);
+                double[] doubleFeatureArray = (double[]) featureArray;
+                DoubleVector features = new SequentialSparseDoubleVector(doubleFeatureArray);
+                Object real_value = uri.getData(Constants.URI_TRUE_CLASS);
+                int rv = (int) real_value;
+                DoubleVector rv_DoubleVector = new SingleEntryDoubleVector(rv);
+                DoubleVector nextExample = features;
+                FeatureOutcomePair realResult = new FeatureOutcomePair(nextExample, rv_DoubleVector); // real outcome
+                //update weights using the updated parameters
+                DoubleVector newWeights = this.updater.prePredictionWeightUpdate(realResult, s.getWeights(),learningRate,0);
+                CostGradientTuple observed = this.learner.observeExample(realResult, newWeights);
+                // calculate new weights (note that the iteration count is not used)
+                CostWeightTuple update = this.updater.computeNewWeights(newWeights, observed.getGradient(), learningRate, 0, observed.getCost());
+                // update model and classifier
+                newModels[i] = new RegressionModel(update.getWeight(), s.getActivationFunction());
+                i++;
+            }
+            //create a new multinomial model with the update weights
+            this.multinomialModel = new MultinomialRegressionModel(newModels);
+        } else
+            LOGGER.warn("URI is null");
+    }
+
+    public RegressionModel getModel() {
+        return null;
+    }
+
+    //Learning rate
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    //L2
+    public double getL2() {
+        return l2;
+    }
+
+    public void setL2(double l2) {
+        this.l2 = l2;
+    }
+
+    //L1
+    public double getL1() {
+        return l1;
+    }
+
+    public void setL1(double l1) {
+        this.l1 = l1;
+    }
+
+    //Beta
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    //Learner
+    public RegressionLearn getLearner() {
+        return learner;
+    }
+
+    protected void setLearner(RegressionLearn learner) {
+        this.learner = learner;
+    }
+
+    //Filepath
+    public String getFilepath() {
+        return filepath;
+    }
+
+    protected void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    //Updater
+    public WeightUpdater getUpdater() {
+        return updater;
+    }
+
+    protected void setUpdater(WeightUpdater updater) {
+        this.updater = updater;
+    }
+
+    //Multinomial Model
+    public MultinomialRegressionModel getMultinomialModel() {
+        return multinomialModel;
+    }
+
+    protected void setMultinomialModel(MultinomialRegressionModel multinomialModel) {
+        this.multinomialModel = multinomialModel;
+    }
+
+
+    //Multinomial Learner
+    public MultinomialRegressionLearner getMultinomialLearner() {
+        return multinomialLearner;
+    }
+
+    protected void setMultinomialLearner(MultinomialRegressionLearner multinomialLearner) {
+        this.multinomialLearner = multinomialLearner;
+    }
+
+    //Multinomial Classifier
+    public MultinomialRegressionClassifier getMultinomialClassifier() {
+        return multinomialClassifier;
+    }
+
+    protected void setMultinomialClassifier(MultinomialRegressionClassifier multinomialClassifier) {
+        this.multinomialClassifier = multinomialClassifier;
+    }
+
+
+    public Double getHoldoutValidationPercentage() {
+        return holdoutValidationPercentage;
+    }
+
+    private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+        this.holdoutValidationPercentage = holdoutValidationPercentage;
+    }
+
+    public ArrayList<String> getClassList(){
+        return this.classList;
+    }
+
+    /**
+     * A builder pattern for the MultinomialPredictor, that uses Regression Model, Regression Learner along with default training data and other default hyperparameters
+     */
+    public static class MultinomialPredictorBuilder {
+
+        private TrainingDataProvider trainingDataProvider = new MultinomialTrainDataProviderImpl(); //Training Data Provider
+
+        protected StochasticGradientDescent sgd; //Minimizer
+
+        private RegressionLearn learner; //Learner
+
+        private WeightUpdater updater; //Updater
+
+        private MultinomialRegressionLearner multinomialLearner; //Multinomial learner
+
+        private MultinomialRegressionModel multinomialModel; //Multinomial odel
+
+        private MultinomialRegressionClassifier multinomialClassifier; //Multinomial Classifier
+
+        private Double learningRate; //Learning rate
+
+        private Double beta;   //Beta
+
+        private Double l1;   //L1
+
+        private Double l2;  //L2
+
+        private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
+
+        private String filePath; //filepath to train
+
+        private ArrayList<String> classList = new ArrayList<>(); // list containing the names of the different classes of URI
+
+        public MultinomialPredictorBuilder(MultinomialRegressionLearner learner, MultinomialRegressionModel model, MultinomialRegressionClassifier classifier, WeightUpdater updater) {
+            this.multinomialLearner = learner;
+            this.multinomialModel = model;
+            this.multinomialClassifier = classifier;
+            this.updater = updater;
+        }
+
+        public MultinomialPredictorBuilder() {
+        }
+
+        public MultinomialPredictorBuilder withUpdater(WeightUpdater updater) {
+            this.setUpdater(updater);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withLearner(MultinomialRegressionLearner multinomialLearner) {
+            this.setMultinomialLearner(multinomialLearner);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withModel(MultinomialRegressionModel multinomialModel) {
+            this.setMultinomialModel(multinomialModel);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withClassifier(MultinomialRegressionClassifier multinomialClassifier) {
+            this.setMultinomialRegressionClassifier(multinomialClassifier);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withFile(String filepath) {
+            this.setFilePath(filepath);
+            return this;
+
+        }
+
+        public MultinomialPredictorBuilder withLearningRate(Double learningRate) {
+            this.setLearningRate(learningRate);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withL1(Double L1) {
+            this.setL1(L1);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withL2(Double L2) {
+            this.setL2(L2);
+            return this;
+        }
+
+        public MultinomialPredictorBuilder withBeta(Double Beta) {
+            this.setBeta(Beta);
+            return this;
+        }
+
+        IntFunction<RegressionLearner> factory = (i) -> {
+            // take care of not sharing any state from the outside, since classes are trained in parallel
+            StochasticGradientDescent minimizer = StochasticGradientDescent.StochasticGradientDescentBuilder
+                .create(0.01)
+                .holdoutValidationPercentage(0.1d)
+                .weightUpdater(new L2Regularizer(0.1))
+                .progressReportInterval(1_000)
+                .build();
+            RegressionLearner learner =  new RegressionLearner(minimizer,
+                new SigmoidActivationFunction(), new LogLoss());
+            learner.setNumPasses(5);
+            return learner;
+        };
+
+        public MultinomialPredictor build() {
+            MultinomialPredictor predictor = new MultinomialPredictor();
+
+            //Learning Rate
+            if (this.getLearningRate() == null)
+                this.setLearningRate(0.7);
+            predictor.setLearningRate(this.getLearningRate());
+
+            //Beta
+            if (this.getBeta() == null)
+                this.setBeta(1);
+            predictor.setBeta(this.getBeta());
+
+            //L1
+            if (this.getL1() == null)
+                this.setL1(1);
+            predictor.setL1(this.getL1());
+
+            //L2
+            if (this.getL2() == null)
+                this.setL2(1);
+            predictor.setL2(this.getL2());
+
+            //updater
+            if (this.getUpdater() == null) {
+                this.setUpdater(new AdaptiveFTRLRegularizer(this.getBeta(), this.getL1(), this.getL2()));
+            }
+            predictor.setUpdater(this.getUpdater());
+
+            //holdout validation percentage
+            if (this.getHoldoutValidationPercentage() == null) {
+                this.setHoldoutValidationPercentage(0.05d);
+            }
+            predictor.setHoldoutValidationPercentage(this.getHoldoutValidationPercentage());
+
+            sgd = StochasticGradientDescent.StochasticGradientDescentBuilder
+                .create(this.getLearningRate()) // learning rate
+                .holdoutValidationPercentage(this.getHoldoutValidationPercentage())// 5% as validation set
+                .historySize(10_000) // keep 10k samples to compute relative improvement
+                .weightUpdater(this.getUpdater()) // FTRL updater
+                .progressReportInterval(1_000) // report every n iterations
+                .build();
+
+            //regression learner
+            if (this.getLearner() == null)
+                this.setLearner(new RegressionLearn(sgd, new SigmoidActivationFunction(), new LogLoss()));
+            predictor.setLearner(this.getLearner());
+
+            //multinomial learner
+            if (this.getMultinomialLearner() == null)
+                this.setMultinomialLearner(new MultinomialRegressionLearner(factory));
+            predictor.setMultinomialLearner(this.getMultinomialLearner());
+
+
+            //model
+            if (this.getMultinomialModel() == null) {
+                // Storing the names of the classes of the URI obtained from the training data
+                BufferedReader br = null;
+                String line;
+                try {
+                    br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filePath)
+                        , Charset.defaultCharset()));
+                    while((line = br.readLine()) != null){
+                        String[] split = line.split(",");
+                        split[1] = split[1].replace("\"", "");
+                        if(!this.classList.contains(split[1])){
+                            this.classList.add(split[1]);
+                        }
+                    }
+                    predictor.classList = this.classList;
+
+                }catch (Exception e){
+                    LOGGER.warn("Exception happened while finding the classes of the URI from training data file", e);
+                }
+                this.setMultinomialModel(multinomialLearner.train(() -> trainingDataProvider.setUpStream(this.getFilePath(), this.classList)));
+            }
+            predictor.setMultinomialModel(this.getMultinomialModel());
+
+            //classifier
+            if (this.getMultinomialClassifier() == null)
+                if (this.getMultinomialModel() != null)
+                    this.setMultinomialRegressionClassifier(new MultinomialRegressionClassifier(this.getMultinomialModel()));
+            predictor.setMultinomialClassifier(this.getMultinomialClassifier());
+
+            return predictor;
+        }
+
+        //Learner
+        private RegressionLearn getLearner() {
+            return learner;
+        }
+
+        private void setLearner(RegressionLearn regressionLearn) {
+            this.learner = regressionLearn;
+        }
+
+        //Updater
+        private WeightUpdater getUpdater() {
+            return updater;
+        }
+
+        private void setUpdater(WeightUpdater updater) {
+            this.updater = updater;
+        }
+
+        //Multinomial Model
+        private MultinomialRegressionModel getMultinomialModel() {
+            return multinomialModel;
+        }
+
+        private void setMultinomialModel(MultinomialRegressionModel multinomialRegressionModel) {
+            this.multinomialModel = multinomialRegressionModel;
+        }
+
+        //Multinomial Classifier
+        private MultinomialRegressionClassifier getMultinomialClassifier() {
+            return multinomialClassifier;
+        }
+
+        private void setMultinomialRegressionClassifier(MultinomialRegressionClassifier multinomialRegressionClassifier) {
+            this.multinomialClassifier = multinomialRegressionClassifier;
+        }
+
+        //Multinomial Regression Learner
+        private MultinomialRegressionLearner getMultinomialLearner() {
+            return multinomialLearner;
+        }
+
+        private void setMultinomialLearner(MultinomialRegressionLearner multinomialRegressionLearner) {
+            this.multinomialLearner = multinomialRegressionLearner;
+        }
+
+        public Double getLearningRate() {
+            return learningRate;
+        }
+
+        private void setLearningRate(double learningRate) {
+            this.learningRate = learningRate;
+        }
+
+        private Double getBeta() {
+            return beta;
+        }
+
+        private void setBeta(double beta) {
+            this.beta = beta;
+        }
+
+        private Double getL1() {
+            return l1;
+        }
+
+        private void setL1(double l1) {
+            this.l1 = l1;
+        }
+
+        private Double getL2() {
+            return l2;
+        }
+
+        private void setL2(double l2) {
+            this.l2 = l2;
+        }
+
+        private String getFilePath() {
+            return filePath;
+        }
+
+        private void setFilePath(String filePath) {
+            this.filePath = filePath;
+        }
+
+        private Double getHoldoutValidationPercentage() {
+            return holdoutValidationPercentage;
+        }
+
+        private void setHoldoutValidationPercentage(Double holdoutValidationPercentage) {
+            this.holdoutValidationPercentage = holdoutValidationPercentage;
+        }
+
+        private ArrayList<String> getClassList(){
+            return this.classList;
+        }
+
+    }
+
+}
