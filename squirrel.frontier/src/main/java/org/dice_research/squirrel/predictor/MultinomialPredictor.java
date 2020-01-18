@@ -1,13 +1,11 @@
 package org.dice_research.squirrel.predictor;
 
-import com.google.common.hash.Hashing;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.activation.SigmoidActivationFunction;
 import de.jungblut.math.dense.SingleEntryDoubleVector;
 import de.jungblut.math.loss.LogLoss;
 import de.jungblut.math.minimize.CostGradientTuple;
 import de.jungblut.math.sparse.SequentialSparseDoubleVector;
-import de.jungblut.nlp.VectorizerUtils;
 import de.jungblut.online.minimizer.StochasticGradientDescent;
 import de.jungblut.online.ml.FeatureOutcomePair;
 import de.jungblut.online.regression.RegressionLearner;
@@ -25,32 +23,70 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.IntFunction;
 
 /**
- * A multinomial classifier that classifies URIs into multiple classes
+ * A predictor that predicts the type of the URI by performing multi-class classification
  */
 public final class MultinomialPredictor implements Predictor{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultinomialPredictor.class);
-
-    private MultinomialRegressionModel multinomialModel; //Multinomial Regression model
-    private MultinomialRegressionLearner multinomialLearner; //Mutilnomial Learner
-    private MultinomialRegressionClassifier multinomialClassifier; //Multinomial Classifier
-    private WeightUpdater updater; //Weight updater
-    private RegressionLearn learner; //Learner
-    private String filepath; //Filepath to the training dataset
-    private Double learningRate; //Learning rate
-    private Double l2; //L2 Regularization
-    private Double l1; //L1 Regularization
-    private Double beta; //Beta value (In paper)
-    private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
-    private ArrayList<String> classList = new ArrayList<>(); // A list storing the different classes of URIs obtained from the training data
-    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator(); // Used to generate the feature vector of a URI
+    /**
+     * {@link MultinomialRegressionModel} Represents the multinomial regression model used for the prediction of the type of the URI
+     */
+    private MultinomialRegressionModel multinomialModel;
+    /**
+     * {@link MultinomialRegressionLearner} Used to train the model with training data
+     */
+    private MultinomialRegressionLearner multinomialLearner;
+    /**
+     * {@link MultinomialRegressionClassifier} Classifier for  multinomial regression model.
+     * Takes a model or the atomic parts of it and predicts the outcome for a given feature.
+     *
+     */
+    private MultinomialRegressionClassifier multinomialClassifier;
+    /**
+     * {@link WeightUpdater} Used to update the weights of the predictor model used.
+     */
+    private WeightUpdater updater;
+    /**
+     * {@link RegressionLearn} Used to train the model with training data
+     */
+    private RegressionLearn learner;
+    /**
+     *  Location of the file containing the training data
+     */
+    private String filepath;
+    /**
+     * The rate at which the model learns.
+     */
+    private Double learningRate;
+    /**
+     * Regularizing parameter L2
+     */
+    private Double l2;
+    /**
+     * Regularizing parameter L1
+     */
+    private Double l1;
+    /**
+     * Hyper parameter Beta
+     */
+    private Double beta;
+    /**
+     * Validation percentage which is between 0 and 1
+     */
+    private Double holdoutValidationPercentage;
+    /**
+     * A list storing the different classes of URIs obtained from the training data
+     */
+    private ArrayList<String> classList = new ArrayList<>();
+    /**
+     * Used to generate the feature vector of a URI
+     */
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
 
     /**
      * Predicts the type of the URI

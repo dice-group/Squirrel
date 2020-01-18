@@ -25,24 +25,64 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A binomial classifier that performs binary classification on the URIs
+ * A predictor that predicts the RDF-relevance of a URI by performing binary classification.
  */
 public final class BinomialPredictor implements Predictor{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinomialPredictor.class);
-    private WeightUpdater updater; //Model updater
-    private RegressionLearn learner; //Learner
-    private RegressionModel model; //Model
-    private RegressionClassifier classifier; //Classifier
-    private String filepath; //Filepath for the training dataset
-    private Double learningRate; //Learningrate
-    private Double l2; //L2 Regularizer
-    private Double l1; //L1 regularizer
-    private Double beta; //Beta
-    private Double holdoutValidationPercentage; //Validation percentage which is between 0 and 1
-    private Double threshold; // The threshold above which a URI is classified into positive class
-    private String positiveClass; // The positive class for the classification
-    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator(); // Used to generate the feature vector of the URI
+    /**
+     * {@link WeightUpdater} Used to update the weights of the predictor model used.
+     */
+    private WeightUpdater updater;
+    /**
+     * {@link RegressionLearn} Used to train the model with training data
+     */
+    private RegressionLearn learner;
+    /**
+     * {@link RegressionModel} Represents the regression model used for the prediction of the RDF-relevance of the URI
+     */
+    private RegressionModel model;
+    /**
+     * {@link RegressionClassifier} Classifier for regression model. Takes a model or the atomic parts of it and predicts the outcome for a given feature.
+     *
+     */
+    private RegressionClassifier classifier;
+    /**
+     * Used to store the location of the training data file.
+     */
+    private String filepath;
+    /**
+     * The rate at which the model learns.
+     */
+    private Double learningRate;
+    /**
+     * Regularizing parameter L2
+     */
+    private Double l2;
+    /**
+     *  Regularizing parameter L1
+     */
+    private Double l1;
+    /**
+     * Hyper parameter Beta
+     */
+    private Double beta;
+    /**
+     * Validation percentage which is between 0 and 1
+     */
+    private Double holdoutValidationPercentage;
+    /**
+     * The threshold above which a URI is classified into positive class
+     */
+    private Double threshold;
+    /**
+     * The positive class for the classification
+     */
+    private String positiveClass;
+    /**
+     * {@link FeatureVectorGenerator} Used to generate the feature vector of the URI
+     */
+    private FeatureVectorGenerator featureGenerator = new FeatureVectorGenerator();
 
     /**
      * Predicts the type of the URI
