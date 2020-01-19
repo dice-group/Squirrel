@@ -177,10 +177,10 @@ public class RDBKnownUriFilter implements KnownUriFilter, Closeable, UriHashCust
         try {
             // FIXME Fix this implementation
 //            if (r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).isEmpty().run(connector.connection)) {
-                r.db(DATABASE_NAME)
-                    .table(TABLE_NAME)
-                    .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
-                    .run(connector.connection);
+            r.db(DATABASE_NAME)
+                .table(TABLE_NAME)
+                .insert(convertURITimestampToRDB(uri, lastCrawlTimestamp, nextCrawlTimestamp, false, DUMMY_HASH_VALUE))
+                .run(connector.connection);
 //            } else {
 //                ReqlExpr row = r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString()));
 //                row.update(r.hashMap(COLUMN_CRAWLING_IN_PROCESS, false));

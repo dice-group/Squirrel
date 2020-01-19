@@ -99,7 +99,7 @@ public class HTTPFetcher implements Fetcher {
         ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
-    
+
     protected File requestData(CrawleableUri uri, File outputFile)
         throws ClientProtocolException, FileNotFoundException, IOException {
         HttpGet request = null;
@@ -165,6 +165,4 @@ public class HTTPFetcher implements Fetcher {
     public void close() throws IOException {
         client.close();
     }
-
-
 }

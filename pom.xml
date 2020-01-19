@@ -41,6 +41,7 @@
 		<module>squirrel.frontier</module>
 		<module>squirrel.mockup</module>
 		<module>squirrel.worker</module>
+		<module>squirrel.crawled-data-graph</module>
 	</modules>
 
 	<properties>

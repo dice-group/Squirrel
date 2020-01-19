@@ -1,6 +1,8 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
@@ -21,9 +23,11 @@ public class CkanSeedGeneratorImplTest extends TestCase {
     private IpAddressBasedQueue queue;
     private Frontier frontier;
 
+
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue);
+        frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,null);
+
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

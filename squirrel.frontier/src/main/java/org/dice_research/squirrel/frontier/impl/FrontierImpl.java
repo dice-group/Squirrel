@@ -14,6 +14,8 @@ import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
+import org.dice_research.squirrel.frontier.recrawling.SparqlhostConnector;
 import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.BlockingQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -40,6 +42,12 @@ public class FrontierImpl implements Frontier {
      * {@link KnownUriFilter} used to identify URIs that already have been crawled.
      */
     protected KnownUriFilter knownUriFilter;
+
+    /**
+     * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
+     */
+    protected OutDatedUriRetriever outDatedUriRetriever;
+    protected SparqlhostConnector sparqlhostConnector;
 
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
@@ -118,8 +126,8 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
-            GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling,
+                        long generalRecrawlTime, long timerPeriod, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
@@ -143,8 +151,8 @@ public class FrontierImpl implements Frontier {
      *            used to select if URIs should be recrawled.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
-            long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+                        long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian, OutDatedUriRetriever outDatedUriRetriever) {
+        this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod, outDatedUriRetriever);
     }
 
     /**
@@ -164,9 +172,9 @@ public class FrontierImpl implements Frontier {
      *            Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
-            UriQueue queue, boolean doesRecrawling) {
+                        UriQueue queue, boolean doesRecrawling) {
         this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
-                DEFAULT_TIMER_PERIOD);
+            DEFAULT_TIMER_PERIOD);
     }
 
     /**
@@ -184,9 +192,9 @@ public class FrontierImpl implements Frontier {
      *            Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
-            boolean doesRecrawling) {
+                        boolean doesRecrawling, OutDatedUriRetriever outDatedUriRetriever) {
         this(normalizer, knownUriFilter, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
-                DEFAULT_TIMER_PERIOD);
+            DEFAULT_TIMER_PERIOD, outDatedUriRetriever);
     }
 
     /**
@@ -201,8 +209,8 @@ public class FrontierImpl implements Frontier {
      * @param queue
      *            {@link UriQueue} used to manage the URIs that should be crawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, OutDatedUriRetriever outDatedUriRetriever) {
+        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD, outDatedUriRetriever);
     }
 
     /**
@@ -229,8 +237,8 @@ public class FrontierImpl implements Frontier {
      *            used to select if URIs should be recrawled.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
-            UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
-            long timerPeriod) {
+                        UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
+                        long timerPeriod) {
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
@@ -248,7 +256,8 @@ public class FrontierImpl implements Frontier {
             timerRecrawling.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    List<CrawleableUri> urisToRecrawl = knownUriFilter.getOutdatedUris();
+                    List<CrawleableUri> urisToRecrawl = sparqlhostConnector.getUriToRecrawl();
+                    LOGGER.info("URI to recrawl" + urisToRecrawl);
                     urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
                 }
             }, this.timerPeriod, this.timerPeriod);
@@ -298,7 +307,7 @@ public class FrontierImpl implements Frontier {
                 knownUriFilter.add(uri, System.currentTimeMillis());
             } else {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
-                        + schemeUriFilter.getSchemes() + ". Will not added!");
+                    + schemeUriFilter.getSchemes() + ". Will not added!");
             }
 
         } else {
