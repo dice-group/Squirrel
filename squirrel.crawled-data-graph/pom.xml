@@ -32,13 +32,6 @@
 			<version>3.5.13</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-kernel -->
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-kernel</artifactId>
-			<version>3.5.13</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.neo4j.test</groupId>
 			<artifactId>neo4j-harness</artifactId>
@@ -62,6 +55,15 @@
 			<artifactId>neo4j-java-driver</artifactId>
 			<version>1.7.5</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-kernel -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-kernel</artifactId>
+			<version>3.5.14</version>
+		</dependency>
+
+
 
 	</dependencies>
 

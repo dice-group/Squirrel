@@ -26,8 +26,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class QueryExecFactoryConnection {
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryExecFactoryConnection.class);
+public class CrawledDataGraph {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawledDataGraph.class);
     /**
      * The Query factory used to query the SPARQL endpoint.
      */
@@ -37,22 +37,22 @@ public class QueryExecFactoryConnection {
 
     static HashMap<String, Object> newParameters = new HashMap<String, Object>();
 
-    public QueryExecFactoryConnection(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
+    public CrawledDataGraph(QueryExecutionFactory queryExecFactory, UpdateExecutionFactory updateExecFactory) {
         this.queryExecFactory = queryExecFactory;
         LOGGER.info("Connected");
     }
 
-    public QueryExecFactoryConnection() {
+    public CrawledDataGraph() {
         this.queryExecFactory = queryExecFactory;
         LOGGER.info("crawled data Connected");
     }
 
 
-    public static QueryExecFactoryConnection create(String sparqlEndpointUrl) {
+    public static CrawledDataGraph create(String sparqlEndpointUrl) {
         return create(sparqlEndpointUrl, null, null);
     }
 
-    public static QueryExecFactoryConnection create(String sparqlEndpointUrl, String username, String password) {
+    public static CrawledDataGraph create(String sparqlEndpointUrl, String username, String password) {
         QueryExecutionFactory queryExecFactory = null;
         UpdateExecutionFactory updateExecFactory = null;
         if (username != null && password != null) {
@@ -89,7 +89,7 @@ public class QueryExecFactoryConnection {
             queryExecFactory = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
             updateExecFactory = new UpdateExecutionFactoryHttp(sparqlEndpointUrl);
         }
-        return new QueryExecFactoryConnection(queryExecFactory, updateExecFactory);
+        return new CrawledDataGraph(queryExecFactory, updateExecFactory);
     }
     /**Returns levels of the domain
      * @param host is the hostname from the URI
@@ -136,7 +136,7 @@ public class QueryExecFactoryConnection {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         Set<String> domains = new HashSet<String>(domainList);
         LOGGER.info("domains: "+domains);
-        Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "param"));
+        Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("cgraph", "neo4j"));
         try (Session session = driver.session()) {
             String DeleteQuery = "Match (n) detach delete (n)";
             StatementResult deleteQuery = session.run(DeleteQuery, parameters);
@@ -166,7 +166,7 @@ public class QueryExecFactoryConnection {
     }
 
     public static void main(String[] args)throws URISyntaxException{
-        QueryExecFactoryConnection.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
+        CrawledDataGraph.create("http://localhost:8890/sparql-auth/", "dba", "pw123");
         Query domainQuery = SparqlQueryGenerator.getDomain();
         Query query = QueryFactory.create(domainQuery);
         QueryExecution qe = queryExecFactory.createQueryExecution(query);

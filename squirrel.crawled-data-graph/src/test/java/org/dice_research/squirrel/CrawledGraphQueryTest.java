@@ -1,32 +1,40 @@
 package org.dice_research.squirrel;
 
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.neo4j.driver.v1.*;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-import org.neo4j.harness.junit.Neo4jRule;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CrawledGraphQueryTest {
-    QueryExecFactoryConnection queryExecFactoryConnection = new QueryExecFactoryConnection();
-    Driver driver;
-    @Rule
-    public Neo4jRule neo4j = new Neo4jRule().withConfig( GraphDatabaseSettings.auth_enabled, "true" );
 
+
+    public GraphDatabaseService graphDb;
+    /**
+     * Create temporary database for each unit test.
+     */
+    // tag::beforeTest[]
     @Before
-    public void prepare()
+    public void prepareTestDatabase()
     {
-        driver = GraphDatabase.driver( neo4j.boltURI(), AuthTokens.basic( "cgraph", "param"  ), Config.build().withoutEncryption().toConfig() );
+        graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(new File("src/test/resources/graph.db"));
     }
 
-   // @Rule
-   // public Neo4jRule neo4j = new Neo4jRule().withProcedure(CrawledGraphQueryTest.class);
+    // end::beforeTest[]
 
-    //@Test
-    public void getGraph() {
+
+    @Test
+    public void getGraph()
+    {
+
         List<String> domains = new ArrayList<>();
         domains.add("dbpedia.org");
         domains.add("dbpedia.org");
@@ -41,7 +49,7 @@ public class CrawledGraphQueryTest {
         while(parameters.containsKey("plDomain")) {
 
             try (Driver driver = GraphDatabase
-                .driver(neo4j.boltURI(), Config.build().withoutEncryption().toConfig())) {
+                .driver(String.valueOf(graphDb.beginTx()), Config.build().withoutEncryption().toConfig())) {
                 Session session = driver.session();
                 String cypherQuery = "CREATE (domain:name {id:$plDomain,triple:$triples})\n" +
                     "SET domain.label = $plDomain\n" +
@@ -54,5 +62,19 @@ public class CrawledGraphQueryTest {
                 Assert.assertTrue("", true);
             }
         }
+
     }
+
+    /**
+     * Shutdown the database.
+     */
+    // tag::afterTest[]
+    @After
+    public void destroyTestDatabase()
+    {
+        graphDb.shutdown();
+    }
+    // end::afterTest[]
+
+
 }
