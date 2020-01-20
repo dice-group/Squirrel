@@ -8,10 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.compress.Decompressor;
+import org.dice_research.squirrel.analyzer.compress.enums.MimeTypeEnum;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
+
+/**
+ * Decompression implementation for the BZip format
+ * 
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
+ *
+ */
 public class BzipDecompressor extends TarDecompressor implements Decompressor {
 
     protected BzipDecompressor() throws IOException {
@@ -39,6 +48,11 @@ public class BzipDecompressor extends TarDecompressor implements Decompressor {
         List<File> listFiles = new ArrayList<File>();
         listFiles.add(outputFile);
         curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "text/plain");
+        
+        Tika tika = new Tika();
+        if(listFiles.size() == 1 && tika.detect(listFiles.get(0)).equals(MimeTypeEnum.TAR.mime_type()))
+            return super.decompress(curi, listFiles.get(0));
+        
         return listFiles;
 
     }
