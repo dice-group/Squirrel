@@ -24,6 +24,7 @@ import org.apache.jena.riot.system.StreamRDFBase;
 import org.dice_research.squirrel.analyzer.compress.impl.FileManager;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,6 +215,13 @@ public class DecompressionTest {
     public void tarDecompressionTest() {
         List<File> listFiles = fm.decompressFile(testUri, tarFile);
         assertDcompressedFiles(listFiles);
+    }
+    
+    @After
+    public void deleteFiles() {
+        tarFile.delete();
+        gzFile.delete();
+        bzipFile.delete();
     }
 
 }
