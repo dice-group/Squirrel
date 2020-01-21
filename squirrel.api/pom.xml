@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <tika-version>1.22</tika-version>
     </properties>
 
     <dependencies>
@@ -34,28 +35,20 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+          <!-- Jackason databind and Jackson’s YAML extension -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>2.9.9</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.9.10.1</version>
+            </dependency>
 
-        <!--compress commons -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-        </dependency>
-        <!--commons IO -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
 
-
-        <!-- Jackason databind and Jackson’s YAML extension -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -63,10 +56,16 @@
 
 
         <!-- Content detect utility tool -->
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-parsers</artifactId>
+                <version>${tika-version}</version>
+            </dependency>
 
 
         <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
@@ -216,7 +215,7 @@
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>            
+            <artifactId>apache-log4j-extras</artifactId>
         </dependency>
         <!-- make Logging with java.util.Logging possible -->
         <dependency>
