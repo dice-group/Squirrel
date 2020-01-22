@@ -114,26 +114,6 @@
 
 
 
-            <!-- ~~~~~~~~~~~~~~~~~~~ HTML libraries ~~~~~~~~~~~~~~~~~~~~~~ -->
-            <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-            <dependency>
-                <groupId>org.jsoup</groupId>
-                <artifactId>jsoup</artifactId>
-                <version>1.11.2</version>
-            </dependency>
-
-            <!-- ~~~~~~~~~~~~~~~~~~~ HTML libraries END ~~~~~~~~~~~~~~~~~~~~~~ -->
-
-
-
-            <!-- ~~~~~~~~~~~~~~~~~~~ Apache Commons ~~~~~~~~~~~~~~~~~~~~~~ -->
-            <dependency>
-                <groupId>commons-cli</groupId>
-                <artifactId>commons-cli</artifactId>
-                <version>1.2</version>
-            </dependency>
-
-            
             <!--commons IO -->
             <dependency>
                 <groupId>commons-io</groupId>
@@ -183,32 +163,6 @@
                 </exclusions>
             </dependency>
 
-            <!-- ~~~~~~~~~~~~~~~~~~~ HDT ~~~~~~~~~~~~~~~~~~~~~~ -->
-            <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
-            <dependency>
-                <groupId>org.rdfhdt</groupId>
-                <artifactId>hdt-java-package</artifactId>
-                <version>1.1</version>
-                <type>pom</type>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit-dep</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.rdfhdt</groupId>
-                <artifactId>hdt-jena</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.rdfhdt</groupId>
-                <artifactId>hdt-api</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <!-- ~~~~~~~~~~~~~~~~~~~ HDT END ~~~~~~~~~~~~~~~~~~~~~~ -->
-
 
             <!-- Zip archives -->
             <dependency>
@@ -238,30 +192,6 @@
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongodb-driver</artifactId>
                 <version>3.6.4</version>
-            </dependency>
-
-            <!-- RethinkDB client -->
-            <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
-            <dependency>
-                <groupId>com.rethinkdb</groupId>
-                <artifactId>rethinkdb-driver</artifactId>
-                <version>2.3.3</version>
-            </dependency>
-            <!-- End RethinkDB client -->
-
-            <!-- HSQLDB (used inside of workers to store URIs) -->
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>2.3.2</version>
-            </dependency>
-
-            <!-- We use the simpleframework to use local HTTP servers for 
-                our JUnit tests and test scenarios -->
-            <dependency>
-                <groupId>org.simpleframework</groupId>
-                <artifactId>simple</artifactId>
-                <version>5.1.6</version>
             </dependency>
 
             <dependency>
