@@ -294,4 +294,10 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
         }
     }
 
+    @Override
+    public void flushMetadata() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

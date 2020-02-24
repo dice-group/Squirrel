@@ -74,6 +74,13 @@ public class FileBasedSink implements Sink {
                     + uri.getUri().toString() + "\". Ignoring it.", e);
         }
     }
+    
+    public void flushMetadata() {
+        StreamStatus status = getStream(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));    
+        status.tripleStream.finish();
+        
+      
+    }
 
     @Override
     public void addData(CrawleableUri uri, InputStream is) {
@@ -123,7 +130,11 @@ public class FileBasedSink implements Sink {
         if ((activity != null) && (status != null) && (status.tripleCount > 0)) {
             activity.setNumberOfTriples(status.tripleCount);
         }
+        
+//        flush(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
+    
+
 
     public static String generateFileName(CrawleableUri uri, Lang outputLang, boolean useCompression) {
         String fileEnding = null;
@@ -178,10 +189,15 @@ public class FileBasedSink implements Sink {
             }
             return dataOutputStream;
         }
+        
+        public void flush() throws IOException {
+            tripleOutputStream.flush();
+        }
 
         protected OutputStream createStream(String postFix, boolean isRdfFile) throws IOException {
             File file = new File(outputDirectory.getAbsolutePath() + File.separator
                     + generateFileName(uri, (isRdfFile ? outputLang : null), useCompression));
+            
             OutputStream outputStream = new FileOutputStream(file);
             if (useCompression) {
                 outputStream = new GZIPOutputStream(outputStream);
@@ -211,4 +227,6 @@ public class FileBasedSink implements Sink {
         // TODO Auto-generated method stub
         
     }
+
+
 }
