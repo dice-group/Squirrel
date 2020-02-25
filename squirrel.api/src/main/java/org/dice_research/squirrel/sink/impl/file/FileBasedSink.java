@@ -191,6 +191,9 @@ public class FileBasedSink implements Sink {
         }
 
         public void flush() throws IOException {
+            if(tripleStream != null)
+                tripleStream.finish();
+            
             if (tripleOutputStream != null) {
                 tripleOutputStream.flush();
             }
