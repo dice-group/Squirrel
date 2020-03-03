@@ -30,6 +30,7 @@ services:
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
+      - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
 

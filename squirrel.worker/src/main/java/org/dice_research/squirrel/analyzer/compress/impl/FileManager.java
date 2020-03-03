@@ -11,6 +11,15 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * Class responsible for detecting the fetched file mimetype
+ * and decompress the file if necessary 
+ * 
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
+ *
+ */
+
 public class FileManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileManager.class);

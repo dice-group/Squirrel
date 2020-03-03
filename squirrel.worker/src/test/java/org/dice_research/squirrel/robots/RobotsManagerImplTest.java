@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.robots.RobotsManager;
 import org.dice_research.squirrel.robots.RobotsManagerImpl;
 import org.dice_research.squirrel.simulation.AbstractServerMockUsingTest;
@@ -54,13 +55,13 @@ public class RobotsManagerImplTest extends AbstractServerMockUsingTest {
                 { ROBOTS_TXT_FILE3, new URI(HTTP_SERVER_ADDRESS + "/dataset-0/resource-5"), false, 5000 } });
     }
 
-    private URI uri;
+    private CrawleableUri uri;
     private boolean isCrawlingAllowed;
     private long expectedMinDelay;
 
     public RobotsManagerImplTest(String robotsFileContent, URI uri, boolean isCrawlingAllowed, long expectedMinDelay) {
         super(new RobotsFileContainer(robotsFileContent));
-        this.uri = uri;
+        this.uri = new CrawleableUri(uri);
         this.isCrawlingAllowed = isCrawlingAllowed;
         this.expectedMinDelay = expectedMinDelay;
     }

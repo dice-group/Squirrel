@@ -14,6 +14,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Decompression implementation for the BZip format
+ * 
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
+ *
+ */
+
 public class ZipDecompressor extends AbstractDecompressor implements Decompressor {
 
     protected ZipDecompressor() throws IOException {

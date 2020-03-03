@@ -8,26 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.compress.Decompressor;
+import org.dice_research.squirrel.analyzer.compress.enums.MimeTypeEnum;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
+ * Decompression implementation for the GZ format
  * 
- * Decompress .gz files
- * 
- * 
- * 
- * @author Geraldo de Souza Junior gsjunior@mail.uni-paderborn.de
+ * @author gsjunior gsjunior@mail.uni-paderborn.de
  *
  */
 public class GzDecompressor extends TarDecompressor implements Decompressor {
 	
-    private static final Logger LOGGER = LoggerFactory.getLogger(GzDecompressor.class);
-
 
     protected GzDecompressor() throws IOException {
         super();
@@ -59,6 +54,13 @@ public class GzDecompressor extends TarDecompressor implements Decompressor {
         List<File> listFiles = new ArrayList<>();
         listFiles.add(outputFile);
         curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "text/plain");
+        
+        Tika tika = new Tika();
+        if(listFiles.size() == 1 && tika.detect(listFiles.get(0)).equals(MimeTypeEnum.TAR.mime_type()))
+            return super.decompress(curi, listFiles.get(0));
+        
+        
+
 
         return listFiles;
 

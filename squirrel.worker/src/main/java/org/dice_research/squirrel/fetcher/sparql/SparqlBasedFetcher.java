@@ -1,5 +1,13 @@
 package org.dice_research.squirrel.fetcher.sparql;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
+import java.util.Iterator;
+
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
@@ -19,10 +27,6 @@ import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.io.*;
-import java.sql.SQLException;
-import java.util.Iterator;
 
 /**
  * A simple {@link Fetcher} for SPARQL that tries to get triples from a SPARQL
@@ -108,6 +112,8 @@ public class SparqlBasedFetcher implements Fetcher {
             return qef;
         }
     }
+    
+
 
     @Override
     public void close() throws IOException {
