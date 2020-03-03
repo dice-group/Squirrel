@@ -1,6 +1,7 @@
 package org.dice_research.squirrel.frontier.impl;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,7 +12,10 @@ import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
+import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
+import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.graph.GraphLogger;
@@ -20,6 +24,8 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -60,6 +66,10 @@ public class FrontierImpl implements Frontier {
      * SPARQL, DEREFERENCEABLE or UNKNOWN
      */
     protected UriProcessor uriProcessor;
+    /**
+     * {@link UriGenerator} used to generate additional domain variants of a URI
+     */
+    List<UriGenerator> uriGenerator;
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
@@ -265,20 +275,36 @@ public class FrontierImpl implements Frontier {
         return queue.getNextUris();
     }
 
+    @Autowired
+    private void setGenerator(List<UriGenerator> uriGenerator){
+        this.uriGenerator = uriGenerator;
+    }
+
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
             addNewUri(uri);
+            try {
+                for (UriGenerator u : uriGenerator) {
+                    if (u.getUriVariant(uri) != null)
+                        addNewUri(u.getUriVariant(uri));
+                }
+            }catch (Exception e){
+                LOGGER.warn("Exception happened while generating additional URI variant", e);
+            }
         }
     }
 
     @Override
     public void addNewUri(CrawleableUri uri) {
-        // Normalize the URI
-        uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+        uri = normalizer.normalize(uri);
+        addNormalizedUri(uri);
 
+    }
+
+    protected void addNormalizedUri(CrawleableUri uri){
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
