@@ -40,7 +40,6 @@ public class HtmlScraper {
     private String uri;
     private String label;
     private Document doc;
-    private Map<String, Object> pageLoadResources;
     private Map<String,List<Triple>> staticMap = new HashMap<String,List<Triple>>();
     private Map<String,List<Triple>> selectedMap = new HashMap<String,List<Triple>>();
     private WebClient webClient;
@@ -63,11 +62,10 @@ public class HtmlScraper {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Triple> scrape(CrawleableUri curi, File filetToScrape) throws Exception {
+    public List<Triple> scrape(String uri, File filetToScrape) throws Exception {
 
         List<Triple> listTriples = new ArrayList<Triple>();
         listIterableObjects = new LinkedHashSet<String>();
-        uri= curi.getUri().toString();
 
         if(uri.contains("?")) {
             this.label = uri.substring(uri.lastIndexOf("/")+1, uri.lastIndexOf("?"));
@@ -84,7 +82,7 @@ public class HtmlScraper {
         
         if (yamlFile != null) {
 //            yamlFile.getFile_descriptor().remove(YamlFileAtributes.SEARCH_CHECK);
-            webClient = new WebClient(BrowserVersion.FIREFOX_60);
+
 
         	if(yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("static-resources")!= null) {
 
@@ -128,14 +126,12 @@ public class HtmlScraper {
                         regexList.add(cfg.getValue().toString().toLowerCase());
                     }
 
-                    if (cfg.getKey().equals(YamlFileAtributes.PAGINATION_DETAILS))
-                        pageLoadResources = (LinkedHashMap) cfg.getValue();
 
                     for (String regex : regexList) {
                         if (cfg.getKey().equals(YamlFileAtributes.REGEX) && uri.toLowerCase().contains(regex.toLowerCase()) ) {
                             @SuppressWarnings("unchecked")
                             Map<String, Object> resources = (Map<String, Object>) entry.getValue().get(YamlFileAtributes.RESOURCES);
-                            listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, curi));
+                            listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, uri));
                             break;
                         }
                     }
@@ -250,7 +246,7 @@ public class HtmlScraper {
      * This function handles loading a html page on javascript based element click.
      * @param uri
      */
-    private void handlePageLoad(CrawleableUri uri, Map<String, Object> resources) {
+    private void handlePageLoad(String uri, Map<String, Object> resources) {
         HtmlPage htmlPage;
         String id = null;
         long timeout = 10000;
@@ -261,28 +257,23 @@ public class HtmlScraper {
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
         try {
-            htmlPage = webClient.getPage(uri.getUri().toString());
+            htmlPage = webClient.getPage(uri);
             //To prevent downloading a page when running unit test cases
-            for (Entry<String, Object> ent : resources.entrySet()) {
-                System.out.println(ent.getKey());
-                if ("javascript".equals(ent.getKey()))
-                    id = ent.getValue().toString();
-            }
             if (!isJUnitTest()) {
+                //get button id from yaml file
                 for (Entry<String, Object> ent : resources.entrySet()) {
-                    id = ent.getValue().toString();
+                    if ("javascript".equals(ent.getKey()))
+                        id = ent.getValue().toString();
                 }
                 DomElement btn = htmlPage.getElementById(id.substring(4, id.length() - 1));
                 do {
                     htmlPage = btn.click();
                     webClient.waitForBackgroundJavaScript(timeout);
-                    webClient.waitForBackgroundJavaScriptStartingBefore(timeout);
                 } while (btn.isDisplayed());
                 this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
 
             } else {
                 webClient.waitForBackgroundJavaScript(timeout);
-                webClient.waitForBackgroundJavaScriptStartingBefore(timeout);
                 this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
             }
             webClient.close();
@@ -296,18 +287,17 @@ public class HtmlScraper {
      * Method that scrapes the downloaded html page for triples based on the yaml rule written for the url.
      * @param resources yaml resources
      * @param htmlFile html file to scrape
-     * @param curi uri of the html file
+     * @param uri uri of the html file
      * @return set of triples found in the page
      * @throws Exception
      */
-    private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, CrawleableUri curi) throws Exception {
+    private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
-        this.uri = curi.getUri().toString();
         Set<Triple> triples = new LinkedHashSet<Triple>();
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
         if (resources.containsKey(YamlFileAtributes.JAVASCRIPT))
-                handlePageLoad(curi, resources);
+                handlePageLoad(uri, resources);
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {

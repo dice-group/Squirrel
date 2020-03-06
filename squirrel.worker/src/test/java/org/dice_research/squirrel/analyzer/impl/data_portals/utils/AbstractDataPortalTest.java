@@ -56,7 +56,7 @@ public abstract class AbstractDataPortalTest {
     public void test() throws Exception{
         //Scrapes the given URI and generates a list of triples
         List<Triple> listTriples = new ArrayList<Triple>();
-        listTriples.addAll(htmlScraper.scrape(uriToCrawl, fileToScrape));
+        listTriples.addAll(htmlScraper.scrape(uriToCrawl.getUri().toString(), fileToScrape));
         // Load an actual model with the list of triples generated
         ModelCom actualModel = (ModelCom) ModelFactory.createDefaultModel();
         for (Triple curTriple: listTriples){
