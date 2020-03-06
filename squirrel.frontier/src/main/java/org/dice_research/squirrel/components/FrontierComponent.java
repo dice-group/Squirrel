@@ -25,6 +25,7 @@ import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
@@ -73,6 +74,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("serializerBean")
     @Autowired
     private Serializer serializer;
+    
+    @Qualifier("listUriGenerator")
+    private List<UriGenerator> uriGenerator;
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
@@ -110,7 +114,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue, doRecrawling);
+        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue,uriGenerator, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
@@ -263,6 +267,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (frontier instanceof ExtendedFrontier) {
             ((ExtendedFrontier) frontier).informAboutDeadWorker(idOfWorker, lstUrisToReassign);
         }
+    }
+    
+    @Autowired
+    private void setGenerator(List<UriGenerator> uriGenerator){
+        this.uriGenerator = uriGenerator;
     }
 
     public void setFrontier(FrontierImpl frontier) {

@@ -15,7 +15,10 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
+import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
+import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -43,7 +46,10 @@ public class FrontierImplTest {
         queue = new MongoDBIpBasedQueue("localhost", 58027);
          filter.open();
          queue.open();
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,true);
+         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+         uriGenerators.add(new DomainBasedUriGenerator());
+         uriGenerators.add(new WellKnownPathUriGenerator());
+        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,uriGenerators,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
