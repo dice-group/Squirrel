@@ -39,10 +39,6 @@ public class Constants {
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
 
-    /**
-     * Uri data key which describes the crawl delay
-     */
-    public static final String URI_TIMEOUT_KEY = "time-out";
 
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms

@@ -1,23 +1,22 @@
 file_descriptor:
- check:
-  domain: govdata.de
-  ignore-request: true
- search-result-page:
-  regex: searchresult
-  resources:
-      "javascript":
-          button:
-              id: searchresults-more-btn
-              action: click
-              disable_id: searchresults-more-block
+    check:
+        domain: govdata.de
+        ignore-request: true
+    search-result-page:
+        regex: searchresult
+        resources:
+            javascript:
+                id: searchresults-more-btn
+            "$uri":
+                "http://projekt-opal.de/dataset#link": .flat-list .row h2 a[href]
 
- download_page:
-  regex: details
-  resources:
-      "http://schema.org/downloadUrl":
-      - .resource-list li dd a[id^=resource]
-      - ul li:contains(RDF) a
-      "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
+    download_page:
+        regex: details
+        resources:
+            "http://schema.org/downloadUrl":
+                - .resource-list li dd a[id^=resource]
+                - ul li:contains(RDF) a
+            "http://schema.org/license": .resource-list li:not(:contains(RDF)) dd a:not([id^=resource])
 
 
 

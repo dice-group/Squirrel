@@ -153,7 +153,7 @@ public class HtmlScraperAnalyzerTest {
 
 	@Test
     public void scrapeDetailGovDataJS() throws Exception{
-        CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/suchen/-/searchresult/q/Patienten/s/relevance_desc"));
+        CrawleableUri curi = new CrawleableUri(new URI("https://www.govdata.de/web/guest/daten"));
         fetchedFile = new File("src/test/resources/html_scraper_analyzer/govdata/govdata_patienten.html");
         List<Triple> listTriples = new ArrayList<Triple>();
         listTriples.addAll(scraper.scrape(curi, fetchedFile));

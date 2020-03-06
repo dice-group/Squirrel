@@ -230,47 +230,6 @@ public class HtmlScraper {
     	return updatedList;
     }
 
-    /**
-     * Method to fetch the javascript timeout.
-     * @param uri
-     * @return timeout
-     */
-    private long getJavascriptTimeout(CrawleableUri uri){
-        long timeout;
-        try {
-            if (uri.getData("time-out").equals(null)) {
-                timeout = Constants.JAVASCRIPT_WAIT_TIME;
-            }else{
-                timeout = (long) uri.getData("time-out");
-            }
-        } catch (Exception e) {
-            LOGGER.error("An error occurred when retrieving the Time out value, ", e);
-            timeout = Constants.JAVASCRIPT_WAIT_TIME;
-        }
-        return timeout;
-    }
-
-    /**
-     * Method to execute java script commands in a html page.
-     * @param uri
-     * @throws IOException
-     */
-    private void executeJavaScript(CrawleableUri uri){
-        webClient.setRefreshHandler(new ThreadedRefreshHandler());
-        webClient.getCookieManager().setCookiesEnabled(true);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setUseInsecureSSL(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setCssEnabled(true);
-        long timeout = getJavascriptTimeout(uri);
-        try {
-            HtmlPage htmlPage = webClient.getPage(uri.getUri().toString());
-            webClient.waitForBackgroundJavaScript(timeout);
-            this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
-        } catch (IOException e){
-            LOGGER.warn("Error in handling java script by htmlunit: " + e.getMessage());
-        }
-    }
 
     /**
      * Method to check if the code is running through a Unit test
@@ -291,28 +250,47 @@ public class HtmlScraper {
      * This function handles loading a html page on javascript based element click.
      * @param uri
      */
-    private void handlePageLoad(CrawleableUri uri){
+    private void handlePageLoad(CrawleableUri uri, Map<String, Object> resources) {
         HtmlPage htmlPage;
+        String id = null;
+        long timeout = 10000;
+        webClient = new WebClient(BrowserVersion.FIREFOX_60);
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setThrowExceptionOnScriptError(true);
         webClient.getOptions().setCssEnabled(false);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        long timeout = getJavascriptTimeout(uri);
-        try{
+
+        try {
             htmlPage = webClient.getPage(uri.getUri().toString());
-            DomElement btn = htmlPage.getElementById(pageLoadResources.get(YamlFileAtributes.ID).toString());
-            DomElement disabledElement = htmlPage.getElementById(pageLoadResources.get(YamlFileAtributes.ID).toString());
-            do {
-                htmlPage = btn.click();
+            //To prevent downloading a page when running unit test cases
+            for (Entry<String, Object> ent : resources.entrySet()) {
+                System.out.println(ent.getKey());
+                if ("javascript".equals(ent.getKey()))
+                    id = ent.getValue().toString();
+            }
+            if (!isJUnitTest()) {
+                for (Entry<String, Object> ent : resources.entrySet()) {
+                    id = ent.getValue().toString();
+                }
+                DomElement btn = htmlPage.getElementById(id.substring(4, id.length() - 1));
+                do {
+                    htmlPage = btn.click();
+                    webClient.waitForBackgroundJavaScript(timeout);
+                    webClient.waitForBackgroundJavaScriptStartingBefore(timeout);
+                } while (btn.isDisplayed());
+                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+
+            } else {
                 webClient.waitForBackgroundJavaScript(timeout);
-            } while (!disabledElement.getStyleMap().containsKey("display") ||
-                (disabledElement.getStyleMap().containsKey("display") &&
-                    !disabledElement.getStyleMap().get("display").getValue().equals("none")));
-            this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+                webClient.waitForBackgroundJavaScriptStartingBefore(timeout);
+                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+            }
+            webClient.close();
         } catch (Exception e) {
             LOGGER.error("An error occurred when trying handle page load, ", e);
         }
     }
+
 
     /**
      * Method that scrapes the downloaded html page for triples based on the yaml rule written for the url.
@@ -328,11 +306,8 @@ public class HtmlScraper {
         Set<Triple> triples = new LinkedHashSet<Triple>();
         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 
-        if (!isJUnitTest()) //To prevent downloading a page when running unit test cases
-            if (pageLoadResources != null)
-                handlePageLoad(curi);
-            else
-                executeJavaScript(curi);
+        if (resources.containsKey(YamlFileAtributes.JAVASCRIPT))
+                handlePageLoad(curi, resources);
 
         for (Entry<String, Object> entry :
             resources.entrySet()) {
