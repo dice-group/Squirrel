@@ -46,22 +46,15 @@
 		<constructor-arg index="0"
 			value="#{systemEnvironment['MDB_HOST_NAME']}" />
 		<constructor-arg index="1"
-			value="#{systemEnvironment['MDB_PORT']}" />
+			value="#{systemEnvironmen
+			t['MDB_PORT']}" />
 	</bean>
 	
-	<!-- 
-
-	<util:list id="listGenerator"
-		value-type="org.dice_research.squirrel.data.uri.norm.UriGenerator">
-		<ref bean="domainGeneratorBean" />
-		<ref bean="wellKnownVariantGeneratorBean" />
-	</util:list>
- -->
 	<bean id="domainGeneratorBean"
 		class="org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator" />
-<!-- 
+ 
 	<bean id="wellKnownVariantGeneratorBean"
-		class="org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator" />
+		class="org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator" /><!--
  -->
 
 
