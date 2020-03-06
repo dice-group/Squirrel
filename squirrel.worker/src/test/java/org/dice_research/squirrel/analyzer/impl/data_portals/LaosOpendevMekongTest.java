@@ -25,7 +25,7 @@ public class LaosOpendevMekongTest extends AbstractDataPortalTest {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
         String uriIndexPage = "https://laos.opendevelopmentmekong.net/";
         String uriSearchPage = "https://laos.opendevelopmentmekong.net/search/data/";
-        String uriDetailsPage = "https://laos.opendevelopmentmekong.net/dataset/?id=registering-property-indicators-laos&search_query=Pw==";
+        String uriDetailsPage = "https://laos.opendevelopmentmekong.net/dataset/";
 
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriIndexPage)),

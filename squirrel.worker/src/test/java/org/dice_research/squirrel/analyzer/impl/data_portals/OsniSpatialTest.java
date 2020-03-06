@@ -150,18 +150,6 @@ public class OsniSpatialTest extends AbstractDataPortalTest {
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("http://osni-spatial-ni.opendata.arcgis.com/datasets?q=*&sort_by=updated_at")
                 )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("SpatialNI_Admin"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-10 of 83 results"), null)
-                )
             )
         });
 

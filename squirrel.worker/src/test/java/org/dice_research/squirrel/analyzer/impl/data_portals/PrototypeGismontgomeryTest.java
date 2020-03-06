@@ -23,7 +23,7 @@ public class PrototypeGismontgomeryTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object []> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchResultPage = "http://prototype-gismontgomery.opendata.arcgis.com/datasets?q=";
+        String uriSearchResultPage = "http://prototype-gismontgomery.opendata.arcgis.com/datasets";
         String uriDetailsPage = "http://prototype-gismontgomery.opendata.arcgis.com/datasets/3f2dc8774b934b17b1c8bf9c2d05d45b_0";
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriSearchResultPage)),
@@ -87,48 +87,6 @@ public class PrototypeGismontgomeryTest extends AbstractDataPortalTest {
                     new ResourceImpl(uriSearchResultPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("http://prototype-gismontgomery.opendata.arcgis.com/datasets/1959435a5a81409992b45cc976ac6d1b_0")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-10 of 212 results"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("jay.mukherjee"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("melissa.noakes"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("RockvilleMD"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.issued,
-                    new LiteralImpl(NodeFactory.createLiteral("on September 13, 2013"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.issued,
-                    new LiteralImpl(NodeFactory.createLiteral("on May 07, 2018"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchResultPage),
-                    DCTerms.issued,
-                    new LiteralImpl(NodeFactory.createLiteral("on April 09, 2014"), null)
                 )
             ).add(
                 new StatementImpl(

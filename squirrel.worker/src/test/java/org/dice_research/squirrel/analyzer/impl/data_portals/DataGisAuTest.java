@@ -23,7 +23,7 @@ public class DataGisAuTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "http://data-gis-au.opendata.arcgis.com/datasets?";
+        String uriSearchPage = "http://data-gis-au.opendata.arcgis.com/datasets";
         String uriDetailsPage = "http://data-gis-au.opendata.arcgis.com/datasets/ce14e9631cdc41e1ba7b43aa547c52d4_3";
 
         testConfigs.add(new Object[]{
@@ -76,18 +76,6 @@ public class DataGisAuTest extends AbstractDataPortalTest {
                     new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("http://data-gis-au.opendata.arcgis.com/datasets/aafdaf30aa1849f397df520b492a2221_0")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-8 of 8 results"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("larskeh_gisau"), null)
                 )
             )
         });

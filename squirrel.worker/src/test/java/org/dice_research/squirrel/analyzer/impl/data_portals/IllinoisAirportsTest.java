@@ -22,7 +22,7 @@ public class IllinoisAirportsTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "http://illinoisairports-cmtengr.opendata.arcgis.com/datasets?";
+        String uriSearchPage = "http://illinoisairports-cmtengr.opendata.arcgis.com/datasets";
         String uriDetailsPage = "http://illinoisairports-cmtengr.opendata.arcgis.com/datasets/b755db2c2ba0454ca4e334760359f6a9_1";
 
         testConfigs.add(new Object[]{
@@ -69,18 +69,6 @@ public class IllinoisAirportsTest extends AbstractDataPortalTest {
                     new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#link"),
                     new ResourceImpl("https://www.arcgis.com/home/webmap/viewer.html?webmap=db4740a131c94f34ae721b46a18a8cba")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-7 of 7 results"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("Boyd"), null)
                 )
             )
         });

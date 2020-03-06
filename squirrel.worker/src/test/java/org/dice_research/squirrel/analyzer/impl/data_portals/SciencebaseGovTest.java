@@ -23,7 +23,7 @@ public class SciencebaseGovTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "https://www.sciencebase.gov/catalog/items?q=&filter0=browseCategory%3DData";
+        String uriSearchPage = "https://www.sciencebase.gov/catalog/items";
         String uriDetailsPage = "https://www.sciencebase.gov/catalog/item/542d8123e4b092f17defc662";
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriSearchPage)),

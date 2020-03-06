@@ -10,14 +10,14 @@ file_descriptor:
                 "http://projekt-opal.de/dataset#pagination": .dataset-link
 
     search-result-page:
-        regex: datasets?
+        regex: datasets
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link": div[itemprop="name"] a
                 "http://projekt-opal.de/dataset#pagination": div#page-next
 
     detail-page:
-        regex: datasets
+        regex: datasets/
         resources:
             "$uri":
                 "http://purl.org/dc/terms/title": div#main-message

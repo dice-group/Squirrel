@@ -22,7 +22,7 @@ public class DataReitroutenPlannerTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "http://data-reitroutenplaner.opendata.arcgis.com/datasets?";
+        String uriSearchPage = "http://data-reitroutenplaner.opendata.arcgis.com/datasets";
         String uriDetailsPage = "http://data-reitroutenplaner.opendata.arcgis.com/datasets/56941fd831b34abc9da66f405670036a_0";
 
         testConfigs.add(new Object[]{
@@ -39,18 +39,6 @@ public class DataReitroutenPlannerTest extends AbstractDataPortalTest {
                     new ResourceImpl(uriSearchPage),
                     new PropertyImpl("http://projekt-opal.de/dataset#pagination"),
                     new ResourceImpl("http://data-reitroutenplaner.opendata.arcgis.com/datasets/56941fd831b34abc9da66f405670036a_0")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-1 of 1 results"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("schoolgis_chr.sailer"), null)
                 )
             )
         });
