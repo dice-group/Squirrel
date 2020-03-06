@@ -5,18 +5,41 @@ import java.util.List;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
+/**
+ * This simple structure represents the result of a crawling process.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class CrawlingResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * List of URIs that have been crawled.
+     */
     public final List<CrawleableUri> uris;
+    /**
+     * ID of the worker which has crawled the URIs.
+     */
     public final String idOfWorker;
 
+    /**
+     * Constructor.
+     * 
+     * @param uris list of URIs that have been crawled
+     * @param idOfWorker ID of the worker which has crawled the URIs
+     */
     public CrawlingResult(List<CrawleableUri> uris, String idOfWorker) {
         this.uris = uris;
         this.idOfWorker = idOfWorker;
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param uris list of URIs that have been crawled
+     */
     public CrawlingResult(List<CrawleableUri> uris) {
         this(uris, null);
     }

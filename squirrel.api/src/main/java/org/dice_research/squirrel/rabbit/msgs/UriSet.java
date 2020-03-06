@@ -6,12 +6,26 @@ import java.util.List;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
+/**
+ * Simple structure represents a set of URIs.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 public class UriSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    /**
+     * The URIs of this set.
+     */
     public List<CrawleableUri> uris;
 
+    /**
+     * Constructor.
+     * 
+     * @param uris the URIs of this set
+     */
     public UriSet(List<CrawleableUri> uris) {
         this.uris = (uris == null) ? this.uris = Collections.emptyList() : uris;
     }

@@ -24,7 +24,7 @@ public class CatalogueDataGovtNzTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "https://catalogue.data.govt.nz/dataset?q=&sort=score+desc%2C+metadata_modified+desc";
+        String uriSearchPage = "https://catalogue.data.govt.nz/dataset";
         String uriDetailsPage = "https://catalogue.data.govt.nz/dataset/directory-of-educational-institutions";
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriSearchPage)),

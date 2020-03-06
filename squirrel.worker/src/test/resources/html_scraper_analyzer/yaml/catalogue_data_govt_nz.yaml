@@ -4,14 +4,14 @@ file_descriptor:
         ignore-request: false
 
     search-result-page:
-        regex: dataset?q=
+        regex: dataset
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  .dataset-heading a
                 "http://projekt-opal.de/dataset#pagination": .pagination li a
 
     detail-page:
-        regex: dataset
+        regex: dataset/
         resources:
             "$uri":
                 "http://purl.org/dc/terms/title": .module-content h1.heading:eq(0)

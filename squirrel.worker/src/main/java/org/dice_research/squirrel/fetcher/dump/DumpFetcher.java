@@ -16,6 +16,7 @@ import org.apache.jena.riot.lang.PipedTriplesStream;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.fetcher.http.HTTPFetcher;
 import org.dice_research.squirrel.fetcher.utils.ZipArchiver;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class DumpFetcher implements Fetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpFetcher.class);
 
     @Override
-    public File fetch(CrawleableUri uri/*, Sink sink*/) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         int tripleCount = 0;
         String filePath = this.downloadFile(uri, "/tmp/");
         if (filePath == null) {

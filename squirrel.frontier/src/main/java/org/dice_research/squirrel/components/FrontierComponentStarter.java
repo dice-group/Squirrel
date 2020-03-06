@@ -52,10 +52,10 @@ public class FrontierComponentStarter {
     }
     
     private static synchronized void closeComponent() {
-        if (closed == false) {
+        if (!closed) {
             Closer.close(component, LOGGER);
             closed = true;
-            context.close();
+            Closer.close(context, LOGGER);
         }
     }
 

@@ -25,6 +25,7 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,27 +47,19 @@ public class SparqlDatasetFetcher implements Fetcher {
      * The delay that the system will have between sending two queries.
      */
 
-    protected String dataSetQuery = "select ?s where {?s a <http://www.w3.org/ns/dcat#Dataset>.} " ;
-    protected String graphQuery =
-        "construct { ?s ?p ?o. " +
-            "?o ?p2 ?o2. } " +
-            "where { " +
-            "graph ?g { " +
-            "?s ?p ?o. " +
-            "OPTIONAL { ?o ?p2 ?o2.} " +
-            "} " +
-            "}";
-
-
+    protected String dataSetQuery = "select ?s where {?s a <http://www.w3.org/ns/dcat#Dataset>.} ";
+    protected String graphQuery = "construct { ?s ?p ?o. " + "?o ?p2 ?o2. } " + "where { " + "graph ?g { "
+            + "?s ?p ?o. " + "OPTIONAL { ?o ?p2 ?o2.} " + "} " + "}";
 
     protected int delay;
     protected int limit = 0;
     protected File dataDirectory = FileUtils.getTempDirectory();
+    protected boolean checkForUriType = false;
+
 
     public SparqlDatasetFetcher() {
 
     }
-
 
     public SparqlDatasetFetcher(int delay, int begin, int limit) {
         this.delay = delay;
@@ -75,102 +68,103 @@ public class SparqlDatasetFetcher implements Fetcher {
 
     }
 
-    public SparqlDatasetFetcher(int delay){
+    public SparqlDatasetFetcher(int delay) {
         this.delay = delay;
     }
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // Check whether we can be sure that it is a SPARQL endpoint
         boolean shouldBeSparql = Constants.URI_TYPE_VALUE_SPARQL.equals(uri.getData(Constants.URI_TYPE_KEY));
         QueryExecutionFactory qef = null;
         QueryExecution execution = null;
         File dataFile = null;
         OutputStream out = null;
-        try {
-            // Create query execution instance
-            qef = initQueryExecution(uri.getUri().toString());
-            // create temporary file
+        if (shouldBeSparql || !checkForUriType) {
             try {
-                dataFile = File.createTempFile("fetched_", "", dataDirectory);
-                out = new BufferedOutputStream(new FileOutputStream(dataFile));
-            } catch (IOException e) {
-                LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
-                return null;
-            }
-
-            execution = qef.createQueryExecution(dataSetQuery);
-            ResultSet resultSet = execution.execSelect();
-
-            int i = 0;
-
-            while(resultSet.hasNext()) {
-
-                if(limit != 0 && i>limit) {
-                    LOGGER.info("LIMIT REACHED, STOPING EXECUTION");
-                    execution.close();
-                    break;
+                // Create query execution instance
+                qef = initQueryExecution(uri.getUri().toString());
+                // create temporary file
+                try {
+                    dataFile = File.createTempFile("fetched_", "", dataDirectory);
+                    out = new BufferedOutputStream(new FileOutputStream(dataFile));
+                } catch (IOException e) {
+                    LOGGER.error("Couldn't create temporary file for storing fetched data. Returning null.", e);
+                    return null;
                 }
 
+                execution = qef.createQueryExecution(dataSetQuery);
+                ResultSet resultSet = execution.execSelect();
 
-                QuerySolution soln = resultSet.nextSolution() ;
-                String dataSetResource = soln.get("s").toString() ;       // Get a result variable by name.
-                LOGGER.info("- Now Fetching - " + i + ": " + dataSetResource);
+                int i = 0;
 
-                Query query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">")) ;
+                while (resultSet.hasNext()) {
 
-
-                boolean tryAgain = true;
-
-                while(tryAgain) {
-
-                    try {
-                        Thread.sleep(delay);
-                    } catch (InterruptedException e) {
-                        LOGGER.error("An error occurred when fetching URI: " + uri.getUri().toString()
-                            ,e);
+                    if (limit != 0 && i > limit) {
+                        LOGGER.info("LIMIT REACHED, STOPING EXECUTION");
+                        execution.close();
+                        break;
                     }
 
-                    try {
-                        QueryExecution qexecGraph = org.apache.jena.query.QueryExecutionFactory.createServiceRequest(uri.getUri().toString(), query);
+                    QuerySolution soln = resultSet.nextSolution();
+                    String dataSetResource = soln.get("s").toString(); // Get a result variable by name.
+                    LOGGER.info("- Now Fetching - " + i + ": " + dataSetResource);
 
-                        Iterator<Triple> triples = qexecGraph.execConstructTriples();
+                    Query query = QueryFactory.create(graphQuery.replaceAll("\\?s", "<" + dataSetResource + ">"));
 
-                        RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
-                        tryAgain = false;
+                    boolean tryAgain = true;
 
-                        i++;
-                    }catch(QueryExceptionHTTP e) {
+                    while (tryAgain) {
 
-                        if(e.getResponseCode() == 404 || e.getResponseCode() == 500) {
-                            tryAgain = true;
-                            LOGGER.info("Error while fetching " +dataSetResource + ". Trying again...");
+                        try {
+                            Thread.sleep(delay);
+                        } catch (InterruptedException e) {
+                            LOGGER.error("An error occurred when fetching URI: " + uri.getUri().toString(), e);
                         }
 
+                        try {
+                            QueryExecution qexecGraph = org.apache.jena.query.QueryExecutionFactory
+                                    .createServiceRequest(uri.getUri().toString(), query);
+
+                            Iterator<Triple> triples = qexecGraph.execConstructTriples();
+
+                            RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(triples));
+                            tryAgain = false;
+
+                            i++;
+                        } catch (QueryExceptionHTTP e) {
+
+                            if (e.getResponseCode() == 404 || e.getResponseCode() == 500) {
+                                tryAgain = true;
+                                LOGGER.info("Error while fetching " + dataSetResource + ". Trying again...");
+                            }
+
+                        }
                     }
                 }
-            }
-
 
 //            RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
-        } catch (Throwable e) {
-            // If this should have worked, print a message, otherwise silently return null
-            if (shouldBeSparql) {
-                LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
-                ActivityUtil.addStep(uri, getClass(), e.getMessage());
+            } catch (Throwable e) {
+                // If this should have worked, print a message, otherwise silently return null
+                if (shouldBeSparql) {
+                    LOGGER.error("Couldn't create QueryExecutionFactory for \"" + uri.getUri() + "\". Returning -1.");
+                    ActivityUtil.addStep(uri, getClass(), e.getMessage());
+                }
+                return null;
+            } finally {
+                IOUtils.closeQuietly(out);
+                if (execution != null) {
+                    execution.close();
+                }
+                if (qef != null) {
+                    qef.close();
+                }
             }
-            return null;
-        } finally {
-            IOUtils.closeQuietly(out);
-            if (execution != null) {
-                execution.close();
-            }
-            if (qef != null) {
-                qef.close();
-            }
+            ActivityUtil.addStep(uri, getClass());
+            uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "application/n-triples");
+            return dataFile;
         }
-        ActivityUtil.addStep(uri, getClass());
-        return dataFile;
+        return null;
     }
 
     protected QueryExecutionFactory initQueryExecution(String uri) throws ClassNotFoundException, SQLException {
@@ -182,7 +176,7 @@ public class SparqlDatasetFetcher implements Fetcher {
             return new QueryExecutionFactoryPaginated(qef, 2000);
         } catch (Exception e) {
             LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
-                e.getLocalizedMessage());
+                    e.getLocalizedMessage());
             return qef;
         }
     }
@@ -206,10 +200,9 @@ public class SparqlDatasetFetcher implements Fetcher {
 
         @Override
         public Triple next() {
-           return triples.next();
+            return triples.next();
         }
 
     }
-
 
 }

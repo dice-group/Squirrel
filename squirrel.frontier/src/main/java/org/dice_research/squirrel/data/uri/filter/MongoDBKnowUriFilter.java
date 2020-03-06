@@ -40,6 +40,7 @@ import com.mongodb.client.model.Indexes;
  *
  */
 
+@SuppressWarnings("deprecation")
 public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeable,UriHashCustodian {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
@@ -57,13 +58,16 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     public static final String COLUMN_IP = "ipAddress";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_HASH_VALUE = "hashValue";
+    private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
     /**
      * Used as a default hash value for URIS, will be replaced by real hash value as soon as it has been computed.
      */
     private static final String DUMMY_HASH_VALUE = "dummyValue";
 
     public MongoDBKnowUriFilter(String hostName, Integer port) {
-    
+ 
+        LOGGER.info("Filter Persistance: " + PERSIST);
+
     	
     	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
@@ -112,7 +116,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     public Document crawleableUriToMongoDocument(CrawleableUri uri) {
 
-        @SuppressWarnings("deprecation")
         UriType uriType = uri.getType();
 
         return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
@@ -121,7 +124,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
     @Override
     public void close() throws IOException {
-        mongoDB.getCollection(COLLECTION_NAME).drop();
+        if(!PERSIST) {
+            mongoDB.getCollection(COLLECTION_NAME).drop();
+
+        }
         client.close();
     }
 
@@ -159,10 +165,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
     
     @Override
     public void addHashValuesForUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : uris) {
-//            r.db(DATABASE_NAME).table(TABLE_NAME).filter(doc -> doc.getField(COLUMN_URI).eq(uri.getUri().toString())).
-//                update(r.hashMap(COLUMN_HASH_VALUE, ((HashValue) uri.getData(Constants.URI_HASH_KEY)).encodeToString())).run(connector.connection);
-        }
+
     }
     
     

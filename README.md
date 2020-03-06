@@ -1,8 +1,13 @@
 # Squirrel - Crawler of linked data.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e98f6dbb54c548ab868f3656c7e6f674)](https://app.codacy.com/app/MichaelRoeder/Squirrel?utm_source=github.com&utm_medium=referral&utm_content=dice-group/Squirrel&utm_campaign=Badge_Grade_Dashboard)
+
 ## Introduction
 Squirrel is a crawler for the linked web. It provides several tools to search and collect data
 from the heterogeneous content of the linked web.
+
+You can find the crawler documentation, tutorials and more here:
+<https://dice-group.github.io/squirrel.github.io/>
 
 <img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
 

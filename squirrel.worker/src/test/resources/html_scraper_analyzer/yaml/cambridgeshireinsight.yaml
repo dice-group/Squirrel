@@ -4,7 +4,7 @@ file_descriptor:
         ignore-request: true
 
     search-result-page:
-        regex: search
+        regex: search/field_topics
         resources:
             "$uri":
                 "http://projekt-opal.de/dataset#link":  div.view-content h2 a

@@ -1,11 +1,15 @@
 package org.dice_research.squirrel.data.uri.norm;
 
 import java.net.URI;
-import java.util.BitSet;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +24,17 @@ import org.springframework.stereotype.Component;
  * "https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_in_a_URI">
  * percent-encoding</a> in URL paths</li>
  * <li>sort query parameters</li>
+ * <li>add "/" for empty paths</li>
  * <li>filter parts of the URI</li>
+ * <li>Convert host and scheme to lower case</li>
+ * <li>Handle session ids</li>
  * </ul>
  */
 @Component
 @Qualifier("normalizerImpl")
 public class NormalizerImpl implements UriNormalizer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NormalizerImpl.class);
 
     /**
      * Nutch 1098 - finds URL encoded parts of the URL
@@ -52,29 +61,130 @@ public class NormalizerImpl implements UriNormalizer {
         UNESCAPED_CHARS.set(0x7E);
     }
 
+    /**
+     * map containing schemes and their default ports
+     */
+    private static final Map<String, Integer> defaultPortMap = new HashMap<>();
+    static {
+        defaultPortMap.put("http", 80);
+        defaultPortMap.put("https", 443);
+        defaultPortMap.put("ftp", 21);
+        defaultPortMap.put("ftps", 990);
+        defaultPortMap.put("sftp", 22);
+
+    }
+
+    /**
+     * list containing query parameters for session ids     *
+     */
+    private static final List<String> sessionIDs = new ArrayList<>();
+    static {
+        sessionIDs.add("sessionid");
+        sessionIDs.add("jsessionids");
+        sessionIDs.add("phpsessid");
+        sessionIDs.add("sid");
+    }
+
     @Override
     public CrawleableUri normalize(CrawleableUri uri) {
         URI uriObject = uri.getUri();
         boolean changed = false;
         // normalize path
-        String path = uriObject.getPath();
-        String temp = normalizePath(path);
-        if (temp != path) {
-            path = temp;
+        String path = uriObject.getRawPath();
+        if (path != null) {
+            String temp = normalizePath(path);
+            if (temp != path) {
+                path = temp;
+                changed = true;
+            }
         }
+
+
         // Copy Normalization from
         // https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java
         // OR use URI.normalize()
 
         // Check whether the query part of a URI has to be sorted
+        String query = uriObject.getQuery();
+        if(query != null){
+            if(query.length() > 0) {
+                String[] queryList = query.split("&");
+                Arrays.sort(queryList);
+                List<String> queries = new ArrayList<>(Arrays.asList(queryList));
+                List<String> toRemove = new ArrayList<>();
+                for(String queryParameter : queries){
+                    //removing session ids
+                    if(sessionIDs.contains(queryParameter.split("=")[0].toLowerCase())){
+                        toRemove.add(queryParameter);
+                    }
+                }
+                queries.removeAll(toRemove);
+                String newQuery = String.join("&", queries);
+                if(!query.equals(newQuery)) {
+                    query = newQuery;
+                    changed = true;
+
+                }
+            }
+            else{
+                query = null;
+                changed = true;
+            }
+        }
+
+        //Remove default ports
+        int port = uriObject.getPort();
+        String scheme = uriObject.getScheme();
+        if(port != -1){
+            if(defaultPortMap.containsKey(scheme)){
+                if(port == defaultPortMap.get(scheme)){
+                    port = -1;
+                    changed = true;
+                }
+            }
+        }
+        // Filter fragments (i.e., delete them)
+        String fragment = uriObject.getFragment();
+        if ((fragment != null) && (fragment.length() > 0)) {
+            changed = true;
+        }
+
+        // convert host and scheme to lower case
+        String host = uriObject.getHost();
+        String lowerCaseHost = host.toLowerCase();
+        String lowerCaseScheme = scheme.toLowerCase();
+        if(!scheme.equals(lowerCaseScheme) || !host.equals(lowerCaseHost)){
+            scheme = lowerCaseScheme;
+            host = lowerCaseHost;
+            changed = true;
+        }
 
         // Filter attributes of the URI
-        //uriObject.getQuery();
+        // uriObject.getQuery();
 
         if (changed) {
-            // TODO create new URI object;
+            // create new URI object;
+            URIBuilder builder = new URIBuilder(uriObject);
+            builder.setFragment(null);
+            builder.setPath(path);
+            builder.setCustomQuery(query);
+            builder.setPort(port);
+            builder.setHost(host);
+            builder.setScheme(scheme);
+            CrawleableUri normalizedUri = null;
+
+            try {
+                normalizedUri = new CrawleableUri(builder.build());
+                normalizedUri.setData(uri.getData());
+            } catch (URISyntaxException e) {
+                LOGGER.error("Exception while normalizing URI. Returning original URI.", e);
+                return uri;
+            }
+            return normalizedUri;
         }
-        return uri;
+        else
+            return uri;
+
     }
 
     /**
@@ -82,17 +192,22 @@ public class NormalizerImpl implements UriNormalizer {
      * src/solaris/native/java/io/canonicalize_md.c) and the <a href=
      * "https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java">Crawler
      * Commons</a> project.
-     * 
+     *
      * @param path
      * @return the normalized path or the given path object if no changes have been
      *         made.
      */
-    protected String normalizePath(String path) {
+    public String normalizePath(String path) {
+        // Check for empty paths
+        if(path.equals("")){
+            path = "/";
+            return path;
+        }
         // Check for encoded parts
         Matcher matcher = UNESCAPE_RULE_PATTERN.matcher(path);
         StringBuffer changedPath = null;
         if (matcher.find()) {
-            changedPath = new StringBuffer(path);
+            changedPath = new StringBuffer("");
             int hex, pos = 0;
             do {
                 changedPath.append(path.substring(pos, matcher.start()));

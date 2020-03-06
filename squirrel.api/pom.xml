@@ -1,97 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.dice-research</groupId>
-		<artifactId>squirrel</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>squirrel.api</artifactId>
-	<packaging>jar</packaging>
-	<name>Squirrel API</name>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dice-research</groupId>
+        <artifactId>squirrel</artifactId>
+        <version>0.4.0</version>
+    </parent>
+    <artifactId>squirrel.api</artifactId>
+    <packaging>jar</packaging>
+    <name>Squirrel API</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<slf4j-version>1.7.10</slf4j-version>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.hobbit</groupId>
-			<artifactId>core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpclient</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>org.hobbit</groupId>
+            <artifactId>core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<!--compress commons -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-		</dependency>
-		<!--commons IO -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
+        <!--compress commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+        <!--commons IO -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
 
-		<!-- Jackason databind and Jackson’s YAML extension -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-yaml</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<!-- Content detect utility tool -->
-		<dependency>
-		    <groupId>org.apache.tika</groupId>
-		    <artifactId>tika-core</artifactId>
-		</dependency>
-		
-		
-		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-		<dependency>
-		    <groupId>org.jsoup</groupId>
-		    <artifactId>jsoup</artifactId>
-		</dependency>
-		
-		<!-- Spring Context -->
-		<dependency>
-		  <groupId>org.springframework</groupId>
-		  <artifactId>spring-context</artifactId>
-		</dependency>
-		
-		<!-- Spring JDBC -->
-		<dependency>
-		  <groupId>org.springframework</groupId>
-		  <artifactId>spring-jdbc</artifactId>
-		</dependency>
-		
-		<!-- Spring JDBC -->
-		<dependency>
-		  <groupId>org.springframework</groupId>
-		  <artifactId>spring-test</artifactId>
-		</dependency>
-		        
+        <!-- Jackason databind and Jackson’s YAML extension -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.10.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+
+        <!-- Content detect utility tool -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
+        <!-- Spring Context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Spring JDBC -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!-- Spring JDBC -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+
 
         <!-- crawler commons -->
         <dependency>
@@ -104,33 +106,35 @@
             <groupId>org.aksw.jena-sparql-api</groupId>
             <artifactId>jena-sparql-api-core</artifactId>
         </dependency>
-        
-		        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
-		
-		<dependency>
-		    <groupId>org.rdfhdt</groupId>
-		    <artifactId>hdt-java-package</artifactId>
-		    <type>pom</type>
-		    <exclusions>
-		        <exclusion>
-		          <groupId>junit</groupId> <!-- Exclude Project-D from Project-B -->
-		          <artifactId>junit-dep</artifactId>
-		        </exclusion>
-		      </exclusions>
-		</dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.rdfhdt/hdt-java-package -->
+
+        <dependency>
+            <groupId>org.rdfhdt</groupId>
+            <artifactId>hdt-java-package</artifactId>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId> <!-- Exclude Project-D from Project-B -->
+                    <artifactId>junit-dep</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
 
         <!-- HTTP Requests -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.4.11</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.7</version>
-		</dependency>
-		<!-- End HTTP Requests -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${httpcore-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient-version}</version>
+        </dependency>
+        <!-- End HTTP Requests -->
 
         <!-- Apache commons net for FTP -->
         <dependency>
@@ -157,12 +161,12 @@
             <artifactId>json</artifactId>
         </dependency>
         <!-- End JSON processing -->
-        
+
         <!-- MongoDBDriver -->
         <dependency>
-	        <groupId>org.mongodb</groupId>
-	        <artifactId>mongodb-driver</artifactId>
-	    </dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver</artifactId>
+        </dependency>
 
         <!-- RethinkDB client -->
         <!-- https://mvnrepository.com/artifact/com.rethinkdb/rethinkdb-driver -->
@@ -171,20 +175,20 @@
             <artifactId>rethinkdb-driver</artifactId>
         </dependency>
         <!-- End RethinkDB client -->
-        
-        <!-- HSQLDB (used inside of workers to store URIs)-->
+
+        <!-- HSQLDB (used inside of workers to store URIs) -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
         </dependency>
-        
-        <!-- We use the simpleframework to use local HTTP servers for our 
+
+        <!-- We use the simpleframework to use local HTTP servers for our
             JUnit tests and test scenarios -->
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
@@ -214,7 +218,6 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>apache-log4j-extras</artifactId>
-            <scope>test</scope>
         </dependency>
         <!-- make Logging with java.util.Logging possible -->
         <dependency>
@@ -224,4 +227,5 @@
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
     </dependencies>
+
 </project>

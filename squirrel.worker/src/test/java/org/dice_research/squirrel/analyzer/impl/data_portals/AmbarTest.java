@@ -23,7 +23,7 @@ public class AmbarTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "http://ambar.utpl.edu.ec/dataset?";
+        String uriSearchPage = "http://ambar.utpl.edu.ec/dataset";
         String uriDetailsPage = "http://ambar.utpl.edu.ec/dataset/feminicidios-latam";
         testConfigs.add(new Object[] {
             new CrawleableUri(new URI("http://ambar.utpl.edu.ec")),

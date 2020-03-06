@@ -1,10 +1,7 @@
 package org.dice_research.squirrel.configurator;
 
-import org.dice_research.squirrel.configurator.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public class MongoConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoConfiguration.class);

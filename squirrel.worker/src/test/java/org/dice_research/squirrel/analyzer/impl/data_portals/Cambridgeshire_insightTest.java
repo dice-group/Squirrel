@@ -25,7 +25,7 @@ public class Cambridgeshire_insightTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws IOException, URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "https://data.cambridgeshireinsight.org.uk/search/field_topics/type/dataset?sort_by=changed";
+        String uriSearchPage = "https://data.cambridgeshireinsight.org.uk/search/field_topics/type/dataset";
         String uriDetailsPage = "https://data.cambridgeshireinsight.org.uk/dataset/empty-homes";
 
         testConfigs.add(new Object[]{

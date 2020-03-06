@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 
 import com.rabbitmq.client.*;
 
@@ -72,7 +73,7 @@ public class MicroServiceBasedCkanFetcher implements Fetcher {
     }
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // TODO Auto-generated method stub
         return null;
     }

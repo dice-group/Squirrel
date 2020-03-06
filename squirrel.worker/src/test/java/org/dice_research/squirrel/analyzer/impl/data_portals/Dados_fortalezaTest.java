@@ -23,7 +23,7 @@ public class Dados_fortalezaTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws IOException, URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchPage = "http://dados.fortaleza.ce.gov.br/catalogo/dataset?q=&sort=score+desc%2C+metadata_modified+desc";
+        String uriSearchPage = "http://dados.fortaleza.ce.gov.br/catalogo/dataset";
         String uriDetailsPage = "http://dados.fortaleza.ce.gov.br/catalogo/dataset/http-www-fortaleza-ce-gov-br-sites-default-files-rede-de-atencao-e-cuidados-de-fortaleza-pdf";
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriDetailsPage)),

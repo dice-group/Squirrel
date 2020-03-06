@@ -1,38 +1,37 @@
 package org.dice_research.squirrel.configurator;
 
-import org.dice_research.squirrel.configurator.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public class SimpleHTTPServerConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleHTTPServerConfiguration.class);
-
-    private static Map<String, String> env = System.getenv();
 
     private static final String MODEL_KEY = "RESOURCE_MODEL";
     private static final String MODEL_LANG_KEY = "RESOURCE_MODEL_LANG";
     private static final String SERVER_PORT_KEY = "PORT";
     private static final String DUMP_FILE_NAME_KEY = "DUMP_FILE_NAME";
     private static final String USE_DEREF_KEY = "USE_DEREF";
+    private static final String ROBOTS_TXT_KEY = "ROBOTS_TXT";
 
     private String modelFile;
     private String modelLang;
     private Integer serverPort;
     private String dumpFileName;
     private boolean useDeref;
+    private String robotsTxt;
 
     private SimpleHTTPServerConfiguration(String modelFile,
                                           String modelLang,
                                           Integer serverPort,
                                           String dumpFileName,
-                                          boolean useDeref) {
+                                          boolean useDeref,
+                                          String robotsTxt) {
         this.modelFile = modelFile;
         this.modelLang = modelLang;
         this.serverPort = serverPort;
         this.dumpFileName = dumpFileName;
         this.useDeref = useDeref;
+        this.robotsTxt = robotsTxt;
     }
 
     public static SimpleHTTPServerConfiguration getSimpleHTTPServerConfiguration() {
@@ -41,7 +40,8 @@ public class SimpleHTTPServerConfiguration extends Configuration {
             getEnvLangKey(),
             getEnvServerPort(),
             getEnvDumpFileName(),
-            getEnvDerefKey()
+            getEnvDerefKey(),
+            getEnvRobotsTxt()
         );
     }
 
@@ -70,6 +70,10 @@ public class SimpleHTTPServerConfiguration extends Configuration {
         }
     }
 
+    private static String getEnvRobotsTxt() {
+        return getEnv(ROBOTS_TXT_KEY, LOGGER);
+    }
+
     public String getModelFile() {
         return modelFile;
     }
@@ -89,4 +93,9 @@ public class SimpleHTTPServerConfiguration extends Configuration {
     public boolean isUseDeref() {
         return useDeref;
     }
+
+    public String getRobotsTxt() {
+        return robotsTxt;
+    }
+    
 }
