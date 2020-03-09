@@ -46,8 +46,7 @@
 		<constructor-arg index="0"
 			value="#{systemEnvironment['MDB_HOST_NAME']}" />
 		<constructor-arg index="1"
-			value="#{systemEnvironmen
-			t['MDB_PORT']}" />
+			value="#{systemEnvironment['MDB_PORT']}" />
 	</bean>
 	
 	<bean id="domainGeneratorBean"
