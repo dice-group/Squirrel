@@ -134,7 +134,8 @@ public class NormalizerImpl implements UriNormalizer {
 
         //Remove default ports
         int port = uriObject.getPort();
-        String scheme = uriObject.getScheme();
+        String scheme = uriObject.getScheme() != null ? uriObject.getScheme() : "";
+        
         if(port != -1){
             if(defaultPortMap.containsKey(scheme)){
                 if(port == defaultPortMap.get(scheme)){
@@ -150,9 +151,10 @@ public class NormalizerImpl implements UriNormalizer {
         }
 
         // convert host and scheme to lower case
-        String host = uriObject.getHost();
-        String lowerCaseHost = host.toLowerCase();
-        String lowerCaseScheme = scheme.toLowerCase();
+        String host = uriObject.getHost() != null ? uriObject.getHost() : "";   
+        String lowerCaseHost = host != null ? host.toLowerCase() : "";
+        String lowerCaseScheme = scheme != null ? scheme.toLowerCase() : "";
+        
         if(!scheme.equals(lowerCaseScheme) || !host.equals(lowerCaseHost)){
             scheme = lowerCaseScheme;
             host = lowerCaseHost;

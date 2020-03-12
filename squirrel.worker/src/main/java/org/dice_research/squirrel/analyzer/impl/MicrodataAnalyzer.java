@@ -44,7 +44,7 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
-		
+
 		HtmlCleaner cleaner = new HtmlCleaner();
 
 		CleanerProperties props = new CleanerProperties();
@@ -62,16 +62,15 @@ public class MicrodataAnalyzer extends AbstractAnalyzer {
 			FileWriter writer = new FileWriter(tempFile);
 
 			new PrettyXmlSerializer(props).write(tagNode, writer, "utf-8");
-			
-			
+
 			ModifiableConfiguration modifiableConf = DefaultConfiguration.copy();
 			modifiableConf.setProperty("any23.microdata.ns.default", "http://schema.org/");
-			Any23 runner = new Any23(modifiableConf, "html-rdfa11");
-			// Any23 runner = new Any23("html-microdata");
+//			Any23 runner = new Any23(modifiableConf, "html-rdfa11");
+			Any23 runner = new Any23("html-microdata");
 
 			runner.setHTTPUserAgent(Any23.DEFAULT_HTTP_CLIENT_USER_AGENT);
 			DocumentSource source = new FileDocumentSource(tempFile, curi.getUri().toString());
-			TripleHandler handler = new SquirrelTripleHandler(curi,collector,sink);
+			TripleHandler handler = new SquirrelTripleHandler(curi, collector, sink);
 			runner.extract(source, handler);
 			handler.close();
 
