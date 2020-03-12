@@ -47,8 +47,8 @@ public class FrontierImplTest {
          filter.open();
          queue.open();
          List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
-         uriGenerators.add(new DomainBasedUriGenerator());
-         uriGenerators.add(new WellKnownPathUriGenerator());
+//         uriGenerators.add(new DomainBasedUriGenerator());
+//         uriGenerators.add(new WellKnownPathUriGenerator());
         frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,uriGenerators,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
