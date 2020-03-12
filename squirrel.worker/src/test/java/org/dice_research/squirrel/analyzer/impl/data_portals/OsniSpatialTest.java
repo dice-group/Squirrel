@@ -25,7 +25,7 @@ public class OsniSpatialTest extends AbstractDataPortalTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriSearchResultPage = "http://osni-spatial-ni.opendata.arcgis.com/datasets?sort_by=relevance";
+        String uriSearchResultPage = "http://osni-spatial-ni.opendata.arcgis.com/datasets";
         String uriDetailsPage = "http://osni-spatial-ni.opendata.arcgis.com/datasets/1cdb3f26958046799f84a3de58dcc349_6";
         testConfigs.add(new Object[] {
             new CrawleableUri(new URI(uriSearchResultPage)),
