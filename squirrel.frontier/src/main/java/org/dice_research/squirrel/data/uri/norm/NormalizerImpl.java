@@ -30,8 +30,7 @@ import org.springframework.stereotype.Component;
  * <li>Handle session ids</li>
  * </ul>
  */
-@Component
-@Qualifier("normalizerImpl")
+
 public class NormalizerImpl implements UriNormalizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NormalizerImpl.class);
@@ -44,6 +43,13 @@ public class NormalizerImpl implements UriNormalizer {
      * look-up table for characters which should not be escaped in URL paths
      */
     private final static BitSet UNESCAPED_CHARS = new BitSet(0x7F);
+    private final List<String> sessionIDs;
+    private final Map<String, Integer> defaultPortMap;
+    
+    public NormalizerImpl(List<String> sessionIDs, Map<String, Integer> defaultPortMap) {
+    	this.sessionIDs = sessionIDs;
+    	this.defaultPortMap = defaultPortMap;
+    }
 
     static {
         /*
@@ -61,29 +67,6 @@ public class NormalizerImpl implements UriNormalizer {
         UNESCAPED_CHARS.set(0x7E);
     }
 
-    /**
-     * map containing schemes and their default ports
-     */
-    private static final Map<String, Integer> defaultPortMap = new HashMap<>();
-    static {
-        defaultPortMap.put("http", 80);
-        defaultPortMap.put("https", 443);
-        defaultPortMap.put("ftp", 21);
-        defaultPortMap.put("ftps", 990);
-        defaultPortMap.put("sftp", 22);
-
-    }
-
-    /**
-     * list containing query parameters for session ids     *
-     */
-    private static final List<String> sessionIDs = new ArrayList<>();
-    static {
-        sessionIDs.add("sessionid");
-        sessionIDs.add("jsessionids");
-        sessionIDs.add("phpsessid");
-        sessionIDs.add("sid");
-    }
 
     @Override
     public CrawleableUri normalize(CrawleableUri uri) {

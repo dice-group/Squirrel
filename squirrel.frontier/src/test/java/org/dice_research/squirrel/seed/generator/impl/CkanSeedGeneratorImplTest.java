@@ -2,7 +2,9 @@ package org.dice_research.squirrel.seed.generator.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
@@ -34,7 +36,10 @@ public class CkanSeedGeneratorImplTest extends TestCase {
         uriGenerators.add(new DomainBasedUriGenerator());
         uriGenerators.add(new WellKnownPathUriGenerator());
         
-        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue,uriGenerators);
+        List<String> sessionIDs = new ArrayList<String>();
+        Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), new InMemoryKnownUriFilter(false, -1), queue,uriGenerators);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

@@ -65,7 +65,7 @@ public class FrontierImpl implements Frontier {
     /**
      * {@link UriGenerator} used to generate additional domain variants of a URI
      */
-    List<UriGenerator> uriGenerator;
+    protected List<UriGenerator> uriGenerator;
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */

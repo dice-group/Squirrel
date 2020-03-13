@@ -8,7 +8,9 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -49,7 +51,10 @@ public class FrontierImplTest {
          List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
 //         uriGenerators.add(new DomainBasedUriGenerator());
 //         uriGenerators.add(new WellKnownPathUriGenerator());
-        frontier = new FrontierImpl(new NormalizerImpl(), filter, queue,uriGenerators,true);
+        List<String> sessionIDs = new ArrayList<String>();
+        Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), filter, queue,uriGenerators,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
