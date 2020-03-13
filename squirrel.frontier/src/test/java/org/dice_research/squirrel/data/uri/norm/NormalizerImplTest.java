@@ -31,7 +31,17 @@ public class NormalizerImplTest {
     @Test
     public void test() {
         List<String> sessionIDs = new ArrayList<String>();
+        sessionIDs.add("sessionid");
+        sessionIDs.add("jsessionids");
+        sessionIDs.add("phpsessid");
+        sessionIDs.add("sid");
+        
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        mapDefaultPort.put("http", 80);
+        mapDefaultPort.put("https", 443);
+        mapDefaultPort.put("ftp", 21);
+        mapDefaultPort.put("ftps", 90);
+        mapDefaultPort.put("sftp", 22);
 
 
         NormalizerImpl normalizer = new NormalizerImpl(sessionIDs, mapDefaultPort);
