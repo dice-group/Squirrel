@@ -1,0 +1,20 @@
+file_descriptor:
+    check:
+        domain: suche.transparenz.hamburg.de
+        ignore-request: true
+    search-result-page:
+        regex: suche
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .rs_headline h3 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": .left_660 h2
+                "http://purl.org/dc/terms/description": div#beschreibung_datensatz
+                "http://purl.org/dc/terms/publisher": .ta_l_content
+                "http://purl.org/dc/terms/license": table tbody tr:contains(Lizenz:) td a
+

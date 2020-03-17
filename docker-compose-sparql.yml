@@ -25,8 +25,8 @@ services:
       - QUEUE_FILTER_PERSIST=true
       - COMMUNICATION_WITH_WEBSERVICE=false
       - VISUALIZATION_OF_CRAWLED_GRAPH=false
-      - JVM_ARGS=-Xmx8g 
-      
+      - JVM_ARGS=-Xmx8g
+
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
@@ -76,7 +76,7 @@ services:
       - "8081:15672"
       # Forwarding the port for testing
       - "5672:5672"
-      
+
   worker1:
     image: squirrel.worker:latest
     container_name: worker1

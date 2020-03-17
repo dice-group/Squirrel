@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr" dir="ltr" class="js">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>
+    Open Data Bordeaux
+  </title>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js">
+  </script>
+  <script type="text/javascript" src="http://opendata.bordeaux.fr/sites/opendata.bordeaux.fr/themes/theme482/build/yahoo-dom-event/yahoo-dom-event.js">
+  </script>
+  <script type="text/javascript" src="http://opendata.bordeaux.fr/sites/opendata.bordeaux.fr/themes/theme482/build/animation/animation-min.js">
+  </script>
+  <script type="text/javascript" src="http://opendata.bordeaux.fr/sites/opendata.bordeaux.fr/themes/theme482/build/container/container_core-min.js">
+  </script>
+  <script type="text/javascript" src="http://opendata.bordeaux.fr/sites/opendata.bordeaux.fr/themes/theme482/build/menu/menu-min.js">
+  </script>
+  <script type="text/javascript">
+
+    //<![CDATA[
+    // Initialize and render the menu bar when it is available in the DOM
+    YAHOO.util.Event.onContentReady("productsandservices", function () {
+      var oMenuBar = new YAHOO.widget.MenuBar("productsandservices", {
+        autosubmenudisplay: true,
+        hidedelay: 750,
+        lazyload: true });
+      var oSubmenuData = [
+
+        {
+          id: "Les données",
+          itemdata: [
+            { text: "Cadre de vie", url: "http://opendata.bordeaux.fr/recherche/results/taxonomy%253A94%20" },
+            { text: "Citoyenneté et administration", url: "http://opendata.bordeaux.fr/recherche/results/taxonomy%253A95%20" },
+            { text: "Culture, sport et loisirs", url: "http://opendata.bordeaux.fr/recherche/results/taxonomy%253A96%20" },
+            { text: "Catalogue de données", url: "/catalogue-des-donnees" }
+          ]},
+        {
+          id: "Les applications",
+          itemdata: [
+          ]},
+        {
+          id: "Les vidéos",
+          itemdata: [
+            { text: "Open data mode d'emploi", url: "/video-opendata-mode-emploi" },
+            { text: "Le reportage métier", url: "/des-donnees-et-des-hommes" }
+          ]},
+        {
+          id: "L'opendata à Bordeaux",
+          itemdata: [
+            { text: "Bienvenue sur le portail", url: "/bienvenue" },
+            { text: "Exploiter les données", url: "/exploiter-les-donnees" },
+            { text: "Manipuler les données", url: "/manipuler-les-donnees-municipales" },
+            { text: "La licence", url: "/licence-ouverte" },
+            { text: "FAQ", url: "/faq" },
+            { text: "Nous contacter", url: "/contact" }
+          ]},
+      ];var ua = YAHOO.env.ua,
+        oAnim;  // Animation instance
+      function onSubmenuBeforeShow(p_sType, p_sArgs) {
+        var oBody,
+          oElement,
+          oShadow,
+          oUL;
+        if (this.parent) {
+          oElement = this.element;
+          oShadow = oElement.lastChild;
+          oShadow.style.height = "0px";
+          if (oAnim && oAnim.isAnimated()) {
+            oAnim.stop();
+            oAnim = null;
+          }
+          oBody = this.body;
+          //  Check if the menu is a submenu of a submenu.
+          if (this.parent &&
+            !(this.parent instanceof YAHOO.widget.MenuBarItem)) {
+            if (ua.gecko) {
+              oBody.style.width = oBody.clientWidth + "px";
+            }
+            if (ua.ie == 7) {
+              oElement.style.width = oElement.clientWidth + "px";
+            }
+          }
+          oBody.style.overflow = "hidden";
+          oUL = oBody.getElementsByTagName("ul")[0];
+          oUL.style.marginTop = ("-" + oUL.offsetHeight + "px");
+        }
+      }
+
+      function onTween(p_sType, p_aArgs, p_oShadow) {
+        if (this.cfg.getProperty("iframe")) {
+          this.syncIframe();
+        }
+        if (p_oShadow) {
+          p_oShadow.style.height = this.element.offsetHeight + "px";
+        }
+      }
+      function onAnimationComplete(p_sType, p_aArgs, p_oShadow) {
+        var oBody = this.body,
+          oUL = oBody.getElementsByTagName("ul")[0];
+        if (p_oShadow) {
+          p_oShadow.style.height = this.element.offsetHeight + "px";
+        }
+        oUL.style.marginTop = "";
+        oBody.style.overflow = "";
+        //  Check if the menu is a submenu of a submenu.
+        if (this.parent &&
+          !(this.parent instanceof YAHOO.widget.MenuBarItem)) {
+          // Clear widths set by the "beforeshow" event handler
+          if (ua.gecko) {
+            oBody.style.width = "";
+          }
+          if (ua.ie == 7) {
+            this.element.style.width = "";
+          }
+        }
+      }
+      function onSubmenuShow(p_sType, p_sArgs) {
+        var oElement,
+          oShadow,
+          oUL;
+        if (this.parent) {
+          oElement = this.element;
+          oShadow = oElement.lastChild;
+          oUL = this.body.getElementsByTagName("ul")[0];
+          oAnim = new YAHOO.util.Anim(oUL,
+            { marginTop: { to: 0 } },
+            .5, YAHOO.util.Easing.easeOut);
+          oAnim.onStart.subscribe(function () {
+            oShadow.style.height = "100%";
+          });
+          oAnim.animate();
+          if (YAHOO.env.ua.ie) {
+            oShadow.style.height = oElement.offsetHeight + "px";
+            oAnim.onTween.subscribe(onTween, oShadow, this);
+          }
+          oAnim.onComplete.subscribe(onAnimationComplete, oShadow, this);
+        }
+      }oMenuBar.subscribe("beforeRender", function () {
+        if (this.getRoot() == this) {this.getItem(0).cfg.setProperty("submenu", oSubmenuData[0]);
+          this.getItem(2).cfg.setProperty("submenu", oSubmenuData[2]);
+          this.getItem(3).cfg.setProperty("submenu", oSubmenuData[3]);
+        }}); oMenuBar.subscribe("beforeShow", onSubmenuBeforeShow);
+      oMenuBar.subscribe("show", onSubmenuShow);
+      oMenuBar.render();
+    });
+    //]]>
+
+  </script>
+  <script type="text/javascript" src="https://www.google.com/jsapi">
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    <!--//--><![CDATA[//><!--
+      function goInner119() {
+        function alimenterChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'intitule_budget');
+          data.addColumn('string', 'exercice');
+          data.addColumn('string', 'section');
+          data.addColumn('string', 'depenses_recettes');
+          data.addColumn('string', 'reel_ordre');
+          data.addColumn('string', 'chapitre_budg_nature');
+          data.addColumn('string', 'intitule_chapitre');
+          data.addColumn('string', 'credits_ouverts');
+          data.addColumn('string', 'mandats_emis');
+          data.addColumn('string', 'restes_a_realiser');
+          data.addColumn('string', 'charges_rattachees');
+          data.addRows([
+            ['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','16','Emprunts et dettes assimilées','55920000','20000000','34100000',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','00','Résultats antérieurs','25568658.29','0','0',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','13','Subventions d\'investissement','18672253.75','8772328.29','9625616.97',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','77','Produits exceptionnels','11088239.41','10447846.94','0',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','10','Dotations, fonds divers et réserves','32197527.23','32197527.87','0',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','45','Total des opé. pour compte de tiers','3971878.88','2433388.54','1538490.34',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','16','Emprunts et dettes assimilées','25116339.51','25075931.03','',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','73','Impôts et taxes','175944399','182588021.6','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','013','Atténuation de charges','1207073','1416900.86','',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','23','Immobilisations en cours','72026483.6','32454278','38997520.88',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','67','Charges exceptionnelles','12672746.9','6638609.5','5003374.63','39906.66'],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','76','Produits financiers','600258.59','962625.71','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','65','Autres charges de gestion courante','64144307.72','55896255.27','7746071.76','348819.67'],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','13','Subventions d\'investissement','1644.91','1644.91','',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','21','Immobilisations corporelles','179640.84','174538.28','',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','79','','714595','633395.89','0',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','26','Particip. et créances rattachées à des particip.','729478.46','0','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','656','Frais de fonct. des groupes d\'élus','299953','182744.97','0','2535.32'],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','27','Aures immobilisations financières','40623.93','18750.81','',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','011','Charges à caractère général','54530156.73','46051119.22','2795173.44','4355251.77'],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','012','Charges de personnel et frais assimilés','134714394','131909666.64','23658.3','727752.35'],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','21','Immobilisations corporelles','18539880.35','9465767.47','8844988.28',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','014','Atténuation de produits','821631.85','810439.26','',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','27','Aures immobilisations financières','1961880.06','1949084.63','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','75','Autres produits de gestion courante','9183802.28','8889468.19','0',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','26','Particip. et créances rattachées à des particip.','13718.21','6860.21','6858',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','23','Immobilisations en cours','1041618.91','1041618.91','',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','RECETTES','REEL','45','Total des opé. pour compte de tiers','3817171.78','2278681.44','1538490.34',''],['MAIRIE DE BORDEAUX','2003','INVESTISSEMENT','DEPENSES','REEL','20','Immobilisations incorporelles (sauf 204)','4627015.37','1485537.12','2990934',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','74','Dotations aux amortissements','84725376.38','83775822.83','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','70','Produits des services, de domaine et ventes div.','12129802.84','11140020.07','0',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','DEPENSES','REEL','66','Charges financières','11509686.58','10052555.21','',''],['MAIRIE DE BORDEAUX','2003','FONCTIONNEMENT','RECETTES','REEL','00','Résultats antérieurs','18469002.3','0','0','']
+          ]);
+          return data;
+        }
+        function drawVisualization() {
+          var data = alimenterChart();
+
+          var options = {};
+          options['width'] = "100%";
+//options['height'] = 300;
+          options['page'] = 'enable';
+          options['pageSize'] = 10;
+          options['pagingSymbols'] = {prev: 'préc', next: 'suiv'};
+          options['pagingButtonsConfiguration'] = 'auto';
+
+//options['state'] ='';
+//options['showAdvancedPanel'] = true;
+
+          visualization = new google.visualization.Table(document.getElementById('tab'));
+          visualization.draw(data, options);
+
+        }
+
+        google.load('visualization', '1', {packages: ['table']});
+        google.setOnLoadCallback(drawVisualization);
+      }
+    goInner119();
+
+    //--><!]]>
+
+    //]]>
+  </script>
+  <script src="https://www.google.com/uds/?file=visualization&amp;v=1&amp;packages=table" type="text/javascript">
+  </script>
+  <link href="https://www.google.com/uds/api/visualization/1.0/40ff64b1d9d6b3213524485974f36cc0/ui+en,table+en.css" type="text/css" rel="stylesheet"/>
+  <script src="https://www.google.com/uds/api/visualization/1.0/40ff64b1d9d6b3213524485974f36cc0/format+en,default+en,ui+en,table+en.I.js" type="text/javascript">
+  </script>
+  <script type="text/javascript" src="https://www.google.com/jsapi">
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    <!--//--><![CDATA[//><!--
+      function goInner150() {
+        function alimenterChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'depenses_recettes');
+          data.addColumn('number', 'Annee');
+          data.addColumn('number', 'Montant');
+          data.addColumn('string', 'intitule_chapitre');
+          data.addRows([
+            ['DEPENSES',2005,0,'Résultats antérieurs'],['DEPENSES',2002,1573059.75,'Immobilisations incorporelles (sauf 204)'],['RECETTES',2004,14431402.49,'Subventions d\'investissement'],['DEPENSES',2008,2321907.29,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2004,41931348.75,'Immobilisations en cours'],['RECETTES',2008,10882.04,'Immobilisations en cours'],['DEPENSES',2011,27854300.55,'Emprunts et dettes assimilées'],['DEPENSES',2007,0,'Résultats antérieurs'],['DEPENSES',2005,0,'Aures immobilisations financières'],['DEPENSES',2005,0,'Particip. et créances rattachées à des particip.'],['RECETTES',2008,43670943,'Dotations, fonds divers et réserves'],['RECETTES',2005,10000000,'Emprunts et dettes assimilées'],['RECETTES',2011,11004147.36,'Subventions d\'investissement'],['DEPENSES',2008,44785529.93,'Immobilisations en cours'],['RECETTES',2009,1312589.89,'Aures immobilisations financières'],['RECETTES',2009,8720949.75,'Subventions d\'investissement'],['RECETTES',2004,28051453.28,'Dotations, fonds divers et réserves'],['DEPENSES',2003,6860.21,'Particip. et créances rattachées à des particip.'],['RECETTES',2011,17071.29,'Immobilisations en cours'],['RECETTES',2004,27233.08,'Immobilisations en cours'],['DEPENSES',2006,39644182.41,'Emprunts et dettes assimilées'],['RECETTES',2003,1041618.91,'Immobilisations en cours'],['DEPENSES',2008,17939178.59,'Immobilisations corporelles'],['DEPENSES',2011,5176599.62,'Subventions d\'équipements versées'],['DEPENSES',2009,2940983.43,'Subventions d\'équipements versées'],['DEPENSES',2007,23771769.23,'Emprunts et dettes assimilées'],['DEPENSES',2009,602206,'Aures immobilisations financières'],['RECETTES',2004,10300000,'Emprunts et dettes assimilées'],['DEPENSES',2007,2302968.82,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2003,0,'Résultats antérieurs'],['DEPENSES',2002,28139.21,'Subventions d\'investissement'],['DEPENSES',2010,1577,'Total des opé. pour compte de tiers'],['DEPENSES',2003,9465767.47,'Immobilisations corporelles'],['RECETTES',2005,43056071.48,'Dotations, fonds divers et réserves'],['DEPENSES',2009,25994850.43,'Emprunts et dettes assimilées'],['DEPENSES',2003,32454278,'Immobilisations en cours'],['RECETTES',2003,8772328.29,'Subventions d\'investissement'],['RECETTES',2010,42596066.15,'Dotations, fonds divers et réserves'],['RECETTES',2010,9307788.25,'Subventions d\'investissement'],['RECETTES',2002,2146894.37,'Aures immobilisations financières'],['RECETTES',2008,8858603.04,'Subventions d\'investissement'],['DEPENSES',2007,1320355.34,'Subventions d\'équipements versées'],['RECETTES',2005,1942.9,'Immobilisations corporelles'],['DEPENSES',2010,50000,'Particip. et créances rattachées à des particip.'],['DEPENSES',2003,1485537.12,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2007,215626.47,'Total des opé. pour compte de tiers'],['RECETTES',2003,0,'Particip. et créances rattachées à des particip.'],['RECETTES',2006,191792.97,'Immobilisations en cours'],['DEPENSES',2006,0,'Résultats antérieurs'],['RECETTES',2011,0,'Produits des cessions'],['RECETTES',2011,428121.88,'Total des opé. pour compte de tiers'],['DEPENSES',2010,4350304.34,'Subventions d\'équipements versées'],['RECETTES',2011,26178005.31,'Emprunts et dettes assimilées'],['DEPENSES',2010,46587015.86,'Immobilisations en cours'],['DEPENSES',2003,25075931.03,'Emprunts et dettes assimilées'],['RECETTES',2007,188904.51,'Total des opé. pour compte de tiers'],['RECETTES',2011,11579.73,'Aures immobilisations financières'],['DEPENSES',2006,15772611.3,'Aures immobilisations financières'],['RECETTES',2010,1292183.18,'Aures immobilisations financières'],['RECETTES',2008,20204.18,'Total des opé. pour compte de tiers'],['RECETTES',2009,2805.38,'Immobilisations en cours'],['DEPENSES',2011,3874747.69,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2006,73157.24,'Total des opé. pour compte de tiers'],['RECETTES',2004,1407949.87,'Aures immobilisations financières'],['DEPENSES',2006,1898721.07,'Immobilisations incorporelles (sauf 204)'],['RECETTES',2003,32197527.87,'Dotations, fonds divers et réserves'],['DEPENSES',2002,5256158.55,'Immobilisations corporelles'],['DEPENSES',2005,24065624.31,'Emprunts et dettes assimilées'],['DEPENSES',2006,53651910.7,'Immobilisations en cours'],['DEPENSES',2010,8053922.25,'Immobilisations corporelles'],['RECETTES',2008,1015531.01,'Aures immobilisations financières'],['DEPENSES',2009,50931064.78,'Immobilisations en cours'],['RECETTES',2005,180441.49,'Immobilisations en cours'],['DEPENSES',2009,78176.64,'Total des opé. pour compte de tiers'],['DEPENSES',2006,4380104.1,'Subventions d\'équipements versées'],['DEPENSES',2007,0,'Aures immobilisations financières'],['DEPENSES',2007,6268.8,'Particip. et créances rattachées à des particip.'],['DEPENSES',2004,6858,'Particip. et créances rattachées à des particip.'],['DEPENSES',2004,827570.16,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2007,46948283.64,'Immobilisations en cours'],['RECETTES',2008,0,'Produits des cessions'],['RECETTES',2003,174538.28,'Immobilisations corporelles'],['RECETTES',2009,0,'Produits des cessions'],['DEPENSES',2010,0,'Résultats antérieurs'],['RECETTES',2010,0,'Produits des cessions'],['RECETTES',2002,17545971.75,'Dotations, fonds divers et réserves'],['RECETTES',2006,33135000,'Emprunts et dettes assimilées'],['RECETTES',2003,2278681.44,'Total des opé. pour compte de tiers'],['RECETTES',2005,1101013.43,'Aures immobilisations financières'],['RECETTES',2004,732036.18,'Particip. et créances rattachées à des particip.'],['DEPENSES',2002,96833.78,'Total des opé. pour compte de tiers'],['RECETTES',2006,56892794.29,'Dotations, fonds divers et réserves'],['DEPENSES',2002,37212954.24,'Immobilisations en cours'],['RECETTES',2007,1039180.58,'Aures immobilisations financières'],['RECETTES',2006,0,'Produits des cessions'],['RECETTES',2005,24498.85,'Total des opé. pour compte de tiers'],['RECETTES',2003,20000000,'Emprunts et dettes assimilées'],['RECETTES',2002,259559.34,'Total des opé. pour compte de tiers'],['DEPENSES',2003,1644.91,'Subventions d\'investissement'],['DEPENSES',2009,16447643.52,'Immobilisations corporelles'],['DEPENSES',2003,18750.81,'Aures immobilisations financières'],['DEPENSES',2010,17546.29,'Aures immobilisations financières'],['DEPENSES',2010,27472519.09,'Emprunts et dettes assimilées'],['DEPENSES',2011,50000,'Particip. et créances rattachées à des particip.'],['RECETTES',2004,1564580.61,'Total des opé. pour compte de tiers'],['RECETTES',2003,1949084.63,'Aures immobilisations financières'],['RECETTES',2011,46233118.36,'Dotations, fonds divers et réserves'],['RECETTES',2002,310602.86,'Immobilisations en cours'],['RECETTES',2002,17077893,'Emprunts et dettes assimilées'],['DEPENSES',2008,0,'Résultats antérieurs'],['DEPENSES',2009,3426439.92,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2010,3219661.58,'Immobilisations incorporelles (sauf 204)'],['RECETTES',2006,16809410.61,'Aures immobilisations financières'],['DEPENSES',2008,13,'Particip. et créances rattachées à des particip.'],['DEPENSES',2008,2040,'Aures immobilisations financières'],['DEPENSES',2011,54809322.77,'Immobilisations en cours'],['DEPENSES',2002,0,'Résultats antérieurs'],['DEPENSES',2007,15586032.45,'Immobilisations corporelles'],['DEPENSES',2011,495158.76,'Total des opé. pour compte de tiers'],['DEPENSES',2008,25531338.39,'Emprunts et dettes assimilées'],['DEPENSES',2005,52623161.15,'Immobilisations en cours'],['RECETTES',2010,23003100,'Emprunts et dettes assimilées'],['DEPENSES',2008,1316370.83,'Subventions d\'équipements versées'],['RECETTES',2008,23114768,'Emprunts et dettes assimilées'],['RECETTES',2006,90765.2,'Total des opé. pour compte de tiers'],['RECETTES',2002,9220.38,'Immobilisations corporelles'],['DEPENSES',2011,13448394.76,'Immobilisations corporelles'],['RECETTES',2007,0,'Produits des cessions'],['RECETTES',2006,9477,'Immobilisations corporelles'],['DEPENSES',2004,25797252.58,'Emprunts et dettes assimilées'],['RECETTES',2009,27828766.67,'Emprunts et dettes assimilées'],['DEPENSES',2009,4500,'Particip. et créances rattachées à des particip.'],['DEPENSES',2009,0,'Résultats antérieurs'],['RECETTES',2007,20000000,'Emprunts et dettes assimilées'],['DEPENSES',2011,0,'Résultats antérieurs'],['DEPENSES',2006,13957735.68,'Immobilisations corporelles'],['DEPENSES',2002,13323.88,'Aures immobilisations financières'],['DEPENSES',2003,2433388.54,'Total des opé. pour compte de tiers'],['DEPENSES',2008,195278.14,'Total des opé. pour compte de tiers'],['RECETTES',2009,111795.5,'Total des opé. pour compte de tiers'],['DEPENSES',2004,0,'Résultats antérieurs'],['DEPENSES',2004,1285.3,'Aures immobilisations financières'],['RECETTES',2006,15871809.71,'Subventions d\'investissement'],['DEPENSES',2005,2191056.98,'Immobilisations incorporelles (sauf 204)'],['DEPENSES',2004,1568184.61,'Total des opé. pour compte de tiers'],['RECETTES',2002,9178238.59,'Subventions d\'investissement'],['RECETTES',2010,6630.43,'Immobilisations en cours'],['RECETTES',2009,50528469.3,'Dotations, fonds divers et réserves'],['DEPENSES',2005,106498.92,'Total des opé. pour compte de tiers'],['RECETTES',2007,49629308.73,'Dotations, fonds divers et réserves'],['RECETTES',2007,108963.82,'Immobilisations en cours'],['RECETTES',2007,8019582.51,'Subventions d\'investissement'],['DEPENSES',2002,25641882.38,'Emprunts et dettes assimilées'],['DEPENSES',2006,2286,'Particip. et créances rattachées à des particip.'],['DEPENSES',2004,5534093.8,'Immobilisations corporelles'],['RECETTES',2005,16586679.09,'Subventions d\'investissement'],['DEPENSES',2011,3150000,'Aures immobilisations financières'],['RECETTES',2010,140760,'Total des opé. pour compte de tiers'],['DEPENSES',2005,15945908.98,'Immobilisations corporelles']
+          ]);
+          return data;
+        }
+        function drawVisualization() {
+          var data = alimenterChart();
+          var motionchart = new google.visualization.MotionChart(
+            document.getElementById('idMotionSyncBudgetNomenc'));
+
+          var options = {};
+          options['width'] = 940;
+          options['height'] = 500;
+
+          options['state'] ='{"orderedByY":false,"xAxisOption":"_TIME","playDuration":15000,"xZoomedDataMin":1009843200000,"colorOption":"_UNIQUE_COLOR","duration":{"timeUnit":"Y","multiplier":1},"xZoomedDataMax":1262304000000,"time":"2010","sizeOption":"_UNISIZE","dimensions":{"iconDimensions":["dim0"]},"xLambda":1,"nonSelectedAlpha":0.4,"xZoomedIn":false,"yZoomedDataMax":500000000,"yAxisOption":"2","showTrails":false,"orderedByX":false,"yZoomedDataMin":0,"yZoomedIn":false,"yLambda":1,"iconType":"LINE","uniColorForNonSelected":false,"iconKeySettings":[{"key":{"dim0":"RECETTES"}},{"key":{"dim0":"DEPENSES"}}]}';
+
+          options['showAdvancedPanel'] = true;
+
+
+          var grouped_dt = google.visualization.data.group(
+            data, [0,1],
+            [{'column': 2, 'aggregation': google.visualization.data.sum, 'type': 'number'}]);
+
+          motionchart.draw(grouped_dt , options);
+
+
+        }
+
+        google.load('visualization', '1', {packages: ['motionchart']});
+
+        google.setOnLoadCallback(drawVisualization);
+      }
+    goInner150();
+
+    //--><!]]>
+
+    //]]>
+  </script>
+  <script src="https://www.google.com/uds/?file=visualization&amp;v=1&amp;packages=motionchart&amp;sig=40ff64b1d9d6b3213524485974f36cc0&amp;have=default%2Cui%2Cformat%2Ctable" type="text/javascript">
+  </script>
+  <script src="https://www.google.com/uds/api/visualization/1.0/40ff64b1d9d6b3213524485974f36cc0/motionchart+en.js" type="text/javascript">
+  </script>
+  <link rel="shortcut icon" href="/sites/opendata/files/theme482_favicon.png" type="image/x-icon"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/node/node.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/system/defaults.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/system/system.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/system/system-menus.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/user/user.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/cck/theme/content-module.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/ctools/css/ctools.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/date/date.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/date/date_popup/themes/datepicker.1.7.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/date/date_popup/themes/jquery.timeentry.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/filefield/filefield.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/fivestar/css/fivestar.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/opendata/files/fivestar/basic/basic.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/lightbox2/css/lightbox.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/panels/css/panels.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/forum/forum.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/cck/modules/fieldgroup/fieldgroup.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/views/css/views.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/panels/plugins/layouts/onecol/onecol.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/comment/comment.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/faceted_search/faceted_search_ui.css?t"/>
+  <link type="text/css" rel="stylesheet" media="all" href="/sites/opendata.bordeaux.fr/themes/theme482/styles.css?t"/>
+  <script type="text/javascript" src="/sites/opendata.bordeaux.fr/files/js/js_691113222662f762608ef8adf8662bcb.js">
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    <!--//--><![CDATA[//><!--
+      jQuery.extend(Drupal.settings, { "basePath": "/", "fivestar": { "titleUser": "Votre notation: ", "titleAverage": "Moyenne: ", "feedbackSavingVote": "En train d\'enregistrer votre vote...", "feedbackVoteSaved": "Votre vote a été enregistré.", "feedbackDeletingVote": "Suppression de votre vote...", "feedbackVoteDeleted": "Votre vote a été supprimé." }, "lightbox2": { "rtl": "0", "file_path": "/(\\w\\w/)sites/opendata.bordeaux.fr/files", "default_image": "/sites/all/modules/lightbox2/images/brokenimage.jpg", "border_size": 10, "font_color": "000", "box_color": "fff", "top_position": "", "overlay_opacity": "0.8", "overlay_color": "000", "disable_close_click": true, "resize_sequence": 0, "resize_speed": 400, "fade_in_speed": 400, "slide_down_speed": 600, "use_alt_layout": false, "disable_resize": false, "disable_zoom": false, "force_show_nav": false, "show_caption": true, "loop_items": false, "node_link_text": "View Image Details", "node_link_target": false, "image_count": "Image !current of !total", "video_count": "Video !current of !total", "page_count": "Page !current of !total", "lite_press_x_close": "press \x3ca href=\"#\" onclick=\"hideLightbox(); return FALSE;\"\x3e\x3ckbd\x3ex\x3c/kbd\x3e\x3c/a\x3e to close", "download_link_text": "", "enable_login": false, "enable_contact": false, "keys_close": "c x 27", "keys_previous": "p 37", "keys_next": "n 39", "keys_zoom": "z", "keys_play_pause": "32", "display_image_size": "original", "image_node_sizes": "()", "trigger_lightbox_classes": "", "trigger_lightbox_group_classes": "", "trigger_slideshow_classes": "", "trigger_lightframe_classes": "", "trigger_lightframe_group_classes": "", "custom_class_handler": 0, "custom_trigger_classes": "", "disable_for_gallery_lists": true, "disable_for_acidfree_gallery_lists": true, "enable_acidfree_videos": true, "slideshow_interval": 5000, "slideshow_automatic_start": true, "slideshow_automatic_exit": true, "show_play_pause": true, "pause_on_next_click": false, "pause_on_previous_click": true, "loop_slides": false, "iframe_width": 600, "iframe_height": 400, "iframe_border": 1, "enable_video": false }, "CToolsUrlIsAjaxTrusted": { "/content/budget-2003-par-nomenclature": [ true, true, true, true ] } });
+    //--><!]]>
+
+    //]]>
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    <!--//--><![CDATA[//><!--
+    if (Drupal.jsEnabled) { $(document).ready(function() { $('body').addClass('yui-skin-sam'); } ); };
+    //--><!]]>
+
+    //]]>
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    <!--//--><![CDATA[//><!--
+    if (Drupal.jsEnabled) {
+      $(document).ready(function() {
+        $("#edit-keywords").attr("title", "Recherche d'articles, données, applications");
+
+
+      } )
+    };
+
+
+    //--><!]]>
+
+    //]]>
+  </script>
+  <link rel="alternate" type="application/rss+xml" title="Dernières données" href="/fluxdonnees.xml"/>
+  <link rel="alternate" type="application/rss+xml" title="Actualités données" href="/fluxactualites.xml"/>
+  <link href="/sites/opendata.bordeaux.fr/themes/theme482/menu.css" rel="stylesheet" type="text/css"/>
+</head>
+<body id="body" class="lightbox-processed yui-skin-sam">
+<iframe id="_yuiResizeMonitor" style="position: absolute; visibility: visible; width: 10em; height: 10em; top: -160px; left: 0px; border-width: 0;">
+</iframe>
+<div class="foradmin">
+</div>
+<div class="main pages ">
+  <div class="main-bg">
+    <div class="main-width">
+      <div class="header">
+        <div class="logo">
+          <h1>
+            <a href="/" title="Accueil" accesskey="1">
+              <img src="/sites/opendata/files/theme482_logo.png" alt="Accueil"/>
+            </a>
+          </h1>
+        </div>
+        <div class="toprightheader">
+        </div>
+      </div>
+      <div class="clear">
+      </div>
+      <div class="menu">
+        <div class="menu-left">
+          <!-- YUI Menu div-->              <div id="productsandservices" class="yuimenubar yuimenubarnav yui-module yui-overlay visible" style="z-index: 0; position: static; display: block; visibility: visible;">
+          <div class="bd">
+            <ul style="text-decoration:none" class="first-of-type">
+              <li class="yuimenubaritem first-of-type yuimenubaritem-hassubmenu" id="yui-gen0" groupindex="0" index="0">
+                <a href="/recherche/results" class="yuimenubaritemlabel yuimenubaritemlabel-hassubmenu">
+                  Les données
+                </a>
+              </li>
+              <li class="yuimenubaritem" id="yui-gen1" groupindex="0" index="1">
+                <a href="/applications-titre/all" class="yuimenubaritemlabel">
+                  Les applications
+                </a>
+              </li>
+              <li class="yuimenubaritem yuimenubaritem-hassubmenu" id="yui-gen2" groupindex="0" index="2">
+                <a href="/bienvenue-sur-les-videos" class="yuimenubaritemlabel yuimenubaritemlabel-hassubmenu">
+                  Les vidéos
+                </a>
+              </li>
+              <li class="yuimenubaritem yuimenubaritem-hassubmenu" id="yui-gen3" groupindex="0" index="3">
+                <a href="/demarche" class="yuimenubaritemlabel yuimenubaritemlabel-hassubmenu">
+                  L'opendata à Bordeaux
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        </div>
+        <div class="search">
+          <div class="menu-right">
+            <form action="/content/budget-2003-par-nomenclature" accept-charset="UTF-8" method="post" id="faceted-search-ui-form-1">
+              <div>
+                <div class="form-item" id="edit-keywords-wrapper">
+                  <input type="text" maxlength="256" name="keywords" id="edit-keywords" size="20" value="" accesskey="4" class="form-text" title="Recherche d'articles, données, applications"/>
+                </div>
+                <input type="hidden" name="stage" id="edit-stage" value="results"/>
+                <input type="hidden" name="facet-key" id="edit-facet-key" value=""/>
+                <input type="hidden" name="facet-id" id="edit-facet-id" value=""/>
+                <input type="hidden" name="facet-sort" id="edit-facet-sort" value=""/>
+                <input type="submit" name="op" id="edit-submit" value="Go" class="form-submit"/>
+                <a href="/recherche/" class="faceted-search-more">
+                  Plus d'options
+                </a>
+                <input type="hidden" name="form_build_id" id="form-VXpnqEsTfcP12zDe_D9CZp1RaT8JYiIu7g9LbaOABgk" value="form-VXpnqEsTfcP12zDe_D9CZp1RaT8JYiIu7g9LbaOABgk"/>
+                <input type="hidden" name="form_id" id="edit-faceted-search-ui-form-1" value="faceted_search_ui_form_1"/>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="clear">
+      </div>
+      <div class="one-column">
+        <div class="content">
+          <div class="node node-panel">
+            <div class="indent">
+              <div class="picto-taxo">
+                <h1>
+                  <img src="http://opendata.bordeaux.fr/sites/opendata.bordeaux.fr/files/imagecache/20x20/category_pictures/ico_th_turquoise.png" alt="Citoyenneté et administration" title="Citoyenneté et administration" class="taxonomy-image-term-95 taxonomy-image-vid-5" width="20" height="20"/>
+                </h1>
+              </div>
+              <div class="title">
+                <h1>
+                  Budget 2003 par nomenclature
+                </h1>
+              </div>
+              <div class="lien-coms">
+                <a href="#commentaires" class="smoothscroll">
+                  Commentaires
+                </a>
+              </div>
+              <div class="text-box">
+                <div class="field field-type-nodereference field-field-lien-data">
+                  <div class="field-items">
+                    <div class="field-item odd">
+
+                      ﻿
+
+                      <div class="node node-data">
+                        <div class="taxonomy">
+                          <a href="/recherche/results/taxonomy%253A41">
+                            Budget principal
+                          </a>
+                          <a href="/recherche/results/taxonomy%253A42">
+                            Chapitre
+                          </a>
+                          <a href="/recherche/results/taxonomy%253A95">
+                            Citoyenneté et administration
+                          </a>
+                          <a href="/recherche/results/taxonomy%253A44">
+                            Nomenclature
+                          </a>
+                        </div>
+                        <div class="indent">
+                          <div class="column-data left-data">
+                            <div class="title-data">
+
+                              Description générale
+                            </div>
+                            <div class="content-data">
+                              <div class="field field-type-date field-field-datemaj">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Date de mise à jour : 
+                                    </div>
+                                    <span class="date-display-single">
+                                          06/05/2015
+                                        </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-nodereference field-field-lien-licence">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Licence : 
+                                    </div>
+                                    <a href="/content/licence-ouverte">
+                                      Licence ouverte
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-description">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Description : 
+                                    </div>
+
+                                    Budget 2003 par nomenclature.
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-zgeo">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Zone géographique : 
+                                    </div>
+
+                                    Commune de Bordeaux
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-nodereference field-field-proprietaire">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Propriétaire : 
+                                    </div>
+                                    <a href="/content/ville-de-bordeaux">
+                                      Ville de Bordeaux
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-nodereference field-field-data-contact">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Gestionnaire : 
+                                    </div>
+                                    <a href="/content/finances">
+                                      Finances
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-data-langue">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Langue : 
+                                    </div>
+
+                                    Français
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="column-data center-data">
+                            <div class="title-data">
+
+                              Description technique
+                            </div>
+                            <div class="content-data">
+                              <div class="field field-type-text field-field-type-ressource">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Type de ressource : 
+                                    </div>
+
+                                    Table
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-freqmaj">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Fréquence de mise à jour : 
+                                    </div>
+
+                                    Annuelle
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-periode">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Période couverte : 
+                                    </div>
+
+                                    2003
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-data-granularite">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Granularité : 
+                                    </div>
+
+                                    Chapitre
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-data-exhaustivite">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Exhaustivité : 
+                                    </div>
+
+                                    Totale
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-data-precision">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Précision : 
+                                    </div>
+
+                                    Bonne
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="column-data right-data">
+                            <div class="title-data">
+
+                              Ressources
+                            </div>
+                            <div class="content-data">
+                              <div class="field field-type-link field-field-liensref">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <a href="http://databordeaux.blob.core.windows.net/data/dref/budgetnomenc2003.xls" target="_blank">
+                                      Fichier de référence (excel)
+                                    </a>
+                                  </div>
+                                  <div class="field-item even">
+                                    <a href="http://databordeaux.blob.core.windows.net/data/doc/vbdx_notice.pdf" target="_blank">
+                                      Consulter la notice descriptive des données (pdf)
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="field field-type-text field-field-resource-path">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+                                    <div class="field-label-inline-first">
+
+                                      Ressource odata : 
+                                    </div>
+
+                                    budgetnomenc2003
+                                  </div>
+                                </div>
+                              </div>
+                              <a href="http://opendatabdx.cloudapp.net/DataBrowser/DownloadCsv?container=databordeaux&amp;entitySet=budgetnomenc2003&amp;filter=NOFILTER" class="downloaddata" onclick="return xitiClickTel('DownloadData::Data_budgetnomenc2003::csv', this);">
+                                <img alt="Icône csv" src="/sites/opendata/files/filetype/csv.png"/>
+                              </a>
+                              <a href="http://odata.bordeaux.fr/v1/databordeaux/budgetnomenc2003/?format=json" class="downloaddata" onclick="return xitiClickTel('DownloadData::Data_budgetnomenc2003::json', this);">
+                                <img alt="Icône json" src="/sites/opendata/files/filetype/json.png"/>
+                              </a>
+                              <a href="http://odata.bordeaux.fr/v1/databordeaux/budgetnomenc2003/?format=atom" class="downloaddata" onclick="return xitiClickTel('DownloadData::Data_budgetnomenc2003::atom', this);">
+                                <img alt="Icône atom" src="/sites/opendata/files/filetype/atom.png"/>
+                              </a>
+                              <form action="/content/budget-2003-par-nomenclature" accept-charset="UTF-8" method="post" id="fivestar-form-node-55-1" class="fivestar-widget">
+                                <div>
+                                  <div class="fivestar-form-vote-55 clear-block">
+                                    <input type="hidden" name="content_type" id="edit-content-type-1" value="node"/>
+                                    <input type="hidden" name="content_id" id="edit-content-id-1" value="55"/>
+                                    <div class="fivestar-form-item  fivestar-combo-text fivestar-average-stars fivestar-labels-hover fivestar-processed">
+                                      <div class="form-item" id="edit-vote-2-wrapper">
+                                        <input type="hidden" name="vote_count" id="edit-vote-count-1" value="3"/>
+                                        <input type="hidden" name="vote_average" id="edit-vote-average-1" value="56"/>
+                                        <input type="hidden" name="auto_submit_path" id="edit-auto-submit-path-1" value="/fivestar/vote/node/55/vote" class="fivestar-path"/>
+                                        <select name="vote" class="form-select" id="edit-vote-3" style="display: none;">
+                                          <option value="-">
+                                            Sélectionner la notation
+                                          </option>
+                                          <option value="34">
+                                            Faible
+                                          </option>
+                                          <option value="67" selected="selected">
+                                            Moyen
+                                          </option>
+                                          <option value="100">
+                                            Bon
+                                          </option>
+                                        </select>
+                                        <div class="fivestar-widget clear-block fivestar-widget-3">
+                                          <div class="star star-1 star-odd star-first on">
+                                            <a href="#34" title="Faible">
+                                              Faible
+                                            </a>
+                                          </div>
+                                          <div class="star star-2 star-even on">
+                                            <a href="#67" title="Moyen" style="width: 68.00000000000001%;">
+                                              Moyen
+                                            </a>
+                                          </div>
+                                          <div class="star star-3 star-odd star-last">
+                                            <a href="#100" title="Bon">
+                                              Bon
+                                            </a>
+                                          </div>
+                                        </div>
+                                        <input type="hidden" name="auto_submit_token" id="edit-auto-submit-token-1" value="953232d329217c8d2068b65663ad4014" class="fivestar-token"/>
+                                        <div class="description">
+                                          <div class="fivestar-summary fivestar-summary-combo fivestar-feedback-enabled">
+                                                <span class="user-rating">
+                                                  Votre notation :
+                                                  <span>
+                                                    Aucun(e)
+                                                  </span>
+                                                </span>
+                                            <span class="average-rating">
+                                                  Moyenne :
+                                                  <span>
+                                                    1.7
+                                                  </span>
+                                                </span>
+                                            <span class="total-votes">
+                                                  (
+                                                  <span>
+                                                    3
+                                                  </span>
+                                                   votes)
+                                                </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <input type="hidden" name="destination" id="edit-destination-1" value="node/192"/>
+                                    <input type="submit" name="op" id="edit-fivestar-submit-1" value="Frais" class="form-submit fivestar-submit" style="display: none;"/>
+                                    <input type="hidden" name="form_build_id" id="form-_TDYnMuitLOa6MlptL3sot5Ipx5YqT9iugeF0F8AYfQ" value="form-_TDYnMuitLOa6MlptL3sot5Ipx5YqT9iugeF0F8AYfQ"/>
+                                    <input type="hidden" name="form_id" id="edit-fivestar-form-node-55-1" value="fivestar_form_node_55"/>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                          <div class="clear">
+                          </div>
+                          <a name="post-links-data" href="#post-links-data" title="Liens bas de contenu">
+                          </a>
+                          <div class="post-links">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-display panel-1col clear-block">
+                  <div class="panel-panel panel-col">
+                    <div>
+                      <div class="panel-pane pane-node">
+                        <h2 class="pane-title">
+                          tab_budgetNomenc2003
+                        </h2>
+                        <div class="pane-content">
+
+                          ﻿
+
+
+
+                          <script type="text/javascript">
+                            //<![CDATA[
+
+                            <!--//--><![CDATA[//><!--
+                            if (Drupal.jsEnabled) { $(document).ready(function() { $('#node-119').toggle(false); } ); };
+                            //--><!]]>
+
+                            //]]>
+                          </script>
+                          <h3 class="visu-title-toggle">
+                            <a href="#" onclick="$('#node-119').toggle(1000);return false;">
+                              <div class="field field-type-text field-field-title-toggle">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+
+                                    Visualisation d'un extrait des données
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          </h3>
+                          <div id="node-119" class="main-width node" style="display: none;">
+                            <div class="content">
+                            </div>
+                            <div id="zoneHtml">
+                              <div id="tab">
+                                <div class="google-visualization-table" style="position: relative; z-index: 0; max-width: 100%; max-height: 100%; width: 100%;">
+                                  <div style="position: relative; overflow: auto; max-width: 100%; max-height: 100%; width: 100%;">
+                                    <table class="google-visualization-table-table" cellspacing="0" style="width: 100%;">
+                                      <thead>
+                                      <tr class="google-visualization-table-tr-head">
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          intitule_budget
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          exercice
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          section
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          depenses_recettes
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          reel_ordre
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          chapitre_budg_nature
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          intitule_chapitre
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          credits_ouverts
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          mandats_emis
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          restes_a_realiser
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                        <th class="google-visualization-table-th gradient unsorted">
+                                          charges_rattachees
+                                          <span class="google-visualization-table-sortind">
+                                                </span>
+                                        </th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr class="google-visualization-table-tr-even">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          16
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Emprunts et dettes assimilées
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          55920000
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          20000000
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          34100000
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-odd">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          DEPENSES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          00
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Résultats antérieurs
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          25568658.29
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          0
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          0
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-even">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          13
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Subventions d'investissement
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          18672253.75
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          8772328.29
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          9625616.97
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-odd">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          FONCTIONNEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          77
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Produits exceptionnels
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          11088239.41
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          10447846.94
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          0
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-even">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          10
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Dotations, fonds divers et réserves
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          32197527.23
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          32197527.87
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          0
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-odd">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          DEPENSES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          45
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Total des opé. pour compte de tiers
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          3971878.88
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2433388.54
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          1538490.34
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-even">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          DEPENSES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          16
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Emprunts et dettes assimilées
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          25116339.51
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          25075931.03
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-odd">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          FONCTIONNEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          73
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Impôts et taxes
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          175944399
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          182588021.6
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          0
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-even">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          FONCTIONNEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          RECETTES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          013
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Atténuation de charges
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          1207073
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          1416900.86
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      <tr class="google-visualization-table-tr-odd">
+                                        <td class="google-visualization-table-td">
+                                          MAIRIE DE BORDEAUX
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          2003
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          INVESTISSEMENT
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          DEPENSES
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          REEL
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          23
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          Immobilisations en cours
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          72026483.6
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          32454278
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                          38997520.88
+                                        </td>
+                                        <td class="google-visualization-table-td">
+                                        </td>
+                                      </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="google-visualization-table-div-page gradient">
+                                    <div class="charts-inline-block charts-custom-button charts-custom-button-disabled charts-custom-button-collapse-right" role="button" style="-moz-user-select: none;" aria-disabled="true">
+                                      <div class="charts-inline-block charts-custom-button-outer-box">
+                                        <div class="charts-inline-block charts-custom-button-inner-box">
+                                          préc
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="charts-inline-block charts-custom-button charts-custom-button-collapse-left" role="button" style="-moz-user-select: none;" tabindex="0">
+                                      <div class="charts-inline-block charts-custom-button-outer-box">
+                                        <div class="charts-inline-block charts-custom-button-inner-box">
+                                          suiv
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="google-visualization-table-page-numbers">
+                                    </div>
+                                  </div>
+                                  <div style="clear: both; width: 100%; height: 0px;">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="meta">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="panel-region-separator">
+                      </div>
+                      <div class="panel-pane pane-node">
+                        <h2 class="pane-title">
+                          Motion_SynBudgetNomenc
+                        </h2>
+                        <div class="pane-content">
+
+                          ﻿
+
+
+
+
+                          <h3 class="visu-title-toggle">
+                            <a href="#" onclick="$('#node-150').toggle(1000);return false;">
+                              <div class="field field-type-text field-field-title-toggle">
+                                <div class="field-items">
+                                  <div class="field-item odd">
+
+                                    Visualisation graphique
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          </h3>
+                          <div id="node-150" class="main-width node">
+                            <div class="content">
+                              <p>
+                                    <span style="color: #808080;">
+                                      Visualisation du budget d'investissement (dépenses et recettes) pour la période 2002 - 2011
+                                    </span>
+                              </p>
+                            </div>
+                            <div id="zoneHtml">
+                              <div id="idMotionSyncBudgetNomenc">
+                              </div>
+                            </div>
+                            <div class="meta">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a name="post-links-panel" href="#post-links-panel" title="Liens bas de contenu">
+              </a>
+              <div class="post-links" id="commentaires">
+                <ul class="links inline">
+                  <li class="first last comment_add">
+                    <a href="/comment/reply/192">
+                          <span title="Partager vos idées et opinions au sujet de cette contribution." class="comment_add">
+                            <span>
+                              Ajouter un commentaire
+                            </span>
+                          </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fin one/left column -->          <div class="clear">
+    </div>
+      <div class="footer">
+        <a href="http://www.bordeaux.fr" target="_blank" title="Lien vers http://www.bordeaux.fr - Nouvelle fenêtre">
+          <img alt="Icône Bordeaux" src="/sites/opendata/files/pictos/img_footer.png" class="img-footer"/>
+        </a>
+        <div class="block block-menu" id="block-menu-menu-footer">
+          <div class="block-bg">
+            <div class="indent">
+              <ul class="menu">
+                <li class="leaf first">
+                  <a href="/content/mentions-legales" title="" accesskey="">
+                    Mentions légales
+                  </a>
+                </li>
+                <li class="leaf">
+                  <a href="/contact" title="">
+                    Contact
+                  </a>
+                </li>
+                <li class="leaf last">
+                  <a href="/faq" title="" accesskey="">
+                    FAQ
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="block block-block" id="block-block-11">
+          <div class="block-bg">
+            <div class="indent">
+              <script type="text/javascript">
+                //<![CDATA[
+                // <![CDATA[
+                xtnv = document;        //parent.document or top.document or document
+                xtsd = "http://logi242";
+                xtsite = "504730";
+                xtn2 = "";        // level 2 site
+                xtpage = "panel::content/budget-2003-par-nomenclature";        //page name (with the use of :: to create chapters)
+                xtdi = "";        //implication degree
+                // ]]>
+                //]]>
+              </script>
+              <script src="/sites/opendata.bordeaux.fr/themes/theme482/js/xtcore.js" type="text/javascript">
+              </script>
+              <noscript>
+
+                &lt;img width="1" height="1" alt="" src="http://logi242.xiti.com/hit.xiti?s=504730&amp;amp;s2=&amp;amp;p=&amp;amp;di=&amp;amp;" /&gt;
+
+              </noscript>
+            </div>
+          </div>
+        </div>
+        <div class="block block-block" id="block-block-18">
+          <div class="block-bg">
+            <div class="indent">
+              <script type="text/javascript">
+                //<![CDATA[
+
+
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', 'UA-15818726-8']);
+                _gaq.push(['_setDomainName', 'bordeaux.fr']);
+                _gaq.push(['_trackPageview']);
+
+                (function() {
+                  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+                })();
+
+
+                //]]>
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="lightbox2-overlay" style="display: none;">
+</div>
+<div id="lightbox" style="display: none;" class="lightbox2-orig-layout">
+  <div id="outerImageContainer" style="background-color: #fff; color: #000;">
+    <div id="modalContainer" style="display: none; padding: 10px;">
+    </div>
+    <div id="frameContainer" style="display: none; padding: 10px;">
+    </div>
+    <div id="imageContainer" style="display: none; padding: 10px;">
+      <img id="lightboxImage" alt=""/>
+      <div id="hoverNav">
+        <a id="prevLink" title="Précédent" href="#" style="padding-top: 10px;">
+        </a>
+        <a id="nextLink" title="Suivant" href="#" style="padding-top: 10px;">
+        </a>
+      </div>
+    </div>
+    <div id="loading">
+      <a href="#" id="loadingLink">
+      </a>
+    </div>
+  </div>
+  <div id="imageDataContainer" class="clearfix" style="background-color: #fff; color: #000;">
+    <div id="imageData">
+      <div id="imageDetails">
+            <span id="caption">
+            </span>
+        <span id="numberDisplay">
+            </span>
+      </div>
+      <div id="bottomNav">
+        <div id="frameHoverNav">
+          <a id="framePrevLink" title="Précédent" href="#" style="padding-top: 10px;">
+          </a>
+          <a id="frameNextLink" title="Suivant" href="#" style="padding-top: 10px;">
+          </a>
+        </div>
+        <a id="bottomNavClose" title="Fermer" href="#" style="background-color: #fff; color: #000;">
+        </a>
+        <a id="bottomNavZoom" href="#">
+        </a>
+        <a id="bottomNavZoomOut" href="#">
+        </a>
+        <a id="lightshowPause" title="Arrêter le diaporama" href="#" style="display: none;">
+        </a>
+        <a id="lightshowPlay" title="Démarrer le diaporama" href="#" style="display: none;">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+file_descriptor:
+    check:
+        domain: abertos.xunta.gal
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": a:contains(Catálogo de datos)
+
+    search-result-page:
+        regex: busca-de-datos
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link": a.titulo
+
+    detail-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": span.titulo
+                "http://purl.org/dc/terms/description": div#audioiddesc
+                "http://purl.org/dc/terms/publisher": span[itemprop="author"]
+                "http://purl.org/dc/terms/issued": ul.infoXeral li:eq(0) span
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": ul.infoXeral li:eq(4) span a
+                "http://purl.org/dc/terms/license": ul.infoXeral li:eq(3) span a
+                "http://purl.org/dc/terms/modified": ul.infoXeral li:eq(1) span
+                "http://www.w3.org/ns/dcat#downloadURL": a:contains(Ficha en)

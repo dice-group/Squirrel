@@ -1,0 +1,2684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" class="  ext-strict">
+<head>
+  <style type="text/css">
+    @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}
+  </style>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>
+    Forest density in Kyrgyzstan —  example.com
+  </title>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:site" content="@GeoNode"/>
+  <!-- Twitter truncates twitter:title to 70 characters. -->    <meta name="twitter:title" content="Forest density in Kyrgyzstan"/>
+  <!-- Twitter truncates twitter:description at the word to 200 characters. -->    <meta name="twitter:description" content="Layer on example.com by maksim.kulikov"/>
+  <meta name="twitter:image" content="http://31.186.50.220/uploaded/thumbs/layer-e279bbae-6aee-11e8-9d66-000c29ef5152-thumb.png"/>
+  <meta property="og:title" content="Forest density in Kyrgyzstan"/>
+  <meta property="og:site_name" content="example.com"/>
+  <meta property="og:url" content="http://example.com/layers/geonode%3Aforests"/>
+  <meta property="og:description" content="Layer on example.com by maksim.kulikov"/>
+  <meta name="og:image" content="http://31.186.50.220/uploaded/thumbs/layer-e279bbae-6aee-11e8-9d66-000c29ef5152-thumb.png"/>
+  <meta name="og:image:width" content="200"/>
+  <meta name="og:image:height" content="150"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/ext/resources/css/ext-all.css?v=2.4.dev20160217120921"/>
+  <script type="text/javascript" src="/static/geoexplorer/externals/ext/adapter/ext/ext-base.js?v=2.4.dev20160217120921">
+  </script>
+  <script type="text/javascript" src="/static/geoexplorer/externals/ext/ext-all.js?v=2.4.dev20160217120921">
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    Ext.Ajax.defaultHeaders = { 'X-CSRFToken': '55ZYpcpo3NXvK5tcbuSxoM0T8EPgezJL' };
+    Ext.BLANK_IMAGE_URL = "/static/geoexplorer/externals/ext/resources/images/default/s.gif";
+
+    //]]>
+  </script>
+  <script src="/static/geonode/js/extjs/ux.js?v=2.4.dev20160217120921">
+  </script>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/geoext/resources/css/geoext-all.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/geoext/resources/css/gxtheme-gray.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/theme/ux/colorpicker/color-picker.ux.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/printpreview/resources/css/printpreview.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/openlayers/theme/default/style.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/externals/gxp/src/theme/all.css?v=2.4.dev20160217120921"/>
+  <link rel="stylesheet" type="text/css" href="/static/geoexplorer/theme/app/geoexplorer.css?v=2.4.dev20160217120921"/>
+  <!--[if IE]><link rel="stylesheet" type="text/css" href="/static/geoexplorer/theme/app/ie.css"/><![endif]-->    <script src="/static/geoexplorer/script/GeoExplorer.js?v=2.4.dev20160217120921" type="text/javascript">
+</script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    OpenLayers.ImgPath = "/static/geoexplorer/externals/openlayers/theme/default/img";
+    OpenLayers.Request.DEFAULT_CONFIG.headers = {
+      'X-CSRFToken': '55ZYpcpo3NXvK5tcbuSxoM0T8EPgezJL'
+    };
+
+    /**
+     *  Add GetFeedFeatureInfo tool to GeoExplorer.Viewer
+     */
+    GeoExplorer.Viewer.prototype.loadConfig = function(config) {
+      config.viewerTools.push( {
+        ptype: "gxp_getfeedfeatureinfo",
+        checked: true
+      });
+
+      // Do not include the layer styler on the map-detail view.
+
+
+
+
+      GeoExplorer.Viewer.superclass.loadConfig.call(this, config);
+    };
+
+
+    //]]>
+  </script>
+  <script type="text/javascript" src="/static/geonode/js/utils/thumbnail.js">
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+
+    var app;
+    Ext.onReady(function() {
+      GeoExt.Lang.set("en");
+      var config = {
+        tools: [{
+          ptype: "gxp_wmsgetfeatureinfo",
+          format: "grid",
+          actionTarget: "main.tbar",
+          outputConfig: {width: 400, height: 200, panIn: false}
+        }],
+
+        proxy: '/proxy/?url=',
+
+        localGeoServerBaseUrl: "http://31.186.50.220/geoserver/",
+        authorizedRoles: "ROLE_ANONYMOUS",
+
+        /* The URL to a REST map configuration service.  This service
+         * provides listing and, with an authenticated user, saving of
+         * maps on the server for sharing and editing.
+         */
+        rest: "/maps/",
+
+        printService: "http://31.186.50.220/geoserver/pdf/",
+
+
+        portalConfig: {
+          renderTo: "preview_map",
+          height: 400
+        },
+
+        listeners: {
+          "ready": function() {
+            var map = app.mapPanel.map;
+            var layer = app.map.layers.slice(-1)[0];
+
+            // FIXME(Ariel): Zoom to extent until #1795 is fixed.
+            //map.zoomToExtent(layer.maxExtent, false)
+
+            var bbox = layer.bbox;
+            if (bbox != undefined)
+            {
+              if (!Array.isArray(bbox) && Object.keys(layer.srs) in bbox) {
+                bbox = bbox[Object.keys(layer.srs)].bbox;
+              }
+
+              var extent = OpenLayers.Bounds.fromArray(bbox);
+              var zoomToData = function()
+              {
+                map.zoomToExtent(extent, false);
+                app.mapPanel.center = map.center;
+                app.mapPanel.zoom = map.zoom;
+                map.events.unregister('changebaselayer', null, zoomToData);
+              };
+              map.events.register('changebaselayer',null,zoomToData);
+              if(map.baseLayer){
+                map.zoomToExtent(extent, false);
+              }
+            }
+          },
+          "beforeunload": function() {
+            if (modified) {
+              styleEditor.show();
+              return false;
+            }
+          }
+        }
+      };
+
+      config = Ext.apply(config, {"defaultSourceType": "gxp_wmscsource", "about": {"abstract": "", "title": ""}, "map": {"layers": [{"opacity": 1, "group": "background", "args": ["No background"], "visibility": false, "source": "0", "fixed": true, "type": "OpenLayers.Layer"}, {"opacity": 1, "group": "background", "name": "mapnik", "visibility": true, "source": "1", "fixed": true, "type": "OpenLayers.Layer.OSM"}, {"opacity": 1, "source": "2", "fixed": false, "visibility": true}, {"opacity": 1, "group": "background", "name": "AerialWithLabels", "visibility": false, "source": "3", "fixed": true}, {"opacity": 1.0, "name": "geonode:forests", "title": "Forest density in Kyrgyzstan", "selected": true, "visibility": true, "srs": "EPSG:900913", "bbox": [7569678.98976402, 4721611.87082253, 9128244.751580475, 5465506.706080516], "fixed": false, "queryable": true, "source": "4"}], "center": [0.0, -7.081154550627918e-10], "units": "m", "maxResolution": 156543.03390625, "maxExtent": [-20037508.34, -20037508.34, 20037508.34, 20037508.34], "zoom": 0, "projection": "EPSG:900913"}, "id": 0, "sources": {"1": {"ptype": "gxp_osmsource"}, "0": {"ptype": "gxp_olsource"}, "3": {"apiKey": "AlsVz31xTG6eKYZjR0sNhi6lgHrcUlmwWv-ioWkR7HBQpTv-2835_Wk1vUq2JPuR", "ptype": "gxp_bingsource"}, "2": {"ptype": "gxp_mapboxsource"}, "4": {"url": "http://31.186.50.220/geoserver/wms", "restUrl": "/gs/rest", "ptype": "gxp_wmscsource"}}});
+      app = new GeoExplorer.Viewer(config);
+
+      for (var key in app.tools) {
+        var tool = app.tools[key];
+        if (tool.ptype == 'gxp_styler') {
+          tool.rasterStyling = true;
+        };
+      };
+
+      // change style displayed in map
+      Ext.get(Ext.DomQuery.select("input[@name='style']")).on("click", function(evt, elem) {
+        app.selectedLayer.getLayer().mergeNewParams({
+          "STYLES": elem.id,
+          "_dc": Math.random()
+        });
+      });
+
+      Ext.get(Ext.DomQuery.select(".style-edit")).on("click", function(evt, elem) {
+        for (var key in app.tools) {
+          var tool = app.tools[key];
+          if (tool.ptype == 'gxp_styler') {
+            tool.actions[0].execute();
+          };
+        }
+      });
+      Ext.Ajax.on('requestcomplete', function(req, cippa, opts){
+        if(opts.method == 'PUT'){
+          $('#legend_icon').attr('src', $('#legend_icon').attr('src')+'&'+Math.random());
+        }
+      }, this);
+    });
+
+
+
+    //]]>
+  </script>
+  <link href="/static/lib/css/assets.min.css?v=2.4.dev20160217120921" rel="stylesheet"/>
+  <link href="/static/geonode/css/ext-compatibility.css?v=2.4.dev20160217120921" rel="stylesheet"/>
+  <link href="/static/geonode/css/base.css?v=2.4.dev20160217120921" rel="stylesheet"/>
+  <style type="text/css">
+    [ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}
+  </style>
+  <!--[if IE]>
+  <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <style>
+    #ieflag{
+      display: block !important;
+      height: 150px;
+      text-align: center;
+    }
+  </style>
+  <![endif]-->    <link rel="search" type="application/opensearchdescription+xml" href="/catalogue/opensearch" title="GeoNode Search"/>
+</head>
+<body class="layers   ext-gecko ext-gecko3" id="ext-gen91">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+            <span class="sr-only">
+              Toggle navigation
+            </span>
+        <span class="icon-bar">
+            </span>
+        <span class="icon-bar">
+            </span>
+        <span class="icon-bar">
+            </span>
+      </button>
+      <a class="navbar-brand" href="/">
+        GeoNode
+      </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li id="nav_layers">
+          <a href="/layers/">
+            Layers
+          </a>
+        </li>
+        <li id="nav_maps">
+          <a href="/maps/">
+            Maps
+          </a>
+        </li>
+        <li id="nav_documents">
+          <a href="/documents/">
+            Documents
+          </a>
+        </li>
+        <li id="nav_people">
+          <a href="/people/">
+            People
+          </a>
+        </li>
+        <li id="nav_groups">
+          <a href="/groups/">
+            Groups
+          </a>
+        </li>
+      </ul>
+      <form class="navbar-form" id="search" action="/search/">
+        <div class="col-md-3">
+          <div class="input-group">
+            <input id="search_input" type="text" placeholder="Search" class="form-control" name="title__icontains" autocomplete="off"/>
+            <span class="input-group-btn">
+                  <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search">
+                    </i>
+                  </button>
+                </span>
+          </div>
+        </div>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="#" data-toggle="modal" data-target="#SigninModal" role="button">
+
+            Sign in
+
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!--/.nav-collapse -->      </div>
+</nav>
+<div class="alert alert-danger alert-dismissible" role="alert" id="ieflag" style="display:none">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">
+          ×
+        </span>
+  </button>
+  <h1>
+    You are using an outdated browser that is not supported by GeoNode.
+  </h1>
+  <p>
+    Please use a
+    <strong>
+      modern browser
+    </strong>
+    like Mozilla Firefox, Google Chrome or Safari.
+  </p>
+</div>
+<div id="wrap">
+  <div class="container">
+    <div class="alert alert-warn" id="status-message" hidden="hidden">
+      <a class="close" onclick="$('.alert').hide()">
+        ×
+      </a>
+      <strong>
+        <p id="status-message-text">
+          Placeholder for status-message
+        </p>
+      </strong>
+      <p id="status-message-text-body">
+        Placeholder for status-message-body
+      </p>
+    </div>
+    <div class="page-header">
+      <h2 class="page-title">
+        Forest density in Kyrgyzstan
+      </h2>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div id="embedded_map" class="mrg-btm">
+          <div id="preview_map">
+            <div id="ext-comp-1011" class=" x-panel">
+              <div class="x-panel-bwrap" id="ext-gen18">
+                <div class="x-panel-body x-panel-body-noheader" id="ext-gen19" style="height: 400px;">
+                  <div id="ext-comp-1012" class=" x-panel x-panel-noborder" style="width: 1256px;">
+                    <div class="x-panel-bwrap" id="ext-gen21">
+                      <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder x-border-layout-ct" id="ext-gen22" style="width: 1256px; height: 400px;">
+                        <div id="ext-comp-1013" class=" x-panel x-border-panel" style="left: 0px; top: 0px; width: 1256px;">
+                          <div class="x-panel-bwrap" id="ext-gen24">
+                            <div class="x-panel-tbar x-panel-tbar-noheader" id="ext-gen25" style="width: 1256px;">
+                              <div id="paneltbar" class="x-toolbar x-small-editor x-toolbar-layout-ct" style="width: 1252px;">
+                                <table cellspacing="0" class="x-toolbar-ct">
+                                  <tbody>
+                                  <tr>
+                                    <td class="x-toolbar-left" align="left">
+                                      <table cellspacing="0">
+                                        <tbody>
+                                        <tr class="x-toolbar-left-row">
+                                          <td class="x-toolbar-cell" id="ext-gen51">
+                                            <table id="layerchooser" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="x-btn-arrow" unselectable="on">
+                                                    <button type="button" id="ext-gen52" class=" x-btn-text icon-layer-switcher">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen53">
+                                                    <span class="xtb-sep" id="ext-gen54">
+                                                    </span>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen56">
+                                            <table id="ext-comp-1018" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen57" class=" x-btn-text gxp-icon-print">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen59">
+                                            <table id="ext-comp-1019" cellspacing="0" class="x-btn x-btn-icon x-btn-pressed">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen60" class=" x-btn-text gxp-icon-pan">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen62">
+                                            <table id="ext-comp-1020" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen63" class=" x-btn-text gxp-icon-getfeatureinfo">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen66">
+                                            <table id="ext-comp-1024" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="x-btn-split" unselectable="on">
+                                                    <button type="button" id="ext-gen67" class=" x-btn-text gxp-icon-measure-length">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen70">
+                                            <table id="ext-comp-1025" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen71" class=" x-btn-text gxp-icon-zoom-in">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen72">
+                                            <table id="ext-comp-1026" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen73" class=" x-btn-text gxp-icon-zoom-out">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen76">
+                                            <table id="ext-comp-1027" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen77" class=" x-btn-text gxp-icon-zoom-previous">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen78">
+                                            <table id="ext-comp-1028" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen79" class=" x-btn-text gxp-icon-zoom-next">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen81">
+                                            <table id="ext-comp-1029" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen82" class=" x-btn-text gxp-icon-zoomtoextent">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen84">
+                                            <table id="ext-comp-1030" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen85" class=" x-btn-text gxp-icon-legend">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td class="x-toolbar-cell" id="ext-gen87">
+                                            <table id="ext-comp-1031" cellspacing="0" class="x-btn x-btn-icon">
+                                              <tbody class="x-btn-small x-btn-icon-small-left">
+                                              <tr>
+                                                <td class="x-btn-tl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-tc"/>
+                                                <td class="x-btn-tr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-ml">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-mc">
+                                                  <em class="" unselectable="on">
+                                                    <button type="button" id="ext-gen88" class=" x-btn-text gxp-icon-googleearth">
+                                                       
+                                                    </button>
+                                                  </em>
+                                                </td>
+                                                <td class="x-btn-mr">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="x-btn-bl">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                                <td class="x-btn-bc"/>
+                                                <td class="x-btn-br">
+                                                  <i>
+                                                     
+                                                  </i>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                        </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                    <td class="x-toolbar-right" align="right">
+                                      <table cellspacing="0" class="x-toolbar-right-ct">
+                                        <tbody>
+                                        <tr>
+                                          <td>
+                                            <table cellspacing="0">
+                                              <tbody>
+                                              <tr class="x-toolbar-right-row">
+                                                <td class="x-toolbar-cell" id="ext-gen89">
+                                                  <table id="aboutbutton" cellspacing="0" class="x-btn x-btn-icon">
+                                                    <tbody class="x-btn-small x-btn-icon-small-left">
+                                                    <tr>
+                                                      <td class="x-btn-tl">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                      <td class="x-btn-tc"/>
+                                                      <td class="x-btn-tr">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="x-btn-ml">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                      <td class="x-btn-mc">
+                                                        <em class="" unselectable="on">
+                                                          <button type="button" id="ext-gen90" class=" x-btn-text icon-about">
+                                                             
+                                                          </button>
+                                                        </em>
+                                                      </td>
+                                                      <td class="x-btn-mr">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="x-btn-bl">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                      <td class="x-btn-bc"/>
+                                                      <td class="x-btn-br">
+                                                        <i>
+                                                           
+                                                        </i>
+                                                      </td>
+                                                    </tr>
+                                                    </tbody>
+                                                  </table>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                          <td>
+                                            <table cellspacing="0">
+                                              <tbody>
+                                              <tr class="x-toolbar-extras-row"/>
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                        </tr>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div class="x-panel-body x-panel-body-noheader x-border-layout-ct" id="ext-gen26" style="width: 1256px; height: 375px;">
+                              <div id="ext-comp-1007" class=" x-panel x-border-panel" style="left: 0px; top: 0px; width: 1256px;">
+                                <div class="x-panel-bwrap" id="ext-gen29">
+                                  <div class="x-panel-body x-panel-body-noheader" id="ext-gen30" style="width: 1256px; height: 375px;">
+                                    <div id="ext-comp-1003" class=" x-panel x-panel-noborder" style="width: 1256px;">
+                                      <div class="x-panel-bwrap" id="ext-gen32">
+                                        <div class="x-panel-tbar x-panel-tbar-noheader x-panel-tbar-noborder" id="ext-gen33" style="width: 1256px;">
+                                          <div id="ext-comp-1002" class="x-toolbar x-small-editor x-hide-display x-toolbar-layout-ct" style="width: 1251px;">
+                                            <table cellspacing="0" class="x-toolbar-ct">
+                                              <tbody>
+                                              <tr>
+                                                <td class="x-toolbar-left" align="left">
+                                                  <table cellspacing="0">
+                                                    <tbody>
+                                                    <tr class="x-toolbar-left-row"/>
+                                                    </tbody>
+                                                  </table>
+                                                </td>
+                                                <td class="x-toolbar-right" align="right">
+                                                  <table cellspacing="0" class="x-toolbar-right-ct">
+                                                    <tbody>
+                                                    <tr>
+                                                      <td>
+                                                        <table cellspacing="0">
+                                                          <tbody>
+                                                          <tr class="x-toolbar-right-row"/>
+                                                          </tbody>
+                                                        </table>
+                                                      </td>
+                                                      <td>
+                                                        <table cellspacing="0">
+                                                          <tbody>
+                                                          <tr class="x-toolbar-extras-row"/>
+                                                          </tbody>
+                                                        </table>
+                                                      </td>
+                                                    </tr>
+                                                    </tbody>
+                                                  </table>
+                                                </td>
+                                              </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                        <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder olMap" id="ext-gen34" style="width: 1256px; height: 375px;">
+                                          <div id="OpenLayers_Map_15_OpenLayers_ViewPort" style="position: relative; overflow: hidden; width: 100%; height: 100%;" class="olMapViewport olControlDragPanActive olControlZoomBoxActive olControlNavigationActive olControlPanPanelActive olControlZoomPanelActive olControlScaleLineActive olControlNavigationHistoryActive olControlNavigationHistoryolControlNavigationHistoryPreviousActive">
+                                            <div id="OpenLayers_Map_15_OpenLayers_Container" style="position: absolute; z-index: 749; left: 0px; top: 0px;">
+                                              <div id="OpenLayers_Layer_13" style="position: absolute; width: 100%; height: 100%; z-index: 325;" dir="ltr" class="olLayerDiv">
+                                              </div>
+                                              <div id="OpenLayers_Layer_WMS_89" style="position: absolute; width: 100%; height: 100%; z-index: 345;" dir="ltr" class="olLayerDiv olLayerGrid">
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: -34px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=8140237.763125,5009377.085,8766409.89875,5635549.220625&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: 222px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=8140237.763125,4383204.949375,8766409.89875,5009377.085&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: -34px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=7514065.6275,5009377.085,8140237.763125,5635549.220625&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: 222px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=7514065.6275,4383204.949375,8140237.763125,5009377.085&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: -34px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=8766409.89875,5009377.085,9392582.034375,5635549.220625&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: 222px; width: 256px; height: 256px;" src="http://31.186.50.220/geoserver/wms?LAYERS=geonode%3Aforests&amp;TRANSPARENT=TRUE&amp;SERVICE=WMS&amp;VERSION=1.1.1&amp;REQUEST=GetMap&amp;STYLES=&amp;FORMAT=image%2Fpng&amp;TILED=true&amp;SRS=EPSG%3A900913&amp;BBOX=8766409.89875,4383204.949375,9392582.034375,5009377.085&amp;WIDTH=256&amp;HEIGHT=256"/>
+                                              </div>
+                                              <div id="OpenLayers_Layer_Bing_85" style="position: absolute; width: 100%; height: 100%; z-index: 340; display: none;" dir="ltr" class="olLayerDiv olLayerGrid">
+                                              </div>
+                                              <div id="OpenLayers_Layer_OSM_83" style="position: absolute; width: 100%; height: 100%; z-index: 335;" dir="ltr" class="olLayerDiv olLayerGrid">
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/45/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/45/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/44/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/44/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/46/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/46/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/45/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/44/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/45/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/46/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/44/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 31px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/43/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 31px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/43/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/46/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1055px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/47/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1055px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/47/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 31px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/43/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 31px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/43/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1055px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/47/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 543px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/45/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1055px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/47/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 287px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/44/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -225px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/42/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 799px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/46/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -225px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/42/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -225px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/42/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1311px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/48/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 31px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/43/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1311px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/48/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -225px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/42/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1055px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/47/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1311px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/48/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1311px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/48/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -481px; top: -34px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/41/23.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -225px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/42/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -481px; top: 222px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://b.tile.openstreetmap.org/6/41/24.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -481px; top: -290px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/41/22.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: 1311px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/48/26.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -481px; top: 478px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://a.tile.openstreetmap.org/6/41/25.png"/>
+                                                <img class="olTileImage" style="visibility: inherit; opacity: 1.0; position: absolute; left: -481px; top: 734px; width: 256px; height: 256px;" crossorigin="anonymous" src="http://c.tile.openstreetmap.org/6/41/26.png"/>
+                                              </div>
+                                              <div id="OpenLayers_Layer_81" style="position: absolute; width: 100%; height: 100%; z-index: 330; display: none;" dir="ltr" class="olLayerDiv">
+                                              </div>
+                                            </div>
+                                            <div id="OpenLayers_Control_PanNorth_4" style="position: absolute; z-index: 1005;" class="olControlPanNorth olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_PanSouth_5" style="position: absolute; z-index: 1006;" class="olControlPanSouth olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_PanEast_6" style="position: absolute; z-index: 1007;" class="olControlPanEast olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_PanWest_7" style="position: absolute; z-index: 1008;" class="olControlPanWest olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_PanPanel_3" style="position: absolute; z-index: 1008;" class="olControlPanPanel olControlNoSelect" unselectable="on">
+                                              <div class="olControlPanNorthItemInactive olButton">
+                                              </div>
+                                              <div class="olControlPanSouthItemInactive olButton">
+                                              </div>
+                                              <div class="olControlPanEastItemInactive olButton">
+                                              </div>
+                                              <div class="olControlPanWestItemInactive olButton">
+                                              </div>
+                                            </div>
+                                            <div id="OpenLayers_Control_ZoomIn_9" style="position: absolute; z-index: 1009;" class="olControlZoomIn olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_ZoomToMaxExtent_10" style="position: absolute; z-index: 1010;" class="olControlZoomToMaxExtent olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_ZoomOut_11" style="position: absolute; z-index: 1011;" class="olControlZoomOut olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_ZoomPanel_8" style="position: absolute; z-index: 1011;" class="olControlZoomPanel olControlNoSelect" unselectable="on">
+                                              <div class="olControlZoomInItemInactive olButton">
+                                              </div>
+                                              <div class="olControlZoomToMaxExtentItemInactive olButton">
+                                              </div>
+                                              <div class="olControlZoomOutItemInactive olButton">
+                                              </div>
+                                            </div>
+                                            <div id="OpenLayers_Control_Attribution_12" style="position: absolute; z-index: 1011;" class="olControlAttribution olControlNoSelect" unselectable="on">
+                                              ©
+                                              <a href="http://www.openstreetmap.org/copyright">
+                                                OpenStreetMap
+                                              </a>
+                                              contributors
+                                            </div>
+                                            <div id="OpenLayers_Control_Measure_68" style="position: absolute; z-index: 1013;" class="olControlMeasure olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="OpenLayers_Control_Measure_76" style="position: absolute; z-index: 1014;" class="olControlMeasure olControlNoSelect" unselectable="on">
+                                            </div>
+                                            <div id="ext-comp-1004" class=" x-panel map-overlay">
+                                              <div class="x-panel-bwrap" id="ext-gen39">
+                                                <div class="x-panel-body x-panel-body-noheader" id="ext-gen40">
+                                                  <div class="olControlScaleLine overlay-element overlay-scaleline" id="ext-comp-1014" style="position: relative; display: inline;">
+                                                    <div class="olControlScaleLineTop" style="visibility: visible; width: 55px;">
+                                                      100 km
+                                                    </div>
+                                                    <div class="olControlScaleLineBottom" style="visibility: visible; width: 88px;">
+                                                      100 mi
+                                                    </div>
+                                                  </div>
+                                                  <div id="ext-comp-1016" class=" x-panel overlay-element overlay-scalechooser x-panel-noborder">
+                                                    <div class="x-panel-bwrap" id="ext-gen43">
+                                                      <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder" id="ext-gen44">
+                                                        <div class="x-form-field-wrap x-form-field-trigger-wrap" id="ext-gen45" style="width: 166px;">
+                                                          <input type="text" size="24" autocomplete="off" id="ext-comp-1015" name="ext-comp-1015" class="x-form-text x-form-field x-trigger-noedit" style="width: 85px;" value="1 : 8735642" readonly="readOnly"/>
+                                                          <img src="/static/geoexplorer/externals/ext/resources/images/default/s.gif" alt="" class="x-form-trigger x-form-arrow-trigger" id="ext-gen46"/>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div class="x-slider x-slider-vert gx-zoomslider" id="ext-comp-1005" style="position: absolute; z-index: 1000; height: 93px;">
+                                              <div class="x-slider-end" id="ext-gen47">
+                                                <div class="x-slider-inner" id="ext-gen48" style="height: 86px;">
+                                                  <div class="x-slider-thumb" id="ext-gen50" style="bottom: 11.125px;">
+                                                  </div>
+                                                  <a class="x-slider-focus" href="#" tabindex="-1" hidefocus="on" id="ext-gen49">
+                                                  </a>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div id="OpenLayers_Control_WMSGetFeatureInfo_309" style="position: absolute; z-index: 1016;" class="olControlWMSGetFeatureInfo olControlNoSelect" unselectable="on">
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div id="ext-comp-1006" class=" x-panel x-panel-noborder x-hide-display">
+                                      <div class="x-panel-bwrap" id="ext-gen36">
+                                        <div class="x-panel-body x-panel-body-noheader x-panel-body-noborder" id="ext-gen37">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layer-actions">
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a href="#info" data-toggle="tab">
+                <i class="fa fa-info-circle">
+                </i>
+                Info
+              </a>
+            </li>
+            <li>
+              <a href="#attributes" data-toggle="tab">
+                <i class="fa fa-bars">
+                </i>
+                Attributes
+              </a>
+            </li>
+            <li>
+              <a href="#share" data-toggle="tab">
+                <i class="fa fa-share">
+                </i>
+                Share
+              </a>
+            </li>
+            <li>
+              <a href="#rate" data-toggle="tab">
+                <i class="fa fa-star">
+                </i>
+                Ratings
+              </a>
+            </li>
+            <li>
+              <a href="#comments" data-toggle="tab">
+                <i class="fa fa-comment-o">
+                </i>
+                Comments
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content">
+          <article itemscope="" itemtype="http://schema.org/Dataset" class="description tab-pane active" id="info">
+            <dl class="dl-horizontal">
+              <dt>
+                Title
+              </dt>
+              <dd itemprop="name">
+                Forest density in Kyrgyzstan
+              </dd>
+              <dd class="license-more-above collapse">
+              </dd>
+              <dt>
+                Abstract
+              </dt>
+              <dd itemprop="description">
+                <p>
+                  Forest density in Kyrgyzstan, data from Global Forest Watch
+                </p>
+              </dd>
+              <dt>
+                Publication Date
+              </dt>
+              <dd itemprop="datePublished" datetime="2018-06-08T02:38:00">
+                June 8, 2018, 2:38 a.m.
+              </dd>
+              <dt>
+                Type
+              </dt>
+              <dd>
+                Raster Data
+              </dd>
+              <dt>
+                Category
+              </dt>
+              <dd>
+                <a href="/search/?category__identifier__in=environment">
+                  Environment
+                </a>
+                <a href="#category-more" data-toggle="collapse" data-target=".category-more">
+                  <i class="fa fa-info-circle">
+                  </i>
+                </a>
+              </dd>
+              <dd class="category-more collapse">
+
+                environmental resources, protection and conservation. Examples: environmental pollution, waste storage and treatment, environmental impact assessment, monitoring environmental risk, nature reserves, landscape
+
+              </dd>
+              <dt>
+                Owner
+              </dt>
+              <dd>
+                <a itemprop="author" href="/people/profile/maksim.kulikov/">
+                  maksim.kulikov
+                </a>
+              </dd>
+            </dl>
+            <dl class="dl-horizontal">
+              <dt>
+                <a href="#more" data-toggle="collapse" data-target=".more">
+                  More info
+                </a>
+              </dt>
+              <dd>
+                -
+              </dd>
+            </dl>
+            <dl class="dl-horizontal">
+              <div class="more collapse">
+                <dt>
+                  Language
+                </dt>
+                <dd>
+                  English
+                </dd>
+                <dt>
+                  Supplemental Information
+                </dt>
+                <dd>
+                  <p>
+                    Информация отсутствует
+                  </p>
+                </dd>
+              </div>
+            </dl>
+          </article>
+          <article id="attributes" class="tab-pane">
+            <table class="table table-striped table-bordered table-condensed">
+              <thead>
+              <tr>
+                <th>
+                  Attribute Name
+                </th>
+                <th>
+                  Label
+                </th>
+                <th>
+                  Description
+                </th>
+                <th>
+                  Range
+                </th>
+                <th>
+                  Average
+                </th>
+                <th>
+                  Median
+                </th>
+                <th>
+                  Standard Deviation
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>
+                  GRAY_INDEX
+                </td>
+                <td/>
+                <td/>
+                <td>
+                  NA
+                </td>
+                <td/>
+                <td/>
+                <td/>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+          <link href="/static/geonode/css/social_twitter.css" rel="stylesheet"/>
+          <article class="tab-pane" id="share">
+            <!-- TODO: Move this to a reusable template snippet -->                <header>
+            <h3>
+              Share This Layer
+            </h3>
+          </header>
+            <div>
+              <ul class="social">
+                <li>
+                  <a href="mailto:?subject=Forest density in Kyrgyzstan&amp;body=http://geonode.msri.io/layers/geonode:forests" class="email">
+                    Email
+                  </a>
+                </li>
+                <li>
+                  <a href="http://www.facebook.com/sharer.php?u=http://geonode.msri.io/layers/geonode:forests" class="fb">
+                    Facebook
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/share?url=http://geonode.msri.io/layers/geonode:forests&amp;hashtags=geonode" class="tw">
+                    Twitter
+                  </a>
+                </li>
+                <li>
+                  <a href="https://plus.google.com/share?url=http://geonode.msri.io/layers/geonode:forests" class="gp">
+                    Google +
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- TODO: Add more sharing options -->              </article>
+          <article id="comments" class="tab-pane">
+            <div id="comments_section" class="comments paginate paginate-manual">
+              <header>
+                <h3>
+                  Comments
+                  <span class="total">
+                        (0 total)
+                      </span>
+                </h3>
+              </header>
+              <div class="clearfix">
+                <p class="pull-right">
+                  Log in to add a comment
+                </p>
+              </div>
+              <div class="paginate-contents">
+              </div>
+            </div>
+            <!-- Modal -->              </article>
+          <article id="rate" class="tab-pane">
+            <!-- TODO: Move this to a reusable template snippet -->                <h4>
+            Average Rating
+          </h4>
+            <div class="overall_rating" data-score="0" title="Not rated yet!" style="width: 100px;">
+              <img src="/static/lib/img/star-off.png" alt="1" title="Not rated yet!"/>
+               
+              <img src="/static/lib/img/star-off.png" alt="2" title="Not rated yet!"/>
+               
+              <img src="/static/lib/img/star-off.png" alt="3" title="Not rated yet!"/>
+               
+              <img src="/static/lib/img/star-off.png" alt="4" title="Not rated yet!"/>
+               
+              <img src="/static/lib/img/star-off.png" alt="5" title="Not rated yet!"/>
+              <input type="hidden" name="score" readonly="readonly"/>
+            </div>
+            (0)
+
+          </article>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <button class="btn btn-primary btn-md btn-block" data-toggle="modal" data-target="#download-layer">
+              Download Layer
+            </button>
+          </li>
+        </ul>
+        <div class="modal fade" id="download-layer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  ×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                  Download Layer
+                </h4>
+              </div>
+              <div class="modal-body">
+                <ul>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/gwc/service/gmaps?layers=geonode:forests&amp;zoom={z}&amp;x={x}&amp;y={y}&amp;format=image/png8">
+                      Tiles
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wms/kml?layers=geonode%3Aforests&amp;mode=refresh">
+                      View in Google Earth
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wms/kml?layers=geonode%3Aforests&amp;mode=download">
+                      KML
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wcs?format=image%2Ftiff&amp;request=GetCoverage&amp;version=2.0.1&amp;service=WCS&amp;coverageid=geonode%3Aforests">
+                      GeoTIFF
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wcs?format=application%2Fx-gzip&amp;request=GetCoverage&amp;version=2.0.1&amp;service=WCS&amp;coverageid=geonode%3Aforests">
+                      GZIP
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&amp;width=1539&amp;bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&amp;service=WMS&amp;format=image%2Fpng&amp;srs=EPSG%3A4326&amp;request=GetMap&amp;height=550">
+                      PNG
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&amp;width=1539&amp;bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&amp;service=WMS&amp;format=application%2Fpdf&amp;srs=EPSG%3A4326&amp;request=GetMap&amp;height=550">
+                      PDF
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/geoserver/wms?layers=geonode%3Aforests&amp;width=1539&amp;bbox=67.9995833333%2C38.999583212199994%2C82.0004177867%2C44.000416945599994&amp;service=WMS&amp;format=image%2Fjpeg&amp;srs=EPSG%3A4326&amp;request=GetMap&amp;height=550">
+                      JPEG
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <li class="list-group-item">
+          <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#download-metadata">
+            Download Metadata
+          </button>
+        </li>
+        <div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  ×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                  Download Metadata
+                </h4>
+              </div>
+              <div class="modal-body">
+                <ul>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      ISO
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2Fcsdgm&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      FGDC
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=urn%3Aoasis%3Anames%3Atc%3Aebxml-regrep%3Axsd%3Arim%3A3.0&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      ebRIM
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      Dublin Core
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fgcmd.gsfc.nasa.gov%2FAboutus%2Fxml%2Fdif%2F&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      DIF
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://31.186.50.220/catalogue/csw?outputschema=http%3A%2F%2Fwww.w3.org%2F2005%2FAtom&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=e279bbae-6aee-11e8-9d66-000c29ef5152">
+                      Atom
+                    </a>
+                  </li>
+                  <ul>
+                  </ul>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <li class="list-group-item">
+          <h4 class="list-group-item-heading">
+            Legend
+          </h4>
+          <p>
+          </p>
+          <p>
+            <img id="legend_icon" src="http://31.186.50.220/geoserver/wms?request=GetLegendGraphic&amp;format=image/png&amp;WIDTH=20&amp;HEIGHT=20&amp;LAYER=geonode:forests&amp;legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on"/>
+          </p>
+        </li>
+        <li class="list-group-item">
+          <h4>
+            Maps using this layer
+          </h4>
+          <ul class="list-unstyled">
+            <li>
+              This layer is not currently used in any maps.
+            </li>
+          </ul>
+        </li>
+        <li class="list-group-item">
+          <h4>
+            Create a map using this layer
+          </h4>
+          <p>
+            Click the button below to generate a new map based on this layer.
+          </p>
+          <a href="/maps/new?layer=geonode:forests" class="btn btn-primary btn-block">
+            Create a Map
+          </a>
+        </li>
+        <li class="list-group-item">
+          <h4>
+            About
+          </h4>
+          <p>
+            Owner, Point of Contact, Metadata Author
+          </p>
+          <section class="last">
+            <div class="avatar span1 pull-left">
+              <a href="/people/profile/maksim.kulikov/">
+                <img src="http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e/?s=40" alt="maksim.kulikov"/>
+              </a>
+            </div>
+            <div>
+              <div>
+                <a href="/people/profile/maksim.kulikov/">
+                  maksim.kulikov
+                </a>
+              </div>
+              <div class="details">
+                <div class="meta">
+                  <p>
+
+                    No Group
+
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </li>
+        <div class="modal fade" id="_permissions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <form id="permission_form" accept-charset="UTF-8" method="post" class="modal-form" action="/security/permissions/180">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                  </button>
+                  <h4 class="modal-title" id="myModalLabel">
+                    Set permissions for this resource
+                  </h4>
+                </div>
+                <div class="modal-body">
+                  <div class="panel-group" id="permissions-body">
+                    <!-- view layer -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+
+                          Who can view it?
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+                            <input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" checked=""/>
+
+                            Anyone
+
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="view_resourcebase" id="view_resourcebase_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="view_resourcebase" id="view_resourcebase_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- download layer -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+
+                          Who can download it?
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+                            <input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" checked=""/>
+
+                            Anyone
+
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="download_resourcebase" id="download_resourcebase_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="download_resourcebase" id="download_resourcebase_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- change metadata -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+
+                          Who can change metadata for it?
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="change_resourcebase_metadata" id="change_resourcebase_metadata_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="change_resourcebase_metadata" id="change_resourcebase_metadata_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- change layer data -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+
+                          Who can edit data for this layer?
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse4" class="panel-collapse collapse">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="change_layer_data" id="change_layer_data_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="change_layer_data" id="change_layer_data_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- change layer style -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+
+                          Who can edit styles for this layer?
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse5" class="panel-collapse collapse">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="change_layer_style" id="change_layer_style_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="change_layer_style" id="change_layer_style_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <!-- manage layer -->                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+
+                          Who can manage it? (update, delete, change permissions, publish/unpublish it)
+
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse6" class="panel-collapse collapse">
+                      <div class="controls">
+                        <div class="radio">
+                          <label>
+
+                            The following users:
+
+                            <input class="user-select" type="text" name="manage_resourcebase" id="manage_resourcebase_users"/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+
+                            The following groups:
+
+                            <input class="group-select" type="text" name="manage_resourcebase" id="manage_resourcebase_groups"/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a href="#" class="btn btn-default" data-dismiss="modal">
+                    Cancel
+                  </a>
+                  <a href="#" class="btn btn-primary" data-dismiss="modal" id="perms_submit">
+                    Apply Changes
+                  </a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- col-md-4 -->        </div>
+    <!-- row -->      </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+
+        Powered by
+        <a href="http://geonode.org">
+          GeoNode
+        </a>
+        <em>
+          version 2.4.dev20160217120921
+        </em>
+        |
+
+        <a href="/developer/">
+          Developers
+        </a>
+        |
+
+        <a href="/about/">
+          About
+        </a>
+      </div>
+      <div class="col-md-4">
+        <label class="hidden">
+          Language
+        </label>
+        <form class="form-inline" action="/i18n/setlang/" method="post">
+          <input type="hidden" name="csrfmiddlewaretoken" value="55ZYpcpo3NXvK5tcbuSxoM0T8EPgezJL"/>
+          <select class="col-md-6 pull-right" name="language" onchange="javascript:form.submit()">
+            <option value="en" selected="selected">
+
+              English
+
+            </option>
+            <option value="es">
+
+              Español
+
+            </option>
+            <option value="it">
+
+              Italiano
+
+            </option>
+            <option value="fr">
+
+              Français
+
+            </option>
+            <option value="de">
+
+              Deutsch
+
+            </option>
+            <option value="el">
+
+              Ελληνικά
+
+            </option>
+            <option value="id">
+
+              Bahasa Indonesia
+
+            </option>
+            <option value="zh-cn">
+
+              中文
+
+            </option>
+            <option value="ja">
+
+              日本語
+
+            </option>
+            <option value="fa">
+
+              Persian
+
+            </option>
+            <option value="ar">
+
+              Arabic
+
+            </option>
+            <option value="bn">
+
+              Bengali
+
+            </option>
+            <option value="ne">
+
+              Nepali
+
+            </option>
+            <option value="sq">
+
+              Albanian
+
+            </option>
+            <option value="af">
+
+              Afrikaans
+
+            </option>
+            <option value="sw">
+
+              Swahili
+
+            </option>
+            <option value="pt">
+
+              Portuguese
+
+            </option>
+            <option value="ru">
+
+              Russian
+
+            </option>
+            <option value="vi">
+
+              Vietnamese
+
+            </option>
+            <option value="ko">
+
+              한국어
+
+            </option>
+            <option value="am">
+
+              Amharic
+
+            </option>
+            <option value="km">
+
+              Khmer
+
+            </option>
+            <option value="pl">
+
+              Polish
+
+            </option>
+            <option value="sv">
+
+              Swedish
+
+            </option>
+            <option value="th">
+
+              ไทย
+
+            </option>
+            <option value="uk">
+
+              Ukranian
+
+            </option>
+            <option value="si">
+
+              Sinhala
+
+            </option>
+            <option value="ta">
+
+              Tamil
+
+            </option>
+            <option value="tl">
+
+              Tagalog
+
+            </option>
+          </select>
+        </form>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- Modal must stay outside the navbar -->    <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">
+                ×
+              </span>
+          <span class="sr-only">
+                Close
+              </span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          Sign in
+        </h4>
+      </div>
+      <form class="form-signin" role="form" action="/account/login/?next=/layers/geonode:forests" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="csrfmiddlewaretoken" value="55ZYpcpo3NXvK5tcbuSxoM0T8EPgezJL"/>
+          <div class="form-group">
+            <label for="id_username" class="sr-only">
+              Username:
+            </label>
+            <input id="id_username" class="form-control" name="username" placeholder="Username" type="text"/>
+          </div>
+          <div class="form-group">
+            <label for="id_password" class="sr-only">
+              Password:
+            </label>
+            <input id="id_password" class="form-control" name="password" placeholder="Password" type="password"/>
+          </div>
+          <label class="checkbox">
+            <input type="checkbox" value="on"/>
+            Remember Me
+
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-block">
+            Sign in
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- End of Modal -->    <script src="/static/lib/js/assets.min.js?v=2.4.dev20160217120921">
+</script>
+<script src="/static/geonode/js/utils/utils.js?v=2.4.dev20160217120921">
+</script>
+<script src="/static/geonode/js/base/base.js?v=2.4.dev20160217120921">
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  jQuery(function($) {
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = jQuery.trim(cookies[i]);
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function sameOrigin(url) {
+      // test that a given url is a same-origin URL
+      // url could be relative or scheme relative or absolute
+      var host = document.location.host; // host + port
+      var protocol = document.location.protocol;
+      var sr_origin = '//' + host;
+      var origin = protocol + sr_origin;
+      // Allow absolute or scheme relative URLs to same origin
+      return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+          // Send the token to same-origin, relative URLs only.
+          // Send the token only if the method warrants CSRF protection
+          // Using the CSRFToken value acquired earlier
+          xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+      }
+    });
+  });
+
+  //]]>
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/django_admin.js">
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/autocomplete.js">
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/widget.js">
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/addanother.js">
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/text_widget.js">
+</script>
+<script type="text/javascript" src="/static/autocomplete_light/remote.js">
+</script>
+<link rel="stylesheet" type="text/css" href="/static/autocomplete_light/style.css"/>
+<script type="text/javascript" src="/jsi18n/">
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  $(function() {
+    $('div.overall_rating').raty({
+      half: true,
+      readOnly: true,
+      score: function() {
+        return $(this).attr('data-score');
+      },
+      path: "/static/lib/img/"
+    });
+    var activeTab = $("[href='" + location.hash + "']");
+    activeTab && activeTab.tab('show');
+  });
+
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  if($("#request-download").length){
+    $("#request-download").click(function () {
+      $.ajax(
+        {
+          type: "POST",
+          url: "/security/request-permissions",
+          dataType: 'json',
+          data: { uuid: "e279bbae-6aee-11e8-9d66-000c29ef5152" },
+          success: function(data) {
+            $('#status-message-text').text('Success!');
+            $('#status-message-text-body').text('Permission to download the resource requested to resource owner.');
+            $('#status-message').addClass('alert-success').removeClass('alert-danger');
+            $('#status-message').show();
+          },
+          error: function(data) {
+            $('#status-message-text').text('Error!');
+            $('#status-message-text-body').text('Permission to download the resource could not be requested to resource owner because of an error.');
+            $('#status-message').addClass('alert-danger').removeClass('alert-success');
+            $('#status-message').show();
+          }
+        }
+      );
+    });
+  }
+
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  $("#comment_submit_btn").click(function(event) {
+    $.ajax({
+      type: "POST",
+      url: $("#form_post_comment").attr('action'),
+      data: $("#form_post_comment").serialize(),
+      success: function() {
+        $('#form_post_comment_div').modal('hide');
+        $('#comments_section').load(window.location.pathname + ' #comments_section',
+          function(){$(this).children().unwrap()})
+      }
+    });
+    return false;
+  });
+
+
+
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  $('#set_thumbnail').click(function(){
+    createMapThumbnail();
+    $('#edit-layer').modal('toggle');
+  });
+
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+
+  function permissionsString(form, type) {
+    var permissions = {
+      'users': {},
+      'groups': {}
+    }
+    if (typeof form === 'string'){
+      form = $(form);
+    }
+    var data = form.serializeObject();
+
+    /*
+    * If there's the anonymous user then set it's view permission and pop it
+    */
+    permissions['users']['AnonymousUser'] = [];
+    if (data.hasOwnProperty('view_anonymous')) {
+      permissions['users']['AnonymousUser'] = ['view_resourcebase'];
+      delete data['view_anonymous'];
+    }
+    if (data.hasOwnProperty('download_anonymous')) {
+      if (permissions['users']['AnonymousUser'] != undefined){
+        permissions['users']['AnonymousUser'].push('download_resourcebase');
+      } else {
+        permissions['users']['AnonymousUser'] = ['download_resourcebase'];
+      };
+      delete data['download_anonymous'];
+    }
+
+    /*
+    * Cycle through permissions to map the form structure perm = ['user1',',user2'] to
+    * the geonode user = ['perm1','perm2'], the same for groups
+    */
+
+    for(var perm in data){
+      if(data[perm][0] !== ''){
+        var perms_to_assign = [perm];
+        if(perm=='manage_resourcebase'){
+          perms_to_assign = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase'];
+        }
+        for (var i=0;i<data[perm][0].split(',').length;i++){
+          var user = data[perm][0].split(',')[i];
+          for(var j=0;j< perms_to_assign.length;j++){
+            if(permissions['users'].hasOwnProperty(user)){
+              permissions['users'][user].push(perms_to_assign[j]);
+            }else{
+              permissions['users'][user] = [perms_to_assign[j]];
+            }
+          }
+        }
+      }
+      if(data[perm][1] !== ''){
+        var perms_to_assign = [perm];
+        if(perm=='manage_resourcebase'){
+          perms_to_assign = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase'];
+        }
+        for (var i=0;i<data[perm][1].split(',').length;i++){
+          var group = data[perm][1].split(',')[i];
+          for(var j=0;j< perms_to_assign.length;j++){
+            if(permissions['groups'].hasOwnProperty(group)){
+              permissions['groups'][group].push(perms_to_assign[j]);
+            }else{
+              permissions['groups'][group] = [perms_to_assign[j]];
+            }
+          }
+        }
+      }
+    }
+    return permissions
+  };
+
+  $(function() {
+
+    $('#permissions-body').ready(function(){
+
+      $.ajax(
+        "/security/permissions/180",
+        {
+          success: function(data){
+            var users = {
+              view_resourcebase: [],
+              download_resourcebase: [],
+              change_resourcebase_metadata: [],
+              change_layer_data: [],
+              change_layer_style: [],
+              manage_resourcebase: [],
+            };
+
+            // let's initialize the anyone flags to false, if there's the AnonymousUser
+            // they will be chacked later
+            $('#perms_view_anyone').prop('checked', false);
+            $('#perms_download_resourcebase_anyone').prop('checked', false);
+
+            /*
+            * Compile the users fields after receiving the current permissions status from the server
+            */
+            var perms = $.parseJSON($.parseJSON(data).permissions);
+
+            var perms_users = perms.users;
+
+            /*
+            * If there is the group anonymous then treas it as it is the AnonymousUser
+            * since the server doesn't explicitly send the users that belongs to a group with permissions
+            */
+            if (perms.groups.hasOwnProperty('anonymous')){
+              perms_users.AnonymousUser = perms.groups.anonymous;
+            }
+
+            for (var user in perms_users){
+              var user_perms = perms_users[user];
+              if (user === 'AnonymousUser'){
+                if(user_perms.indexOf('view_resourcebase') > -1){
+                  $('#perms_view_anyone').prop('checked', true);
+                }
+                if(user_perms.indexOf('download_resourcebase') > -1){
+                  $('#perms_download_resourcebase_anyone').prop('checked', true);
+                }
+              }else{
+                for (var i=0;i<user_perms.length;i++){
+                  if(['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase'].indexOf(user_perms[i]) >= 0){
+                    if(users['manage_resourcebase'].indexOf(user)<0){
+                      users['manage_resourcebase'].push(user);
+                    }
+                  }else{
+                    if(users.hasOwnProperty(user_perms[i])){
+                      users[user_perms[i]].push(user);
+                    }
+                  }
+                }
+              }
+            }
+
+            // If "anyone" is checked then don't show all the users in the view perms field
+            // if (perms_users.hasOwnProperty('AnonymousUser')
+            //   && perms_users['AnonymousUser'].indexOf('view_resourcebase') > -1){
+            //   users.view_resourcebase=[]
+            // };
+
+            // if (perms_users.hasOwnProperty('AnonymousUser')
+            //   && perms_users['AnonymousUser'].indexOf('download_resourcebase') > -1){
+            //   users.download_resourcebase=[]
+            // };
+
+            for (var perm in users){
+              if(['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase'].indexOf(user_perms[i]) >= 0){
+                if(users['manage_resourcebase'].indexOf(user)<0){
+                  users['manage_resourcebase'].push(user);
+                }
+              }else{
+                if(users.hasOwnProperty(user_perms[i])){
+                  users[user_perms[i]].push(user);
+                }
+              }
+              $('#' + perm + '_users').val(users[perm].join());
+            }
+            addSelectUsers();
+
+            /*
+            * Compile the groups fields after receiving the current permissions status from the server
+            */
+            var groups = {
+              view_resourcebase: [],
+              download_resourcebase: [],
+              change_resourcebase_metadata: [],
+              change_layer_data: [],
+              change_layer_style: [],
+              manage_resourcebase: []
+            };
+            var perms_groups = perms.groups;
+            for (var group in perms_groups){
+              if (group !== 'anonymous'){
+                var group_perms = perms_groups[group];
+                for (var i=0;i<group_perms.length;i++){
+                  if(['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase'].indexOf(group_perms[i]) >= 0){
+                    if(groups['manage_resourcebase'].indexOf(group)<0){
+                      groups['manage_resourcebase'].push(group);
+                    }
+                  }else{
+                    if(groups.hasOwnProperty(group_perms[i])){
+                      groups[group_perms[i]].push(group);
+                    }
+                  }
+                }
+              }
+            }
+            for (var perm in groups){
+              $('#' + perm + '_groups').val(groups[perm].join());
+            }
+
+            addSelectGroups();
+
+          }
+        }
+      );
+
+    });
+
+    function addSelectUsers(){
+      $("input.user-select").select2({
+        placeholder: 'Choose users...',
+        minimumInputLength: 1,
+        multiple: true,
+        width: 'copy',
+        ajax: {
+          url: "/account/ajax_lookup",
+          dataType: "json",
+          type: "POST",
+          data: function (term, page) {
+            return {
+              query: term,
+            };
+          },
+          results: function (data, page) {
+            return {results: data.users};
+          }
+        },
+        id: userID,
+        formatResult: userFormatResult,
+        formatSelection: userFormatSelection,
+        initSelection: function(element, callback) {
+          var data = [];
+          var val = element.val().split(",");
+          $(element.val().split(",")).each(function (index,value) {
+            data.push({username: value});
+          });
+          callback(data);
+        }
+      });
+    }
+
+    function addSelectGroups(){
+      $("input.group-select").select2({
+        placeholder: 'Choose groups...',
+        minimumInputLength: 1,
+        multiple: true,
+        width: 'copy',
+        ajax: {
+          url: "/account/ajax_lookup",
+          dataType: "json",
+          type: "POST",
+          data: function (term, page) {
+            return {
+              query: term,
+            };
+          },
+          results: function (data, page) {
+            return {results: data.groups};
+          }
+        },
+        id: groupID,
+        formatResult: groupFormatResult,
+        formatSelection: groupFormatSelection,
+        initSelection: function(element, callback) {
+          var data = [];
+          var val = element.val().split(",");
+          $(element.val().split(",")).each(function (index,value) {
+            data.push({name: value});
+          });
+          callback(data);
+        }
+      });
+    }
+
+    function userID(user) {
+      return user.username;
+    }
+
+    function groupID(group) {
+      return group.name;
+    }
+
+    function userFormatResult(user) {
+      return user.username;
+    }
+
+    function userFormatSelection(user) {
+      return user.username;
+    }
+
+    function groupFormatResult(group) {
+      return group.title;
+    }
+
+    function groupFormatSelection(group) {
+      return group.name;
+    }
+
+
+    var perms_submit = function() {
+      var form = $(this);
+      var action = form.attr("action");
+
+      var permissions = permissionsString(form, 'base');
+      $.ajax(
+        {
+          type: "POST",
+          url: action,
+          data: JSON.stringify(permissions),
+          success: function(data) {
+            $("#modal_perms").modal("hide");
+          }
+        }
+      );
+      return false;
+    };
+
+    $("#perms_submit").click(function(){
+      $("#permission_form").submit();
+    });
+
+
+    $("#permission_form").submit(perms_submit);
+
+
+    $("#_bulk_permissions").on('hidden.bs.modal', function (e) {
+      $('#bulk_perms_message').addClass("hidden");
+    });
+  });
+
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  var autocomplete = $('#search_input').yourlabsAutocomplete({
+    url: '/autocomplete/ResourceBaseAutocomplete/',
+    choiceSelector: 'span',
+    hideAfter: 200,
+    minimumCharacters: 1,
+    placeholder: 'Type your search here ...',
+    appendAutocomplete: $('#search_input'),
+    autoHilightFirst: false
+  });
+  $('#search_input').bind('selectChoice', function(e, choice, autocomplete) {
+    if(choice[0].children[0] == undefined) {
+      $('#search_input').val($(choice[0]).text());
+      $('#search').submit();
+    }
+  });
+
+  //]]>
+</script>
+<script>
+  //<![CDATA[
+
+  // Workaround to fix the autocomplete box positions
+  yourlabs.Autocomplete.prototype.fixPosition = function(html) {
+    this.input.parents().filter(function() {
+      return $(this).css('overflow') === 'hidden';
+    }).first().css('overflow', 'visible');
+    if(this.input.attr('name') !== 'resource-keywords'){
+      this.box.insertAfter(this.input).css({top: 0, left: 0});
+    }else{
+      var pos = $.extend({}, this.input.position(), {
+        height: this.input.outerHeight()
+      });
+      this.box.insertAfter(this.input).css({top: pos.top + pos.height, left: pos.left});
+    }
+  };
+
+  //]]>
+</script>
+<script type="text/javascript" src="/lang.js">
+</script>
+<div id="ext-comp-1033" class=" x-tip" style="position: absolute; z-index: 20002; visibility: hidden; display: none;">
+  <div class="x-tip-tl">
+    <div class="x-tip-tr">
+      <div class="x-tip-tc">
+        <div class="x-tip-header x-unselectable" id="ext-gen92" style="-moz-user-select: none;">
+              <span class="x-tip-header-text">
+              </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="x-tip-bwrap" id="ext-gen93">
+    <div class="x-tip-ml">
+      <div class="x-tip-mr">
+        <div class="x-tip-mc" id="ext-gen96">
+          <div class="x-tip-body" id="ext-gen94" style="height: auto;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="x-tip-bl x-panel-nofooter" id="ext-gen95">
+      <div class="x-tip-br">
+        <div class="x-tip-bc">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="x-tip-anchor x-tip-anchor-top" id="ext-gen97" style="z-index: 20003;">
+  </div>
+</div>
+</body>
+</html>

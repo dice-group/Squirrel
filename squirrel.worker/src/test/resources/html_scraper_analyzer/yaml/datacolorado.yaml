@@ -1,0 +1,18 @@
+file_descriptor:
+    check:
+        domain: data.colorado.gov
+        ignore-request: true
+    search-result-page:
+        regex: browse
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .browse2-result-title h2 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: /
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": .clipText.currentViewName
+                "http://purl.org/dc/terms/description": .descriptionContent
+                "http://purl.org/dc/terms/publisher": .aboutAuthorName

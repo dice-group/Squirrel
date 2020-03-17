@@ -1,0 +1,19 @@
+file_descriptor:
+    check:
+        domain: ssa.gov
+        ignore-request: true
+    search-result-page:
+        regex: open/data
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .table-scroll div.align-center a
+
+    download_page:
+        regex: data/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title":  div > h2
+                "http://purl.org/dc/terms/description":  article > section > h2
+                "http://www.w3.org/ns/dcat#downloadURL": p.mb0.mt2 a
+
+

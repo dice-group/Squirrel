@@ -12,7 +12,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * An IP-based queue which holds its data in memory.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * Parser for Yaml Files, for the HTML Scraper
- * 
+ *
  * @author gsjunior
  */
 public class YamlFilesParser {

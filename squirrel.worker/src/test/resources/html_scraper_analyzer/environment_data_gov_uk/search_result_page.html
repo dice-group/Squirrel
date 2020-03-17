@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/registry/ui/assets/images/favicon/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/registry/ui/assets/images/favicon/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/registry/ui/assets/images/favicon/favicon-16x16.png"/>
+  <link rel="manifest" href="/registry/ui/assets/images/favicon/manifest.json"/>
+  <link rel="mask-icon" href="/registry/ui/assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5"/>
+  <link rel="shortcut icon" href="/registry/ui/assets/images/favicon/favicon.ico"/>
+  <meta name="msapplication-config" content="/registry/ui/assets/images/favicon/browserconfig.xml"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->    <title>
+  Environment Registry  :
+</title>
+  <link href="/registry/ui/assets/css/reg-style.css" rel="stylesheet"/>
+  <link href="/registry/ui/assets/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
+  <link href="/registry/ui/assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+  <link type="text/css" rel="stylesheet" href="/registry/ui/assets/css/ui.css"/>
+  <link type="text/css" rel="stylesheet" href="/registry/ui/assets/css/jquery.dataTables.min.css"/>
+  <link href="/registry/ui/assets/css/bootstrap-editable.css" rel="stylesheet"/>
+  <script type="text/javascript" src="/registry/ui/assets/js/jquery-1.12.0.min.js">
+  </script>
+  <script type="text/javascript" src="/registry/ui/assets/js/jquery.form.js">
+  </script>
+</head>
+<body>
+<nav class="navbar o-navbar-reg navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3">
+        <!-- Brand and toggle get grouped for better mobile display -->            <div class="navbar-header">
+        <button class="navbar-toggle collapsed" data-target="#navbar-ea-menu" data-toggle="collapse" type="button">
+                <span class="sr-only">
+                  Toggle navigation
+                </span>
+          <span class="icon-bar">
+                </span>
+          <span class="icon-bar">
+                </span>
+          <span class="icon-bar">
+                </span>
+        </button>
+        <a class="navbar-brand" href="/registry/">
+          Environment Registry
+        </a>
+      </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="collapse navbar-collapse" id="navbar-ea-menu">
+          <ul class="nav navbar-nav navbar-left">
+            <li>
+              <a href="/registry/?_browse=true">
+                Browse
+              </a>
+            </li>
+            <li>
+              <a href="/registry/ui/about">
+                About
+              </a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Advanced
+                <b class="caret"/>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://environment.data.gov.uk/registry/ui/login?return=https://environment.data.gov.uk/registry/">
+                    Login
+                  </a>
+                </li>
+                <li role="separator" class="divider"/>
+                <li>
+                  <a href="/registry/ui/actions/check-page">
+                    Check URI
+                  </a>
+                </li>
+                <li>
+                  <a href="/registry/ui/sparql-form">
+                    Sparql
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <form action="/registry/ui/text-search" method="get" class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="search" class="form-control search-query" placeholder="Search" name="query"/>
+            </div>
+            <button type="submit" class="btn btn-default">
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="container" id="main">
+  <div class="o-top-colour-bar">
+  </div>
+  <div class="o-service-phase">
+        <span class="c-service-phase-beta-badge">
+
+            beta
+
+        </span>
+
+    This is a trial service – your
+
+    <a href="mailto:TBD">
+
+      feedback
+
+    </a>
+
+    will help us to improve it.
+
+  </div>
+  <h1>
+    List all registers
+  </h1>
+  <div class="row">
+    <div class="col-md-3">
+      <h4>
+        Filters
+      </h4>
+      <div>
+        <h4 class="label label-info">
+          Category
+        </h4>
+        <ul>
+          <li>
+            <a href="/registry/?state=category%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fcategory%2fMarine_and_Coast%3e">
+              Marine and Coast
+            </a>
+            [1]
+          </li>
+          <li>
+            <a href="/registry/?state=category%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fcategory%2fOrganizations_and_sectors%3e">
+              Organizations_and_sectors
+            </a>
+            [1]
+          </li>
+          <li>
+            <a href="/registry/?state=category%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fcategory%2fSystem%3e">
+              System
+            </a>
+            [13]
+          </li>
+          <li>
+            <a href="/registry/?state=category%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fcategory%2fWater%3e">
+              Water
+            </a>
+            [5]
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="label label-info">
+          Owner
+        </h4>
+        <ul>
+          <li>
+            <a href="/registry/?state=owner%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2forg%2fdepartment-for-environment-food-rural-affairs%3e">
+              Department for Environment, Food &amp; Rural Affairs
+            </a>
+            [6]
+          </li>
+          <li>
+            <a href="/registry/?state=owner%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2forg%2fenvironment-agency%3e">
+              Environment Agency
+            </a>
+            [8]
+          </li>
+          <li>
+            <a href="/registry/?state=owner%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2forg%2fmarine-management-organisation%3e">
+              Marine Management Organisation
+            </a>
+            [3]
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="label label-info">
+          Entity
+        </h4>
+        <ul>
+          <li>
+            <a href="/registry/?state=entity%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fentity-type%2fAbstract%3e">
+              Abstract
+            </a>
+            [8]
+          </li>
+          <li>
+            <a href="/registry/?state=entity%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fentity-type%2fOrganizations_and_sectors%3e">
+              Organizations and sectors
+            </a>
+            [2]
+          </li>
+          <li>
+            <a href="/registry/?state=entity%3d%3chttp%3a%2f%2fenvironment.data.gov.uk%2fregistry%2fstructure%2fentity-type%2fRegions_and_Habitats%3e">
+              Regions and Habitats
+            </a>
+            [1]
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+        <div class="dataTables_length" id="DataTables_Table_0_length">
+          <label>
+            Show
+            <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="">
+              <option label="20" value="20" selected="selected">
+                20
+              </option>
+              <option label="50" value="50">
+                50
+              </option>
+              <option label="100" value="100">
+                100
+              </option>
+              <option label="All" value="-1">
+                All
+              </option>
+            </select>
+            entries
+          </label>
+        </div>
+        <div id="DataTables_Table_0_filter" class="dataTables_filter">
+          <label>
+            Filter entries:
+            <input type="search" class="" value="" placeholder="" aria-controls="DataTables_Table_0"/>
+          </label>
+        </div>
+        <table class="table table-striped table-bordered  datatable  dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+          <thead>
+          <tr role="row">
+            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 40px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+              Name
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 80px;" aria-label="Notation: activate to sort column ascending">
+              Notation
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 110px;" aria-label="Description: activate to sort column ascending">
+              Description
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 60px;" aria-label="Status: activate to sort column ascending">
+              Status
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/system/_bulkCollectionTypes" title="http://environment.data.gov.uk/registry/system/_bulkCollectionTypes">
+                bulk collection types
+              </a>
+            </td>
+            <td>
+              bulkCollectionTypes
+            </td>
+            <td>
+              System register describing the data types which can be upload...
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_catchment-planning" title="http://environment.data.gov.uk/registry/def/_catchment-planning">
+                Catchment planning
+              </a>
+            </td>
+            <td>
+              catchment-planning
+            </td>
+            <td>
+              Collection of code lists related to catchment planning
+
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/structure/_category" title="http://environment.data.gov.uk/registry/structure/_category">
+                Category
+              </a>
+            </td>
+            <td>
+              category
+            </td>
+            <td>
+              Codes used to classify collections in the registry, based on ...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_CEFAS" title="http://environment.data.gov.uk/registry/def/_CEFAS">
+                CEFAS
+              </a>
+            </td>
+            <td>
+              CEFAS
+            </td>
+            <td>
+              Collection of CEFAS managed codes
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_data-standards" title="http://environment.data.gov.uk/registry/def/_data-standards">
+                Data Standards
+              </a>
+            </td>
+            <td>
+              data-standards
+            </td>
+            <td>
+              Vocabularies used in publishing various data standards
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/_def" title="http://environment.data.gov.uk/registry/_def">
+                Definitions
+              </a>
+            </td>
+            <td>
+              def
+            </td>
+            <td>
+              Code lists, concept schemes and other collections in the regi...
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_DEFRA" title="http://environment.data.gov.uk/registry/def/_DEFRA">
+                DEFRA
+              </a>
+            </td>
+            <td>
+              DEFRA
+            </td>
+            <td>
+              Collection of DEFRA managed codelists
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_EA" title="http://environment.data.gov.uk/registry/def/_EA">
+                EA
+              </a>
+            </td>
+            <td>
+              EA
+            </td>
+            <td>
+              Collection of Environment Agency managed codes
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/ea-organization/_ea_areas" title="http://environment.data.gov.uk/registry/def/ea-organization/_ea_areas">
+                EA Areas
+              </a>
+            </td>
+            <td>
+              ea_areas
+            </td>
+            <td>
+              Areas of the Environment Agency.The Environment Agency is div...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_ea-organization" title="http://environment.data.gov.uk/registry/def/_ea-organization">
+                EA organization
+              </a>
+            </td>
+            <td>
+              ea-organization
+            </td>
+            <td>
+              Collection of code lists related to Environment Agency organi...
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/structure/_entity-type" title="http://environment.data.gov.uk/registry/structure/_entity-type">
+                Entity type
+              </a>
+            </td>
+            <td>
+              entity-type
+            </td>
+            <td>
+              Codes used to describe the type of entity that a code list is...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/system/_form-templates" title="http://environment.data.gov.uk/registry/system/_form-templates">
+                form templates
+              </a>
+            </td>
+            <td>
+              form-templates
+            </td>
+            <td>
+              System register containing a collection of form templates whi...
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_JNCC" title="http://environment.data.gov.uk/registry/def/_JNCC">
+                JNCC
+              </a>
+            </td>
+            <td>
+              JNCC
+            </td>
+            <td>
+              Collection of JNCC managed codelists
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/system/_links" title="http://environment.data.gov.uk/registry/system/_links">
+                Link definitions
+              </a>
+            </td>
+            <td>
+              links
+            </td>
+            <td>
+              A system register which lists all link definitions which the ...
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_medin" title="http://environment.data.gov.uk/registry/def/_medin">
+                medin
+              </a>
+            </td>
+            <td>
+              medin
+            </td>
+            <td>
+              Collection of medin-maintained codelists
+
+
+            </td>
+            <td>
+                    <span class="label label-success">
+                      stable
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_MMO" title="http://environment.data.gov.uk/registry/def/_MMO">
+                MMO
+              </a>
+            </td>
+            <td>
+              MMO
+            </td>
+            <td>
+              Collection of Marine Management Organisation managed codes
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/mmo-experimental/_data-theme" title="http://environment.data.gov.uk/registry/def/mmo-experimental/_data-theme">
+                MMO Data Theme
+              </a>
+            </td>
+            <td>
+              data-theme
+            </td>
+            <td>
+              Experimental representation of MMO Data Themes mapped to Topi...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_mmo-experimental" title="http://environment.data.gov.uk/registry/def/_mmo-experimental">
+                MMO Experimental
+              </a>
+            </td>
+            <td>
+              mmo-experimental
+            </td>
+            <td>
+              Collection of code lists experimentally published by MMO as p...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/mmo-experimental/_topic-category" title="http://environment.data.gov.uk/registry/def/mmo-experimental/_topic-category">
+                MMO Topic Category
+              </a>
+            </td>
+            <td>
+              topic-category
+            </td>
+            <td>
+              Experimental representation of MMO Topic Category list mapped...
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+                    <span class="glyphicon glyphicon-folder-open">
+                    </span>
+               
+              <a href="/registry/def/_NE" title="http://environment.data.gov.uk/registry/def/_NE">
+                NE
+              </a>
+            </td>
+            <td>
+              NE
+            </td>
+            <td>
+              Collection of Natural England managed codes
+
+
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+          Showing 1 to 20 of 33 entries
+        </div>
+        <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+          <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous">
+            Previous
+          </a>
+          <span>
+                <a class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0">
+                  1
+                </a>
+                <a class="paginate_button " aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0">
+                  2
+                </a>
+              </span>
+          <a class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" id="DataTables_Table_0_next">
+            Next
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of container -->    <footer class="o-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="">
+          <div class="c-footer-credits">
+            <h4 class="">
+              Support
+            </h4>
+            <p>
+
+              Support and contact information goes here.
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <h4>
+          About this page
+        </h4>
+        <p>
+
+          Unless otherwise stated, all content is available under the
+
+          <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">
+            Open Government Licence
+          </a>
+        </p>
+        <p class="c-footer-epimorphics">
+              <span class="i18n">
+                Design and development by
+              </span>
+          <a href="http://www.epimorphics.com">
+            Epimorphics
+          </a>
+          .
+
+        </p>
+      </div>
+    </div>
+    <!--/.row-->      </div>
+</footer>
+<script type="text/javascript" src="/registry/ui/assets/js/bootstrap.min.js">
+</script>
+<script type="text/javascript" src="/registry/ui/assets/js/jquery.dataTables.min.js">
+</script>
+<script src="/registry/ui/assets/js/bootstrap-editable.min.js">
+</script>
+<script type="text/javascript" src="/registry/ui/assets/js/ui.js">
+</script>
+</body>
+</html>

@@ -21,31 +21,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SqlBasedUriCollectorTest {
-	
-	GzipJavaUriSerializer serializer;
-	String dbdir;
-	File file;
-	FileReader fr;
-	BufferedReader br;
-	
-	@Before
-	public void prepare() throws Exception {
-		serializer = new GzipJavaUriSerializer();
-		dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
-		ClassLoader classLoader = getClass().getClassLoader();
-		file = new File(classLoader.getResource("collector/mCloudURIs.txt").getFile());
-		fr = new FileReader(file);
-		br = new BufferedReader(fr);
-		
-	}
+
+    GzipJavaUriSerializer serializer;
+    String dbdir;
+    File file;
+    FileReader fr;
+    BufferedReader br;
+
+    @Before
+    public void prepare() throws Exception {
+        serializer = new GzipJavaUriSerializer();
+        dbdir = TempFileHelper.getTempDir("dbTest", "").getAbsolutePath() + File.separator + "test";
+        ClassLoader classLoader = getClass().getClassLoader();
+        file = new File(classLoader.getResource("collector/mCloudURIs.txt").getFile());
+        fr = new FileReader(file);
+        br = new BufferedReader(fr);
+
+    }
 
     @Test
     public void test() throws Exception {
-        
+
         CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test1"));
 
         SqlBasedUriCollector collector = new SqlBasedUriCollector(serializer, "testUris");
-        
+
         collector.openSinkForUri(uri);
 
 
@@ -59,47 +59,47 @@ public class SqlBasedUriCollectorTest {
         }
 
         Iterator<byte[]> iterator = collector.getUris(uri);
-        
+
         Set<String> listCuris = new TreeSet<String>();
-        
+
         while(iterator.hasNext()) {
-        	listCuris.add( ((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString() );
+            listCuris.add( ((CrawleableUri) serializer.deserialize(iterator.next())).getUri().toString() );
 
         }
-        
+
         collector.closeSinkForUri(uri);
         Assert.assertEquals(expectedUris, listCuris);
 
 
     }
-    
+
     @Test
     public void testFile() throws Exception {
-    	String sCurrentLine;
-    	
-    	Set<URI> expectedUris = new TreeSet<URI>();
-    	Set<URI> listUris = new TreeSet<URI>();
-    	
-    	SqlBasedUriCollector collector = new SqlBasedUriCollector(serializer, "testUris");
-    	CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test2"));
-    	collector.openSinkForUri(uri);
+        String sCurrentLine;
 
-		while ((sCurrentLine = br.readLine()) != null) {
-			expectedUris.add(new URI(sCurrentLine));
-			collector.addNewUri(uri, new CrawleableUri(new URI(sCurrentLine)));
-		}
-		
-		Iterator<byte[]> it = collector.getUris(uri);
-		while(it.hasNext()) {
-			listUris.add(new URI( ((CrawleableUri) serializer.deserialize(it.next())).getUri().toString() ));
-		}
-		
+        Set<URI> expectedUris = new TreeSet<URI>();
+        Set<URI> listUris = new TreeSet<URI>();
 
-		collector.closeSinkForUri(uri);
-		Assert.assertEquals(expectedUris.size(), listUris.size());
-		
-		
-    	
+        SqlBasedUriCollector collector = new SqlBasedUriCollector(serializer, "testUris");
+        CrawleableUri uri = new CrawleableUri(new URI("http://example.org/test2"));
+        collector.openSinkForUri(uri);
+
+        while ((sCurrentLine = br.readLine()) != null) {
+            expectedUris.add(new URI(sCurrentLine));
+            collector.addNewUri(uri, new CrawleableUri(new URI(sCurrentLine)));
+        }
+
+        Iterator<byte[]> it = collector.getUris(uri);
+        while(it.hasNext()) {
+            listUris.add(new URI( ((CrawleableUri) serializer.deserialize(it.next())).getUri().toString() ));
+        }
+
+
+        collector.closeSinkForUri(uri);
+        Assert.assertEquals(expectedUris.size(), listUris.size());
+
+
+
     }
 
 }

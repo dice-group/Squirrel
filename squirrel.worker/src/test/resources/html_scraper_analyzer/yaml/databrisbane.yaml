@@ -1,0 +1,19 @@
+file_descriptor:
+    check:
+        domain: data.brisbane.qld.gov.au
+        ignore-request: true
+    search-result-page:
+        regex: data/dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": div[data-module="bcc-paginator"] a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": h1:eq(1)
+                "http://purl.org/dc/terms/description": .notes
+                "http://purl.org/dc/terms/license": table tr:contains(License) td a
+

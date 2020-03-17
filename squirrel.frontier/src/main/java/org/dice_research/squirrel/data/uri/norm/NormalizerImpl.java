@@ -177,7 +177,7 @@ public class NormalizerImpl implements UriNormalizer {
      * src/solaris/native/java/io/canonicalize_md.c) and the <a href=
      * "https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java">Crawler
      * Commons</a> project.
-     * 
+     *
      * @param path
      * @return the normalized path or the given path object if no changes have been
      *         made.

@@ -1,0 +1,18 @@
+file_descriptor:
+    check:
+        domain: welland.ca
+        ignore-request: true
+
+    search-result-page:
+        regex: Opendata
+        resources:
+            "http://projekt-opal.de/dataset#link": .w3-row .w3-third a
+
+    detail-page:
+        regex: OpendataResp
+        resources:
+            "http://purl.org/dc/terms/title": td.w3-text-white h3
+            "http://purl.org/dc/terms/description": table[role=presentation] tr:contains(Abstract) td:eq(1)
+            "http://purl.org/dc/terms/publisher": table[role=presentation] tr:contains(Source) td:eq(1)
+            "http://purl.org/dc/terms/issued": table[role=presentation] tr:contains(Date Released) td:eq(1)
+            "http://www.w3.org/ns/dcat#downloadURL": table[role=presentation] tr:contains(Data Formats) td:eq(1) a

@@ -112,7 +112,7 @@ public class SparqlBasedFetcher implements Fetcher {
             return qef;
         }
     }
-    
+
 
 
     @Override

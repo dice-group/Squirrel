@@ -1,0 +1,1437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/registry/ui/assets/images/favicon/apple-touch-icon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/registry/ui/assets/images/favicon/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/registry/ui/assets/images/favicon/favicon-16x16.png"/>
+  <link rel="manifest" href="/registry/ui/assets/images/favicon/manifest.json"/>
+  <link rel="mask-icon" href="/registry/ui/assets/images/favicon/safari-pinned-tab.svg" color="#5bbad5"/>
+  <link rel="shortcut icon" href="/registry/ui/assets/images/favicon/favicon.ico"/>
+  <meta name="msapplication-config" content="/registry/ui/assets/images/favicon/browserconfig.xml"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->    <title>
+  Environment Registry  : structure/_org
+</title>
+  <link href="/registry/ui/assets/css/reg-style.css" rel="stylesheet"/>
+  <link href="/registry/ui/assets/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet"/>
+  <link href="/registry/ui/assets/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+  <link type="text/css" rel="stylesheet" href="/registry/ui/assets/css/ui.css"/>
+  <link type="text/css" rel="stylesheet" href="/registry/ui/assets/css/jquery.dataTables.min.css"/>
+  <link href="/registry/ui/assets/css/bootstrap-editable.css" rel="stylesheet"/>
+  <script type="text/javascript" src="/registry/ui/assets/js/jquery-1.12.0.min.js">
+  </script>
+  <script type="text/javascript" src="/registry/ui/assets/js/jquery.form.js">
+  </script>
+</head>
+<body>
+<nav class="navbar o-navbar-reg navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-3">
+        <!-- Brand and toggle get grouped for better mobile display -->            <div class="navbar-header">
+        <button class="navbar-toggle collapsed" data-target="#navbar-ea-menu" data-toggle="collapse" type="button">
+                <span class="sr-only">
+                  Toggle navigation
+                </span>
+          <span class="icon-bar">
+                </span>
+          <span class="icon-bar">
+                </span>
+          <span class="icon-bar">
+                </span>
+        </button>
+        <a class="navbar-brand" href="/registry/">
+          Environment Registry
+        </a>
+      </div>
+      </div>
+      <div class="col-sm-9">
+        <div class="collapse navbar-collapse" id="navbar-ea-menu">
+          <ul class="nav navbar-nav navbar-left">
+            <li class="active">
+              <a href="/registry/?_browse=true">
+                Browse
+              </a>
+            </li>
+            <li>
+              <a href="/registry/ui/about">
+                About
+              </a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Advanced
+                <b class="caret"/>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://environment.data.gov.uk/registry/ui/login?return=https://environment.data.gov.uk/registry/structure/_org">
+                    Login
+                  </a>
+                </li>
+                <li role="separator" class="divider"/>
+                <li>
+                  <a href="/registry/structure/_org?showStatus=accepted">
+                    Show all entries
+                  </a>
+                </li>
+                <li>
+                  <a href="/registry/ui/actions/check-page">
+                    Check URI
+                  </a>
+                </li>
+                <li>
+                  <a href="/registry/ui/sparql-form">
+                    Sparql
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <form action="/registry/ui/text-search" method="get" class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="search" class="form-control search-query" placeholder="Search" name="query"/>
+            </div>
+            <button type="submit" class="btn btn-default">
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="container" id="main">
+  <div class="o-top-colour-bar">
+  </div>
+  <div class="o-service-phase">
+        <span class="c-service-phase-beta-badge">
+
+            beta
+
+        </span>
+
+    This is a trial service – your
+
+    <a href="mailto:TBD">
+
+      feedback
+
+    </a>
+
+    will help us to improve it.
+
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <ol class="breadcrumb">
+        <li>
+          <a href="/registry/">
+            http://environment.data.gov.uk/registry
+          </a>
+        </li>
+        <li>
+          <a href="/registry/structure">
+            structure
+          </a>
+        </li>
+        <li class="active">
+          _org
+        </li>
+      </ol>
+    </div>
+    <div class="col-md-offset-1 col-md-1">
+          <span class="label label-warning">
+            experimental
+          </span>
+    </div>
+  </div>
+  <div class="row">
+    <div id="description" class="col-md-10">
+      <h2>
+        Register:  Organizations
+      </h2>
+      <p>
+        <strong>
+          URI:
+        </strong>
+        <a href="/registry/structure/org" title="http://environment.data.gov.uk/registry/structure/org">
+          http://environment.data.gov.uk/registry/structure/org
+        </a>
+      </p>
+      <p>
+        Codes used to identify each organization in the DEFRA family.
+
+      </p>
+    </div>
+    <div id="metadata-pane" class="col-md-5 hide">
+      <div class="tab-content" id="metadata-content">
+        <div class="tab-pane" id="detailsTab">
+          <h3 class="text-center">
+            Core metadata
+          </h3>
+          <table class="table table-condensed">
+            <tbody>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  is a
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/?entity=http%3a%2f%2fpurl.org%2flinked-data%2fregistry%23Register" title="http://purl.org/linked-data/registry#Register">
+                  Register
+                </a>
+
+                |
+                <a href="/registry/?entity=http%3a%2f%2fwww.w3.org%2fns%2fldp%23Container" title="http://www.w3.org/ns/ldp#Container">
+                  Container
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  category
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/category/System" title="http://environment.data.gov.uk/registry/structure/category/System">
+                  System
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  owned by
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/org/department-for-environment-food-rural-affairs" title="http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs">
+                  Department for Environment, Food &amp; Rural Affairs
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  contains
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/entity-type/Organizations_and_sectors" title="http://environment.data.gov.uk/registry/structure/entity-type/Organizations_and_sectors">
+                  organizations and sectors
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  licence
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/?entity=http%3a%2f%2fwww.nationalarchives.gov.uk%2fdoc%2fopen-government-licence%2fversion%2f2%2f" title="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">
+                  http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  rights attribution
+                </strong>
+              </td>
+              <td>
+                Contains public sector information licensed under the Open Government Licence v2.0.
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong>
+                  submitted by
+                </strong>
+              </td>
+              <td>
+                Dave Reynolds (profile)
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane" id="downloadsTab">
+          <h3 class="text-center">
+            Download formats available
+          </h3>
+          <table class="table table-condensed">
+            <tbody>
+            <tr>
+              <td>
+                RDF ttl
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=ttl">
+                  plain
+                </a>
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=ttl&amp;_view=with_metadata">
+                  with metadata
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                RDF/XML
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=rdf">
+                  plain
+                </a>
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=rdf&amp;_view=with_metadata">
+                  with metadata
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                JSON-LD
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=jsonld">
+                  plain
+                </a>
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=jsonld&amp;_view=with_metadata">
+                  with metadata
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                CSV
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=csv">
+                  plain
+                </a>
+              </td>
+              <td>
+                <a href="/registry/structure/org?_format=csv&amp;_view=with_metadata">
+                  with metadata
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Export all
+              </td>
+              <td>
+                <a href="/registry/structure/org?export">
+                  export
+                </a>
+              </td>
+              <td/>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane" id="propertiesTab">
+          <h3 class="text-center">
+            All properties of the register
+          </h3>
+          <table class="table table-striped table-condensed">
+            <tbody>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/linked-data/registry#category">
+                  category
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/category/System" title="http://environment.data.gov.uk/registry/structure/category/System">
+                  System
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/dc/terms/description">
+                  description
+                </strong>
+              </td>
+              <td>
+
+                Codes used to identify each organization in the DEFRA family.
+
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://environment.data.gov.uk/registry/structure/ui/entityType">
+                  entity type
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/entity-type/Organizations_and_sectors" title="http://environment.data.gov.uk/registry/structure/entity-type/Organizations_and_sectors">
+                  organizations and sectors
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://www.w3.org/2000/01/rdf-schema#label">
+                  label
+                </strong>
+              </td>
+              <td>
+
+                Organizations
+
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/dc/terms/license">
+                  license
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/?entity=http%3a%2f%2fwww.nationalarchives.gov.uk%2fdoc%2fopen-government-licence%2fversion%2f2%2f" title="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">
+                  http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://www.w3.org/2000/01/rdf-schema#member">
+                  member
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/org/science-advisory-council" title="http://environment.data.gov.uk/registry/structure/org/science-advisory-council">
+                  Science Advisory Council
+                </a>
+
+                |
+                <a href="/registry/structure/org/veterinary-medicines-directorate" title="http://environment.data.gov.uk/registry/structure/org/veterinary-medicines-directorate">
+                  Veterinary Medicines Directorate
+                </a>
+
+                |
+                <a href="/registry/structure/org/advisory-committee-on-releases-to-the-environment" title="http://environment.data.gov.uk/registry/structure/org/advisory-committee-on-releases-to-the-environment">
+                  Advisory Committee on Releases to the Environment
+                </a>
+
+                |
+                <a href="/registry/structure/org/rural-payments-agency" title="http://environment.data.gov.uk/registry/structure/org/rural-payments-agency">
+                  Rural Payments Agency
+                </a>
+
+                |
+                <a href="/registry/structure/org/sea-fish-industry-authority" title="http://environment.data.gov.uk/registry/structure/org/sea-fish-industry-authority">
+                  Sea Fish Industry Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/joint-nature-conservation-committee" title="http://environment.data.gov.uk/registry/structure/org/joint-nature-conservation-committee">
+                  Joint Nature Conservation Committee
+                </a>
+
+                |
+                <a href="/registry/structure/org/centre-for-environment-fisheries-and-aquaculture-science" title="http://environment.data.gov.uk/registry/structure/org/centre-for-environment-fisheries-and-aquaculture-science">
+                  Centre for Environment, Fisheries and Aquaculture Science
+                </a>
+
+                |
+                <a href="/registry/structure/org/drinking-water-inspectorate" title="http://environment.data.gov.uk/registry/structure/org/drinking-water-inspectorate">
+                  Drinking Water Inspectorate
+                </a>
+
+                |
+                <a href="/registry/structure/org/peak-district-national-park" title="http://environment.data.gov.uk/registry/structure/org/peak-district-national-park">
+                  Peak District National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/south-downs-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/south-downs-national-park-authority">
+                  South Downs National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/consumer-council-for-water" title="http://environment.data.gov.uk/registry/structure/org/consumer-council-for-water">
+                  Consumer Council for Water
+                </a>
+
+                |
+                <a href="/registry/structure/org/marine-management-organisation" title="http://environment.data.gov.uk/registry/structure/org/marine-management-organisation">
+                  Marine Management Organisation
+                </a>
+
+                |
+                <a href="/registry/structure/org/royal-botanic-gardens-kew" title="http://environment.data.gov.uk/registry/structure/org/royal-botanic-gardens-kew">
+                  Royal Botanic Gardens Kew
+                </a>
+
+                |
+                <a href="/registry/structure/org/exmoor-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/exmoor-national-park-authority">
+                  Exmoor National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/northumberland-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/northumberland-national-park-authority">
+                  Northumberland National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/covent-garden-market-authority" title="http://environment.data.gov.uk/registry/structure/org/covent-garden-market-authority">
+                  Covent Garden Market Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/natural-england" title="http://environment.data.gov.uk/registry/structure/org/natural-england">
+                  Natural England
+                </a>
+
+                |
+                <a href="/registry/structure/org/new-forest-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/new-forest-national-park-authority">
+                  New Forest National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/agricultural-wages-committee-x13" title="http://environment.data.gov.uk/registry/structure/org/agricultural-wages-committee-x13">
+                  Agricultural Wages Committee
+                </a>
+
+                |
+                <a href="/registry/structure/org/forestry-commission" title="http://environment.data.gov.uk/registry/structure/org/forestry-commission">
+                  Forestry Commission
+                </a>
+
+                |
+                <a href="/registry/structure/org/environment-agency" title="http://environment.data.gov.uk/registry/structure/org/environment-agency">
+                  Environment Agency
+                </a>
+
+                |
+                <a href="/registry/structure/org/national-forest-company" title="http://environment.data.gov.uk/registry/structure/org/national-forest-company">
+                  National Forest Company
+                </a>
+
+                |
+                <a href="/registry/structure/org/dartmoor-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/dartmoor-national-park-authority">
+                  Dartmoor National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/agricultural-dwelling-house-advisory-committees-x16" title="http://environment.data.gov.uk/registry/structure/org/agricultural-dwelling-house-advisory-committees-x16">
+                  Agricultural Dwelling House Advisory Committees (x16)
+                </a>
+
+                |
+                <a href="/registry/structure/org/lake-district-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/lake-district-national-park-authority">
+                  Lake District National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/animal-health-and-veterinary-laboratories-agency" title="http://environment.data.gov.uk/registry/structure/org/animal-health-and-veterinary-laboratories-agency">
+                  Animal Health Veterinary Laboratories Agency
+                </a>
+
+                |
+                <a href="/registry/structure/org/gangmasters-licensing-authority" title="http://environment.data.gov.uk/registry/structure/org/gangmasters-licensing-authority">
+                  Gangmasters Licensing Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/the-food-and-environment-research-agency" title="http://environment.data.gov.uk/registry/structure/org/the-food-and-environment-research-agency">
+                  Food &amp; Environment Research Agency
+                </a>
+
+                |
+                <a href="/registry/structure/org/broads-authority" title="http://environment.data.gov.uk/registry/structure/org/broads-authority">
+                  Broads Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/plant-varieties-and-seeds-tribunal" title="http://environment.data.gov.uk/registry/structure/org/plant-varieties-and-seeds-tribunal">
+                  Plant Varieties and Seeds Tribunal
+                </a>
+
+                |
+                <a href="/registry/structure/org/north-york-moors-national-park" title="http://environment.data.gov.uk/registry/structure/org/north-york-moors-national-park">
+                  North York Moors National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/independent-agricultural-appeals-panel" title="http://environment.data.gov.uk/registry/structure/org/independent-agricultural-appeals-panel">
+                  Independent Agricultural Appeals Panel
+                </a>
+
+                |
+                <a href="/registry/structure/org/the-water-services-regulation-authority" title="http://environment.data.gov.uk/registry/structure/org/the-water-services-regulation-authority">
+                  The Water Services Regulation Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/department-for-environment-food-rural-affairs" title="http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs">
+                  Department for Environment, Food &amp; Rural Affairs
+                </a>
+
+                |
+                <a href="/registry/structure/org/advisory-committee-on-pesticides" title="http://environment.data.gov.uk/registry/structure/org/advisory-committee-on-pesticides">
+                  Advisory Committee on Pesticides
+                </a>
+
+                |
+                <a href="/registry/structure/org/yorkshire-dales-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/yorkshire-dales-national-park-authority">
+                  Yorkshire Dales National Park Authority
+                </a>
+
+                |
+                <a href="/registry/structure/org/agriculture-and-horticulture-development-board" title="http://environment.data.gov.uk/registry/structure/org/agriculture-and-horticulture-development-board">
+                  Agriculture and Horticulture Development Board
+                </a>
+
+                |
+                <a href="/registry/structure/org/veterinary-products-committee" title="http://environment.data.gov.uk/registry/structure/org/veterinary-products-committee">
+                  Veterinary Products Committee
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://www.w3.org/ns/ldp#membershipPredicate">
+                  membership predicate
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/?entity=http%3a%2f%2fwww.w3.org%2f2000%2f01%2frdf-schema%23member" title="http://www.w3.org/2000/01/rdf-schema#member">
+                  member
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/dc/terms/modified">
+                  modified
+                </strong>
+              </td>
+              <td>
+
+                5 Mar 2014 17:24:17.517
+
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/linked-data/registry#owner">
+                  owner
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/org/department-for-environment-food-rural-affairs" title="http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs">
+                  Department for Environment, Food &amp; Rural Affairs
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/dc/terms/publisher">
+                  publisher
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/structure/org/department-for-environment-food-rural-affairs" title="http://environment.data.gov.uk/registry/structure/org/department-for-environment-food-rural-affairs">
+                  Department for Environment, Food &amp; Rural Affairs
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://purl.org/dc/terms/rights">
+                  rights
+                </strong>
+              </td>
+              <td>
+                <table class="table table-striped table-condensed">
+                  <tbody>
+                  <tr>
+                    <td class="align-right span2">
+                      <strong title="http://schema.theodi.org/odrs#attributionText">
+                        attribution text
+                      </strong>
+                    </td>
+                    <td>
+
+                      Contains public sector information licensed under the Open Government Licence v2.0.
+
+                      <br/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-right span2">
+                      <strong title="http://schema.theodi.org/odrs#dataLicense">
+                        data license
+                      </strong>
+                    </td>
+                    <td>
+                      <a href="/registry/?entity=http%3a%2f%2fwww.nationalarchives.gov.uk%2fdoc%2fopen-government-licence%2fversion%2f2%2f" title="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">
+                        http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/
+                      </a>
+                      <br/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="align-right span2">
+                      <strong title="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+                        type
+                      </strong>
+                    </td>
+                    <td>
+                      <a href="/registry/?entity=http%3a%2f%2fschema.theodi.org%2fodrs%23RightsStatement" title="http://schema.theodi.org/odrs#RightsStatement">
+                        rights statement
+                      </a>
+                      <br/>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+                  type
+                </strong>
+              </td>
+              <td>
+                <a href="/registry/?entity=http%3a%2f%2fpurl.org%2flinked-data%2fregistry%23Register" title="http://purl.org/linked-data/registry#Register">
+                  Register
+                </a>
+
+                |
+                <a href="/registry/?entity=http%3a%2f%2fwww.w3.org%2fns%2fldp%23Container" title="http://www.w3.org/ns/ldp#Container">
+                  Container
+                </a>
+                <br/>
+              </td>
+            </tr>
+            <tr>
+              <td class="align-right span2">
+                <strong title="http://www.w3.org/2002/07/owl#versionInfo">
+                  version info
+                </strong>
+              </td>
+              <td>
+
+                1
+
+                <br/>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane active" id="collapse-tab">
+              <span class="small">
+                Select tab to expand
+              </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <ul class="nav nav-pills nav-stacked action-tab" id="pillstack">
+        <li>
+          <a href="#detailsTab">
+            Core metadata
+          </a>
+        </li>
+        <li>
+          <a href="#propertiesTab">
+            All properties
+          </a>
+        </li>
+        <li>
+          <a href="#downloadsTab">
+            Download
+          </a>
+        </li>
+        <li id="close-pillstack" class="hide">
+          <a href="#collapse-tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-remove-circle">
+                </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <h2>
+    Contents
+  </h2>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+        <div class="dataTables_length" id="DataTables_Table_0_length">
+          <label>
+            Show
+            <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="">
+              <option label="20" value="20" selected="selected">
+                20
+              </option>
+              <option label="50" value="50">
+                50
+              </option>
+              <option label="100" value="100">
+                100
+              </option>
+              <option label="All" value="-1">
+                All
+              </option>
+            </select>
+            entries
+          </label>
+        </div>
+        <div id="DataTables_Table_0_filter" class="dataTables_filter">
+          <label>
+            Filter entries:
+            <input type="search" class="" value="" placeholder="" aria-controls="DataTables_Table_0"/>
+          </label>
+        </div>
+        <table class="table table-striped table-bordered  datatable  dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+          <thead>
+          <tr role="row">
+            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 40px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+              Name
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 80px;" aria-label="Notation: activate to sort column ascending">
+              Notation
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 110px;" aria-label="Description: activate to sort column ascending">
+              Description
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 50px;" aria-label="Types: activate to sort column ascending">
+              Types
+            </th>
+            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 60px;" aria-label="Status: activate to sort column ascending">
+              Status
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_advisory-committee-on-pesticides" title="http://environment.data.gov.uk/registry/structure/org/_advisory-committee-on-pesticides">
+                Advisory Committee on Pesticides
+              </a>
+            </td>
+            <td>
+              advisory-committee-on-pesticides
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB" title="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB">
+                advisory nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_advisory-committee-on-releases-to-the-environment" title="http://environment.data.gov.uk/registry/structure/org/_advisory-committee-on-releases-to-the-environment">
+                Advisory Committee on Releases to the Environment
+              </a>
+            </td>
+            <td>
+              advisory-committee-on-releases-to-the-environment
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB" title="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB">
+                advisory nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_agricultural-dwelling-house-advisory-committees-x16" title="http://environment.data.gov.uk/registry/structure/org/_agricultural-dwelling-house-advisory-committees-x16">
+                Agricultural Dwelling House Advisory Committees (x16)
+              </a>
+            </td>
+            <td>
+              agricultural-dwelling-house-advisory-committees-x16
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB" title="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB">
+                advisory nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_agricultural-wages-committee-x13" title="http://environment.data.gov.uk/registry/structure/org/_agricultural-wages-committee-x13">
+                Agricultural Wages Committee
+              </a>
+            </td>
+            <td>
+              agricultural-wages-committee-x13
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_agriculture-and-horticulture-development-board" title="http://environment.data.gov.uk/registry/structure/org/_agriculture-and-horticulture-development-board">
+                Agriculture and Horticulture Development Board
+              </a>
+            </td>
+            <td>
+              agriculture-and-horticulture-development-board
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_animal-health-and-veterinary-laboratories-agency" title="http://environment.data.gov.uk/registry/structure/org/_animal-health-and-veterinary-laboratories-agency">
+                Animal Health Veterinary Laboratories Agency
+              </a>
+            </td>
+            <td>
+              animal-health-and-veterinary-laboratories-agency
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveAgency" title="http://reference.data.gov.uk/def/central-government/ExecutiveAgency">
+                executive agency
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_broads-authority" title="http://environment.data.gov.uk/registry/structure/org/_broads-authority">
+                Broads Authority
+              </a>
+            </td>
+            <td>
+              broads-authority
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_centre-for-environment-fisheries-and-aquaculture-science" title="http://environment.data.gov.uk/registry/structure/org/_centre-for-environment-fisheries-and-aquaculture-science">
+                Centre for Environment, Fisheries and Aquaculture Science
+              </a>
+            </td>
+            <td>
+              centre-for-environment-fisheries-and-aquaculture-science
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveAgency" title="http://reference.data.gov.uk/def/central-government/ExecutiveAgency">
+                executive agency
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_consumer-council-for-water" title="http://environment.data.gov.uk/registry/structure/org/_consumer-council-for-water">
+                Consumer Council for Water
+              </a>
+            </td>
+            <td>
+              consumer-council-for-water
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_covent-garden-market-authority" title="http://environment.data.gov.uk/registry/structure/org/_covent-garden-market-authority">
+                Covent Garden Market Authority
+              </a>
+            </td>
+            <td>
+              covent-garden-market-authority
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_dartmoor-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/_dartmoor-national-park-authority">
+                Dartmoor National Park Authority
+              </a>
+            </td>
+            <td>
+              dartmoor-national-park-authority
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_department-for-environment-food-rural-affairs" title="http://environment.data.gov.uk/registry/structure/org/_department-for-environment-food-rural-affairs">
+                Department for Environment, Food &amp; Rural Affairs
+              </a>
+            </td>
+            <td>
+              department-for-environment-food-rural-affairs
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/MinisterialDepartment" title="http://reference.data.gov.uk/def/central-government/MinisterialDepartment">
+                ministerial department
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_drinking-water-inspectorate" title="http://environment.data.gov.uk/registry/structure/org/_drinking-water-inspectorate">
+                Drinking Water Inspectorate
+              </a>
+            </td>
+            <td>
+              drinking-water-inspectorate
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_environment-agency" title="http://environment.data.gov.uk/registry/structure/org/_environment-agency">
+                Environment Agency
+              </a>
+            </td>
+            <td>
+              environment-agency
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_exmoor-national-park-authority" title="http://environment.data.gov.uk/registry/structure/org/_exmoor-national-park-authority">
+                Exmoor National Park Authority
+              </a>
+            </td>
+            <td>
+              exmoor-national-park-authority
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_the-food-and-environment-research-agency" title="http://environment.data.gov.uk/registry/structure/org/_the-food-and-environment-research-agency">
+                Food &amp; Environment Research Agency
+              </a>
+            </td>
+            <td>
+              the-food-and-environment-research-agency
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveAgency" title="http://reference.data.gov.uk/def/central-government/ExecutiveAgency">
+                executive agency
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_forestry-commission" title="http://environment.data.gov.uk/registry/structure/org/_forestry-commission">
+                Forestry Commission
+              </a>
+            </td>
+            <td>
+              forestry-commission
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/NonMinisterialDepartment" title="http://reference.data.gov.uk/def/central-government/NonMinisterialDepartment">
+                non ministerial department
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_gangmasters-licensing-authority" title="http://environment.data.gov.uk/registry/structure/org/_gangmasters-licensing-authority">
+                Gangmasters Licensing Authority
+              </a>
+            </td>
+            <td>
+              gangmasters-licensing-authority
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="odd">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_independent-agricultural-appeals-panel" title="http://environment.data.gov.uk/registry/structure/org/_independent-agricultural-appeals-panel">
+                Independent Agricultural Appeals Panel
+              </a>
+            </td>
+            <td>
+              independent-agricultural-appeals-panel
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB" title="http://reference.data.gov.uk/def/central-government/AdvisoryNDPB">
+                advisory nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          <tr role="row" class="even">
+            <td class="sorting_1">
+              <a href="/registry/structure/org/_joint-nature-conservation-committee" title="http://environment.data.gov.uk/registry/structure/org/_joint-nature-conservation-committee">
+                Joint Nature Conservation Committee
+              </a>
+            </td>
+            <td>
+              joint-nature-conservation-committee
+            </td>
+            <td>
+            </td>
+            <td>
+              <a href="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB" title="http://reference.data.gov.uk/def/central-government/ExecutiveNDPB">
+                executive nDPB
+              </a>
+
+              ,
+              <a href="http://www.w3.org/ns/org#Organization" title="http://www.w3.org/ns/org#Organization">
+                Organization
+              </a>
+            </td>
+            <td>
+                    <span class="label label-warning">
+                      experimental
+                    </span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+          Showing 1 to 20 of 38 entries
+        </div>
+        <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+          <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous">
+            Previous
+          </a>
+          <span>
+                <a class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0">
+                  1
+                </a>
+                <a class="paginate_button " aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0">
+                  2
+                </a>
+              </span>
+          <a class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" id="DataTables_Table_0_next">
+            Next
+          </a>
+        </div>
+      </div>
+      <nav>
+      </nav>
+    </div>
+  </div>
+</div>
+<!-- End of container -->    <footer class="o-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="">
+          <div class="c-footer-credits">
+            <h4 class="">
+              Support
+            </h4>
+            <p>
+
+              Support and contact information goes here.
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <h4>
+          About this page
+        </h4>
+        <p>
+
+          Unless otherwise stated, all content is available under the
+
+          <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">
+            Open Government Licence
+          </a>
+        </p>
+        <p class="c-footer-epimorphics">
+              <span class="i18n">
+                Design and development by
+              </span>
+          <a href="http://www.epimorphics.com">
+            Epimorphics
+          </a>
+          .
+
+        </p>
+      </div>
+    </div>
+    <!--/.row-->      </div>
+</footer>
+<script type="text/javascript" src="/registry/ui/assets/js/bootstrap.min.js">
+</script>
+<script type="text/javascript" src="/registry/ui/assets/js/jquery.dataTables.min.js">
+</script>
+<script src="/registry/ui/assets/js/bootstrap-editable.min.js">
+</script>
+<script type="text/javascript" src="/registry/ui/assets/js/ui.js">
+</script>
+</body>
+</html>

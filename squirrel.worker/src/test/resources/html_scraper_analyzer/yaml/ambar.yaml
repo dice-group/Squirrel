@@ -1,0 +1,29 @@
+file_descriptor:
+    check:
+        domain: ambar.utpl.edu.ec
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": .navigation ul li:contains(Datasets) a
+
+    search-result-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-content a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    detail-page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": .module-content h1.heading:eq(0)
+                "http://purl.org/dc/terms/description": .module-content p:eq(0)
+                "http://purl.org/dc/terms/publisher": .context-info .module-content .heading:eq(1)
+                "http://purl.org/dc/terms/license": p.module-content a:eq(0)
+                "http://purl.org/dc/terms/modified": tr:contains(Last Updated) td
+                "http://purl.org/dc/terms/issued": tr:contains(Created) td
+                "http://www.w3.org/ns/dcat#downloadURL": .dropdown ul li:eq(1) a

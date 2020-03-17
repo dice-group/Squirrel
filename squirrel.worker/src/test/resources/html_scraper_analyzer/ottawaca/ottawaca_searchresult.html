@@ -1,0 +1,2360 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2015-05-10T18:32:27/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2015-05-10T18:32:27/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ottawa/:version:2015-10-16T08:50:48/:bundle:css/medium-editor.css;css/bootstrap.css" />
+
+
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta name="description" content=""/>
+
+  <title>Datasets - OpenData Ottawa</title>
+
+
+
+
+
+  <link rel="shortcut icon" href="/images/icons/ckan.ico" />
+
+
+  <link href="/img/favicon.ico" rel="icon" type="image/x-icon"/>
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html start -->
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36718000-2']);
+    _gaq.push(['_setDomainName', 'auto']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html end -->
+
+
+
+  <link rel="stylesheet" href="/theme-base/css/wet-boew.min.css"/>
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/ottawa.css" />
+  <script src="//use.edgefonts.net/source-sans-pro.js"></script>
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body  data-site-root="http://data.ottawa.ca/" data-locale-root="http://data.ottawa.ca/"  vocab="http://schema.org/" typeof="WebPage" >
+
+
+
+
+
+<!-- Snippet snippets/skip.html start -->
+<ul id="wb-tphp">
+  <li class="wb-slc"><a class="wb-sl" href="#wb-cont">Skip to main content</a></li>
+  <li class="wb-slc visible-md visible-lg"><a class="wb-sl" href="#wb-info">Skip to site information</a></li>
+</ul>
+<!-- Snippet snippets/skip.html end -->
+
+
+
+
+
+
+<header role="banner">
+
+  <div id="wb-bnr">
+    <div id="wb-bar">
+
+      <div class="container">
+        <div class="row">
+          <section id="wb-lng" class="visible-md visible-lg">
+            <a href="http://ottawa.ca"><img src="/img/ottawalogo.png" alt="City of Ottawa" style="height:30px"/></a>
+            <ul class="text-right">
+
+
+              <li><a lang="fr" hreflang="fr" href="/fr/dataset">Français</a></li>
+
+
+
+              <li><a href="/user/login">Log in</a></li>
+
+              <li><a class="sub" href="/user/register">Register</a></li>
+
+
+
+            </ul>
+          </section>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="container">
+      <div class="row">
+
+        <div id="wb-sttl" class="col-md-7">
+
+          <h1 style="margin:0;">
+
+            <a href="/"> <img src="/img/open_data_logo_en.png" width="160" height="45" style="margin: 20px 0 20px 0;" alt="City of Ottawa"> </a>
+
+          </h1>
+
+        </div>
+
+        <section id="wb-srch" class="col-md-5 visible-md visible-lg"><h2>Search</h2>
+          <form method="get" action="/dataset" role="search" class="form-inline">
+            <div class="form-group"><label for="wb-srch-q">Search Your Data</label>
+              <input id="wb-srch-q" class="form-control" name="q" type="search" value="" size="27" maxlength="150"/>
+            </div>
+            <button type="submit" id="wb-srch-sub" class="btn btn-default">Search</button>
+          </form>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+
+  <nav role="navigation" id="wb-sm" data-trgt="mb-pnl" class="wb-menu visible-md visible-lg" typeof="SiteNavigationElement">
+    <div class="container nvbar"><h2>Site menu</h2>
+
+      <div class="row">
+        <ul class="nav nav-pills">
+
+
+          <li class="active"><a href="/dataset">Datasets</a></li><li><a href="/organization">Organizations</a></li><li><a href="/group">Groups</a></li><li><a href="/about">About</a></li>
+
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+  </nav>
+
+
+  <nav role="navigation" id="wb-bc" property="breadcrumb"><h2>You are here:</h2>
+
+    <div class="container">
+      <div class="row">
+        <ol class="breadcrumb">
+
+          <!-- Snippet snippets/home_breadcrumb_item.html start -->
+          <li><a href="/">Home</a></li>
+          <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+          <li class="active"><a href="/dataset">Datasets</a></li>
+
+        </ol>
+      </div>
+    </div>
+  </nav>
+
+
+</header>
+
+
+
+
+
+
+<div class="container" id="wb-cont">
+  <div class="row">
+
+
+    <div class="col-md-3 col-md-push-9" >
+
+
+
+
+      <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+      <div class="panel panel-primary">
+
+        <div class="panel-heading"><span class="glyphicon glyphicon-filter"></span> Organizations</div>
+
+        <div class="panel panel-body">
+
+
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=infrastructure-services" title="Infrastructure Services">
+                  <span>Infrastructure Services (36)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=parks-recreation" title="Parks, Recreation &amp; Cultural Services ">
+                  <span>Parks, Recreation &amp; Cultural Services  (23)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=transportationservices" title="Transportation Services">
+                  <span>Transportation Services (18)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=planning-growth" title="Planning &amp; Growth Management">
+                  <span>Planning &amp; Growth Management (16)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=city-clerk-and-solicitor" title="City Clerk and Solicitor">
+                  <span>City Clerk and Solicitor (15)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=serviceottawa" title="">
+                  <span>ServiceOttawa (13)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=environmental-services" title="Environmental Services ">
+                  <span>Environmental Services  (13)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=community-social-services" title="Community &amp; Social Services">
+                  <span>Community &amp; Social Services (9)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=public-works" title="">
+                  <span>Public Works (5)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=ottawa-public-library" title="">
+                  <span>Ottawa Public Library  (5)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <p class="module-footer">
+
+
+            <a href="/dataset?_organization_limit=0" class="read-more">Show More Organizations</a>
+
+
+          </p>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <!-- Snippet snippets/facet_list.html end -->
+
+
+
+      <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+      <div class="panel panel-primary">
+
+        <div class="panel-heading"><span class="glyphicon glyphicon-filter"></span> Groups</div>
+
+        <div class="panel panel-body">
+
+
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=geography-and-maps" title="">
+                  <span>Geography and Maps (50)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=living" title="">
+                  <span>Living (40)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=transportation" title="">
+                  <span>Transportation (35)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=city-hall" title="">
+                  <span>City Hall (28)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=environment" title="">
+                  <span>Environment (17)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=demographics" title="">
+                  <span>Demographics (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=planning-and-development" title="">
+                  <span>Planning &amp; Development (8)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=health-and-safety" title="">
+                  <span>Health and Safety (5)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=business-and-economy" title="">
+                  <span>Business &amp; Economy (5)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <p class="module-footer">
+
+
+
+          </p>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <!-- Snippet snippets/facet_list.html end -->
+
+
+
+      <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+      <div class="panel panel-primary">
+
+        <div class="panel-heading"><span class="glyphicon glyphicon-filter"></span> Tags</div>
+
+        <div class="panel panel-body">
+
+
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=accidents" title="">
+                  <span>accidents (11)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=transportation" title="">
+                  <span>transportation (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=pedestrian+collisions" title="">
+                  <span>pedestrian collisions (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=pedestrian+accidents" title="">
+                  <span>pedestrian accidents (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=bicycle+collisions" title="">
+                  <span>bicycle collisions (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=bicycle+accidents" title="">
+                  <span>bicycle accidents (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=Collisions" title="">
+                  <span>Collisions (10)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=transport" title="">
+                  <span>transport (9)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=accidents+impliquant+des+pi%C3%A9tons" title="accidents impliquant des piétons">
+                  <span>accidents impliquant des piétons (9)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=collisions+impliquant+des+pi%C3%A9tons" title="collisions impliquant des piétons">
+                  <span>collisions impliquant des piétons (8)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <p class="module-footer">
+
+
+            <a href="/dataset?_tags_limit=0" class="read-more">Show More Tags</a>
+
+
+          </p>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <!-- Snippet snippets/facet_list.html end -->
+
+
+
+      <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+      <div class="panel panel-primary">
+
+        <div class="panel-heading"><span class="glyphicon glyphicon-filter"></span> Formats</div>
+
+        <div class="panel panel-body">
+
+
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=CSV" title="">
+                  <span>CSV (105)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=SHP" title="">
+                  <span>SHP (83)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=KMZ" title="">
+                  <span>KMZ (83)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=GeoJSON" title="">
+                  <span>GeoJSON (77)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=dwg" title="">
+                  <span>dwg (65)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=XLSX" title="">
+                  <span>XLSX (59)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=XML" title="">
+                  <span>XML (52)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=XLS" title="">
+                  <span>XLS (20)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=dwg.xml" title="">
+                  <span>dwg.xml (9)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=JSON" title="">
+                  <span>JSON (9)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <p class="module-footer">
+
+
+            <a href="/dataset?_res_format_limit=0" class="read-more">Show More Formats</a>
+
+
+          </p>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <!-- Snippet snippets/facet_list.html end -->
+
+
+
+      <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+      <div class="panel panel-primary">
+
+        <div class="panel-heading"><span class="glyphicon glyphicon-filter"></span> Licenses</div>
+
+        <div class="panel panel-body">
+
+
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?license_id=ottawa" title="">
+                  <span>Open Data License 2.0 (177)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <p class="module-footer">
+
+
+
+          </p>
+
+
+
+        </div>
+      </div>
+
+
+
+
+      <!-- Snippet snippets/facet_list.html end -->
+
+
+
+
+    </div>
+
+
+
+
+    <div class="col-md-9 col-md-pull-3 main-content">
+      <main role="main" property="mainContentOfPage">
+
+
+
+
+
+
+        <div class="row">
+          <div class="col-md-12">
+            <h2 class="h3">Datasets</h2>
+          </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="row">
+          <div class="col-md-12 mrgn-lft-sm mrgn-rght-sm">
+
+
+
+
+            <!-- Snippet snippets/search_form.html start -->
+
+
+
+
+
+
+
+
+            <form class="form-inline mrgn-bttm-lg mrgn-tp-md" role="form" method="get" data-module="select-switch">
+
+
+
+              <label for="search_field" class="wb-inv">Search Datasets</label>
+
+
+              <div class="input-group col-md-12">
+
+                <input type="text" class="form-control" id="search_field" autocomplete="off" name="q"
+                       value="" placeholder="Search...">
+                <span class="input-group-btn">
+
+<button class="btn btn-primary btn-small" id="wb-srch-sub" type="submit">
+    <span class="fa fa-search"></span>
+    <span class="wb-inv">Search</span>
+</button>
+
+    </span>
+              </div>
+
+
+
+
+
+
+
+
+
+
+              <div class="row mrgn-tp-md ">
+
+                <div class="col-md-6 mrgn-tp-sm text-left text-success">
+                  <strong>
+                    <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+                    182 datasets found
+                    <!-- Snippet snippets/search_result_text.html end -->
+                  </strong>
+                </div>
+                <div class="col-md-6 text-left">
+
+                  <!-- Snippet snippets/sort_by.html start -->
+                  <span class="form-select control-group control-order-by">
+  <label for="field-order-by">Order by</label>
+  <select id="field-order-by" name="sort">
+    <option value="score desc, metadata_modified desc">Relevance</option>
+    <option value="title_string asc">Name Ascending</option>
+    <option value="title_string desc">Name Descending</option>
+    <option value="metadata_modified desc">Last Modified</option>
+
+  </select>
+  <button class="btn btn-xs js-hide" type="submit">Go</button>
+</span>
+                  <!-- Snippet snippets/sort_by.html end -->
+
+                </div>
+
+
+              </div>
+
+
+
+
+              <div class="col-md-12 mrgn-tp-md mrgn-bttm-md">
+                <ul class="list-inline">
+
+
+                </ul>
+              </div>
+
+
+
+            </form>
+            <!-- Snippet snippets/search_form.html end -->
+
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+
+
+            <!-- Snippet snippets/package_list.html start -->
+
+
+
+            <ul class="list-unstyled">
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/water">Water</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Water bodies
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/water/resource/97694bef-0277-4f07-8c35-48ac7fffb9e2" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/water/resource/aa603a32-ecd1-43f7-a849-6dbbfad7a48c" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/water/resource/adfe55ae-2848-43fb-9d02-a5b9cd7285ee" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/water/resource/e9a4cc5b-65ce-43db-aa95-0315df080150" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/water/resource/aa50e31f-7bfc-408a-a3c6-76a37b553fc8" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/water/resource/31d70571-7953-42e2-aad3-d50a78615d34" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/wards-2014">Wards 2014</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Ward boundaries in 2014
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/8152e707-fc28-409c-9bbe-8cb9f88dca86" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/3dec3c38-1644-4542-a91c-db7883a80463" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/32e43199-b3d3-4000-88a8-aa62faea18ad" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/d63e4443-febd-4d4a-ba9a-444d49c10124" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/1b6112e5-3fe6-4976-8c8e-401a35d529a7" data-format="geojson">GeoJSON</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2014/resource/71fe338e-7cfd-4ab8-afda-a2065e29b8bc" data-format="kml">KML</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/wards-2010">Wards 2010</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Ward boundaries in 2010
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/308de4e4-31f4-4f8b-a04c-0a909da2ee18" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/7e5e1cec-13e8-4ff7-90b5-c129db2c6573" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/dd0a4ca5-6c5e-46a0-b913-811da261e44e" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/79ff1529-d38f-4fd0-b68e-a83e6a1378ec" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/6abe3aa1-4ad8-4061-bb18-dad5054b85fb" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2010/resource/d4ec0dae-d8ca-40ee-8b0b-0968eedd3a3f" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/wards-2006">Wards 2006</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Ward boundaries in 2006
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/8e53aef6-0f75-467e-adb9-8926810f88a5" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/eede1835-82fe-4ebd-bdc0-74491f473b02" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/bff8f501-ef2c-48e6-98a6-bbb8773599bf" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/da9a5562-215f-46dd-b5c8-6d12d3746f65" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/ae05b3ef-453c-4026-b4a7-7b278bdb1681" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2006/resource/f1ad60e3-a18d-49b3-b1d0-48623daca4cd" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/wards-2003">Wards 2003</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Ward boundaries in 2003
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/b9729205-705c-4e22-8ca1-154e34cb3bf0" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/20423242-2e4d-407b-8517-1881914ce8dd" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/5207288c-d788-4db6-a492-11c31461e618" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/84449567-7279-4ca5-a76f-6f49ac080b7a" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/5d093497-2c80-423a-b03b-b4340527868b" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wards-2003/resource/7b0d24f0-1df9-4771-9f61-a8198c96b6a4" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/wading-pools">Wading Pools</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all wading pool locations in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/616a62bb-1c8a-4aef-9045-12447dcbce9d" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/a1dc7fa3-4a29-4b98-8039-1f253ffc3942" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/1976f1f9-84cb-4b8e-80c7-540fbf748843" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/9f926133-3c46-4e23-815b-fe406346feb2" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/e7ee0633-a684-4e54-a59d-96410d924ab9" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/wading-pools/resource/538cd1ac-da15-45f0-97fa-2acdde2d1b0b" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/volleyball-courts">Volleyball Courts</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all volleyball court locations in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/76288f16-c478-44a2-8490-1f61ec70fe3c" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/568539b9-fe4e-4d92-8fd4-1380e3167c67" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/71aa7e08-03de-4c30-b478-d9fea752b6c5" data-format="dwg.xml">dwg.xml</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/5a13f474-9711-45a8-8ffb-0123fc0c00f6" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/996428a2-0a91-42e4-ae85-edb711d9d628" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/445d2466-e52c-442f-b0d5-9dcc7e90d829" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/volleyball-courts/resource/74525ce3-945c-4818-bd3d-8d2247016742" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/urban-transit-area">Urban Transit Area</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Urban Transit Areas
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/urban-transit-area/resource/2c2dfe61-d9ee-45de-bea8-9130b1865e7e" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/urban-transit-area/resource/0a35b372-19c6-4817-b7a8-92589b5259e8" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/urban-transit-area/resource/b764698a-7483-4cbd-b725-2c2293608a65" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/urban-transit-area/resource/8ae44728-d3eb-4293-81a2-eb3fb3b3b098" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/urban-transit-area/resource/f9a72dfa-985f-45e9-a166-83a00a980ec4" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/trans-canada-trail">Trans Canada Trail</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Trans Canada Trail
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/8d99ca07-2a5e-47aa-bb42-5407cb95e8a3" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/37983eec-b591-41ea-be57-3664a361f13f" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/4fc7ff9e-f210-48ec-a694-027c9c6ef76c" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/a65aed6b-81e5-4597-8450-92cabf4d45eb" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/1e6d23b7-0a8f-4cef-a9ea-f2a5e2a775f0" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trans-canada-trail/resource/dfeca6c5-ba72-4b83-b6ba-a105b890bc6f" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/trails">Trails</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Pedestrian trails
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/04b9dbac-e948-4421-b84e-c5293b7deabd" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/4c380bfd-6b38-4766-ad43-0b844792e4de" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/21dd7e36-c5ac-4ba0-94e2-0fe63896327c" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/701be4d9-7480-46ae-aff6-711551dd1c40" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/07fa2330-79c1-49e4-9ea3-89ebcfa13822" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/trails/resource/dd752a1f-a2aa-431c-972e-1b52e9b8fe3d" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/township-lot-centroids">Township Lot Centroids</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Township Lot Centroids
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/43ae0833-282a-4efb-bafc-2167e38e7c43" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/ff302d1f-d831-4b64-8ee3-b5230253b15d" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/c3e0a19d-201e-433c-a97d-eb1335c89555" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/b59bd253-50e4-4a40-ac75-59d848b8ea93" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/299f35b2-92b7-44e7-be5f-6c4f81af733c" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/township-lot-centroids/resource/ad2b8955-2908-4e10-a8d1-3fcdba6c716c" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/tennis-courts">Tennis Courts</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all tennis court locations in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/0b2c552f-979f-4256-a31b-565cec18e4f2" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/c64acca2-bd2e-45ce-be56-177f44f00f28" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/4e9f020b-69d7-4141-b75f-19c7532542c0" data-format="dwg.xml">dwg.xml</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/1319cec1-0465-418a-92d7-eccd393e1f2b" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/3cee71e6-4e26-4082-b8f8-a6d7925c4007" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/3fd0129d-2524-4bf8-875e-2df2958b7498" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/tennis-courts/resource/36d9f458-800b-4b9f-94c4-0e88ef3fea9f" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/sports-fields">Sports Fields</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all sports fields locations in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/48aecbdc-446f-460a-9683-028cde0e564b" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/aea2511f-a608-457b-aba8-b4bbc501bc86" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/37cd25a7-6936-4f15-9b43-ebddf1214ab6" data-format="dwg.xml">dwg.xml</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/3331cdf0-5d5b-410b-bf37-5c4df70767c5" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/4a0cd5bd-06c5-4f86-9c02-01a84bff5021" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/c0d83938-5b22-455c-9c58-3da5f24ae673" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sports-fields/resource/29f77098-9789-4999-aee5-91cbab68f199" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/splash-pads">Splash Pads</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all splash pads in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/c1385948-6ec4-4b14-9dc4-844c21133850" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/e5d4c959-2247-4618-9c1f-269ae7952b4a" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/1f2b52e0-c471-4449-9665-a3496f0bcaef" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/b0b31d32-c370-40ab-bc6f-0dae5f2b921e" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/5c42ad4e-bc54-4770-bdd1-b8a84e7c8f86" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/splash-pads/resource/c7a7417b-e408-497e-ab0a-329dcd9095ec" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/sledding-hills">Sledding Hills</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all City of Ottawa approved sledding hills located in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/c8b43edf-032f-4866-be72-e5669cbb09f1" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/ab3b1c61-f663-42ec-b632-a1e1eb150011" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/07ec2ee0-1634-4c5a-b847-fe2d1b40e850" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/6b5e4eee-2522-48ea-b4c8-e2e2ab2ba764" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/266d36dd-f794-4774-88bc-7f0885b45f44" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/sledding-hills/resource/924d9959-4f4a-4d59-b1ac-fa8a71599281" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/skateboard-parks">Skateboard Parks</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Point file of all skateboard parks in City of Ottawa parkland.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/70f2aed7-5159-4326-b54f-53c4a398342b" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/36ff481d-4b73-4c27-9b1d-d7cee8a21a75" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/fc666645-7d91-4577-bdc8-c7a0689e9093" data-format="dwg.xml">dwg.xml</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/c2dfae01-8bec-46df-b2dc-3fb142f81be1" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/797e1bc3-351d-49c6-ae36-eafa686b19c9" data-format="xml">XML</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/c537a04c-2bb1-4b3c-9e54-2ddd25d2f754" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/skateboard-parks/resource/8c26bbf7-51d9-4b54-997a-c472c5b6d355" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/secondaryplans">Secondary Plans</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Secondary Plan locations
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/secondaryplans/resource/bd317133-22d9-4459-b2a7-0b95000f0d39" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/secondaryplans/resource/b24005c8-9eb2-47b3-8e18-a2f7c8ffd4e3" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/secondaryplans/resource/69c3ff2b-e67e-4692-81dc-a49450ba82c6" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/secondaryplans/resource/a955b493-f243-4d97-9ca0-31428535543a" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/secondaryplans/resource/442f3a50-63f8-45d0-a010-26862e002d6a" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/rural-transit-area">Rural Transit Area</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Rural Transit Areas
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/rural-transit-area/resource/15eab3f1-f168-435e-9464-f89beef45ff0" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/rural-transit-area/resource/6ab1d8d7-f958-46a5-b273-d512dc466878" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/rural-transit-area/resource/4f64b570-9339-46dc-a793-e82b63eb9914" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/rural-transit-area/resource/1438ef3b-d208-4e46-9ef0-938f5997aa53" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/rural-transit-area/resource/948ebdeb-120c-4815-bb87-a07203ed8c6f" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/roads-proposed">Roads - Proposed</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Single polyline data showing proposed roadways within geographic limits of City of Ottawa.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/roads-proposed/resource/f77ebe3a-3349-4987-97a2-c0e78e6428d4" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads-proposed/resource/7529f946-f483-442e-9b43-31fbf446f6e5" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads-proposed/resource/e8950123-ef68-44b6-b9e5-52b5584f801a" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads-proposed/resource/ba11f90a-b041-4156-9b59-0e1c5e2b6a7c" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads-proposed/resource/9138bce5-e2f1-49f5-a437-8652294eb41d" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+
+              <li>
+                <div class="panel panel-default mrgn-bttm-sm">
+
+                  <header class="panel-heading"><h3 class="panel-title">
+
+
+
+
+                    <a href="/dataset/roads">Roads</a>
+
+
+
+
+
+                  </h3></header>
+
+                  <div class="panel-body">
+
+
+
+                    Single polyline data showing operational roadways within geographic limits of City of Ottawa.
+
+
+
+
+                    <div class="row">
+                      <div class="col-md-3"><em>Resource Formats:</em></div>
+                      <div class="col-md-9">
+                        <ul class="list-inline list-unstyled">
+
+                          <li><span class="badge"><a href="/dataset/roads/resource/a5e55f72-84c6-4c5e-b4ca-c7472e66c8cd" data-format="dwg">dwg</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads/resource/bd87734f-96c2-49d8-ba86-bf144a6aed0a" data-format="kmz">KMZ</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads/resource/f72339eb-769f-48ec-a18a-9965a879527e" data-format="shp">SHP</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads/resource/c8848dc6-6269-4c68-8dcf-b91c34543674" data-format="csv">CSV</a></span></li>
+
+                          <li><span class="badge"><a href="/dataset/roads/resource/a65e0b1e-ab26-418d-8afb-9fbbf9d53c0b" data-format="geojson">GeoJSON</a></span></li>
+
+                        </ul>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </li>
+
+
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+            </ul>
+
+
+            <!-- Snippet snippets/package_list.html end -->
+
+
+          </div>
+        </div>
+        <div class="col-md-12">
+          <ul class='pagination'> <li class="disabled"><a class="active" href="/dataset?page=1">1</a></li> <li><a class="active" href="/dataset?page=2">2</a></li> <li><a class="active" href="/dataset?page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a class="active" href="/dataset?page=10">10</a></li> <li><a class="active" href="/dataset?page=2">Next</a></li></ul>
+        </div>
+        <div class="col-md-12">
+
+          <small>
+
+
+
+            You can also access this registry using the <a href="/api/3">API</a> (see <a href="http://docs.ckan.org/en/latest/api/">API Docs</a>).
+          </small>
+
+        </div>
+
+
+      </main>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+
+<footer role="contentinfo" id="wb-info wb-foot" class="visible-sm visible-md visible-lg wb-navcurr">
+
+  <div class="container" id="wb-info">
+
+    <nav role="navigation" class="row">
+      <br/>
+      <section class="col-sm-4">
+        <div class="boxes-box-content">
+          <div class="logo">
+            <img src="/img/footer-ottawalogo.png" class="mrgn-bttm-md" alt="Ottawa Logo" width="107" height="47">
+            <p>© 2001-2017 City of Ottawa</p>
+            <p>110 Laurier Avenue West <br> Ottawa, Ontario, K1P 1J1</p>
+          </div>
+        </div>
+      </section>
+      <section class="col-sm-4">
+        <div class="call mrgn-tp-xl">
+          <p>Call <strong>3-1-1 </strong>or visit your local <a href="http://ottawa.ca/en/city-hall/your-city-government/contact-city-ottawa/client-services">Client Service Centre</a> <br>for service in more than 170 languages</p>
+        </div>
+      </section>
+      <section class="col-sm-3 mrgn-tp-lg col-sm-push-1">
+        <div class="span-2">
+          <div id="block-boxes-city-of-ottawa-footer-right" class="block block-boxes block-boxes-wetkit_box no-title odd last block-count-5 block-region-footer block-city-of-ottawa-footer-right">
+            <div id="boxes-box-city_of_ottawa_footer_right" class="boxes-box"><div class="boxes-box-content">
+              <div class="social">
+                <a href="https://twitter.com/ottawacity">
+                  <img src="/img/twitter.png" alt="Twitter" width="30" height="24">
+                </a>
+                <a href="https://www.facebook.com/cityofottawa">
+                  <img src="/img/facebook.png" alt="facebook" width="24" height="24">
+                </a>
+                <a href="http://www.youtube.com/user/cityottawa">
+                  <img src="/img/youtube.png" alt="Youtube" width="24" height="24" class="image-actual">
+                </a>
+                <a href="http://instagram.com/cityofottawa">
+                  <img src="/img/instagram.png" alt="Instagram icon" width="24" height="24">
+                </a>
+                <a href="http://www.flickr.com/photos/cityofottawa">
+                  <img src="/img/flickr.png" alt="Flickr" width="24" height="24">
+                </a>
+                <a href="http://ottawa.ca/en/rss-feeds">
+                  <img src="/img/rss.png" alt="Subscription" width="25" height="24">
+                </a>
+                <p><a href="http://ottawa.ca/en/city-hall/your-city-government/policies-and-administrative-structure/protocols#social-media-protocol">Access the city’s social media streams</a></p>
+              </div>
+            </div>
+            </div>
+      </section>
+    </nav>
+    <div class="row clear">
+      <div id="base-fullft-in" class="col-md-push-4 col-md-4">
+        <ul class="links list-inline list-unstyled">
+          <li class="menu-760 first">
+            <a href="http://ottawa.ca/en/disclaimer" title="">Disclaimer</a>
+          </li>
+          <li class="menu-762">
+            <a href="http://ottawa.ca/en/privacy-statement" title="">Privacy</a>
+          </li>
+          <li class="menu-766">
+            <a href="http://ottawa.ca/en/city-hall/your-city-government/policies-and-administrative-structure/administrative-policies-1#accessibility-policy" title="">Accessibility</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2015-05-10T18:32:27/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2015-05-10T18:32:27/:bundle:jed.min.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2015-05-22T18:24:14/:bundle:plugins/jquery.inherit.js;plugins/jquery.proxy-all.js;plugins/jquery.url-helpers.js;plugins/jquery.date-helpers.js;plugins/jquery.slug.js;plugins/jquery.slug-preview.js;plugins/jquery.truncator.js;plugins/jquery.masonry.js;plugins/jquery.form-warning.js;sandbox.js;module.js;pubsub.js;client.js;notify.js;i18n.js;main.js"></script>
+<script type="text/javascript" src="/fanstatic/ottawa/:version:2015-10-16T08:50:48/:bundle:js/medium-editor.min.js;js/dropdown.js;js/pages-editor.js"></script></body>
+</html>

@@ -1,0 +1,23 @@
+file_descriptor:
+    check:
+        domain: data.kk.dk
+        ignore-request: true
+    search-result-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": h1.heading:eq(0)
+                "http://purl.org/dc/terms/description": .notes p
+                "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#downloadURL": .resources .resource-item .dropdown.btn-group .dropdown-menu li:eq(1) a
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/mbox": table tr:contains(Forfatter) td a
+                    "http://xmlns.com/foaf/0.1/name": table tr:contains(Forfatter) td

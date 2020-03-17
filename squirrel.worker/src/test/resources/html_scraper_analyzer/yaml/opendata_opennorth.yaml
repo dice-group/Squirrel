@@ -1,0 +1,31 @@
+file_descriptor:
+    check:
+        domain: opendata.opennorth.se
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": a:contains(Dataset)
+
+    search-result-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    detail-page:
+        regex: dataset
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": tr:contains(Title) td
+                "http://purl.org/dc/terms/description": tr:contains(Description) td
+                "http://purl.org/dc/terms/publisher": tr:contains(Publisher) td
+                "http://purl.org/dc/terms/modified": tr:contains(Last Updated) td
+                "http://purl.org/dc/terms/issued": tr:contains(Created) td
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": tr:contains(Metadata) td
+                "http://purl.org/dc/terms/language": tr:contains(Language) td
+                "http://www.w3.org/ns/dcat#distribution": tr:contains(Distribution) td
+                "http://www.w3.org/ns/dcat#downloadURL": .dropdown a:contains(Download)

@@ -182,7 +182,7 @@
             <artifactId>hsqldb</artifactId>
         </dependency>
 
-        <!-- We use the simpleframework to use local HTTP servers for our 
+        <!-- We use the simpleframework to use local HTTP servers for our
             JUnit tests and test scenarios -->
         <dependency>
             <groupId>org.simpleframework</groupId>

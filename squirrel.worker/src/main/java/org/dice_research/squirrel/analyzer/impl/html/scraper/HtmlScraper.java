@@ -1,6 +1,7 @@
 package org.dice_research.squirrel.analyzer.impl.html.scraper;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,12 +9,15 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -48,6 +52,7 @@ public class HtmlScraper {
     private Document doc;
     private Map<String, List<Triple>> staticMap = new HashMap<String, List<Triple>>();
     private Map<String, List<Triple>> selectedMap = new HashMap<String, List<Triple>>();
+    private WebClient webClient;
 
     public HtmlScraper(File file) {
         try {
@@ -164,7 +169,7 @@ public class HtmlScraper {
 
     /**
      * Update the triples with nested objects
-     * 
+     *
      * @param listTriples
      * @return
      */
@@ -229,6 +234,70 @@ public class HtmlScraper {
         return updatedList;
     }
 
+    /**
+     * Method to check if the code is running through a Unit test
+     * @return a boolean value.
+     */
+    private boolean isJUnitTest() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        List<StackTraceElement> list = Arrays.asList(stackTrace);
+        for (StackTraceElement element : list) {
+            if (element.getClassName().startsWith("org.junit.")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This function handles loading javascript on html page based on element click.
+     * @param uri
+     */
+    private void handlePageLoad(String uri, Map<String, Object> resources) {
+        HtmlPage htmlPage;
+        String id = null;
+        long timeout = 10000;
+        webClient = new WebClient(BrowserVersion.FIREFOX_60);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setThrowExceptionOnScriptError(true);
+        webClient.getOptions().setCssEnabled(false);
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
+        try {
+            htmlPage = webClient.getPage(uri);
+            //To prevent downloading a page when running unit test cases
+            if (!isJUnitTest()) {
+                //get button id from yaml file
+                for (Entry<String, Object> ent : resources.entrySet()) {
+                    if ("javascript".equals(ent.getKey()))
+                        id = ent.getValue().toString();
+                }
+                DomElement btn = htmlPage.getElementById(id.substring(4, id.length() - 1));
+                do {
+                    htmlPage = btn.click();
+                    webClient.waitForBackgroundJavaScript(timeout);
+                } while (btn.isDisplayed());
+                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+
+            } else {
+                webClient.waitForBackgroundJavaScript(timeout);
+                this.doc = Jsoup.parse(htmlPage.getWebResponse().getContentAsString(), "UTF-8");
+            }
+            webClient.close();
+        } catch (Exception e) {
+            LOGGER.error("An error occurred when trying handle page load, ", e);
+        }
+    }
+
+
+    /**
+     * Method that scrapes the downloaded html page for triples based on the yaml rule written for the url.
+     * @param resources yaml resources
+     * @param htmlFile html file to scrape
+     * @param uri uri of the html file
+     * @return set of triples found in the page
+     * @throws Exception
+     */
     private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
         this.doc = Jsoup.parse(htmlFile, "UTF-8");
 
@@ -241,6 +310,9 @@ public class HtmlScraper {
 //        }else {
 //         this.label = uri.substring(uri.lastIndexOf("/")+1, uri.length());
 //        }
+
+        if (resources.containsKey(YamlFileAtributes.JAVASCRIPT))
+            handlePageLoad(uri, resources);
 
         for (Entry<String, Object> entry : resources.entrySet()) {
             resourcesList.clear();

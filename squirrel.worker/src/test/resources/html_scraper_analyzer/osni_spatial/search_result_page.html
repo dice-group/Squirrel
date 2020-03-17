@@ -1,0 +1,1423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" class="js geolocation history csstransforms csstransforms3d cors dj_gecko dj_ff60 dj_contentbox" style="">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta charset="UTF-8"/>
+  <title>
+    Search for * | Spatial NI
+  </title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Discover, explore, and download open data from Spatial NI"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="shortcut icon" href="https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"/>
+  <link rel="search" type="application/opensearchdescription+xml" title="Spatial NI" href="/opensearch.xml"/>
+  <link type="text/css" rel="stylesheet" href="//fast.fonts.com/cssapi/4a60d16b-c9e4-404d-89d3-809adb97d65c.css"/>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css"/>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css"/>
+  <link rel="canonical" href="http://osni-spatial-ni.opendata.arcgis.com/datasets"/>
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application-ie.css" />
+  <![endif]-->    <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/nls/jsapi_en-us.js">
+</script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/QueryTask.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/RelationshipQuery.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/StatisticDefinition.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dojox/gfx/svg.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/Task.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/FeatureSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/renderers/smartMapping.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/FeatureLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/ArcGISImageServiceLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/WebTiledLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/arcgis/utils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/dijit/Attribution.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/numberUtils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/type.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/size.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/choropleth.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/heatmap.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/renderers/utils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/colors.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/WidgetSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/focus.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/scroll.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/sniff.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/typematic.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/wai.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/window.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/selection.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/Viewport.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/BackgroundIframe.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/typematic.js">
+  </script>
+  <script async="" src="//www.google-analytics.com/analytics.js">
+  </script>
+  <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendorhead.js">
+  </script>
+  <script>
+    //<![CDATA[
+
+    //normalize/shim window.performance.now
+    //NOTE: this needs to be here because we make use of it immediately below
+    window.performance = window.performance || {};
+    window.performance.now =
+      performance.now           ||
+      performance.webkitNow     ||
+      performance.msNow         ||
+      performance.oNow          ||
+      performance.mozNow        ||
+      function() { return new Date().getTime(); };
+
+    window.composerTelemetryStart = window.performance.now();
+
+    //]]>
+  </script>
+  <meta name="csrf-param" content="authenticity_token"/>
+  <meta name="csrf-token" content="9RzavF1iKSSaQ5yBmpDOy0dUK41xIL4TTkbnQM1vFUu6jkZEobjVeBieta3Aq8y+s1eoPjkWCPeqMtcUe3Jv3Q=="/>
+  <script src="//js.arcgis.com/3.13compact/init.js">
+  </script>
+</head>
+<body class="search dj_a11y dijit_a11y" dir="ltr">
+<!-- customer site -->    <header id="header" role="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div id="home-link-region">
+          <div class="inner-header header-nav-items">
+            <a id="home-link" href="http://osni-spatial-ni.opendata.arcgis.com/">
+              <div class="Title">
+                Open Data
+              </div>
+              <img class="header-image" style="width: 400px; height: auto;" src="https://apps.spatialni.gov.uk/OpenData/img/Header2.jpeg" alt="Open Data logo"/>
+              <div class="site-brand brand">
+                    <span class="site-logo">
+                    </span>
+              </div>
+              <!-- Skip-Nav should be placed ahead of links to allow non-sighted users to bypass navigation -->                </a>
+            <a href="#slide-region" class="skip-nav">
+              Skip Navigation
+            </a>
+            <style type="text/css">
+              .Title {
+                position: absolute;
+                right: 0%;
+                top: 27px;
+                color: #003361;
+                font-size: 60px;
+                font-style: bold;
+              }
+              #grid, .col-1-3 {
+                padding-left: 20px;
+                padding-top: 20px;
+              }
+              .container, .grid {
+                margin: 0 auto;
+              }
+
+              .col-1-3 {
+                width: 24%;
+              }
+              .col-1-3 {
+                display: inline-block;
+                vertical-align: top;
+              }
+              .LPS{
+                position: relative;
+                right:40px;
+              }
+            </style>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="title-bar-region">
+  <div id="copier">
+  </div>
+  <div class="container" id="title-wrap">
+    <div id="title-bar-inner">
+      <div id="search-region" role="search">
+        <a href="/datasets?q=*" data-pjax="true" id="search-all" class="btn light small">
+          BROWSE ALL
+        </a>
+        <div id="search-input-wrapper">
+          <label for="gsearch" class="sr-only">
+            Search
+          </label>
+          <div class="input-group">
+            <form action="/datasets" accept-charset="UTF-8" method="get">
+              <input name="utf8" type="hidden" value="✓"/>
+              <span class="twitter-typeahead" style="position: relative; display: inline-block; direction: ltr;">
+                    <input type="search" name="q" id="gsearch" value="*" size="75" autocomplete="off" class="form-control tt-input" placeholder="Search for open data" spellcheck="false" style="position: relative;" dir="auto"/>
+                    <pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: inherit; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 100; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"/>
+                    <span class="tt-dropdown-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none; right: auto;">
+                      <div class="tt-dataset-datasets">
+                      </div>
+                    </span>
+                  </span>
+              <div id="click-to-search">
+                search icon
+              </div>
+              <!--<span class="input-group-btn">
+              <button class="btn btn-default" type="submit">GO</button>
+          </span>-->                </form>
+          </div>
+        </div>
+        <div id="search-results-extent-button-region" class="search-nav-item">
+          <div class="icon-unchecked">
+              Search Within Map
+          </div>
+        </div>
+      </div>
+      <div id="activities-region">
+        <div id="activities-inner-region">
+          <div class="opendata-bell" id="activity-button-alert">
+          </div>
+          <span id="activities-button" class="btn btn-default" tabindex="0" role="button" data-toggle="popover" data-content="&lt;ul class='activities-items'>&lt;/ul>" data-placement="bottom" data-html="true" data-original-title="" title="">
+                My Activity
+              </span>
+          <div id="activities-growl">
+            This download has been added to your activity panel.
+            <span id="growl-open-panel">
+                  Open panel
+                </span>
+          </div>
+        </div>
+      </div>
+      <div id="user-region">
+      </div>
+    </div>
+  </div>
+</div>
+<div id="flyout-right-region">
+  <div id="flyout-right-controls-region">
+    <div class="flyout-right-controls">
+      <div class="flyout-controls">
+        <div id="close-flyout-right">
+              <span class="glyphicon glyphicon-remove-circle">
+              </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="flyout-content-region">
+  </div>
+</div>
+<div id="map-bar-region" class="">
+  <div id="overlay-region">
+  </div>
+  <div id="controls-region">
+    <div class="mapbar-controls">
+      <div class="container">
+        <div id="controls">
+          <div id="viz-selector" class="disabled " data-toggle="tooltip" data-placement="top" title="Zoom in to visualize" style="display: none;">
+            <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/color-picker-smaps3.png"/>
+            <span id="viz-sep">
+                  |
+                </span>
+          </div>
+          <div id="map-type">
+                <span id="basemap-primary" class="type selected-type" title="Change the map to see streets and place names.">
+                  MAP
+                </span>
+            |
+            <span id="basemap-secondary" class="type" title="Change the map to see satellite imagery.">
+                  SATELLITE
+                </span>
+          </div>
+          <div id="map-change-size" unselectable="on">
+            <div unselectable="on" class="map-resize" id="map-minimize" title="Hide the map">
+              Hide the map
+            </div>
+            <div unselectable="on" class="map-resize selected-size" id="map-normal" title="View the normal map size">
+              View the normal map size
+            </div>
+            <div unselectable="on" class="map-resize" id="map-maximize" title="View the map larger">
+              View the map larger
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="legend-region">
+    <div class="mapbar-legend">
+      <div class="container">
+        <div id="legend">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="map-region">
+    <div id="info-window-container">
+    </div>
+    <div id="map-div" class="map" data-zoom="2" data-scale="147914381.897889" data-loaded="">
+      <div id="map-div_root" style="width: 1256px; height: 300px; direction: ltr;" class="container">
+        <div id="map-div_container" style="position: absolute; cursor: default; -moz-user-select: none; clip: rect(0px,1140px,300px,116px);" class="container">
+          <div id="map-div_layers" class="layersDiv">
+            <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transform: translate3d(24px,-166px,0px); display: block;" id="map-div_bm0">
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: -moz-transform 500ms ease;">
+                <img id="map-div_bm0_tile_2_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-164px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/3"/>
+                <img id="map-div_bm0_tile_2_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-164px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/3"/>
+                <img id="map-div_bm0_tile_2_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(92px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/0"/>
+                <img id="map-div_bm0_tile_2_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(92px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/0"/>
+                <img id="map-div_bm0_tile_2_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(348px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/1"/>
+                <img id="map-div_bm0_tile_2_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(348px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/1"/>
+                <img id="map-div_bm0_tile_2_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(604px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/2"/>
+                <img id="map-div_bm0_tile_2_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(604px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/2"/>
+                <img id="map-div_bm0_tile_2_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(860px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/3"/>
+                <img id="map-div_bm0_tile_2_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(860px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/3"/>
+                <img id="map-div_bm0_tile_2_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1116px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/1/0"/>
+                <img id="map-div_bm0_tile_2_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1116px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/2/2/0"/>
+              </div>
+            </div>
+            <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transform: translate3d(24px,-166px,0px); display: block;" id="map-div_bm1">
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: -moz-transform 500ms ease;">
+                <img id="map-div_bm1_tile_2_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-164px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/3"/>
+                <img id="map-div_bm1_tile_2_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-164px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/3"/>
+                <img id="map-div_bm1_tile_2_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(92px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/0"/>
+                <img id="map-div_bm1_tile_2_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(92px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/0"/>
+                <img id="map-div_bm1_tile_2_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(348px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/1"/>
+                <img id="map-div_bm1_tile_2_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(348px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/1"/>
+                <img id="map-div_bm1_tile_2_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(604px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/2"/>
+                <img id="map-div_bm1_tile_2_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(604px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/2"/>
+                <img id="map-div_bm1_tile_2_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(860px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/3"/>
+                <img id="map-div_bm1_tile_2_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(860px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/3"/>
+                <img id="map-div_bm1_tile_2_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1116px,60px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/1/0"/>
+                <img id="map-div_bm1_tile_2_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1116px,316px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/2/2/0"/>
+              </div>
+            </div>
+            <svg overflow="hidden" width="1256" height="300" style="overflow: visible; position: absolute;" id="map-div_gc">
+              <g id="SearchExtentLayer_layer" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,24.00000000,-166.00000000)" style="display: block;">
+                <g/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="92" y="-2333" width="1024" height="5298" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="92" y="-2333" width="1024" height="5298" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="92" y="-2333" width="1024" height="5298" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+              </g>
+              <defs/>
+              <g id="map-div_graphics_layer" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,24.00000000,-166.00000000)" style="display: block;">
+                <g/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="esriControlsBR">
+              <span class="esriAttribution" style="max-width: 565px; cursor: default;">
+                <span class="esriAttributionList">
+                  <span class="esriAttributionLastItem" style="display: inline;">
+                    Esri, HERE, Garmin, © OpenStreetMap contributors, and the GIS user community
+                    <span class="esriAttributionDelim">
+                       |
+                    </span>
+                  </span>
+                </span>
+              </span>
+          <div class="logo-med">
+          </div>
+        </div>
+        <div class="esriPopup" style="visibility: hidden; z-index: 40;">
+          <div class="esriPopupWrapper" style="position: absolute;">
+            <div class="sizer">
+              <div class="titlePane" style="webkit-user-select: none;">
+                <div class="spinner hidden" title="Searching...">
+                </div>
+                <div class="title">
+                </div>
+                <div class="titleButton prev hidden" title="Previous feature">
+                </div>
+                <div class="titleButton next hidden" title="Next feature">
+                </div>
+                <div class="titleButton maximize" title="Maximize">
+                </div>
+                <div class="titleButton close" title="Close">
+                </div>
+              </div>
+            </div>
+            <div class="sizer content">
+              <div class="contentPane">
+              </div>
+            </div>
+            <div class="sizer">
+              <div class="actionsPane">
+                <div class="actionList hidden">
+                  <a title="Zoom" to="" class="action zoomTo" href="javascript:void(0);">
+                        <span>
+                          Zoom to
+                        </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="pointer hidden">
+            </div>
+          </div>
+          <div class="outerPointer hidden">
+          </div>
+        </div>
+        <div id="map-div_zoom_slider" class="esriSimpleSlider esriSimpleSliderHorizontal esriSimpleSliderTR" style="z-index: 30;">
+          <div class="esriSimpleSliderIncrementButton">
+                <span>
+                  +
+                </span>
+          </div>
+          <div class="esriSimpleSliderDecrementButton esriSimpleSliderDisabledButton">
+                <span>
+                  –
+                </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="locator-region">
+    <div>
+      <div class="container">
+        <div id="locator">
+          <div class="query-container">
+            <input id="locator-query" type="text" placeholder="Search for a location"/>
+            <div class="icon-search">
+            </div>
+          </div>
+          <ul class="results">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="title-region">
+  </div>
+  <div id="progress-region" style="display: none;">
+    <div class="mapbar-progress-wrapper">
+      <div id="mapbar-progress">
+        <div class="loading open-data-loader">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="navigation-region">
+    <div class="mapbar-navigation">
+      <div id="result-name">
+        <a href="/datasets/" data-pjax="true">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="slide-region" role="main">
+  <div id="slide-me" class="layout">
+    <div id="page-content">
+      <div class="container">
+        <div class="row" id="banner-container">
+          <div class="col-xs-12">
+            <div id="show-banner-region">
+              <div class="banner-main">
+                <div class="map-bar-banner">
+                  <div class="map-bar-title">
+                        <span id="nav-back">
+                          <i class="icon-left-arrow hide">
+                          </i>
+                        </span>
+                    <div itemprop="name" id="main-message">
+                      1-10 of 83 results
+                    </div>
+                    <div id="dataset-download-container">
+                      <!-- APIs button -->                          <div class="btn-group" id="apis-download">
+                      <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        APIs
+                        <span class="caret">
+                              </span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right api-menu">
+                        <input class="form-control" type="text"/>
+                      </div>
+                    </div>
+                      <!-- /.btn-group -->                          <!-- Downloads button -->                          <div class="btn-group" id="nav-download">
+                      <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        Download Dataset
+                        <span class="caret">
+                              </span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-right download-menu">
+                      </ul>
+                    </div>
+                      <!-- /.btn-group -->                          <!-- <span id="nav-subscribe" class="icon-rss icon-gray" tabindex="0" role="button" data-toggle="popover" data-placement="bottom" data-content="<div class='rss-popover-container'><div class='rss-popover'></div></div>" data-html="true"><span class="banner-link">Subscribe</span></span> -->                          <span id="nav-share-inner" class="icon-share icon-gray" tabindex="0" role="button" data-toggle="popover" data-placement="bottom" data-content="&lt;div class='nav-share-popover'>&lt;/div>" data-html="true" data-original-title="" title="">
+                            <span class="banner-link">
+                              Share
+                            </span>
+                          </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="content-sidebar-right">
+            <main id="main" class="col-xs-12 col-md-9">
+              <div id="dataset-header-row">
+                <div id="search-results-sort-region" class="search-nav-item">
+                  <div class="dropdown-navigation dropdown-wrapper">
+                    <div class="dropdown-content">
+                      <div class="btn-group">
+                        <button type="button" data-toggle="dropdown" id="sort-by" class="btn btn-default dropdown-toggle">
+                          Most Recent
+                          <span class="caret">
+                              </span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li class="sort-option">
+                            <a data-sort-by="relevance" href="#">
+                              Relevance
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="name" href="#">
+                              Name
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="updated_at" href="#">
+                              Most Recent
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix">
+                </div>
+              </div>
+              <section id="search-results-region" class="item-list">
+                <div id="search-results">
+                  <ul>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="d9dfdaf77847401e81efc9471dcd09e1_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/d9dfdaf77847401e81efc9471dcd09e1_0" class="dataset-link" title="OSNI Open Data Largescale Boundaries - NI Outline">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/d9dfdaf77847401e81efc9471dcd09e1/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="d9dfdaf77847401e81efc9471dcd09e1_0">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                1 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                5 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/d9dfdaf77847401e81efc9471dcd09e1_0">
+                            OSNI Open Data Largescale Boundaries - NI Outline
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/d9dfdaf77847401e81efc9471dcd09e1_0">
+
+                              The OSNI Large-scale boundaries is a polygon dataset consisting of the land area of Northern Ireland.  The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset. This service is published for Open Data By download or use of this dataset you agree to abide by the Open Government Data Licence.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="a55726475f1b460c927d1816ffde6c72_2">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/a55726475f1b460c927d1816ffde6c72_2" class="dataset-link" title="OSNI Open Data Largescale Boundaries - Local Government Districts 2012">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/a55726475f1b460c927d1816ffde6c72/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="a55726475f1b460c927d1816ffde6c72_2">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                11 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                5 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/a55726475f1b460c927d1816ffde6c72_2">
+                            OSNI Open Data Largescale Boundaries - Local Government Districts 2012
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/a55726475f1b460c927d1816ffde6c72_2">
+
+                              The OSNI Large-scale boundaries is a polygon dataset consisting of Local Government Districts set in 2012.The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset.This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="1cdb3f26958046799f84a3de58dcc349_6">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/1cdb3f26958046799f84a3de58dcc349_6" class="dataset-link" title="OSNI Open Data 50k Admin Boundaries - Townlands">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/1cdb3f26958046799f84a3de58dcc349/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="1cdb3f26958046799f84a3de58dcc349_6">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                9524 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                12 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/1cdb3f26958046799f84a3de58dcc349_6">
+                            OSNI Open Data 50k Admin Boundaries - Townlands
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/1cdb3f26958046799f84a3de58dcc349_6">
+
+                              Mid scale vector polygon dataset showing townland boundaries. Published here for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="ae71b79359634fbaaad18a6826710ed5_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/ae71b79359634fbaaad18a6826710ed5_0" class="dataset-link" title="OSNI Open Data 50k Grid">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/ae71b79359634fbaaad18a6826710ed5/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="ae71b79359634fbaaad18a6826710ed5_0">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                54 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                5 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/ae71b79359634fbaaad18a6826710ed5_0">
+                            OSNI Open Data 50k Grid
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/ae71b79359634fbaaad18a6826710ed5_0">
+
+                              This shows the location of each of our  50K tiles. The 50K Grid is published here for Open Data and can be used as a reference system for the download of the 50m DTM.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="de0116be5fe5499f921c112568218a39_1">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/de0116be5fe5499f921c112568218a39_1" class="dataset-link" title="OSNI Open Data 10k Grid">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/de0116be5fe5499f921c112568218a39/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="de0116be5fe5499f921c112568218a39_1">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                1057 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                8 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/de0116be5fe5499f921c112568218a39_1">
+                            OSNI Open Data 10k Grid
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/de0116be5fe5499f921c112568218a39_1">
+
+                              National Grid Reference System for Northern Ireland composed of 292 sheets and provides the naming convention for the 1:10 000 scale mapping. The 10k Grid is published here for Open Data and can be used as a reference system for the download of the DTM and the Mid Scale Raster map
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="55cd419b2d2144de9565c9b8f73a226d_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/55cd419b2d2144de9565c9b8f73a226d_0" class="dataset-link" title="OSNI Open Data Largescale Boundaries Wards 2012">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/55cd419b2d2144de9565c9b8f73a226d/info/thumbnail/ago_downloaded.gif" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="55cd419b2d2144de9565c9b8f73a226d_0">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                462 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                4 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/55cd419b2d2144de9565c9b8f73a226d_0">
+                            OSNI Open Data Largescale Boundaries Wards 2012
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/55cd419b2d2144de9565c9b8f73a226d_0">
+
+                              The OSNI Large-scale boundaries is a polygon dataset consisting of Standard Electoral Wards set in 2012.  The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset.This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence. 
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="4db1ea247b4e48ad8b55c3014f062f34_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/4db1ea247b4e48ad8b55c3014f062f34_0" class="dataset-link" title="OSNI Open Data Largescale Boundaries  Wards 1993">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/4db1ea247b4e48ad8b55c3014f062f34/info/thumbnail/ago_downloaded.gif" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="4db1ea247b4e48ad8b55c3014f062f34_0">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                624 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                4 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/4db1ea247b4e48ad8b55c3014f062f34_0">
+                            OSNI Open Data Largescale Boundaries  Wards 1993
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" href="/datasets/4db1ea247b4e48ad8b55c3014f062f34_0">
+
+                              This is a polygon dataset consisting of Standard Electoral Wards set in 1993. The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset. This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence. 
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="fa6b8956b0924decafb96f9f4beb4696">
+                        <div class="dataset-thumb">
+                          <a href="https://opendatani.blob.core.windows.net/lpsopendata/OSNI_OPEN_DATA_Midscale_Raster.zip" title="OSNI OPEN DATA Midscale Raster" target="_blank">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/fa6b8956b0924decafb96f9f4beb4696/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                opendatani.blob.core.windows.net
+
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                Document Link
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a itemprop="url" href="https://opendatani.blob.core.windows.net/lpsopendata/OSNI_OPEN_DATA_Midscale_Raster.zip" target="_blank" data-toggle="tooltip" data-placement="auto" title="" data-original-title="This link references an external site.">
+                            OSNI OPEN DATA Midscale Raster
+                            <span class="glyphicon glyphicon-new-window" aria-hidden="true">
+                                </span>
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="link-desc" href="https://opendatani.blob.core.windows.net/lpsopendata/OSNI_OPEN_DATA_Midscale_Raster.zip" target="_blank">
+
+                              A series of maps at 1:10 000
+                              scale showing base mapping for Northern Ireland. These raster maps can be used
+                              with other maps or information to enhance the mapping.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="49ada1b089b646ad85b195de0035eaf3">
+                        <div class="dataset-thumb">
+                          <a href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets251-293.zip" title="OSNI Open Data 10M DTM Sheets 251-293" target="_blank">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/49ada1b089b646ad85b195de0035eaf3/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                opendatani.blob.core.windows.net
+
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                Document Link
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a itemprop="url" href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets251-293.zip" target="_blank" data-toggle="tooltip" data-placement="auto" title="" data-original-title="This link references an external site.">
+                            OSNI Open Data 10M DTM Sheets 251-293
+                            <span class="glyphicon glyphicon-new-window" aria-hidden="true">
+                                </span>
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="link-desc" href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets251-293.zip" target="_blank">
+
+                              A Digital Terrain Model (DTM) is
+                              a digital file consisting of a grid of regularly spaced points of known height
+                              which, when used with other digital data such as maps or orthophotographs, can
+                              provide a 3D image of the land surface. This download contains OSNI 10k sheet numbers 251 - 293. 
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="3e82dda4a1c64eb6a1b76c6510c6543c">
+                        <div class="dataset-thumb">
+                          <a href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets101-150.zip" title="OSNI Open Data 10M DTM Sheets 101-150" target="_blank">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/3e82dda4a1c64eb6a1b76c6510c6543c/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                opendatani.blob.core.windows.net
+
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+
+                                Document Link
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a itemprop="url" href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets101-150.zip" target="_blank" data-toggle="tooltip" data-placement="auto" title="" data-original-title="This link references an external site.">
+                            OSNI Open Data 10M DTM Sheets 101-150
+                            <span class="glyphicon glyphicon-new-window" aria-hidden="true">
+                                </span>
+                          </a>
+                          <em>
+                            (from OSNIOpenData)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  SpatialNI_Admin
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <a itemprop="description" class="link-desc" href="https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets101-150.zip" target="_blank">
+
+                              A Digital Terrain Model (DTM) is
+                              a digital file consisting of a grid of regularly spaced points of known height
+                              which, when used with other digital data such as maps or orthophotographs, can
+                              provide a 3D image of the land surface. This download contains OSNI 10k sheet numbers 101 - 150. 
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+              <div id="results-pagination-region">
+                <div>
+                  <nav id="pagination">
+                    <ul class="pagination pagination-sm">
+                      <li id="page-prev" class="disabled">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at">
+                              <span aria-hidden="true">
+                                «
+                              </span>
+                          <span class="sr-only">
+                                Previous
+                              </span>
+                        </a>
+                      </li>
+                      <li class="active">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=1" class="page-number" data-page="1">
+                          1
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=2" class="page-number" data-page="2">
+                          2
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=3" class="page-number" data-page="3">
+                          3
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=4" class="page-number" data-page="4">
+                          4
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=5" class="page-number" data-page="5">
+                          5
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=6" class="page-number" data-page="6">
+                          6
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=7" class="page-number" data-page="7">
+                          7
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=8" class="page-number" data-page="8">
+                          8
+                        </a>
+                      </li>
+                      <li class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=9" class="page-number" data-page="9">
+                          9
+                        </a>
+                      </li>
+                      <li id="page-next" class="">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=2">
+                              <span aria-hidden="true">
+                                »
+                              </span>
+                          <span class="sr-only">
+                                Next
+                              </span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </main>
+          </div>
+          <aside id="sidebar-right" class="sidebar-navigation">
+            <div id="search-results-favorites-region" class="col-xs-12 col-md-3">
+              <div id="favorites" class="favorites-view">
+                <section>
+                  <div id="saved-layers" class="dropzone">
+                    <div id="my-layers">
+                      <h4>
+                        My Favorites
+                      </h4>
+                      <div id="fav-region" class="dropzone">
+                        <ul>
+                          <div>
+                            <div id="fav-help">
+                              <div id="fav-drag-help">
+
+                                click
+                                <span class="opendata-star-hollow">
+                                    </span>
+                                on any dataset to add to your favorites
+
+                              </div>
+                            </div>
+                          </div>
+                        </ul>
+                        <div id="too-many-alert">
+                          The number of favorites is limited to 10.  To add other favorites, please remove one or more existing favorites.
+                        </div>
+                        <div id="fav-footer" style="display: none;">
+                          <div id="fav-controls">
+                                <span id="fav-mapit" class="btn small icon-globe">
+                                   map it
+                                </span>
+                            <span id="fav-delete" class="icon-delete">
+                                </span>
+                          </div>
+                          <div id="fav-drag-help">
+
+                            click
+                            <span class="opendata-star-hollow">
+                                </span>
+                            on any dataset to add to your favorites
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <!-- /row -->      </div>
+  <!-- /container -->      <div id="slide-me2" class="layout" style="display: none;">
+</div>
+</div>
+<footer id="footer" class="footer" role="footer">
+  <div class="container">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-8">
+          <p>
+            © 2015 Land &amp; Property Services
+            <br/>
+            <a href="http://spatial-ni.maps.arcgis.com/sharing/rest/content/items/e2101ed1d0fc479cb879d3e75e63c715/data">
+              Open Government Licence
+            </a>
+            <br/>
+            <a href="https://www.dfpni.gov.uk/articles/publishing-derived-data-questions-and-answers">
+              LPS Open and Derived Data Q&amp;A
+            </a>
+            <br/>
+          </p>
+        </div>
+        <div class="LPS">
+          <p>
+            <a href="https://www.dfpni.gov.uk/land-property-services-lps">
+              <img src="https://apps.spatialni.gov.uk/OpenData/img/LPS_Logo1.png" align="right"/>
+            </a>
+          </p>
+        </div>
+      </div>
+      <style type="text/css">
+      </style>
+    </div>
+  </div>
+</footer>
+<!--
+<footer id="sub-footer" >
+<div class="container">
+<div class="row" >
+  <div class="column-12">
+    <a href="">Powered by ArcGIS for Open Data</a>
+    | f5cddae
+    | deploy
+    | 2018-12-11 09:03:58 -0500
+  </div>
+</div>
+</div>
+</footer>
+-->    <!-- loading this down here to improve page load
+  this isn't used until the js below is loaded -->    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css"/>
+<!--[if lte IE 8]>
+<script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor-ie.min.js"></script>
+<![endif]-->    <!--[if gte IE 9]><!-->    <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor.min.js">
+</script>
+<!--<![endif]-->    <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/composer-ui.min.js">
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  I18n.defaultLocale = "en";
+  I18n.fallbacks = true;
+
+  //]]>
+</script>
+<script id="site-configuration-json" type="text/json">
+//<![CDATA[
+
+  {"site_info":{"title":"Spatial NI","default_extent":{"type":"extent","xmin":-4422340.70846599,"ymin":2973676.55657941,"xmax":6300857.115602,"ymax":10018113.0833394,"spatialReference":{"wkid":102100,"latestWkid":3857}},"mapbar_enabled":false,"flags":{"charts":false,"autocomplete":true,"large_dataset_extent":true,"geohash":false,"one_click_styling":true,"heatmap":false,"projection":true,"signin":false,"comments_enabled":true,"api_explorer":false,"activities":true,"pages":false,"my_data":false,"social_logins":false,"metadata_tab":false,"dataset_identity":false},"map":{"basemaps":{"type":"default","primary":{"extent":{"xmin":-20037507.0671618,"ymin":-19971868.8804086,"xmax":20037507.0671618,"ymax":19971868.8804086,"spatialReference":{"wkid":102100}},"isWebMercator":true,"title":"Light Gray Canvas","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer","type":"ArcGISTiledMapServiceLayer"},{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer","isReference":true,"type":"ArcGISTiledMapServiceLayer"}]},"secondary":{"extent":{"xmin":-20037507.0671618,"ymin":-19971868.8804086,"xmax":20037507.0671618,"ymax":19971868.8804086,"spatialReference":{"wkid":102100}},"isWebMercator":true,"title":"World Imagery","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"}]}}},"default_license":{"title":"none","description":"no default license specified"}}}
+
+//]]>
+    </script>
+<script id="site-serialized-datasets-json" type="text/json">
+//<![CDATA[
+
+  {"data":[{"display_field":"NAME","max_record_count":5000,"record_count":1,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"KmlServer, WMSServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supports_advanced_queries":true,"id":"d9dfdaf77847401e81efc9471dcd09e1_0","landing_page":"https://www.arcgis.com/home/item.html?id=d9dfdaf77847401e81efc9471dcd09e1","description":"The OSNI Large-scale boundaries is a polygon dataset consisting of the land area of Northern Ireland.  The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset. This service is published for Open Data By download or use of this dataset you agree to abide by the Open Government Data Licence.","extent":{"coordinates":[[-8.1813,54.0115],[-5.3807,55.3257]]},"fields":[{"name":"ID","type":"esriFieldTypeDouble","alias":"ID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:49:33.795Z"},{"name":"NAME","type":"esriFieldTypeString","alias":"Name","domain":null,"updated_at":"2018-02-06T09:49:34.263Z","statistics":{"values":[{"value":"Outline of Northern Ireland","count":1}],"duration":467.995669990778,"count":1}},{"name":"Area_SqKM","type":"esriFieldTypeDouble","alias":"Area SqKm","domain":null,"updated_at":"2018-02-06T09:49:34.259Z","statistics":{"duration":462.000695005059,"sum":13594.0441049446,"avg":13594.0441049446,"count":1,"min":13594.0441049446,"max":13594.0441049446}},{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:49:33.797Z"},{"name":"SHAPE","type":"esriFieldTypeGeometry","alias":"SHAPE","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:49:33.797Z"}],"item_name":"OSNI Open Data Largescale Boundaries - NI Outline","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":5000,"name":"OSNI Open Data Largescale Boundaries - NI Outline","owner":"SpatialNI_Admin","record_count":1,"tags":["OSNI","LPS","Spatial NI","Northern Ireland","U.K","OpenData","SpatialNI","Product Management","District Electoral Area","DEA","LGD","Wards","Townlands","Parliamentary Constituency","Counties","Boundaries"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/d9dfdaf77847401e81efc9471dcd09e1/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2015-11-24T09:47:52.000Z","updated_at":"2019-03-11T21:56:53.503Z","url":"https://gisservices.spatialni.gov.uk/arcgisc/rest/services/OpenData/OSNIOpenData_LargescaleBoundaries/MapServer/0","views":null,"quality":76,"coverage":"regional","current_version":10.41,"comments_enabled":false,"service_spatial_reference":{"wkid":29900,"latestWkid":29902},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supported_extensions":"KmlServer, WMSServer"},{"display_field":"LGDNAME","max_record_count":5000,"record_count":11,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"KmlServer, WMSServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supports_advanced_queries":true,"id":"a55726475f1b460c927d1816ffde6c72_2","landing_page":"https://www.arcgis.com/home/item.html?id=a55726475f1b460c927d1816ffde6c72","description":"The OSNI Large-scale boundaries is a polygon dataset consisting of Local Government Districts set in 2012.The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset.This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence.","extent":{"coordinates":[[-8.1813,54.0115],[-5.3807,55.3257]]},"fields":[{"name":"LGDNAME","type":"esriFieldTypeString","alias":"LGD Name","domain":null,"updated_at":"2018-02-06T09:48:03.424Z","statistics":{"values":[{"value":"Ards and North Down","count":1},{"value":"Newry Mourne and Down","count":1},{"value":"Mid Ulster","count":1},{"value":"Mid and East Antrim","count":1},{"value":"Lisburn and Castlereagh","count":1},{"value":"Fermanagh and Omagh","count":1},{"value":"Derry City and Strabane","count":1},{"value":"Causeway Coast and Glens","count":1},{"value":"Belfast","count":1},{"value":"Armagh City Banbridge and Craigavon","count":1}],"duration":537.6391299963,"count":11}},{"name":"AREA","type":"esriFieldTypeDouble","alias":"Area","domain":null,"updated_at":"2018-02-06T09:48:03.395Z","statistics":{"duration":507.554699003696,"sum":490687079.49988,"avg":44607916.3181709,"count":11,"min":903614.24375,"max":137028550.404,"stddev":51735430.9998779,"var":2676554820743129}},{"name":"LGDCode","type":"esriFieldTypeString","alias":"LGD Code","domain":null,"updated_at":"2018-02-06T09:48:03.353Z","statistics":{"values":[{"value":"N09000011","count":1},{"value":"N09000010","count":1},{"value":"N09000009","count":1},{"value":"N09000008","count":1},{"value":"N09000007","count":1},{"value":"N09000006","count":1},{"value":"N09000005","count":1},{"value":"N09000004","count":1},{"value":"N09000003","count":1},{"value":"N09000002","count":1}],"duration":465.850694000721,"count":11}},{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:48:02.888Z"},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:48:02.888Z"}],"item_name":"OSNI Open Data Largescale Boundaries - Local Government Districts 2012","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":5000,"name":"OSNI Open Data Largescale Boundaries - Local Government Districts 2012","owner":"SpatialNI_Admin","record_count":11,"tags":["OSNI","LPS","Spatial NI","Northern Ireland","U.K","OpenData","SpatialNI","Product Management","District Electoral Area","DEA","LGD","Wards","Townlands","Parliamentary Constituency","Counties","Boundaries"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/a55726475f1b460c927d1816ffde6c72/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2015-11-24T09:51:34.000Z","updated_at":"2019-03-15T03:32:23.221Z","url":"https://gisservices.spatialni.gov.uk/arcgisc/rest/services/OpenData/OSNIOpenData_LargescaleBoundaries/MapServer/2","views":null,"quality":76,"coverage":"regional","current_version":10.41,"comments_enabled":false,"service_spatial_reference":{"wkid":29900,"latestWkid":29902},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supported_extensions":"KmlServer, WMSServer"},{"display_field":"CO_NAME","max_record_count":5000,"record_count":9524,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"KmlServer, WMSServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supports_advanced_queries":true,"id":"1cdb3f26958046799f84a3de58dcc349_6","landing_page":"https://www.arcgis.com/home/item.html?id=1cdb3f26958046799f84a3de58dcc349","description":"Mid scale vector polygon dataset showing townland boundaries. Published here for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence.","extent":{"coordinates":[[-8.1816,54.0117],[-5.3806,55.3256]]},"fields":[{"name":"TLAND_ID","type":"esriFieldTypeDouble","alias":"Townland ID","domain":null,"updated_at":"2018-02-06T09:47:34.041Z","statistics":{"duration":1109.75055399537,"sum":45596300,"avg":4787.51574968501,"count":9524,"min":2,"max":9579,"stddev":2765.08190259002,"var":7645677.92803082}},{"name":"TOWNLAND","type":"esriFieldTypeString","alias":"Townland","domain":null,"updated_at":"2018-02-06T09:47:34.756Z","statistics":{"values":[{"value":"Glebe","count":38},{"value":"Tully","count":18},{"value":"Ballykeel","count":18},{"value":"Mullaghmore","count":13},{"value":"Dromore","count":13},{"value":"Cabragh","count":12},{"value":"Tamlaght","count":12},{"value":"Kilmore","count":11},{"value":"Greenan","count":11},{"value":"Drumard","count":10}],"duration":1824.82103300095,"count":5000}},{"name":"NUMBER","type":"esriFieldTypeString","alias":"Number","domain":null,"updated_at":"2018-02-06T09:47:33.857Z","statistics":{"values":[{"value":"211","count":116},{"value":"247","count":114},{"value":"230","count":112},{"value":"244","count":109},{"value":"246","count":109},{"value":"261","count":106},{"value":"154","count":102},{"value":"228","count":93},{"value":"141","count":92},{"value":"124","count":86}],"duration":925.394387990236,"count":281}},{"name":"X_COORD","type":"esriFieldTypeDouble","alias":"X","domain":null,"updated_at":"2018-02-06T09:47:33.560Z","statistics":{"duration":628.069775000215,"sum":2635449772.99727,"avg":276716.691830877,"count":9524,"min":189482.036783,"max":365530.391981,"stddev":40742.3125171302,"var":1659936029.2435}},{"name":"Y_COORD","type":"esriFieldTypeDouble","alias":"Y","domain":null,"updated_at":"2018-02-06T09:47:33.561Z","statistics":{"duration":628.503196001053,"sum":3536393287.89435,"avg":371313.868951528,"count":9524,"min":310952.181897,"max":452598.598567,"stddev":33537.3668317924,"var":1124754974.01021}},{"name":"CO_NAME","type":"esriFieldTypeString","alias":"Co. Name","domain":null,"updated_at":"2018-02-06T09:47:33.865Z","statistics":{"values":[{"value":"FERMANAGH","count":2165},{"value":"TYRONE","count":2155},{"value":"ANTRIM","count":1704},{"value":"DOWN","count":1262},{"value":"LONDONDERRY","count":1230},{"value":"ARMAGH","count":962},{"value":"BELFAST","count":32},{"value":" ","count":9},{"value":"Antrim","count":2},{"value":"Down","count":1}],"duration":931.404300004244,"count":12}},{"name":"BAR_NAME","type":"esriFieldTypeString","alias":"Bar Name","domain":null,"updated_at":"2018-02-06T09:47:33.646Z","statistics":{"values":[{"value":"MIDDLE DUNGANNON","count":403},{"value":"CLANAWLEY","count":371},{"value":"LURG","count":362},{"value":"LOUGHINSHOLIN","count":330},{"value":"EAST OMAGH","count":328},{"value":"CLOGHER","count":327},{"value":"MAGHERASTEPHANA","count":317},{"value":"MAGHERABOY","count":313},{"value":"LOWER STRABANE","count":301},{"value":"UPPER DUNGANNON","count":286}],"duration":712.596373006701,"count":65}},{"name":"AREA","type":"esriFieldTypeDouble","alias":"Area","domain":null,"updated_at":"2018-02-06T09:47:33.922Z","statistics":{"duration":988.151409000158,"sum":13607989588.266,"avg":1428810.33056131,"count":9524,"min":440.515,"max":27606196.054,"stddev":1487778.08993611,"var":2213483644893.93}},{"name":"PERIMETER","type":"esriFieldTypeDouble","alias":"Perimeter","domain":null,"updated_at":"2018-02-06T09:47:33.604Z","statistics":{"duration":670.252524003386,"sum":52217462.7680002,"avg":5482.7239361613,"count":9524,"min":83.217,"max":30649.588,"stddev":2846.46898528684,"var":8102385.68419992}},{"name":"TnLndCAPS","type":"esriFieldTypeString","alias":"Townland Name","domain":null,"updated_at":"2018-02-06T09:47:34.945Z","statistics":{"values":[{"value":"GLEBE","count":38},{"value":"TULLY","count":18},{"value":"BALLYKEEL","count":18},{"value":"MULLAGHMORE","count":13},{"value":"DROMORE","count":13},{"value":"CABRAGH","count":12},{"value":"TAMLAGHT","count":12},{"value":"KILMORE","count":11},{"value":"GREENAN","count":11},{"value":"DRUMARD","count":10}],"duration":2010.63339398801,"count":5000}},{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:47:32.935Z"},{"name":"SHAPE","type":"esriFieldTypeGeometry","alias":"SHAPE","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:47:32.935Z"}],"item_name":"OSNI Open Data 50k Admin Boundaries - Townlands","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":5000,"name":"OSNI Open Data 50k Admin Boundaries - Townlands","owner":"SpatialNI_Admin","record_count":9524,"tags":["OSNI","LPS","Spatial NI","OpenData","50k","Admin","NI Outline","DEA","LGD","Counties","Parliamentary Constituency","Townlands","Wards","Boundaries","NI","U.K"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/1cdb3f26958046799f84a3de58dcc349/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2015-11-23T15:59:08.000Z","updated_at":"2019-03-02T14:36:29.511Z","url":"https://gisservices.spatialni.gov.uk/arcgisc/rest/services/OpenData/OSNIOpenData_50KBoundaries/MapServer/6","views":null,"quality":76,"coverage":"regional","current_version":10.41,"comments_enabled":false,"service_spatial_reference":{"wkid":29900,"latestWkid":29902},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supported_extensions":"KmlServer, WMSServer"},{"display_field":"TILE","max_record_count":1000,"record_count":54,"geometry_type":"esriGeometryPolygon","object_id_field":"FID","supported_extensions":"KmlServer, WMSServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":false,"supports_order_by":false,"supports_distinct":false,"supports_pagination":false,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supports_advanced_queries":false,"id":"ae71b79359634fbaaad18a6826710ed5_0","landing_page":"https://www.arcgis.com/home/item.html?id=ae71b79359634fbaaad18a6826710ed5","description":"This shows the location of each of our  50K tiles. The 50K Grid is published here for Open Data and can be used as a reference system for the download of the 50m DTM.","extent":{"coordinates":[[-8.317,54.0079],[-5.1562,55.4765]]},"fields":[{"name":"FID","type":"esriFieldTypeOID","alias":"FID","domain":null},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null},{"name":"TILE","type":"esriFieldTypeString","alias":"TILE","domain":null},{"name":"Area","type":"esriFieldTypeString","alias":"Area","domain":null},{"name":"Published","type":"esriFieldTypeString","alias":"Published","domain":null}],"item_name":"OSNI Open Data 50k Grid","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Licence Applies</p><p><br /></p><p>Land &amp; Property Services (LPS) has made a number of Ordnance Survey\nof Northern Ireland® (OSNI®) branded datasets available free of charge under\nthe terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open Government Licence</a> (OGL). These\ndatasets – which include raster and vector mapping, boundary, gazetteer,\nheight, street and townland products – are <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each dataset is clearly marked with the OGL\nsymbol shown below </p><p>The OGL allows you to: </p><ul>\n <li>copy,\n     distribute and transmit the data;</li>\n <li>adapt\n     the data; and</li>\n <li>exploit\n     the data commercially, whether by sub-licensing it, combining it with\n     other data, or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS datasets <b>in any way and for any purpose</b>. We simply ask that you acknowledge\nthe copyright and the source of the data by including the following attribution\nstatement:</p><p>\n\n\n\n\n\n\n\n</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open Government Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include\n     the same acknowledgement requirement in any sub-licences of the data that\n     you grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure\n     that you do not use the data in a way that suggests LPS endorses you or your\n     use of the data; and</li>\n <li>make\n     sure you do not misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n</p><p>N.B. Any\ndataset that does not expressly state that it has been released under OGL will\nrequire a licence from LPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":1000,"name":"OSNI Open Data 50k Grid","owner":"SpatialNI_Admin","record_count":54,"tags":["OSNI","LPS","NI","OpenData","Grids","10k","50k","Raster","DTM","Height","Vector"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/ae71b79359634fbaaad18a6826710ed5/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2016-05-10T13:01:03.000Z","updated_at":"2019-02-28T21:16:09.928Z","url":"https://gisservices.spatialni.gov.uk/arcgisc/rest/services/OpenData/OSNIOpenData_Grids/MapServer/0","views":null,"quality":76,"coverage":"regional","current_version":10.41,"comments_enabled":false,"service_spatial_reference":{"wkid":29900,"latestWkid":29902},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence AppliesLand &amp; Property Services (LPS) has made a number of Ordnance Survey\nof Northern Ireland® (OSNI®) branded datasets available free of charge under\nthe terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open Government Licence</a> (OGL). These\ndatasets – which include raster and vector mapping, boundary, gazetteer,\nheight, street and townland products – are <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each dataset is clearly marked with the OGL\nsymbol shown below The OGL allows you to: \n copy,\n     distribute and transmit the data;\n adapt\n     the data; and\n exploit\n     the data commercially, whether by sub-licensing it, combining it with\n     other data, or including it in your own product or application.\nYou are therefore able to use the LPS datasets in any way and for any purpose. We simply ask that you acknowledge\nthe copyright and the source of the data by including the following attribution\nstatement:\n\n\n\n\n\n\n\nContains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open Government Licence</a> v3.0.You must also:\n include\n     the same acknowledgement requirement in any sub-licences of the data that\n     you grant, and a requirement that any further sub-licences do the same;\n ensure\n     that you do not use the data in a way that suggests LPS endorses you or your\n     use of the data; and\n make\n     sure you do not misrepresent the data or its source.\n\n\n\n\nN.B. Any\ndataset that does not expressly state that it has been released under OGL will\nrequire a licence from LPS and the appropriate licence fee will be applied. "},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":false,"supports_order_by":false,"supports_distinct":false,"supports_pagination":false,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supported_extensions":"KmlServer, WMSServer"},{"display_field":"NAME","max_record_count":1000,"record_count":1057,"geometry_type":"esriGeometryPolygon","object_id_field":"FID","supported_extensions":"KmlServer, WMSServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":false,"supports_order_by":false,"supports_distinct":false,"supports_pagination":false,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supports_advanced_queries":false,"id":"de0116be5fe5499f921c112568218a39_1","landing_page":"https://www.arcgis.com/home/item.html?id=de0116be5fe5499f921c112568218a39","description":"National Grid Reference System for Northern Ireland composed of 292 sheets and provides the naming convention for the 1:10 000 scale mapping. The 10k Grid is published here for Open Data and can be used as a reference system for the download of the DTM and the Mid Scale Raster map","extent":{"coordinates":[[-8.1898,53.9789],[-5.3179,55.3274]]},"fields":[{"name":"FID","type":"esriFieldTypeOID","alias":"FID","domain":null},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null},{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","domain":null},{"name":"CLASS","type":"esriFieldTypeString","alias":"CLASS","domain":null},{"name":"UR_EASTING","type":"esriFieldTypeDouble","alias":"UR_EASTING","domain":null},{"name":"UR_NORTHIN","type":"esriFieldTypeDouble","alias":"UR_NORTHIN","domain":null},{"name":"LL_EASTING","type":"esriFieldTypeDouble","alias":"LL_EASTING","domain":null},{"name":"LL_NORTHIN","type":"esriFieldTypeDouble","alias":"LL_NORTHIN","domain":null}],"item_name":"OSNI Open Data 10k Grid","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Licence Applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":1000,"name":"OSNI Open Data 10k Grid","owner":"SpatialNI_Admin","record_count":1057,"tags":["OSNI","LPS","NI","OpenData","Grids","10k","50k","Raster","DTM","Height","Vector"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/de0116be5fe5499f921c112568218a39/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2016-05-10T13:02:34.000Z","updated_at":"2019-03-01T16:55:55.333Z","url":"https://gisservices.spatialni.gov.uk/arcgisc/rest/services/OpenData/OSNIOpenData_Grids/MapServer/1","views":null,"quality":76,"coverage":"regional","current_version":10.41,"comments_enabled":false,"service_spatial_reference":{"wkid":29900,"latestWkid":29902},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence Applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":false,"supports_order_by":false,"supports_distinct":false,"supports_pagination":false,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true},"supported_extensions":"KmlServer, WMSServer"},{"display_field":"WARDNAME","max_record_count":2000,"record_count":462,"geometry_type":"esriGeometryPolygon","object_id_field":"FID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true},"supports_advanced_queries":true,"id":"55cd419b2d2144de9565c9b8f73a226d_0","landing_page":"https://www.arcgis.com/home/item.html?id=55cd419b2d2144de9565c9b8f73a226d","description":"The OSNI Large-scale boundaries is a polygon dataset consisting of Standard Electoral Wards set in 2012.  The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset.This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence. ","extent":{"coordinates":[[-8.18130098108108,54.0115383057898],[-5.38069673168385,55.3256613390728]]},"fields":[{"name":"FID","type":"esriFieldTypeOID","alias":"FID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:40:01.866Z"},{"name":"OBJECTID","type":"esriFieldTypeInteger","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:40:01.866Z"},{"name":"WARDNAME","type":"esriFieldTypeString","alias":"WARDNAME","domain":null,"updated_at":"2018-02-06T09:40:02.124Z","statistics":{"values":[{"value":"VICTORIA","count":2},{"value":"VALLEY","count":2},{"value":"STEWARTSTOWN","count":2},{"value":"SHANKILL","count":2},{"value":"PARK","count":2},{"value":"GREYSTONE","count":2},{"value":"GLEBE","count":2},{"value":"DROMORE","count":2},{"value":"CATHEDRAL","count":2},{"value":"CASTLE","count":2}],"duration":258.431946992874,"count":450}},{"name":"WardCode","type":"esriFieldTypeString","alias":"WardCode","domain":null,"updated_at":"2018-02-06T09:40:02.156Z","statistics":{"values":[{"value":"N08001140","count":1},{"value":"N08001139","count":1},{"value":"N08001138","count":1},{"value":"N08001137","count":1},{"value":"N08001136","count":1},{"value":"N08001135","count":1},{"value":"N08001134","count":1},{"value":"N08001133","count":1},{"value":"N08001132","count":1},{"value":"N08001131","count":1}],"duration":289.881186008453,"count":462}}],"item_name":"OSNI Open Data Largescale Boundaries Wards 2012","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Data\r\nLicence applies.</p>\r\n\r\n<p> </p>\r\n\r\n<p> Land\r\n&amp; Property Services (LPS) has made a number of Ordnance Survey of Northern\r\nIreland® (OSNI®) branded datasets available free of charge under the terms of\r\nthe current Open\r\nGovernment Licence (OGL). These datasets – which\r\ninclude raster and vector mapping, boundary, gazetteer, height, street and\r\ntownland products – are available for download. \r\nEach dataset is clearly marked with the OGL symbol.</p>\r\n\r\n<p>The OGL allows you to: copy, distribute and transmit the data;\r\nadapt the data; and exploit the data commercially, whether by sub-licensing it,\r\ncombining it with other data, or including it in your own product or\r\napplication.</p>\r\n\r\n<p>You are therefore able to use the LPS datasets in any way and\r\nfor any purpose. We simply ask that you acknowledge the copyright and the\r\nsource of the data by including the following attribution statement:</p>\r\n\r\n<p><i>Contains LPS Intellectual Property © Crown copyright and\r\ndatabase right (year)  </i><i>This information is licensed under the terms\r\nof the Open Government Licence (<a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3</a>).</i></p>\r\n\r\n<p>You must also:<i> </i>include the same\r\nacknowledgement requirement in any sub-licences of the data that you grant, and\r\na requirement that any further sub-licences do the same;<i> </i>ensure\r\nthat you do not use the data in a way that suggests LPS endorses you or your\r\nuse of the data; and<i>\r\n</i>make sure you do not misrepresent the data or its source.</p>\r\n\r\n<p>N.B. Any dataset that does\r\nnot expressly state that it has been released under OGL will require a licence\r\nfrom LPS and the appropriate licence fee will be applied. </p>\r\n\r\n<p> </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":2000,"name":"OSNI Open Data Largescale Boundaries Wards 2012","owner":"SpatialNI_Admin","record_count":462,"tags":["OSNI","LPS","Spatial NI","OpenData","Boundaries","Wards","2012"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/55cd419b2d2144de9565c9b8f73a226d/info/thumbnail/ago_downloaded.gif","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2015-12-09T11:30:16.000Z","updated_at":"2019-03-11T15:39:09.999Z","url":"https://services3.arcgis.com/dNsInyVNGMqG1QjF/arcgis/rest/services/OSNI_Open_Data_Largescale_Boundaries_Wards_2012/FeatureServer/0","views":null,"quality":76,"coverage":"regional","current_version":10.51,"comments_enabled":false,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Data\r\nLicence applies.\r\n\r\n \r\n\r\n Land\r\n&amp; Property Services (LPS) has made a number of Ordnance Survey of Northern\r\nIreland® (OSNI®) branded datasets available free of charge under the terms of\r\nthe current Open\r\nGovernment Licence (OGL). These datasets – which\r\ninclude raster and vector mapping, boundary, gazetteer, height, street and\r\ntownland products – are available for download. \r\nEach dataset is clearly marked with the OGL symbol.\r\n\r\nThe OGL allows you to: copy, distribute and transmit the data;\r\nadapt the data; and exploit the data commercially, whether by sub-licensing it,\r\ncombining it with other data, or including it in your own product or\r\napplication.\r\n\r\nYou are therefore able to use the LPS datasets in any way and\r\nfor any purpose. We simply ask that you acknowledge the copyright and the\r\nsource of the data by including the following attribution statement:\r\n\r\nContains LPS Intellectual Property © Crown copyright and\r\ndatabase right (year)  This information is licensed under the terms\r\nof the Open Government Licence (<a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3</a>).\r\n\r\nYou must also: include the same\r\nacknowledgement requirement in any sub-licences of the data that you grant, and\r\na requirement that any further sub-licences do the same; ensure\r\nthat you do not use the data in a way that suggests LPS endorses you or your\r\nuse of the data; and\r\nmake sure you do not misrepresent the data or its source.\r\n\r\nN.B. Any dataset that does\r\nnot expressly state that it has been released under OGL will require a licence\r\nfrom LPS and the appropriate licence fee will be applied. \r\n\r\n "},"use_standardized_queries":true,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true},"supported_extensions":""},{"display_field":"NAME","max_record_count":2000,"record_count":624,"geometry_type":"esriGeometryPolygon","object_id_field":"FID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true},"supports_advanced_queries":true,"id":"4db1ea247b4e48ad8b55c3014f062f34_0","landing_page":"https://www.arcgis.com/home/item.html?id=4db1ea247b4e48ad8b55c3014f062f34","description":"This is a polygon dataset consisting of Standard Electoral Wards set in 1993. The data has been extracted from OSNI Largescale database and has been topologically cleansed and attributed to create a seamless dataset. This service is published for OpenData. By download or use of this dataset you agree to abide by the Open Government Data Licence. ","extent":{"coordinates":[[-8.18132054095237,54.0115382985734],[-5.38069676818148,55.3256613287128]]},"fields":[{"name":"FID","type":"esriFieldTypeOID","alias":"FID","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:40:01.850Z"},{"name":"WARD93_ID","type":"esriFieldTypeDouble","alias":"WARD93_ID","domain":null,"updated_at":"2018-02-06T09:40:01.980Z","statistics":{"duration":129.445398002863,"sum":852235,"avg":1365.76121794872,"count":624,"min":101,"max":2617,"stddev":756.11332498977,"var":571707.360227086}},{"name":"NAME","type":"esriFieldTypeString","alias":"NAME","domain":null,"updated_at":"2018-02-06T09:40:02.007Z","statistics":{"values":[{"value":"DONAGHADEE NORTH","count":12},{"value":"CRAIGAVAD","count":10},{"value":"DONARD","count":5},{"value":"BONAMARGY AND RATHLIN","count":5},{"value":"HARBOUR","count":4},{"value":"CRAWFORDSBURN","count":4},{"value":"KILLOUGH","count":3},{"value":"GLEBE","count":3},{"value":"CENTRAL","count":3},{"value":"CARNCASTLE","count":3}],"duration":155.353722006083,"count":568}},{"name":"SHAPE_AREA","type":"esriFieldTypeDouble","alias":"SHAPE_AREA","domain":null,"statistics":{"duration":0},"updated_at":"2018-02-06T09:40:01.852Z"}],"item_name":"OSNI Open Data Largescale Boundaries  Wards 1993","type":"ItemLayer","item_type":"Feature Layer","license":"<p>Open Government Data\r\nLicence applies.</p>\r\n\r\n<p> </p>\r\n\r\n<p> Land\r\n&amp; Property Services (LPS) has made a number of Ordnance Survey of Northern\r\nIreland® (OSNI®) branded datasets available free of charge under the terms of\r\nthe current Open\r\nGovernment Licence (OGL). These datasets – which\r\ninclude raster and vector mapping, boundary, gazetteer, height, street and\r\ntownland products – are available for download. \r\nEach dataset is clearly marked with the OGL symbol.</p>\r\n\r\n<p>The OGL allows you to: copy, distribute and transmit the data;\r\nadapt the data; and exploit the data commercially, whether by sub-licensing it,\r\ncombining it with other data, or including it in your own product or\r\napplication.</p>\r\n\r\n<p>You are therefore able to use the LPS datasets in any way and\r\nfor any purpose. We simply ask that you acknowledge the copyright and the\r\nsource of the data by including the following attribution statement:</p>\r\n\r\n<p><i>Contains LPS Intellectual Property © Crown copyright and\r\ndatabase right (year)  </i><i>This information is licensed under the terms\r\nof the Open Government Licence (<a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3</a>).</i></p>\r\n\r\n<p>You must also:<i> </i>include the same\r\nacknowledgement requirement in any sub-licences of the data that you grant, and\r\na requirement that any further sub-licences do the same;<i> </i>ensure\r\nthat you do not use the data in a way that suggests LPS endorses you or your\r\nuse of the data; and<i>\r\n</i>make sure you do not misrepresent the data or its source.</p>\r\n\r\n<p>N.B. Any dataset that does\r\nnot expressly state that it has been released under OGL will require a licence\r\nfrom LPS and the appropriate licence fee will be applied. </p>\r\n\r\n<p> </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":2000,"name":"OSNI Open Data Largescale Boundaries  Wards 1993","owner":"SpatialNI_Admin","record_count":624,"tags":["OSNI","OpenDAta","LPS","Spatial NI","Boundaries","Wards","1993"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/4db1ea247b4e48ad8b55c3014f062f34/info/thumbnail/ago_downloaded.gif","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2015-12-08T15:44:12.000Z","updated_at":"2019-02-21T02:52:08.292Z","url":"https://services3.arcgis.com/dNsInyVNGMqG1QjF/arcgis/rest/services/OSNI_Open_Data_Largescale_Boundaries__Wards_1993/FeatureServer/0","views":null,"quality":76,"coverage":"regional","current_version":10.51,"comments_enabled":false,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Data\r\nLicence applies.\r\n\r\n \r\n\r\n Land\r\n&amp; Property Services (LPS) has made a number of Ordnance Survey of Northern\r\nIreland® (OSNI®) branded datasets available free of charge under the terms of\r\nthe current Open\r\nGovernment Licence (OGL). These datasets – which\r\ninclude raster and vector mapping, boundary, gazetteer, height, street and\r\ntownland products – are available for download. \r\nEach dataset is clearly marked with the OGL symbol.\r\n\r\nThe OGL allows you to: copy, distribute and transmit the data;\r\nadapt the data; and exploit the data commercially, whether by sub-licensing it,\r\ncombining it with other data, or including it in your own product or\r\napplication.\r\n\r\nYou are therefore able to use the LPS datasets in any way and\r\nfor any purpose. We simply ask that you acknowledge the copyright and the\r\nsource of the data by including the following attribution statement:\r\n\r\nContains LPS Intellectual Property © Crown copyright and\r\ndatabase right (year)  This information is licensed under the terms\r\nof the Open Government Licence (<a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3</a>).\r\n\r\nYou must also: include the same\r\nacknowledgement requirement in any sub-licences of the data that you grant, and\r\na requirement that any further sub-licences do the same; ensure\r\nthat you do not use the data in a way that suggests LPS endorses you or your\r\nuse of the data; and\r\nmake sure you do not misrepresent the data or its source.\r\n\r\nN.B. Any dataset that does\r\nnot expressly state that it has been released under OGL will require a licence\r\nfrom LPS and the appropriate licence fee will be applied. \r\n\r\n "},"use_standardized_queries":true,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true},"supported_extensions":""},{"id":"fa6b8956b0924decafb96f9f4beb4696","landing_page":"https://www.arcgis.com/home/item.html?id=fa6b8956b0924decafb96f9f4beb4696","description":"<p>A series of maps at 1:10 000\r\nscale showing base mapping for Northern Ireland. These raster maps can be used\r\nwith other maps or information to enhance the mapping.</p>","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"OSNI OPEN DATA Midscale Raster","type":"ItemDocument","item_type":"Document Link","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":null,"name":"OSNI OPEN DATA Midscale Raster","owner":"SpatialNI_Admin","record_count":-1,"tags":["OSNI","LPS","OpenData","Spatial NI","NI","UK","Raster","Mid Scale"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/fa6b8956b0924decafb96f9f4beb4696/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2016-03-14T11:04:59.000Z","updated_at":"2018-02-06T09:40:01.733Z","url":"https://opendatani.blob.core.windows.net/lpsopendata/OSNI_OPEN_DATA_Midscale_Raster.zip","views":null,"quality":71,"coverage":"global","current_version":"n/a","comments_enabled":false,"service_spatial_reference":null,"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"49ada1b089b646ad85b195de0035eaf3","landing_page":"https://www.arcgis.com/home/item.html?id=49ada1b089b646ad85b195de0035eaf3","description":"<p>A Digital Terrain Model (DTM) is\r\na digital file consisting of a grid of regularly spaced points of known height\r\nwhich, when used with other digital data such as maps or orthophotographs, can\r\nprovide a 3D image of the land surface. This download contains OSNI 10k sheet numbers 251 - 293.</p> <br />","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"OSNI Open Data 10M DTM Sheets 251-293","type":"ItemDocument","item_type":"Document Link","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":null,"name":"OSNI Open Data 10M DTM Sheets 251-293","owner":"SpatialNI_Admin","record_count":-1,"tags":["OSNI","LPS","OpenData","Spatial NI","NI","UK","Height","DTM"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/49ada1b089b646ad85b195de0035eaf3/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2016-03-14T11:28:36.000Z","updated_at":"2018-02-06T09:40:01.639Z","url":"https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets251-293.zip","views":null,"quality":71,"coverage":"global","current_version":"n/a","comments_enabled":false,"service_spatial_reference":null,"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""},{"id":"3e82dda4a1c64eb6a1b76c6510c6543c","landing_page":"https://www.arcgis.com/home/item.html?id=3e82dda4a1c64eb6a1b76c6510c6543c","description":"<p>A Digital Terrain Model (DTM) is\r\na digital file consisting of a grid of regularly spaced points of known height\r\nwhich, when used with other digital data such as maps or orthophotographs, can\r\nprovide a 3D image of the land surface. This download contains OSNI 10k sheet numbers 101 - 150.</p> <br />","extent":{"coordinates":[[-180.0,-90.0],[180.0,90.0]]},"fields":[],"item_name":"OSNI Open Data 10M DTM Sheets 101-150","type":"ItemDocument","item_type":"Document Link","license":"<p>Open Government Licence applies</p><p>                                    </p><p>Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown below</p><p>The OGL allows you to:</p><ul>\n <li>copy, distribute and\n     transmit the data;</li>\n <li>adapt the data; and</li>\n <li>exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.</li>\n</ul><p>You are therefore able to use the LPS\ndatasets <b>in any way and for any purpose</b>. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:</p><p><i>Contains public sector i</i><i>nformation licensed\nunder the terms of the </i><a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\"><i>Open\nGovernment Licence</i></a> v3.0.</p><p>You must also:</p><ul>\n <li>include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;</li>\n <li>ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and</li>\n <li>make sure you do not\n     misrepresent the data or its source.</li>\n</ul><p>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p>N.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. </p>","main_group_description":"OSNI Open Data","main_group_thumbnail_url":null,"main_group_title":"OSNIOpenData","max_record_count":null,"name":"OSNI Open Data 10M DTM Sheets 101-150","owner":"SpatialNI_Admin","record_count":-1,"tags":["OSNI","LPS","OpenData","Spatial NI","NI","UK","Height","DTM"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/3e82dda4a1c64eb6a1b76c6510c6543c/info/thumbnail/ago_downloaded.png","sites":[{"title":"Spatial NI","url":"http://osni-spatial-ni.opendata.arcgis.com","logo":"https://www.spatialni.gov.uk/geoportal/SDSSitePlans/img/icon.png"},{"title":"UK Open Data Portal","url":"http://opendata.esriuk.com","logo":"http://www.esriuk.com/favicon.ico"}],"public":true,"created_at":"2016-03-14T11:22:04.000Z","updated_at":"2018-02-06T09:40:01.626Z","url":"https://opendatani.blob.core.windows.net/lpsopendata/10M-DTM-Sheets101-150.zip","views":null,"quality":71,"coverage":"global","current_version":"n/a","comments_enabled":false,"service_spatial_reference":null,"metadata_url":null,"org_id":"dNsInyVNGMqG1QjF","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"Open Government Licence applies                                    Land &amp; Property Services (LPS)\nhas made a number of Ordnance Survey of Northern Ireland® (OSNI®) branded\ndatasets available free of charge under the terms of the current <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\">Open\nGovernment Licence</a> (OGL). These datasets – which include raster\nand vector mapping, boundary, gazetteer, height, street and townland products –\nare <a href=\"http://osni.spatial-ni.opendata.arcgis.com/\">available for download</a>.  Each\ndataset is clearly marked with the OGL symbol shown belowThe OGL allows you to:\n copy, distribute and\n     transmit the data;\n adapt the data; and\n exploit the data\n     commercially, whether by sub-licensing it, combining it with other data,\n     or including it in your own product or application.\nYou are therefore able to use the LPS\ndatasets in any way and for any purpose. We simply ask that you\nacknowledge the copyright and the source of the data by including the following\nattribution statement:Contains public sector information licensed\nunder the terms of the <a href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3\">Open\nGovernment Licence</a> v3.0.You must also:\n include the same\n     acknowledgement requirement in any sub-licences of the data that you\n     grant, and a requirement that any further sub-licences do the same;\n ensure that you do not use\n     the data in a way that suggests LPS endorses you or your use of the data;\n     and\n make sure you do not\n     misrepresent the data or its source.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nN.B. Any dataset that does not\nexpressly state that it has been released under OGL will require a licence from\nLPS and the appropriate licence fee will be applied. "},"use_standardized_queries":null,"advanced_query_capabilities":null,"supported_extensions":""}],"metadata":{"query_parameters":{"bbox":null,"page":1,"per_page":10,"q":"*","required_keywords":[],"sort_by":"updated_at","sort_order":"desc"},"stats":{"count":10,"total_count":83,"top_tags":[{"name":"open data","count":8356},{"name":"transportation","count":7541},{"name":"boundaries","count":6472},{"name":"planning","count":4248},{"name":"water","count":4216},{"name":"environment","count":4106},{"name":"arcgis","count":3534},{"name":"service definition","count":3340},{"name":".sd","count":3285},{"name":"government","count":2918},{"name":"cartografia, região metropolitana, cartas","count":2669},{"name":"infrastructure","count":2616},{"name":"census","count":2477},{"name":"demographics","count":2328},{"name":"education","count":2309},{"name":"2017","count":2299},{"name":"moncton","count":2089},{"name":"zoning","count":2043},{"name":"noaa","count":1957},{"name":"development","count":1944},{"name":"pdf","count":1938},{"name":"boundary","count":1899},{"name":"recreation","count":1893},{"name":"health","count":1889},{"name":"parks","count":1823},{"name":"map","count":1728},{"name":"county","count":1713},{"name":"florida","count":1698},{"name":"esri","count":1606},{"name":"maryland","count":1605},{"name":"data","count":1575},{"name":"population","count":1569},{"name":"gis","count":1537},{"name":"imagery","count":1512},{"name":"michigan","count":1471},{"name":"roads","count":1458},{"name":"wms","count":1455},{"name":"opendata","count":1441},{"name":"wfs","count":1432},{"name":"land use","count":1420},{"name":"elevation","count":1419},{"name":"wildlife","count":1409},{"name":"lake county illinois","count":1400},{"name":"facilities","count":1385},{"name":"property","count":1365},{"name":"geology","count":1311},{"name":"parcels","count":1296},{"name":"washington","count":1278},{"name":"utilities","count":1278},{"name":"story map","count":1242},{"name":"university of michigan","count":1233},{"name":"economic development","count":1231},{"name":"eda","count":1230},{"name":"university of michigan flint","count":1226},{"name":"um-flint outreach","count":1226},{"name":"um-flint gisc","count":1226},{"name":"um-flint gis trc","count":1226},{"name":"um-flint gis training and research center","count":1226},{"name":"um-flint gis center","count":1226},{"name":"um-flint","count":1226},{"name":"um flint outreach","count":1226},{"name":"um flint","count":1226},{"name":"ucced","count":1226},{"name":"plf3","count":1226},{"name":"michigan usa","count":1226},{"name":"mi usa","count":1226},{"name":"medc region vi","count":1226},{"name":"medc region 6","count":1226},{"name":"medc","count":1226},{"name":"mapflint","count":1226},{"name":"map flint","count":1226},{"name":"i-69 thumb region","count":1226},{"name":"https://mapflint.org","count":1226},{"name":"gistrc","count":1226},{"name":"gisc","count":1226},{"name":"gis trc","count":1226},{"name":"eda university center for community and economic development","count":1226},{"name":"habitat","count":1210},{"name":"community","count":1206},{"name":"housing","count":1190},{"name":"local government","count":1178},{"name":"police","count":1171},{"name":"environmental","count":1156},{"name":"basemap","count":1146},{"name":"ontario","count":1142},{"name":"fire","count":1136},{"name":"2016","count":1117},{"name":"printed maps","count":1105},{"name":"md imap","count":1095},{"name":"md","count":1076},{"name":"ohio","count":1061},{"name":"2010","count":1049},{"name":"trails","count":1045},{"name":"hydrology","count":1044},{"name":"safety","count":1042},{"name":"national park service","count":1041},{"name":"test","count":1036},{"name":"auth_cdfw","count":1035},{"name":"public safety","count":1031},{"name":"enc","count":1020},{"name":"resources","count":1010},{"name":"s-57","count":1004},{"name":"dc","count":998},{"name":"streets","count":997},{"name":"district","count":991},{"name":"district of columbia","count":990},{"name":"dnr","count":987},{"name":"traffic","count":979},{"name":"canada","count":963},{"name":"public","count":935},{"name":"species","count":932},{"name":"gouvernement","count":924},{"name":"washington dc","count":919},{"name":"environnement","count":919},{"name":"avr","count":916},{"name":"schools","count":908},{"name":"maps","count":897},{"name":"natural","count":896},{"name":"people","count":895},{"name":"agriculture","count":873},{"name":"land","count":870},{"name":"flood","count":852},{"name":"parking","count":850},{"name":"biota","count":844},{"name":"transport","count":843},{"name":"california","count":841},{"name":"2018","count":832},{"name":"lidar","count":830},{"name":"public works","count":822},{"name":"sn:","count":816},{"name":"natural resources","count":816},{"name":"cn:","count":814},{"name":"conservation","count":812},{"name":"usa","count":811},{"name":"districts","count":805},{"name":"fema","count":803},{"name":"2012","count":799},{"name":"historical","count":794},{"name":"2015","count":783},{"name":"council","count":781},{"name":"colorado","count":780},{"name":"transit","count":779},{"name":"stormwater","count":776},{"name":"virginia","count":775},{"name":"los angeles","count":767},{"name":"business","count":748},{"name":"administrative boundaries","count":656},{"name":"2014","count":631},{"name":"north carolina","count":630},{"name":"topography","count":612},{"name":"esribelux","count":600},{"name":"esri belux","count":599},{"name":"belux","count":597},{"name":"belgique","count":597},{"name":"sip4d","count":595},{"name":"belgië","count":595},{"name":"open","count":468},{"name":"landscape","count":468},{"name":"election","count":456},{"name":"kml","count":451}]}}}
+
+//]]>
+    </script>
+<script>
+  //<![CDATA[
+
+  $(function() {
+    var rawJSONElt = $('#site-configuration-json');
+    var rawJSON = rawJSONElt.text();
+    var siteConfiguration = JSON.parse(rawJSON.replace('<\\/script>', '</'+'script>'));
+
+    var rawDatasetsJSONElt = $('#site-serialized-datasets-json');
+    var rawDatasetsJSON = rawDatasetsJSONElt.text();
+    siteConfiguration.inlinedData = JSON.parse(rawDatasetsJSON.replace('<\\/script>', '</'+'script>'));
+
+    //currently the siteInfo serializer returns a top-level object of "site_info", but
+    //we want that passed into the app as site, so minor juggling here
+    if(siteConfiguration.site_info){
+      siteConfiguration = siteConfiguration.site_info;
+    }
+
+    //extent the site over ComposerConfig
+    var options = $.extend(ComposerConfig, {site: siteConfiguration });
+
+    var localizr = new util.Localizr(_);
+    localizr.localize()
+      .always(function () {
+        Composer.create(options);
+      });
+  });
+
+  //]]>
+</script>
+<script>
+  //<![CDATA[
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', "UA-47337822-2", 'auto');
+  ga('send', 'pageview');
+
+  //]]>
+</script>
+<script>
+  //<![CDATA[
+
+  ga('create', "UA-37388483-7", 'auto', {'name': 'customerTracker'});
+  ga('customerTracker.send', 'pageview');
+
+  //]]>
+</script>
+</body>
+</html>

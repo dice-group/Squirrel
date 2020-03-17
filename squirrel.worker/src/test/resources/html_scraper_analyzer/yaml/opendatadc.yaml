@@ -1,0 +1,15 @@
+file_descriptor:
+    check:
+        domain: opendatadc.org
+        ignore-request: true
+    search-result-page:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .front-view-title a
+
+    detail-page:
+        regex: prediksi
+        resources:
+            "http://purl.org/dc/terms/title": .single_post .thecategory a
+            "http://purl.org/dc/terms/description": .post-single-content .thecontent p

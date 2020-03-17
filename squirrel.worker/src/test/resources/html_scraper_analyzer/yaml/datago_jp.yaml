@@ -1,0 +1,22 @@
+file_descriptor:
+    check:
+        domain: data.go.jp
+        ignore-request: true
+    search-result-page:
+        regex: data/en/dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: en/dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": h1.heading:eq(0)
+                "http://purl.org/dc/terms/description": tr:contains(Description) td
+                "http://purl.org/dc/terms/publisher": tr:contains(Publisher) td
+                "http://purl.org/dc/terms/creator": tr:contains(Creator) td
+                "http://purl.org/dc/terms/issued": tr:contains(Release date) td
+                "http://www.w3.org/ns/dcat#downloadURL": ul.dropdown-menu li:nth-child(2)  a
+

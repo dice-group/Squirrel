@@ -1,0 +1,1376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" class=" js">
+<!--<![endif]-->  <head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/html5.min.js"></script><![endif]-->    <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/select2/select2.css"/>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2016-07-18T16:36:22.19/main.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/font-awesome/css/font-awesome.min.css"/>
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->    <meta charset="utf-8"/>
+  <meta name="generator" content="ckan 2.4.1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>
+    Datasets - Ambar DataStore
+  </title>
+  <link rel="shortcut icon" href="/images/icons/ckan.ico"/>
+</head>
+<body data-site-root="http://ambar.utpl.edu.ec/" data-locale-root="http://ambar.utpl.edu.ec/">
+<div class="hide">
+  <a href="#content">
+    Skip to content
+  </a>
+</div>
+<header class="account-masthead">
+  <div class="container">
+    <nav class="account not-authed">
+      <ul class="unstyled">
+        <li>
+          <a href="/user/login">
+            Log in
+          </a>
+        </li>
+        <li>
+          <a class="sub" href="/user/register">
+            Register
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<header class="navbar navbar-static-top masthead">
+  <div class="container">
+    <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+          <span class="icon-bar">
+          </span>
+      <span class="icon-bar">
+          </span>
+      <span class="icon-bar">
+          </span>
+    </button>
+    <hgroup class="header-image pull-left">
+      <a class="logo" href="/">
+        <img src="/base/images/logo.png" alt="Ambar DataStore" title="Ambar DataStore" width="100%"/>
+      </a>
+    </hgroup>
+    <div class="nav-collapse collapse">
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+          <li class="active">
+            <a href="/dataset">
+              Datasets
+            </a>
+          </li>
+          <li>
+            <a href="/organization">
+              Organizations
+            </a>
+          </li>
+          <li>
+            <a href="/group">
+              Groups
+            </a>
+          </li>
+          <li>
+            <a href="/about">
+              About
+            </a>
+          </li>
+          <li>
+            <a href="/blog">
+              Blog
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <form class="section site-search simple-input" action="/dataset" method="get">
+        <div class="field">
+          <label for="field-sitewide-search">
+            Search Datasets
+          </label>
+          <input id="field-sitewide-search" type="text" name="q" placeholder="Search"/>
+          <button class="btn-search" type="submit">
+            <i class="icon-search">
+            </i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</header>
+<div role="main">
+  <div id="content" class="container">
+    <div class="flash-messages">
+    </div>
+    <div class="toolbar">
+      <ol class="breadcrumb">
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->            <li class="home">
+        <a href="/">
+          <i class="icon-home">
+          </i>
+          <span>
+                   Home
+                </span>
+        </a>
+      </li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->            <li class="active">
+        <a href="/dataset">
+          Datasets
+        </a>
+      </li>
+      </ol>
+    </div>
+    <div class="row wrapper">
+      <div class="primary span9">
+        <section class="module">
+          <div class="module-content">
+            <!-- Snippet snippets/search_form.html start -->                <form id="dataset-search-form" class="search-form" method="get" data-module="select-switch">
+            <div class="search-input control-group search-giant">
+              <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="Search datasets..."/>
+              <button type="submit" value="search">
+                <i class="icon-search">
+                </i>
+                <span>
+                        Submit
+                      </span>
+              </button>
+            </div>
+            <div class="form-select control-group control-order-by">
+              <label for="field-order-by">
+                Order by
+              </label>
+              <select id="field-order-by" name="sort">
+                <option value="score desc, metadata_modified desc" selected="selected">
+                  Relevance
+                </option>
+                <option value="title_string asc">
+                  Name Ascending
+                </option>
+                <option value="title_string desc">
+                  Name Descending
+                </option>
+                <option value="metadata_modified desc">
+                  Last Modified
+                </option>
+              </select>
+              <button class="btn js-hide" type="submit">
+                Go
+              </button>
+            </div>
+            <h2>
+              <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+              558 datasets found
+
+              <!-- Snippet snippets/search_result_text.html end -->                  </h2>
+            <p class="filter-list">
+            </p>
+            <a class="show-filters btn">
+              Filter Results
+            </a>
+          </form>
+            <!-- Snippet snippets/search_form.html end -->                <!-- Snippet snippets/package_list.html start -->                <ul class="dataset-list unstyled">
+            <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/feminicidios-latam">
+                  feminicidios-LatAm
+                </a>
+              </h3>
+              <div>
+                A medida que las tecnologías de la información y la comunicación incrementan su  impacto social, más académicos se  interesan en vincular la tecnología con las necesidades...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/feminicidios-latam" class="label" data-format="xlsx">
+                  XLSX
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/knowledge-graph-about-historical-figures-of-ecuador">
+                  Knowledge Graph about Historical Figures of Ecuador
+                </a>
+              </h3>
+              <div>
+                Use of Graph Database for the Integration of Heterogeneous Data about Ecuadorian Historical Personages
+                Jean Mosquera1, Nelson Piedra2
+                1 Universidad Técnica Particular de Loja,...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/knowledge-graph-about-historical-figures-of-ecuador" class="label" data-format="cypher">
+                  Cypher
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/problematicas-y-conflictos-socioambientales">
+                  Problemáticas y conflictos socioambientales
+                </a>
+              </h3>
+              <div>
+                Esta base corresponde a las investigaciones desarrolladas sobre problemáticas y conflictos socioambientales en la provincia de Zamora Chinchipe.
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/problematicas-y-conflictos-socioambientales" class="label" data-format="pdf">
+                  PDF
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/national-health-and-nutrition-examination-survey-nhanes">
+                  National Health and Nutrition Examination Survey (NHANES)
+                </a>
+              </h3>
+              <div>
+                1999-2000 forward. The National Health and Nutrition Examination Survey (NHANES) is a program of studies designed to assess the health and nutritional status of adults and...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/national-health-and-nutrition-examination-survey-nhanes" class="label" data-format="csv">
+                  CSV
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system">
+                  Nutrition, Physical Activity, and Obesity - Behavioral Risk Factor Surveillan...
+                </a>
+              </h3>
+              <div>
+                Organización de las Naciones Unidas para la Agricultura y la Alimentación ( fao.org/publications/en )
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/nutrition-physical-activity-and-obesity-behavioral-risk-factor-surveillance-system" class="label" data-format="csv">
+                  CSV
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/nutricion-ninez">
+                  Nutrición_Infantil
+                </a>
+              </h3>
+              <div>
+                Objetivo 3: "Garantizar una vida sana y promover el bienestar para todos en todas las edades."
+
+                El objetivo se enfoca en fomentar y buscar varias iniciativas para erradicar por...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/nutricion-ninez" class="label" data-format="xlsx">
+                  XLSX
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/tasa-de-mortalidad-infantil">
+                  Tasa de Mortalidad Infantil
+                </a>
+              </h3>
+              <div>
+                Objetivo 3: "Garantizar una vida sana y promover el bienestar para todos en todas las edades."
+
+                El objetivo se enfoca en fomentar y buscar varias iniciativas para erradicar por...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/tasa-de-mortalidad-infantil" class="label" data-format="xls">
+                  XLS
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/education-statistics-world-bank">
+                  Education Statistics (World Bank)
+                </a>
+              </h3>
+              <div>
+                The World Bank EdStats All Indicator Query holds over 4,000 internationally comparable indicators that describe education access, progression, completion, literacy, teachers,...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/education-statistics-world-bank" class="label" data-format="zip">
+                  ZIP
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/educacion-de-calidad">
+                  Educación de calidad
+                </a>
+              </h3>
+              <div>
+                El Objetivo 4: "Garantizar una educación inclusiva, equitativa y de calidad y promover oportunidades de aprendizaje durante toda la vida para todos".
+
+                Este objetivo se enfoca en...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/educacion-de-calidad" class="label" data-format="zip">
+                  ZIP
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/datos-encuestas-sobre-percepcion-de-audiencias-de-tv-local-en-ecuador">
+                  Datos encuestas sobre percepción de audiencias de Tv local en Ecuador
+                </a>
+              </h3>
+              <div>
+                Lo que se pretende con esta investigación es conocer la percepción de las audiencias sobre las televisiones locales en Ecuador. Tomando en cuenta que los medios locales son...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/datos-encuestas-sobre-percepcion-de-audiencias-de-tv-local-en-ecuador" class="label" data-format="xls">
+                  XLS
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/fallos-de-casacion-1994-2004">
+                  Fallos de casación 1994 -2004
+                </a>
+              </h3>
+              <div>
+                Base de datos con las instituciones jurídicas mas comunes, la normativa legal y la jurisprudencia textual de fallos de casación emitidos por la Corte Superior de Justicia de...
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/fallos-de-casacion-1994-2004" class="label" data-format="cvs">
+                  CVS
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/marcas-de-preguntas-matematica">
+                  Marcas de preguntas Matemática
+                </a>
+              </h3>
+              <div>
+                Opciones de respuesta dada a las preguntas de Matemática
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/marcas-de-preguntas-matematica" class="label" data-format="csv">
+                  CSV
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/web-gad-ec">
+                  Web_GAD_Ec
+                </a>
+              </h3>
+              <div>
+                Orientación al ciudadano en los sitios Web de los Gobiernos Autónomos Descentralizados municipales de Ecuador en julio de 2017
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/web-gad-ec" class="label" data-format="xls">
+                  XLS
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/estados-financieros-de-las-companias-en-el-ecuador-en-2016">
+                  Estados financieros de las compañias en el Ecuador en 2016
+                </a>
+              </h3>
+              <div>
+                Es información de balances de las compañias en Ecuador  a nivel de CIIU 4 digitos
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/estados-financieros-de-las-companias-en-el-ecuador-en-2016" class="label" data-format="zip">
+                  ZIP
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/organismo-de-ciencia-y-tecnologia-de-iberoamerica">
+                  Organismo de Ciencia y Tecnología de Iberoamérica
+                </a>
+              </h3>
+              <div>
+                Contempla los 21 organismo oficiales de ciencia y tecnología de Iberoamérica, su relación y conexiones extraídas de Twitter en base a NodeXL
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/organismo-de-ciencia-y-tecnologia-de-iberoamerica" class="label" data-format="csv">
+                  CSV
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/consumo-de-agua-ciudad-victoria">
+                  Consumo de agua Ciudad Victoria
+                </a>
+              </h3>
+              <div>
+                La presente base de datos contienen los consumos por vivienda del barrio de interés social Ciudad Victoria.
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/consumo-de-agua-ciudad-victoria" class="label" data-format="xlsx">
+                  XLSX
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/datos-de-publicaciones-de-la-cuenta-municipal-mi-puyango-en-facebook">
+                  Datos de publicaciones de la cuenta municipal Mi Puyango en Facebook
+                </a>
+              </h3>
+              <div>
+                Datos de publicaciones de la cuenta municipal Mi Puyango en Facebook
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/datos-de-publicaciones-de-la-cuenta-municipal-mi-puyango-en-facebook" class="label" data-format="xlsx">
+                  XLSX
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/caracteres-problemas">
+                  Caracteres,problemas
+                </a>
+              </h3>
+              <div>
+                Este archivo contiene referencias  de aproximaciones a la definición de un partido arquitectónico.
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/caracteres-problemas" class="label" data-format="pdf">
+                  PDF
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/crecimiento-sustentable-van-horne-2017">
+                  Crecimiento sustentable Van Horne 2017
+                </a>
+              </h3>
+              <div>
+                Aplicación de la formula de calculo
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/crecimiento-sustentable-van-horne-2017" class="label" data-format="xls">
+                  XLS
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                  <!-- Snippet snippets/package_item.html start -->                  <li class="dataset-item">
+            <div class="dataset-content">
+              <h3 class="dataset-heading">
+                <a href="/dataset/catalogo-de-los-recursos-gastronomicos-mancomunidad-bosque-seco">
+                  Catálogo de los recursos gastronómicos mancomunidad Bosque Seco
+                </a>
+              </h3>
+              <div>
+                Comprende en la recopilación de los principales recursos gastronómicos y turísticos que posee la Mancomunidad Bosque Seco
+
+              </div>
+            </div>
+            <ul class="dataset-resources unstyled">
+              <li>
+                <a href="/dataset/catalogo-de-los-recursos-gastronomicos-mancomunidad-bosque-seco" class="label" data-format="pdf">
+                  PDF
+                </a>
+              </li>
+            </ul>
+          </li>
+            <!-- Snippet snippets/package_item.html end -->                </ul>
+            <!-- Snippet snippets/package_list.html end -->              </div>
+          <div class="pagination pagination-centered">
+            <ul>
+              <li class="active">
+                <a href="/dataset?page=1">
+                  1
+                </a>
+              </li>
+              <li>
+                <a href="/dataset?page=2">
+                  2
+                </a>
+              </li>
+              <li>
+                <a href="/dataset?page=3">
+                  3
+                </a>
+              </li>
+              <li class="disabled">
+                <a href="#">
+                  ...
+                </a>
+              </li>
+              <li>
+                <a href="/dataset?page=28">
+                  28
+                </a>
+              </li>
+              <li>
+                <a href="/dataset?page=2">
+                  »
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section class="module">
+          <div class="module-content">
+            <small>
+
+
+
+
+              You can also access this registry using the
+              <a href="/api/3">
+                API
+              </a>
+              (see
+              <a href="http://docs.ckan.org/en/ckan-2.4.1/api/">
+                API Docs
+              </a>
+              ).
+
+            </small>
+          </div>
+        </section>
+      </div>
+      <aside class="secondary span3">
+        <div class="filters">
+          <div>
+            <!-- Snippet snippets/facet_list.html start -->                <section class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter">
+              </i>
+
+
+              Organizations
+
+            </h2>
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+                <li class="nav-item">
+                  <a href="/dataset?organization=instituto-nacional-de-estadisticas-y-censos-ecuador" title="Instituto Nacional de Estadísticas y Censos Ecuador">
+                          <span>
+                            Instituto Nacional ... (247)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=ministerio-de-educacion" title="Ministerio de Educación ">
+                          <span>
+                            Ministerio de Educa... (170)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=smartland" title="">
+                          <span>
+                            SmartLand (18)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=turismo-ecuador" title="">
+                          <span>
+                            Turismo Ecuador (16)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=agencia-de-regulacion-y-control-minero" title="Agencia de Regulación y Control Minero">
+                          <span>
+                            Agencia de Regulaci... (16)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=centro-de-informacion-financiera-de-estudiantes-y-docentes-cifed" title="CENTRO DE INFORMACIÓN FINANCIERA DE ESTUDIANTES Y DOCENTES “CIFED”">
+                          <span>
+                            CENTRO DE INFORMACI... (15)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=senplades" title="">
+                          <span>
+                            SENPLADES (12)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=sniese" title="">
+                          <span>
+                            SNIESE (7)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=instituto-geofisico" title="">
+                          <span>
+                            Instituto Geofísico (7)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?organization=panama-opendata" title="">
+                          <span>
+                            Panamá OpenData (5)
+                          </span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <p class="module-footer">
+              <a href="/dataset?_organization_limit=0" class="read-more">
+                Show More Organizations
+              </a>
+            </p>
+          </section>
+            <!-- Snippet snippets/facet_list.html end -->                <!-- Snippet snippets/facet_list.html start -->                <section class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter">
+              </i>
+
+
+              Groups
+
+            </h2>
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+                <li class="nav-item">
+                  <a href="/dataset?groups=mine" title="">
+                          <span>
+                            Mine (2)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?groups=education" title="">
+                          <span>
+                            Education (2)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?groups=oer" title="">
+                          <span>
+                            oer (1)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?groups=rdf" title="">
+                          <span>
+                            RDF (1)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?groups=culture" title="">
+                          <span>
+                            Culture (1)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?groups=ambar" title="">
+                          <span>
+                            Ambar (1)
+                          </span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <p class="module-footer">
+            </p>
+          </section>
+            <!-- Snippet snippets/facet_list.html end -->                <!-- Snippet snippets/facet_list.html start -->                <section class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter">
+              </i>
+
+
+              Tags
+
+            </h2>
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+                <li class="nav-item">
+                  <a href="/dataset?tags=Ecuador" title="">
+                          <span>
+                            Ecuador (449)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=indicadores" title="">
+                          <span>
+                            indicadores (181)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=education" title="">
+                          <span>
+                            education (174)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=educaci%C3%B3n" title="">
+                          <span>
+                            educación (172)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=statistics" title="">
+                          <span>
+                            statistics (171)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=indicadores+educaci%C3%B3n" title="">
+                          <span>
+                            indicadores educación (169)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=indicadores_educacion" title="">
+                          <span>
+                            indicadores_educacion (168)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=estad%C3%ADsticas" title="">
+                          <span>
+                            estadísticas (167)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=2014" title="">
+                          <span>
+                            2014 (106)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?tags=Canasta" title="">
+                          <span>
+                            Canasta (79)
+                          </span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <p class="module-footer">
+              <a href="/dataset?_tags_limit=0" class="read-more">
+                Show More Tags
+              </a>
+            </p>
+          </section>
+            <!-- Snippet snippets/facet_list.html end -->                <!-- Snippet snippets/facet_list.html start -->                <section class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter">
+              </i>
+
+
+              Formats
+
+            </h2>
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+                <li class="nav-item">
+                  <a href="/dataset?res_format=XLS" title="">
+                          <span>
+                            XLS (329)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=CSV" title="">
+                          <span>
+                            CSV (258)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=XLSX" title="">
+                          <span>
+                            XLSX (82)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=PDF" title="">
+                          <span>
+                            PDF (79)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=JPEG" title="">
+                          <span>
+                            JPEG (5)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=XML" title="">
+                          <span>
+                            XML (4)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=ZIP" title="">
+                          <span>
+                            ZIP (3)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=RDF" title="">
+                          <span>
+                            RDF (3)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=DOC" title="">
+                          <span>
+                            DOC (3)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?res_format=excel" title="">
+                          <span>
+                            excel (2)
+                          </span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <p class="module-footer">
+              <a href="/dataset?_res_format_limit=0" class="read-more">
+                Show More Formats
+              </a>
+            </p>
+          </section>
+            <!-- Snippet snippets/facet_list.html end -->                <!-- Snippet snippets/facet_list.html start -->                <section class="module module-narrow module-shallow">
+            <h2 class="module-heading">
+              <i class="icon-medium icon-filter">
+              </i>
+
+
+              Licenses
+
+            </h2>
+            <nav>
+              <ul class="unstyled nav nav-simple nav-facet">
+                <li class="nav-item">
+                  <a href="/dataset?license_id=notspecified" title="">
+                          <span>
+                            License not specified (480)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-by" title="Creative Commons Attribution">
+                          <span>
+                            Creative Commons At... (56)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-open" title="">
+                          <span>
+                            Other (Open) (9)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-by-sa" title="Creative Commons Attribution Share-Alike">
+                          <span>
+                            Creative Commons At... (6)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=odc-pddl" title="Open Data Commons Public Domain Dedication and License (PDDL)">
+                          <span>
+                            Open Data Commons P... (2)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-nc" title="Creative Commons Non-Commercial (Any)">
+                          <span>
+                            Creative Commons No... (2)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=cc-zero" title="Creative Commons CCZero">
+                          <span>
+                            Creative Commons CC... (2)
+                          </span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/dataset?license_id=other-nc" title="">
+                          <span>
+                            Other (Non-Commercial) (1)
+                          </span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <p class="module-footer">
+            </p>
+          </section>
+            <!-- Snippet snippets/facet_list.html end -->              </div>
+          <a class="close no-text hide-filters">
+            <i class="icon-remove-sign">
+            </i>
+            <span class="text">
+                  close
+                </span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<footer class="site-footer">
+  <div class="container">
+    <div class="row">
+      <div class="span3 footer-links">
+        <ul class="unstyled">
+          <li>
+            <a href="/about">
+              About Ambar DataStore
+            </a>
+          </li>
+        </ul>
+        <ul class="unstyled">
+          <li>
+            <a href="http://docs.ckan.org/en/ckan-2.4.1/api/">
+              CKAN API
+            </a>
+          </li>
+          <li>
+            <a href="http://www.okfn.org/">
+              Open Knowledge Foundation
+            </a>
+          </li>
+          <li>
+            <a href="http://www.opendefinition.org/okd/">
+              <img src="/base/images/od_80x15_blue.png"/>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="span5" style="text-align:center;">
+        <a href="http://utpl.edu.ec/" title="Universidad Técnica Particular de Loja" target="_blank">
+          <img src="http://www.utpl.edu.ec/manual_imagen/images/institucional/UTPL-INSTITUCIONAL-1-color.png" alt="Logo UTPL" width="150"/>
+        </a>
+        <a href="http://es-la.dbpedia.org/home/" title="DBpedia-Latinoamérica" target="_blank">
+          <img src="http://es-la.dbpedia.org/home/sites/all/themes/webmate-responsive-theme/logo.png" alt="Logo DBPEDIA Latam" width="150"/>
+        </a>
+        <a href="http://smartland.utpl.edu.ec/" title="SmartLand UTPL" target="_blank">
+          <img src="http://smartland.utpl.edu.ec/sites/all/themes/forest-dry/logo.png" alt="Logo SmartLand UTPL" width="150"/>
+        </a>
+      </div>
+      <div class="span1 attribution">
+        <!-- Snippet snippets/language_selector.html start -->            <form class="form-inline form-select lang-select" action="/util/redirect" data-module="select-switch" method="POST">
+        <label for="field-lang-select">
+          Language
+        </label>
+        <div class="select2-container lang-container" id="s2id_field-lang-select" style="width: 230px;">
+          <a href="javascript:void(0)" class="select2-choice" tabindex="-1">
+                  <span class="select2-chosen" id="select2-chosen-1">
+
+        English
+
+                  </span>
+            <abbr class="select2-search-choice-close"/>
+            <span class="select2-arrow" role="presentation">
+                    <b role="presentation"/>
+                  </span>
+          </a>
+          <label for="s2id_autogen1" class="select2-offscreen">
+            Language
+          </label>
+          <input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-1" id="s2id_autogen1"/>
+          <div class="select2-drop select2-display-none lang-dropdown select2-with-searchbox">
+            <div class="select2-search">
+              <label for="s2id_autogen1_search" class="select2-offscreen">
+                Language
+              </label>
+              <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="select2-input" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-owns="select2-results-1" id="s2id_autogen1_search" placeholder=""/>
+            </div>
+            <ul class="select2-results" role="listbox" id="select2-results-1">
+            </ul>
+          </div>
+        </div>
+        <select id="field-lang-select" name="url" data-module="autocomplete" data-module-dropdown-class="lang-dropdown" data-module-container-class="lang-container" tabindex="-1" title="Language" class="select2-offscreen">
+          <option value="/en/dataset" selected="selected">
+
+            English
+
+          </option>
+          <option value="/pt_BR/dataset">
+
+            português (Brasil)
+
+          </option>
+          <option value="/ja/dataset">
+
+            日本語
+
+          </option>
+          <option value="/it/dataset">
+
+            italiano
+
+          </option>
+          <option value="/cs_CZ/dataset">
+
+            čeština (Česká republika)
+
+          </option>
+          <option value="/ca/dataset">
+
+            català
+
+          </option>
+          <option value="/es/dataset">
+
+            español
+
+          </option>
+          <option value="/fr/dataset">
+
+            français
+
+          </option>
+          <option value="/el/dataset">
+
+            Ελληνικά
+
+          </option>
+          <option value="/sv/dataset">
+
+            svenska
+
+          </option>
+          <option value="/sr/dataset">
+
+            Српски
+
+          </option>
+          <option value="/no/dataset">
+
+            Norwegian
+
+          </option>
+          <option value="/sk/dataset">
+
+            slovenský
+
+          </option>
+          <option value="/fi/dataset">
+
+            suomi
+
+          </option>
+          <option value="/ru/dataset">
+
+            русский
+
+          </option>
+          <option value="/de/dataset">
+
+            Deutsch
+
+          </option>
+          <option value="/pl/dataset">
+
+            polski
+
+          </option>
+          <option value="/nl/dataset">
+
+            Nederlands
+
+          </option>
+          <option value="/bg/dataset">
+
+            български
+
+          </option>
+          <option value="/ko_KR/dataset">
+
+            한국어 (대한민국)
+
+          </option>
+          <option value="/hu/dataset">
+
+            magyar
+
+          </option>
+          <option value="/sl/dataset">
+
+            slovenščina
+
+          </option>
+          <option value="/lv/dataset">
+
+            latviešu
+
+          </option>
+          <option value="/id/dataset">
+
+            Bahasa Indonesia
+
+          </option>
+          <option value="/is/dataset">
+
+            íslenska
+
+          </option>
+          <option value="/ne/dataset">
+
+            नेपाली
+
+          </option>
+          <option value="/th/dataset">
+
+            ไทย
+
+          </option>
+          <option value="/en_AU/dataset">
+
+            English (Australia)
+
+          </option>
+          <option value="/he/dataset">
+
+            עברית
+
+          </option>
+          <option value="/uk_UA/dataset">
+
+            українська (Україна)
+
+          </option>
+          <option value="/zh_CN/dataset">
+
+            中文 (中国)
+
+          </option>
+          <option value="/pt_PT/dataset">
+
+            português (Portugal)
+
+          </option>
+          <option value="/fa_IR/dataset">
+
+            فارسی (ایران)
+
+          </option>
+          <option value="/lt/dataset">
+
+            lietuvių
+
+          </option>
+          <option value="/da_DK/dataset">
+
+            dansk (Danmark)
+
+          </option>
+          <option value="/hr/dataset">
+
+            hrvatski
+
+          </option>
+          <option value="/mn_MN/dataset">
+
+            монгол (Монгол улс)
+
+          </option>
+          <option value="/sr_Latn/dataset">
+
+            Srpski (Latinica)
+
+          </option>
+          <option value="/vi/dataset">
+
+            Tiếng Việt
+
+          </option>
+          <option value="/sq/dataset">
+
+            shqipe
+
+          </option>
+          <option value="/km/dataset">
+
+            ភាសាខ្មែរ
+
+          </option>
+          <option value="/ar/dataset">
+
+            العربية
+
+          </option>
+          <option value="/ro/dataset">
+
+            română
+
+          </option>
+          <option value="/zh_TW/dataset">
+
+            中文 (台湾)
+
+          </option>
+          <option value="/tr/dataset">
+
+            Türkçe
+
+          </option>
+        </select>
+        <button class="btn js-hide" type="submit">
+          Go
+        </button>
+      </form>
+        <!-- Snippet snippets/language_selector.html end -->            <small>
+        <strong>
+          Powered by
+        </strong>
+        <a href="http://ckan.org">
+          CKAN
+        </a>
+      </small>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+  //<![CDATA[
+  document.getElementsByTagName('html')[0].className += ' js';
+  //]]>
+</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/jquery.min.js">
+</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-07-18T16:36:22.09/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js">
+</script>
+<script type="text/javascript" src="/fanstatic/base/:version:2016-07-18T16:36:22.11/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js">
+</script>
+<span role="status" aria-live="polite" class="select2-hidden-accessible">
+    </span>
+</body>
+</html>
