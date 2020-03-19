@@ -38,7 +38,10 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
     private int timeout;
     private final int PAGESIZE = 100;
     
-    
+  /**
+   * Time out for the Ckan Client  
+   * @param timeout
+   */
     public PaginatedCkanFetcher(int timeout) {
     	this.timeout = timeout;
 	}
