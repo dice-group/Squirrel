@@ -29,7 +29,6 @@ import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * A simple {@link Fetcher} for SPARQL that tries to get DataSets from a SPARQL
@@ -38,7 +37,6 @@ import org.springframework.stereotype.Component;
  * @author Geraldo de Souza Jr (gsjunior@uni-paderborn.de)
  *
  */
-@Component
 public class SparqlDatasetFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlDatasetFetcher.class);

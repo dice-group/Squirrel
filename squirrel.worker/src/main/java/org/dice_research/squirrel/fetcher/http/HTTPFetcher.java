@@ -34,9 +34,6 @@ import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * {@link Fetcher} which uses an HTTP client to fetch data and store it in a
@@ -45,9 +42,7 @@ import org.springframework.stereotype.Component;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@Component
-@Order(value = 1)
-@Qualifier("httpFetcher")
+
 public class HTTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPFetcher.class);

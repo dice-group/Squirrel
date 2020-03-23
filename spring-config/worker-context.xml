@@ -47,12 +47,19 @@
         <constructor-arg index="0">
             <list>
                  
+                 <ref bean="htmlScraperAnalyzerBean"/>
+                 <ref bean="rdfAnalyzerBean"/>
+                         
+                 <!--                  
+                 <ref bean="rdfaAnalyzerBean"/>
+                 
+                  
                  <ref bean="ckanAnalyzerBean"/> 
                  <ref bean="rdfAnalyzerBean"/>
                  <ref bean="htmlScraperAnalyzerBean"/>          
                  <ref bean="microdataAnalyzerBean"/>          
                  <ref bean="microformatAnalyzerBean"/>          
-                 <ref bean="hdtAnalyzerBean"/>       <!--   -->
+                 <ref bean="hdtAnalyzerBean"/>        -->
                  
                        
             </list>
@@ -94,10 +101,11 @@
         <constructor-arg>
             <list>
                 
-                <ref bean="ckanFetcherBean" />
+               	 
+                 <ref bean="httpFetcherBean" /><!-- 
+                 <ref bean="ckanFetcherBean" />
                  <ref bean="sparqlFetcherBean" />
-                 <ref bean="httpFetcherBean" />
-                 <ref bean="ftpFetcherBean" /> <!-- -->
+                 <ref bean="ftpFetcherBean" /> -->
 
                 <!-- 
                 <ref bean="sparqlDatasetFetcherBean" />
