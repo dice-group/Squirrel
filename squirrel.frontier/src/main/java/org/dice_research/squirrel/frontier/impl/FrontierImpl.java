@@ -284,7 +284,7 @@ public class FrontierImpl implements Frontier {
                         addNewUri(u.getUriVariant(uri));
                 }
             }catch (Exception e){
-                LOGGER.warn("Exception happened while generating additional URI variant", e);
+                LOGGER.info("Exception happened while generating additional URI variant for URI: " + uri.getUri().toString());
             }
         }
     }
