@@ -5,8 +5,8 @@ build:
 	mvn clean install -U -DskipTests -Dmaven.javadoc.skip=true
 
 dockerize:
-	docker build -f Dockerfile.frontier -t squirrel.frontier -t dicegroup/squirrel-frontier .
-	docker build -f Dockerfile.worker -t squirrel.worker -t dicegroup/squirrel-worker .
+	docker build -f Dockerfile.frontier -t dicegroup/squirrel.frontier .
+	docker build -f Dockerfile.worker -t dicegroup/squirrel.worker .
 	docker build -f Dockerfile.web -t squirrel.web .
 	docker build -f Dockerfile.mockup -t squirrel.mockup .
 
