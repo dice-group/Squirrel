@@ -11,8 +11,8 @@ dockerize:
 	docker build -f Dockerfile.mockup -t squirrel.mockup .
 
 push-images:
-	docker push dicegroup/squirrel-frontier
-	docker push dicegroup/squirrel-worker
+	docker push dicegroup/squirrel.frontier
+	docker push dicegroup/squirrel.worker
 
 start: dockerize
 	docker-compose -f docker-compose-sparql.yml up
