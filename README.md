@@ -12,72 +12,28 @@ You can find the crawler documentation, tutorials and more here:
 <img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
 
 
-## Build notes
-You can build the project with a simple ***mvn clean install***
-and then you can use the *makefile*
-
-```
-  $ make build dockerize
-  $ docker-compose build
-  $ docker-compose up
-```
 
 ## Run
-You can run by using the docker-compose file.
+
+Clone the repository in a folder of your choice with:
 
 ```
-  $ docker-compose -f docker-compose-sparql.yml up
+	$ git clone https://github.com/dice-group/Squirrel
 ```
 
-Squirrel uses spring context configuration to define the implementation of its components in Runtime.
-you can check the default implementation file in spring-config/sparqlStoreBased.xml and define your own
-beans on it.
 
-You can also define a different context for each one of the workers. Check the docker-compose file and change
-an implementation file in each worker's env variable.
+Enter into the Squirrel folder and initialize rabbitmq and mongodb images:
 
-These are the components of Squirrel that can be customized:
-
-#### Fetcher
-
-* *HTTPFetcher* - Fetches data from html sources.
-* *FTPFetcher* - Fetches data from html sources.
-* *SparqlBasedFetcher* - Fetches data from Sparql endpoints.
-
-* *Note*: The fetchers are not managed as spring beans yet, since only three are available.
-
-#### Analyzer
-Analyses the fetched data and extract triples from it. Note: the analyzer implementations are managed by the `SimpleAnalyzerManager`. Any implementations should be passed in the constructor of this class, like the example below:
-```xml
-<bean id="analyzerBean" class="org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager">
-        <constructor-arg index="0" ref="uriCollectorBean" />
-        <constructor-arg index="1" >
-        	<array value-type="java.lang.String">
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HDTAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer</value>
-		</array>
-       	</constructor-arg>
-</bean>
 ```
-Also, if you want to implement your own analyzer, it is necessary to implement the method `isEligible()`, that checks if that analyzer matches the condition to call the `analyze` method.
+  $ docker-compose up -d mongodb rabbit
 
-* *RDFAnalyzer* - Analyses RDF formats.
-* *HTMLScraperAnalyzer* - Analyses and scrapes HTML data base on Jsoup selector-synthax (see: https://github.com/dice-group/Squirrel/wiki/HtmlScraper_how_to)
-* *HDTAnalyzer* - Analyses HDT binary RDF format.
+```
 
-#### Collectors
-Collects new URIs found during the analysis process and serialize it before they are sent to the Frontier.
+Set up your seeds on the file seed/seeds.txt and start the frontier and one worker instance with:
 
-* *SimpleUriCollector* - Serialize uri's and stores it in memory (mainly used for testing purposes).
-* *SqlBasedUriCollector* - Serialize uri's and stores it in a hsqldb database.
+```
+  $ docker-compose up frontier worker1
 
-#### Sink
-Responsible for persisting the collected RDF data.
+```
 
-* *FileBasedSink* - persists the triples in NT files,
-* *InMemorySink* - persists the triples only in memory, not in disk (mainly used for testing purposes).
-* *HdtBasedSink* - persists the triples in a HDT file (compressed RDF format - http://www.rdfhdt.org/).
-* *SparqlBasedSink* - persists the triples in a SparqlEndPoint.
-
-
+Check the official web site for documentation and tutorials:
