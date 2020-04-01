@@ -32,7 +32,6 @@ services:
       - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
 
   mongodb:
     image: mongo:4.0.0
@@ -74,7 +73,6 @@ services:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker2:
     image: dicegroup/squirrel.worker:latest
@@ -93,7 +91,6 @@ services:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker3:
     image: dicegroup/squirrel.worker:latest
@@ -110,7 +107,6 @@ services:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   deduplicator:
     image: squirrel
