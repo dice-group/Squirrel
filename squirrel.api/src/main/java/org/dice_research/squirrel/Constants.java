@@ -50,7 +50,7 @@ public class Constants {
     // URIs
     //////////////////////////////////////////////////
 
-    public static final String SQUIRREL_URI_PREFIX = "http://w3id.org/squirrel";
+    public static final String SQUIRREL_URI_PREFIX = "http://w3id.org/dice-research/squirrel";
     public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create(SQUIRREL_URI_PREFIX + "/metadata");
     public static final URI DEFAULT_ACTIVITY_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/activity#");
     public static final URI DEFAULT_RESULT_GRAPH_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/graph#");
