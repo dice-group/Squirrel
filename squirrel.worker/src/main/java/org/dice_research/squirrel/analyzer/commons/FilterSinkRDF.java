@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 
 public class FilterSinkRDF extends StreamRDFBase {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterSinkRDF.class);
-
 
     private CrawleableUri curi;
     private Sink sink;
@@ -36,14 +34,12 @@ public class FilterSinkRDF extends StreamRDFBase {
     public void triple(Triple triple) {
         sink.addTriple(curi, triple);
         collector.addTriple(curi, triple);
-//        LOGGER.info("triple found: " + triple.toString());
     }
 
     @Override
     public void quad(Quad quad) {
         sink.addTriple(curi, quad.asTriple());
         collector.addTriple(curi, quad.asTriple());
-//        LOGGER.info("triple found: " + quad.asTriple().toString());
     }
 
 }

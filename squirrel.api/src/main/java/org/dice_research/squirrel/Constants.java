@@ -20,7 +20,7 @@ public class Constants {
     public static final String URI_TYPE_KEY = "type";
     public static final String URI_TYPE_VALUE_DEREF = "dereferenceable";
     public static final String URI_TYPE_VALUE_SPARQL = "sparql";
-    public static final String URI_TYPE_VALUE_CKAN = "ckan";
+    public static final String URI_TYPE_VALUE_CKAN = "ckan/json";
     public static final String URI_TYPE_VALUE_DUMP = "rdf-dump";
     public static final String URI_TYPE_VALUE_CSV = "csv";
     public static final String URI_TYPE_VALUE_HTML = "html";

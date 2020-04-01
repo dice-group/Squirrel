@@ -164,4 +164,10 @@ public class InMemorySink implements Sink {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public void flushMetadata() {
+        // TODO Auto-generated method stub
+        
+    }
 }

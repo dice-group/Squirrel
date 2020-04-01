@@ -20,9 +20,6 @@ import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.utils.Closer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * A simple fetcher using the FTP protocol.
@@ -30,9 +27,7 @@ import org.springframework.stereotype.Component;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@Component
-@Order(value = 2)
-@Qualifier("ftpFetcher")
+
 public class FTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FTPFetcher.class);

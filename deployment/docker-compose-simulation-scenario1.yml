@@ -37,7 +37,7 @@ services:
       - "27017:27017"
 
   frontier:
-    image: squirrel.frontier:latest
+    image: dicegroup/squirrel.frontier:latest
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -52,7 +52,7 @@ services:
       - ./scenarios/1:/var/squirrel/data
       
   worker1:
-    image: squirrel.worker:latest
+    image: dicegroup/squirrel.worker:latest
     container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit

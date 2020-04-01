@@ -33,8 +33,23 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
 public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginatedCkanFetcher.class);
-
+    
+    private final int DEFAULT_TIMEOUT = 10000;
+    private int timeout;
     private final int PAGESIZE = 100;
+    
+  /**
+   * Time out for the Ckan Client  
+   * @param timeout
+   */
+    public PaginatedCkanFetcher(int timeout) {
+    	this.timeout = timeout;
+	}
+    
+    public PaginatedCkanFetcher() {
+		this.timeout = DEFAULT_TIMEOUT;
+	}
+    
 
     @Override
     public File fetch(CrawleableUri uri, Delayer delayer) {
@@ -45,7 +60,11 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
             try {
 
-                client = new CkanClient(uri.getUri().toString());
+                client = CkanClient.builder()
+                        .setCatalogUrl(uri.getUri().toString())
+                        .setTimeout(timeout)
+                        .build();
+                
 
                 List<String> datasets = client.getDatasetList();
                 LOGGER.info("Found: " + datasets.size() + " datasets");
@@ -64,12 +83,11 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
                 // If we reached this point, we should add a flag that the file contains CKAN
                 // JSON
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 ActivityUtil.addStep(uri, getClass());
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, Constants.URI_TYPE_VALUE_CKAN);
                 return dataFile;
             } catch (CkanException e) {
-                LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
+                LOGGER.info("The given URI: {} does not seems to be a CKAN URI. Returning null", uri.getUri().toString());
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } catch (IOException e) {

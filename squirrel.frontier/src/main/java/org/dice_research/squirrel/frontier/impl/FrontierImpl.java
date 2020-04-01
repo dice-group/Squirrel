@@ -11,6 +11,7 @@ import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
@@ -20,6 +21,7 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -60,6 +62,10 @@ public class FrontierImpl implements Frontier {
      * SPARQL, DEREFERENCEABLE or UNKNOWN
      */
     protected UriProcessor uriProcessor;
+    /**
+     * {@link UriGenerator} used to generate additional domain variants of a URI
+     */
+    protected List<UriGenerator> uriGenerator;
     /**
      * {@link GraphLogger} that can be added to log the crawled graph.
      */
@@ -118,9 +124,9 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, List<UriGenerator> uriGenerators,
             GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
-        this(normalizer, knownUriFilter, null, queue, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
+        this(normalizer, knownUriFilter, null, queue,uriGenerators, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
     /**
@@ -142,9 +148,9 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue, boolean doesRecrawling,
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
             long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        this(normalizer, knownUriFilter, queue, null, doesRecrawling, generalRecrawlTime, timerPeriod);
+        this(normalizer, knownUriFilter, queue, uriGenerators, null, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
     /**
@@ -164,8 +170,8 @@ public class FrontierImpl implements Frontier {
      *            Value for {@link #doesRecrawling}.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
-            UriQueue queue, boolean doesRecrawling) {
-        this(normalizer, knownUriFilter, uriReferences, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
+            UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling) {
+        this(normalizer, knownUriFilter, uriReferences, queue,uriGenerators, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
     }
 
@@ -183,9 +189,9 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling
      *            Value for {@link #doesRecrawling}.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,List<UriGenerator> uriGenerators,
             boolean doesRecrawling) {
-        this(normalizer, knownUriFilter, queue, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
+        this(normalizer, knownUriFilter, queue,uriGenerators, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
     }
 
@@ -201,8 +207,8 @@ public class FrontierImpl implements Frontier {
      * @param queue
      *            {@link UriQueue} used to manage the URIs that should be crawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue) {
-        this(normalizer, knownUriFilter, queue, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+    public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, UriQueue queue,List<UriGenerator> uriGenerators) {
+        this(normalizer, knownUriFilter, queue,uriGenerators, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
     /**
@@ -229,11 +235,12 @@ public class FrontierImpl implements Frontier {
      *            used to select if URIs should be recrawled.
      */
     public FrontierImpl(UriNormalizer normalizer, KnownUriFilter knownUriFilter, URIReferences uriReferences,
-            UriQueue queue, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
+            UriQueue queue, List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
             long timerPeriod) {
         this.normalizer = normalizer;
         this.knownUriFilter = knownUriFilter;
         this.uriReferences = uriReferences;
+        this.uriGenerator = uriGenerators;
         this.queue = queue;
         this.uriProcessor = new UriProcessor();
         this.graphLogger = graphLogger;
@@ -265,20 +272,33 @@ public class FrontierImpl implements Frontier {
         return queue.getNextUris();
     }
 
+
+
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
         for (CrawleableUri uri : uris) {
             addNewUri(uri);
+            try {
+                for (UriGenerator u : uriGenerator) {
+                    if (u.getUriVariant(uri) != null)
+                        addNewUri(u.getUriVariant(uri));
+                }
+            }catch (Exception e){
+                LOGGER.info("Exception happened while generating additional URI variant for URI: " + uri.getUri().toString());
+            }
         }
     }
 
     @Override
     public void addNewUri(CrawleableUri uri) {
-        // Normalize the URI
-        uri = normalizer.normalize(uri);
         // After knownUriFilter uri should be classified according to
         // UriProcessor
+        uri = normalizer.normalize(uri);
+        addNormalizedUri(uri);
 
+    }
+
+    protected void addNormalizedUri(CrawleableUri uri){
         if (knownUriFilter.isUriGood(uri)) {
             LOGGER.debug("addNewUri(" + uri + "): URI is good [" + knownUriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
