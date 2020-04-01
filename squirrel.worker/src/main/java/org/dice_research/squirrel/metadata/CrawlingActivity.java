@@ -128,12 +128,14 @@ public class CrawlingActivity implements Serializable {
         model.add(association, RDF.type, PROV_O.Association);
         model.add(activity, PROV_O.qualifiedAssociation, association);
         Resource plan = model.createResource(activityUri + "_plan");
-        model.add(association, RDF.type, PROV_O.Plan);
         model.add(activity, PROV_O.hadPlan, plan);
         model.add(plan, RDFS.comment, model.createTypedLiteral(getStepsAsString()));
+        model.add(plan, RDF.type, PROV_O.Plan);
+
 
         if (workerUri != null) {
-            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));
+            model.add(activity, PROV_O.wasAssociatedWith, model.createResource(workerUri));  
+            model.add(model.createResource(workerUri), RDF.type, PROV_O.agent);
         }
         if (outputResource != null) {
             // write all the output resources to the model

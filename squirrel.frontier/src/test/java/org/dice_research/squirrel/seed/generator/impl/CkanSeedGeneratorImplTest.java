@@ -1,7 +1,15 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
+import org.dice_research.squirrel.data.uri.norm.UriGenerator;
+import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
 import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.queue.InMemoryQueue;
@@ -23,7 +31,15 @@ public class CkanSeedGeneratorImplTest extends TestCase {
 
     public void setUp() {
         queue = new InMemoryQueue();
-        frontier = new FrontierImpl(new NormalizerImpl(), new InMemoryKnownUriFilter(false, -1), queue);
+        
+        List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+        uriGenerators.add(new DomainBasedUriGenerator());
+        uriGenerators.add(new WellKnownPathUriGenerator());
+        
+        List<String> sessionIDs = new ArrayList<String>();
+        Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), new InMemoryKnownUriFilter(false, -1), queue,uriGenerators);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

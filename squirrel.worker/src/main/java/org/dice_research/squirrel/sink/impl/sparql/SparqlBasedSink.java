@@ -199,7 +199,7 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
                 break;
             } catch (Exception e) {
                 if (i == attempts)
-                    LOGGER.error("Exception while sending update query.", e);
+                    LOGGER.error("Exception while sending update query. URI: " + uri.getUri().toString(), e);
                 else
                     LOGGER.info("An error was caught while inserting triples, trying again, Attempt " + i + " of "
                             + attempts);
@@ -243,7 +243,7 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
                 processor.execute();
             } catch (Exception e) {
                 if (i == attempts)
-                    LOGGER.error("Exception while sending update query.", e);
+                    LOGGER.error("Exception while sending update query. URI: " + uri.getUri().toString(), e);
                 else
                     LOGGER.info("An error was caught while inserting quads, trying again, Attempt " + i + " of "
                             + attempts);
@@ -292,6 +292,12 @@ public class SparqlBasedSink extends AbstractBufferingSink implements AdvancedTr
             updateExecFactory.close();
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public void flushMetadata() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

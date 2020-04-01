@@ -48,10 +48,11 @@
             <list>
                  <ref bean="ckanAnalyzerBean"/>         
                  <ref bean="rdfAnalyzerBean"/>
+				 <ref bean="rdfaAnalyzerBean"/> 
                  <ref bean="htmlScraperAnalyzerBean"/>          
                  <ref bean="microdataAnalyzerBean"/>          
                  <ref bean="microformatAnalyzerBean"/>          
-                 <ref bean="hdtAnalyzerBean"/>          <!-- -->
+                 <ref bean="hdtAnalyzerBean"/>  <!--        -->
                  
                        
             </list>
@@ -94,10 +95,10 @@
 			<list>
             
                  
-                <ref bean="ckanFetcherBean" />
+               	 <ref bean="ckanFetcherBean" />
                  <ref bean="sparqlFetcherBean" />
-                 <ref bean="httpFetcherBean" /><!-- 
-                 <ref bean="ftpFetcherBean" />-->
+                 <ref bean="httpFetcherBean" /> 
+                 <ref bean="ftpFetcherBean" />
 
 				<!-- 
                 <ref bean="sparqlDatasetFetcherBean" />
