@@ -58,7 +58,7 @@ services:
         - ../spring-config:/var/squirrel/spring-config
 
   SimulationNodeA:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeA
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
