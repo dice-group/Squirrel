@@ -33,7 +33,6 @@ services:
     volumes:
       - ./data/frontier:/var/squirrel/data
       - ./seeds.txt:/var/squirrel/data/seeds.txt:ro
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.FrontierComponent
 
   worker1:
     image: squirrel
@@ -47,7 +46,6 @@ services:
       RDB_PORT: 28015
     volumes:
         - ./data/worker1:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.WorkerComponent
 
   worker2:
     image: squirrel
@@ -62,7 +60,6 @@ services:
       RDB_PORT: 28015
     volumes:
         - ./data/worker2:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.WorkerComponent
 
   worker3:
     image: squirrel
@@ -77,7 +74,6 @@ services:
       RDB_PORT: 28015
     volumes:
         - ./data/worker3:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.dice_research.squirrel.components.WorkerComponent
 
   deduplicator:
      image: squirrel

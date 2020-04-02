@@ -114,6 +114,7 @@ public class SquirrelClerezzaSink implements TripleSink {
 			Node p = objUrl ? NodeFactory.createURI(obj) : NodeFactory.createLiteral(obj);
 		
 			Triple t = new Triple(s,o,p);
+			System.out.println(t);
 			sink.addTriple(curi, t);
 			collector.addTriple(curi, t);
 		}

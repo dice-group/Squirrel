@@ -4,6 +4,12 @@ import java.net.InetAddress;
 
 import org.dice_research.squirrel.data.uri.UriType;
 
+/**
+ * Pair of an IP and a URI type.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
 @SuppressWarnings("deprecation")
 public class IpUriTypePair implements Comparable<IpUriTypePair> {
     private InetAddress ip;

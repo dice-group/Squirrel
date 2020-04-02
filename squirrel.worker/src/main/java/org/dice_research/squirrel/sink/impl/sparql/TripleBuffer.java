@@ -13,7 +13,7 @@ public class TripleBuffer {
     protected long numberOfTriples = 0;
     
     public TripleBuffer() {
-        this(AbstractBufferingTripleBasedSink.DEFAULT_BUFFER_SIZE);
+        this(AbstractBufferingSink.DEFAULT_BUFFER_SIZE);
     }
 
     public TripleBuffer(int bufferSize) {
@@ -21,7 +21,7 @@ public class TripleBuffer {
         buffer = new ArrayList<>(bufferSize);
     }
 
-    public void addTriple(AbstractBufferingTripleBasedSink sink, CrawleableUri uri, Triple triple) {
+    public void addTriple(AbstractBufferingSink sink, CrawleableUri uri, Triple triple) {
         synchronized (buffer) {
             buffer.add(triple);
             if (buffer.size() >= bufferSize) {
@@ -30,7 +30,7 @@ public class TripleBuffer {
         }
     }
 
-    public void sendTriples(AbstractBufferingTripleBasedSink sink, CrawleableUri uri) {
+    public void sendTriples(AbstractBufferingSink sink, CrawleableUri uri) {
         synchronized (buffer) {
             sink.sendTriples(uri, buffer);
             numberOfTriples += buffer.size();

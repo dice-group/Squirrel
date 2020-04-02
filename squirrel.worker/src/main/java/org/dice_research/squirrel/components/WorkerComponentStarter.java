@@ -57,7 +57,7 @@ public class WorkerComponentStarter {
         if (closed == false) {
             Closer.close(component, LOGGER);
             closed = true;
-            context.close();
+            Closer.close(context, LOGGER);
         }
     }
 

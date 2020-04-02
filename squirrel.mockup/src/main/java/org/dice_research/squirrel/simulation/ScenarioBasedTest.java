@@ -29,6 +29,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.dice_research.squirrel.simulation.AbstractServerMockUsingTest;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 @RunWith(Parameterized.class)

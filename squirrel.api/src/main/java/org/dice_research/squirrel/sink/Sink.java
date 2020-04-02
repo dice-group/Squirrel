@@ -4,6 +4,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.sink.quadBased.QuadBasedSink;
 import org.dice_research.squirrel.sink.tripleBased.TripleBasedSink;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ import java.io.IOException;
  *
  */
 @Component
-public interface Sink extends TripleBasedSink, UnstructuredDataSink, Closeable {
+public interface Sink extends TripleBasedSink, QuadBasedSink, UnstructuredDataSink, Closeable {
 
     public default void addMetaData(Model model) {
         CrawleableUri uri = new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI);
@@ -27,10 +28,14 @@ public interface Sink extends TripleBasedSink, UnstructuredDataSink, Closeable {
         while (iterator.hasNext()) {
             addTriple(uri, iterator.next().asTriple());
         }
+        flushMetadata();
     }
 
     @Override
     public default void close() throws IOException {
         closeSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
+    
+    public void flushMetadata();
+    
 }

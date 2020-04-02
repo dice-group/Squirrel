@@ -13,6 +13,7 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,26 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
 public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginatedCkanFetcher.class);
-
+    
+    private final int DEFAULT_TIMEOUT = 10000;
+    private int timeout;
     private final int PAGESIZE = 100;
+    
+  /**
+   * Time out for the Ckan Client  
+   * @param timeout
+   */
+    public PaginatedCkanFetcher(int timeout) {
+    	this.timeout = timeout;
+	}
+    
+    public PaginatedCkanFetcher() {
+		this.timeout = DEFAULT_TIMEOUT;
+	}
+    
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         LOGGER.info("Fetching " + uri.getUri().toString());
         CkanClient client = null;
         OutputStream out = null;
@@ -44,7 +60,11 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
             try {
 
-                client = new CkanClient(uri.getUri().toString());
+                client = CkanClient.builder()
+                        .setCatalogUrl(uri.getUri().toString())
+                        .setTimeout(timeout)
+                        .build();
+                
 
                 List<String> datasets = client.getDatasetList();
                 LOGGER.info("Found: " + datasets.size() + " datasets");
@@ -55,6 +75,7 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
                 int totalPages = datasets.size() / PAGESIZE;
 
                 do {
+                    delayer.getRequestPermission();
                     LOGGER.info("Fetching Page: " + String.valueOf(offset / PAGESIZE) + " of " + totalPages);
                     fetchDataset(client, PAGESIZE, offset, out);
                     offset = offset + PAGESIZE;
@@ -62,20 +83,24 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
                 // If we reached this point, we should add a flag that the file contains CKAN
                 // JSON
-                uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, CKAN_JSON_OBJECT_MIME_TYPE);
                 ActivityUtil.addStep(uri, getClass());
                 uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, Constants.URI_TYPE_VALUE_CKAN);
                 return dataFile;
             } catch (CkanException e) {
-                LOGGER.info("The given URI does not seem to be a CKAN URI. Returning null");
+                LOGGER.info("The given URI: {} does not seems to be a CKAN URI. Returning null", uri.getUri().toString());
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
             } catch (IOException e) {
                 LOGGER.error("Error while writing result file. Returning null.", e);
                 ActivityUtil.addStep(uri, getClass(), e.getMessage());
                 return null;
+            } catch (InterruptedException e) {
+                LOGGER.error("Interrupted while waiting for request permission. Returning null.");
+                ActivityUtil.addStep(uri, getClass(), e.getMessage());
+                return null;
             } finally {
                 IOUtils.closeQuietly(out);
+                delayer.requestFinished();
             }
 
         }

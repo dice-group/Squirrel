@@ -3,6 +3,8 @@ package org.dice_research.squirrel.analyzer.impl.ckan;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 
 /**
@@ -83,7 +86,8 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTextLiteral(datasetRes, DCTerms.provenance, true, extras.get("provenance"));
 
         storeResourceOrText(datasetRes, DCAT.landingPage, true, dataset.getUrl());
-        storeResourceOrText(datasetRes, DCTerms.license, true, dataset.getLicenseUrl(), dataset.getLicenseTitle());
+        if (dataset.getLicenseUrl() != null || dataset.getLicenseTitle() != null)
+            storeResourceOrText(datasetRes, DCTerms.license, true, dataset.getLicenseUrl(), dataset.getLicenseTitle());
 
         storeTypedLiteral(datasetRes, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, extras.get("issued"),
                 dataset.getMetadataCreated());
@@ -92,19 +96,27 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTypedLiteral(datasetRes, DCTerms.accrualPeriodicity, XSDDatatype.XSDinteger, true,
                 extras.get("frequency"));
 
-        storePublisher(datasetRes, extras);
+        if (dataset.getExtras() != null)
+            for (String theme : findTheme(dataset.getExtras())) {
+                storeResourceOrText(datasetRes, DCAT.theme, true, theme);
+            }
+
+        storePublisher(dataset, datasetRes, extras);
         storeContact(datasetRes, dataset, extras);
         storeResources(datasetRes, dataset);
     }
 
-    protected void storePublisher(Resource datasetRes, Map<String, String> extras) {
-        if (!extras.containsKey("publisher_uri")) {
-            return;
+    protected void storePublisher(CkanDataset dataset, Resource datasetRes, Map<String, String> extras) {
+//        if (!extras.containsKey("publisher_uri")) {
+//            return;
+//        }
+        String uri = curiString;
+        if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
+            uri += "/";
         }
-        String uri = extras.get("publisher_uri");
-        if (!URI.isWellFormedAddress(uri)) {
-            return;
-        }
+        uri += "organization/";
+        uri += dataset.getId();
+
         Resource publisher = ResourceFactory.createResource(uri);
         store(datasetRes, DCTerms.publisher, publisher);
         store(publisher, RDF.type, FOAF.Agent);
@@ -144,6 +156,7 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         if ((!uri.endsWith("/")) && (!uri.endsWith("#"))) {
             uri += "/";
         }
+        uri += "distribution/";
         uri += ckanResource.getId();
         Resource resource = ResourceFactory.createResource(uri);
         store(datasetRes, DCAT.distribution, resource);
@@ -154,29 +167,47 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         storeTextLiteral(resource, DCAT.mediaType, true, ckanResource.getMimetype());
         storeTextLiteral(resource, DCTerms.format, true, ckanResource.getFormat());
 
-        storeResourceOrText(resource, DCAT.accessURL, true, ckanResource.getUrl());
-        storeResourceOrText(resource, DCAT.downloadURL, true, ckanResource.getUrl());
+        try {
+            storeResourceOrText(resource, DCTerms.license, true, findLicense(ckanResource));
+        } catch (NullPointerException e) {
+        }
+
+        storeResourceOrText(resource, DCAT.accessURL, true, ckanResource.getUrl().replaceAll("\\s+", "%20"));
+        storeResourceOrText(resource, DCAT.downloadURL, true, ckanResource.getUrl().replaceAll("\\s+", "%20"));
 
         storeTypedLiteral(resource, DCAT.byteSize, XSDDatatype.XSDlong, true, ckanResource.getSize());
-        storeTypedLiteral(datasetRes, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, ckanResource.getCreated());
-        storeTypedLiteral(datasetRes, DCTerms.modified, XSDDatatype.XSDdateTimeStamp, true,
+        storeTypedLiteral(resource, DCTerms.issued, XSDDatatype.XSDdateTimeStamp, true, ckanResource.getCreated());
+        storeTypedLiteral(resource, DCTerms.modified, XSDDatatype.XSDdateTimeStamp, true,
                 ckanResource.getLastModified());
+    }
+
+    protected List<String> findTheme(List<CkanPair> pairList) {
+        String theme = "";
+
+        for (CkanPair pair : pairList) {
+            if ("theme".equals(pair.getKey())) {
+                theme = pair.getValue().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
+                break;
+            }
+        }
+        return Arrays.asList(theme.split(","));
+    }
+
+    protected String findLicense(CkanResource resource) {
+        return resource.getOthers().get("license").toString();
+
     }
 
     /**
      * Method creating one or several literals based on the given data and storing
      * it as object of the given subject and predicate.
      * 
-     * @param subject
-     *            the resource which should be used as subject
-     * @param predicate
-     *            the property which should be used as predicate
-     * @param storeFirstMatch
-     *            a flag indicating whether the first non null value of the literals
-     *            is used or if all non null literals should be stored (in mutliple
-     *            triples)
-     * @param literals
-     *            the list of literals which will be taken into account
+     * @param subject         the resource which should be used as subject
+     * @param predicate       the property which should be used as predicate
+     * @param storeFirstMatch a flag indicating whether the first non null value of
+     *                        the literals is used or if all non null literals
+     *                        should be stored (in mutliple triples)
+     * @param literals        the list of literals which will be taken into account
      */
     protected void storeTextLiteral(Resource subject, Property predicate, boolean storeFirstMatch, String... literals) {
         for (int i = 0; i < literals.length; i++) {
@@ -248,17 +279,17 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
         URL url = null;
         try {
-             url = new URL(o.toString());
+            url = new URL(o.toString());
         } catch (MalformedURLException e) {
 
         }
         if (url != null) {
-          t = new Triple(s.asNode(), p.asNode(), NodeFactory.createURI(url.toString()));   
+            t = new Triple(s.asNode(), p.asNode(), NodeFactory.createURI(url.toString()));
         }
         sink.addTriple(curi, t);
         // We already know most of the Resources, so make sure that they are not part of
         // our current dataset
-        
+
         collector.addTriple(curi, t);
 //        if (!s.getURI().startsWith(curiString)) {
 //            collector.addNewUri(curi, s.getURI());

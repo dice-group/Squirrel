@@ -16,6 +16,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWriter;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -54,7 +55,7 @@ public class FileBasedSink implements Sink {
     public FileBasedSink(File outputDirectory, boolean useCompression) {
         this(outputDirectory, DEFAULT_OUTPUT_LANG, useCompression);
     }
-    
+
     public FileBasedSink(File outputDirectory, Lang outputLang, boolean useCompression) {
         this.outputDirectory = outputDirectory;
         this.outputLang = outputLang;
@@ -71,6 +72,15 @@ public class FileBasedSink implements Sink {
         } catch (Exception e) {
             LOGGER.error("Exception while writing the triple \"" + triple.toString() + "\" from the URI \""
                     + uri.getUri().toString() + "\". Ignoring it.", e);
+        }
+    }
+
+    public void flushMetadata() {
+        StreamStatus status = getStream(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
+        try {
+            status.flush();
+        } catch (Exception e) {
+            LOGGER.error("Exception while flushing metadata. Ignoring it.", e);
         }
     }
 
@@ -117,11 +127,13 @@ public class FileBasedSink implements Sink {
         } else {
             LOGGER.error("Should close the sink for the URI \"" + uriString + "\" but couldn't find it.");
         }
-        // Add provenance information 
+        // Add provenance information
         CrawlingActivity activity = (CrawlingActivity) uri.getData(Constants.URI_CRAWLING_ACTIVITY);
         if ((activity != null) && (status != null) && (status.tripleCount > 0)) {
             activity.setNumberOfTriples(status.tripleCount);
         }
+
+//        flush(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
 
     public static String generateFileName(CrawleableUri uri, Lang outputLang, boolean useCompression) {
@@ -163,7 +175,7 @@ public class FileBasedSink implements Sink {
                 tripleOutputStream = createStream(null, true);
                 tripleStream = StreamRDFWriter.getWriterStream(tripleOutputStream, outputLang);
                 // Define prefixes the stream should use
-                for(Entry<String, String> prefix : Prefixes.PREFIX_TO_URI.entrySet()) {
+                for (Entry<String, String> prefix : Prefixes.PREFIX_TO_URI.entrySet()) {
                     tripleStream.prefix(prefix.getKey(), prefix.getValue());
                 }
                 tripleCount = 0;
@@ -178,9 +190,22 @@ public class FileBasedSink implements Sink {
             return dataOutputStream;
         }
 
+        public void flush() throws IOException {
+            if(tripleStream != null)
+                tripleStream.finish();
+            
+            if (tripleOutputStream != null) {
+                tripleOutputStream.flush();
+            }
+            if (dataOutputStream != null) {
+                dataOutputStream.flush();
+            }
+        }
+
         protected OutputStream createStream(String postFix, boolean isRdfFile) throws IOException {
             File file = new File(outputDirectory.getAbsolutePath() + File.separator
                     + generateFileName(uri, (isRdfFile ? outputLang : null), useCompression));
+
             OutputStream outputStream = new FileOutputStream(file);
             if (useCompression) {
                 outputStream = new GZIPOutputStream(outputStream);
@@ -204,4 +229,11 @@ public class FileBasedSink implements Sink {
             Closer.close(dataOutputStream, LOGGER);
         }
     }
+
+    @Override
+    public void addQuad(CrawleableUri uri, Quad quad) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

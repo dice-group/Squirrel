@@ -3,7 +3,7 @@ package org.dice_research.squirrel.analyzer.compress.enums;
 public enum MimeTypeEnum {
 
     TAR("application/x-tar"),
-    TAR_GZ("application/gzip"),
+    GZ("application/gzip"),
     ZIP("application/zip"),
     F7Z("application/x-7z-compressed"),
     BZ2("application/x-bzip2");
