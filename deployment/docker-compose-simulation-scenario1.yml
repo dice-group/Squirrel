@@ -71,7 +71,7 @@ services:
         - ../spring-config:/var/squirrel/spring-config
 
   SimulationNodeA:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeA
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
@@ -86,7 +86,7 @@ services:
       - "80:80"
 
   SimulationNodeB:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeB
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeB.ttl
@@ -98,7 +98,7 @@ services:
         - ./scenarios/1:/var/squirrel/data
 
   SimulationNodeC:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeC
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeC.ttl
