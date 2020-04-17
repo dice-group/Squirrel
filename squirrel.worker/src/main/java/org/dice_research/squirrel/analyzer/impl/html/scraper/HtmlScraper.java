@@ -19,7 +19,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.tdb.store.Hash;
 import org.dice_research.squirrel.analyzer.impl.html.scraper.exceptions.SyntaxParserException;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.jsoup.Jsoup;
@@ -77,13 +76,15 @@ public class HtmlScraper {
 
 		this.uri = uri;
 		if (uri.contains("?")) {
-			this.label = uri.substring(uri.lastIndexOf("/") + 1, uri.lastIndexOf("?"));
+			String temp = uri.substring(0 , uri.indexOf("?")+1);
+			this.label = temp.substring(temp.lastIndexOf("/") + 1, temp.lastIndexOf("?"));
 		} else {
 			this.label = uri.substring(uri.lastIndexOf("/") + 1, uri.length());
 		}
 		if ((boolean) yamlFile.getFile_descriptor().get(YamlFileAtributes.SEARCH_CHECK).get("ignore-request")
 				&& uri.contains("?")) {
-			label = uri.substring(uri.lastIndexOf("/") + 1, uri.lastIndexOf("?"));
+			String temp = uri.substring(0 , uri.indexOf("?")+1);
+			this.label = temp.substring(temp.lastIndexOf("/") + 1, temp.lastIndexOf("?"));
 			this.uri = uri.substring(0, uri.indexOf("?"));
 		}
 
@@ -274,7 +275,39 @@ public class HtmlScraper {
 					
 				stackNode.push(node);
 				triples.addAll(scrapeTree((Map<String, Object>) entry.getValue(), triples, stackNode));
-			} else if (entry.getValue() instanceof String) {
+			}else if(entry.getValue() instanceof ArrayList<?>) {
+				
+				List<String> listValues = (ArrayList<String>)entry.getValue();
+				
+				Node p = ResourceFactory.createResource(entry.getKey()).asNode();
+				
+				for(String v : listValues) {
+					
+					
+					List<Node> o = jsoupQuery(v);
+					if (o.isEmpty()) {
+						LOGGER.warn("Element " + entry.getKey() + ": " + v + " not found or does not exist");
+						continue;
+					}
+					int i=0;
+					for (Node n : o) {
+						if(listIterableObjects.contains(stackNode.peek().toString())) {
+							Triple t = new Triple(NodeFactory.createURI(stackNode.peek().toString() + "_" + i), p, n);
+							updatedObjects.add(NodeFactory.createURI(stackNode.peek().toString() + "_" + i));
+							triples.add(t);
+							i = i + 1;
+							
+						}else {
+						Triple t = new Triple(NodeFactory.createURI(stackNode.peek().toString()), p, n);
+						triples.add(t);
+						}
+					}
+
+					
+				}
+			
+			
+			}else if (entry.getValue() instanceof String) {
 
 
 				Node p = ResourceFactory.createResource(entry.getKey()).asNode();
