@@ -35,7 +35,7 @@ public class NormalizerImplTest {
         sessionIDs.add("jsessionids");
         sessionIDs.add("phpsessid");
         sessionIDs.add("sid");
-        
+
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
         mapDefaultPort.put("http", 80);
         mapDefaultPort.put("https", 443);
@@ -68,7 +68,7 @@ public class NormalizerImplTest {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
         CrawleableUri originalUri;
         CrawleableUri expectedUri;
-        
+
         // Very simple first test case
         originalUri = new CrawleableUri(new URI("http://example.org/test1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/test1"));
