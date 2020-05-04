@@ -79,10 +79,10 @@
 	
 	<bean id="domainGeneratorBean"
 		class="org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator" />
- <!-- 
+ 
 	<bean id="wellKnownVariantGeneratorBean"
 		class="org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator" />
- -->
+ 
 
 
 </beans>

@@ -21,7 +21,7 @@ public class Configuration {
         try {
             return Integer.parseInt(toInt);
         } catch (Exception e) {
-            logger.error(envVariableName + " not found.", e);
+            logger.error(envVariableName + " not found.");
             return 0;
         }
     }
@@ -31,7 +31,7 @@ public class Configuration {
         try {
             return Boolean.parseBoolean(toBool);
         } catch (Exception e) {
-            logger.error(envVariableName + " not found.", e);
+            logger.error(envVariableName + " not found.");
             return false;
         }
     }
@@ -41,7 +41,7 @@ public class Configuration {
         try {
             return toLong != null ? Long.parseLong(toLong) : 0L;
         } catch (Exception e) {
-            logger.error(envVariableName + " not found.", e);
+            logger.error(envVariableName + " not found.");
             return 0L;
         }
     }
