@@ -97,7 +97,8 @@ public class NormalizerImpl implements UriNormalizer {
                 List<String> toRemove = new ArrayList<>();
                 for(String queryParameter : queries){
                     //removing session ids
-                    if(sessionIDs.contains(queryParameter.split("=")[0].toLowerCase())){
+                    String name = queryParameter.split("=")[0].toLowerCase();
+                    if (sessionIDs.stream().anyMatch(s -> s.equals(name) || (s.endsWith("*") && name.startsWith(s.substring(0, s.length() - 1))))) {
                         toRemove.add(queryParameter);
                     }
                 }
