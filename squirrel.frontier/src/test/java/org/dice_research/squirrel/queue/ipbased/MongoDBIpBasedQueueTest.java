@@ -29,7 +29,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
 
     @Before
     public void setUp() throws Exception {
-    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027);
+    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027,false);
     	
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
     	

@@ -3,7 +3,6 @@ package org.dice_research.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
@@ -19,12 +17,10 @@ import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriSeedReader;
-import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
-import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -255,15 +251,18 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
+    
+    private List<CrawleableUri> initializeDepth(List<CrawleableUri> listUris){  
+    	listUris.forEach(uri -> uri.addData(Constants.URI_DEPTH, 1));
+    	return listUris;
+    }
 
     protected void processSeedFile(String seedFile) {
         try {
-            List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
+            List<CrawleableUri> listSeeds = initializeDepth(new UriSeedReader(seedFile).getUris()); 
             if (!listSeeds.isEmpty())
                 frontier.addNewUris(listSeeds);
 
-            List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
-            frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }

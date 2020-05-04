@@ -17,10 +17,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
-import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
-import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,7 +43,7 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBIpBasedQueue("localhost", 58027);
+        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
          filter.open();
          queue.open();
          List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();

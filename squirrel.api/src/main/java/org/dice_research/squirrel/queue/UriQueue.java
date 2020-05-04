@@ -47,4 +47,9 @@ public interface UriQueue {
      * Opens the queue and allocates necessary resources.
      */
     public void open();
+    
+    /**
+     * Check if the queue is storing the depth
+     */
+    public boolean isDepthIncluded();
 }

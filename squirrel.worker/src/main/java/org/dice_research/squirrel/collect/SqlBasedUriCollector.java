@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.apache.http.annotation.NotThreadSafe;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.iterators.SqlBasedIterator;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *                stateless.
  */
 @NotThreadSafe
-public class SqlBasedUriCollector implements UriCollector, Closeable {
+public class SqlBasedUriCollector implements UriCollector,Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlBasedUriCollector.class);
 
@@ -161,6 +162,12 @@ public class SqlBasedUriCollector implements UriCollector, Closeable {
 
     @Override
     public void addNewUri(CrawleableUri uri, CrawleableUri newUri) {
+    	
+    	if (uri.getData(Constants.URI_DEPTH) != null) {
+			int nextDepth = Integer.parseInt(uri.getData(Constants.URI_DEPTH).toString()) + 1;
+			newUri.addData(Constants.URI_DEPTH, nextDepth);
+		}
+    	
         String uriString = uri.getUri().toString();
         if (knownUris.containsKey(uriString)) {
             UriTableStatus table = knownUris.get(uriString);
