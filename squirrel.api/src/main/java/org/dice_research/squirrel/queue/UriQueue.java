@@ -48,8 +48,4 @@ public interface UriQueue {
      */
     public void open();
     
-    /**
-     * Check if the queue is storing the depth
-     */
-    public boolean isDepthIncluded();
 }
