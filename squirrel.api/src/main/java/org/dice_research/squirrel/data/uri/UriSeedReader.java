@@ -33,6 +33,7 @@ public class UriSeedReader {
     private static final String URI = "uri";
     private boolean isCsv = true;
     private Reader in;
+    private String filePath = "";
     
     
     private static final Logger LOGGER = LoggerFactory.getLogger(UriSeedReader.class);
