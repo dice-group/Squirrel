@@ -17,6 +17,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
+import org.dice_research.squirrel.data.uri.filter.relational.AndConcatenatingUriFilter;
+import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
@@ -51,8 +53,10 @@ public class FrontierImplTest {
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        
+        RelationalUriFilter relationalUriFilter = new AndConcatenatingUriFilter(filter);
 
-        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), filter, queue,uriGenerators,true);
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
@@ -113,7 +117,7 @@ public class FrontierImplTest {
 //        filter.add(uri_1, 100);
 
         frontier.crawlingDone(crawledUris);
-        assertFalse("uri_1 has been already crawled", frontier.knownUriFilter.isUriGood(uri_1));
+        assertFalse("uri_1 has been already crawled", frontier.relationalUriFilter.isUriGood(uri_1));
     }
 
     @Test

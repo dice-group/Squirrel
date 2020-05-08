@@ -65,6 +65,16 @@
 		<constructor-arg index="2" ref="serializerBean" />
 		<constructor-arg index="3" value="true" />
 	</bean>
+	
+	<bean id="UriFilterBean"
+		class="org.dice_research.squirrel.data.uri.filter.relational.AndConcatenatingUriFilter">
+		<constructor-arg index="0" ref= "knowUriFilterBean" />
+		<constructor-arg index="1" ref= "depthFilter" />
+	</bean>
+	
+	<bean id="depthFilter" class="org.dice_research.squirrel.data.uri.filter.DepthFilter">
+		<constructor-arg index="0" value="5" />
+	</bean>
 
 	<bean id="knowUriFilterBean"
 		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter">
@@ -73,7 +83,6 @@
 		<constructor-arg index="1"
 			value="#{systemEnvironment['MDB_PORT']}" />
 			
-			<constructor-arg index="2" value="3" />
 	</bean>
 	
 	

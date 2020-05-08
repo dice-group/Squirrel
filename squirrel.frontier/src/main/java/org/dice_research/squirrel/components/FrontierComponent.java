@@ -20,6 +20,8 @@ import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilter;
+import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
@@ -61,9 +63,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
-    @Qualifier("knowUriFilterBean")
+    @Qualifier("UriFilterBean")
     @Autowired
-    private KnownUriFilter knownUriFilter;
+    private RelationalUriFilter uriFilter;
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -95,12 +97,12 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (mongoConfiguration != null) {
 
             queue.open();
-            knownUriFilter.open();
+            uriFilter.getKnownUriFilter().open();
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = RegexBasedWhiteListFilter.create(knownUriFilter, whitelistFile);
+                uriFilter.setKnownUriFilter(RegexBasedWhiteListFilter.create(uriFilter.getKnownUriFilter(), whitelistFile));
             }
 
             // TODO Reactivate me but with a different configuration
@@ -111,11 +113,11 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         } else {
             LOGGER.warn("Couldn't get MDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
+            uriFilter.setKnownUriFilter(new InMemoryKnownUriFilter(doRecrawling, recrawlingTime));
         }
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(normalizer, knownUriFilter, uriReferences, queue,uriGenerator, doRecrawling);
+        frontier = new ExtendedFrontierImpl(normalizer, uriFilter, uriReferences, queue,uriGenerator, doRecrawling);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         
@@ -131,7 +133,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
             final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-                    workerGuard, queue, knownUriFilter, uriReferences);
+                    workerGuard, queue, uriFilter, uriReferences);
             LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
                     + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
@@ -166,8 +168,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue.close();
         if (uriReferences != null)
             uriReferences.close();
-        if (knownUriFilter instanceof Closeable) {
-            ((Closeable) knownUriFilter).close();
+        if (uriFilter instanceof Closeable) {
+            ((Closeable) uriFilter).close();
         }
         workerGuard.shutdown();
         if (frontier != null)

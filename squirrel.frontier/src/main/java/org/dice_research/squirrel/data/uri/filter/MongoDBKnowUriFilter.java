@@ -90,11 +90,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 		}
 	}
 
-	public MongoDBKnowUriFilter(String hostName, Integer port, int max_depth) {
-		this(hostName, port);
-		this.max_depth = max_depth;
-	}
-
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
 		MongoCursor<Document> cursor = mongoDB.getCollection(COLLECTION_NAME)
@@ -112,16 +107,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 			}
 		} else {
 
-			if (uri.getData().containsKey(Constants.URI_DEPTH)) {
-				int depth = Integer.parseInt(uri.getData(Constants.URI_DEPTH).toString());
-				if (depth > max_depth) {
-					LOGGER.debug("Max Depth reached. Uri {} is not good", uri.toString());
-					cursor.close();
-					return false;
-				}
-
-			}
-
 			LOGGER.debug("URI {} is good", uri.toString());
 			cursor.close();
 			return true;
@@ -138,9 +123,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 		UriType uriType = uri.getType();
 
-		if (uri.getData().containsKey(Constants.URI_DEPTH))
-			return new Document("uri", uri.getUri().toString()).append("type", uriType.toString()).append("depth",
-					Integer.parseInt(uri.getData(Constants.URI_DEPTH).toString()));
 
 		return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
 
