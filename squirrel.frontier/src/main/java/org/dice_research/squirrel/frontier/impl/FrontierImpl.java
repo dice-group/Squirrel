@@ -10,7 +10,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
-import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
@@ -42,7 +42,7 @@ public class FrontierImpl implements Frontier {
     /**
      * {@link KnownUriFilter} used to identify URIs that already have been crawled.
      */
-    protected RelationalUriFilter relationalUriFilter;
+    protected UriFilterComposer relationalUriFilter;
 
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
@@ -125,7 +125,7 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, UriQueue queue, List<UriGenerator> uriGenerators,
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue, List<UriGenerator> uriGenerators,
             GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
         this(normalizer, relationalUriFilter, null, queue,uriGenerators, graphLogger, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
@@ -149,7 +149,7 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
             long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
         this(normalizer, relationalUriFilter, queue, uriGenerators, null, doesRecrawling, generalRecrawlTime, timerPeriod);
     }
@@ -170,7 +170,7 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling
      *            Value for {@link #doesRecrawling}.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, URIReferences uriReferences,
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences,
             UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling) {
         this(normalizer, relationalUriFilter, uriReferences, queue,uriGenerators, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
@@ -190,7 +190,7 @@ public class FrontierImpl implements Frontier {
      * @param doesRecrawling
      *            Value for {@link #doesRecrawling}.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators,
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators,
             boolean doesRecrawling) {
         this(normalizer, relationalUriFilter, queue,uriGenerators, null, doesRecrawling, DEFAULT_GENERAL_RECRAWL_TIME,
                 DEFAULT_TIMER_PERIOD);
@@ -208,7 +208,7 @@ public class FrontierImpl implements Frontier {
      * @param queue
      *            {@link UriQueue} used to manage the URIs that should be crawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators) {
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators) {
         this(normalizer, relationalUriFilter, queue,uriGenerators, null, false, DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
     }
 
@@ -235,7 +235,7 @@ public class FrontierImpl implements Frontier {
      * @param timerPeriod
      *            used to select if URIs should be recrawled.
      */
-    public FrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, URIReferences uriReferences,
+    public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences,
             UriQueue queue, List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
             long timerPeriod) {
         this.normalizer = normalizer;

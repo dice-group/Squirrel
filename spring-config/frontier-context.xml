@@ -66,17 +66,19 @@
 		<constructor-arg index="3" value="true" />
 	</bean>
 	
-	<bean id="UriFilterBean"
-		class="org.dice_research.squirrel.data.uri.filter.relational.AndConcatenatingUriFilter">
-		<constructor-arg index="0" ref= "knowUriFilterBean" />
-		<constructor-arg index="1" ref= "depthFilter" />
+	
+	<bean id="UriFilterBean" class="org.dice_research.squirrel.data.uri.filter.MultipleUriFilters">
+		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
+		<constructor-arg index="1">
+            <list>
+            	<ref bean = "depthFilter"/>           
+            </list>
+        </constructor-arg>
+        <constructor-arg index="2" value="AND" />
 	</bean>
 	
-	<bean id="depthFilter" class="org.dice_research.squirrel.data.uri.filter.DepthFilter">
-		<constructor-arg index="0" value="5" />
-	</bean>
-
-	<bean id="knowUriFilterBean"
+	
+	<bean id="mongoDBKnowUriFilter"
 		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter">
 		<constructor-arg index="0"
 			value="#{systemEnvironment['MDB_HOST_NAME']}" />
@@ -84,6 +86,12 @@
 			value="#{systemEnvironment['MDB_PORT']}" />
 			
 	</bean>
+	
+	
+	<bean id="depthFilter" class="org.dice_research.squirrel.data.uri.filter.DepthFilter">
+		<constructor-arg index="0" value="3" />
+	</bean>
+
 	
 	
 	<bean id="domainGeneratorBean"

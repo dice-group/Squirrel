@@ -19,9 +19,10 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.MultipleUriFilters;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
-import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
@@ -65,7 +66,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     protected UriQueue queue;
     @Qualifier("UriFilterBean")
     @Autowired
-    private RelationalUriFilter uriFilter;
+    private UriFilterComposer uriFilter;
+    
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -80,12 +82,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     
     @Qualifier("listUriGenerator")
     private List<UriGenerator> uriGenerator;
+    
+
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
     private Timer timerTerminator;
-
+    
     public static final boolean RECRAWLING_ACTIVE = true;
 
     @Override
@@ -94,10 +98,14 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+                
         if (mongoConfiguration != null) {
 
             queue.open();
+            
             uriFilter.getKnownUriFilter().open();
+            
+           
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
@@ -115,6 +123,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue = new InMemoryQueue();
             uriFilter.setKnownUriFilter(new InMemoryKnownUriFilter(doRecrawling, recrawlingTime));
         }
+        
+        
 
         // Build frontier
         frontier = new ExtendedFrontierImpl(normalizer, uriFilter, uriReferences, queue,uriGenerator, doRecrawling);

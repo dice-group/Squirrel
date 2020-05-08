@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
-import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
@@ -32,7 +32,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param uriHashCustodian   used to access and write hash values for uris.
      */
     @SuppressWarnings("unused")
-    public ExtendedFrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
+    public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
                                 long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
         super(normalizer, relationalUriFilter, queue, uriGenerators,doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
     }
@@ -47,7 +47,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                         crawled.
      * @param doesRecrawling   used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, IpAddressBasedQueue queue, List<UriGenerator> uriGenerators, boolean doesRecrawling) {
+    public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, IpAddressBasedQueue queue, List<UriGenerator> uriGenerators, boolean doesRecrawling) {
         super(normalizer, relationalUriFilter, queue, uriGenerators, doesRecrawling);
     }
 
@@ -62,7 +62,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, RelationalUriFilter relationalUriFilter, URIReferences uriReferences, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling) {
+    public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling) {
         super(normalizer, relationalUriFilter, uriReferences, queue,uriGenerators, doesRecrawling);
     }
 

@@ -16,9 +16,9 @@ import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.data.uri.filter.MultipleUriFilters;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
-import org.dice_research.squirrel.data.uri.filter.relational.AndConcatenatingUriFilter;
-import org.dice_research.squirrel.data.uri.filter.relational.RelationalUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
@@ -54,7 +54,7 @@ public class FrontierImplTest {
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
         
-        RelationalUriFilter relationalUriFilter = new AndConcatenatingUriFilter(filter);
+        UriFilterComposer relationalUriFilter = new MultipleUriFilters(filter,"");
 
         frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators,true);
 
