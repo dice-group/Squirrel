@@ -13,19 +13,19 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  *
  */
 
-public class MultipleUriFilters implements UriFilterComposer {
+public class UriFilterConfigurator implements UriFilterComposer {
 
 	private KnownUriFilter knownUriFilter;
 	private List<UriFilter> listUriFilters;
 	private final String OPERATOR;
 
-	public MultipleUriFilters(KnownUriFilter knownUriFilter, List<UriFilter> listUriFilters,String operator) {
+	public UriFilterConfigurator(KnownUriFilter knownUriFilter, List<UriFilter> listUriFilters,String operator) {
 		this.knownUriFilter = knownUriFilter;
 		this.listUriFilters = listUriFilters;
 		this.OPERATOR = operator;
 	}
 
-	public MultipleUriFilters(KnownUriFilter knownUriFilter,String operator) {
+	public UriFilterConfigurator(KnownUriFilter knownUriFilter,String operator) {
 		this.knownUriFilter = knownUriFilter;
 		this.listUriFilters = new ArrayList<UriFilter>();
 		this.OPERATOR = operator;

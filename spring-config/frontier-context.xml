@@ -67,7 +67,7 @@
 	</bean>
 	
 	
-	<bean id="UriFilterBean" class="org.dice_research.squirrel.data.uri.filter.MultipleUriFilters">
+	<bean id="UriFilterBean" class="org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator">
 		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
 		<constructor-arg index="1">
             <list>
