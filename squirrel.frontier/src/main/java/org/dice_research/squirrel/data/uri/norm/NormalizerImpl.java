@@ -43,11 +43,11 @@ public class NormalizerImpl implements UriNormalizer {
      * look-up table for characters which should not be escaped in URL paths
      */
     private final static BitSet UNESCAPED_CHARS = new BitSet(0x7F);
-    private final List<String> sessionIDs;
+    private final Pattern queryArgumentsToRemove;
     private final Map<String, Integer> defaultPortMap;
 
-    public NormalizerImpl(List<String> sessionIDs, Map<String, Integer> defaultPortMap) {
-    	this.sessionIDs = sessionIDs;
+    public NormalizerImpl(List<String> queryArgumentsToRemove, Map<String, Integer> defaultPortMap) {
+    	this.queryArgumentsToRemove = Pattern.compile(String.join("|", queryArgumentsToRemove), Pattern.CASE_INSENSITIVE);
     	this.defaultPortMap = defaultPortMap;
     }
 
@@ -97,8 +97,8 @@ public class NormalizerImpl implements UriNormalizer {
                 List<String> toRemove = new ArrayList<>();
                 for(String queryParameter : queries){
                     //removing session ids
-                    String name = queryParameter.split("=")[0].toLowerCase();
-                    if (sessionIDs.stream().anyMatch(s -> s.equals(name) || (s.endsWith("*") && name.startsWith(s.substring(0, s.length() - 1))))) {
+                    String name = queryParameter.split("=")[0];
+                    if (queryArgumentsToRemove.matcher(name).matches()) {
                         toRemove.add(queryParameter);
                     }
                 }

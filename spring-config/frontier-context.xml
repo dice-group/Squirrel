@@ -51,13 +51,13 @@
 				<value>fbclid</value>
 				<value>fb_ref</value>
 				<value>fb_source</value>
-				<value>ga_*</value>
+				<value>ga_.+</value>
 				<value>gclid</value>
 				<value>gclsrc</value>
 				<value>igshid</value>
 				<value>mkt_tok</value>
 				<value>_openstat</value>
-				<value>utm_*</value>
+				<value>utm_.+</value>
 				<value>wt_zmc</value>
 				<value>yclid</value>
 			</list>
