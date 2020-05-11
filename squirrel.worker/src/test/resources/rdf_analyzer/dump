@@ -1,0 +1,20 @@
+<http://example.com/d1-r1>
+  <http://example.com/p1> <http://example.com/d1-r2>;
+  <http://example.com/p2> <http://example.com/d2-r1>;
+  <http://example.com/p3> "value";
+  <http://example.com/p4> "value";
+  <http://example.com/p5> "value".
+
+<http://example.com/d1-r2>
+  <http://example.com/p1> <http://example.com/d1-r3>;
+  <http://example.com/p2> <http://example.com/d2-r1>;
+  <http://example.com/p3> "value";
+  <http://example.com/p4> "value";
+  <http://example.com/p5> "value".
+
+<http://example.com/d1-r3>
+  <http://example.com/p1> <http://example.com/d1-r1>;
+  <http://example.com/p2> <http://example.com/d2-/r1>;
+  <http://example.com/p3> "value";
+  <http://example.com/p4> "value";
+  <http://example.com/p5> "value".
