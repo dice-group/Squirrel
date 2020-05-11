@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
- * {@link #queue} and a {@link #relationalUriFilter}.
+ * {@link #queue} and a {@link #uriFilter}.
  *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  */
@@ -42,7 +42,7 @@ public class FrontierImpl implements Frontier {
     /**
      * {@link KnownUriFilter} used to identify URIs that already have been crawled.
      */
-    protected UriFilterComposer relationalUriFilter;
+    protected UriFilterComposer uriFilter;
 
     /**
      * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
@@ -239,7 +239,7 @@ public class FrontierImpl implements Frontier {
             UriQueue queue, List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
             long timerPeriod) {
         this.normalizer = normalizer;
-        this.relationalUriFilter = relationalUriFilter;
+        this.uriFilter = relationalUriFilter;
         this.uriReferences = uriReferences;
         this.uriGenerator = uriGenerators;
         this.queue = queue;
@@ -300,8 +300,8 @@ public class FrontierImpl implements Frontier {
     }
 
     protected void addNormalizedUri(CrawleableUri uri){
-        if (relationalUriFilter.isUriGood(uri)) {
-            LOGGER.debug("addNewUri(" + uri + "): URI is good [" + relationalUriFilter + "]");
+        if (uriFilter.isUriGood(uri)) {
+            LOGGER.debug("addNewUri(" + uri + "): URI is good [" + uriFilter + "]");
             if (schemeUriFilter.isUriGood(uri)) {
                 LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
                 // Make sure that the IP is known
@@ -316,14 +316,14 @@ public class FrontierImpl implements Frontier {
                 } else {
                     LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
                 }
-                relationalUriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
+                uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
             } else {
                 LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
                         + schemeUriFilter.getSchemes() + ". Will not added!");
             }
 
         } else {
-            LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + relationalUriFilter + "]. Will not be added!");
+            LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + uriFilter + "]. Will not be added!");
         }
     }
 
@@ -361,7 +361,7 @@ public class FrontierImpl implements Frontier {
                 recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
                 addNewUri(recrawlUri);
             } else {
-            	relationalUriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
+            	uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
             }
         }
     }
