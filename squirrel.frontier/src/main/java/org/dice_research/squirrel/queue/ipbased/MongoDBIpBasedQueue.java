@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.types.Binary;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -48,18 +49,27 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
+    
+    public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth) {
+    	this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
 
-    public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer) {
+    }
+
+    public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
 
         LOGGER.info("Queue Persistance: " + PERSIST);
-
+        
+        this.includeDepth = includeDepth;
+        if(this.includeDepth)
+			LOGGER.info("Depth Persistance Enabled.");
+        
         this.serializer = serializer;
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
-        if (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null) {
+        if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
+                && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -74,10 +84,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     }
 
-    public MongoDBIpBasedQueue(String hostName, Integer port) {
-        client = new MongoClient(hostName, port);
-        serializer = new SnappyJavaUriSerializer();
-    }
+   
 
     public void purge() {
         mongoDB.getCollection(COLLECTION_QUEUE).drop();
@@ -225,6 +232,9 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         docUri.put("_id", uri.getUri().hashCode());
         docUri.put("ipAddress", ipAddress.getHostAddress());
         docUri.put("type", DEFAULT_TYPE);
+        if(includeDepth)
+        	docUri.put("depth",uri.getData(Constants.URI_DEPTH));
+        	
         docUri.put("uri", new Binary(suri));
         return docUri;
     }

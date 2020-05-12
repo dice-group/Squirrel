@@ -1,13 +1,11 @@
 package org.dice_research.squirrel.data.uri.norm;
 
-import org.apache.http.client.utils.URIBuilder;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 
 /**

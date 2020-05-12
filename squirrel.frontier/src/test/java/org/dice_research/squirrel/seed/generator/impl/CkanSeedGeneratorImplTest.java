@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
@@ -39,7 +41,9 @@ public class CkanSeedGeneratorImplTest extends TestCase {
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
         
-        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), new InMemoryKnownUriFilter(false, -1), queue,uriGenerators);
+        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(new InMemoryKnownUriFilter(false, -1),"");
+        
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators);
         ckanSeedGenerator = new CkanSeedGeneratorImpl(frontier);
     }
 

@@ -28,6 +28,10 @@ public interface KnownUriFilter extends UriFilter {
      * @param nextCrawlTimestamp The time at which the given URI should be crawled next.
      */
     void add(CrawleableUri uri, long lastCrawlTimestamp, long nextCrawlTimestamp);
+    
+    public default void add(CrawleableUri uri) {
+    	add(uri, System.currentTimeMillis());
+    }
 
     /**
      * Returns all {@link CrawleableUri}s which have to be recrawled. This means their time to next crawl has passed.

@@ -56,4 +56,10 @@ public class SchemeBasedUriFilter implements UriFilter {
         this.schemes = schemes;
     }
 
+	@Override
+	public void add(CrawleableUri uri) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

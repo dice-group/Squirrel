@@ -17,10 +17,11 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
-import org.dice_research.squirrel.data.uri.norm.DomainBasedUriGenerator;
+import org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
-import org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator;
+import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,7 +46,7 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBIpBasedQueue("localhost", 58027);
+        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
          filter.open();
          queue.open();
          List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
@@ -53,8 +54,10 @@ public class FrontierImplTest {
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        
+        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(filter,"OR");
 
-        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), filter, queue,uriGenerators,true);
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators,true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
@@ -115,12 +118,14 @@ public class FrontierImplTest {
 //        filter.add(uri_1, 100);
 
         frontier.crawlingDone(crawledUris);
-        assertFalse("uri_1 has been already crawled", frontier.knownUriFilter.isUriGood(uri_1));
+        assertFalse("uri_1 has been already crawled", frontier.uriFilter.isUriGood(uri_1));
     }
 
     @Test
     public void getNumberOfPendingUris() throws Exception {
         frontier.addNewUris(uris);
+//        for(CrawleableUri curi: uris)
+//        	queue.addUri(curi);
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(1, numberOfPendingUris);
