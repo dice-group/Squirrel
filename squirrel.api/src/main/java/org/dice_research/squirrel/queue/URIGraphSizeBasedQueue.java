@@ -44,5 +44,4 @@ public class URIGraphSizeBasedQueue extends AbstractURIScoreBasedQueue {
         }
         return 0;
     }
-
 }

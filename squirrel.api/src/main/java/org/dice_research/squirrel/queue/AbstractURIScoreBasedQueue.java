@@ -69,5 +69,4 @@ public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator
         }
         return 0;
     }
-
 }
