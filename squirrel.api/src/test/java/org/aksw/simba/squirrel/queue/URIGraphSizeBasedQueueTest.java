@@ -29,6 +29,8 @@ public class URIGraphSizeBasedQueueTest {
 
         Node s1 = NodeFactory.createURI("http://dbpedia.org/resource/New_York_City");
         Node s2 = NodeFactory.createURI("http://dbpedia.org/resource/Berlin");
+        Node s3 = NodeFactory.createURI("http://dbpedia.org/resource/Bangalore");
+        Node s4 = NodeFactory.createURI("http://dbpedia.org/resource/Moscow");
         String otherUri = "http://dbpedia.org/doesntMatter";
         Node o = NodeFactory.createURI("http://dbpedia.org/doesntMatter");
         DatasetGraph graph = dataset.asDatasetGraph();
@@ -41,16 +43,28 @@ public class URIGraphSizeBasedQueueTest {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s2, p, o);
         }
+        for(int i = 0; i <= 8; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s3, p, o);
+        }
+        for(int i = 0; i <= 4; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s4, p, o);
+        }
 
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
         URIGraphSizeBasedQueue uRIGraphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
 
         uRIGraphSizeBasedQueue.addUri(new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City")));
         uRIGraphSizeBasedQueue.addUri(new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin")));
+        uRIGraphSizeBasedQueue.addUri(new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore")));
+        uRIGraphSizeBasedQueue.addUri(new CrawleableUri(new URI("http://dbpedia.org/resource/Moscow")));
 
         List<CrawleableUri> uris = uRIGraphSizeBasedQueue.getNextUris();
-        Assert.assertEquals(2, uris.size());
+        Assert.assertEquals(4, uris.size());
         Assert.assertTrue(uris.get(0).getUri().toString().equals("http://dbpedia.org/resource/Berlin"));
-        Assert.assertTrue(uris.get(1).getUri().toString().equals("http://dbpedia.org/resource/New_York_City"));
+        Assert.assertTrue(uris.get(1).getUri().toString().equals("http://dbpedia.org/resource/Bangalore"));
+        Assert.assertTrue(uris.get(2).getUri().toString().equals("http://dbpedia.org/resource/New_York_City"));
+        Assert.assertTrue(uris.get(3).getUri().toString().equals("http://dbpedia.org/resource/Moscow"));
     }
 }

@@ -110,14 +110,14 @@ public class CrawleableUri implements Serializable {
     private Map<String, Object> data = new TreeMap<>();
     /**
      * Timestamp at which this URI should be crawled next time.
-     * 
+     *
      * @deprecated The timestamp should be added to the {@link #data} map.
      */
     private long timestampNextCrawl;
 
     /**
      * Constructor.
-     * 
+     *
      * @param uri
      *            the URI
      */
@@ -127,7 +127,7 @@ public class CrawleableUri implements Serializable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param uri
      *            the URI
      * @param ipAddress
@@ -169,7 +169,7 @@ public class CrawleableUri implements Serializable {
 
     /**
      * Adds the given data to this URI instance using the given key.
-     * 
+     *
      * @param key
      *            the identifier of the given data
      * @param data
@@ -182,14 +182,14 @@ public class CrawleableUri implements Serializable {
     /**
      * Returns the data that is attached to this URI with the given key or
      * {@code null} if it does not exist.
-     * 
+     *
      * @param key
      *            the identifier of the data
      * @return the data that is attached to this URI with the given key or
      *         {@code null} if it does not exist
      */
     public Object getData(String key) {
-        if (data.containsKey(key)) {
+         if (data.containsKey(key)) {
             return data.get(key);
         } else {
             return null;
@@ -199,7 +199,7 @@ public class CrawleableUri implements Serializable {
     /**
      * Returns the complete data attached to this URI. Note that the IP of the URI
      * as well as the URI itself have to be retrieved using the other get methods.
-     * 
+     *
      * @return the complete data attached to this URI
      */
     public Map<String, Object> getData() {
@@ -208,7 +208,7 @@ public class CrawleableUri implements Serializable {
 
     /**
      * Overrides the data attached to this URI by the given data.
-     * 
+     *
      * @param data the data map that should be attached to this URI
      */
     public void setData(Map<String, Object> data) {
