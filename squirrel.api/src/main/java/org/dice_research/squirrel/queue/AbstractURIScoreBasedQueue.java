@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.queue;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -13,8 +14,11 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  */
 public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator<CrawleableUri> {
 
-    protected PriorityQueue<CrawleableUri> queue = new PriorityQueue<>();
+    protected PriorityQueue<CrawleableUri> queue;
 
+    public AbstractURIScoreBasedQueue() {
+        queue = new PriorityQueue<>(100, this);
+    }
     /**
      * Each class implementing this method can have its own scoring scheme.
      *
@@ -25,6 +29,7 @@ public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator
     public void addUri(CrawleableUri uri) {
         float uriScore = getURIScore(uri);
         uri.addData(Constants.URI_DUPLICITY_SCORE, uriScore);
+        queue.add(uri);
     }
 
     @Override
@@ -48,13 +53,14 @@ public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator
      * @return Returns a list of URIs which are sorted according to their score
      */
     public List<CrawleableUri> getNextUris() {
-        return (List<CrawleableUri>) queue;
+        List<CrawleableUri> uriList = new ArrayList<>(queue);
+        return uriList;
     }
 
     public int compare(CrawleableUri uri1, CrawleableUri uri2) {
         if (uri1.getData(Constants.URI_DUPLICITY_SCORE) != null && uri2.getData(Constants.URI_DUPLICITY_SCORE) != null) {
-            Double uri1Score = (Double) uri1.getData(Constants.URI_DUPLICITY_SCORE);
-            Double uri2Score = (Double) uri2.getData(Constants.URI_DUPLICITY_SCORE);
+            float uri1Score = (float) uri1.getData(Constants.URI_DUPLICITY_SCORE);
+            float uri2Score = (float) uri2.getData(Constants.URI_DUPLICITY_SCORE);
             if (uri1Score < uri2Score) {
                 return -1;
             } else if (uri1Score > uri2Score) {
