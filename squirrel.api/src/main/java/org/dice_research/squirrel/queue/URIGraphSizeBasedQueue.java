@@ -15,6 +15,7 @@ public class URIGraphSizeBasedQueue extends AbstractURIScoreBasedQueue {
     protected QueryExecutionFactory queryExecFactory = null;
 
     public URIGraphSizeBasedQueue() {
+        throw new UnsupportedOperationException();
     }
 
     public URIGraphSizeBasedQueue(QueryExecutionFactory qe) {
