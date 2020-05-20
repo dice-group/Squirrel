@@ -36,9 +36,9 @@ public class URIGraphSizeBasedQueue extends AbstractURIScoreBasedQueue {
             ResultSet resultSet = execution.execSelect();
             if(resultSet.hasNext()){
                 QuerySolution solution = resultSet.next();
-                Literal countNode = solution.getLiteral("C");
-                ResultSetFormatter.out(resultSet);
-                return countNode.getInt();
+                int count = solution.getLiteral("C").getInt();
+                LOGGER.info("getGraphSize(<{}>) = {}", uri, count);
+                return count;
             }
         } catch (Exception e) {
             LOGGER.error("Exception occurred while querying Sparql for duplicity of URL", e);
