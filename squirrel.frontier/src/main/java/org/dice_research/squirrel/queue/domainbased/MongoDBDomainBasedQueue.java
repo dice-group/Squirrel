@@ -1,9 +1,19 @@
 package org.dice_research.squirrel.queue.domainbased;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.sparql.core.DatasetDescription;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.Constants;
@@ -80,6 +90,47 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         this(hostName, port, serializer, includeDepth);
         this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
+    }
+
+    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
+        this(hostName, port, serializer, includeDepth);
+
+        QueryExecutionFactory qef;
+        if (username != null && password != null) {
+            // Create the factory with the credentials
+            final Credentials credentials = new UsernamePasswordCredentials(username, password);
+            HttpAuthenticator authenticator = new HttpAuthenticator() {
+                @Override
+                public void invalidate() {
+                    // unused method in this implementation
+                }
+
+                @Override
+                public void apply(AbstractHttpClient client, HttpContext httpContext, URI target) {
+                    client.setCredentialsProvider(new CredentialsProvider() {
+                        @Override
+                        public void clear() {
+                            // unused method in this implementation
+                        }
+
+                        @Override
+                        public Credentials getCredentials(AuthScope scope) {
+                            return credentials;
+                        }
+
+                        @Override
+                        public void setCredentials(AuthScope arg0, Credentials arg1) {
+                            LOGGER.error("I am a read-only credential provider but got a call to set credentials.");
+                        }
+                    });
+                }
+            };
+            qef = new QueryExecutionFactoryHttp(sparqlEndpointUrl, new DatasetDescription(), authenticator);
+        } else {
+            qef = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
+        }
+
+        this.uriKeywiseFilter = new URIKeywiseFilter(qef);
     }
 
     public MongoDBDomainBasedQueue(String hostName, Integer port, boolean includeDepth) {
