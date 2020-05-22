@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
@@ -239,6 +240,7 @@ public class FrontierImpl implements Frontier {
 				@Override
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = relationalUriFilter.getKnownUriFilter().getOutdatedUris();
+                    urisToRecrawl = urisToRecrawl.stream().distinct().collect(Collectors.toList());
 					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
 				}
 			}, this.timerPeriod, this.timerPeriod);
@@ -257,7 +259,7 @@ public class FrontierImpl implements Frontier {
 
 	@Override
 	public void addNewUris(List<CrawleableUri> uris) {
-		for (CrawleableUri uri : uris) {
+		for (CrawleableUri uri : uris.stream().distinct().collect(Collectors.toList())) {
 			addNewUri(uri);
 		}
 	}
