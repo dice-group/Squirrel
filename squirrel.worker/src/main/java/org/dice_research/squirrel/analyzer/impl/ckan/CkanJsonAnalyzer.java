@@ -52,10 +52,8 @@ public class CkanJsonAnalyzer extends AbstractAnalyzer {
             Stream<String> lines = null;
             try {
                 lines = Files.lines(data.toPath(), StandardCharsets.UTF_8);
-                sink.openSinkForUri(curi);
-                CkanDatasetConsumer consumer = new CkanDatasetConsumer(sink, collector, curi);
+                CkanDatasetConsumer consumer = new CkanDatasetConsumer(sink, collector, curi,tripleEncoder);
                 lines.map(s -> parseDataset(s)).forEach(consumer);
-                sink.closeSinkForUri(curi);
                 ActivityUtil.addStep(curi, getClass());
                 return collector.getUris(curi);
             } catch (IOException e) {
