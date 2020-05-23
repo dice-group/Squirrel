@@ -1,11 +1,10 @@
 package org.dice_research.squirrel.frontier.impl;
 
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -259,10 +258,37 @@ public class FrontierImpl implements Frontier {
 
 	@Override
 	public void addNewUris(List<CrawleableUri> uris) {
-		for (CrawleableUri uri : uris.stream().distinct().collect(Collectors.toList())) {
-			addNewUri(uri);
-		}
+        for (CrawleableUri uri : getNewUrisDomainWise(uris)) {
+            addNewUri(uri);
+        }
 	}
+
+	protected List<CrawleableUri> getNewUrisDomainWise(List<CrawleableUri> uris) {
+        List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
+        Map<String, Queue<CrawleableUri>> domainWiseUris = new HashMap<>();
+        for (CrawleableUri uri : distinctUris) {
+            String domain = uri.getUri().getHost();
+            Queue<CrawleableUri> uriQueue = domainWiseUris.get(domain);
+            if(CollectionUtils.isEmpty(uriQueue)) {
+                uriQueue = new ArrayDeque<>();
+            }
+            uriQueue.add(uri);
+            domainWiseUris.put(domain, uriQueue);
+        }
+        Collection<Queue<CrawleableUri>> uriQueues = domainWiseUris.values();
+        List<CrawleableUri> finalList = new ArrayList<>();
+        int counter = 0;
+        while(counter < uris.size()) {
+            for (Queue<CrawleableUri> uriList : uriQueues) {
+                CrawleableUri uri = uriList.poll();
+                if(uri != null) {
+                    finalList.add(uri);
+                    counter++;
+                }
+            }
+        }
+        return finalList;
+    }
 
 	@Override
 	public void addNewUri(CrawleableUri uri) {
