@@ -74,18 +74,17 @@ public class MongoDBURIScoreBasedQueue extends AbstractURIScoreBasedQueue {
     }
 
     public void purge() {
-        mongoDB.getCollection(COLLECTION_QUEUE).drop();
         mongoDB.getCollection(COLLECTION_URIS).drop();
     }
 
-    private long length() {
-        return mongoDB.getCollection(COLLECTION_QUEUE).count();
+    public long length() {
+        return mongoDB.getCollection(COLLECTION_URIS).count();
     }
 
     @Override
     public void close() {
         if (!PERSIST) {
-            mongoDB.getCollection(COLLECTION_QUEUE).drop();
+//            mongoDB.getCollection(COLLECTION_QUEUE).drop();
             mongoDB.getCollection(COLLECTION_URIS).drop();
         }
         client.close();
@@ -141,17 +140,14 @@ public class MongoDBURIScoreBasedQueue extends AbstractURIScoreBasedQueue {
     public void open() {
         mongoDB = client.getDatabase(DB_NAME);
         if (!queueTableExists()) {
-            mongoDB.createCollection(COLLECTION_QUEUE);
             mongoDB.createCollection(COLLECTION_URIS);
-            MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
-            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("domain"),
                     Indexes.ascending("type")));
         }
     }
 
-    private boolean queueTableExists() {
+    public boolean queueTableExists() {
         for (String collection : mongoDB.listCollectionNames()) {
             if (collection.equalsIgnoreCase(COLLECTION_QUEUE.toLowerCase())) {
                 return true;
