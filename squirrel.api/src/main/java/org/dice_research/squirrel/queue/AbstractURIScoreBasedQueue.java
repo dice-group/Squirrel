@@ -64,11 +64,8 @@ public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator
         if (uri1.getData(Constants.URI_DUPLICITY_SCORE) != null && uri2.getData(Constants.URI_DUPLICITY_SCORE) != null) {
             float uri1Score = (float) uri1.getData(Constants.URI_DUPLICITY_SCORE);
             float uri2Score = (float) uri2.getData(Constants.URI_DUPLICITY_SCORE);
-            if (uri1Score < uri2Score) {
-                return -1;
-            } else if (uri1Score > uri2Score) {
-                return 1;
-            }
+            // Take an opposite since PriorityQueue prioritizes the least elements.
+            return - Float.compare(uri1Score, uri2Score);
         }
         return 0;
     }
