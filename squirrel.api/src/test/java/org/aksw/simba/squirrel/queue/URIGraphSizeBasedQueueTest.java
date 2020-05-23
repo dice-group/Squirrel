@@ -37,19 +37,19 @@ public class URIGraphSizeBasedQueueTest {
 
         for(int i = 0; i <= 5; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
-            graph.add(g, s1, p, o);
+            graph.add(g, s1, p, o); // <http://dbpedia.org/resource/New_York_City>
         }
         for(int i = 0; i <= 10; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
-            graph.add(g, s2, p, o);
+            graph.add(g, s2, p, o); // <http://dbpedia.org/resource/Berlin>
         }
         for(int i = 0; i <= 8; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
-            graph.add(g, s3, p, o);
+            graph.add(g, s3, p, o); // <http://dbpedia.org/resource/Bangalore>
         }
         for(int i = 0; i <= 4; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
-            graph.add(g, s4, p, o);
+            graph.add(g, s4, p, o); // <http://dbpedia.org/resource/Moscow>
         }
 
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);
@@ -62,9 +62,9 @@ public class URIGraphSizeBasedQueueTest {
 
         List<CrawleableUri> uris = uRIGraphSizeBasedQueue.getNextUris();
         Assert.assertEquals(4, uris.size());
-        Assert.assertTrue(uris.get(0).getUri().toString().equals("http://dbpedia.org/resource/Berlin"));
-        Assert.assertTrue(uris.get(1).getUri().toString().equals("http://dbpedia.org/resource/Bangalore"));
-        Assert.assertTrue(uris.get(2).getUri().toString().equals("http://dbpedia.org/resource/New_York_City"));
-        Assert.assertTrue(uris.get(3).getUri().toString().equals("http://dbpedia.org/resource/Moscow"));
+        Assert.assertEquals("http://dbpedia.org/resource/Moscow", uris.get(0).getUri().toString());
+        Assert.assertEquals("http://dbpedia.org/resource/New_York_City", uris.get(1).getUri().toString());
+        Assert.assertEquals("http://dbpedia.org/resource/Bangalore", uris.get(2).getUri().toString());
+        Assert.assertEquals("http://dbpedia.org/resource/Berlin", uris.get(3).getUri().toString());
     }
 }
