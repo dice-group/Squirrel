@@ -1,12 +1,11 @@
 package org.dice_research.squirrel.components;
 
-import org.apache.commons.io.FileUtils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
@@ -17,7 +16,6 @@ import org.dice_research.squirrel.configurator.SeedConfiguration;
 import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.UriSeedReader;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
@@ -29,7 +27,12 @@ import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.Frontier;
-import org.dice_research.squirrel.frontier.impl.*;
+import org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl;
+import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
+import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
+import org.dice_research.squirrel.frontier.impl.TerminationCheck;
+import org.dice_research.squirrel.frontier.impl.WorkerGuard;
 import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
@@ -50,13 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.Semaphore;
-
 @Component
 @Qualifier("frontierComponent")
 public class FrontierComponent extends AbstractComponent implements RespondingDataHandler {
@@ -68,7 +64,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
-        private OutDatedUriRetriever outDatedUriRetriever;
+    private OutDatedUriRetriever outDatedUriRetriever;
     private UriFilterComposer uriFilter;
     
     private URIReferences uriReferences = null;
@@ -90,11 +86,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("listUriGenerator")
     private List<UriGenerator> uriGenerator;
     
-
-    private final Semaphore terminationMutex = new Semaphore(0);
-    private final WorkerGuard workerGuard = new WorkerGuard(this);
-    private final boolean doRecrawling = true;
-    private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
     private Timer timerTerminator;
     
     public static final boolean RECRAWLING_ACTIVE = true;
