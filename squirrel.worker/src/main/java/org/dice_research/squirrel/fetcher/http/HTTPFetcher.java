@@ -30,27 +30,55 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
-@Component
-@Order(value = 1)
-@Qualifier("httpFetcher")
+/**
+ * {@link Fetcher} which uses an HTTP client to fetch data and store it in a
+ * temporary directory.
+ * 
+ * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
+ *
+ */
+
 public class HTTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPFetcher.class);
 
+    /**
+     * The default HTTP Accept header value which simply accepts everything.
+     */
+    public static final String DEFAULT_ACCEPT_HEADER_STRING = "*/*";
+    /**
+     * The prefix which is added to HTTP response headers before they are stored the
+     * {@link CrawleableUri}'s data map.
+     */
     public static final String HTTP_RESPONSE_HEADER_PREFIX = "http-response-";
-
+    /**
+     * URI schemes which are accepted by this fetcher (i.e., {@code "http"} and
+     * {@code "https"}).
+     */
     protected static final Set<String> ACCEPTED_SCHEMES = new HashSet<String>(Arrays.asList("http", "https"));
 
-    protected String acceptHeader = "application/rdf+xml";
+    /**
+     * The value which will be used for the HTTP Accept header if the give
+     * {@link CrawleableUri} object does not define a header value.
+     */
+    protected String acceptHeader = DEFAULT_ACCEPT_HEADER_STRING;
+    /**
+     * The value which will be used for the HTTP Accept Charset header if the give
+     * {@link CrawleableUri} object does not define a header value.
+     */
     protected String acceptCharset = StandardCharsets.UTF_8.name();
+    /**
+     * The HTTP client instance used by this feature.
+     */
     protected CloseableHttpClient client;
+    /**
+     * The temporary directory which will be used to store downloaded data.
+     */
     protected File dataDirectory = FileUtils.getTempDirectory();
 
     public HTTPFetcher() {
@@ -59,7 +87,7 @@ public class HTTPFetcher implements Fetcher {
 
     public HTTPFetcher(String userAgent) {
         this(HttpClientBuilder.create().setConnectionManager(new PoolingHttpClientConnectionManager())
-            .setUserAgent(userAgent).build());
+                .setUserAgent(userAgent).build());
     }
 
     public HTTPFetcher(CloseableHttpClient client) {
@@ -67,7 +95,7 @@ public class HTTPFetcher implements Fetcher {
     }
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // Check whether this fetcher can handle the given URI
         if ((uri == null) || (uri.getUri() == null) || (!ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;
@@ -81,10 +109,11 @@ public class HTTPFetcher implements Fetcher {
             return null;
         }
         try {
+            delayer.getRequestPermission();
             dataFile = requestData(uri, dataFile);
         } catch (ClientProtocolException e) {
             LOGGER.debug("HTTP Exception while requesting uri \"{}\". Returning null. Exception: {}", uri,
-                e.getMessage());
+                    e.getMessage());
             ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
         } catch (FileNotFoundException e) {
@@ -95,19 +124,26 @@ public class HTTPFetcher implements Fetcher {
             LOGGER.error("Couldn't fetched data. Returning null.", e);
             ActivityUtil.addStep(uri, getClass(), e.getMessage());
             return null;
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while waiting for request permission. Returning null.");
+            ActivityUtil.addStep(uri, getClass(), e.getMessage());
+            return null;
+        } finally {
+            // Inform the delayer that the request is done
+            delayer.requestFinished();
         }
         ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
 
     protected File requestData(CrawleableUri uri, File outputFile)
-        throws ClientProtocolException, FileNotFoundException, IOException {
+            throws ClientProtocolException, FileNotFoundException, IOException {
         HttpGet request = null;
         request = new HttpGet(uri.getUri());
         request.addHeader(HttpHeaders.ACCEPT,
-            MapUtils.getString(uri.getData(), Constants.URI_HTTP_ACCEPT_HEADER, acceptHeader));
+                MapUtils.getString(uri.getData(), Constants.URI_HTTP_ACCEPT_HEADER, acceptHeader));
         request.addHeader(HttpHeaders.ACCEPT_CHARSET,
-            MapUtils.getString(uri.getData(), Constants.URI_HTTP_ACCEPT_HEADER, acceptCharset));
+                MapUtils.getString(uri.getData(), Constants.URI_HTTP_ACCEPT_HEADER, acceptCharset));
 
         HttpEntity entity = null;
         CloseableHttpResponse response = null;
@@ -159,6 +195,28 @@ public class HTTPFetcher implements Fetcher {
         }
         uri.addData(Constants.URI_DATA_FILE_NAME, outputFile.getAbsolutePath());
         return outputFile;
+    }
+
+    /**
+     * The value of the HTTP Accept header field that is used if the given
+     * {@link CrawleableUri} instance does not define this. <b>Note</b> that the
+     * given string has to follow
+     * <a href="https://tools.ietf.org/html/rfc7231#page-38">section 5.3.2 of
+     * RFC-7231</a>.
+     * 
+     * @param acceptHeader the new value of the accept header as defined in
+     *                     RFC-7231.
+     */
+    public void setAcceptHeader(String acceptHeader) {
+        this.acceptHeader = acceptHeader;
+    }
+
+    public void setAcceptCharset(String acceptCharset) {
+        this.acceptCharset = acceptCharset;
+    }
+
+    public void setDataDirectory(File dataDirectory) {
+        this.dataDirectory = dataDirectory;
     }
 
     @Override

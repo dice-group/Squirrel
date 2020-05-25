@@ -1,0 +1,72 @@
+version: "2"
+
+services:
+
+  # message bus
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbit
+    hostname: rabbit
+    ports:
+      - "8081:15672"
+      # Forwarding the port for testing
+      - "5672:5672"
+
+  mongodb:
+    image: mongo:4.0.0
+    volumes:
+      - ./data/mongodb:/data
+    ports:
+      - "27017:27017"
+
+  frontier:
+    image: dicegroup/squirrel.frontier:latest
+    container_name: frontier
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
+      - SEED_FILE=/var/squirrel/data/seeds.csv
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - MDB_CONNECTION_TIME_OUT=5000
+      - MDB_SOCKET_TIME_OUT=10000
+      - MDB_SERVER_TIME_OUT=10000
+      - COMMUNICATION_WITH_WEBSERVICE=false
+      - VISUALIZATION_OF_CRAWLED_GRAPH=false
+      - JVM_ARGS=-Xmx8g
+    volumes:
+      - ./scenarios/2:/var/squirrel/data
+      - ../spring-config:/var/squirrel/spring-config
+      
+  worker1:
+    image: dicegroup/squirrel.worker:latest
+    container_name: worker1
+    environment:
+      - HOBBIT_RABBIT_HOST=rabbit
+      - OUTPUT_FOLDER=/var/squirrel/data
+      - HTML_SCRAPER_YAML_PATH=/var/squirrel/yaml
+      - CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/worker-context.xml
+      - SPARQL_HOST_NAME=sparqlhost
+      - SPARQL_HOST_PORT=3030
+      - DEDUPLICATION_ACTIVE=false
+      - MDB_HOST_NAME=mongodb
+      - MDB_PORT=27017
+      - JVM_ARGS=-Xmx8g
+    volumes:
+        - ./data/worker1:/var/squirrel/data
+        - ../yaml:/var/squirrel/yaml
+        - ../spring-config:/var/squirrel/spring-config
+
+  SimulationNodeA:
+    image: dicegroup/squirrel.mockup:latest
+    container_name: NodeA
+    environment:
+      RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
+      ROBOTS_TXT: /var/squirrel/data/robotsA.txt
+      RESOURCE_MODEL_LANG: N3
+      PORT: 80
+      USE_DEREF: "true"
+    volumes:
+        - ./scenarios/2:/var/squirrel/data
+    ports:
+      - "80:80"

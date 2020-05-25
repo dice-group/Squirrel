@@ -12,6 +12,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
+import org.rdfhdt.hdt.util.Histogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +47,20 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer) {
+    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
         this.serializer = serializer;
+        
+        this.includeDepth = includeDepth;
+        if(this.includeDepth)
+			LOGGER.info("Depth Persistance Enabled.");
 
         LOGGER.info("Queue Persistance: " + PERSIST);
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
-        if (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null) {
+        if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
+                && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -70,9 +75,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     }
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port) {
-        client = new MongoClient(hostName, port);
-        serializer = new SnappyJavaUriSerializer();
+    public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth) {
+        this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
     }
 
     public void purge() {

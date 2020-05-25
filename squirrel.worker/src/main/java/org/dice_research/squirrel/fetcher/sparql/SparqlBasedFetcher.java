@@ -1,5 +1,13 @@
 package org.dice_research.squirrel.fetcher.sparql;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
+import java.util.Iterator;
+
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.delay.core.QueryExecutionFactoryDelay;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
@@ -14,14 +22,10 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.io.*;
-import java.sql.SQLException;
-import java.util.Iterator;
 
 /**
  * A simple {@link Fetcher} for SPARQL that tries to get triples from a SPARQL
@@ -30,27 +34,24 @@ import java.util.Iterator;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@Component
+
 public class SparqlBasedFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedFetcher.class);
 
     /**
-     * The delay that the system will have between sending two queries.
+     * The default minimum delay that the system will have between sending two queries.
      */
-    private static final int DELAY = 1000;
+    private static final int MINIMUM_DELAY = 1000;
 
-    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o\r\n" + 
-            "WHERE  {\r\n" + 
-            "GRAPH ?g {\r\n" + 
-            "?s ?p ?o\r\n" + 
-            "}} ";
+    private static final String SELECT_ALL_TRIPLES_QUERY = "SELECT ?s ?p ?o\r\n" + "WHERE  {\r\n" + "GRAPH ?g {\r\n"
+            + "?s ?p ?o\r\n" + "}} ";
 
-    protected int delay = DELAY;
+    protected int minimumDelay = MINIMUM_DELAY;
     protected File dataDirectory = FileUtils.getTempDirectory();
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // Check whether we can be sure that it is a SPARQL endpoint
         boolean shouldBeSparql = Constants.URI_TYPE_VALUE_SPARQL.equals(uri.getData(Constants.URI_TYPE_KEY));
         QueryExecutionFactory qef = null;
@@ -58,8 +59,10 @@ public class SparqlBasedFetcher implements Fetcher {
         File dataFile = null;
         OutputStream out = null;
         try {
+            // Get the permission for the first request
+            delayer.getRequestPermission();
             // Create query execution instance
-            qef = initQueryExecution(uri.getUri().toString());
+            qef = initQueryExecution(uri.getUri().toString(), delayer);
             // create temporary file
             try {
                 dataFile = File.createTempFile("fetched_", "", dataDirectory);
@@ -72,7 +75,7 @@ public class SparqlBasedFetcher implements Fetcher {
             ResultSet resultSet = execution.execSelect();
             RDFDataMgr.writeTriples(out, new SelectedTriplesIterator(resultSet));
             uri.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "application/n-triples");
-            LOGGER.info("Added: " +  uri.getData(Constants.URI_HTTP_MIME_TYPE_KEY));
+            LOGGER.info("Added: " + uri.getData(Constants.URI_HTTP_MIME_TYPE_KEY));
         } catch (Throwable e) {
             // If this should have worked, print a message, otherwise silently return null
             if (shouldBeSparql) {
@@ -88,17 +91,19 @@ public class SparqlBasedFetcher implements Fetcher {
             if (qef != null) {
                 qef.close();
             }
+            delayer.requestFinished();
         }
         ActivityUtil.addStep(uri, getClass());
         return dataFile;
     }
 
-    protected QueryExecutionFactory initQueryExecution(String uri) throws ClassNotFoundException, SQLException {
+    protected QueryExecutionFactory initQueryExecution(String uri, Delayer delayer)
+            throws ClassNotFoundException, SQLException {
         QueryExecutionFactory qef;
         qef = new QueryExecutionFactoryHttp(uri);
-        qef = new QueryExecutionFactoryDelay(qef, DELAY);
+        qef = new QueryExecutionFactoryDelay(qef, Math.max(minimumDelay, delayer.getDelay()));
         try {
-        	LOGGER.info("Starting to Query uri:" + uri);
+            LOGGER.info("Starting to Query uri:" + uri);
             return new QueryExecutionFactoryPaginated(qef, 1000);
         } catch (Exception e) {
             LOGGER.info("Couldn't create Factory with pagination. Returning Factory without pagination. Exception: {}",
@@ -106,6 +111,8 @@ public class SparqlBasedFetcher implements Fetcher {
             return qef;
         }
     }
+    
+
 
     @Override
     public void close() throws IOException {
@@ -132,6 +139,5 @@ public class SparqlBasedFetcher implements Fetcher {
         }
 
     }
-
 
 }

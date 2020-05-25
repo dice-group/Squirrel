@@ -48,13 +48,12 @@ public class CkanJsonAnalyzer extends AbstractAnalyzer {
     public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
         // Make sure that the file contains the CKAN JSON objects we are expecting
         if (Constants.URI_TYPE_VALUE_CKAN.equals(curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY))) {
+            LOGGER.info("Starting the Ckan Json Analyzer for URI: " + curi.getUri().toString());
             Stream<String> lines = null;
             try {
                 lines = Files.lines(data.toPath(), StandardCharsets.UTF_8);
-                sink.openSinkForUri(curi);
-                CkanDatasetConsumer consumer = new CkanDatasetConsumer(sink, collector, curi);
+                CkanDatasetConsumer consumer = new CkanDatasetConsumer(sink, collector, curi,tripleEncoder);
                 lines.map(s -> parseDataset(s)).forEach(consumer);
-                sink.closeSinkForUri(curi);
                 ActivityUtil.addStep(curi, getClass());
                 return collector.getUris(curi);
             } catch (IOException e) {

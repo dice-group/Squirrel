@@ -3,6 +3,7 @@ package org.dice_research.squirrel.analyzer.compress.impl;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 import org.dice_research.squirrel.analyzer.compress.Decompressor;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.utils.TempPathUtils;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public class SevenZipDecompressor extends AbstractDecompressor implements Decomp
     }
 
     @Override
-    public List<File> decompress(File inputFile) throws IOException {
+    public List<File> decompress(CrawleableUri curi, File inputFile) throws IOException {
         File outputFile = createOutputFile();
 
         SevenZFile sevenZFile = new SevenZFile(inputFile);

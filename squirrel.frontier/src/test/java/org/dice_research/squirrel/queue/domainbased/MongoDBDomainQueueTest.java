@@ -30,7 +30,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
 
     @Before
     public void setUp() throws Exception {
-        mongodbQueue = new MongoDBDomainBasedQueue("localhost", 58027);
+        mongodbQueue = new MongoDBDomainBasedQueue("localhost", 58027,false);
 
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
@@ -121,6 +121,8 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         for (CrawleableUri uri : uris) {
             mongodbQueue.addUri(uri);
         }
+        
+        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
         Iterator<String> iter = mongodbQueue.getGroupIterator();
         int count = 0;
         while (iter.hasNext()) {
@@ -131,6 +133,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
                 ++count;
             }
         }
+        
         assertEquals(uris.size(), count);
         mongodbQueue.close();
     }

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
@@ -197,15 +198,16 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
         }
 
-//        cursor.close();
-        return urisToRecrawl;
-    }
 
-    @Override
-    public long count() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+//        cursor.close();
+		return urisToRecrawl;
+	}
+
+	@Override
+	public long count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
     @Override
     public Set<CrawleableUri> getUrisWithSameHashValues(Set<HashValue> hashValuesForComparison) {

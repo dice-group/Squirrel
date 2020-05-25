@@ -15,13 +15,11 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.fetcher.Fetcher;
+import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.dice_research.squirrel.utils.Closer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * A simple fetcher using the FTP protocol.
@@ -29,9 +27,7 @@ import org.springframework.stereotype.Component;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@Component
-@Order(value = 2)
-@Qualifier("ftpFetcher")
+
 public class FTPFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FTPFetcher.class);
@@ -42,7 +38,7 @@ public class FTPFetcher implements Fetcher {
     private FTPRecursiveFetcher recursiveFetcher;
 
     @Override
-    public File fetch(CrawleableUri uri) {
+    public File fetch(CrawleableUri uri, Delayer delayer) {
         // Check whether this fetcher can handle the given URI
         if ((uri == null) || (uri.getUri() == null) || (!ACCEPTED_SCHEMES.contains(uri.getUri().getScheme()))) {
             return null;

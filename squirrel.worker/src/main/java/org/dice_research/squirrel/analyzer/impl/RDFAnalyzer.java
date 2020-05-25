@@ -2,6 +2,7 @@ package org.dice_research.squirrel.analyzer.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
@@ -66,15 +68,26 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         FileInputStream fin = null;
         try {
             // First, try to get the language of the data
-            LOGGER.info("Starting the RDF Analyzer");
+            LOGGER.info("Starting the RDF Analyzer for URI: " + curi.getUri().toString());
             Lang lang = null;
-            String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
-            StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
+            Object httpMimeTypeObject = curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+            String contentType = null;
+            // Make sure the mime type is available before using it AND check that it is not
+            // text/plain (the latter is a workaround)
+            if ((httpMimeTypeObject != null) && (!"text/plain".equals(httpMimeTypeObject.toString()))) {
+                contentType = httpMimeTypeObject.toString();
+            }
+            StreamRDF filtered = new FilterSinkRDF(curi, sink, collector,tripleEncoder);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
-                LOGGER.info("Received content type: " + contentType);
-                RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
+
+                try {
+                    RDFDataMgr.parse(filtered, data.getAbsolutePath(), lang);
+                } catch (Exception e) {
+                    LOGGER.warn("Could not parse file as " + lang.getName());
+                }
             } else {
+                LOGGER.info("Content Type is null");
                 for (Lang l : listLangs) {
                     try {
                         RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
@@ -95,10 +108,21 @@ public class RDFAnalyzer extends AbstractAnalyzer {
         }
     }
 
-//    @Override
+    // @Override
     public boolean isElegible(CrawleableUri curi, File data) {
         // Check the content type first
         String contentType = (String) curi.getData(Constants.URI_HTTP_MIME_TYPE_KEY);
+        Tika tika = new Tika();
+
+        if ("*/*".equals(contentType) || "text/plain".equals(contentType)) {
+            try {
+                contentType = tika.detect(data);
+                curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, contentType);
+
+            } catch (IOException e) {
+                LOGGER.info("Could not Detect Mimetype using Tika, using from Fetcher");
+            }
+        }
 
         if ((contentType != null) && jenaContentTypes.contains(contentType))
             return true;

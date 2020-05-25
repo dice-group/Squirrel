@@ -47,4 +47,5 @@ public interface UriQueue {
      * Opens the queue and allocates necessary resources.
      */
     public void open();
+    
 }

@@ -1,5 +1,4 @@
 uri,type
-https://dbpedia.org/resource/New_York,html
-https://dbpedia.org/resource/Moscow,html
-https://ckan.govdata.de,ckan
-https://www.europeandataportal.eu/sparql,sparql
+https://dice-research.org/Squirrel/html,html
+https://dice-research.org/Squirrel/ckan,ckan
+https://dice-research.org/Squirrel/sparql,sparql

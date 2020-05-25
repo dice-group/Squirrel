@@ -73,7 +73,7 @@ public class MicroformatMF2JAnalyzer extends AbstractAnalyzer {
 				StringWriter out = new StringWriter();
 				model.write(out, syntax);
 				result = out.toString();
-				StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
+				StreamRDF filtered = new FilterSinkRDF(curi, sink, collector,tripleEncoder); 
 				RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);	
 		} catch (Exception e) {
 			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
