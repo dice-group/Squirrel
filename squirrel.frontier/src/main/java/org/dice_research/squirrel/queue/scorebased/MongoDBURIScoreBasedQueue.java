@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.mongodb.client.model.Sorts;
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -43,8 +44,9 @@ public class MongoDBURIScoreBasedQueue extends AbstractURIScoreBasedQueue {
             : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBURIScoreBasedQueue.class);
-
+    private URIGraphSizeBasedQueue graphSizeBasedQueue = new URIGraphSizeBasedQueue("","","");
     public MongoDBURIScoreBasedQueue(String hostName, Integer port, Serializer serializer) {
+
         this.serializer = serializer;
 
         LOGGER.info("Queue Persistance: " + PERSIST);
@@ -71,6 +73,11 @@ public class MongoDBURIScoreBasedQueue extends AbstractURIScoreBasedQueue {
     public MongoDBURIScoreBasedQueue(String hostName, Integer port) {
         client = new MongoClient(hostName, port);
         serializer = new SnappyJavaUriSerializer();
+    }
+
+    public MongoDBURIScoreBasedQueue(String hostName, Integer port, QueryExecutionFactory queryExecFactory) {
+        this(hostName,port);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
     }
 
     public void purge() {
@@ -132,7 +139,7 @@ public class MongoDBURIScoreBasedQueue extends AbstractURIScoreBasedQueue {
 
     @Override
     public float getURIScore(CrawleableUri uri) {
-        URIGraphSizeBasedQueue graphSizeBasedQueue = new URIGraphSizeBasedQueue("","","");
+
         return graphSizeBasedQueue.getURIScore(uri);
     }
 
