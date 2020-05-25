@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -21,11 +22,10 @@
 	<context:component-scan
 		base-package="org.dice_research.squirrel" />
 
-	<!-- This will automatically locate any and all property files you have 
-		within your classpath, provided they fall under the META-INF directory. The 
-		located property files are parsed and their values can then be used within 
+	<!-- This will automatically locate any and all property files you have
+		within your classpath, provided they fall under the META-INF directory. The
+		located property files are parsed and their values can then be used within
 		application context files in the form of ${propertyKey}. -->
-
 
 
 
@@ -99,7 +99,7 @@
  
 	<bean id="wellKnownVariantGeneratorBean"
 		class="org.dice_research.squirrel.data.uri.norm.WellKnownPathUriGenerator" />
- 
+
 
 
 </beans>

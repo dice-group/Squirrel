@@ -1,0 +1,14 @@
+@prefix sq-a:  <http://w3id.org/squirrel/activity#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix sq:  <http://w3id.org/squirrel/vocab#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+sq-a:95ef9851-46af-42a1-b78a-3d2d73bf844b
+        prov:endedAtTime           "2019-11-17T21:40:05.155Z"^^xsd:dateTime ;
+        sq:crawled                 <http://dbpedia.org/ontology/language>.
+
+
+sq-a:300bae75-5208-4144-8f3d-eeeccf2c90e8
+        sq:crawled                 <http://dbpedia.org/ontology/India>;
+        prov:endedAtTime           "2020-01-09T12:53:24.607Z"^^xsd:dateTime.
+
