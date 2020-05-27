@@ -3,7 +3,6 @@ package org.dice_research.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -64,7 +63,9 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
-    private OutDatedUriRetriever outDatedUriRetriever;
+    
+    @Qualifier("UriFilterBean")
+    @Autowired
     private UriFilterComposer uriFilter;
     
     private URIReferences uriReferences = null;
@@ -75,13 +76,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Autowired
     private Serializer serializer;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
-    @Qualifier("sparqlBean")
-    @Autowired
-    private Map<String, Boolean> hasUrisToCrawl;
 
     @Qualifier("normalizerBean")
     @Autowired
     private UriNormalizer normalizer;
+    
+    /**
+     * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
+     */
+	@Qualifier("uriRetrieverBean")
+	@Autowired
+    protected OutDatedUriRetriever outDatedUriRetriever;
     
     @Qualifier("listUriGenerator")
     private List<UriGenerator> uriGenerator;
@@ -96,9 +101,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
-
-          
-          hasUrisToCrawl = new HashMap<String, Boolean>();
 
         if (mongoConfiguration != null) {
 
@@ -126,7 +128,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(normalizer, uriFilter, uriReferences, queue,uriGenerator, doRecrawling);
+        frontier = new ExtendedFrontierImpl(normalizer, uriFilter, uriReferences, queue,uriGenerator, doRecrawling, outDatedUriRetriever);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
         

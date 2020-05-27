@@ -1,7 +1,12 @@
 package org.dice_research.squirrel.frontier.recrawling;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.aksw.jena_sparql_api.core.UpdateExecutionFactory;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -20,12 +25,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
+@SuppressWarnings("deprecation")
 public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedOutDatedUriRetriever.class);
@@ -45,9 +45,8 @@ public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
         return create(sparqlEndpointUrl, null, null);
     }
 
-    public SparqlBasedOutDatedUriRetriever create(String sparqlEndpointUrl, String username, String password) {
+    public static SparqlBasedOutDatedUriRetriever create(String sparqlEndpointUrl, String username, String password) {
         QueryExecutionFactory queryExecFactory;
-        UpdateExecutionFactory updateExecFactory;
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);

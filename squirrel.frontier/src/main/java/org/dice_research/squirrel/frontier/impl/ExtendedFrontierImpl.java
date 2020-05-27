@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-
-import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
-import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
-
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
@@ -17,9 +13,11 @@ import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 
+@SuppressWarnings("deprecation")
 public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFrontier {
 
     /**
@@ -68,8 +66,9 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      *                       crawled.
      * @param doesRecrawling used to select if URIs should be recrawled.
      */
-    public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling) {
-        super(normalizer, relationalUriFilter, uriReferences, queue,uriGenerators, doesRecrawling);
+    public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
+    		OutDatedUriRetriever outDatedUriRetriever) {
+        super(normalizer, relationalUriFilter, uriReferences, queue,uriGenerators, doesRecrawling,outDatedUriRetriever);
     }
 
     @Override
