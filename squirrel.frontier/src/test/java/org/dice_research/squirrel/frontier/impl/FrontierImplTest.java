@@ -22,7 +22,6 @@ import org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator;
 import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -136,7 +135,7 @@ public class FrontierImplTest {
     }
 
     @Test
-    public void testAddingUrisDomainWise() throws URISyntaxException {
+    public void testAddingUrisWithShuffledDomains() throws URISyntaxException {
         List<CrawleableUri> uriList = new ArrayList<>();
         CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
         CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
@@ -156,7 +155,7 @@ public class FrontierImplTest {
         uriList.add(uri6);
         uriList.add(uri7);
         uriList.add(uri8);
-        List<CrawleableUri> domainWiseUriList = frontier.getNewUrisDomainWise(uriList);
+        List<CrawleableUri> domainWiseUriList = frontier.getNewUrisWithShuffledDomains(uriList);
         Assert.assertEquals(8, domainWiseUriList.size());
         String domainWiseUri1Host = domainWiseUriList.get(0).getUri().getHost();
         String domainWiseUri2Host = domainWiseUriList.get(1).getUri().getHost();

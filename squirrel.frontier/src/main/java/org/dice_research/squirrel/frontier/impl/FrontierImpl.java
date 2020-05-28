@@ -22,7 +22,6 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -258,12 +257,12 @@ public class FrontierImpl implements Frontier {
 
 	@Override
 	public void addNewUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : getNewUrisDomainWise(uris)) {
+        for (CrawleableUri uri : getNewUrisWithShuffledDomains(uris)) {
             addNewUri(uri);
         }
 	}
 
-	protected List<CrawleableUri> getNewUrisDomainWise(List<CrawleableUri> uris) {
+	protected List<CrawleableUri> getNewUrisWithShuffledDomains(List<CrawleableUri> uris) {
         List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
         Map<String, Queue<CrawleableUri>> domainWiseUris = new HashMap<>();
         for (CrawleableUri uri : distinctUris) {
