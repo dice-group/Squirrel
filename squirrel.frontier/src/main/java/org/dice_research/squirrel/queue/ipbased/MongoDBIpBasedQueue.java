@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.Constants;
@@ -16,6 +17,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
+import org.dice_research.squirrel.queue.scorebased.URIGraphSizeBasedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +29,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 
 /**
- * 
+ *
  * IpBasedQueue implementation for use with MongoDB
- * 
+ *
  * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
  */
@@ -43,26 +46,32 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
+    private URIGraphSizeBasedQueue graphSizeBasedQueue;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
             : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
-    
+
     public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth) {
     	this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
 
     }
 
+    public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
+        this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
+    }
+
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
 
         LOGGER.info("Queue Persistance: " + PERSIST);
-        
+
         this.includeDepth = includeDepth;
         if(this.includeDepth)
 			LOGGER.info("Depth Persistance Enabled.");
-        
+
         this.serializer = serializer;
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
@@ -84,7 +93,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     }
 
-   
+    public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
+        this(hostName, port, serializer, includeDepth);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
+    }
 
     public void purge() {
         mongoDB.getCollection(COLLECTION_QUEUE).drop();
@@ -169,7 +181,8 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     public List<CrawleableUri> getUris(InetAddress address) {
 
         Document query = getIpDocument(address);
-        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(query).iterator();
+        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(query)
+            .sort(Sorts.descending("score")).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 
@@ -216,6 +229,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         LOGGER.debug("Inserted new UriTypePair");
     }
 
+    public float getURIScore(CrawleableUri uri) {
+        return graphSizeBasedQueue.getURIScore(uri);
+    }
+
     public Document getUriDocument(CrawleableUri uri) {
         byte[] suri = null;
 
@@ -232,9 +249,13 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         docUri.put("_id", uri.getUri().hashCode());
         docUri.put("ipAddress", ipAddress.getHostAddress());
         docUri.put("type", DEFAULT_TYPE);
+        if(graphSizeBasedQueue!=null) {
+            float score = getURIScore(uri);
+            docUri.put("score", score);
+        }
         if(includeDepth)
         	docUri.put("depth",uri.getData(Constants.URI_DEPTH));
-        	
+
         docUri.put("uri", new Binary(suri));
         return docUri;
     }
@@ -303,7 +324,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     protected boolean containsIpAddress(InetAddress address) {
         return containsIpAddress(getIpDocument(address));
     }
-    
+
     protected boolean containsIpAddress(Document ipDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(ipDoc).first() != null;
     }

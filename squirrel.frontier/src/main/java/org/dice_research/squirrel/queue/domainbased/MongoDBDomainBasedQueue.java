@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -12,6 +13,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
+import org.dice_research.squirrel.queue.scorebased.URIGraphSizeBasedQueue;
 import org.rdfhdt.hdt.util.Histogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +26,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 
 /**
- * 
+ *
  * DomainBasedQueue implementation for use with MongoDB
- * 
+ *
  * * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
  */
@@ -40,6 +43,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
+    private URIGraphSizeBasedQueue graphSizeBasedQueue;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
@@ -49,7 +53,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
         this.serializer = serializer;
-        
+
         this.includeDepth = includeDepth;
         if(this.includeDepth)
 			LOGGER.info("Depth Persistance Enabled.");
@@ -72,11 +76,20 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         } else {
             client = new MongoClient(hostName, port);
         }
+    }
 
+    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth,QueryExecutionFactory queryExecFactory) {
+        this(hostName, port, serializer, includeDepth);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
     }
 
     public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth) {
         this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
+    }
+
+    public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth,QueryExecutionFactory queryExecFactory) {
+        this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
     }
 
     public void purge() {
@@ -115,6 +128,11 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         }
     }
 
+
+    public float getURIScore(CrawleableUri uri) {
+        return graphSizeBasedQueue.getURIScore(uri);
+    }
+
     protected void addDomain(String domain) {
         try {
             Document domainDoc = getDomainDocument(domain);
@@ -144,6 +162,10 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         docUri.put("domain", domain);
         docUri.put("type", DEFAULT_TYPE);
         docUri.put("uri", new Binary(suri));
+        if(graphSizeBasedQueue!=null) {
+            float score = getURIScore(uri);
+            docUri.put("score", score);
+        }
         return docUri;
     }
 
@@ -206,7 +228,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public List<CrawleableUri> getUris(String domain) {
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-                .find(new Document("domain", domain).append("type", DEFAULT_TYPE)).iterator();
+                .find(new Document("domain", domain).append("type", DEFAULT_TYPE))
+                .sort(Sorts.descending("score")).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 
