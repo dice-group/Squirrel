@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,28 +42,28 @@ public class FrontierImplTest {
 
     @Before
     public void setUp() throws Exception {
-    	
-    	
+
+
         MongoDBBasedTest.setUpMDB();
 
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
-         filter.open();
-         queue.open();
-         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+        queue = new MongoDBIpBasedQueue("localhost", 58027, false);
+        filter.open();
+        queue.open();
+        List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
 //         uriGenerators.add(new DomainBasedUriGenerator());
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
-        
-        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(filter,"OR");
 
-        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators,true);
+        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(filter, "OR");
+
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs, mapDefaultPort), relationalUriFilter, queue, uriGenerators, true);
 
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
     }
 
     @Test
@@ -85,9 +86,9 @@ public class FrontierImplTest {
 
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"),
-                InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
+            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"),
-                UriType.DEREFERENCEABLE));
+            UriType.DEREFERENCEABLE));
 
         assertEquals("Should be the same as uris array", assertion, nextUris);
     }
@@ -99,7 +100,7 @@ public class FrontierImplTest {
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"),
-                InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
+            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertEquals(assertion, nextUris);
     }
 
@@ -107,13 +108,13 @@ public class FrontierImplTest {
     public void crawlingDone() throws Exception {
         List<CrawleableUri> crawledUris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
-        
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+
         crawledUris.add(uri_1);
         crawledUris.add(uri_2);
-        
+
 //        frontier.addNewUris(crawledUris);
 //        filter.add(uri_1, 100);
 
@@ -129,9 +130,48 @@ public class FrontierImplTest {
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(1, numberOfPendingUris);
-        
+
         numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(2, nextUris.size());
+    }
+
+    @Test
+    public void testAddingUrisDomainWise() throws URISyntaxException {
+        List<CrawleableUri> uriList = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"));
+
+        CrawleableUri uri4 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/New_York_City"));
+        CrawleableUri uri5 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/Berlin"));
+
+        CrawleableUri uri6 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=berlin"));
+        CrawleableUri uri7 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=bangalore"));
+        CrawleableUri uri8 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=moscow"));
+        uriList.add(uri1);
+        uriList.add(uri2);
+        uriList.add(uri3);
+        uriList.add(uri4);
+        uriList.add(uri5);
+        uriList.add(uri6);
+        uriList.add(uri7);
+        uriList.add(uri8);
+        List<CrawleableUri> domainWiseUriList = frontier.getNewUrisDomainWise(uriList);
+        Assert.assertEquals(8, domainWiseUriList.size());
+        String domainWiseUri1Host = domainWiseUriList.get(0).getUri().getHost();
+        String domainWiseUri2Host = domainWiseUriList.get(1).getUri().getHost();
+        String domainWiseUri3Host = domainWiseUriList.get(2).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri1Host.equalsIgnoreCase(domainWiseUri2Host) &&
+            !domainWiseUri1Host.equalsIgnoreCase(domainWiseUri3Host));
+        String domainWiseUri4Host = domainWiseUriList.get(3).getUri().getHost();
+        String domainWiseUri5Host = domainWiseUriList.get(4).getUri().getHost();
+        String domainWiseUri6Host = domainWiseUriList.get(5).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri4Host.equalsIgnoreCase(domainWiseUri5Host) &&
+            !domainWiseUri4Host.equalsIgnoreCase(domainWiseUri6Host) &&
+            !domainWiseUri4Host.equalsIgnoreCase(domainWiseUri3Host));
+        String domainWiseUri7Host = domainWiseUriList.get(6).getUri().getHost();
+        String domainWiseUri8Host = domainWiseUriList.get(7).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri7Host.equalsIgnoreCase(domainWiseUri8Host));
     }
 
     /*
@@ -142,9 +182,9 @@ public class FrontierImplTest {
         // Add the URIs to the frontier
         List<CrawleableUri> uris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/uriThatShouldBeRecrawled"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/normalUri"),
-                InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
+            InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         uris.add(uri_1);
         uris.add(uri_2);
 
@@ -160,13 +200,13 @@ public class FrontierImplTest {
 
         // Set the first URI as recrawlable
         for (CrawleableUri uri : nextUris) {
-            if(uri.getUri().equals(uri_1.getUri())) {
+            if (uri.getUri().equals(uri_1.getUri())) {
                 uri.addData(Constants.URI_PREFERRED_RECRAWL_ON, System.currentTimeMillis() - 1);
             }
         }
 
         frontier.crawlingDone(uris);
-        
+
         uris.add(uri_1);
         uris.add(uri_2);
 
@@ -179,8 +219,8 @@ public class FrontierImplTest {
 
     @After
     public void tearDown() throws Exception {
-    	filter.purge();
-    	queue.purge();
+        filter.purge();
+        queue.purge();
         String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();

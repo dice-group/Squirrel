@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
@@ -211,10 +212,10 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
- 
+
             if (manager.isUriCrawlable(uri)) {
                 // Make sure that there is a delay between the fetching of two URIs
-                
+
                 Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri),
                         System.currentTimeMillis());
 
@@ -315,7 +316,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Sends the given URIs to the frontier.
-     * 
+     *
      * @param uriIterator an iterator used to iterate over all new URIs
      */
     public void sendNewUris(Iterator<byte[]> uriIterator) {
@@ -328,15 +329,17 @@ public class WorkerImpl implements Worker, Closeable {
                 uriProcessor.recognizeUriType(newUri);
                 newUris.add(newUri);
                 if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
+                    List<CrawleableUri> distinctUris = newUris.stream().distinct().collect(Collectors.toList());
                     frontier.addNewUris(
-                            new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
+                            new ArrayList<>(distinctUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
                     packageCount++;
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        frontier.addNewUris(newUris);
+        List<CrawleableUri> distinctUris = newUris.stream().distinct().collect(Collectors.toList());
+        frontier.addNewUris(distinctUris);
     }
 
     @Override
