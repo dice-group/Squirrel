@@ -1,11 +1,11 @@
 package org.dice_research.squirrel.queue.domainbased;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
+import org.apache.commons.collections.CollectionUtils;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
@@ -276,4 +276,32 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     protected boolean containsDomain(Document domainDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(domainDoc).first() != null;
     }
+
+    protected List<CrawleableUri> getNewUrisWithShuffledDomains(List<CrawleableUri> uris) {
+        List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
+        Map<String, Queue<CrawleableUri>> domainWiseUris = new HashMap<>();
+        for (CrawleableUri uri : distinctUris) {
+            String domain = uri.getUri().getHost();
+            Queue<CrawleableUri> uriQueue = domainWiseUris.get(domain);
+            if(CollectionUtils.isEmpty(uriQueue)) {
+                uriQueue = new ArrayDeque<>();
+            }
+            uriQueue.add(uri);
+            domainWiseUris.put(domain, uriQueue);
+        }
+        Collection<Queue<CrawleableUri>> uriQueues = domainWiseUris.values();
+        List<CrawleableUri> finalList = new ArrayList<>();
+        int counter = 0;
+        while(counter < uris.size()) {
+            for (Queue<CrawleableUri> uriList : uriQueues) {
+                CrawleableUri uri = uriList.poll();
+                if(uri != null) {
+                    finalList.add(uri);
+                    counter++;
+                }
+            }
+        }
+        return finalList;
+    }
+
 }

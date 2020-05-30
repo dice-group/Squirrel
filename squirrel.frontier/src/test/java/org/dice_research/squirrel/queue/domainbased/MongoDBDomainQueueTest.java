@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -236,4 +237,44 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         assertEquals(0, mongodbQueue.length());
         mongodbQueue.close();
     }
+
+    @Test
+    public void testAddingUrisWithShuffledDomains() throws URISyntaxException {
+        List<CrawleableUri> uriList = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"));
+
+        CrawleableUri uri4 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/New_York_City"));
+        CrawleableUri uri5 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/Berlin"));
+
+        CrawleableUri uri6 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=berlin"));
+        CrawleableUri uri7 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=bangalore"));
+        CrawleableUri uri8 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=moscow"));
+        uriList.add(uri1);
+        uriList.add(uri2);
+        uriList.add(uri3);
+        uriList.add(uri4);
+        uriList.add(uri5);
+        uriList.add(uri6);
+        uriList.add(uri7);
+        uriList.add(uri8);
+        List<CrawleableUri> domainWiseUriList = mongodbQueue.getNewUrisWithShuffledDomains(uriList);
+        Assert.assertEquals(8, domainWiseUriList.size());
+        String domainWiseUri1Host = domainWiseUriList.get(0).getUri().getHost();
+        String domainWiseUri2Host = domainWiseUriList.get(1).getUri().getHost();
+        String domainWiseUri3Host = domainWiseUriList.get(2).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri1Host.equalsIgnoreCase(domainWiseUri2Host) &&
+            !domainWiseUri1Host.equalsIgnoreCase(domainWiseUri3Host));
+        String domainWiseUri4Host = domainWiseUriList.get(3).getUri().getHost();
+        String domainWiseUri5Host = domainWiseUriList.get(4).getUri().getHost();
+        String domainWiseUri6Host = domainWiseUriList.get(5).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri4Host.equalsIgnoreCase(domainWiseUri5Host) &&
+            !domainWiseUri4Host.equalsIgnoreCase(domainWiseUri6Host) &&
+            !domainWiseUri4Host.equalsIgnoreCase(domainWiseUri3Host));
+        String domainWiseUri7Host = domainWiseUriList.get(6).getUri().getHost();
+        String domainWiseUri8Host = domainWiseUriList.get(7).getUri().getHost();
+        Assert.assertTrue(!domainWiseUri7Host.equalsIgnoreCase(domainWiseUri8Host));
+    }
+
 }
