@@ -1,14 +1,11 @@
 package org.dice_research.squirrel.queue;
 
-import java.util.AbstractMap;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.group.UriGroupByOperator;
 
@@ -30,7 +27,11 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
      * Set of blocked key values.
      */
     private Set<T> blockedKeys = new HashSet<T>();
-    
+
+    private int numberOfKeys;
+
+    private int minNumberOfUrisToCheck = 5;
+
     /**
      * if the queue will store the depth or not
      */
@@ -38,9 +39,8 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Constructor.
-     * 
-     * @param groupByOperator
-     *            Operator used to group URIs
+     *
+     * @param groupByOperator Operator used to group URIs
      */
     public AbstractGroupingQueue(UriGroupByOperator<T> groupByOperator) {
         this.groupByOperator = groupByOperator;
@@ -55,12 +55,10 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Adds the given URI with they given group key to the queue.
-     * 
-     * @param uri
-     *            the URI that should be added to the queue
-     * @param groupKey
-     *            the group key which should be used to identify the group this URI
-     *            belongs to
+     *
+     * @param uri      the URI that should be added to the queue
+     * @param groupKey the group key which should be used to identify the group this URI
+     *                 belongs to
      */
     protected abstract void addUri(CrawleableUri uri, T groupKey);
 
@@ -116,36 +114,89 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Returns an iterator over all group keys that are currently in the queue.
-     * 
+     *
      * @return all group keys currently in the queue
      */
     protected abstract Iterator<T> getGroupIterator();
 
     /**
      * Returns all URIs of the given group key
-     * 
-     * @param groupKey
-     *            key of the selected URI group
+     *
+     * @param groupKey key of the selected URI group
      * @return all URIs of the given group key
      */
     protected abstract List<CrawleableUri> getUris(T groupKey);
 
     /**
      * Removes the given set of URIs from the queue
-     * 
-     * @param groupKey
-     *            key of the given URI group
-     * @param uris
-     *            set of URIs which should be removed
+     *
+     * @param groupKey key of the given URI group
+     * @param uris     set of URIs which should be removed
      */
     protected abstract void deleteUris(T groupKey, List<CrawleableUri> uris);
-    
+
     /**
      * Returns if the queue is storing the crawled depth
-     * 
      */
     public boolean isDepthIncluded() {
-    	return this.includeDepth;
+        return this.includeDepth;
     }
 
+    @Override
+    public void addUris(List<CrawleableUri> uris) {
+        synchronized (this) {
+            addShuffledUris(uris);
+        }
+    }
+
+    public void addShuffledUris(List<CrawleableUri> uris) {
+        List<CrawleableUri> shuffledUris = getNewUrisWithShuffledKeys(uris);
+        Map<String, Integer> mapOfKeysWithLessScore = new HashMap<>();
+        for (int i = 0; i < shuffledUris.size(); i++) {
+            if(mapOfKeysWithLessScore.get(getKey(shuffledUris.get(i))) == null ||  mapOfKeysWithLessScore.get(getKey(shuffledUris.get(i))) < minNumberOfUrisToCheck) {
+                float score = addShuffledUri(shuffledUris.get(i));
+                if ((i < minNumberOfUrisToCheck * numberOfKeys) && score < getCriticalScore()) {
+                    if (!mapOfKeysWithLessScore.containsKey(getKey(shuffledUris.get(i)))) {
+                        mapOfKeysWithLessScore.put(getKey(shuffledUris.get(i)), 1);
+                    } else {
+                        mapOfKeysWithLessScore.put(getKey(shuffledUris.get(i)), mapOfKeysWithLessScore.get(shuffledUris.get(i)) + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public abstract float addShuffledUri(CrawleableUri uri);
+
+    protected List<CrawleableUri> getNewUrisWithShuffledKeys(List<CrawleableUri> uris) {
+        List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
+        Map<String, Queue<CrawleableUri>> keyWiseUris = new HashMap<>();
+        for (CrawleableUri uri : distinctUris) {
+            String key = getKey(uri);
+            Queue<CrawleableUri> uriQueue = keyWiseUris.get(key);
+            if (CollectionUtils.isEmpty(uriQueue)) {
+                uriQueue = new ArrayDeque<>();
+            }
+            uriQueue.add(uri);
+            keyWiseUris.put(key, uriQueue);
+        }
+        numberOfKeys = keyWiseUris.entrySet().size();
+        Collection<Queue<CrawleableUri>> uriQueues = keyWiseUris.values();
+        List<CrawleableUri> finalList = new ArrayList<>();
+        int counter = 0;
+        while (counter < uris.size()) {
+            for (Queue<CrawleableUri> uriList : uriQueues) {
+                CrawleableUri uri = uriList.poll();
+                if (uri != null) {
+                    finalList.add(uri);
+                    counter++;
+                }
+            }
+        }
+        return finalList;
+    }
+
+    protected abstract String getKey(CrawleableUri uri);
+
+    protected abstract float getCriticalScore();
 }

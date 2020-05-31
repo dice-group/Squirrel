@@ -239,7 +239,8 @@ public class FrontierImpl implements Frontier {
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = relationalUriFilter.getKnownUriFilter().getOutdatedUris();
                     urisToRecrawl = urisToRecrawl.stream().distinct().collect(Collectors.toList());
-					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+//					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+					queue.addUris(urisToRecrawl);
 				}
 			}, this.timerPeriod, this.timerPeriod);
 		}
