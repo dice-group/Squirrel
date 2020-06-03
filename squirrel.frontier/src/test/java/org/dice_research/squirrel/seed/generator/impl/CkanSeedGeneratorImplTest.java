@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,11 @@ public class CkanSeedGeneratorImplTest extends TestCase {
     private IpAddressBasedQueue queue;
     private Frontier frontier;
 
+
     public void setUp() {
         queue = new InMemoryQueue();
+        //frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,null);
+
         
         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
         uriGenerators.add(new DomainBasedUriGenerator());

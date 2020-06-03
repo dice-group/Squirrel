@@ -1,11 +1,7 @@
 package org.dice_research.squirrel.encoder;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +12,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.MultiValueMap;
 
 /**
  * Class that can encode triples to UTF8
@@ -28,8 +23,6 @@ public class TripleEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TripleEncoder.class);
 	private static TripleEncoder tripleEncoder;
-
-	private static final String DEFAULT_CHARSET = StandardCharsets.UTF_8.toString();
 
 	private TripleEncoder() {
 

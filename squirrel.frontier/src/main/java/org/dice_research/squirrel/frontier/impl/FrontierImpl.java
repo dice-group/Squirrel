@@ -16,13 +16,13 @@ import org.dice_research.squirrel.data.uri.norm.UriGenerator;
 import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.Frontier;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.graph.GraphLogger;
 import org.dice_research.squirrel.queue.BlockingQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -43,6 +43,11 @@ public class FrontierImpl implements Frontier {
 	 * {@link KnownUriFilter} used to identify URIs that already have been crawled.
 	 */
 	protected UriFilterComposer uriFilter;
+	
+	/**
+     * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
+     */
+    protected OutDatedUriRetriever outDatedUriRetriever;
 
 	/**
 	 * {@link org.dice_research.squirrel.data.uri.info.URIReferences} used to
@@ -123,8 +128,8 @@ public class FrontierImpl implements Frontier {
 	public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,
 			List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
 			long timerPeriod) {
-		this(normalizer, relationalUriFilter, null, queue, uriGenerators, graphLogger, doesRecrawling,
-				generalRecrawlTime, timerPeriod);
+		this(normalizer, relationalUriFilter, null, queue, uriGenerators, graphLogger, false,
+				generalRecrawlTime, timerPeriod,null);
 	}
 
 	/**
@@ -162,9 +167,9 @@ public class FrontierImpl implements Frontier {
 	 * @param doesRecrawling Value for {@link #doesRecrawling}.
 	 */
 	public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences,
-			UriQueue queue, List<UriGenerator> uriGenerators, boolean doesRecrawling) {
+			UriQueue queue, List<UriGenerator> uriGenerators,boolean doesRecrawling, OutDatedUriRetriever outDatedUriRetriever) {
 		this(normalizer, relationalUriFilter, uriReferences, queue, uriGenerators, null, doesRecrawling,
-				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD);
+				DEFAULT_GENERAL_RECRAWL_TIME, DEFAULT_TIMER_PERIOD,outDatedUriRetriever);
 	}
 
 	/**
@@ -219,7 +224,7 @@ public class FrontierImpl implements Frontier {
 	 */
 	public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, URIReferences uriReferences,
 			UriQueue queue, List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling,
-			long generalRecrawlTime, long timerPeriod) {
+			long generalRecrawlTime, long timerPeriod,OutDatedUriRetriever outDatedUriRetriever) {
 		this.normalizer = normalizer;
 		this.uriFilter = relationalUriFilter;
 		this.uriReferences = uriReferences;
@@ -227,7 +232,7 @@ public class FrontierImpl implements Frontier {
 		this.queue = queue;
 		this.uriProcessor = new UriProcessor();
 		this.graphLogger = graphLogger;
-
+		this.outDatedUriRetriever = outDatedUriRetriever;
 		this.queue.open();
 		this.doesRecrawling = doesRecrawling;
 		this.timerPeriod = timerPeriod;
@@ -238,7 +243,7 @@ public class FrontierImpl implements Frontier {
 			timerRecrawling.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					List<CrawleableUri> urisToRecrawl = relationalUriFilter.getKnownUriFilter().getOutdatedUris();
+					List<CrawleableUri> urisToRecrawl = outDatedUriRetriever.getUriToRecrawl();
 					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
 				}
 			}, this.timerPeriod, this.timerPeriod);
