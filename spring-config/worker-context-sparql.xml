@@ -38,13 +38,17 @@
 	<bean id="analyzerBean"	class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
 		<constructor-arg index="0">
             <list>
+                <ref bean="rdfAnalyzerBean"/>
+                <ref bean="htmlScraperAnalyzerBean"/>          
+           
+            	<!-- 
                  <ref bean="ckanAnalyzerBean"/>         
                  <ref bean="rdfAnalyzerBean"/>
 				 <ref bean="rdfaAnalyzerBean"/> 
                  <ref bean="htmlScraperAnalyzerBean"/>          
                  <ref bean="microdataAnalyzerBean"/>          
                  <ref bean="microformatAnalyzerBean"/>          
-                 <ref bean="hdtAnalyzerBean"/>  <!--        -->
+                 <ref bean="hdtAnalyzerBean"/>         -->
                  
                        
             </list>
@@ -84,12 +88,14 @@
 		  class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
 		<constructor-arg>
 			<list>
+				<ref bean="httpFetcherBean" />
+			<!-- 
 				<ref bean="sparqlFetcherBean" />
 				<ref bean="ckanFetcherBean" />
 				<ref bean="httpFetcherBean" />
 				<ref bean="ftpFetcherBean" />
 				<ref bean="sparqlDatasetFetcherBean" />
-
+ -->
 			</list>
 		</constructor-arg>
 	</bean>
@@ -142,6 +148,8 @@
 		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}" />
 		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}" />
 		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />
+		<constructor-arg index="3" value="1000" />
+		<constructor-arg index="4" value="10" /> 
 	</bean>
 
 	<bean id="serializerBean"

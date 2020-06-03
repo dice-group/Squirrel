@@ -72,10 +72,10 @@
 		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
 		<constructor-arg index="1">
 			<list>
-				<ref bean="depthFilter" />
+				<!-- <ref bean="depthFilter" /> -->
 			</list>
 		</constructor-arg>
-		<constructor-arg index="2" value="AND" />
+		<constructor-arg index="2" value="OR" />
 	</bean>
 
 	<!-- Triple Store sparql implementation -->
