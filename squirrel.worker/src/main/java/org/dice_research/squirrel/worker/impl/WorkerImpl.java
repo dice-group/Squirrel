@@ -253,6 +253,7 @@ public class WorkerImpl implements Worker, Closeable {
                                 for (File file : fileList) {
                                     LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
                                     Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                                    sink.flushSinkForUri(uri);
                                     sendNewUris(resultUris);
                                     cont++;
                                 }

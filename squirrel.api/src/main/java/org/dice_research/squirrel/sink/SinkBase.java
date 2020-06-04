@@ -20,6 +20,15 @@ public interface SinkBase {
     public void openSinkForUri(CrawleableUri uri);
 
     /**
+     * Makes sure the data of the given URI is sent to the database.
+     *
+     * @param uri
+     *            the URI for which data needs to be sent.
+     */
+    public default void flushSinkForUri(CrawleableUri uri) {
+    };
+
+    /**
      * Closes the resources necessary for storing the data of the given URI.
      * 
      * @param uri

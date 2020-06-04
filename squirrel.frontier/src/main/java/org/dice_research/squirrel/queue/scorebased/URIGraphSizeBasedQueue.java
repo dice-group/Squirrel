@@ -80,7 +80,7 @@ public class URIGraphSizeBasedQueue {
     }
 
     private int getGraphSize(String uri) {
-        String query = "SELECT (COUNT(*) AS ?C) WHERE { GRAPH <" + Constants.DEFAULT_META_DATA_GRAPH_URI +  "> { <" + uri + "> ?p ?o } }";
+        String query = "SELECT (COUNT(*) AS ?C) WHERE { <" + uri + "> ?p ?o }";
         try (QueryExecution execution = queryExecFactory.createQueryExecution(query)) {
             ResultSet resultSet = execution.execSelect();
             if(resultSet.hasNext()){
