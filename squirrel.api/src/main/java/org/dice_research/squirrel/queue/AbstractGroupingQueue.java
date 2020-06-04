@@ -168,7 +168,7 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     public abstract float addShuffledUri(CrawleableUri uri);
 
-    protected List<CrawleableUri> getNewUrisWithShuffledKeys(List<CrawleableUri> uris) {
+    public List<CrawleableUri> getNewUrisWithShuffledKeys(List<CrawleableUri> uris) {
         List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
         Map<String, Queue<CrawleableUri>> keyWiseUris = new HashMap<>();
         for (CrawleableUri uri : distinctUris) {
