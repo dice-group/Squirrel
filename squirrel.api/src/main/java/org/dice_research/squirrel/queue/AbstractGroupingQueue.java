@@ -28,10 +28,6 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
      */
     private Set<T> blockedKeys = new HashSet<T>();
 
-    private int numberOfKeys;
-
-    private int minNumberOfUrisToCheck = 5;
-
     /**
      * if the queue will store the depth or not
      */
@@ -143,60 +139,51 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     }
 
     @Override
-    public void addUris(List<CrawleableUri> uris) {
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris) {
         synchronized (this) {
-            addShuffledUris(uris);
+            return addKeywiseUris(makeURIsKeywise(uris), getMinNumOfUrisToCheck());
         }
     }
 
-    public void addShuffledUris(List<CrawleableUri> uris) {
-        List<CrawleableUri> shuffledUris = getNewUrisWithShuffledKeys(uris);
-        Map<String, Integer> mapOfKeysWithLessScore = new HashMap<>();
-        for (int i = 0; i < shuffledUris.size(); i++) {
-            if(mapOfKeysWithLessScore.get(getKey(shuffledUris.get(i))) == null ||  mapOfKeysWithLessScore.get(getKey(shuffledUris.get(i))) < minNumberOfUrisToCheck) {
-                float score = addShuffledUri(shuffledUris.get(i));
-                if ((i < minNumberOfUrisToCheck * numberOfKeys) && score < getCriticalScore()) {
-                    if (!mapOfKeysWithLessScore.containsKey(getKey(shuffledUris.get(i)))) {
-                        mapOfKeysWithLessScore.put(getKey(shuffledUris.get(i)), 1);
-                    } else {
-                        mapOfKeysWithLessScore.put(getKey(shuffledUris.get(i)), mapOfKeysWithLessScore.get(shuffledUris.get(i)) + 1);
-                    }
-                }
-            }
-        }
-    }
+    protected abstract float addKeywiseUri(CrawleableUri uri);
 
-    public abstract float addShuffledUri(CrawleableUri uri);
-
-    public List<CrawleableUri> getNewUrisWithShuffledKeys(List<CrawleableUri> uris) {
+    public Map<String, List<CrawleableUri>> makeURIsKeywise(List<CrawleableUri> uris) {
         List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
-        Map<String, Queue<CrawleableUri>> keyWiseUris = new HashMap<>();
+        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
         for (CrawleableUri uri : distinctUris) {
             String key = getKey(uri);
-            Queue<CrawleableUri> uriQueue = keyWiseUris.get(key);
-            if (CollectionUtils.isEmpty(uriQueue)) {
-                uriQueue = new ArrayDeque<>();
+            List<CrawleableUri> uriList = keyWiseUris.get(key);
+            if (CollectionUtils.isEmpty(uriList)) {
+                uriList = new ArrayList<>();
             }
-            uriQueue.add(uri);
-            keyWiseUris.put(key, uriQueue);
+            uriList.add(uri);
+            keyWiseUris.put(key, uriList);
         }
-        numberOfKeys = keyWiseUris.entrySet().size();
-        Collection<Queue<CrawleableUri>> uriQueues = keyWiseUris.values();
-        List<CrawleableUri> finalList = new ArrayList<>();
-        int counter = 0;
-        while (counter < uris.size()) {
-            for (Queue<CrawleableUri> uriList : uriQueues) {
-                CrawleableUri uri = uriList.poll();
-                if (uri != null) {
-                    finalList.add(uri);
-                    counter++;
+        return keyWiseUris;
+    }
+
+    public List<CrawleableUri> addKeywiseUris(Map<String, List<CrawleableUri>> keyWiseUris, int minNumberOfUrisToCheck) {
+        List<CrawleableUri> notAddedURIs = new ArrayList<>();
+        Collection<List<CrawleableUri>> uriLists = keyWiseUris.values();
+        for(List<CrawleableUri> uriList : uriLists) {
+            boolean checkScore = true;
+            for(int i = 0; i < uriList.size(); i++) {
+                if(checkScore && i < minNumberOfUrisToCheck) {
+                    float score = addKeywiseUri(uriList.get(i));
+                    if(score > getCriticalScore()) {
+                        checkScore = false;
+                    }
+                    continue;
                 }
+                addKeywiseUri(uriList.get(i));
             }
         }
-        return finalList;
+        return notAddedURIs;
     }
 
     protected abstract String getKey(CrawleableUri uri);
 
     protected abstract float getCriticalScore();
+
+    protected abstract int getMinNumOfUrisToCheck();
 }

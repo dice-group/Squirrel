@@ -43,7 +43,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
-    private final float criticalScore = .001f;
+    private static final float CRITICAL_SCORE = .2f;
+    private static final int MIN_NUMBER_OF_URIS_TO_CHECK = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
@@ -195,7 +196,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     }
 
     @Override
-    public float addShuffledUri(CrawleableUri uri) {
+    public float addKeywiseUri(CrawleableUri uri) {
         addDomain(uri.getUri().getHost());
         return addCrawleableUri(uri, uri.getUri().getHost());
     }
@@ -207,7 +208,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     @Override
     protected float getCriticalScore() {
-        return criticalScore;
+        return CRITICAL_SCORE;
+    }
+
+    @Override
+    protected int getMinNumOfUrisToCheck() {
+        return MIN_NUMBER_OF_URIS_TO_CHECK;
     }
 
     public boolean queueTableExists() {

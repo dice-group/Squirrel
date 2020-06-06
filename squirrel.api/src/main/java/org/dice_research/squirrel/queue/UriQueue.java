@@ -48,6 +48,12 @@ public interface UriQueue {
      */
     public void open();
 
-    public void addUris(List<CrawleableUri> uris);
-
+    /**
+     * Adds the given {@link CrawleableUri} instances to the queue.
+     *
+     * @param uris
+     *            the {@link CrawleableUri} instances that should be added to the
+     *            queue.
+     */
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris);
 }

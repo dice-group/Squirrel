@@ -14,7 +14,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetDescription;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +94,7 @@ public class URIGraphSizeBasedQueue extends AbstractURIScoreBasedQueue {
     }
 
     @Override
-    public void addUris(List<CrawleableUri> uris) {
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris) {
+        return null;
     }
 }

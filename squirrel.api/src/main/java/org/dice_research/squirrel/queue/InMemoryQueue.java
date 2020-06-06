@@ -100,7 +100,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 	}
 
     @Override
-    public float addShuffledUri(CrawleableUri uri) {
+    public float addKeywiseUri(CrawleableUri uri) {
         return 0;
     }
 
@@ -111,6 +111,11 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 
     @Override
     protected float getCriticalScore() {
+        return 0;
+    }
+
+    @Override
+    protected int getMinNumOfUrisToCheck() {
         return 0;
     }
 
