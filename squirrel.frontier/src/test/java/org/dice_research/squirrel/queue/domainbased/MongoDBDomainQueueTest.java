@@ -157,10 +157,10 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         assertEquals(1, listUris.size());
         List<CrawleableUri> listUris2 = mongodbQueue.getNextUris();
         assertEquals(4, listUris2.size());
-        Assert.assertEquals("http://dbpedia.org/resource/New_York_City", listUris2.get(0).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/Moscow", listUris2.get(1).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/Berlin", listUris2.get(2).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/Bangalore", listUris2.get(3).getUri().toString());
+        Assert.assertTrue(listUris2.contains(uris.get(1)));                 // "http://dbpedia.org/resource/New_York_City"
+        Assert.assertTrue(listUris2.contains(uris.get(2)));                 // "http://dbpedia.org/resource/Moscow"
+        Assert.assertTrue(listUris2.contains(uris.get(3)));                 // "http://dbpedia.org/resource/Berlin"
+        Assert.assertTrue(listUris2.contains(uris.get(4)));                 // "http://dbpedia.org/resource/Bangalore"
         List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
         assertEquals(1, listUris3.size());
         List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
@@ -270,9 +270,9 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         mongodbQueue.purge();
         Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
         List<CrawleableUri> dbpediaUris = new ArrayList<>();
-        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
-        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"));
-        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Paderborn"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Sirsi"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Cologne"));
         dbpediaUris.add(uri1);
         dbpediaUris.add(uri2);
         dbpediaUris.add(uri3);
