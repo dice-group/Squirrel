@@ -166,16 +166,23 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
         List<CrawleableUri> notAddedURIs = new ArrayList<>();
         Collection<List<CrawleableUri>> uriLists = keyWiseUris.values();
         for(List<CrawleableUri> uriList : uriLists) {
-            boolean checkScore = true;
+            boolean scoresBelowCritical = true;
             for(int i = 0; i < uriList.size(); i++) {
-                if(checkScore && i < minNumberOfUrisToCheck) {
+                if(i < minNumberOfUrisToCheck) {
                     float score = addKeywiseUri(uriList.get(i));
                     if(score > getCriticalScore()) {
-                        checkScore = false;
+                        scoresBelowCritical = false;
+                    }
+                    if(scoresBelowCritical) {
+                        notAddedURIs.add(uriList.get(i));
                     }
                     continue;
                 }
-                addKeywiseUri(uriList.get(i));
+                if(scoresBelowCritical) {
+                    notAddedURIs.add(uriList.get(i));
+                } else {
+                    addKeywiseUri(uriList.get(i));
+                }
             }
         }
         return notAddedURIs;
