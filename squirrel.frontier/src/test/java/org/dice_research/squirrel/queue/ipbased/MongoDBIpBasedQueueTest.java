@@ -41,7 +41,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     @Before
     public void setUp() throws Exception {
         queryExecFactory = initQueryFactoryEngine();
-    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027,false,queryExecFactory);
+    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 27017,false,queryExecFactory);
 
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 
@@ -167,7 +167,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
         Assert.assertEquals("http://dbpedia.org/resource/Bangalore", listUris2.get(2).getUri().toString());
         Assert.assertEquals("http://dbpedia.org/resource/Berlin", listUris2.get(3).getUri().toString());
         List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
-        assertEquals(1, listUris3.size());
+            assertEquals(1, listUris3.size());
         List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
         assertEquals(null, listUris4);
         mongodbQueue.purge();

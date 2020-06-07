@@ -13,8 +13,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
-import org.dice_research.squirrel.queue.scorebased.URIGraphSizeBasedQueue;
-import org.rdfhdt.hdt.util.Histogram;
+import org.dice_research.squirrel.queue.scorecalculator.IURIScoreCalculator;
+import org.dice_research.squirrel.queue.scorecalculator.URIGraphSizeBasedScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
-    private URIGraphSizeBasedQueue graphSizeBasedQueue;
+    private IURIScoreCalculator graphSizeBasedQueue;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
@@ -80,7 +80,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth,QueryExecutionFactory queryExecFactory) {
         this(hostName, port, serializer, includeDepth);
-        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedScoreCalculator(queryExecFactory);
     }
 
     public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth) {
@@ -89,7 +89,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth,QueryExecutionFactory queryExecFactory) {
         this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
-        this.graphSizeBasedQueue = new URIGraphSizeBasedQueue(queryExecFactory);
+        this.graphSizeBasedQueue = new URIGraphSizeBasedScoreCalculator(queryExecFactory);
     }
 
     public void purge() {

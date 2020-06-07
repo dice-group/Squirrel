@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.queue.scorebased;
+package org.dice_research.squirrel.queue.scorecalculator;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
@@ -13,28 +13,27 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.DatasetDescription;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
-public class URIGraphSizeBasedQueue {
+public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(URIGraphSizeBasedQueue.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(URIGraphSizeBasedScoreCalculator.class);
 
     protected QueryExecutionFactory queryExecFactory = null;
 
-    public URIGraphSizeBasedQueue() {
+    public URIGraphSizeBasedScoreCalculator() {
         throw new UnsupportedOperationException();
     }
 
-    public URIGraphSizeBasedQueue(QueryExecutionFactory qe) {
+    public URIGraphSizeBasedScoreCalculator(QueryExecutionFactory qe) {
         this.queryExecFactory = qe;
     }
 
-    public URIGraphSizeBasedQueue(String sparqlEndpointUrl, String username, String password) {
+    public URIGraphSizeBasedScoreCalculator(String sparqlEndpointUrl, String username, String password) {
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
