@@ -8,10 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.util.*;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
@@ -159,10 +157,10 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         assertEquals(1, listUris.size());
         List<CrawleableUri> listUris2 = mongodbQueue.getNextUris();
         assertEquals(4, listUris2.size());
-        Assert.assertEquals("http://dbpedia.org/resource/Moscow", listUris2.get(0).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/New_York_City", listUris2.get(1).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/Bangalore", listUris2.get(2).getUri().toString());
-        Assert.assertEquals("http://dbpedia.org/resource/Berlin", listUris2.get(3).getUri().toString());
+        Assert.assertTrue(listUris2.contains(uris.get(1)));                 // "http://dbpedia.org/resource/New_York_City"
+        Assert.assertTrue(listUris2.contains(uris.get(2)));                 // "http://dbpedia.org/resource/Moscow"
+        Assert.assertTrue(listUris2.contains(uris.get(3)));                 // "http://dbpedia.org/resource/Berlin"
+        Assert.assertTrue(listUris2.contains(uris.get(4)));                 // "http://dbpedia.org/resource/Bangalore"
         List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
         assertEquals(1, listUris3.size());
         List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
@@ -234,6 +232,76 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         mongodbQueue.markUrisAsAccessible(retrievedUris);
         // Now, the queue should be empty
         assertEquals(0, mongodbQueue.length());
+        mongodbQueue.close();
+    }
+
+    @Test
+    public void testMakeURIsKeywise() throws URISyntaxException {
+        List<CrawleableUri> uriList = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"));
+
+        CrawleableUri uri4 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/New_York_City"));
+        CrawleableUri uri5 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/Berlin"));
+
+        CrawleableUri uri6 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=berlin"));
+        uriList.add(uri1);
+        uriList.add(uri2);
+        uriList.add(uri3);
+        uriList.add(uri4);
+        uriList.add(uri5);
+        uriList.add(uri6);
+        Map<String, List<CrawleableUri>> keywiseUris = mongodbQueue.makeURIsKeywise(uriList);
+        Assert.assertEquals(3, keywiseUris.get("dbpedia.org").size());
+        Assert.assertEquals(2, keywiseUris.get("en.wikipedia.org").size());
+        Assert.assertEquals(1, keywiseUris.get("www.lonelyplanet.com").size());
+        Assert.assertTrue(keywiseUris.get("dbpedia.org").contains(uri1));
+        Assert.assertTrue(keywiseUris.get("dbpedia.org").contains(uri2));
+        Assert.assertTrue(keywiseUris.get("dbpedia.org").contains(uri3));
+        Assert.assertTrue(keywiseUris.get("en.wikipedia.org").contains(uri4));
+        Assert.assertTrue(keywiseUris.get("en.wikipedia.org").contains(uri5));
+        Assert.assertTrue(keywiseUris.get("www.lonelyplanet.com").contains(uri6));
+    }
+
+    @Test
+    public void testAddKeywiseUrisForFirstTime() throws URISyntaxException {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
+        List<CrawleableUri> dbpediaUris = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Paderborn"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Sirsi"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Cologne"));
+        dbpediaUris.add(uri1);
+        dbpediaUris.add(uri2);
+        dbpediaUris.add(uri3);
+        keyWiseUris.put("dbpedia.org", dbpediaUris);
+        List<CrawleableUri> urisNotAdded = mongodbQueue.addKeywiseUris(keyWiseUris, 2);
+        Assert.assertEquals(0, urisNotAdded.size());
+        mongodbQueue.purge();
+        mongodbQueue.close();
+    }
+
+    @Test
+    public void testAddKeywiseUrisWithBelowCriticalScores() throws URISyntaxException {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
+        List<CrawleableUri> dbpediaUris = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"));
+        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"));
+        mongodbQueue.addUri(uri1);
+        mongodbQueue.addUri(uri2);
+        mongodbQueue.addUri(uri3);
+        dbpediaUris.add(uri1);
+        dbpediaUris.add(uri2);
+        dbpediaUris.add(uri3);
+        keyWiseUris.put("dbpedia.org", dbpediaUris);
+        List<CrawleableUri> urisNotAdded = mongodbQueue.addKeywiseUris(keyWiseUris, 2);
+        Assert.assertEquals(3, urisNotAdded.size());
+        mongodbQueue.purge();
         mongodbQueue.close();
     }
 }

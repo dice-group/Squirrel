@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * An IP-based queue which holds its data in memory.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -97,5 +98,25 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public float addKeywiseUri(CrawleableUri uri) {
+        return 0;
+    }
+
+    @Override
+    protected String getKey(CrawleableUri uri) {
+        return StringUtils.EMPTY;
+    }
+
+    @Override
+    protected float getCriticalScore() {
+        return 0;
+    }
+
+    @Override
+    protected int getMinNumOfUrisToCheck() {
+        return 0;
+    }
 
 }

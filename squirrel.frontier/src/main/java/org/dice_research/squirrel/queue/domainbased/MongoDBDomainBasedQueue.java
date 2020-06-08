@@ -1,9 +1,7 @@
 package org.dice_research.squirrel.queue.domainbased;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
@@ -17,7 +15,6 @@ import org.dice_research.squirrel.queue.scorecalculator.IURIScoreCalculator;
 import org.dice_research.squirrel.queue.scorecalculator.URIGraphSizeBasedScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
@@ -29,11 +26,9 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 
 /**
- *
  * DomainBasedQueue implementation for use with MongoDB
- *
+ * <p>
  * * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
- *
  */
 public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
@@ -47,7 +42,9 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
-            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+        : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+    private static final float CRITICAL_SCORE = .2f;
+    private static final int MIN_NUMBER_OF_URIS_TO_CHECK = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
@@ -55,8 +52,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         this.serializer = serializer;
 
         this.includeDepth = includeDepth;
-        if(this.includeDepth)
-			LOGGER.info("Depth Persistance Enabled.");
+        if (this.includeDepth)
+            LOGGER.info("Depth Persistance Enabled.");
 
         LOGGER.info("Queue Persistance: " + PERSIST);
 
@@ -64,7 +61,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
         if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null)) {
+            && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -78,13 +75,13 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         }
     }
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth,QueryExecutionFactory queryExecFactory) {
+    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         this(hostName, port, serializer, includeDepth);
         this.graphSizeBasedQueue = new URIGraphSizeBasedScoreCalculator(queryExecFactory);
     }
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth) {
-        this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
+    public MongoDBDomainBasedQueue(String hostName, Integer port, boolean includeDepth) {
+        this(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
     }
 
     public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth,QueryExecutionFactory queryExecFactory) {
@@ -116,16 +113,19 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         addCrawleableUri(uri, domain);
     }
 
-    protected void addCrawleableUri(CrawleableUri uri, String domain) {
+    protected float addCrawleableUri(CrawleableUri uri, String domain) {
+        float score = 0;
         try {
             Document uriDoc = getUriDocument(uri, domain);
             // If the document does not already exist, add it
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
             }
+            score = (float) uriDoc.get("score");
         } catch (Exception e) {
             LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
+        return score;
     }
 
 
@@ -162,7 +162,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         docUri.put("domain", domain);
         docUri.put("type", DEFAULT_TYPE);
         docUri.put("uri", new Binary(suri));
-        if(graphSizeBasedQueue!=null) {
+        if (graphSizeBasedQueue != null) {
             float score = getURIScore(uri);
             docUri.put("score", score);
         }
@@ -191,8 +191,29 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
             mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("domain"),
-                    Indexes.ascending("type")));
+                Indexes.ascending("type")));
         }
+    }
+
+    @Override
+    public float addKeywiseUri(CrawleableUri uri) {
+        addDomain(uri.getUri().getHost());
+        return addCrawleableUri(uri, uri.getUri().getHost());
+    }
+
+    @Override
+    protected String getKey(CrawleableUri uri) {
+        return uri.getUri().getHost();
+    }
+
+    @Override
+    protected float getCriticalScore() {
+        return CRITICAL_SCORE;
+    }
+
+    @Override
+    protected int getMinNumOfUrisToCheck() {
+        return MIN_NUMBER_OF_URIS_TO_CHECK;
     }
 
     public boolean queueTableExists() {
@@ -228,8 +249,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public List<CrawleableUri> getUris(String domain) {
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-                .find(new Document("domain", domain).append("type", DEFAULT_TYPE))
-                .sort(Sorts.descending("score")).iterator();
+            .find(new Document("domain", domain).append("type", DEFAULT_TYPE))
+            .sort(Sorts.descending("score")).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 

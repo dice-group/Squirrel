@@ -33,6 +33,14 @@ public abstract class AbstractURIScoreBasedQueue implements UriQueue, Comparator
     }
 
     @Override
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris) {
+        for (CrawleableUri uri : uris) {
+            addUri(uri);
+        }
+        return uris;
+    }
+
+    @Override
     public void open() {
         // nothing to do
     }

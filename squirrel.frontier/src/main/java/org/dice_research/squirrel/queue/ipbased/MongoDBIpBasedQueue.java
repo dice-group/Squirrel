@@ -33,11 +33,9 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Sorts;
 
 /**
- *
  * IpBasedQueue implementation for use with MongoDB
  *
  * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
- *
  */
 public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
@@ -51,12 +49,14 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
-            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+        : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+    private static final float CRITICAL_SCORE = .2f;
+    private static final int MIN_NUMBER_OF_URIS_TO_CHECK = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
     public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth) {
-    	this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
+        this(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
 
     }
 
@@ -70,8 +70,8 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         LOGGER.info("Queue Persistance: " + PERSIST);
 
         this.includeDepth = includeDepth;
-        if(this.includeDepth)
-			LOGGER.info("Depth Persistance Enabled.");
+        if (this.includeDepth)
+            LOGGER.info("Depth Persistance Enabled.");
 
         this.serializer = serializer;
 
@@ -79,7 +79,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
         if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null)) {
+            && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -127,11 +127,32 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
             mongoCollection
-                    .createIndex(Indexes.compoundIndex(Indexes.ascending("ipAddress"), Indexes.ascending("type")));
+                .createIndex(Indexes.compoundIndex(Indexes.ascending("ipAddress"), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"),
-                    Indexes.ascending("ipAddress"), Indexes.ascending("type")));
+                Indexes.ascending("ipAddress"), Indexes.ascending("type")));
         }
 
+    }
+
+    @Override
+    public float addKeywiseUri(CrawleableUri uri) {
+        addIp(uri.getIpAddress());
+        return addCrawleableUri(uri);
+    }
+
+    @Override
+    protected String getKey(CrawleableUri uri) {
+        return uri.getIpAddress().toString();
+    }
+
+    @Override
+    protected float getCriticalScore() {
+        return CRITICAL_SCORE;
+    }
+
+    @Override
+    protected int getMinNumOfUrisToCheck() {
+        return MIN_NUMBER_OF_URIS_TO_CHECK;
     }
 
     public boolean queueTableExists() {
@@ -167,7 +188,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
                     return InetAddress.getByName(doc.get("ipAddress").toString());
                 } catch (UnknownHostException e) {
                     LOGGER.error("Got an exception when creating the InetAddress of \""
-                            + doc.get("ipAddress").toString() + "\". Returning null.", e);
+                        + doc.get("ipAddress").toString() + "\". Returning null.", e);
                     e.printStackTrace();
                 }
                 return null;
@@ -201,16 +222,19 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         return listUris;
     }
 
-    protected void addCrawleableUri(CrawleableUri uri) {
+    protected float addCrawleableUri(CrawleableUri uri) {
+        float score = 0;
         try {
             Document uriDoc = getUriDocument(uri);
             // If the document does not already exist, add it
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
             }
+            score = (float) uriDoc.get("score");
         } catch (Exception e) {
             LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
+        return score;
     }
 
     protected void addIp(InetAddress address) {
@@ -250,12 +274,12 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         docUri.put("_id", uri.getUri().hashCode());
         docUri.put("ipAddress", ipAddress.getHostAddress());
         docUri.put("type", DEFAULT_TYPE);
-        if(graphSizeBasedQueue!=null) {
+        if (graphSizeBasedQueue != null) {
             float score = getURIScore(uri);
             docUri.put("score", score);
         }
-        if(includeDepth)
-        	docUri.put("depth",uri.getData(Constants.URI_DEPTH));
+        if (includeDepth)
+            docUri.put("depth", uri.getData(Constants.URI_DEPTH));
 
         docUri.put("uri", new Binary(suri));
         return docUri;
@@ -318,7 +342,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         if (mongoDB.getCollection(COLLECTION_URIS).find(query).first() == null) {
             // remove the domain from the queue
             mongoDB.getCollection(COLLECTION_QUEUE)
-                    .deleteMany(query);
+                .deleteMany(query);
         }
     }
 

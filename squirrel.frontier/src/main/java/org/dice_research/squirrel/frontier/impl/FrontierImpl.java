@@ -22,7 +22,6 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -240,7 +239,8 @@ public class FrontierImpl implements Frontier {
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = relationalUriFilter.getKnownUriFilter().getOutdatedUris();
                     urisToRecrawl = urisToRecrawl.stream().distinct().collect(Collectors.toList());
-					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+//					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+					queue.addUris(urisToRecrawl);
 				}
 			}, this.timerPeriod, this.timerPeriod);
 		}
@@ -258,37 +258,10 @@ public class FrontierImpl implements Frontier {
 
 	@Override
 	public void addNewUris(List<CrawleableUri> uris) {
-        for (CrawleableUri uri : getNewUrisDomainWise(uris)) {
+        for (CrawleableUri uri : uris) {
             addNewUri(uri);
         }
 	}
-
-	protected List<CrawleableUri> getNewUrisDomainWise(List<CrawleableUri> uris) {
-        List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
-        Map<String, Queue<CrawleableUri>> domainWiseUris = new HashMap<>();
-        for (CrawleableUri uri : distinctUris) {
-            String domain = uri.getUri().getHost();
-            Queue<CrawleableUri> uriQueue = domainWiseUris.get(domain);
-            if(CollectionUtils.isEmpty(uriQueue)) {
-                uriQueue = new ArrayDeque<>();
-            }
-            uriQueue.add(uri);
-            domainWiseUris.put(domain, uriQueue);
-        }
-        Collection<Queue<CrawleableUri>> uriQueues = domainWiseUris.values();
-        List<CrawleableUri> finalList = new ArrayList<>();
-        int counter = 0;
-        while(counter < uris.size()) {
-            for (Queue<CrawleableUri> uriList : uriQueues) {
-                CrawleableUri uri = uriList.poll();
-                if(uri != null) {
-                    finalList.add(uri);
-                    counter++;
-                }
-            }
-        }
-        return finalList;
-    }
 
 	@Override
 	public void addNewUri(CrawleableUri uri) {

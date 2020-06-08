@@ -1,6 +1,8 @@
 package org.dice_research.squirrel.queue;
 
 import java.net.URI;
+import java.util.List;
+
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
 import org.apache.http.auth.AuthScope;
@@ -12,7 +14,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetDescription;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,5 +91,10 @@ public class URIGraphSizeBasedQueue extends AbstractURIScoreBasedQueue {
             LOGGER.error("Exception occurred while querying Sparql for duplicity of URL", e);
         }
         return 0;
+    }
+
+    @Override
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris) {
+        return null;
     }
 }

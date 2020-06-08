@@ -6,7 +6,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * Interface of a URI queue managing the URIs that should be crawled next.
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -14,26 +14,26 @@ public interface UriQueue {
 
     /**
      * Adds the given {@link CrawleableUri} instance to the queue.
-     * 
+     *
      * @param uri
      *            the {@link CrawleableUri} instance that should be added to the
      *            queue.
      */
     public void addUri(CrawleableUri uri);
-    
+
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
      * this method removes the URIs from the queue.
-     * 
+     *
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
     public List<CrawleableUri> getNextUris();
-    
-    
+
+
     /**
      * Returns true if the queue is empty
-     * 
+     *
      * @return
      */
     public boolean isEmpty();
@@ -47,5 +47,13 @@ public interface UriQueue {
      * Opens the queue and allocates necessary resources.
      */
     public void open();
-    
+
+    /**
+     * Adds the given {@link CrawleableUri} instances to the queue.
+     *
+     * @param uris
+     *            the {@link CrawleableUri} instances that should be added to the
+     *            queue.
+     */
+    public List<CrawleableUri> addUris(List<CrawleableUri> uris);
 }
