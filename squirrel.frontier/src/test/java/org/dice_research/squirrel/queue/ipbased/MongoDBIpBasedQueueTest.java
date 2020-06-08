@@ -39,7 +39,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     @Before
     public void setUp() throws Exception {
         queryExecFactory = initQueryFactoryEngine();
-    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 27017,false,queryExecFactory);
+    	mongodbQueue = new MongoDBIpBasedQueue("localhost", 58027,false,queryExecFactory);
 
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 
