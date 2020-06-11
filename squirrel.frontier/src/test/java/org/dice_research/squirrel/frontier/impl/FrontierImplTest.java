@@ -53,15 +53,15 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
         filter = new MongoDBKnowUriFilter("localhost", 58027);
 //<<<<<<< sparql_recrawling
-    //    queue = new MongoDBIpBasedQueue("localhost", 58027);
-    //    filter.open();
-  //      queue.open();
-  //      frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
+        //    queue = new MongoDBIpBasedQueue("localhost", 58027);
+        //    filter.open();
+        //      queue.open();
+        //      frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
 //=======
-        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
-         filter.open();
-         queue.open();
-         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+        queue = new MongoDBIpBasedQueue("localhost", 58027, false);
+        filter.open();
+        queue.open();
+        List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
 //         uriGenerators.add(new DomainBasedUriGenerator());
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();

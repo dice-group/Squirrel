@@ -72,17 +72,17 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
 
     public float getURIScore(CrawleableUri uri) {
         int uriScore = getGraphSize(uri.getUri().toString());
-        if(uriScore == 0) {
+        if (uriScore == 0) {
             return 1;
         }
-        return 1 / (float)uriScore;
+        return 1 / (float) uriScore;
     }
 
     private int getGraphSize(String uri) {
         String query = "SELECT (COUNT(*) AS ?C) WHERE { GRAPH ?g { <" + uri + "> ?p ?o } }";
         try (QueryExecution execution = queryExecFactory.createQueryExecution(query)) {
             ResultSet resultSet = execution.execSelect();
-            if(resultSet.hasNext()){
+            if (resultSet.hasNext()) {
                 QuerySolution solution = resultSet.next();
                 int count = solution.getLiteral("C").getInt();
                 LOGGER.info("getGraphSize(<{}>) = {}", uri, count);

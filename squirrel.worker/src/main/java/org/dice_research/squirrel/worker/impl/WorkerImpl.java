@@ -236,7 +236,7 @@ public class WorkerImpl implements Worker, Closeable {
                 }
 
                 // If there is at least one file
-                if (fetchedFiles.size() > 0) {
+                if (!fetchedFiles.isEmpty()) {
                     FileManager fm = new FileManager();
                     List<File> fileList;
                     try {

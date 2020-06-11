@@ -145,8 +145,20 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
         }
     }
 
+    /**
+     * This method adds the uri according to the domain/ip in the mongodb queue
+     *
+     * @param uri add the uri to the mongodb queue domain/ip wise
+     * @return score of the uri stored in the mongodb queue
+     */
     protected abstract float addKeywiseUri(CrawleableUri uri);
 
+    /**
+     * Group the uris according to their keys i.e. domain-wise/ip-wise
+     *
+     * @param uris the uris to be grouped
+     * @return grouped uris
+     */
     public Map<String, List<CrawleableUri>> makeURIsKeywise(List<CrawleableUri> uris) {
         List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
         Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
@@ -162,23 +174,32 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
         return keyWiseUris;
     }
 
+    /**
+     * This method adds the uris according to the domain/ip in the mongodb queue. For each domain/ip, minimum number of
+     * uris are checked for score, if they are above the critical score, all the remaining are added to queue. If all of
+     * them are below the critical score, the uris are considered duplicates and returned without adding to the queue.
+     *
+     * @param keyWiseUris uris to be added
+     * @param minNumberOfUrisToCheck the minimum number of uris to be checked before adding remaining uris to the queue
+     * @return the uris which are not added to the queue because these are considered duplicates.
+     */
     public List<CrawleableUri> addKeywiseUris(Map<String, List<CrawleableUri>> keyWiseUris, int minNumberOfUrisToCheck) {
         List<CrawleableUri> notAddedURIs = new ArrayList<>();
         Collection<List<CrawleableUri>> uriLists = keyWiseUris.values();
-        for(List<CrawleableUri> uriList : uriLists) {
+        for (List<CrawleableUri> uriList : uriLists) {
             boolean scoresBelowCritical = true;
-            for(int i = 0; i < uriList.size(); i++) {
-                if(i < minNumberOfUrisToCheck) {
+            for (int i = 0; i < uriList.size(); i++) {
+                if (i < minNumberOfUrisToCheck) {
                     float score = addKeywiseUri(uriList.get(i));
-                    if(score > getCriticalScore()) {
+                    if (score > getCriticalScore()) {
                         scoresBelowCritical = false;
                     }
-                    if(scoresBelowCritical) {
+                    if (scoresBelowCritical) {
                         notAddedURIs.add(uriList.get(i));
                     }
                     continue;
                 }
-                if(scoresBelowCritical) {
+                if (scoresBelowCritical) {
                     notAddedURIs.add(uriList.get(i));
                 } else {
                     addKeywiseUri(uriList.get(i));
@@ -188,9 +209,25 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
         return notAddedURIs;
     }
 
+    /**
+     * Get the key of the uri i.e. either domain or ip
+     *
+     * @param uri the uri whose key has to be returned
+     * @return the key of the uri
+     */
     protected abstract String getKey(CrawleableUri uri);
 
+    /**
+     * The critical score which for uris according to their keys are returned.
+     *
+     * @return Critical score w.r.t key
+     */
     protected abstract float getCriticalScore();
 
+    /**
+     * the minimum number of uris to be checked before adding the rest of the uris to the queue are returned w.r.t. key
+     *
+     * @return minimum nuber of keys to be checked
+     */
     protected abstract int getMinNumOfUrisToCheck();
 }

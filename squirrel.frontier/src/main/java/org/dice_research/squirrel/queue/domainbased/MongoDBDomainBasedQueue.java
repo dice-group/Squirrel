@@ -6,6 +6,7 @@ import java.util.*;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
 import org.bson.types.Binary;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -121,7 +122,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
             }
-            score = (float) uriDoc.get("score");
+            score = (float) uriDoc.get(Constants.URI_SCORE);
         } catch (Exception e) {
             LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
@@ -129,6 +130,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     }
 
 
+    /**
+     * Return the score of the duplicity score of the uri
+     *
+     * @param uri the uri whose duplicity score has to be returned
+     * @return duplicity score of the uri
+     */
     public float getURIScore(CrawleableUri uri) {
         return graphSizeBasedQueue.getURIScore(uri);
     }
@@ -159,19 +166,19 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
         Document docUri = new Document();
         docUri.put("_id", uri.getUri().hashCode());
-        docUri.put("domain", domain);
+        docUri.put(Constants.URI_DOMAIN, domain);
         docUri.put("type", DEFAULT_TYPE);
         docUri.put("uri", new Binary(suri));
         if (graphSizeBasedQueue != null) {
             float score = getURIScore(uri);
-            docUri.put("score", score);
+            docUri.put(Constants.URI_SCORE, score);
         }
         return docUri;
     }
 
     public Document getDomainDocument(String domain) {
         Document docIp = new Document();
-        docIp.put("domain", domain);
+        docIp.put(Constants.URI_DOMAIN, domain);
         docIp.put("type", DEFAULT_TYPE);
         return docIp;
     }
@@ -189,8 +196,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             mongoDB.createCollection(COLLECTION_URIS);
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
-            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
-            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("domain"),
+            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending(Constants.URI_DOMAIN), Indexes.ascending("type")));
+            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending(Constants.URI_DOMAIN),
                 Indexes.ascending("type")));
         }
     }
@@ -238,7 +245,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
             @Override
             public String next() {
-                return cursor.next().get("domain").toString();
+                return cursor.next().get(Constants.URI_DOMAIN).toString();
             }
         };
 
@@ -249,8 +256,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public List<CrawleableUri> getUris(String domain) {
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-            .find(new Document("domain", domain).append("type", DEFAULT_TYPE))
-            .sort(Sorts.descending("score")).iterator();
+            .find(new Document(Constants.URI_DOMAIN, domain).append("type", DEFAULT_TYPE))
+            .sort(Sorts.descending(Constants.URI_SCORE)).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 
@@ -274,7 +281,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     protected void deleteUris(String domain, List<CrawleableUri> uris) {
         // remove all URIs from the list
         Document query = new Document();
-        query.put("domain", domain);
+        query.put(Constants.URI_DOMAIN, domain);
         query.put("type", DEFAULT_TYPE);
         for (CrawleableUri uri : uris) {
             // replace the old ID with the current ID

@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.data.uri;
 
-import org.apache.jena.rdf.model.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ public class CrawleableUri implements Serializable {
      * @deprecated Use the JSON deserialization instead.
      */
     @Deprecated
-    public static CrawleableUri fromByteArray(byte bytes[]) {
+    public static CrawleableUri fromByteArray(byte[] bytes) {
         if ((bytes == null) || (bytes.length < URI_START_INDEX)) {
             return null;
         }
@@ -191,7 +190,7 @@ public class CrawleableUri implements Serializable {
      *         {@code null} if it does not exist
      */
     public Object getData(String key) {
-         if (data.containsKey(key)) {
+        if (data.containsKey(key)) {
             return data.get(key);
         } else {
             return null;
@@ -249,9 +248,9 @@ public class CrawleableUri implements Serializable {
      */
     @Deprecated
     public ByteBuffer toByteBuffer() {
-        byte uriBytes[] = uri.toString().getBytes(ENCODING_CHARSET);
+        byte[] uriBytes = uri.toString().getBytes(ENCODING_CHARSET);
         int bytesLength = 6 + uriBytes.length;
-        byte ipAddressBytes[] = null;
+        byte[] ipAddressBytes = null;
         if (ipAddress != null) {
             ipAddressBytes = ipAddress.getAddress();
             bytesLength += ipAddressBytes.length;
