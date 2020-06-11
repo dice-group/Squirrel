@@ -79,7 +79,7 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
     }
 
     private int getGraphSize(String uri) {
-        String query = "SELECT (COUNT(*) AS ?C) WHERE { <" + uri + "> ?p ?o }";
+        String query = "SELECT (COUNT(*) AS ?C) WHERE { GRAPH ?g { <" + uri + "> ?p ?o } }";
         try (QueryExecution execution = queryExecFactory.createQueryExecution(query)) {
             ResultSet resultSet = execution.execSelect();
             if(resultSet.hasNext()){
