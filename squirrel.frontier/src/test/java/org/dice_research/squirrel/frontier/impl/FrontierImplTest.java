@@ -1,5 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,9 +29,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 
 @SuppressWarnings("deprecation")
 public class FrontierImplTest {
+
 
 
     private static FrontierImpl frontier;
@@ -41,15 +50,18 @@ public class FrontierImplTest {
 
     @Before
     public void setUp() throws Exception {
-
-
         MongoDBBasedTest.setUpMDB();
-
         filter = new MongoDBKnowUriFilter("localhost", 58027);
-        queue = new MongoDBIpBasedQueue("localhost", 58027, false);
-        filter.open();
-        queue.open();
-        List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+//<<<<<<< sparql_recrawling
+    //    queue = new MongoDBIpBasedQueue("localhost", 58027);
+    //    filter.open();
+  //      queue.open();
+  //      frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
+//=======
+        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
+         filter.open();
+         queue.open();
+         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
 //         uriGenerators.add(new DomainBasedUriGenerator());
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();
@@ -59,6 +71,7 @@ public class FrontierImplTest {
 
         frontier = new FrontierImpl(new NormalizerImpl(sessionIDs, mapDefaultPort), relationalUriFilter, queue, uriGenerators, true);
 
+//>>>>>>> developForMerging
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
             UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
@@ -67,12 +80,13 @@ public class FrontierImplTest {
 
     @Test
     public void getNextUris() throws Exception {
+
         queue.addUri(uris.get(1));
 
+        //  queue.addCrawleableUri(uris.get(1));
         List<CrawleableUri> nextUris = frontier.getNextUris();
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
         assertion.add(uris.get(1));
-
         assertEquals("Should be dbr:New_York", assertion, nextUris);
     }
 
@@ -82,13 +96,11 @@ public class FrontierImplTest {
         filter.purge();
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
-
         List<CrawleableUri> assertion = new ArrayList<CrawleableUri>();
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"),
             InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"),
             UriType.DEREFERENCEABLE));
-
         assertEquals("Should be the same as uris array", assertion, nextUris);
     }
 
@@ -110,12 +122,11 @@ public class FrontierImplTest {
             InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         CrawleableUri uri_2 = cuf.create(new URI("http://dbpedia.org/resource/Moscow"),
             InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
-
         crawledUris.add(uri_1);
         crawledUris.add(uri_2);
 
-//        frontier.addNewUris(crawledUris);
-//        filter.add(uri_1, 100);
+        //        frontier.addNewUris(crawledUris);
+        //        filter.add(uri_1, 100);
 
         frontier.crawlingDone(crawledUris);
         assertFalse("uri_1 has been already crawled", frontier.uriFilter.isUriGood(uri_1));
@@ -129,7 +140,6 @@ public class FrontierImplTest {
         List<CrawleableUri> nextUris = frontier.getNextUris();
         int numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(1, numberOfPendingUris);
-
         numberOfPendingUris = frontier.getNumberOfPendingUris();
         assertEquals(2, nextUris.size());
     }
@@ -147,9 +157,7 @@ public class FrontierImplTest {
             InetAddress.getByName("127.0.0.1"), UriType.DEREFERENCEABLE);
         uris.add(uri_1);
         uris.add(uri_2);
-
         frontier.addNewUris(uris);
-
         List<CrawleableUri> nextUris = frontier.getNextUris();
         for (CrawleableUri uri : nextUris) {
             Assert.assertTrue(uris.contains(uri));
@@ -157,19 +165,15 @@ public class FrontierImplTest {
         for (CrawleableUri uri : uris) {
             Assert.assertTrue(nextUris.contains(uri));
         }
-
         // Set the first URI as recrawlable
         for (CrawleableUri uri : nextUris) {
             if (uri.getUri().equals(uri_1.getUri())) {
                 uri.addData(Constants.URI_PREFERRED_RECRAWL_ON, System.currentTimeMillis() - 1);
             }
         }
-
         frontier.crawlingDone(uris);
-
         uris.add(uri_1);
         uris.add(uri_2);
-
         nextUris = frontier.getNextUris();
         Assert.assertNotNull(nextUris);
         assertTrue("uri_1 has been expected but couldn't be found", nextUris.contains(uri_1));

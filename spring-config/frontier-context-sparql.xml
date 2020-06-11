@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://www.springframework.org/schema/beans"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+	<context:component-scan
+		base-package="org.dice_research.squirrel" />
+
+	<!-- This will automatically locate any and all property files you have
+		within your classpath, provided they fall under the META-INF directory. The
+		located property files are parsed and their values can then be used within
+		application context files in the form of ${propertyKey}. -->
+
+
+
+	<!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> -->
+	<!--
+    <bean id="frontierBean"
+        class="org.dice_research.squirrel.frontier.impl.ExtendedFrontierImpl">
+        <constructor-arg index="0" ref="normalizerImpl" />
+        <constructor-arg index="1" ref="knowUriFilterBean" />
+        <constructor-arg index="2">
+            <null />
+        </constructor-arg>
+        <constructor-arg index="3" ref="queueBean" />
+        <constructor-arg index="4" value="true" />
+    </bean> -->
+
+	<bean id="serializerBean"
+		  class="org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer"/>
+
+	<bean id = "queueBean" class="org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue">
+		<constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
+		<constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
+		<constructor-arg index="2" ref="serializerBean" />
+	</bean>
+
+	<bean id = "knowUriFilterBean" class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter">
+		<constructor-arg index="0" value="#{systemEnvironment['MDB_HOST_NAME']}" />
+		<constructor-arg index="1" value="#{systemEnvironment['MDB_PORT']}" />
+	</bean>
+	<!-- Triple Store sparql implementation  -->
+	<bean id="sparqlBean" class="org.dice_research.squirrel.frontier.recrawling.SparqlBasedOutDatedUriRetriever">
+		<constructor-arg index="0" value="#{systemEnvironment['SPARQL_URL']}"/>
+		<constructor-arg index="1" value="#{systemEnvironment['SPARQL_HOST_USER']}"/>
+		<constructor-arg index="2" value="#{systemEnvironment['SPARQL_HOST_PASSWD']}"/>
+	</bean>
+
+
+</beans>
