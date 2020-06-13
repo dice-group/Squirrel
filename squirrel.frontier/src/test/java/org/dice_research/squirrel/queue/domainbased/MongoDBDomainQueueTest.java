@@ -304,7 +304,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     }
 
     @Test
-    public void testPriorityQueue() throws URISyntaxException {
+    public void testURIScore() throws URISyntaxException {
         mongodbQueue.open();
         mongodbQueue.purge();
         float score1 = mongodbQueue.getURIScore(new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin")));
