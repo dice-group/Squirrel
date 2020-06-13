@@ -255,10 +255,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     }
 
     /**
-     * Return the score of the duplicity score of the uri
+     * Return the score of the duplicity score of the {@link CrawleableUri}
      *
-     * @param uri the uri whose duplicity score has to be returned
-     * @return duplicity score of the uri
+     * @param uri the {@link CrawleableUri} whose duplicity score has to be returned
+     * @return duplicity score of the {@link CrawleableUri}
      */
     public float getURIScore(CrawleableUri uri) {
         return graphSizeBasedQueue.getURIScore(uri);

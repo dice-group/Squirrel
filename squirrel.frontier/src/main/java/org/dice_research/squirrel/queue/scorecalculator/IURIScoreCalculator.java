@@ -11,7 +11,7 @@ public interface IURIScoreCalculator {
     /**
      * Returns the score based on specific score calculation implementation
      *
-     * @return uri score
+     * @return {@link CrawleableUri} score
      *
      */
     float getURIScore(CrawleableUri uri);

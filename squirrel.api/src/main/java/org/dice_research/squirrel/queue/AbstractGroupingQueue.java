@@ -146,18 +146,18 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     }
 
     /**
-     * This method adds the uri according to the domain/ip in the mongodb queue
+     * This method adds the {@link CrawleableUri} according to the domain/ip in the mongodb queue
      *
-     * @param uri add the uri to the mongodb queue domain/ip wise
-     * @return score of the uri stored in the mongodb queue
+     * @param uri the {@link CrawleableUri} that has to be added to the mongodb queue domain/ip wise
+     * @return score of the {@link CrawleableUri} stored in the mongodb queue
      */
     protected abstract float addKeywiseUri(CrawleableUri uri);
 
     /**
-     * Group the uris according to their keys i.e. domain-wise/ip-wise
+     * Group the {@link CrawleableUri}s according to their keys i.e. domain-wise/ip-wise
      *
-     * @param uris the uris to be grouped
-     * @return grouped uris
+     * @param uris the {@link CrawleableUri}s to be grouped
+     * @return grouped {@link CrawleableUri}s
      */
     public Map<String, List<CrawleableUri>> makeURIsKeywise(List<CrawleableUri> uris) {
         List<CrawleableUri> distinctUris = uris.stream().distinct().collect(Collectors.toList());
@@ -175,13 +175,15 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     }
 
     /**
-     * This method adds the uris according to the domain/ip in the mongodb queue. For each domain/ip, minimum number of
-     * uris are checked for score, if they are above the critical score, all the remaining are added to queue. If all of
-     * them are below the critical score, the uris are considered duplicates and returned without adding to the queue.
+     * This method adds the {@link CrawleableUri}s according to the domain/ip in the mongodb queue. For each domain/ip,
+     * minimum number of {@link CrawleableUri}s are checked for score, if they are above the critical score, all the
+     * remaining are added to queue. If all of them are below the critical score, the {@link CrawleableUri}s are
+     * considered duplicates and returned without adding to the queue.
      *
-     * @param keyWiseUris uris to be added
-     * @param minNumberOfUrisToCheck the minimum number of uris to be checked before adding remaining uris to the queue
-     * @return the uris which are not added to the queue because these are considered duplicates.
+     * @param keyWiseUris {@link CrawleableUri}s to be added
+     * @param minNumberOfUrisToCheck the minimum number of {@link CrawleableUri}s to be checked before adding remaining
+     *                               {@link CrawleableUri}s to the queue
+     * @return the {@link CrawleableUri}s which are not added to the queue because these are considered duplicates.
      */
     public List<CrawleableUri> addKeywiseUris(Map<String, List<CrawleableUri>> keyWiseUris, int minNumberOfUrisToCheck) {
         List<CrawleableUri> notAddedURIs = new ArrayList<>();
@@ -210,24 +212,25 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     }
 
     /**
-     * Get the key of the uri i.e. either domain or ip
+     * Get the key of the {@link CrawleableUri} i.e. either domain or ip
      *
-     * @param uri the uri whose key has to be returned
-     * @return the key of the uri
+     * @param uri the {@link CrawleableUri} whose key has to be returned
+     * @return the key of the {@link CrawleableUri}
      */
     protected abstract String getKey(CrawleableUri uri);
 
     /**
-     * The critical score which for uris according to their keys are returned.
+     * The critical score which for {@link CrawleableUri}s according to their keys are returned.
      *
      * @return Critical score w.r.t key
      */
     protected abstract float getCriticalScore();
 
     /**
-     * the minimum number of uris to be checked before adding the rest of the uris to the queue are returned w.r.t. key
+     * the minimum number of {@link CrawleableUri}s to be checked before adding the rest of the {@link CrawleableUri}s
+     * to the queue are returned w.r.t. key
      *
-     * @return minimum nuber of keys to be checked
+     * @return minimum number of keys to be checked
      */
     protected abstract int getMinNumOfUrisToCheck();
 }
