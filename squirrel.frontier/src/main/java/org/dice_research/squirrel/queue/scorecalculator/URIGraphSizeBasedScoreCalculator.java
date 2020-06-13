@@ -70,6 +70,13 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
 
     }
 
+    /**
+     * This method calculates the duplicity score for a {@link CrawleableUri} which is 1 / (number of times the Uri
+     * occurs as a subject in graphs).
+     *
+     * @param uri the {@link CrawleableUri} for which the duplicity score has to be calculated
+     * @return duplicity score
+     */
     public float getURIScore(CrawleableUri uri) {
         int uriScore = getGraphSize(uri.getUri().toString());
         if (uriScore == 0) {
@@ -78,6 +85,12 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
         return 1 / (float) uriScore;
     }
 
+    /**
+     * This method return the number of times the Uri occurs as a subject in the graphs.
+     *
+     * @param uri the Uri for which the score has to calculated
+     * @return number of times the Uri occurs as a subject in the graphs
+     */
     private int getGraphSize(String uri) {
         String query = "SELECT (COUNT(*) AS ?C) WHERE { GRAPH ?g { <" + uri + "> ?p ?o } }";
         try (QueryExecution execution = queryExecFactory.createQueryExecution(query)) {
