@@ -6,9 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.*;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
@@ -72,19 +70,19 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         Node o = NodeFactory.createURI("http://dbpedia.org/doesntMatter");
         DatasetGraph graph = dataset.asDatasetGraph();
 
-        for(int i = 0; i <= 5; i++) {
+        for(int i = 0; i < 5; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s1, p, o); // <http://dbpedia.org/resource/New_York_City>
         }
-        for(int i = 0; i <= 10; i++) {
+        for(int i = 0; i < 10; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s2, p, o); // <http://dbpedia.org/resource/Berlin>
         }
-        for(int i = 0; i <= 8; i++) {
+        for(int i = 0; i < 8; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s3, p, o); // <http://dbpedia.org/resource/Bangalore>
         }
-        for(int i = 0; i <= 4; i++) {
+        for(int i = 0; i < 4; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s4, p, o); // <http://dbpedia.org/resource/Moscow>
         }
@@ -303,5 +301,15 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         Assert.assertEquals(3, urisNotAdded.size());
         mongodbQueue.purge();
         mongodbQueue.close();
+    }
+
+    @Test
+    public void testPriorityQueue() throws URISyntaxException {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        float score1 = mongodbQueue.getURIScore(new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin")));
+        float score2 = mongodbQueue.getURIScore(new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore")));
+        Assert.assertEquals(.1f, score1, .0001);
+        Assert.assertEquals(.125f, score2, .0001);
     }
 }
