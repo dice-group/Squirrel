@@ -1,12 +1,13 @@
 package org.dice_research.squirrel.analyzer.impl;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.riot.Lang;
@@ -15,6 +16,7 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
+import org.dice_research.rdfdetector.RdfSerializationDetector;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.commons.FilterSinkRDF;
@@ -38,22 +40,14 @@ public class RDFAnalyzer extends AbstractAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDFAnalyzer.class);
 
-    private List<Lang> listLangs = new ArrayList<Lang>();
     private Set<String> jenaContentTypes = new HashSet<String>();
+    private RdfSerializationDetector serializationDetector = new RdfSerializationDetector(50);
+
+    protected long failedParseAttempts = 0;
 
     public RDFAnalyzer(UriCollector collector) {
 
         super(collector);
-        listLangs.add(Lang.NT);
-        listLangs.add(Lang.NQUADS);
-        listLangs.add(Lang.RDFJSON);
-        listLangs.add(Lang.RDFTHRIFT);
-        listLangs.add(Lang.RDFXML);
-        listLangs.add(Lang.JSONLD);
-        listLangs.add(Lang.TRIG);
-        listLangs.add(Lang.TRIX);
-        listLangs.add(Lang.TTL);
-        listLangs.add(Lang.TURTLE);
 
         for (Lang lang : RDFLanguages.getRegisteredLanguages()) {
             if (!RDFLanguages.RDFNULL.equals(lang)) {
@@ -88,12 +82,27 @@ public class RDFAnalyzer extends AbstractAnalyzer {
                 }
             } else {
                 LOGGER.info("Content Type is null");
-                for (Lang l : listLangs) {
+
+                BufferedInputStream dataStream = new BufferedInputStream(Files.newInputStream(data.toPath()));
+                Collection<Lang> langs = serializationDetector.detect(dataStream);
+                LOGGER.info("Detected languages: {}", langs);
+                for (Lang l : langs) {
                     try {
-                        RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+                        if (dataStream != null) {
+                            // Reuse dataStream for the first attempted language.
+                            RDFDataMgr.parse(filtered, dataStream, l);
+                        } else {
+                            RDFDataMgr.parse(filtered, data.getAbsolutePath(), l);
+                        }
                         break;
                     } catch (Exception e) {
                         LOGGER.warn("Could not parse file as " + l.getName());
+                        failedParseAttempts += 1;
+                    } finally {
+                        if (dataStream != null) {
+                            dataStream.close();
+                            dataStream = null;
+                        }
                     }
                 }
             }
