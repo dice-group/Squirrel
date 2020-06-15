@@ -29,7 +29,7 @@ public class WorkerComponentConfig extends AbstractComponent {
     @Bean(name = "client")
     public RabbitRpcClient client() throws IOException {
         RabbitRpcClient client = RabbitRpcClient.create(outgoingDataQueuefactory.getConnection(),
-                Constants.FRONTIER_QUEUE_NAME);
+            Constants.FRONTIER_QUEUE_NAME);
         return client;
     }
 

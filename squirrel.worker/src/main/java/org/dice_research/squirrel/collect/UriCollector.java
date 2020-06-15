@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.sink.SinkBase;
 

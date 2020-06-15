@@ -92,4 +92,10 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
         return 0;
     }
 
+	@Override
+	public boolean isDepthIncluded() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -4,15 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Iterator;
 
 import org.apache.tika.Tika;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.AbstractAnalyzer;
 import org.dice_research.squirrel.analyzer.commons.SquirrelClerezzaSink;
+import org.dice_research.squirrel.collect.SimpleUriCollector;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.sink.Sink;
+import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyXmlSerializer;
@@ -63,9 +67,9 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 
 			tempFile.delete();
 
-		} catch (Exception e1) {
-			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: "
-					+ this.getClass().getName());
+		} catch (Exception e) {
+			LOGGER.error("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: "
+					+ this.getClass().getName(),e);
 
 		}
 
@@ -89,6 +93,19 @@ public class RDFaAnalyzer extends AbstractAnalyzer {
 			LOGGER.error("An error was found when verify eligibility", e);
 		}
 		return false;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		Sink sink = new InMemorySink();
+		CrawleableUri curi = new CrawleableUri(new URI("http://www.dice-research.org/rdfaTest"));
+		curi.addData(Constants.URI_HTTP_MIME_TYPE_KEY, "text/html");
+		File file = new File("/home/gsjunior/Documentos/rdfa.html");
+		
+		UriCollector collector = new SimpleUriCollector(new GzipJavaUriSerializer());
+		
+		new RDFaAnalyzer(collector).analyze(curi, file, sink);
+		
+		
 	}
 
 }

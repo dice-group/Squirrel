@@ -5,9 +5,8 @@ import org.apache.jena.riot.system.StreamRDFBase;
 import org.apache.jena.sparql.core.Quad;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.encoder.TripleEncoder;
 import org.dice_research.squirrel.sink.Sink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -19,31 +18,31 @@ import org.slf4j.LoggerFactory;
 
 public class FilterSinkRDF extends StreamRDFBase {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterSinkRDF.class);
-
 
     private CrawleableUri curi;
     private Sink sink;
     private UriCollector collector;
+    private TripleEncoder encoder;
 
-    public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector) {
+    public FilterSinkRDF(CrawleableUri curi, Sink sink, UriCollector collector,TripleEncoder encoder) {
         this.curi = curi;
         this.sink = sink;
         this.collector = collector;
+        this.encoder = encoder;
     }
 
     @Override
     public void triple(Triple triple) {
-        sink.addTriple(curi, triple);
-        collector.addTriple(curi, triple);
-//        LOGGER.info("triple found: " + triple.toString());
+    	Triple t = encoder.encodeTriple(triple);
+        sink.addTriple(curi, t);
+        collector.addTriple(curi, t);
     }
 
     @Override
     public void quad(Quad quad) {
-        sink.addTriple(curi, quad.asTriple());
-        collector.addTriple(curi, quad.asTriple());
-//        LOGGER.info("triple found: " + quad.asTriple().toString());
+    	Triple t = encoder.encodeTriple(quad.asTriple());
+        sink.addTriple(curi, t);
+        collector.addTriple(curi, t);
     }
 
 }

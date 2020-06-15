@@ -28,10 +28,14 @@ public interface Sink extends TripleBasedSink, QuadBasedSink, UnstructuredDataSi
         while (iterator.hasNext()) {
             addTriple(uri, iterator.next().asTriple());
         }
+        flushMetadata();
     }
 
     @Override
     public default void close() throws IOException {
         closeSinkForUri(new CrawleableUri(Constants.DEFAULT_META_DATA_GRAPH_URI));
     }
+    
+    public void flushMetadata();
+    
 }

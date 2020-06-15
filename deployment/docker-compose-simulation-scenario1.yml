@@ -37,7 +37,7 @@ services:
       - "27017:27017"
 
   frontier:
-    image: squirrel.frontier:latest
+    image: dicegroup/squirrel.frontier:latest
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -52,7 +52,7 @@ services:
       - ./scenarios/1:/var/squirrel/data
       
   worker1:
-    image: squirrel.worker:latest
+    image: dicegroup/squirrel.worker:latest
     container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -71,7 +71,7 @@ services:
         - ../spring-config:/var/squirrel/spring-config
 
   SimulationNodeA:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeA
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeA.ttl
@@ -86,7 +86,7 @@ services:
       - "80:80"
 
   SimulationNodeB:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeB
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeB.ttl
@@ -98,7 +98,7 @@ services:
         - ./scenarios/1:/var/squirrel/data
 
   SimulationNodeC:
-    image: squirrel.mockup
+    image: dicegroup/squirrel.mockup:latest
     container_name: NodeC
     environment:
       RESOURCE_MODEL: /var/squirrel/data/nodeC.ttl

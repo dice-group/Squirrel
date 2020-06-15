@@ -71,7 +71,7 @@ public class RDFAnalyzer extends AbstractAnalyzer {
             if ((httpMimeTypeObject != null) && (!"text/plain".equals(httpMimeTypeObject.toString()))) {
                 contentType = httpMimeTypeObject.toString();
             }
-            StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
+            StreamRDF filtered = new FilterSinkRDF(curi, sink, collector,tripleEncoder);
             if (contentType != null) {
                 lang = RDFLanguages.contentTypeToLang(contentType);
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:context="http://www.springframework.org/schema/context"
@@ -18,14 +19,16 @@
     <context:component-scan
         base-package="org.dice_research.squirrel" />
 
-    <!-- This will automatically locate any and all property files you have 
-        within your classpath, provided they fall under the META-INF directory. The 
-        located property files are parsed and their values can then be used within 
-        application context files in the form of ${propertyKey}. -->
+	<!-- This will automatically locate any and all property files you have
+		within your classpath, provided they fall under the META-INF directory. The
+		located property files are parsed and their values can then be used within
+		application context files in the form of ${propertyKey}. -->
+
 
 
 
     <!-- <bean id="workerImpl" class="org.aksw.simba.squirrel.worker.impl.WorkerImpl"></bean> -->
+
 
     <bean id="workerBean"
         class="org.dice_research.squirrel.worker.impl.WorkerImpl">
@@ -46,12 +49,14 @@
     <bean id="analyzerBean" class="org.dice_research.squirrel.analyzer.manager.SimpleAnalyzerManager">
         <constructor-arg index="0">
             <list>
+                 
                  <ref bean="ckanAnalyzerBean"/>         
                  <ref bean="rdfAnalyzerBean"/>
+				 <ref bean="rdfaAnalyzerBean"/> 
                  <ref bean="htmlScraperAnalyzerBean"/>          
                  <ref bean="microdataAnalyzerBean"/>          
                  <ref bean="microformatAnalyzerBean"/>          
-                 <ref bean="hdtAnalyzerBean"/>          <!-- -->
+                 <ref bean="hdtAnalyzerBean"/>  <!--        -->
                  
                        
             </list>
@@ -92,12 +97,12 @@
         class="org.dice_research.squirrel.fetcher.manage.SimpleOrderedFetcherManager">
         <constructor-arg>
             <list>
-            
-                 
-                <ref bean="ckanFetcherBean" />
+                
+               	 
+                 <ref bean="ckanFetcherBean" />
                  <ref bean="sparqlFetcherBean" />
-                 <ref bean="httpFetcherBean" />
-                 <ref bean="ftpFetcherBean" /><!-- -->
+                 <ref bean="httpFetcherBean" /> 
+                 <ref bean="ftpFetcherBean" />
 
                 <!-- 
                 <ref bean="sparqlDatasetFetcherBean" />

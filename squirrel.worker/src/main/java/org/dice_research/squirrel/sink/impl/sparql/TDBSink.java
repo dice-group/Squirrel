@@ -180,4 +180,10 @@ public class TDBSink extends AbstractBufferingSink implements AdvancedTripleBase
         
     }
 
+    @Override
+    public void flushMetadata() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

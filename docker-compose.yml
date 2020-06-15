@@ -10,27 +10,30 @@ services:
   #  command: nc -l 50070
 
   frontier:
-    image: squirrel.frontier:latest
+    image: dicegroup/squirrel.frontier:latest
     container_name: frontier
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
       - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
-      - SEED_FILE=/var/squirrel/seeds.txt
+      - SEED_FILE=/var/squirrel/seeds.csv
       - MDB_HOST_NAME=mongodb
       - MDB_PORT=27017
-      - QUEUE_FILTER_PERSIST=true
       - MDB_CONNECTION_TIME_OUT=5000
       - MDB_SOCKET_TIME_OUT=10000
       - MDB_SERVER_TIME_OUT=10000
+      - QUEUE_FILTER_PERSIST=true
       - COMMUNICATION_WITH_WEBSERVICE=false
       - VISUALIZATION_OF_CRAWLED_GRAPH=false
-      - JVM_ARGS=-Xmx8g
+      - JVM_ARGS=-Xmx8g 
+      
     volumes:
       - ./data/frontier:/var/squirrel/data
+      - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
     command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
+
 
   mongodb:
     image: mongo:4.0.0
@@ -58,7 +61,7 @@ services:
       - "5672:5672"
 
   worker1:
-    image: squirrel.worker:latest
+    image: dicegroup/squirrel.worker:latest
     container_name: worker1
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -72,10 +75,9 @@ services:
         - ./data/worker1:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker2:
-    image: squirrel.worker:latest
+    image: dicegroup/squirrel.worker:latest
     container_name: worker2
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -91,10 +93,9 @@ services:
         - ./data/worker2:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
   worker3:
-    image: squirrel.worker:latest
+    image: dicegroup/squirrel.worker:latest
     container_name: worker3
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
@@ -108,20 +109,19 @@ services:
         - ./data/worker3:/var/squirrel/data
         - ./yaml:/var/squirrel/yaml
         - ./spring-config:/var/squirrel/spring-config
-    command: java -cp squirrel.jar org.dice_research.squirrel.components.WorkerComponentStarter
 
-  deduplicator:
-    image: squirrel
-    container_name: deduplicator
-    environment:
-      DEDUPLICATION_ACTIVE: "true"
-      HOBBIT_RABBIT_HOST: rabbit
-      OUTPUT_FOLDER: /var/squirrel/data
-      MDB_HOST_NAME: mongodb
-      MDB_PORT: 27017
-      SPARQL_HOST_NAME: sparqlhost
-      SPARQL_HOST_PORT: 3030
-      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
-    volumes:
-        - ./data/deduplicator:/var/squirrel/data
-    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent
+#  deduplicator:
+#    image: squirrel
+#    container_name: deduplicator
+#    environment:
+#      DEDUPLICATION_ACTIVE: "true"
+#      HOBBIT_RABBIT_HOST: rabbit
+#      OUTPUT_FOLDER: /var/squirrel/data
+#      MDB_HOST_NAME: mongodb
+#      MDB_PORT: 27017
+#      SPARQL_HOST_NAME: sparqlhost
+#      SPARQL_HOST_PORT: 3030
+#      SERVICE_PRECONDITION: "rethinkdb:28015 rabbit:5672"
+#    volumes:
+#        - ./data/deduplicator:/var/squirrel/data
+#    command: java -cp squirrel.jar org.hobbit.core.run.ComponentStarter org.aksw.simba.squirrel.components.DeduplicatorComponent
