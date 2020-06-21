@@ -330,17 +330,15 @@ public class WorkerImpl implements Worker, Closeable {
                 uriProcessor.recognizeUriType(newUri);
                 newUris.add(newUri);
                 if ((newUris.size() >= (packageCount + 1) * MAX_URIS_PER_MESSAGE) && uriIterator.hasNext()) {
-                    List<CrawleableUri> distinctUris = newUris.stream().distinct().collect(Collectors.toList());
                     frontier.addNewUris(
-                            new ArrayList<>(distinctUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
+                            new ArrayList<>(newUris.subList(packageCount * MAX_URIS_PER_MESSAGE, newUris.size())));
                     packageCount++;
                 }
             } catch (Exception e) {
                 LOGGER.warn("Couldn't handle the (de-)serialization of a URI. It will be ignored.", e);
             }
         }
-        List<CrawleableUri> distinctUris = newUris.stream().distinct().collect(Collectors.toList());
-        frontier.addNewUris(distinctUris);
+        frontier.addNewUris(newUris);
     }
 
     @Override

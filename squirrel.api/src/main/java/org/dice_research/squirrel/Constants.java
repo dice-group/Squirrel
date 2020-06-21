@@ -40,10 +40,7 @@ public class Constants {
     public static final String URI_DEPTH = "depth";
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
-    public static final String URI_DUPLICITY_SCORE = "duplicity-score";
     public static final String URI_SCORE = "score";
-    public static final String URI_DOMAIN = "domain";
-    public static final String URI_IP_ADRESS = "ipAddress";
 
     /**
      * The preferred date for recrawling a URI is assumed to be a timestamp (in ms

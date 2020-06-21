@@ -3,10 +3,7 @@ package org.dice_research.squirrel.queue.ipbased;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.bson.Document;
@@ -17,8 +14,8 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
-import org.dice_research.squirrel.queue.scorecalculator.IURIScoreCalculator;
-import org.dice_research.squirrel.queue.scorecalculator.URIGraphSizeBasedScoreCalculator;
+import org.dice_research.squirrel.queue.scorebasedfilter.IURIKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.URIKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,13 +42,14 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     private final String COLLECTION_URIS = "uris";
-    private IURIScoreCalculator graphSizeBasedQueue;
+    private IURIKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
-    private static final float CRITICAL_SCORE = .2f;
-    private static final int MIN_NUMBER_OF_URIS_TO_CHECK = 5;
+    public static final String URI_IP_ADRESS = "ipAddress";
+    private float criticalScore = .2f;
+    private int minNumberOfUrisToCheck = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
@@ -62,7 +60,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
-        this.graphSizeBasedQueue = new URIGraphSizeBasedScoreCalculator(queryExecFactory);
+        this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
     }
 
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
@@ -96,7 +94,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         this(hostName, port, serializer, includeDepth);
-        this.graphSizeBasedQueue = new URIGraphSizeBasedScoreCalculator(queryExecFactory);
+        this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
     }
 
     public void purge() {
@@ -127,32 +125,11 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
             mongoCollection
-                .createIndex(Indexes.compoundIndex(Indexes.ascending(Constants.URI_IP_ADRESS), Indexes.ascending("type")));
+                .createIndex(Indexes.compoundIndex(Indexes.ascending(URI_IP_ADRESS), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"),
-                Indexes.ascending(Constants.URI_IP_ADRESS), Indexes.ascending("type")));
+                Indexes.ascending(URI_IP_ADRESS), Indexes.ascending("type")));
         }
 
-    }
-
-    @Override
-    public float addKeywiseUri(CrawleableUri uri) {
-        addIp(uri.getIpAddress());
-        return addCrawleableUri(uri);
-    }
-
-    @Override
-    protected String getKey(CrawleableUri uri) {
-        return uri.getIpAddress().toString();
-    }
-
-    @Override
-    protected float getCriticalScore() {
-        return CRITICAL_SCORE;
-    }
-
-    @Override
-    protected int getMinNumOfUrisToCheck() {
-        return MIN_NUMBER_OF_URIS_TO_CHECK;
     }
 
     public boolean queueTableExists() {
@@ -167,7 +144,8 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     @Override
     protected void addUri(CrawleableUri uri, InetAddress address) {
         addIp(address);
-        addCrawleableUri(uri);
+        // default score taken as 1
+        addCrawleableUri(uri, 1);
     }
 
     @Override
@@ -185,10 +163,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             public InetAddress next() {
                 Document doc = (Document) cursor.next();
                 try {
-                    return InetAddress.getByName(doc.get(Constants.URI_IP_ADRESS).toString());
+                    return InetAddress.getByName(doc.get(URI_IP_ADRESS).toString());
                 } catch (UnknownHostException e) {
                     LOGGER.error("Got an exception when creating the InetAddress of \""
-                        + doc.get(Constants.URI_IP_ADRESS).toString() + "\". Returning null.", e);
+                        + doc.get(URI_IP_ADRESS).toString() + "\". Returning null.", e);
                     e.printStackTrace();
                 }
                 return null;
@@ -222,19 +200,16 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         return listUris;
     }
 
-    protected float addCrawleableUri(CrawleableUri uri) {
-        float score = 0;
+    protected void addCrawleableUri(CrawleableUri uri, float score) {
         try {
-            Document uriDoc = getUriDocument(uri);
+            Document uriDoc = getUriDocument(uri, score);
             // If the document does not already exist, add it
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
             }
-            score = (float) uriDoc.get(Constants.URI_SCORE);
         } catch (Exception e) {
             LOGGER.error("Error while adding uri to MongoDBQueue", e);
         }
-        return score;
     }
 
     protected void addIp(InetAddress address) {
@@ -254,17 +229,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         LOGGER.debug("Inserted new UriTypePair");
     }
 
-    /**
-     * Return the score of the duplicity score of the {@link CrawleableUri}
-     *
-     * @param uri the {@link CrawleableUri} whose duplicity score has to be returned
-     * @return duplicity score of the {@link CrawleableUri}
-     */
-    public float getURIScore(CrawleableUri uri) {
-        return graphSizeBasedQueue.getURIScore(uri);
-    }
-
-    public Document getUriDocument(CrawleableUri uri) {
+    public Document getUriDocument(CrawleableUri uri, float score) {
         byte[] suri = null;
 
         try {
@@ -278,12 +243,9 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
         Document docUri = new Document();
         docUri.put("_id", uri.getUri().hashCode());
-        docUri.put(Constants.URI_IP_ADRESS, ipAddress.getHostAddress());
+        docUri.put(URI_IP_ADRESS, ipAddress.getHostAddress());
         docUri.put("type", DEFAULT_TYPE);
-        if (graphSizeBasedQueue != null) {
-            float score = getURIScore(uri);
-            docUri.put(Constants.URI_SCORE, score);
-        }
+        docUri.put(Constants.URI_SCORE, score);
         if (includeDepth)
             docUri.put("depth", uri.getData(Constants.URI_DEPTH));
 
@@ -293,7 +255,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     public Document getIpDocument(InetAddress address) {
         Document docIp = new Document();
-        docIp.put(Constants.URI_IP_ADRESS, address.getHostAddress());
+        docIp.put(URI_IP_ADRESS, address.getHostAddress());
         docIp.put("type", DEFAULT_TYPE);
         return docIp;
     }
@@ -335,7 +297,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     protected void deleteUris(InetAddress ipAddress, List<CrawleableUri> uris) {
         // remove all URIs from the list
         Document query = new Document();
-        query.put(Constants.URI_IP_ADRESS, ipAddress.getHostAddress());
+        query.put(URI_IP_ADRESS, ipAddress.getHostAddress());
         query.put("type", DEFAULT_TYPE);
         for (CrawleableUri uri : uris) {
             // replace the old ID with the current ID
@@ -349,6 +311,15 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             // remove the domain from the queue
             mongoDB.getCollection(COLLECTION_QUEUE)
                 .deleteMany(query);
+        }
+    }
+
+    @Override
+    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
+        Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
+        for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
+            addIp(entry.getKey().getIpAddress());
+            addCrawleableUri(entry.getKey(), entry.getValue());
         }
     }
 

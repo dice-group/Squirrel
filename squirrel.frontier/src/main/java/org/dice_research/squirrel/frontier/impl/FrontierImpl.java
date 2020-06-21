@@ -244,7 +244,6 @@ public class FrontierImpl implements Frontier {
 				@Override
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = outDatedUriRetriever.getUriToRecrawl();
-                    urisToRecrawl = urisToRecrawl.stream().distinct().collect(Collectors.toList());
 //					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
 					queue.addUris(urisToRecrawl);
 				}

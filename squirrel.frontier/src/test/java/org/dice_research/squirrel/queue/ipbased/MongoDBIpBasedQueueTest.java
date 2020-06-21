@@ -246,71 +246,20 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     }
 
     @Test
-    public void testMakeURIsKeywise() throws URISyntaxException, UnknownHostException {
-        List<CrawleableUri> uriList = new ArrayList<>();
-        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("dbpedia.org"));
-        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"), InetAddress.getByName("dbpedia.org"));
-        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"), InetAddress.getByName("dbpedia.org"));
-
-        CrawleableUri uri4 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/New_York_City"), InetAddress.getByName("en.wikipedia.org"));
-        CrawleableUri uri5 = new CrawleableUri(new URI("https://en.wikipedia.org/wiki/Berlin"), InetAddress.getByName("en.wikipedia.org"));
-
-        CrawleableUri uri6 = new CrawleableUri(new URI("https://www.lonelyplanet.com/search?q=berlin"), InetAddress.getByName("www.lonelyplanet.com"));
-        uriList.add(uri1);
-        uriList.add(uri2);
-        uriList.add(uri3);
-        uriList.add(uri4);
-        uriList.add(uri5);
-        uriList.add(uri6);
-        Map<String, List<CrawleableUri>> keywiseUris = mongodbQueue.makeURIsKeywise(uriList);
-        Assert.assertEquals(3, keywiseUris.get(InetAddress.getByName("dbpedia.org").toString()).size());
-        Assert.assertEquals(2, keywiseUris.get(InetAddress.getByName("en.wikipedia.org").toString()).size());
-        Assert.assertEquals(1, keywiseUris.get(InetAddress.getByName("www.lonelyplanet.com").toString()).size());
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("dbpedia.org").toString()).contains(uri1));
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("dbpedia.org").toString()).contains(uri2));
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("dbpedia.org").toString()).contains(uri3));
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("en.wikipedia.org").toString()).contains(uri4));
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("en.wikipedia.org").toString()).contains(uri5));
-        Assert.assertTrue(keywiseUris.get(InetAddress.getByName("www.lonelyplanet.com").toString()).contains(uri6));
-    }
-
-    @Test
-    public void testAddKeywiseUrisForFirstTime() throws URISyntaxException, UnknownHostException {
+    public void testAddKeywiseUris() throws URISyntaxException, UnknownHostException {
         mongodbQueue.open();
         mongodbQueue.purge();
-        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
+        Map<InetAddress, List<CrawleableUri>> keyWiseUris = new HashMap<>();
         List<CrawleableUri> dbpediaUris = new ArrayList<>();
         CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Paderborn"), InetAddress.getByName("dbpedia.org"));
         CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Sirsi"), InetAddress.getByName("dbpedia.org"));
-        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/Cologne"), InetAddress.getByName("dbpedia.org"));
         dbpediaUris.add(uri1);
         dbpediaUris.add(uri2);
-        dbpediaUris.add(uri3);
-        keyWiseUris.put(InetAddress.getByName("dbpedia.org").toString(), dbpediaUris);
-        List<CrawleableUri> urisNotAdded = mongodbQueue.addKeywiseUris(keyWiseUris, 2);
-        Assert.assertEquals(0, urisNotAdded.size());
-        mongodbQueue.purge();
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void testAddKeywiseUrisWithBelowCriticalScores() throws URISyntaxException, UnknownHostException {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
-        List<CrawleableUri> dbpediaUris = new ArrayList<>();
-        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Berlin"), InetAddress.getByName("dbpedia.org"));
-        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Bangalore"), InetAddress.getByName("dbpedia.org"));
-        CrawleableUri uri3 = new CrawleableUri(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("dbpedia.org"));
-        mongodbQueue.addUri(uri1);
-        mongodbQueue.addUri(uri2);
-        mongodbQueue.addUri(uri3);
-        dbpediaUris.add(uri1);
-        dbpediaUris.add(uri2);
-        dbpediaUris.add(uri3);
-        keyWiseUris.put(InetAddress.getByName("dbpedia.org").toString(), dbpediaUris);
-        List<CrawleableUri> urisNotAdded = mongodbQueue.addKeywiseUris(keyWiseUris, 2);
-        Assert.assertEquals(3, urisNotAdded.size());
+        keyWiseUris.put(InetAddress.getByName("dbpedia.org"), dbpediaUris);
+        mongodbQueue.addKeywiseUris(keyWiseUris);
+        List<CrawleableUri> mongoDBUris = mongodbQueue.getUris(InetAddress.getByName("dbpedia.org"));
+        Assert.assertTrue(mongoDBUris.contains(uri1));
+        Assert.assertTrue(mongoDBUris.contains(uri2));
         mongodbQueue.purge();
         mongodbQueue.close();
     }

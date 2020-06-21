@@ -1,14 +1,7 @@
 package org.dice_research.squirrel.queue;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
@@ -100,23 +93,6 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 	}
 
     @Override
-    public float addKeywiseUri(CrawleableUri uri) {
-        return 0;
+    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
     }
-
-    @Override
-    protected String getKey(CrawleableUri uri) {
-        return StringUtils.EMPTY;
-    }
-
-    @Override
-    protected float getCriticalScore() {
-        return 0;
-    }
-
-    @Override
-    protected int getMinNumOfUrisToCheck() {
-        return 0;
-    }
-
 }

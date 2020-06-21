@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.queue.scorecalculator;
+package org.dice_research.squirrel.queue.scorebasedfilter;
 
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
@@ -18,22 +18,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.*;
 
-public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
+/**
+ * This class filters the {@link CrawleableUri}s to be added to the queue based on the score.
+ * The duplicity score is calculated for a {@link CrawleableUri} as 1 / (number of times the Uri occurs as a subject in graphs
+ */
+public class URIKeywiseFilter implements IURIKeywiseFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(URIGraphSizeBasedScoreCalculator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(URIKeywiseFilter.class);
 
     protected QueryExecutionFactory queryExecFactory = null;
 
-    public URIGraphSizeBasedScoreCalculator() {
-        throw new UnsupportedOperationException();
-    }
-
-    public URIGraphSizeBasedScoreCalculator(QueryExecutionFactory qe) {
+    public URIKeywiseFilter(QueryExecutionFactory qe) {
         this.queryExecFactory = qe;
     }
 
-    public URIGraphSizeBasedScoreCalculator(String sparqlEndpointUrl, String username, String password) {
+    public URIKeywiseFilter(String sparqlEndpointUrl, String username, String password) {
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
@@ -78,11 +79,32 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
      * @return duplicity score
      */
     public float getURIScore(CrawleableUri uri) {
-        int uriScore = getGraphSize(uri.getUri().toString());
+        int uriScore = getSubjectTripleCount(uri.getUri().toString());
         if (uriScore == 0) {
             return 1;
         }
         return 1 / (float) uriScore;
+    }
+
+    @Override
+    public Map<CrawleableUri, Float> filterUrisKeywise(Map keyWiseUris, int minNumberOfUrisToCheck, float criticalScore) {
+        Collection<List<CrawleableUri>> uriLists = keyWiseUris.values();
+        Map<CrawleableUri, Float> filteredUriMap = new HashMap<>();
+        for (List<CrawleableUri> uriList : uriLists) {
+            boolean scoresBelowCritical = true;
+            for (int i = 0; i < (minNumberOfUrisToCheck < uriList.size() ? minNumberOfUrisToCheck : uriList.size()); i++) {
+                float score = getURIScore(uriList.get(i));
+                if (score > criticalScore) {
+                    scoresBelowCritical = false;
+                }
+            }
+            if (!scoresBelowCritical) {
+                for (CrawleableUri uri : uriList) {
+                    filteredUriMap.put(uri, getURIScore(uri));
+                }
+            }
+        }
+        return filteredUriMap;
     }
 
     /**
@@ -91,7 +113,7 @@ public class URIGraphSizeBasedScoreCalculator implements IURIScoreCalculator {
      * @param uri the Uri for which the score has to calculated
      * @return number of times the Uri occurs as a subject in the graphs
      */
-    private int getGraphSize(String uri) {
+    private int getSubjectTripleCount(String uri) {
         String query = "SELECT (COUNT(*) AS ?C) WHERE { GRAPH ?g { <" + uri + "> ?p ?o } }";
         try (QueryExecution execution = queryExecFactory.createQueryExecution(query)) {
             ResultSet resultSet = execution.execSelect();
