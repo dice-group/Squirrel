@@ -277,4 +277,20 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     protected boolean containsDomain(Document domainDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(domainDoc).first() != null;
     }
+
+    public float getCriticalScore() {
+        return criticalScore;
+    }
+
+    public void setCriticalScore(float criticalScore) {
+        this.criticalScore = criticalScore;
+    }
+
+    public int getMinNumberOfUrisToCheck() {
+        return minNumberOfUrisToCheck;
+    }
+
+    public void setMinNumberOfUrisToCheck(int minNumberOfUrisToCheck) {
+        this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
+    }
 }

@@ -331,4 +331,20 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(ipDoc).first() != null;
     }
 
+    public float getCriticalScore() {
+        return criticalScore;
+    }
+
+    public void setCriticalScore(float criticalScore) {
+        this.criticalScore = criticalScore;
+    }
+
+    public int getMinNumberOfUrisToCheck() {
+        return minNumberOfUrisToCheck;
+    }
+
+    public void setMinNumberOfUrisToCheck(int minNumberOfUrisToCheck) {
+        this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
+    }
+
 }
