@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for getting score based on specific score calculators
+ * Interface for getting duplicity scores of URIs and filtering URIs based on score.
  */
 public interface IURIKeywiseFilter<T> {
     /**
