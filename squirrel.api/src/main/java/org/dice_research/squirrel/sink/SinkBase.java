@@ -17,7 +17,7 @@ public interface SinkBase {
      * @param uri
      *            the URI for which data should be stored.
      */
-    public void openSinkForUri(CrawleableUri uri);
+    void openSinkForUri(CrawleableUri uri);
 
     /**
      * Flushes this sink for the given URI by writing any buffered data to the underlying storage.
@@ -25,7 +25,7 @@ public interface SinkBase {
      * @param uri
      *            the URI for which data needs to be sent.
      */
-    public default void flushSinkForUri(CrawleableUri uri) {
+    default void flushSinkForUri(CrawleableUri uri) {
     };
 
     /**
@@ -35,6 +35,6 @@ public interface SinkBase {
      *            the URI for which data has been stored and for which the resources
      *            should be freed.
      */
-    public void closeSinkForUri(CrawleableUri uri);
+    void closeSinkForUri(CrawleableUri uri);
 
 }
