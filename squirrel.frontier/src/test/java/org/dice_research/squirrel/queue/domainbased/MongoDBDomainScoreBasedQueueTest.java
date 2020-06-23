@@ -90,58 +90,6 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
     }
 
     @Test
-    public void openClose() throws Exception {
-        mongodbQueue.open();
-        // assertTrue("squirrel database was created",
-        // mongodbQueue.squirrelDatabaseExists());
-        assertTrue("queue table was created", mongodbQueue.queueTableExists());
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void openOpen() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.open();
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void queueContainsDomain() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        String domain = UriUtils.getDomainName(uris.get(0).getUri().toString());
-        assertFalse(mongodbQueue.containsDomain(domain));
-        mongodbQueue.addDomain(domain);
-        assertTrue(mongodbQueue.containsDomain(domain));
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void purgeQueue() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        assertEquals(0, mongodbQueue.length());
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        assertEquals(3, mongodbQueue.length());
-        mongodbQueue.purge();
-        assertEquals(0, mongodbQueue.length());
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void addCrawleableUri() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
-        assertEquals(1, mongodbQueue.length());
-        mongodbQueue.addUri(uris.get(2));
-        assertEquals(1, mongodbQueue.length());
-        mongodbQueue.close();
-    }
-
-    @Test
     public void addCrawleableUriWithScore() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
@@ -166,23 +114,6 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
     }
 
     @Test
-    public void getIterator() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        Iterator<String> iter = mongodbQueue.getGroupIterator();
-        List<String> domains = new ArrayList<String>();
-        while (iter.hasNext()) {
-            domains.add(iter.next());
-        }
-        mongodbQueue.close();
-        Collections.sort(domains);
-        assertArrayEquals(expectedDomains, domains.toArray(new String[domains.size()]));
-    }
-
-    @Test
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
@@ -203,31 +134,6 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
         }
 
         assertEquals(uris.size(), count);
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void deleteUris() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
-        List<CrawleableUri> retrievedUris = mongodbQueue.getNextUris();
-        assertEquals(1, retrievedUris.size());
-        assertTrue(uris.get(1).equals(retrievedUris.get(0)));
-        mongodbQueue.addUri(uris.get(2));
-        // The retrieval should fail
-        assertNull(mongodbQueue.getNextUris());
-        // Give back the first URI
-        mongodbQueue.markUrisAsAccessible(retrievedUris);
-        // Although we returned it, the queue shouldn't be empty!
-        assertEquals(1, mongodbQueue.length());
-        retrievedUris = mongodbQueue.getNextUris();
-        assertEquals(1, retrievedUris.size());
-        assertTrue(uris.get(2).equals(retrievedUris.get(0)));
-        // Give back the second URI
-        mongodbQueue.markUrisAsAccessible(retrievedUris);
-        // Now, the queue should be empty
-        assertEquals(0, mongodbQueue.length());
         mongodbQueue.close();
     }
 
