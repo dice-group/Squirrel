@@ -1,14 +1,5 @@
 package org.dice_research.squirrel.queue.domainbased;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.net.*;
-import java.util.*;
-
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
 import org.apache.jena.graph.Node;
@@ -27,16 +18,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
+import static org.junit.Assert.*;
+
 @SuppressWarnings({ "deprecation" })
-public class MongoDBDomainQueueTest extends MongoDBBasedTest {
+public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private String expectedDomains[];
     private MongoDBDomainBasedQueue mongodbQueue;
+    private QueryExecutionFactory queryExecFactory;
 
     @Before
     public void setUp() throws Exception {
-        mongodbQueue = new MongoDBDomainBasedQueue("localhost", 27017,false);
+        queryExecFactory = initQueryFactoryEngine();
+        mongodbQueue = new MongoDBDomainBasedScoreBasedQueue("localhost", 58027,false,queryExecFactory);
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("127.0.0.1"),
@@ -54,6 +54,40 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         expectedDomains = new String[] {"danbri.org", "dbpedia.org", "localhost"};
     }
 
+    private QueryExecutionFactory initQueryFactoryEngine() {
+        Dataset dataset = DatasetFactory.create();
+        dataset.setDefaultModel(ModelFactory.createDefaultModel());
+        Node g = NodeFactory.createURI(Constants.DEFAULT_META_DATA_GRAPH_URI.toString());
+//        DatasetGraph graph = createDataSetGraph(dataset, g);
+
+        Node s1 = NodeFactory.createURI("http://dbpedia.org/resource/New_York_City");
+        Node s2 = NodeFactory.createURI("http://dbpedia.org/resource/Berlin");
+        Node s3 = NodeFactory.createURI("http://dbpedia.org/resource/Bangalore");
+        Node s4 = NodeFactory.createURI("http://dbpedia.org/resource/Moscow");
+        String otherUri = "http://dbpedia.org/doesntMatter";
+        Node o = NodeFactory.createURI("http://dbpedia.org/doesntMatter");
+        DatasetGraph graph = dataset.asDatasetGraph();
+
+        for(int i = 0; i < 5; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s1, p, o); // <http://dbpedia.org/resource/New_York_City>
+        }
+        for(int i = 0; i < 10; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s2, p, o); // <http://dbpedia.org/resource/Berlin>
+        }
+        for(int i = 0; i < 8; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s3, p, o); // <http://dbpedia.org/resource/Bangalore>
+        }
+        for(int i = 0; i < 4; i++) {
+            Node p = NodeFactory.createURI(otherUri + i);
+            graph.add(g, s4, p, o); // <http://dbpedia.org/resource/Moscow>
+        }
+
+
+        return new QueryExecutionFactoryDataset(dataset);
+    }
 
     @Test
     public void openClose() throws Exception {
@@ -104,6 +138,30 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         assertEquals(1, mongodbQueue.length());
         mongodbQueue.addUri(uris.get(2));
         assertEquals(1, mongodbQueue.length());
+        mongodbQueue.close();
+    }
+
+    @Test
+    public void addCrawleableUriWithScore() throws Exception {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        for (CrawleableUri uri : uris) {
+            mongodbQueue.addUri(uri);
+        }
+        assertEquals(3, mongodbQueue.length());
+        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
+        assertEquals(1, listUris.size());
+        List<CrawleableUri> listUris2 = mongodbQueue.getNextUris();
+        assertEquals(4, listUris2.size());
+        Assert.assertTrue(listUris2.contains(uris.get(1)));                 // "http://dbpedia.org/resource/New_York_City"
+        Assert.assertTrue(listUris2.contains(uris.get(2)));                 // "http://dbpedia.org/resource/Moscow"
+        Assert.assertTrue(listUris2.contains(uris.get(3)));                 // "http://dbpedia.org/resource/Berlin"
+        Assert.assertTrue(listUris2.contains(uris.get(4)));                 // "http://dbpedia.org/resource/Bangalore"
+        List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
+        assertEquals(1, listUris3.size());
+        List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
+        assertEquals(null, listUris4);
+        mongodbQueue.purge();
         mongodbQueue.close();
     }
 
@@ -173,4 +231,22 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         mongodbQueue.close();
     }
 
+    @Test
+    public void testAddKeywiseUris() throws URISyntaxException {
+        mongodbQueue.open();
+        mongodbQueue.purge();
+        Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
+        List<CrawleableUri> dbpediaUris = new ArrayList<>();
+        CrawleableUri uri1 = new CrawleableUri(new URI("http://dbpedia.org/resource/Paderborn"));
+        CrawleableUri uri2 = new CrawleableUri(new URI("http://dbpedia.org/resource/Sirsi"));
+        dbpediaUris.add(uri1);
+        dbpediaUris.add(uri2);
+        keyWiseUris.put("dbpedia.org", dbpediaUris);
+        mongodbQueue.addKeywiseUris(keyWiseUris);
+        List<CrawleableUri> mongoDBUris = mongodbQueue.getUris("dbpedia.org");
+        Assert.assertTrue(mongoDBUris.contains(uri1));
+        Assert.assertTrue(mongoDBUris.contains(uri2));
+        mongodbQueue.purge();
+        mongodbQueue.close();
+    }
 }

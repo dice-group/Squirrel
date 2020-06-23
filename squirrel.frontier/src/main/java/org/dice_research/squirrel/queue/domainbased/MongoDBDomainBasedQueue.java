@@ -1,19 +1,8 @@
 package org.dice_research.squirrel.queue.domainbased;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.*;
 
-import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
-import org.aksw.jena_sparql_api.http.QueryExecutionFactoryHttp;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.sparql.core.DatasetDescription;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.Constants;
@@ -23,7 +12,6 @@ import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
 import org.dice_research.squirrel.queue.scorebasedfilter.IURIKeywiseFilter;
-import org.dice_research.squirrel.queue.scorebasedfilter.URIKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mongodb.MongoClient;
@@ -44,11 +32,11 @@ import com.mongodb.client.model.Sorts;
 public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     private MongoClient client;
-    private MongoDatabase mongoDB;
-    private Serializer serializer;
+    protected MongoDatabase mongoDB;
+    protected Serializer serializer;
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
-    private final String COLLECTION_URIS = "uris";
+    protected final String COLLECTION_URIS = "uris";
     private IURIKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
@@ -87,59 +75,8 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         }
     }
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
-        this(hostName, port, serializer, includeDepth);
-        this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
-    }
-
-    public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
-        this(hostName, port, serializer, includeDepth);
-
-        QueryExecutionFactory qef;
-        if (username != null && password != null) {
-            // Create the factory with the credentials
-            final Credentials credentials = new UsernamePasswordCredentials(username, password);
-            HttpAuthenticator authenticator = new HttpAuthenticator() {
-                @Override
-                public void invalidate() {
-                    // unused method in this implementation
-                }
-
-                @Override
-                public void apply(AbstractHttpClient client, HttpContext httpContext, URI target) {
-                    client.setCredentialsProvider(new CredentialsProvider() {
-                        @Override
-                        public void clear() {
-                            // unused method in this implementation
-                        }
-
-                        @Override
-                        public Credentials getCredentials(AuthScope scope) {
-                            return credentials;
-                        }
-
-                        @Override
-                        public void setCredentials(AuthScope arg0, Credentials arg1) {
-                            LOGGER.error("I am a read-only credential provider but got a call to set credentials.");
-                        }
-                    });
-                }
-            };
-            qef = new QueryExecutionFactoryHttp(sparqlEndpointUrl, new DatasetDescription(), authenticator);
-        } else {
-            qef = new QueryExecutionFactoryHttp(sparqlEndpointUrl);
-        }
-
-        this.uriKeywiseFilter = new URIKeywiseFilter(qef);
-    }
-
     public MongoDBDomainBasedQueue(String hostName, Integer port, boolean includeDepth) {
         this(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
-    }
-
-    public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth,QueryExecutionFactory queryExecFactory) {
-        this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
-        this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
     }
 
     public void purge() {
@@ -163,13 +100,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     @Override
     protected void addUri(CrawleableUri uri, String domain) {
         addDomain(domain);
-        // default score taken as 1
-        addCrawleableUri(uri, domain, 1);
+        addCrawleableUri(uri, domain);
     }
 
-    protected void addCrawleableUri(CrawleableUri uri, String domain, float score) {
+    protected void addCrawleableUri(CrawleableUri uri, String domain) {
         try {
-            Document uriDoc = getUriDocument(uri, domain, score);
+            Document uriDoc = getUriDocument(uri, domain);
             // If the document does not already exist, add it
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
@@ -193,7 +129,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         }
     }
 
-    public Document getUriDocument(CrawleableUri uri, String domain, float score) {
+    public Document getUriDocument(CrawleableUri uri, String domain) {
         byte[] suri = null;
 
         try {
@@ -208,7 +144,6 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         docUri.put(URI_DOMAIN, domain);
         docUri.put("type", DEFAULT_TYPE);
         docUri.put("uri", new Binary(suri));
-        docUri.put(Constants.URI_SCORE, score);
         return docUri;
     }
 
@@ -271,8 +206,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public List<CrawleableUri> getUris(String domain) {
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-            .find(new Document(URI_DOMAIN, domain).append("type", DEFAULT_TYPE))
-            .sort(Sorts.descending(Constants.URI_SCORE)).iterator();
+            .find(new Document(URI_DOMAIN, domain).append("type", DEFAULT_TYPE)).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 
@@ -317,7 +251,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
         for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
             addDomain(entry.getKey().getUri().getHost());
-            addCrawleableUri(entry.getKey(), entry.getKey().getUri().getHost(), entry.getValue());
+            addCrawleableUri(entry.getKey(), entry.getKey().getUri().getHost());
         }
     }
 
@@ -329,19 +263,4 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(domainDoc).first() != null;
     }
 
-    public float getCriticalScore() {
-        return criticalScore;
-    }
-
-    public void setCriticalScore(float criticalScore) {
-        this.criticalScore = criticalScore;
-    }
-
-    public int getMinNumberOfUrisToCheck() {
-        return minNumberOfUrisToCheck;
-    }
-
-    public void setMinNumberOfUrisToCheck(int minNumberOfUrisToCheck) {
-        this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
-    }
 }
