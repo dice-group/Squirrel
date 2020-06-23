@@ -98,55 +98,6 @@ public class MongoDBIpBasedScoreBasedQueueTest  extends MongoDBBasedTest{
         return new QueryExecutionFactoryDataset(dataset);
     }
 
-    @Test
-    public void openClose() throws Exception {
-        mongodbQueue.open();
-//        assertTrue("squirrel database was created", mongodbQueue.squirrelDatabaseExists());
-        assertTrue("queue table was created", mongodbQueue.queueTableExists());
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void openOpen() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.open();
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void queueContainsIpAddress() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        assertFalse(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
-        mongodbQueue.addUri(uris.get(0));
-        assertTrue(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void purgeQueue() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        assertEquals(0, mongodbQueue.length());
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        assertEquals(3, mongodbQueue.length());
-        mongodbQueue.purge();
-        assertEquals(0, mongodbQueue.length());
-        mongodbQueue.close();
-    }
-
-    @Test
-    public void addCrawleableUri() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
-        assertEquals(1, mongodbQueue.length());
-        mongodbQueue.addUri(uris.get(2));
-        assertEquals(1, mongodbQueue.length());
-        mongodbQueue.close();
-    }
 
     @Test
     public void addCrawleableUriWithScore() throws Exception {
@@ -173,34 +124,6 @@ public class MongoDBIpBasedScoreBasedQueueTest  extends MongoDBBasedTest{
     }
 
     @Test
-    public void addToQueue() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        assertEquals(3, mongodbQueue.length());
-        mongodbQueue.close();
-    }
-
-
-    @Test
-    public void getIterator() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
-        int ipCount = 0;
-        while (iter.hasNext()) {
-            assertTrue(expectedIps.contains( iter.next()));
-            ++ipCount;
-        }
-        assertEquals(expectedIps.size(), ipCount);
-    }
-
-    @Test
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
@@ -220,30 +143,6 @@ public class MongoDBIpBasedScoreBasedQueueTest  extends MongoDBBasedTest{
         mongodbQueue.close();
     }
 
-    @Test
-    public void deleteUris() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
-        List<CrawleableUri> retrievedUris = mongodbQueue.getNextUris();
-        assertEquals(1, retrievedUris.size());
-        assertTrue(uris.get(1).equals(retrievedUris.get(0)));
-        mongodbQueue.addUri(uris.get(2));
-        // The retrieval should fail
-        assertNull(mongodbQueue.getNextUris());
-        // Give back the first URI
-        mongodbQueue.markUrisAsAccessible(retrievedUris);
-        // Although we returned it, the queue shouldn't be empty!
-        assertEquals(1, mongodbQueue.length());
-        retrievedUris = mongodbQueue.getNextUris();
-        assertEquals(1, retrievedUris.size());
-        assertTrue(uris.get(2).equals(retrievedUris.get(0)));
-        // Give back the second URI
-        mongodbQueue.markUrisAsAccessible(retrievedUris);
-        // Now, the queue should be empty
-        assertEquals(0, mongodbQueue.length());
-        mongodbQueue.close();
-    }
 
     @Test
     public void testAddKeywiseUris() throws URISyntaxException, UnknownHostException {
