@@ -36,7 +36,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
 
     @Before
     public void setUp() throws Exception {
-        mongodbQueue = new MongoDBDomainBasedQueue("localhost", 27017,false);
+        mongodbQueue = new MongoDBDomainBasedQueue("localhost", 58027,false);
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("127.0.0.1"),
