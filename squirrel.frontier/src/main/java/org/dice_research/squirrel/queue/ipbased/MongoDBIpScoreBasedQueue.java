@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.queue.domainbased;
+package org.dice_research.squirrel.queue.ipbased;
 
 import com.mongodb.client.model.Sorts;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
@@ -17,48 +17,50 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
-import org.dice_research.squirrel.queue.scorebasedfilter.IURIKeywiseFilter;
-import org.dice_research.squirrel.queue.scorebasedfilter.URIKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.UriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorecalculator.IUriScoreCalculator;
+import org.dice_research.squirrel.queue.scorecalculator.UriScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * DomainBasedQueue with MongoDB, and score based sorting of URI Queue
+ * IpBasedQueue with MongoDB, and score based sorting of URI Queue
  *
  */
-public class MongoDBDomainBasedScoreBasedQueue extends MongoDBDomainBasedQueue {
+public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
 
-    private IURIKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
-    public static final String URI_DOMAIN = "domain";
+    public static final String URI_IP_ADRESS = "ipAddress";
     private float criticalScore = .2f;
     private int minNumberOfUrisToCheck = 5;
+    private IUriKeywiseFilter uriKeywiseFilter;
+    private IUriScoreCalculator uriScoreCalculator;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedScoreBasedQueue.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpScoreBasedQueue.class);
 
     /**
      * This constructor is for the junit test case execution only
      *
      */
-
-    public MongoDBDomainBasedScoreBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
+    public MongoDBIpScoreBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         super(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
-        this.uriKeywiseFilter = new URIKeywiseFilter(queryExecFactory);
+        this.uriScoreCalculator = new UriScoreCalculator(queryExecFactory);
+        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
     }
 
-    public MongoDBDomainBasedScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
+    public MongoDBIpScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
         super(hostName, port, serializer, includeDepth);
         QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
-        this.uriKeywiseFilter = new URIKeywiseFilter(qef);
+        this.uriScoreCalculator = new UriScoreCalculator(qef);
+        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
     }
 
     private QueryExecutionFactory getQueryExecutionFactory(String sparqlEndpointUrl, String username, String password) {
@@ -100,15 +102,40 @@ public class MongoDBDomainBasedScoreBasedQueue extends MongoDBDomainBasedQueue {
     }
 
     @Override
-    protected void addUri(CrawleableUri uri, String domain) {
-        addDomain(domain);
-        // default score taken as 1
-        addCrawleableUri(uri, domain, 1);
+    protected void addUri(CrawleableUri uri, InetAddress address) {
+        addIp(address);
+        addCrawleableUri(uri, 1);
     }
 
-    protected void addCrawleableUri(CrawleableUri uri, String domain, float score) {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<CrawleableUri> getUris(InetAddress address) {
+
+        Document query = getIpDocument(address);
+        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS).find(query)
+            .sort(Sorts.descending(Constants.URI_SCORE)).iterator();
+
+        List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
+
         try {
-            Document uriDoc = getUriDocument(uri, domain);
+            while (uriDocs.hasNext()) {
+                Document doc = uriDocs.next();
+                listUris.add(serializer.deserialize(((Binary) doc.get("uri")).getData()));
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Error while retrieving uri from MongoDBQueue. Returning emtpy list.", e);
+            return Collections.EMPTY_LIST;
+        }
+
+        return listUris;
+    }
+
+    protected void addCrawleableUri(CrawleableUri uri, float score) {
+        try {
+            Document uriDoc = getUriDocument(uri);
+            uriDoc.put(Constants.URI_SCORE, score);
             // If the document does not already exist, add it
             if (mongoDB.getCollection(COLLECTION_URIS).find(uriDoc).first() == null) {
                 mongoDB.getCollection(COLLECTION_URIS).insertOne(uriDoc);
@@ -119,40 +146,13 @@ public class MongoDBDomainBasedScoreBasedQueue extends MongoDBDomainBasedQueue {
     }
 
     @Override
-    public List<CrawleableUri> getUris(String domain) {
-
-        Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-            .find(new Document(URI_DOMAIN, domain).append("type", DEFAULT_TYPE))
-            .sort(Sorts.descending(Constants.URI_SCORE)).iterator();
-
-        List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
-
-        try {
-            while (uriDocs.hasNext()) {
-
-                Document doc = uriDocs.next();
-
-                listUris.add(serializer.deserialize(((Binary) doc.get("uri")).getData()));
-
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("Error while retrieving uri from MongoDBQueue", e);
-        }
-
-        return listUris;
-    }
-
-
-    @Override
-    protected void addKeywiseUris(Map<String, List<CrawleableUri>> uris) {
+    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
         Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
         for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
-            addDomain(entry.getKey().getUri().getHost());
-            addCrawleableUri(entry.getKey(), entry.getKey().getUri().getHost(), entry.getValue());
+            addIp(entry.getKey().getIpAddress());
+            addCrawleableUri(entry.getKey(), entry.getValue());
         }
     }
-
 
     public float getCriticalScore() {
         return criticalScore;

@@ -6,15 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for getting duplicity scores of URIs and filtering URIs based on score.
+ * Interface for filtering URIs based on duplicity score
  */
-public interface IURIKeywiseFilter<T> {
-    /**
-     * Returns the score based on specific score calculation implementation
-     *
-     * @return {@link CrawleableUri} score
-     */
-    float getURIScore(CrawleableUri uri);
+public interface IUriKeywiseFilter<T> {
 
     /**
      * This method returns the {@link CrawleableUri}s to be added to the queue after filtering out the ones based on their score

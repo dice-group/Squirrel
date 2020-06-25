@@ -13,7 +13,6 @@ import org.dice_research.squirrel.MongoDBBasedTest;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.UriUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +29,13 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private String expectedDomains[];
-    private MongoDBDomainBasedQueue mongodbQueue;
+    private MongoDBDomainScoreBasedQueue mongodbQueue;
     private QueryExecutionFactory queryExecFactory;
 
     @Before
     public void setUp() throws Exception {
         queryExecFactory = initQueryFactoryEngine();
-        mongodbQueue = new MongoDBDomainBasedScoreBasedQueue("localhost", 58027,false,queryExecFactory);
+        mongodbQueue = new MongoDBDomainScoreBasedQueue("localhost", 58027,false,queryExecFactory);
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("127.0.0.1"),
@@ -84,8 +83,6 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s4, p, o); // <http://dbpedia.org/resource/Moscow>
         }
-
-
         return new QueryExecutionFactoryDataset(dataset);
     }
 

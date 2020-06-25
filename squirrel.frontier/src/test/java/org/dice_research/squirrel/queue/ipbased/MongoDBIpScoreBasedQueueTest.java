@@ -1,16 +1,5 @@
 package org.dice_research.squirrel.queue.ipbased;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.*;
-
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
 import org.apache.jena.graph.Node;
@@ -28,18 +17,27 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 @SuppressWarnings("deprecation")
-public class MongoDBIpBasedScoreBasedQueueTest  extends MongoDBBasedTest{
+public class MongoDBIpScoreBasedQueueTest extends MongoDBBasedTest{
 
     private List<CrawleableUri> uris = new ArrayList<CrawleableUri>();
     private Set<InetAddress> expectedIps;
-    private MongoDBIpBasedQueue mongodbQueue;
+    private MongoDBIpScoreBasedQueue mongodbQueue;
     private QueryExecutionFactory queryExecFactory;
 
     @Before
     public void setUp() throws Exception {
         queryExecFactory = initQueryFactoryEngine();
-    	mongodbQueue = new MongoDBIpBasedScoreBasedQueue("localhost", 58027,false,queryExecFactory);
+    	mongodbQueue = new MongoDBIpScoreBasedQueue("localhost", 58027,false,queryExecFactory);
 
 //    	mongodbQueue = new MongoDBQueue("localhost", 27017);
 

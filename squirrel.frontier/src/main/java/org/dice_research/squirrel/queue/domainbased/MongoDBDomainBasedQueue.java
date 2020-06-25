@@ -1,19 +1,5 @@
 package org.dice_research.squirrel.queue.domainbased;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.bson.Document;
-import org.bson.types.Binary;
-import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
-import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
-import org.dice_research.squirrel.queue.scorebasedfilter.IURIKeywiseFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
@@ -22,7 +8,22 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Sorts;
+import org.bson.Document;
+import org.bson.types.Binary;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
+import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
+import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DomainBasedQueue implementation for use with MongoDB
@@ -37,7 +38,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     protected final String COLLECTION_URIS = "uris";
-    private IURIKeywiseFilter uriKeywiseFilter;
+    private IUriKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false

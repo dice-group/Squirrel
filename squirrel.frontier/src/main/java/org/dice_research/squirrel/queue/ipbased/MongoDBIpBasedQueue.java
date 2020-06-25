@@ -13,7 +13,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
-import org.dice_research.squirrel.queue.scorebasedfilter.IURIKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Sorts;
 
 /**
  * IpBasedQueue implementation for use with MongoDB
@@ -40,7 +39,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     protected final String COLLECTION_URIS = "uris";
-    private IURIKeywiseFilter uriKeywiseFilter;
+    private IUriKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
