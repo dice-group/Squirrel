@@ -35,7 +35,8 @@ public class NormalizerImplTest {
         sessionIDs.add("jsessionids");
         sessionIDs.add("phpsessid");
         sessionIDs.add("sid");
-        
+        sessionIDs.add("utm_.+");
+
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
         mapDefaultPort.put("http", 80);
         mapDefaultPort.put("https", 443);
@@ -68,7 +69,7 @@ public class NormalizerImplTest {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
         CrawleableUri originalUri;
         CrawleableUri expectedUri;
-        
+
         // Very simple first test case
         originalUri = new CrawleableUri(new URI("http://example.org/test1"));
         expectedUri = new CrawleableUri(new URI("http://example.org/test1"));
@@ -125,6 +126,16 @@ public class NormalizerImplTest {
         // Check if session ids are handled
         originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2&SESSIONID=12345678896"));
         expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        // Check if wildcards are handled
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?b=1&a=2&utm_source=garbage"));
+        expectedUri = new CrawleableUri(new URI("http://www.example.com/?a=2&b=1"));
+        testConfigs.add(new Object[] { originalUri, expectedUri});
+
+        // Check if only full argument names are matched
+        originalUri = new CrawleableUri(new URI("http://www.example.com/?side=1"));
+        expectedUri = originalUri;
         testConfigs.add(new Object[] { originalUri, expectedUri});
 
         // Convert the scheme and host to lower case

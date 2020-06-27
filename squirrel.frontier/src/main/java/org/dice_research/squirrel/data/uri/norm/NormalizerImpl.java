@@ -45,11 +45,11 @@ public class NormalizerImpl implements UriNormalizer {
      * look-up table for characters which should not be escaped in URL paths
      */
     private final static BitSet UNESCAPED_CHARS = new BitSet(0x7F);
-    private final List<String> sessionIDs;
+    private final Pattern queryArgumentsToRemove;
     private final Map<String, Integer> defaultPortMap;
-    
-    public NormalizerImpl(List<String> sessionIDs, Map<String, Integer> defaultPortMap) {
-    	this.sessionIDs = sessionIDs;
+
+    public NormalizerImpl(List<String> queryArgumentsToRemove, Map<String, Integer> defaultPortMap) {
+    	this.queryArgumentsToRemove = Pattern.compile(String.join("|", queryArgumentsToRemove), Pattern.CASE_INSENSITIVE);
     	this.defaultPortMap = defaultPortMap;
     }
 
@@ -99,7 +99,8 @@ public class NormalizerImpl implements UriNormalizer {
                 List<String> toRemove = new ArrayList<>();
                 for(String queryParameter : queries){
                     //removing session ids
-                    if(sessionIDs.contains(queryParameter.split("=")[0].toLowerCase())){
+                    String name = queryParameter.split("=")[0];
+                    if (queryArgumentsToRemove.matcher(name).matches()) {
                         toRemove.add(queryParameter);
                     }
                 }
@@ -120,7 +121,7 @@ public class NormalizerImpl implements UriNormalizer {
         //Remove default ports
         int port = uriObject.getPort();
         String scheme = uriObject.getScheme() != null ? uriObject.getScheme() : "";
-        
+
         if(port != -1){
             if(defaultPortMap.containsKey(scheme)){
                 if(port == defaultPortMap.get(scheme)){
@@ -136,10 +137,10 @@ public class NormalizerImpl implements UriNormalizer {
         }
 
         // convert host and scheme to lower case
-        String host = uriObject.getHost() != null ? uriObject.getHost() : "";   
+        String host = uriObject.getHost() != null ? uriObject.getHost() : "";
         String lowerCaseHost = host != null ? host.toLowerCase() : "";
         String lowerCaseScheme = scheme != null ? scheme.toLowerCase() : "";
-        
+
         if(!scheme.equals(lowerCaseScheme) || !host.equals(lowerCaseHost)){
             scheme = lowerCaseScheme;
             host = lowerCaseHost;
@@ -179,7 +180,7 @@ public class NormalizerImpl implements UriNormalizer {
      * src/solaris/native/java/io/canonicalize_md.c) and the <a href=
      * "https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java">Crawler
      * Commons</a> project.
-     * 
+     *
      * @param path
      * @return the normalized path or the given path object if no changes have been
      *         made.

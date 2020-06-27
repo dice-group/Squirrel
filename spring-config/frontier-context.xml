@@ -22,9 +22,9 @@
 	<context:component-scan
 		base-package="org.dice_research.squirrel" />
 
-	<!-- This will automatically locate any and all property files you have 
-		within your classpath, provided they fall under the META-INF directory. The 
-		located property files are parsed and their values can then be used within 
+	<!-- This will automatically locate any and all property files you have
+		within your classpath, provided they fall under the META-INF directory. The
+		located property files are parsed and their values can then be used within
 		application context files in the form of ${propertyKey}. -->
 
 
@@ -36,10 +36,30 @@
 		class="org.dice_research.squirrel.data.uri.norm.NormalizerImpl">
 		<constructor-arg index="0">
 			<list>
+				<!-- sessions -->
 				<value>sessionid</value>
 				<value>jsessionids</value>
 				<value>phpsessid</value>
 				<value>sid</value>
+				<!-- garbage -->
+				<value>action_object_map</value>
+				<value>action_ref_map</value>
+				<value>action_type_map</value>
+				<value>amp</value>
+				<value>fb_action_ids</value>
+				<value>fb_action_types</value>
+				<value>fbclid</value>
+				<value>fb_ref</value>
+				<value>fb_source</value>
+				<value>ga_.+</value>
+				<value>gclid</value>
+				<value>gclsrc</value>
+				<value>igshid</value>
+				<value>mkt_tok</value>
+				<value>_openstat</value>
+				<value>utm_.+</value>
+				<value>wt_zmc</value>
+				<value>yclid</value>
 			</list>
 		</constructor-arg>
 		<constructor-arg index="1">
@@ -88,13 +108,13 @@
 		<constructor-arg index="2"
 			value="#{systemEnvironment['SPARQL_HOST_PASSWD']}" />
 	</bean>
-	
+
 	<!-- Dummy UriRetriever Implementation
 	<bean id="uriRetrieverBean"
 		class="org.dice_research.squirrel.frontier.recrawling.DummyUriRetriever">
 	</bean> -->
-	
-	
+
+
 
 
 	<bean id="mongoDBKnowUriFilter"
