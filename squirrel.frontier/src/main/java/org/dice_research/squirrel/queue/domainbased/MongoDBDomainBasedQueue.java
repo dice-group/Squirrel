@@ -10,6 +10,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.bson.types.Binary;
+import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -171,6 +172,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending(URI_DOMAIN), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending(URI_DOMAIN),
                 Indexes.ascending("type")));
+            mongoCollectionUris.createIndex(Indexes.ascending(Constants.URI_SCORE));
         }
     }
 
