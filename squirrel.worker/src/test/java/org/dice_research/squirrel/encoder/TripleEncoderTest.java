@@ -55,8 +55,8 @@ public class TripleEncoderTest {
 		TripleEncoder encoder = TripleEncoder.getInstance();
 
 		for (int i = 0; i < 10; i++) {
-			System.out.println(encoder.encodeTriple(listUncodedTriples.get(i)));
-			System.out.println(listExpectedTriples.get(i));
+//			System.out.println(encoder.encodeTriple(listUncodedTriples.get(i)));
+//			System.out.println(listExpectedTriples.get(i));
 
 			Assert.assertEquals(listExpectedTriples.get(i), encoder.encodeTriple(listUncodedTriples.get(i)));
 		}
