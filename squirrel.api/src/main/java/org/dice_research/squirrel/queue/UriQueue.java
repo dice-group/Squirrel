@@ -19,7 +19,7 @@ public interface UriQueue {
      *            the {@link CrawleableUri} instance that should be added to the
      *            queue.
      */
-     void addUri(CrawleableUri uri);
+    public void addUri(CrawleableUri uri);
 
     /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
@@ -28,7 +28,7 @@ public interface UriQueue {
      * @return the next chunk of URIs that should be crawled or null if no URIs
      *         are available
      */
-    List<CrawleableUri> getNextUris();
+    public List<CrawleableUri> getNextUris();
 
 
     /**
@@ -36,17 +36,17 @@ public interface UriQueue {
      *
      * @return
      */
-    boolean isEmpty();
+    public boolean isEmpty();
 
     /**
      * Closes the queue and frees all resources.
      */
-    void close();
+    public void close();
 
     /**
      * Opens the queue and allocates necessary resources.
      */
-    void open();
+    public void open();
 
     /**
      * Adds the given {@link CrawleableUri} instances to the queue.
@@ -55,5 +55,5 @@ public interface UriQueue {
      *            the {@link CrawleableUri} instances that should be added to the
      *            queue.
      */
-    void addUris(List<CrawleableUri> uris);
+    public void addUris(List<CrawleableUri> uris);
 }
