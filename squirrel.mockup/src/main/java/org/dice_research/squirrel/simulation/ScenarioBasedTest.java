@@ -1,14 +1,5 @@
 package org.dice_research.squirrel.simulation;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -29,8 +20,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dice_research.squirrel.simulation.AbstractServerMockUsingTest;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.*;
 
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
@@ -128,11 +124,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         // Serializer serializer = (Serializer) context.getBean("serializerBean");
         // UriCollector collector = (UriCollector) context.getBean("uriCollectorBean");
         Worker worker = (Worker) context.getBean("workerBean");
-
-        for (int i = 0; i < seeds.length; ++i) {
-            frontier.addNewUri(seeds[i]);
-        }
-
+        frontier.addNewUris(Arrays.asList(seeds));
         Thread t = new Thread(worker);
         t.start();
         do {
