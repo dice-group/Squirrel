@@ -166,6 +166,7 @@ public class FrontierImplTest {
     public void tearDown() throws Exception {
         filter.purge();
         queue.purge();
+        uris.clear();
         String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
