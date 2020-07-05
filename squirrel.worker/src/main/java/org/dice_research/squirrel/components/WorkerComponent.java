@@ -164,12 +164,7 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
     public void setWorker(Worker worker) {
         this.worker = worker;
     }
-
-    @Override
-    public void addNewUri(CrawleableUri uri) {
-        addNewUris(Collections.singletonList(uri));
-    }
-
+    
     @Override
     public void addNewUris(List<CrawleableUri> uris) {
         try {
