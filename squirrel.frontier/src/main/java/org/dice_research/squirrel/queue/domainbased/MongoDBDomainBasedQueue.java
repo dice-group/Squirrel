@@ -16,7 +16,6 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
-import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +38,11 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     protected final String COLLECTION_URIS = "uris";
-    private IUriKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
     public static final String URI_DOMAIN = "domain";
-    private float criticalScore = .2f;
-    private int minNumberOfUrisToCheck = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 

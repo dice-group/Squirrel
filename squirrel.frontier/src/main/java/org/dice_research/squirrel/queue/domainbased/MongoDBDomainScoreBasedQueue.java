@@ -18,9 +18,9 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
-import org.dice_research.squirrel.queue.scorebasedfilter.UriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.ScoreBasedScoreBasedUriKeywiseFilter;
 import org.dice_research.squirrel.queue.scorecalculator.IUriScoreCalculator;
-import org.dice_research.squirrel.queue.scorecalculator.UriScoreCalculator;
+import org.dice_research.squirrel.queue.scorecalculator.UriDuplicityScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,22 +52,22 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
      */
     public MongoDBDomainScoreBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         super(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
-        this.uriScoreCalculator = new UriScoreCalculator(queryExecFactory);
-        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
+        this.uriScoreCalculator = new UriDuplicityScoreCalculator(queryExecFactory);
+        this.uriKeywiseFilter = new ScoreBasedScoreBasedUriKeywiseFilter(uriScoreCalculator);
     }
 
     public MongoDBDomainScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
         super(hostName, port, serializer, includeDepth);
         QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
-        this.uriScoreCalculator = new UriScoreCalculator(qef);
-        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
+        this.uriScoreCalculator = new UriDuplicityScoreCalculator(qef);
+        this.uriKeywiseFilter = new ScoreBasedScoreBasedUriKeywiseFilter(uriScoreCalculator);
     }
 
-    public MongoDBDomainScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password, UriScoreCalculator uriScoreCalculator, UriKeywiseFilter uriKeywiseFilter) {
+    public MongoDBDomainScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password, UriDuplicityScoreCalculator uriScoreCalculator, ScoreBasedScoreBasedUriKeywiseFilter scoreBasedUriKeywiseFilter) {
         super(hostName, port, serializer, includeDepth);
         QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
         this.uriScoreCalculator = uriScoreCalculator;
-        this.uriKeywiseFilter = uriKeywiseFilter;
+        this.uriKeywiseFilter = scoreBasedUriKeywiseFilter;
     }
 
     private QueryExecutionFactory getQueryExecutionFactory(String sparqlEndpointUrl, String username, String password) {

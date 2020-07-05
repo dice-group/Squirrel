@@ -1,22 +1,5 @@
 package org.dice_research.squirrel.queue.ipbased;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
-
-import org.bson.Document;
-import org.bson.types.Binary;
-import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
-import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
-import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
@@ -25,6 +8,21 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import org.bson.Document;
+import org.bson.types.Binary;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
+import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * IpBasedQueue implementation for use with MongoDB
@@ -39,14 +37,11 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
     protected final String COLLECTION_URIS = "uris";
-    private IUriKeywiseFilter uriKeywiseFilter;
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
     public static final String URI_IP_ADRESS = "ipAddress";
-    private float criticalScore = .2f;
-    private int minNumberOfUrisToCheck = 5;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
 
@@ -125,11 +120,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             }
         }
         return false;
-    }
-
-    private void addUri(CrawleableUri uri, InetAddress address) {
-        addIp(address);
-        addCrawleableUri(uri);
     }
 
     @Override

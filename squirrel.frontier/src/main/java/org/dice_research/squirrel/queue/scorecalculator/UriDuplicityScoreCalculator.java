@@ -14,27 +14,27 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.queue.scorebasedfilter.UriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.ScoreBasedScoreBasedUriKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
 /**
- * Interface for getting duplicity score of a Uri.
- * The duplicity score is calculated for a {@link CrawleableUri} as 1 / (number of times the Uri occurs as a subject in graphs
+ * Interface for getting score of a Uri.
+ * The score is calculated for a {@link CrawleableUri} as 1 / (number of times the Uri occurs as a subject in graphs
  */
-public class UriScoreCalculator implements IUriScoreCalculator {
+public class UriDuplicityScoreCalculator implements IUriScoreCalculator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UriKeywiseFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreBasedScoreBasedUriKeywiseFilter.class);
 
     protected QueryExecutionFactory queryExecFactory = null;
 
-    public UriScoreCalculator(QueryExecutionFactory qe) {
+    public UriDuplicityScoreCalculator(QueryExecutionFactory qe) {
         this.queryExecFactory = qe;
     }
 
-    public UriScoreCalculator(String sparqlEndpointUrl, String username, String password) {
+    public UriDuplicityScoreCalculator(String sparqlEndpointUrl, String username, String password) {
         if (username != null && password != null) {
             // Create the factory with the credentials
             final Credentials credentials = new UsernamePasswordCredentials(username, password);
