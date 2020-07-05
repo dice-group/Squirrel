@@ -18,7 +18,7 @@ public class UriKeywiseFilterTest extends MongoDBScoreBasedTest {
     @Test
     public void testFilterUrisKeywise() throws URISyntaxException {
         UriScoreCalculator scoreCalculator = new UriScoreCalculator(queryExecFactory);
-        UriKeywiseFilter uriKeywiseFilter = new UriKeywiseFilter(scoreCalculator);
+        UriKeywiseFilter uriKeywiseFilter = new UriKeywiseFilter(scoreCalculator, .2f, 3);
 
         Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
         List<CrawleableUri> dbpediaUris = new ArrayList<>();
@@ -30,11 +30,6 @@ public class UriKeywiseFilterTest extends MongoDBScoreBasedTest {
         dbpediaUris.add(uri2);
         dbpediaUris.add(uri3);
         dbpediaUris.add(uri4);
-        keyWiseUris.put("dbpedia.org", dbpediaUris);
-
-        Assert.assertEquals(4, uriKeywiseFilter.filterUrisKeywise(keyWiseUris, 2, .001f).size());
-        Assert.assertEquals(0, uriKeywiseFilter.filterUrisKeywise(keyWiseUris, 2, .8f).size());
-
         CrawleableUri uri5 = new CrawleableUri(new URI("https://www.lonelyplanet.com/germany/paderborn"));
         CrawleableUri uri6 = new CrawleableUri(new URI("https://www.lonelyplanet.com/germany/north-rhine-westphalia/dortmund"));
         CrawleableUri uri7 = new CrawleableUri(new URI("https://www.lonelyplanet.com/england/london"));
@@ -45,12 +40,14 @@ public class UriKeywiseFilterTest extends MongoDBScoreBasedTest {
         lonelyPlanetUris.add(uri7);
         lonelyPlanetUris.add(uri8);
         keyWiseUris.put("www.lonelyplanet.com", lonelyPlanetUris);
-        Map<CrawleableUri, Float> filteredUris = uriKeywiseFilter.filterUrisKeywise(keyWiseUris, 2, .2f);
-
-        Assert.assertEquals(4, filteredUris.size());
-        Assert.assertTrue(filteredUris.containsKey(uri5));
-        Assert.assertTrue(filteredUris.containsKey(uri6));
-        Assert.assertTrue(filteredUris.containsKey(uri7));
-        Assert.assertTrue(filteredUris.containsKey(uri8));
+        keyWiseUris.put("dbpedia.org", dbpediaUris);
+        Map<String, List<CrawleableUri>> filteredUris = uriKeywiseFilter.filterUrisKeywise(keyWiseUris);
+        Assert.assertEquals(1, filteredUris.size());
+        Assert.assertTrue(filteredUris.containsKey("www.lonelyplanet.com"));
+        Assert.assertEquals(4, filteredUris.get("www.lonelyplanet.com").size());
+        Assert.assertTrue(filteredUris.get("www.lonelyplanet.com").contains(uri5));
+        Assert.assertTrue(filteredUris.get("www.lonelyplanet.com").contains(uri6));
+        Assert.assertTrue(filteredUris.get("www.lonelyplanet.com").contains(uri7));
+        Assert.assertTrue(filteredUris.get("www.lonelyplanet.com").contains(uri8));
     }
 }

@@ -41,8 +41,6 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
     public static final String URI_DOMAIN = "domain";
-    private float criticalScore = .2f;
-    private int minNumberOfUrisToCheck = 5;
     private IUriKeywiseFilter uriKeywiseFilter;
     private IUriScoreCalculator uriScoreCalculator;
 
@@ -63,6 +61,13 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
         QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
         this.uriScoreCalculator = new UriScoreCalculator(qef);
         this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
+    }
+
+    public MongoDBDomainScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password, UriScoreCalculator uriScoreCalculator, UriKeywiseFilter uriKeywiseFilter) {
+        super(hostName, port, serializer, includeDepth);
+        QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
+        this.uriScoreCalculator = uriScoreCalculator;
+        this.uriKeywiseFilter = uriKeywiseFilter;
     }
 
     private QueryExecutionFactory getQueryExecutionFactory(String sparqlEndpointUrl, String username, String password) {
@@ -103,13 +108,6 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
         return qef;
     }
 
-    @Override
-    protected void addUri(CrawleableUri uri, String domain) {
-        addDomain(domain);
-        // default score taken as 1
-        addCrawleableUri(uri, domain, 1);
-    }
-
     protected void addCrawleableUri(CrawleableUri uri, String domain, float score) {
         try {
             Document uriDoc = getUriDocument(uri, domain);
@@ -148,29 +146,14 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
         return listUris;
     }
 
-
     @Override
-    protected void addKeywiseUris(Map<String, List<CrawleableUri>> uris) {
-        Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
-        for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
-            addDomain(entry.getKey().getUri().getHost());
-            addCrawleableUri(entry.getKey(), entry.getKey().getUri().getHost(), entry.getValue());
+    protected void addUris(Map<String, List<CrawleableUri>> domainwiswUris) {
+        Map<String, List<CrawleableUri>> uriMap = uriKeywiseFilter.filterUrisKeywise(domainwiswUris);
+        for(Map.Entry<String, List<CrawleableUri>> entry : uriMap.entrySet()) {
+            addDomain(entry.getKey());
+            for(CrawleableUri uri:entry.getValue()) {
+                addCrawleableUri(uri, entry.getKey(), (float)uri.getData(Constants.URI_SCORE));
+            }
         }
-    }
-
-    public float getCriticalScore() {
-        return criticalScore;
-    }
-
-    public void setCriticalScore(float criticalScore) {
-        this.criticalScore = criticalScore;
-    }
-
-    public int getMinNumberOfUrisToCheck() {
-        return minNumberOfUrisToCheck;
-    }
-
-    public void setMinNumberOfUrisToCheck(int minNumberOfUrisToCheck) {
-        this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
     }
 }

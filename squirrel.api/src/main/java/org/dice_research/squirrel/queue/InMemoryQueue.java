@@ -18,8 +18,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
         queue = new TreeMap<InetAddress, List<CrawleableUri>>(this);
     }
 
-    @Override
-    protected void addUri(CrawleableUri uri, InetAddress address) {
+    private void addUri(CrawleableUri uri, InetAddress address) {
         if (queue.containsKey(address)) {
             queue.get(address).add(uri);
         } else {
@@ -93,6 +92,11 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 	}
 
     @Override
-    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
+    protected void addUris(Map<InetAddress, List<CrawleableUri>> ipwiseUris) {
+        for(Map.Entry<InetAddress, List<CrawleableUri>> entry : ipwiseUris.entrySet()) {
+            for(CrawleableUri uri : entry.getValue()) {
+                addUri(uri, entry.getKey());
+            }
+        }
     }
 }

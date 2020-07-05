@@ -99,12 +99,6 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         client.close();
     }
 
-    @Override
-    protected void addUri(CrawleableUri uri, String domain) {
-        addDomain(domain);
-        addCrawleableUri(uri, domain);
-    }
-
     protected void addCrawleableUri(CrawleableUri uri, String domain) {
         try {
             Document uriDoc = getUriDocument(uri, domain);
@@ -250,11 +244,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     }
 
     @Override
-    protected void addKeywiseUris(Map<String, List<CrawleableUri>> uris) {
-        Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
-        for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
-            addDomain(entry.getKey().getUri().getHost());
-            addCrawleableUri(entry.getKey(), entry.getKey().getUri().getHost());
+    protected void addUris(Map<String, List<CrawleableUri>> domainwiswUris) {
+        for(Map.Entry<String, List<CrawleableUri>> entry : domainwiswUris.entrySet()) {
+            addDomain(entry.getKey());
+            for(CrawleableUri uri : entry.getValue()) {
+                addCrawleableUri(uri, entry.getKey());
+            }
         }
     }
 

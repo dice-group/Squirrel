@@ -127,8 +127,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         return false;
     }
 
-    @Override
-    protected void addUri(CrawleableUri uri, InetAddress address) {
+    private void addUri(CrawleableUri uri, InetAddress address) {
         addIp(address);
         addCrawleableUri(uri);
     }
@@ -298,11 +297,12 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
-    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
-        Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
-        for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
-            addIp(entry.getKey().getIpAddress());
-            addCrawleableUri(entry.getKey());
+    protected void addUris(Map<InetAddress, List<CrawleableUri>> ipwiseUris) {
+        for(Map.Entry<InetAddress, List<CrawleableUri>> entry : ipwiseUris.entrySet()) {
+            addIp(entry.getKey());
+            for(CrawleableUri uri : entry.getValue()) {
+                addCrawleableUri(uri);
+            }
         }
     }
 

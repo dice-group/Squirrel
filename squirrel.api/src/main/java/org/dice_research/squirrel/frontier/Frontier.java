@@ -31,17 +31,7 @@ public interface Frontier extends Closeable {
     List<CrawleableUri> getNextUris();
 
     /**
-     * Add this URIs to the {@link Frontier}s internal queue if the internal
-     * rules of the {@link Frontier} allow it.
-     *
-     * @param uri
-     *            the URI that should be added to the {@link Frontier}
-     */
-    void addNewUri(CrawleableUri uri);
-
-    /**
-     * Adds the given list of URIs to the {@link Frontier}. It is like calling
-     * {@link #addNewUri(CrawleableUri)} with every single URI.
+     * Adds the given list of URIs to the {@link Frontier}.
      *
      * @param newUris
      *            the URIs that should be added to the {@link Frontier}
