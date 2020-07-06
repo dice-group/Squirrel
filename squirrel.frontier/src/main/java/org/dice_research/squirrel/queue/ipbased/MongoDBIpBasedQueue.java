@@ -123,6 +123,12 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     }
 
     @Override
+    protected void addUri(CrawleableUri uri, InetAddress address) {
+        addIp(address);
+        addCrawleableUri(uri);
+    }
+
+    @Override
     protected Iterator<InetAddress> getGroupIterator() {
 
         MongoCursor<Document> cursor = mongoDB.getCollection(COLLECTION_QUEUE).find().iterator();

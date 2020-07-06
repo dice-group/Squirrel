@@ -95,6 +95,12 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         client.close();
     }
 
+    @Override
+    protected void addUri(CrawleableUri uri, String domain) {
+        addDomain(domain);
+        addCrawleableUri(uri, domain);
+    }
+
     protected void addCrawleableUri(CrawleableUri uri, String domain) {
         try {
             Document uriDoc = getUriDocument(uri, domain);

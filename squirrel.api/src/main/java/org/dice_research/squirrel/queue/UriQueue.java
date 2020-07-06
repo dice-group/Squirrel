@@ -13,6 +13,15 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 public interface UriQueue {
 
     /**
+     * Adds the given {@link CrawleableUri} instance to the queue.
+     *
+     * @param uri
+     *            the {@link CrawleableUri} instance that should be added to the
+     *            queue.
+     */
+    public void addUri(CrawleableUri uri);
+
+    /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
      * this method removes the URIs from the queue.
      *

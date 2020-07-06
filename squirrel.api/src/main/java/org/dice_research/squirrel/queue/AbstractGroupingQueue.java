@@ -41,6 +41,22 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
     }
 
     @Override
+    public void addUri(CrawleableUri uri) {
+        synchronized (this) {
+            addUri(uri, groupByOperator.retrieveKey(uri));
+        }
+    }
+
+    /**
+     * Adds the given URI with they given group key to the queue.
+     *
+     * @param uri      the URI that should be added to the queue
+     * @param groupKey the group key which should be used to identify the group this URI
+     *                 belongs to
+     */
+    protected abstract void addUri(CrawleableUri uri, T groupKey);
+
+    @Override
     public List<CrawleableUri> getNextUris() {
         synchronized (this) {
             T key;
