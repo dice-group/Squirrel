@@ -18,9 +18,9 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.scorebasedfilter.IUriKeywiseFilter;
-import org.dice_research.squirrel.queue.scorebasedfilter.UriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.ScoreBasedScoreBasedUriKeywiseFilter;
 import org.dice_research.squirrel.queue.scorecalculator.IUriScoreCalculator;
-import org.dice_research.squirrel.queue.scorecalculator.UriScoreCalculator;
+import org.dice_research.squirrel.queue.scorecalculator.UriDuplicityScoreCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +39,6 @@ public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
         : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
     public static final String URI_IP_ADRESS = "ipAddress";
-    private float criticalScore = .2f;
-    private int minNumberOfUrisToCheck = 5;
     private IUriKeywiseFilter uriKeywiseFilter;
     private IUriScoreCalculator uriScoreCalculator;
 
@@ -52,15 +50,22 @@ public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
      */
     public MongoDBIpScoreBasedQueue(String hostName, Integer port, boolean includeDepth, QueryExecutionFactory queryExecFactory) {
         super(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
-        this.uriScoreCalculator = new UriScoreCalculator(queryExecFactory);
-        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
+        this.uriScoreCalculator = new UriDuplicityScoreCalculator(queryExecFactory);
+        this.uriKeywiseFilter = new ScoreBasedScoreBasedUriKeywiseFilter(uriScoreCalculator);
     }
 
     public MongoDBIpScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password) {
         super(hostName, port, serializer, includeDepth);
         QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
-        this.uriScoreCalculator = new UriScoreCalculator(qef);
-        this.uriKeywiseFilter = new UriKeywiseFilter(uriScoreCalculator);
+        this.uriScoreCalculator = new UriDuplicityScoreCalculator(qef);
+        this.uriKeywiseFilter = new ScoreBasedScoreBasedUriKeywiseFilter(uriScoreCalculator);
+    }
+
+    public MongoDBIpScoreBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth, String sparqlEndpointUrl, String username, String password, UriDuplicityScoreCalculator uriScoreCalculator, ScoreBasedScoreBasedUriKeywiseFilter scoreBasedUriKeywiseFilter) {
+        super(hostName, port, serializer, includeDepth);
+        QueryExecutionFactory qef = getQueryExecutionFactory(sparqlEndpointUrl, username, password);
+        this.uriScoreCalculator = uriScoreCalculator;
+        this.uriKeywiseFilter = scoreBasedUriKeywiseFilter;
     }
 
     private QueryExecutionFactory getQueryExecutionFactory(String sparqlEndpointUrl, String username, String password) {
@@ -101,13 +106,6 @@ public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
         return qef;
     }
 
-    @Override
-    protected void addUri(CrawleableUri uri, InetAddress address) {
-        addIp(address);
-        addCrawleableUri(uri, 1);
-    }
-
-
     @SuppressWarnings("unchecked")
     @Override
     public List<CrawleableUri> getUris(InetAddress address) {
@@ -146,27 +144,13 @@ public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
     }
 
     @Override
-    protected void addKeywiseUris(Map<InetAddress, List<CrawleableUri>> uris) {
-        Map<CrawleableUri, Float> uriMap = uriKeywiseFilter.filterUrisKeywise(uris, minNumberOfUrisToCheck, criticalScore);
-        for(Map.Entry<CrawleableUri, Float> entry : uriMap.entrySet()) {
-            addIp(entry.getKey().getIpAddress());
-            addCrawleableUri(entry.getKey(), entry.getValue());
+    protected void addUris(Map<InetAddress, List<CrawleableUri>> uris) {
+        Map<InetAddress, List<CrawleableUri>> uriMap = uriKeywiseFilter.filterUrisKeywise(uris);
+        for(Map.Entry<InetAddress, List<CrawleableUri>> entry : uriMap.entrySet()) {
+            addIp(entry.getKey());
+            for(CrawleableUri uri:entry.getValue()) {
+                addCrawleableUri(uri, (float)uri.getData(Constants.URI_SCORE));
+            }
         }
-    }
-
-    public float getCriticalScore() {
-        return criticalScore;
-    }
-
-    public void setCriticalScore(float criticalScore) {
-        this.criticalScore = criticalScore;
-    }
-
-    public int getMinNumberOfUrisToCheck() {
-        return minNumberOfUrisToCheck;
-    }
-
-    public void setMinNumberOfUrisToCheck(int minNumberOfUrisToCheck) {
-        this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
     }
 }

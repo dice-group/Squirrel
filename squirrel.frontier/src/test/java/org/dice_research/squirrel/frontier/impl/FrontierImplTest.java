@@ -71,7 +71,9 @@ public class FrontierImplTest {
     @Test
     public void getNextUris() throws Exception {
 
-        queue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        queue.addUris(urisToAdd);
 
         //  queue.addCrawleableUri(uris.get(1));
         List<CrawleableUri> nextUris = frontier.getNextUris();
@@ -92,17 +94,6 @@ public class FrontierImplTest {
         assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("194.109.129.58"),
             UriType.DEREFERENCEABLE));
         assertEquals("Should be the same as uris array", assertion, nextUris);
-    }
-
-    @Test
-    public void addNewUri() throws Exception {
-        CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);
-        frontier.addNewUri(uri_1);
-        List<CrawleableUri> nextUris = frontier.getNextUris();
-        List<CrawleableUri> assertion = new ArrayList<>();
-        assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"),
-            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
-        assertEquals(assertion, nextUris);
     }
 
     @Test
@@ -175,6 +166,7 @@ public class FrontierImplTest {
     public void tearDown() throws Exception {
         filter.purge();
         queue.purge();
+        uris.clear();
         String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();

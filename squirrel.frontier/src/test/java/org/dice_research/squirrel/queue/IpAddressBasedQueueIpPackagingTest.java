@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized.Parameters;
  * chunks should have the same IP address and the same {@link UriType}. For
  * every IP UriType combination there shouldn't be more than one single chunk.
  * </p>
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
@@ -109,11 +109,7 @@ public class IpAddressBasedQueueIpPackagingTest {
     @Test
     public void test() throws Exception {
         BlockingQueue<InetAddress> queue = new InMemoryQueue();
-
-        for (int i = 0; i < uris.length; ++i) {
-            queue.addUri(uris[i]);
-        }
-
+        queue.addUris(Arrays.asList(uris));
         int chunkId;
         BitSet chunksFound = new BitSet(expectedChunks.length);
         List<CrawleableUri> chunk = queue.getNextUris();

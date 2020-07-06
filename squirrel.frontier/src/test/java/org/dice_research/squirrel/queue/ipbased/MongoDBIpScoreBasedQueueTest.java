@@ -75,75 +75,46 @@ public class MongoDBIpScoreBasedQueueTest extends MongoDBBasedTest{
         Node o = NodeFactory.createURI("http://dbpedia.org/doesntMatter");
         DatasetGraph graph = dataset.asDatasetGraph();
 
-        for(int i = 0; i <= 5; i++) {
+        for(int i = 0; i < 5; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s1, p, o); // <http://dbpedia.org/resource/New_York_City>
         }
-        for(int i = 0; i <= 10; i++) {
+        for(int i = 0; i < 10; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s2, p, o); // <http://dbpedia.org/resource/Berlin>
         }
-        for(int i = 0; i <= 8; i++) {
+        for(int i = 0; i < 8; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s3, p, o); // <http://dbpedia.org/resource/Bangalore>
         }
-        for(int i = 0; i <= 4; i++) {
+        for(int i = 0; i < 4; i++) {
             Node p = NodeFactory.createURI(otherUri + i);
             graph.add(g, s4, p, o); // <http://dbpedia.org/resource/Moscow>
         }
-
-
         return new QueryExecutionFactoryDataset(dataset);
-    }
-
-
-    @Test
-    public void addCrawleableUriWithScore() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        assertEquals(3, mongodbQueue.length());
-        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
-        assertEquals(1, listUris.size());
-        List<CrawleableUri> listUris2 = mongodbQueue.getNextUris();
-        assertEquals(4, listUris2.size());
-        Assert.assertTrue(listUris2.contains(uris.get(1)));                 // "http://dbpedia.org/resource/New_York_City"
-        Assert.assertTrue(listUris2.contains(uris.get(2)));                 // "http://dbpedia.org/resource/Moscow"
-        Assert.assertTrue(listUris2.contains(uris.get(3)));                 // "http://dbpedia.org/resource/Berlin"
-        Assert.assertTrue(listUris2.contains(uris.get(4)));                 // "http://dbpedia.org/resource/Bangalore"
-        List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
-        assertEquals(1, listUris3.size());
-        List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
-        assertEquals(null, listUris4);
-        mongodbQueue.purge();
-        mongodbQueue.close();
     }
 
     @Test
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
         int count = 0;
         while (iter.hasNext()) {
-            List<CrawleableUri> uriList = mongodbQueue.getUris(iter.next());
+            InetAddress ip = iter.next();
+            List<CrawleableUri> uriList = mongodbQueue.getUris(ip);
             for (CrawleableUri uri : uriList) {
                 assertTrue(uris.contains(uri));
                 ++count;
             }
         }
-        assertEquals(uris.size(), count);
+        assertEquals(6, count);
         mongodbQueue.close();
     }
 
-
     @Test
-    public void testAddKeywiseUris() throws URISyntaxException, UnknownHostException {
+    public void testAddUris() throws URISyntaxException, UnknownHostException {
         mongodbQueue.open();
         mongodbQueue.purge();
         Map<InetAddress, List<CrawleableUri>> keyWiseUris = new HashMap<>();
@@ -153,7 +124,7 @@ public class MongoDBIpScoreBasedQueueTest extends MongoDBBasedTest{
         dbpediaUris.add(uri1);
         dbpediaUris.add(uri2);
         keyWiseUris.put(InetAddress.getByName("dbpedia.org"), dbpediaUris);
-        mongodbQueue.addKeywiseUris(keyWiseUris);
+        mongodbQueue.addUris(keyWiseUris);
         List<CrawleableUri> mongoDBUris = mongodbQueue.getUris(InetAddress.getByName("dbpedia.org"));
         Assert.assertTrue(mongoDBUris.contains(uri1));
         Assert.assertTrue(mongoDBUris.contains(uri2));

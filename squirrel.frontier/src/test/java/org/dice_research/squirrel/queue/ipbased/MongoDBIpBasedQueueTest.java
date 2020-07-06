@@ -70,7 +70,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
         mongodbQueue.open();
         mongodbQueue.purge();
         assertFalse(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
-        mongodbQueue.addUri(uris.get(0));
+        mongodbQueue.addUris(uris);
         assertTrue(mongodbQueue.containsIpAddress(uris.get(0).getIpAddress()));
         mongodbQueue.close();
     }
@@ -80,9 +80,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
         mongodbQueue.open();
         mongodbQueue.purge();
         assertEquals(0, mongodbQueue.length());
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         assertEquals(3, mongodbQueue.length());
         mongodbQueue.purge();
         assertEquals(0, mongodbQueue.length());
@@ -93,9 +91,13 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void addCrawleableUri() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        mongodbQueue.addUris(urisToAdd);
         assertEquals(1, mongodbQueue.length());
-        mongodbQueue.addUri(uris.get(2));
+        urisToAdd.clear();
+        urisToAdd.add(uris.get(2));
+        mongodbQueue.addUris(urisToAdd);
         assertEquals(1, mongodbQueue.length());
         mongodbQueue.close();
     }
@@ -104,9 +106,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void addToQueue() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         assertEquals(3, mongodbQueue.length());
         mongodbQueue.close();
     }
@@ -116,9 +116,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void getIterator() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
         int ipCount = 0;
         while (iter.hasNext()) {
@@ -132,9 +130,7 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         Iterator<InetAddress> iter = mongodbQueue.getGroupIterator();
         int count = 0;
         while (iter.hasNext()) {
@@ -152,11 +148,15 @@ public class MongoDBIpBasedQueueTest  extends MongoDBBasedTest{
     public void deleteUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        mongodbQueue.addUris(urisToAdd);
         List<CrawleableUri> retrievedUris = mongodbQueue.getNextUris();
         assertEquals(1, retrievedUris.size());
         assertTrue(uris.get(1).equals(retrievedUris.get(0)));
-        mongodbQueue.addUri(uris.get(2));
+        urisToAdd.clear();
+        urisToAdd.add(uris.get(2));
+        mongodbQueue.addUris(urisToAdd);
         // The retrieval should fail
         assertNull(mongodbQueue.getNextUris());
         // Give back the first URI

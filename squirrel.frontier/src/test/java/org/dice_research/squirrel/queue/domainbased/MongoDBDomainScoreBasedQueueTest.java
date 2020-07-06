@@ -87,38 +87,10 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
     }
 
     @Test
-    public void addCrawleableUriWithScore() throws Exception {
-        mongodbQueue.open();
-        mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        assertEquals(3, mongodbQueue.length());
-        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
-        assertEquals(1, listUris.size());
-        List<CrawleableUri> listUris2 = mongodbQueue.getNextUris();
-        assertEquals(4, listUris2.size());
-        Assert.assertTrue(listUris2.contains(uris.get(1)));                 // "http://dbpedia.org/resource/New_York_City"
-        Assert.assertTrue(listUris2.contains(uris.get(2)));                 // "http://dbpedia.org/resource/Moscow"
-        Assert.assertTrue(listUris2.contains(uris.get(3)));                 // "http://dbpedia.org/resource/Berlin"
-        Assert.assertTrue(listUris2.contains(uris.get(4)));                 // "http://dbpedia.org/resource/Bangalore"
-        List<CrawleableUri> listUris3 = mongodbQueue.getNextUris();
-        assertEquals(1, listUris3.size());
-        List<CrawleableUri> listUris4 = mongodbQueue.getNextUris();
-        assertEquals(null, listUris4);
-        mongodbQueue.purge();
-        mongodbQueue.close();
-    }
-
-    @Test
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-
-        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
+        mongodbQueue.addUris(uris);
         Iterator<String> iter = mongodbQueue.getGroupIterator();
         int count = 0;
         while (iter.hasNext()) {
@@ -129,13 +101,12 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
                 ++count;
             }
         }
-
         assertEquals(uris.size(), count);
         mongodbQueue.close();
     }
 
     @Test
-    public void testAddKeywiseUris() throws URISyntaxException {
+    public void testAddUris() throws URISyntaxException {
         mongodbQueue.open();
         mongodbQueue.purge();
         Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
@@ -145,7 +116,7 @@ public class MongoDBDomainScoreBasedQueueTest extends MongoDBBasedTest {
         dbpediaUris.add(uri1);
         dbpediaUris.add(uri2);
         keyWiseUris.put("dbpedia.org", dbpediaUris);
-        mongodbQueue.addKeywiseUris(keyWiseUris);
+        mongodbQueue.addUris(keyWiseUris);
         List<CrawleableUri> mongoDBUris = mongodbQueue.getUris("dbpedia.org");
         Assert.assertTrue(mongoDBUris.contains(uri1));
         Assert.assertTrue(mongoDBUris.contains(uri2));

@@ -3,12 +3,12 @@ package org.dice_research.squirrel.queue.scorecalculator;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
- *  Interface for getting duplicity score of a Uri.
+ *  Interface for getting score of a Uri.
  */
 public interface IUriScoreCalculator {
 
     /**
-     * Returns the score based on specific score calculation implementation
+     * Returns a score for the given URI based on the implemented scoring function.
      *
      * @return {@link CrawleableUri} score
      */

@@ -1,12 +1,5 @@
 package org.dice_research.squirrel.components;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -27,6 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Qualifier("workerComponent")
@@ -163,11 +162,6 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
-    }
-
-    @Override
-    public void addNewUri(CrawleableUri uri) {
-        addNewUris(Collections.singletonList(uri));
     }
 
     @Override
