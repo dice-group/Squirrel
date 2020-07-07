@@ -108,6 +108,7 @@ public class MongoDBDomainScoreBasedQueue extends MongoDBDomainBasedQueue {
         return qef;
     }
 
+    @Override
     protected void addCrawleableUri(CrawleableUri uri, String domain) {
         addCrawleableUri(uri, domain, uriScoreCalculator.getURIScore(uri));
     }

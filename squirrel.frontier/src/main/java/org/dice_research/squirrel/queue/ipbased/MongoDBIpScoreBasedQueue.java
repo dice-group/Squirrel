@@ -130,6 +130,7 @@ public class MongoDBIpScoreBasedQueue extends MongoDBIpBasedQueue {
         return listUris;
     }
 
+    @Override
     protected void addCrawleableUri(CrawleableUri uri) {
         addCrawleableUri(uri, uriScoreCalculator.getURIScore(uri));
     }
