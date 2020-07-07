@@ -18,7 +18,7 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
         queue = new TreeMap<InetAddress, List<CrawleableUri>>(this);
     }
 
-    private void addUri(CrawleableUri uri, InetAddress address) {
+    protected void addUri(CrawleableUri uri, InetAddress address) {
         if (queue.containsKey(address)) {
             queue.get(address).add(uri);
         } else {
