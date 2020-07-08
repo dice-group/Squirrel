@@ -14,7 +14,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.queue.scorebasedfilter.ScoreBasedScoreBasedUriKeywiseFilter;
+import org.dice_research.squirrel.queue.scorebasedfilter.ScoreBasedUriKeywiseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ import java.net.URI;
  */
 public class UriDuplicityScoreCalculator implements IUriScoreCalculator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreBasedScoreBasedUriKeywiseFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreBasedUriKeywiseFilter.class);
 
     protected QueryExecutionFactory queryExecFactory = null;
 

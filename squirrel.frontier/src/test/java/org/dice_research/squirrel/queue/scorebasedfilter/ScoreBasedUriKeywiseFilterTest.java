@@ -18,7 +18,7 @@ public class ScoreBasedUriKeywiseFilterTest extends MongoDBScoreBasedTest {
     @Test
     public void testFilterUrisKeywise() throws URISyntaxException {
         UriDuplicityScoreCalculator scoreCalculator = new UriDuplicityScoreCalculator(queryExecFactory);
-        ScoreBasedScoreBasedUriKeywiseFilter scoreBasedUriKeywiseFilter = new ScoreBasedScoreBasedUriKeywiseFilter(scoreCalculator, .2f, 3);
+        ScoreBasedUriKeywiseFilter scoreBasedUriKeywiseFilter = new ScoreBasedUriKeywiseFilter(scoreCalculator, .2f, 3);
 
         Map<String, List<CrawleableUri>> keyWiseUris = new HashMap<>();
         List<CrawleableUri> dbpediaUris = new ArrayList<>();
