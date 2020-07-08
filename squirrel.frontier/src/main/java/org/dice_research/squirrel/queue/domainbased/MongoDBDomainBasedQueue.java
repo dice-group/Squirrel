@@ -12,7 +12,6 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
 import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
-import org.rdfhdt.hdt.util.Histogram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
