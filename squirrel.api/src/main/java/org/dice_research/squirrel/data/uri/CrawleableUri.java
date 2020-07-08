@@ -1,6 +1,5 @@
 package org.dice_research.squirrel.data.uri;
 
-import org.apache.jena.rdf.model.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
