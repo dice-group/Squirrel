@@ -7,7 +7,18 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * 
- * Relational Uri Filter for the AND and OR operators
+ * This class represents a Relational Uri Filter for the AND and OR operators
+ * It is possible to compose two or more filters and use then with relational operators
+ * 
+ * The constructor requires at least one @link {org.dice_research.squirrel.data.uri.filter.KnownUriFilter}
+ * a list of @link {org.dice_research.squirrel.data.uri.filter.UriFilter}
+ * and the Operator. The operator can be <<AND>> or <<OR>>.
+ * 
+ * If the Operator is <<AND>>, the isUriGood(CrawleableUri) method will return true if
+ *  all the UriFilters will return true in their respectives isUriGood(CrawleableUri) methods 
+ *  
+ *  In case the Operator is <<OR>>, if at least one of then returns true, the isUriGood(CrawleableUri) method will return true.
+
  * 
  * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
