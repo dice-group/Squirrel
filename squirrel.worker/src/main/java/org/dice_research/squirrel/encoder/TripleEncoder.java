@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that can encode triples to UTF8
+ * Class that can encode triples
+ * 
+ * The encodeTriple will escape the triple's resource and object following Jena escaping rules 
+ * present on {@link NodeFactory} 
  * 
  * @author Geraldo de Souza Junior gsjunior@mail.uni-paderborn.de
  *
@@ -31,6 +34,15 @@ public class TripleEncoder {
 
 		return tripleEncoder;
 	}
+	
+	/**
+	 * 
+	 * Method that encode triple based on Jena escaping rules.
+	 * @param Triple 
+	 * 				the triple that will be encoded
+	 * @return Triple
+	 * 				the escaped triple
+	 */
 
 	public Triple encodeTriple(Triple t) {
 		Node s = t.getSubject();
@@ -52,7 +64,7 @@ public class TripleEncoder {
 
 	}
 
-	protected Node encodeUri(Node n) throws  URISyntaxException, UnsupportedEncodingException {
+	private Node encodeUri(Node n) throws  URISyntaxException, UnsupportedEncodingException {
 		if(!n.isURI())
 			return n;
 		
@@ -94,9 +106,6 @@ public class TripleEncoder {
 //		return mapParameters;
 //	}
 	
-	public static void main(String[] args) throws UnsupportedEncodingException, URISyntaxException {
-		TripleEncoder te = new TripleEncoder();
-		System.out.println(te.encodeUri(NodeFactory.createURI("https://ckan.govdata.de?alalao eee")).toString());
-	}
+
 
 }
