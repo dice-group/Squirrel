@@ -25,11 +25,10 @@
             <!-- We don't use the "test" scope since this whole project is only for testing -->
             <scope>compile</scope>
         </dependency>
-        <!-- System rules for setting environment variables -->
+        <!-- System Lambda for setting environment variables -->
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-rules</artifactId>
-            <version>1.17.0</version>
+            <artifactId>system-lambda</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- log4j binding -->

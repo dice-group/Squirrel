@@ -345,11 +345,11 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
-            <!-- System rules for setting environment variables -->
+            <!-- System Lambda for setting environment variables -->
             <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-rules</artifactId>
-                <scope>test</scope>
+                <artifactId>system-lambda</artifactId>
+				<version>1.0.0</version>
             </dependency>
             <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
