@@ -20,6 +20,15 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 public interface Frontier extends Closeable {
 
     /**
+     * Add this URIs to the {@link Frontier}s internal queue if the internal
+     * rules of the {@link Frontier} allow it.
+     *
+     * @param uri
+     *            the URI that should be added to the {@link Frontier}
+     */
+    void addNewUri(CrawleableUri uri);
+
+    /**
      * Returns the next chunk of URIs that should be crawled or null. Note that
      * if URIs are received from the Frontier using this method, the Frontier
      * should be notified if the crawling of these URIs is done using the

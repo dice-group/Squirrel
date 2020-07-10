@@ -262,7 +262,14 @@ public class FrontierImpl implements Frontier {
 		return queue.getNextUris();
 	}
 
-	@Override
+    @Override
+    public void addNewUri(CrawleableUri uri) {
+	    List<CrawleableUri> urisToBeAdded = new ArrayList<>();
+	    urisToBeAdded.add(uri);
+	    addNewUris(urisToBeAdded);
+    }
+
+    @Override
 	public void addNewUris(List<CrawleableUri> uris) {
 	    List<CrawleableUri> normalizedUris = new ArrayList<>();
         for (CrawleableUri uri : uris) {
