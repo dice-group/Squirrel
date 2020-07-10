@@ -26,6 +26,7 @@ public interface Frontier extends Closeable {
      * @param uri
      *            the URI that should be added to the {@link Frontier}
      */
+    @Deprecated
     void addNewUri(CrawleableUri uri);
 
     /**

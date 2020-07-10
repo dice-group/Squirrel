@@ -263,6 +263,7 @@ public class FrontierImpl implements Frontier {
 	}
 
     @Override
+    @Deprecated
     public void addNewUri(CrawleableUri uri) {
 	    List<CrawleableUri> urisToBeAdded = new ArrayList<>();
 	    urisToBeAdded.add(uri);
