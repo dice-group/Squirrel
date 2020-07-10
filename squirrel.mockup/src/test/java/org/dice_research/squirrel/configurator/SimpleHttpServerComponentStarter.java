@@ -3,13 +3,13 @@ package org.dice_research.squirrel.configurator;
 import org.hobbit.core.run.ComponentStarter;
 import org.junit.Ignore;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 @Ignore
 public class SimpleHttpServerComponentStarter {
 
     public static void main(String[] args) throws Exception {
-        withEnvironmentVariable("RESOURCE_MODEL", "../deployment/scenarios/2/nodeA.ttl")
+        SystemLambda.withEnvironmentVariable("RESOURCE_MODEL", "../deployment/scenarios/2/nodeA.ttl")
             .and("ROBOTS_TXT", "../deployment/scenarios/2/robotsA.txt")
             .and("RESOURCE_MODEL_LANG", "N3")
             .and("PORT", "8080")
