@@ -20,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -265,9 +262,7 @@ public class FrontierImpl implements Frontier {
     @Override
     @Deprecated
     public void addNewUri(CrawleableUri uri) {
-	    List<CrawleableUri> urisToBeAdded = new ArrayList<>();
-	    urisToBeAdded.add(uri);
-	    addNewUris(urisToBeAdded);
+        addNewUris(Collections.singletonList(uri));
     }
 
     @Override

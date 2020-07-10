@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -162,6 +163,12 @@ public class WorkerComponent extends AbstractComponent implements Frontier {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+    }
+
+    @Override
+    @Deprecated
+    public void addNewUri(CrawleableUri uri) {
+        addNewUris(Collections.singletonList(uri));
     }
 
     @Override
