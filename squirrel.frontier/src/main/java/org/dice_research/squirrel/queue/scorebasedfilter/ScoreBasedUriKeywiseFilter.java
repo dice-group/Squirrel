@@ -12,19 +12,19 @@ import java.util.Map;
 /**
  * This class filters the {@link CrawleableUri}s to be added to the queue based on the score.
  */
-public class ScoreBasedScoreBasedUriKeywiseFilter<T> implements IUriKeywiseFilter {
+public class ScoreBasedUriKeywiseFilter<T> implements IUriKeywiseFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreBasedScoreBasedUriKeywiseFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreBasedUriKeywiseFilter.class);
     private IUriScoreCalculator scoreCalculator;
     private float criticalScore = .2f;      //  default value
     private int minNumberOfUrisToCheck = 5;      //  default value
 
 
-    public ScoreBasedScoreBasedUriKeywiseFilter(IUriScoreCalculator scoreCalculator) {
+    public ScoreBasedUriKeywiseFilter(IUriScoreCalculator scoreCalculator) {
         this.scoreCalculator = scoreCalculator;
     }
 
-    public ScoreBasedScoreBasedUriKeywiseFilter(IUriScoreCalculator scoreCalculator, float criticalScore, int minNumberOfUrisToCheck) {
+    public ScoreBasedUriKeywiseFilter(IUriScoreCalculator scoreCalculator, float criticalScore, int minNumberOfUrisToCheck) {
         this.scoreCalculator = scoreCalculator;
         this.criticalScore = criticalScore;
         this.minNumberOfUrisToCheck = minNumberOfUrisToCheck;
