@@ -72,6 +72,15 @@ public abstract class AbstractBufferingSink implements TripleBasedSink, QuadBase
     protected abstract void sendTriples(CrawleableUri uri, Collection<Triple> buffer);
     protected abstract void sendQuads(CrawleableUri uri, Collection<Quad> buffer);
 
+    @Override
+    public void flushSinkForUri(CrawleableUri uri) {
+        TripleBuffer status = tripleBuffer.get(uri);
+        if (status == null) {
+            LOGGER.info("Try to flush Sink for an uri, without open it before. Do nothing.");
+            return;
+        }
+        status.sendTriples(this, uri);
+    }
 
     @Override
     public void closeSinkForUri(CrawleableUri uri) {

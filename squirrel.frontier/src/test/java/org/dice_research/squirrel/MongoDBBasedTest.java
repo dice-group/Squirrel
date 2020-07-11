@@ -10,10 +10,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 public class MongoDBBasedTest {
-	
+
 	public static final String DB_HOST_NAME = "localhost";
     public static final int DB_PORT = 58027;
-    
+
     protected static  MongoClient client;
 	protected static  MongoDatabase mongoDB;
 
@@ -33,7 +33,7 @@ public class MongoDBBasedTest {
         while ((s = stdError.readLine()) != null) {
             System.out.println(s);
         }
-        
+
         client = new MongoClient(DB_HOST_NAME,DB_PORT);
 
     }

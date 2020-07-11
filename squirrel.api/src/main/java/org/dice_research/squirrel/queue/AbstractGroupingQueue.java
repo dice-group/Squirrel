@@ -1,13 +1,8 @@
 package org.dice_research.squirrel.queue;
 
-import java.util.AbstractMap;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.group.UriGroupByOperator;
@@ -30,7 +25,7 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
      * Set of blocked key values.
      */
     private Set<T> blockedKeys = new HashSet<T>();
-    
+
     /**
      * if the queue will store the depth or not
      */
@@ -38,9 +33,8 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Constructor.
-     * 
-     * @param groupByOperator
-     *            Operator used to group URIs
+     *
+     * @param groupByOperator Operator used to group URIs
      */
     public AbstractGroupingQueue(UriGroupByOperator<T> groupByOperator) {
         this.groupByOperator = groupByOperator;
@@ -55,12 +49,10 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Adds the given URI with they given group key to the queue.
-     * 
-     * @param uri
-     *            the URI that should be added to the queue
-     * @param groupKey
-     *            the group key which should be used to identify the group this URI
-     *            belongs to
+     *
+     * @param uri      the URI that should be added to the queue
+     * @param groupKey the group key which should be used to identify the group this URI
+     *                 belongs to
      */
     protected abstract void addUri(CrawleableUri uri, T groupKey);
 
@@ -116,36 +108,45 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
 
     /**
      * Returns an iterator over all group keys that are currently in the queue.
-     * 
+     *
      * @return all group keys currently in the queue
      */
     protected abstract Iterator<T> getGroupIterator();
 
     /**
      * Returns all URIs of the given group key
-     * 
-     * @param groupKey
-     *            key of the selected URI group
+     *
+     * @param groupKey key of the selected URI group
      * @return all URIs of the given group key
      */
     protected abstract List<CrawleableUri> getUris(T groupKey);
 
     /**
      * Removes the given set of URIs from the queue
-     * 
-     * @param groupKey
-     *            key of the given URI group
-     * @param uris
-     *            set of URIs which should be removed
+     *
+     * @param groupKey key of the given URI group
+     * @param uris     set of URIs which should be removed
      */
     protected abstract void deleteUris(T groupKey, List<CrawleableUri> uris);
-    
+
     /**
      * Returns if the queue is storing the crawled depth
-     * 
      */
     public boolean isDepthIncluded() {
-    	return this.includeDepth;
+        return this.includeDepth;
     }
 
+    @Override
+    public void addUris(List<CrawleableUri> uris) {
+        synchronized (this) {
+            addUris(groupByOperator.groupByKey(uris));
+        }
+    }
+
+    /**
+     * adds URIs key-wise
+     *
+     * @param uris     URIs categorized according to the key
+     */
+    protected abstract void addUris(Map<T, List<CrawleableUri>> uris);
 }

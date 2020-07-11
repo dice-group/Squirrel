@@ -1,13 +1,13 @@
 package org.dice_research.squirrel.queue.ipbased;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoWriteException;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.Constants;
@@ -19,57 +19,51 @@ import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoWriteException;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Indexes;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
- * 
  * IpBasedQueue implementation for use with MongoDB
- * 
- * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
+ * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  */
 public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
     private MongoClient client;
-    private MongoDatabase mongoDB;
-    private Serializer serializer;
+    protected MongoDatabase mongoDB;
+    protected Serializer serializer;
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
-    private final String COLLECTION_URIS = "uris";
+    protected final String COLLECTION_URIS = "uris";
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
-            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+        : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+    public static final String URI_IP_ADRESS = "ipAddress";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBIpBasedQueue.class);
-    
-    public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth) {
-    	this(hostName,port,new SnappyJavaUriSerializer(), includeDepth);
 
+    public MongoDBIpBasedQueue(String hostName, Integer port, boolean includeDepth) {
+        this(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
     }
 
     public MongoDBIpBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
 
         LOGGER.info("Queue Persistance: " + PERSIST);
-        
+
         this.includeDepth = includeDepth;
-        if(this.includeDepth)
-			LOGGER.info("Depth Persistance Enabled.");
-        
+        if (this.includeDepth)
+            LOGGER.info("Depth Persistance Enabled.");
+
         this.serializer = serializer;
 
         MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
         if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null)) {
+            && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -83,8 +77,6 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         }
 
     }
-
-   
 
     public void purge() {
         mongoDB.getCollection(COLLECTION_QUEUE).drop();
@@ -114,9 +106,9 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
             mongoCollection
-                    .createIndex(Indexes.compoundIndex(Indexes.ascending("ipAddress"), Indexes.ascending("type")));
+                .createIndex(Indexes.compoundIndex(Indexes.ascending(URI_IP_ADRESS), Indexes.ascending("type")));
             mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"),
-                    Indexes.ascending("ipAddress"), Indexes.ascending("type")));
+                Indexes.ascending(URI_IP_ADRESS), Indexes.ascending("type")));
         }
 
     }
@@ -151,10 +143,10 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
             public InetAddress next() {
                 Document doc = (Document) cursor.next();
                 try {
-                    return InetAddress.getByName(doc.get("ipAddress").toString());
+                    return InetAddress.getByName(doc.get(URI_IP_ADRESS).toString());
                 } catch (UnknownHostException e) {
                     LOGGER.error("Got an exception when creating the InetAddress of \""
-                            + doc.get("ipAddress").toString() + "\". Returning null.", e);
+                        + doc.get(URI_IP_ADRESS).toString() + "\". Returning null.", e);
                     e.printStackTrace();
                 }
                 return null;
@@ -230,18 +222,18 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
 
         Document docUri = new Document();
         docUri.put("_id", uri.getUri().hashCode());
-        docUri.put("ipAddress", ipAddress.getHostAddress());
+        docUri.put(URI_IP_ADRESS, ipAddress.getHostAddress());
         docUri.put("type", DEFAULT_TYPE);
-        if(includeDepth)
-        	docUri.put("depth",uri.getData(Constants.URI_DEPTH));
-        	
+        if (includeDepth)
+            docUri.put("depth", uri.getData(Constants.URI_DEPTH));
+
         docUri.put("uri", new Binary(suri));
         return docUri;
     }
 
     public Document getIpDocument(InetAddress address) {
         Document docIp = new Document();
-        docIp.put("ipAddress", address.getHostAddress());
+        docIp.put(URI_IP_ADRESS, address.getHostAddress());
         docIp.put("type", DEFAULT_TYPE);
         return docIp;
     }
@@ -283,7 +275,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
     protected void deleteUris(InetAddress ipAddress, List<CrawleableUri> uris) {
         // remove all URIs from the list
         Document query = new Document();
-        query.put("ipAddress", ipAddress.getHostAddress());
+        query.put(URI_IP_ADRESS, ipAddress.getHostAddress());
         query.put("type", DEFAULT_TYPE);
         for (CrawleableUri uri : uris) {
             // replace the old ID with the current ID
@@ -296,14 +288,24 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         if (mongoDB.getCollection(COLLECTION_URIS).find(query).first() == null) {
             // remove the domain from the queue
             mongoDB.getCollection(COLLECTION_QUEUE)
-                    .deleteMany(query);
+                .deleteMany(query);
+        }
+    }
+
+    @Override
+    protected void addUris(Map<InetAddress, List<CrawleableUri>> ipwiseUris) {
+        for(Map.Entry<InetAddress, List<CrawleableUri>> entry : ipwiseUris.entrySet()) {
+            addIp(entry.getKey());
+            for(CrawleableUri uri : entry.getValue()) {
+                addCrawleableUri(uri);
+            }
         }
     }
 
     protected boolean containsIpAddress(InetAddress address) {
         return containsIpAddress(getIpDocument(address));
     }
-    
+
     protected boolean containsIpAddress(Document ipDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(ipDoc).first() != null;
     }

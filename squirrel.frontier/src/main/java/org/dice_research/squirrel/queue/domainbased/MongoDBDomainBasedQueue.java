@@ -1,21 +1,5 @@
 package org.dice_research.squirrel.queue.domainbased;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bson.Document;
-import org.bson.types.Binary;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
-import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
-import org.rdfhdt.hdt.util.Histogram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
@@ -24,35 +8,50 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import org.bson.Document;
+import org.bson.types.Binary;
+import org.dice_research.squirrel.Constants;
+import org.dice_research.squirrel.configurator.MongoConfiguration;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.serialize.Serializer;
+import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
+import org.dice_research.squirrel.queue.AbstractDomainBasedQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 
  * DomainBasedQueue implementation for use with MongoDB
- * 
+ * <p>
  * * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
- *
  */
 public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     private MongoClient client;
-    private MongoDatabase mongoDB;
-    private Serializer serializer;
+    protected MongoDatabase mongoDB;
+    protected Serializer serializer;
     private final String DB_NAME = "squirrel";
     private final String COLLECTION_QUEUE = "queue";
-    private final String COLLECTION_URIS = "uris";
+    protected final String COLLECTION_URIS = "uris";
     @Deprecated
     private final String DEFAULT_TYPE = "default";
     private static final boolean PERSIST = System.getenv("QUEUE_FILTER_PERSIST") == null ? false
-            : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+        : Boolean.parseBoolean(System.getenv("QUEUE_FILTER_PERSIST"));
+    public static final String URI_DOMAIN = "domain";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBDomainBasedQueue.class);
 
     public MongoDBDomainBasedQueue(String hostName, Integer port, Serializer serializer, boolean includeDepth) {
         this.serializer = serializer;
-        
+
         this.includeDepth = includeDepth;
-        if(this.includeDepth)
-			LOGGER.info("Depth Persistance Enabled.");
+        if (this.includeDepth)
+            LOGGER.info("Depth Persistance Enabled.");
 
         LOGGER.info("Queue Persistance: " + PERSIST);
 
@@ -60,7 +59,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
 
         if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null)) {
+            && mongoConfiguration.getServerTimeout() != null)) {
             optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
             optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
             optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
@@ -72,11 +71,10 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         } else {
             client = new MongoClient(hostName, port);
         }
-
     }
 
-    public MongoDBDomainBasedQueue(String hostName, Integer port,boolean includeDepth) {
-        this(hostName,port, new SnappyJavaUriSerializer(),includeDepth);
+    public MongoDBDomainBasedQueue(String hostName, Integer port, boolean includeDepth) {
+        this(hostName, port, new SnappyJavaUriSerializer(), includeDepth);
     }
 
     public void purge() {
@@ -141,7 +139,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
         Document docUri = new Document();
         docUri.put("_id", uri.getUri().hashCode());
-        docUri.put("domain", domain);
+        docUri.put(URI_DOMAIN, domain);
         docUri.put("type", DEFAULT_TYPE);
         docUri.put("uri", new Binary(suri));
         return docUri;
@@ -149,7 +147,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
     public Document getDomainDocument(String domain) {
         Document docIp = new Document();
-        docIp.put("domain", domain);
+        docIp.put(URI_DOMAIN, domain);
         docIp.put("type", DEFAULT_TYPE);
         return docIp;
     }
@@ -167,9 +165,10 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
             mongoDB.createCollection(COLLECTION_URIS);
             MongoCollection<Document> mongoCollection = mongoDB.getCollection(COLLECTION_QUEUE);
             MongoCollection<Document> mongoCollectionUris = mongoDB.getCollection(COLLECTION_URIS);
-            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending("domain"), Indexes.ascending("type")));
-            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending("domain"),
-                    Indexes.ascending("type")));
+            mongoCollection.createIndex(Indexes.compoundIndex(Indexes.ascending(URI_DOMAIN), Indexes.ascending("type")));
+            mongoCollectionUris.createIndex(Indexes.compoundIndex(Indexes.ascending("uri"), Indexes.ascending(URI_DOMAIN),
+                Indexes.ascending("type")));
+            mongoCollectionUris.createIndex(Indexes.ascending(Constants.URI_SCORE));
         }
     }
 
@@ -195,7 +194,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
 
             @Override
             public String next() {
-                return cursor.next().get("domain").toString();
+                return cursor.next().get(URI_DOMAIN).toString();
             }
         };
 
@@ -206,7 +205,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     public List<CrawleableUri> getUris(String domain) {
 
         Iterator<Document> uriDocs = mongoDB.getCollection(COLLECTION_URIS)
-                .find(new Document("domain", domain).append("type", DEFAULT_TYPE)).iterator();
+            .find(new Document(URI_DOMAIN, domain).append("type", DEFAULT_TYPE)).iterator();
 
         List<CrawleableUri> listUris = new ArrayList<CrawleableUri>();
 
@@ -230,7 +229,7 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     protected void deleteUris(String domain, List<CrawleableUri> uris) {
         // remove all URIs from the list
         Document query = new Document();
-        query.put("domain", domain);
+        query.put(URI_DOMAIN, domain);
         query.put("type", DEFAULT_TYPE);
         for (CrawleableUri uri : uris) {
             // replace the old ID with the current ID
@@ -246,6 +245,16 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
         }
     }
 
+    @Override
+    protected void addUris(Map<String, List<CrawleableUri>> domainwiswUris) {
+        for(Map.Entry<String, List<CrawleableUri>> entry : domainwiswUris.entrySet()) {
+            addDomain(entry.getKey());
+            for(CrawleableUri uri : entry.getValue()) {
+                addCrawleableUri(uri, entry.getKey());
+            }
+        }
+    }
+
     protected boolean containsDomain(String domain) {
         return containsDomain(getDomainDocument(domain));
     }
@@ -253,4 +262,5 @@ public class MongoDBDomainBasedQueue extends AbstractDomainBasedQueue {
     protected boolean containsDomain(Document domainDoc) {
         return mongoDB.getCollection(COLLECTION_QUEUE).find(domainDoc).first() != null;
     }
+
 }

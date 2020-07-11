@@ -1,16 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.MongoDBBasedTest;
@@ -18,11 +8,10 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter;
-import org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator;
 import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
+import org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator;
 import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.queue.ipbased.MongoDBIpBasedQueue;
 import org.junit.After;
 import org.junit.Assert;
@@ -33,6 +22,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -53,23 +43,23 @@ public class FrontierImplTest {
         MongoDBBasedTest.setUpMDB();
         filter = new MongoDBKnowUriFilter("localhost", 58027);
 //<<<<<<< sparql_recrawling
-    //    queue = new MongoDBIpBasedQueue("localhost", 58027);
-    //    filter.open();
-  //      queue.open();
-  //      frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
+        //    queue = new MongoDBIpBasedQueue("localhost", 58027);
+        //    filter.open();
+        //      queue.open();
+        //      frontier = new FrontierImpl(new NormalizerImpl(), filter, queue, true, 18000, 18000, null,null);
 //=======
-        queue = new MongoDBIpBasedQueue("localhost", 58027,false);
-         filter.open();
-         queue.open();
-         List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
+        queue = new MongoDBIpBasedQueue("localhost", 58027, false);
+        filter.open();
+        queue.open();
+        List<UriGenerator> uriGenerators = new ArrayList<UriGenerator>();
 //         uriGenerators.add(new DomainBasedUriGenerator());
 //         uriGenerators.add(new WellKnownPathUriGenerator());
         List<String> sessionIDs = new ArrayList<String>();
         Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
-        
-        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(filter,"OR");
 
-        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs,mapDefaultPort), relationalUriFilter, queue,uriGenerators,true);
+        UriFilterComposer relationalUriFilter = new UriFilterConfigurator(filter, "OR");
+
+        frontier = new FrontierImpl(new NormalizerImpl(sessionIDs, mapDefaultPort), relationalUriFilter, queue, uriGenerators, true);
 
 //>>>>>>> developForMerging
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
@@ -81,7 +71,9 @@ public class FrontierImplTest {
     @Test
     public void getNextUris() throws Exception {
 
-        queue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        queue.addUris(urisToAdd);
 
         //  queue.addCrawleableUri(uris.get(1));
         List<CrawleableUri> nextUris = frontier.getNextUris();
@@ -185,6 +177,7 @@ public class FrontierImplTest {
     public void tearDown() throws Exception {
         filter.purge();
         queue.purge();
+        uris.clear();
         String rethinkDockerStopCommand = "docker stop squirrel-test-frontierimpl";
         Process p = Runtime.getRuntime().exec(rethinkDockerStopCommand);
         p.waitFor();
@@ -193,4 +186,3 @@ public class FrontierImplTest {
         p.waitFor();
     }
 }
-

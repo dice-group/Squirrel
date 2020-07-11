@@ -6,6 +6,9 @@ import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * TODO Has to be reworked or deleted
  */
@@ -17,7 +20,10 @@ public class FetcherTest {
         IpAddressBasedQueue queue = new InMemoryQueue();
         System.out.println(crawleableUri);
 
-        queue.addUri(crawleableUri);
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(crawleableUri);
+        queue.addUris(urisToAdd);
+
 //        Frontier frontier = new FrontierImpl(new InMemoryKnownUriFilter(-1), queue);
 //        Worker worker = new WorkerImpl(ZeroMQBasedFrontierClient.create(FRONTIER_ADDRESS, 0), sink,
 //                new RobotsManagerImpl(new SimpleHttpFetcher(new UserAgent("Test", "", ""))),

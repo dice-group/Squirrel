@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.analyzer.Analyzer;
@@ -211,10 +212,10 @@ public class WorkerImpl implements Worker, Closeable {
         CrawlingActivity activity = new CrawlingActivity(uri, getUri());
         uri.addData(Constants.URI_CRAWLING_ACTIVITY, activity);
         try {
- 
+
             if (manager.isUriCrawlable(uri)) {
                 // Make sure that there is a delay between the fetching of two URIs
-                
+
                 Delayer delayer = new StaticDelayer(manager.getMinWaitingTime(uri),
                         System.currentTimeMillis());
 
@@ -235,7 +236,7 @@ public class WorkerImpl implements Worker, Closeable {
                 }
 
                 // If there is at least one file
-                if (fetchedFiles.size() > 0) {
+                if (!fetchedFiles.isEmpty()) {
                     FileManager fm = new FileManager();
                     List<File> fileList;
                     try {
@@ -252,6 +253,7 @@ public class WorkerImpl implements Worker, Closeable {
                                 for (File file : fileList) {
                                     LOGGER.info("Analyzing file " + cont + " of: " + fileList.size());
                                     Iterator<byte[]> resultUris = analyzer.analyze(uri, file, sink);
+                                    sink.flushSinkForUri(uri);
                                     sendNewUris(resultUris);
                                     cont++;
                                 }
@@ -315,7 +317,7 @@ public class WorkerImpl implements Worker, Closeable {
 
     /**
      * Sends the given URIs to the frontier.
-     * 
+     *
      * @param uriIterator an iterator used to iterate over all new URIs
      */
     public void sendNewUris(Iterator<byte[]> uriIterator) {

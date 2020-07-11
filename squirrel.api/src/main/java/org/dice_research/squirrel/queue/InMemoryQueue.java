@@ -1,18 +1,12 @@
 package org.dice_research.squirrel.queue;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
+import java.util.*;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 
 /**
  * An IP-based queue which holds its data in memory.
- * 
+ *
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
@@ -98,4 +92,12 @@ public class InMemoryQueue extends AbstractIpAddressBasedQueue implements Compar
 		return false;
 	}
 
+    @Override
+    protected void addUris(Map<InetAddress, List<CrawleableUri>> ipwiseUris) {
+        for(Map.Entry<InetAddress, List<CrawleableUri>> entry : ipwiseUris.entrySet()) {
+            for(CrawleableUri uri : entry.getValue()) {
+                addUri(uri, entry.getKey());
+            }
+        }
+    }
 }

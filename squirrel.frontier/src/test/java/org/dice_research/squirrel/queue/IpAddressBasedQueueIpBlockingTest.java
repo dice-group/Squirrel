@@ -3,6 +3,7 @@ package org.dice_research.squirrel.queue;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,14 +23,14 @@ import org.slf4j.LoggerFactory;
  * thread adds URIs to the queue until the second thread has finished its work.
  * Every added URI has the same type and one of two IPs.
  * </p>
- * 
+ *
  * <p>
  * The second thread takes a single chunk, thus, blocks one of the two IPs and
  * sets this IP in the third thread. After that the second thread sleeps for a
  * long time. At the end of this sleeping period, it informs the other two
  * threads about its termination, marks the ip as accessible and terminates.
  * </p>
- * 
+ *
  * <p>
  * The third thread requests new chunks from the queue (with a lower frequency
  * than the first thread is adding them) and checks whether it gets chunks
@@ -37,12 +38,12 @@ import org.slf4j.LoggerFactory;
  * finished, this thread makes sure that it gets at least one time URIs of the
  * IP that has been blocked by the second thread.
  * </p>
- * 
+ *
  * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
  *
  */
 public class IpAddressBasedQueueIpBlockingTest {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IpAddressBasedQueueIpBlockingTest.class);
 
     private static final long DELAY_BETWEEN_URI_GENERATIONS = 10;
@@ -85,7 +86,7 @@ public class IpAddressBasedQueueIpBlockingTest {
     /**
      * Simple threads that adds URIs with a delay until its run flag is set to
      * false.
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */
@@ -112,7 +113,9 @@ public class IpAddressBasedQueueIpBlockingTest {
                 while (run) {
                     CrawleableUri uri = generateNextUri();
                     LOGGER.debug("Adding URI {}", uri);
-                    queue.addUri(uri);
+                    List<CrawleableUri> urisToAdd = new ArrayList<>();
+                    urisToAdd.add(uri);
+                    queue.addUris(urisToAdd);
                     try {
                         Thread.sleep(DELAY_BETWEEN_URI_GENERATIONS);
                     } catch (InterruptedException e) {
@@ -150,7 +153,7 @@ public class IpAddressBasedQueueIpBlockingTest {
      * This thread waits a short time, requests a chunk of URIs and waits for a
      * long time. After that it stops the {@link UriAdder} and informs the
      * {@link RegularUriConsumer} about its termination.
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */
@@ -206,14 +209,14 @@ public class IpAddressBasedQueueIpBlockingTest {
      * does not get a URI with the IP blocked by the other
      * {@link LongDelayUriConsumer}.
      * </p>
-     * 
+     *
      * <p>
      * After the {@link LongDelayUriConsumer} is dead, this thread waits for a
      * short time. After that it requests three more chunks. It makes sure that
      * at least one of the first two chunks contains the IP that has been
      * blocked by the other thread and that the third chunk is null.
      * </p>
-     * 
+     *
      * @author Michael R&ouml;der (roeder@informatik.uni-leipzig.de)
      *
      */

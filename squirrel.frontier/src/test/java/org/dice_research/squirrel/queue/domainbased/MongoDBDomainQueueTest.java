@@ -1,10 +1,12 @@
 package org.dice_research.squirrel.queue.domainbased;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.dice_research.squirrel.MongoDBBasedTest;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.data.uri.UriUtils;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -13,13 +15,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.dice_research.squirrel.MongoDBBasedTest;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.UriUtils;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 @SuppressWarnings({ "deprecation" })
 public class MongoDBDomainQueueTest extends MongoDBBasedTest {
@@ -31,19 +27,23 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     @Before
     public void setUp() throws Exception {
         mongodbQueue = new MongoDBDomainBasedQueue("localhost", 58027,false);
-
         CrawleableUriFactory4Tests cuf = new CrawleableUriFactory4Tests();
         uris.add(cuf.create(new URI("http://localhost/sparql"), InetAddress.getByName("127.0.0.1"), UriType.SPARQL));
-        uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York"), InetAddress.getByName("127.0.0.1"),
+        uris.add(cuf.create(new URI("http://dbpedia.org/resource/New_York_City"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
         uris.add(cuf.create(new URI("http://dbpedia.org/resource/Moscow"), InetAddress.getByName("127.0.0.1"),
                 UriType.DEREFERENCEABLE));
+        uris.add(cuf.create(new URI("http://dbpedia.org/resource/Berlin"), InetAddress.getByName("127.0.0.1"),
+            UriType.DEREFERENCEABLE));
+        uris.add(cuf.create(new URI("http://dbpedia.org/resource/Bangalore"), InetAddress.getByName("127.0.0.1"),
+            UriType.DEREFERENCEABLE));
         // Added this to check https://github.com/AKSW/Squirrel/issues/17
         uris.add(cuf.create(new URI("http://danbri.org/foaf.rdf"),
                 InetAddress.getByName((new URI("http://danbri.org/foaf.rdf")).toURL().getHost()), UriType.DUMP));
-        
+
         expectedDomains = new String[] {"danbri.org", "dbpedia.org", "localhost"};
     }
+
 
     @Test
     public void openClose() throws Exception {
@@ -77,9 +77,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         mongodbQueue.open();
         mongodbQueue.purge();
         assertEquals(0, mongodbQueue.length());
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         assertEquals(3, mongodbQueue.length());
         mongodbQueue.purge();
         assertEquals(0, mongodbQueue.length());
@@ -90,9 +88,13 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     public void addCrawleableUri() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        mongodbQueue.addUris(urisToAdd);
         assertEquals(1, mongodbQueue.length());
-        mongodbQueue.addUri(uris.get(2));
+        urisToAdd.clear();
+        urisToAdd.add(uris.get(2));
+        mongodbQueue.addUris(urisToAdd);
         assertEquals(1, mongodbQueue.length());
         mongodbQueue.close();
     }
@@ -101,9 +103,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     public void getIterator() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
+        mongodbQueue.addUris(uris);
         Iterator<String> iter = mongodbQueue.getGroupIterator();
         List<String> domains = new ArrayList<String>();
         while (iter.hasNext()) {
@@ -118,10 +118,8 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     public void getUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        for (CrawleableUri uri : uris) {
-            mongodbQueue.addUri(uri);
-        }
-        
+        mongodbQueue.addUris(uris);
+
         List<CrawleableUri> listUris = mongodbQueue.getNextUris();
         Iterator<String> iter = mongodbQueue.getGroupIterator();
         int count = 0;
@@ -133,7 +131,7 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
                 ++count;
             }
         }
-        
+
         assertEquals(uris.size(), count);
         mongodbQueue.close();
     }
@@ -142,12 +140,16 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
     public void deleteUris() throws Exception {
         mongodbQueue.open();
         mongodbQueue.purge();
-        mongodbQueue.addUri(uris.get(1));
+        List<CrawleableUri> urisToAdd = new ArrayList<>();
+        urisToAdd.add(uris.get(1));
+        mongodbQueue.addUris(urisToAdd);
         List<CrawleableUri> retrievedUris = mongodbQueue.getNextUris();
         assertEquals(1, retrievedUris.size());
         assertTrue(uris.get(1).equals(retrievedUris.get(0)));
-        mongodbQueue.addUri(uris.get(2));
-        // The retrieval should fail 
+        urisToAdd.clear();
+        urisToAdd.add(uris.get(2));
+        mongodbQueue.addUris(urisToAdd);
+        // The retrieval should fail
         assertNull(mongodbQueue.getNextUris());
         // Give back the first URI
         mongodbQueue.markUrisAsAccessible(retrievedUris);
@@ -162,4 +164,5 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
         assertEquals(0, mongodbQueue.length());
         mongodbQueue.close();
     }
+
 }

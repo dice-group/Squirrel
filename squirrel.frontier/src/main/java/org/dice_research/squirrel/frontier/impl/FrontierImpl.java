@@ -1,10 +1,5 @@
 package org.dice_research.squirrel.frontier.impl;
 
-import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
@@ -23,6 +18,9 @@ import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.uri.processing.UriProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.UnknownHostException;
+import java.util.*;
 
 /**
  * Standard implementation of the {@link Frontier} interface containing a
@@ -43,7 +41,7 @@ public class FrontierImpl implements Frontier {
 	 * {@link KnownUriFilter} used to identify URIs that already have been crawled.
 	 */
 	protected UriFilterComposer uriFilter;
-	
+
 	/**
      * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
      */
@@ -244,7 +242,8 @@ public class FrontierImpl implements Frontier {
 				@Override
 				public void run() {
 					List<CrawleableUri> urisToRecrawl = outDatedUriRetriever.getUriToRecrawl();
-					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+//					urisToRecrawl.forEach(uri -> queue.addUri(uriProcessor.recognizeUriType(uri)));
+					queue.addUris(urisToRecrawl);
 				}
 			}, this.timerPeriod, this.timerPeriod);
 		}
@@ -260,58 +259,57 @@ public class FrontierImpl implements Frontier {
 		return queue.getNextUris();
 	}
 
-	@Override
+    @Override
+    @Deprecated
+    public void addNewUri(CrawleableUri uri) {
+        addNewUris(Collections.singletonList(uri));
+    }
+
+    @Override
 	public void addNewUris(List<CrawleableUri> uris) {
-		for (CrawleableUri uri : uris) {
-			addNewUri(uri);
-		}
+	    List<CrawleableUri> normalizedUris = new ArrayList<>();
+        for (CrawleableUri uri : uris) {
+            normalizedUris.add(getNormalizedUri(uri));
+            try {
+                for (UriGenerator u : uriGenerator) {
+                    if (u.getUriVariant(uri) != null)
+                        normalizedUris.add(getNormalizedUri(normalizer.normalize(u.getUriVariant(uri))));
+                }
+            } catch (Exception e) {
+                LOGGER.info(
+                    "Exception happened while generating additional URI variant for URI: " + uri.getUri().toString());
+            }
+        }
+        queue.addUris(normalizedUris);
 	}
 
-	@Override
-	public void addNewUri(CrawleableUri uri) {
-		// After knownUriFilter uri should be classified according to
-		// UriProcessor
-		uri = normalizer.normalize(uri);
-		addNormalizedUri(uri);
-
-		try {
-			for (UriGenerator u : uriGenerator) {
-				if (u.getUriVariant(uri) != null)
-					addNormalizedUri(normalizer.normalize(u.getUriVariant(uri)));
-			}
-		} catch (Exception e) {
-			LOGGER.info(
-					"Exception happened while generating additional URI variant for URI: " + uri.getUri().toString());
-		}
-	}
-
-	protected void addNormalizedUri(CrawleableUri uri) {
-		if (uriFilter.isUriGood(uri)) {
-			LOGGER.debug("addNewUri(" + uri + "): URI is good [" + uriFilter + "]");
-			if (schemeUriFilter.isUriGood(uri)) {
-				LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
-				// Make sure that the IP is known
-				try {
-					uri = this.uriProcessor.recognizeInetAddress(uri);
-
-				} catch (UnknownHostException e) {
-					LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
-				}
-				if (uri.getIpAddress() != null) {
-					queue.addUri(this.uriProcessor.recognizeUriType(uri));
-				} else {
-					LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
-				}
-				uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
-			} else {
-				LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
-						+ schemeUriFilter.getSchemes() + ". Will not added!");
-			}
-
-		} else {
-			LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + uriFilter + "]. Will not be added!");
-		}
-	}
+	protected CrawleableUri getNormalizedUri(CrawleableUri uri) {
+	    CrawleableUri normalizedUri = null;
+        if (uriFilter.isUriGood(uri)) {
+            LOGGER.debug("getNormalizedUri(" + uri + "): URI is good [" + uriFilter + "]");
+            if (schemeUriFilter.isUriGood(uri)) {
+                LOGGER.trace("getNormalizedUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
+                // Make sure that the IP is known
+                try {
+                    uri = this.uriProcessor.recognizeInetAddress(uri);
+                } catch (UnknownHostException e) {
+                    LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
+                }
+                if (uri.getIpAddress() != null) {
+                    normalizedUri = this.uriProcessor.recognizeUriType(uri);
+                } else {
+                    LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
+                }
+                uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
+            } else {
+                LOGGER.warn("getNormalizedUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
+                    + schemeUriFilter.getSchemes() + ". Will not added!");
+            }
+        } else {
+            LOGGER.debug("getNormalizedUri(" + uri + "): URI is not good [" + uriFilter + "]. Will not be added!");
+        }
+        return normalizedUri;
+    }
 
 	@Override
 	public void crawlingDone(List<CrawleableUri> uris) {
@@ -335,6 +333,7 @@ public class FrontierImpl implements Frontier {
 		if (queue instanceof BlockingQueue) {
 			((BlockingQueue<?>) queue).markUrisAsAccessible(uris);
 		}
+		List<CrawleableUri> crawledUris = new ArrayList<>();
 		// send list of crawled URIs to the knownUriFilter
 		for (CrawleableUri uri : uris) {
 			Long recrawlOn = (Long) uri.getData(Constants.URI_PREFERRED_RECRAWL_ON);
@@ -344,11 +343,12 @@ public class FrontierImpl implements Frontier {
 				// Create a new uri object reusing only meta data that is useful
 				CrawleableUri recrawlUri = new CrawleableUri(uri.getUri(), uri.getIpAddress());
 				recrawlUri.addData(Constants.URI_TYPE_KEY, uri.getData(Constants.URI_TYPE_KEY));
-				addNewUri(recrawlUri);
+                crawledUris.add(recrawlUri);
 			} else {
 				uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
 			}
 		}
+		addNewUris(crawledUris);
 	}
 
 	@Override
