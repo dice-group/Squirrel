@@ -97,6 +97,17 @@ public class FrontierImplTest {
     }
 
     @Test
+    public void addNewUri() throws Exception {
+        CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"), null, UriType.UNKNOWN);
+        frontier.addNewUri(uri_1);
+        List<CrawleableUri> nextUris = frontier.getNextUris();
+        List<CrawleableUri> assertion = new ArrayList<>();
+        assertion.add(cuf.create(new URI("http://dbpedia.org/resource/Tom_Lazarus"),
+            InetAddress.getByName("194.109.129.58"), UriType.DEREFERENCEABLE));
+        assertEquals(assertion, nextUris);
+    }
+
+    @Test
     public void crawlingDone() throws Exception {
         List<CrawleableUri> crawledUris = new ArrayList<>();
         CrawleableUri uri_1 = cuf.create(new URI("http://dbpedia.org/resource/New_York"),
