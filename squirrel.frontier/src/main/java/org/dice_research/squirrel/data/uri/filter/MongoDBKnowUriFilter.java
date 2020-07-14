@@ -131,7 +131,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 	public boolean knowUriTableExists() {
 		boolean ret = false;
 		for (String collection : mongoDB.listCollectionNames()) {
-			ret = collection.toLowerCase().equals(COLLECTION_NAME.toLowerCase());
+			ret = collection.equalsIgnoreCase(COLLECTION_NAME);
 			break;
 		}
 		return ret;
@@ -148,7 +148,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 	@Override
 	public void addHashValuesForUris(List<CrawleableUri> uris) {
-
+		System.out.println();
 	}
 
 	public void purge() {

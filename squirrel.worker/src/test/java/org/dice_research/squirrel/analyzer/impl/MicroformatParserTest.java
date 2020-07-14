@@ -50,24 +50,14 @@ public class MicroformatParserTest extends RDFParserTest {
 	private static UriCollector collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 	private CrawleableUri curi;
 	private static InMemorySink sink;
-	ClassLoader classLoader = getClass().getClassLoader();
 	public static Map<String, List<Double>> testresults = new HashMap<String,List<Double>>();
-	
-//	static double[] truepositiv = new double[data().size()];
-//	static double[] falsenegativ = new double[data().size()];
-//	static double[] falsepositiv = new double[data().size()];
-	
-	@BeforeClass
-	public static void initialization () throws URISyntaxException {
-	}
-	
 	@Parameter(0)
     public String testData;
     @Parameter(1)
     public String resultData; 
     @Rule public TestName test = new TestName();
-    
 	
+
     @Parameters(name = "{index},{0},{1}")
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] { //	"@context": {"@vocab": "http://www.w3.org/2006/vcard/ns#"},

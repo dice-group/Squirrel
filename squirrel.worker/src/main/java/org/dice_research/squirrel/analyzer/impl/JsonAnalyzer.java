@@ -36,10 +36,7 @@ public class JsonAnalyzer extends AbstractAnalyzer {
 
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
-		if (curi.getData("type").equals("json")) {
-			return true;
-		}
-		return false;
+		return curi.getData("type").equals("json");
 	}
 
 }

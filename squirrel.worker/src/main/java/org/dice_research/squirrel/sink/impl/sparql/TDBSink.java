@@ -37,10 +37,10 @@ public class TDBSink extends AbstractBufferingSink implements AdvancedTripleBase
      * The URI to the metadata DB in which updates can be performed.
      */
     private final String updateMetaDataUri;
-    /**
-     * The URI to the metadata DB in which querys can be performed.
-     */
-    private final String queryMetaDataUri;
+//    /**
+//     * The URI to the metadata DB in which querys can be performed.
+//     */
+//    private final String queryMetaDataUri;
 
     /**
      * The URI of the DB in which updates can be performed.
@@ -79,7 +79,7 @@ public class TDBSink extends AbstractBufferingSink implements AdvancedTripleBase
         updateDatasetURI = prefix + updateAppendix;
         queryDatasetURI = prefix + queryAppendix;
         updateMetaDataUri = prefix + updateMetaDataAppendix;
-        queryMetaDataUri = prefix + queryMetaDataAppendix;
+//        queryMetaDataUri = prefix + queryMetaDataAppendix;
     }
 
     @Override
