@@ -32,9 +32,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class RDFAnalyzerTest {
-    long startTime;
-    long endTime;
-    static long totalTime;
+    private long startTime;
+    private long endTime;
+    private static long totalTime;
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {

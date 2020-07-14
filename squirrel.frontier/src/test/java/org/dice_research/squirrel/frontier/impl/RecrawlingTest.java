@@ -1,8 +1,19 @@
 package org.dice_research.squirrel.frontier.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Calendar;
+
 import org.aksw.jena_sparql_api.core.QueryExecutionFactory;
 import org.aksw.jena_sparql_api.core.QueryExecutionFactoryDataset;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.dice_research.squirrel.frontier.recrawling.FrontierQueryGenerator;
@@ -10,15 +21,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-
-import static org.junit.Assert.*;
-
 public class RecrawlingTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecrawlingTest.class);
 
     @Test
-    public void Recrawling(){
+    public void recrawling(){
         Dataset dataset = DatasetFactory.create();
         dataset.setDefaultModel(ModelFactory.createDefaultModel().read("test.ttl"));
         QueryExecutionFactory queryExecFactory = new QueryExecutionFactoryDataset(dataset);

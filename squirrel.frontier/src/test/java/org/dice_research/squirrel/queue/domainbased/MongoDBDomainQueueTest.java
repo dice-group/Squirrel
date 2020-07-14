@@ -122,7 +122,6 @@ public class MongoDBDomainQueueTest extends MongoDBBasedTest {
             mongodbQueue.addUri(uri);
         }
         
-        List<CrawleableUri> listUris = mongodbQueue.getNextUris();
         Iterator<String> iter = mongodbQueue.getGroupIterator();
         int count = 0;
         while (iter.hasNext()) {
