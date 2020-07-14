@@ -25,11 +25,9 @@ import org.apache.tika.io.IOUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.sink.Sink;
-import org.dice_research.squirrel.sink.impl.hdt.HdtBasedSink;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.rdfhdt.hdt.exceptions.NotFoundException;
 import org.rdfhdt.hdt.hdt.HDT;
@@ -52,7 +50,7 @@ public class HdtBasedSinkTest {
     protected File tempDirectory = null;
     private Model[] models;
     private URI[] modelUris;
-
+	
     @Before
     public void findTempDir() throws IOException, URISyntaxException {
         tempDirectory = File.createTempFile("HdtBasedSinkTest", ".tmp");
