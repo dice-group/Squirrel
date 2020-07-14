@@ -29,11 +29,11 @@ import com.google.gson.stream.JsonWriter;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-@SuppressWarnings("deprecation")
 public class GsonUriSerializer implements Serializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonUriSerializer.class);
 
+    private GsonBuilder builder;
     private Gson gson;
 
     public GsonUriSerializer() {
@@ -41,7 +41,9 @@ public class GsonUriSerializer implements Serializer {
     }
 
     public GsonUriSerializer(GsonBuilder builder) {
-        gson = builder.create();
+        this.builder = builder;
+        this.builder.registerTypeAdapter(CrawleableUri.class, new CrawleableUriAdapter());
+        gson = this.builder.create();
     }
 
     @Override
