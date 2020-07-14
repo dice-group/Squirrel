@@ -53,6 +53,7 @@ public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
             HttpAuthenticator authenticator = new HttpAuthenticator() {
                 @Override
                 public void invalidate() {
+                	//TODO dummy method
                 }
 
                 @Override
@@ -60,6 +61,8 @@ public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
                     client.setCredentialsProvider(new CredentialsProvider() {
                         @Override
                         public void clear() {
+                        	//TODO dummy method
+
                         }
 
                         @Override
