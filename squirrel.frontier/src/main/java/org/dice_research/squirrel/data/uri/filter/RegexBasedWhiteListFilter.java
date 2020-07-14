@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
+    private Set<Pattern> whiteList;
+
 
     public static RegexBasedWhiteListFilter create(KnownUriFilter decorated, File whitelistfile) {
         try {
@@ -41,7 +43,6 @@ public class RegexBasedWhiteListFilter extends AbstractKnownUriFilterDecorator {
         return null;
     }
 
-    private Set<Pattern> whiteList;
 
     public RegexBasedWhiteListFilter(KnownUriFilter decorated, Set<Pattern> whiteList) {
         super(decorated);

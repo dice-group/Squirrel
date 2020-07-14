@@ -29,13 +29,15 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dice_research.squirrel.simulation.AbstractServerMockUsingTest;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBasedTest.class);
+    private CrawleableUri[] seeds;
+    private CrawleableResource[] resources;
 
     @Parameters
     public static Collection<Object[]> data() throws Exception {
@@ -107,8 +109,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         return scenarios;
     }
 
-    private CrawleableUri[] seeds;
-    private CrawleableResource[] resources;
+
 
     public ScenarioBasedTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));

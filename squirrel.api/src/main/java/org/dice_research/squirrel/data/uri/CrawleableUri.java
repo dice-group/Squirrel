@@ -30,6 +30,27 @@ public class CrawleableUri implements Serializable {
     private static final String CHARSET_NAME = "UTF-8";
     private static final Charset ENCODING_CHARSET = Charset.forName(CHARSET_NAME);
     private static final int URI_START_INDEX = 5;
+    /**
+     * The URI.
+     */
+    private final URI uri;
+    /**
+     * The IP address of the URI.
+     */
+    private InetAddress ipAddress;
+    @Deprecated
+    private UriType type = UriType.UNKNOWN;
+    /**
+     * The data attached to this URI.
+     */
+    private Map<String, Object> data = new TreeMap<>();
+    /**
+     * Timestamp at which this URI should be crawled next time.
+     * 
+     * @deprecated The timestamp should be added to the {@link #data} map.
+     */
+    private long timestampNextCrawl;
+
 
     /**
      * Creates a CrawleableUri object from the given byte array.
@@ -95,26 +116,6 @@ public class CrawleableUri implements Serializable {
         return new CrawleableUri(uri, ipAddress, UriType.values()[typeId]);
     }
 
-    /**
-     * The URI.
-     */
-    private final URI uri;
-    /**
-     * The IP address of the URI.
-     */
-    private InetAddress ipAddress;
-    @Deprecated
-    private UriType type = UriType.UNKNOWN;
-    /**
-     * The data attached to this URI.
-     */
-    private Map<String, Object> data = new TreeMap<>();
-    /**
-     * Timestamp at which this URI should be crawled next time.
-     * 
-     * @deprecated The timestamp should be added to the {@link #data} map.
-     */
-    private long timestampNextCrawl;
 
     /**
      * Constructor.

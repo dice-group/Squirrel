@@ -119,7 +119,8 @@ public class SquirrelWebObject implements Serializable {
             return ret;
         }
 
-        StringBuilder bufferKey = new StringBuilder(), bufferValue = new StringBuilder();
+        StringBuilder bufferKey = new StringBuilder();
+        StringBuilder  bufferValue = new StringBuilder();
         boolean readKey = false;
         boolean readValue = false;
         for (int i = 0; i < string.length(); i++) {

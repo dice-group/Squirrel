@@ -45,7 +45,6 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private URIReferences uriReferences;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
     private RabbitQueueFactory factory;
-    private Channel webQueue = null;
     private DataSender sender;
     private boolean run;
 
@@ -91,7 +90,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     @SuppressWarnings("unused")
     private boolean establishChannel(int triesLeft) {
         try {
-            webQueue = factory.createChannel();
+            Channel webQueue = factory.createChannel();
             return true;
         } catch (IOException e) {
             LOGGER.warn("Connection to rabbit is stable, but there was an error while creating a channel/ queue: " + e.getMessage() + ". There are " + triesLeft + " tries left, try it again in 3s!");

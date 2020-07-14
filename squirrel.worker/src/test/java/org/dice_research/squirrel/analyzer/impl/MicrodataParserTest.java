@@ -59,13 +59,7 @@ public class MicrodataParserTest extends RDFParserTest {
 //	static double[] falsenegativ = new double[data().size()];
 //	static double[] falsepositiv = new double[data().size()];
 	
-	@BeforeClass
-	public static void initialization () throws URISyntaxException {
-	}
-	
 
-    
-	
     @Parameters(name = "{index},{0},{1}")
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {	//Test+73 = Der jeweilige Test

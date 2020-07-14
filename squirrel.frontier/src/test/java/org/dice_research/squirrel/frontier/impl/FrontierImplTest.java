@@ -152,10 +152,10 @@ public class FrontierImplTest {
         frontier.addNewUris(uris);
         List<CrawleableUri> nextUris = frontier.getNextUris();
         for (CrawleableUri uri : nextUris) {
-            Assert.assertTrue(uris.contains(uri));
+            assertTrue(uris.contains(uri));
         }
         for (CrawleableUri uri : uris) {
-            Assert.assertTrue(nextUris.contains(uri));
+            assertTrue(nextUris.contains(uri));
         }
         // Set the first URI as recrawlable
         for (CrawleableUri uri : nextUris) {
@@ -169,7 +169,7 @@ public class FrontierImplTest {
         nextUris = frontier.getNextUris();
         Assert.assertNotNull(nextUris);
         assertTrue("uri_1 has been expected but couldn't be found", nextUris.contains(uri_1));
-        Assert.assertEquals(1, nextUris.size());
+        assertEquals(1, nextUris.size());
         assertFalse("uri_2 has been found but was not expected", nextUris.contains(uri_2));
     }
 

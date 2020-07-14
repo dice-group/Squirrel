@@ -17,6 +17,8 @@ import org.dice_research.squirrel.frontier.Frontier;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 
@@ -26,10 +28,11 @@ import junit.framework.TestCase;
  * Created by ivan on 04.03.16.
  */
 @SuppressWarnings("deprecation")
+@Ignore
 public class CkanSeedGeneratorImplTest extends TestCase {
     private Frontier frontier;
 
-
+    @Test
     public void setUp() {
     	IpAddressBasedQueue queue = new InMemoryQueue();
         //frontier = new FrontierImpl(new NormalizerImpl() , new InMemoryKnownUriFilter(false, -1), queue,null);

@@ -284,30 +284,31 @@ public class FrontierImpl implements Frontier {
 	}
 
 	protected void addNormalizedUri(CrawleableUri uri) {
-		if (uriFilter.isUriGood(uri)) {
-			LOGGER.debug("addNewUri(" + uri + "): URI is good [" + uriFilter + "]");
-			if (schemeUriFilter.isUriGood(uri)) {
-				LOGGER.trace("addNewUri(" + uri.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
+		CrawleableUri curi = uri;
+		if (uriFilter.isUriGood(curi)) {
+			LOGGER.debug("addNewUri(" + curi + "): URI is good [" + uriFilter + "]");
+			if (schemeUriFilter.isUriGood(curi)) {
+				LOGGER.trace("addNewUri(" + curi.getUri() + "): URI schemes is OK [" + schemeUriFilter + "]");
 				// Make sure that the IP is known
 				try {
-					uri = this.uriProcessor.recognizeInetAddress(uri);
+					curi = this.uriProcessor.recognizeInetAddress(curi);
 
 				} catch (UnknownHostException e) {
-					LOGGER.error("Could not recognize IP for {}, unknown host", uri.getUri());
+					LOGGER.error("Could not recognize IP for {}, unknown host", curi.getUri());
 				}
-				if (uri.getIpAddress() != null) {
-					queue.addUri(this.uriProcessor.recognizeUriType(uri));
+				if (curi.getIpAddress() != null) {
+					queue.addUri(this.uriProcessor.recognizeUriType(curi));
 				} else {
-					LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", uri.getUri());
+					LOGGER.error("Couldn't determine the Inet address of \"{}\". It will be ignored.", curi.getUri());
 				}
-				uriFilter.getKnownUriFilter().add(uri, System.currentTimeMillis());
+				uriFilter.getKnownUriFilter().add(curi, System.currentTimeMillis());
 			} else {
-				LOGGER.warn("addNewUri(" + uri + "): " + uri.getUri().getScheme() + " is not supported, only "
+				LOGGER.warn("addNewUri(" + curi + "): " + curi.getUri().getScheme() + " is not supported, only "
 						+ schemeUriFilter.getSchemes() + ". Will not added!");
 			}
 
 		} else {
-			LOGGER.debug("addNewUri(" + uri + "): URI is not good [" + uriFilter + "]. Will not be added!");
+			LOGGER.debug("addNewUri(" + curi + "): URI is not good [" + uriFilter + "]. Will not be added!");
 		}
 	}
 

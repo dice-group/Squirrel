@@ -337,7 +337,8 @@ public class HtmlScraper {
 		return triples;
 	}
 
-	private List<Node> jsoupQuery(String cssQuery) throws Exception {
+	private List<Node> jsoupQuery(String cssQ) throws Exception {
+		String cssQuery = cssQ;
 		List<Node> listNodes = new ArrayList<Node>();
 		String prefix = "";
 		String attribute = "";
