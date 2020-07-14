@@ -130,11 +130,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 	public boolean knowUriTableExists() {
 		for (String collection : mongoDB.listCollectionNames()) {
-			if (collection.toLowerCase().equals(COLLECTION_NAME.toLowerCase())) {
-				return true;
-			} else {
-				return false;
-			}
+			return (collection.toLowerCase().equals(COLLECTION_NAME.toLowerCase()));
 		}
 		return false;
 	}

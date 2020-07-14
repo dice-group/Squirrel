@@ -26,13 +26,6 @@ public class TabSeparatedGraphLogger implements GraphLogger, Closeable {
     public static final char DEFAULT_URI_SEPARATOR = '|';
     public static final char DEFAULT_QUOTE_CHAR = '"';
     public static final char DEFAULT_ESCAPE_CHAR = '\\';
-
-    private static final Charset CHARSET = Charset.forName("UTF-8");
-
-    public static TabSeparatedGraphLogger create(File logFile) throws FileNotFoundException {
-        return new TabSeparatedGraphLogger(new FileOutputStream(logFile));
-    }
-
     protected OutputStream logStream;
     protected char sourceTargetSeperator = DEFAULT_SOURCE_TARGET_SEPARATOR;
     protected char uriSeparator = DEFAULT_URI_SEPARATOR;
@@ -41,6 +34,14 @@ public class TabSeparatedGraphLogger implements GraphLogger, Closeable {
     protected String quoteString = new String(new char[] { quoteChar });
     protected String escapedQuote = new String(new char[] { escapeChar, quoteChar });
     protected String linebreak = String.format("%n");
+
+    private static final Charset CHARSET = Charset.forName("UTF-8");
+
+    public static TabSeparatedGraphLogger create(File logFile) throws FileNotFoundException {
+        return new TabSeparatedGraphLogger(new FileOutputStream(logFile));
+    }
+
+
 
     public TabSeparatedGraphLogger(OutputStream logStream) {
         this.logStream = logStream;

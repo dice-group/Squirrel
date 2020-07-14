@@ -4,8 +4,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.sink.quadBased.QuadBasedSink;
-import org.dice_research.squirrel.sink.tripleBased.TripleBasedSink;
+import org.dice_research.squirrel.sink.quadbased.QuadBasedSink;
+import org.dice_research.squirrel.sink.triplebased.TripleBasedSink;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
