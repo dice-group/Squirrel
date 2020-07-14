@@ -13,7 +13,7 @@ import com.mongodb.ServerAddress;
  *
  */
 
-public class MongoDBConnectionFactory {
+public class Mongodbconnectionfactory {
 	
 	/**
 	 * Returns a MongoClient based on host and port

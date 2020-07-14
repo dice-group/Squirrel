@@ -14,7 +14,7 @@ import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
-import org.dice_research.squirrel.mongodb.MongoDBConnectionFactory;
+import org.dice_research.squirrel.mongodb.Mongodbconnectionfactory;
 import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         
         this.serializer = serializer;
 
-        this.client = MongoDBConnectionFactory.getConnection(hostName, port);
+        this.client = Mongodbconnectionfactory.getConnection(hostName, port);
 
     }
 

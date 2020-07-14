@@ -18,7 +18,7 @@ import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
-import org.dice_research.squirrel.mongodb.MongoDBConnectionFactory;
+import org.dice_research.squirrel.mongodb.Mongodbconnectionfactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 		LOGGER.info("Filter Persistance: " + PERSIST);
 
-        this.client = MongoDBConnectionFactory.getConnection(hostName, port);
+        this.client = Mongodbconnectionfactory.getConnection(hostName, port);
 
 	}
 

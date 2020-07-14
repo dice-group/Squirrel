@@ -93,7 +93,7 @@ public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
     public List<CrawleableUri> getUriToRecrawl() {
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DAY_OF_YEAR, 7);
-        Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery(date);
+        Query getOutdatedUrisQuery = Frontierquerygenerator.getOutdatedUrisQuery(date);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
         ResultSet rs = qe.execSelect();
         while (rs.hasNext()) {
