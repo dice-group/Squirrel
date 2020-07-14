@@ -37,7 +37,7 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
 
     public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
                                 long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
-        super(normalizer, relationalUriFilter, queue, uriGenerators,doesRecrawling, generalRecrawlTime, timerPeriod, uriHashCustodian);
+        super(normalizer, relationalUriFilter, queue, uriGenerators,doesRecrawling, generalRecrawlTime, timerPeriod);
     }
 
     /**
