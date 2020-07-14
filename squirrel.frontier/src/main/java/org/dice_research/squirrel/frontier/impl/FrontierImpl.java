@@ -148,8 +148,7 @@ public class FrontierImpl implements Frontier {
 	 * @param timerPeriod        used to select if URIs should be recrawled.
 	 */
 	public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,
-			List<UriGenerator> uriGenerators, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod,
-			UriHashCustodian uriHashCustodian) {
+			List<UriGenerator> uriGenerators, boolean doesRecrawling, long generalRecrawlTime, long timerPeriod) {
 		this(normalizer, relationalUriFilter, queue, uriGenerators, null, doesRecrawling, generalRecrawlTime,
 				timerPeriod);
 	}

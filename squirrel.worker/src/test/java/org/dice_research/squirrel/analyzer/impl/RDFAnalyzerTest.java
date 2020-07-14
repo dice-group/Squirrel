@@ -35,6 +35,8 @@ public class RDFAnalyzerTest {
     private long startTime;
     private long endTime;
     private static long totalTime;
+    private String resourceName;
+    private int expectedNumberOfTriples;
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
@@ -49,8 +51,7 @@ public class RDFAnalyzerTest {
         System.err.println(String.format("RDFAnalyzerTest total time: %d", totalTime));
     }
 
-    private String resourceName;
-    private int expectedNumberOfTriples;
+    
 
     public RDFAnalyzerTest(String resourceName, int expectedNumberOfTriples) {
         this.resourceName = resourceName;
