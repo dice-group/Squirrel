@@ -45,7 +45,9 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         String server2Url = "http://127.0.0.2:" + SERVER_PORT;
         String server3Url = "http://127.0.0.3:" + SERVER_PORT;
 
-        Model model1, model2, model3;
+        Model model1;
+        Model model2;
+        Model model3;
         /*
          * Simple scenario in which resource1 is the seed and points to resource2 which
          * points to resource3.

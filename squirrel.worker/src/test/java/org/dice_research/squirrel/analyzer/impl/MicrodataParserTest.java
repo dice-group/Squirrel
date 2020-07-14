@@ -49,6 +49,12 @@ public class MicrodataParserTest extends RDFParserTest {
 	ClassLoader classLoader = getClass().getClassLoader();
 	public static Map<String, List<Double>> testresults = new HashMap<String,List<Double>>();
 	
+	@Parameter(0)
+    public String testData;
+    @Parameter(1)
+    public String resultData; 
+    @Rule public TestName test = new TestName();
+	
 //	static double[] truepositiv = new double[data().size()];
 //	static double[] falsenegativ = new double[data().size()];
 //	static double[] falsepositiv = new double[data().size()];
@@ -57,11 +63,7 @@ public class MicrodataParserTest extends RDFParserTest {
 	public static void initialization () throws URISyntaxException {
 	}
 	
-	@Parameter(0)
-    public String testData;
-    @Parameter(1)
-    public String resultData; 
-    @Rule public TestName test = new TestName();
+
     
 	
     @Parameters(name = "{index},{0},{1}")

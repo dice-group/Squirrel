@@ -22,6 +22,7 @@ public class RobotsManagerConfiguration extends Configuration {
         } else {
             String msg = "Couldn't get " + MIN_DELAY_KEY + " from the environment. " +
                 "The RobotsManager will use default minimum delay parameter.";
+            LOGGER.info(msg);
             return null;
         }
     }

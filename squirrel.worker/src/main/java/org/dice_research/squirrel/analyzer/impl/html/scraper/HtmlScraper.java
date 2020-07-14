@@ -142,7 +142,7 @@ public class HtmlScraper {
 								if (m.find()) {
 									Map<String, Object> resources = (Map<String, Object>) entry.getValue()
 											.get(YamlFileAtributes.RESOURCES);
-									listTriples.addAll(scrapeDownloadLink(resources, filetToScrape, uri));
+									listTriples.addAll(scrapeDownloadLink(resources, filetToScrape));
 									break;
 								}
 							} catch (Exception e) {
@@ -202,7 +202,7 @@ public class HtmlScraper {
     }
 
 	@SuppressWarnings("unchecked")
-	private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile, String uri) throws Exception {
+	private Set<Triple> scrapeDownloadLink(Map<String, Object> resources, File htmlFile) throws Exception {
 		this.doc = Jsoup.parse(htmlFile, "UTF-8");
 
 		Set<Triple> triples = new LinkedHashSet<Triple>();

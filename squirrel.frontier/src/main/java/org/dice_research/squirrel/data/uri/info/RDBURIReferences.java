@@ -30,10 +30,10 @@ public class RDBURIReferences implements URIReferences, Closeable {
     private URIReferencesUtils utils;
 
     // Some constants for the rethinkDB
-    static final String DATABASE_NAME = "squirrel";
-    static final String TABLE_NAME = "uriReferences";
-    static final String COLUMN_URI = "uri";
-    static final String COLUMN_FOUNDURIS = "foundUris";
+    public static final String DATABASE_NAME = "squirrel";
+    public static final String TABLE_NAME = "uriReferences";
+    public static final String COLUMN_URI = "uri";
+    public static final String COLUMN_FOUNDURIS = "foundUris";
 
     /**
      * Constructor.
