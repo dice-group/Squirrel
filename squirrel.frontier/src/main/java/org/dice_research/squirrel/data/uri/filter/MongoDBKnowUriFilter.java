@@ -13,19 +13,17 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
 import org.dice_research.squirrel.deduplication.hashing.HashValue;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.impl.FrontierImpl;
+import org.dice_research.squirrel.mongodb.MongoDBConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -70,22 +68,8 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 		LOGGER.info("Filter Persistance: " + PERSIST);
 
-		MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
-		MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
+        this.client = MongoDBConnectionFactory.getConnection(hostName, port);
 
-		if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null
-				&& mongoConfiguration.getSocketTimeout() != null && mongoConfiguration.getServerTimeout() != null)) {
-			optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
-			optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
-			optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
-
-			MongoClientOptions options = optionsBuilder.build();
-
-			client = new MongoClient(new ServerAddress(hostName, port), options);
-
-		} else {
-			client = new MongoClient(hostName, port);
-		}
 	}
 
 	@Override

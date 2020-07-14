@@ -11,18 +11,16 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.dice_research.squirrel.Constants;
-import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.SnappyJavaUriSerializer;
+import org.dice_research.squirrel.mongodb.MongoDBConnectionFactory;
 import org.dice_research.squirrel.queue.AbstractIpAddressBasedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoWriteException;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -65,22 +63,7 @@ public class MongoDBIpBasedQueue extends AbstractIpAddressBasedQueue {
         
         this.serializer = serializer;
 
-        MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
-        MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
-
-        if (mongoConfiguration != null && (mongoConfiguration.getConnectionTimeout() != null && mongoConfiguration.getSocketTimeout() != null
-                && mongoConfiguration.getServerTimeout() != null)) {
-            optionsBuilder.connectTimeout(mongoConfiguration.getConnectionTimeout());
-            optionsBuilder.socketTimeout(mongoConfiguration.getSocketTimeout());
-            optionsBuilder.serverSelectionTimeout(mongoConfiguration.getServerTimeout());
-
-            MongoClientOptions options = optionsBuilder.build();
-
-            client = new MongoClient(new ServerAddress(hostName, port), options);
-
-        } else {
-            client = new MongoClient(hostName, port);
-        }
+        this.client = MongoDBConnectionFactory.getConnection(hostName, port);
 
     }
 
