@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriType;
@@ -48,7 +47,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 	private MongoClient client;
 	private MongoDatabase mongoDB;
-	private int max_depth;
 	public static final String DB_NAME = "squirrel";
 	private Integer recrawlEveryWeek = 60 * 60 * 24 * 7 * 1000; // in miiliseconds
 	public static final String COLLECTION_NAME = "knownurifilter";

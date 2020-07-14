@@ -128,7 +128,7 @@ public class FrontierImpl implements Frontier {
 	public FrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,
 			List<UriGenerator> uriGenerators, GraphLogger graphLogger, boolean doesRecrawling, long generalRecrawlTime,
 			long timerPeriod) {
-		this(normalizer, relationalUriFilter, null, queue, uriGenerators, graphLogger, false,
+		this(normalizer, relationalUriFilter, null, queue, uriGenerators, graphLogger, doesRecrawling,
 				generalRecrawlTime, timerPeriod,null);
 	}
 

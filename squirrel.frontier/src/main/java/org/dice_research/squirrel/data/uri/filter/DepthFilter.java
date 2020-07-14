@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
  * 
  * Depth Filter implementation
  * 
+ * Check if the uriIsGood based on the current depth level
+ * 
  * * @author Geraldo Souza Junior (gsjunior@mail.uni-paderborn.de)
  *
  */
@@ -17,10 +19,10 @@ public class DepthFilter implements UriFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBKnowUriFilter.class);
 
-	
+	/**
+	 * The maximum depth allowed for the filter
+	 */
 	private int max_depth;
-
-
 
 
 	public DepthFilter(int max_depth) {
@@ -48,9 +50,6 @@ public class DepthFilter implements UriFilter {
 
 	}
 
-	public void purge() {
-		
-	}
 
 	@Override
 	public void add(CrawleableUri uri) {

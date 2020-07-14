@@ -33,8 +33,8 @@ public class SparqlBasedOutDatedUriRetriever implements OutDatedUriRetriever{
     /**
      * SparqlBasedOutDatedUriRetriever creates a connection to the SPARQL endpoint and Query factory used to generate a query.
      */
-    QueryExecutionFactory queryExecFactory;
-    List<CrawleableUri> urisToRecrawl = new ArrayList<>();
+    private QueryExecutionFactory queryExecFactory;
+    private List<CrawleableUri> urisToRecrawl = new ArrayList<>();
 
     public SparqlBasedOutDatedUriRetriever(QueryExecutionFactory queryExecFactory) {
         this.queryExecFactory = queryExecFactory;
