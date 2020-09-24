@@ -6,7 +6,7 @@ import org.apache.jena.query.QueryFactory;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class Frontierquerygenerator {
+public class FrontierQueryGenerator {
     /**
      * Return outdated uris by comparing their endtime stamps.
      * @return All triples with time stamp in the default graph.

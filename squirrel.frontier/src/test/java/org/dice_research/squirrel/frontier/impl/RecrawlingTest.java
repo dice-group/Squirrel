@@ -16,7 +16,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
-import org.dice_research.squirrel.frontier.recrawling.Frontierquerygenerator;
+import org.dice_research.squirrel.frontier.recrawling.FrontierQueryGenerator;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class RecrawlingTest {
         date.set(Calendar.MONTH, Calendar.JANUARY);
         date.set(Calendar.DAY_OF_MONTH, 3);
         date.set(Calendar.YEAR, 2020);
-        Query getOutdatedUrisQuery = Frontierquerygenerator.getOutdatedUrisQuery(date);
+        Query getOutdatedUrisQuery = FrontierQueryGenerator.getOutdatedUrisQuery(date);
         QueryExecution qe = queryExecFactory.createQueryExecution(getOutdatedUrisQuery);
         ResultSet rs = qe.execSelect();
         assertTrue("There should be at least one result", rs.hasNext());
