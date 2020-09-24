@@ -14,7 +14,7 @@ public abstract class AbstractAnalyzer implements Analyzer{
 	
 	protected UriCollector collector;
 	
-	protected TripleEncoder tripleEncoder = TripleEncoder.getInstance();
+	protected TripleEncoder tripleEncoder = new TripleEncoder();
 	
 	public AbstractAnalyzer(UriCollector collector) {
 		this.collector = collector;

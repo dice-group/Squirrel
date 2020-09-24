@@ -52,7 +52,7 @@ public class TripleEncoderTest {
 	@Test
 	public void testEncoding() {
 
-		TripleEncoder encoder = TripleEncoder.getInstance();
+		TripleEncoder encoder = new TripleEncoder();
 
 		for (int i = 0; i < 10; i++) {
 //			System.out.println(encoder.encodeTriple(listUncodedTriples.get(i)));

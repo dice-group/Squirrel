@@ -22,18 +22,7 @@ import org.slf4j.LoggerFactory;
 public class TripleEncoder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TripleEncoder.class);
-	private static TripleEncoder tripleEncoder;
 
-	private TripleEncoder() {
-
-	}
-
-	public static final TripleEncoder getInstance() {
-		if (tripleEncoder == null)
-			tripleEncoder = new TripleEncoder();
-
-		return tripleEncoder;
-	}
 	
 	/**
 	 * 
