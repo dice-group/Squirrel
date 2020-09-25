@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
@@ -41,7 +42,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private final long startRunTime = System.currentTimeMillis();
     private WorkerGuard workerGuard;
     private UriQueue queue;
-    private UriFilterComposer relationalUriFilter;
+    private KnownUriFilter knowUriFilter;
     private URIReferences uriReferences;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
     private RabbitQueueFactory factory;
@@ -61,11 +62,11 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @param knownUriFilter has information about the crawled URIs
      * @param uriReferences  has information for the crawled graph. if it is {@code null}, the feature of creating a crawled graph is disabled
      */
-    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, UriQueue queue, UriFilterComposer relationalUriFilter, URIReferences uriReferences) {
+    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, UriQueue queue, KnownUriFilter knowUriFilter, URIReferences uriReferences) {
         this.factory = factory;
         this.workerGuard = workerGuard;
         this.queue = queue;
-        this.relationalUriFilter = relationalUriFilter;
+        this.knowUriFilter = knowUriFilter;
         this.uriReferences = uriReferences;
     }
 
@@ -190,7 +191,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
         //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
         //newObject.setCrawledURIs(Collections.EMPTY_LIST);
-        newObject.setCountOfCrawledURIs((int) relationalUriFilter.getKnownUriFilter().count());
+        newObject.setCountOfCrawledURIs((int) knowUriFilter.count());
 
         return newObject;
     }

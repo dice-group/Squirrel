@@ -148,7 +148,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
             final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-                    workerGuard, queue, uriFilter, uriReferences);
+                    workerGuard, queue, uriFilter.getKnownUriFilter(), uriReferences);
             LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
                     + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
