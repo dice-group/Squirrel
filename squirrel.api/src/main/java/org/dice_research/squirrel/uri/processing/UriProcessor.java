@@ -61,7 +61,7 @@ public class UriProcessor implements UriProcessorInterface {
     public CrawleableUri recognizeInetAddress(CrawleableUri uri) throws UnknownHostException {
         String host;
         InetAddress ipAddress;
-        if (!(uri.getUri() == null)) {
+        if (uri.getUri() != null) {
             host = uri.getUri().getHost();
             ipAddress = InetAddress.getByName(host);
             uri.setIpAddress(ipAddress);

@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.tripleBased;
+package org.dice_research.squirrel.sink.triplebased;
 
 import org.apache.jena.graph.Triple;
 import org.dice_research.squirrel.data.uri.CrawleableUri;

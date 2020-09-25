@@ -8,7 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class WellKnownPathUriGeneratorTest {
-    UriGenerator variantUriObject = new WellKnownPathUriGenerator();
+    private UriGenerator variantUriObject = new WellKnownPathUriGenerator();
 
     @Test
     public void getVariant(){

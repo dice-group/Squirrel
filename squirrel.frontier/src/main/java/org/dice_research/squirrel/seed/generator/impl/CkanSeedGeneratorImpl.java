@@ -1,5 +1,9 @@
 package org.dice_research.squirrel.seed.generator.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -14,21 +18,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by ivan on 25.02.16.
  */
 public class CkanSeedGeneratorImpl extends AbstractSeedGenerator {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AbstractSeedGenerator.class);
 
-    static final String CkanApiEndpoint = "http://datahub.io/api/3";
-    static final String RdfSearchAction = "/action/package_search?q=rdf";
-    static final String RdfSearchQuery = CkanApiEndpoint + RdfSearchAction;
-    static final String RdfCountQuery = RdfSearchQuery + "&rows=1";
+    public static final String CkanApiEndpoint = "http://datahub.io/api/3";
+    public static final String RdfSearchAction = "/action/package_search?q=rdf";
+    public static final String RdfSearchQuery = CkanApiEndpoint + RdfSearchAction;
+    public static final String RdfCountQuery = RdfSearchQuery + "&rows=1";
 
     public CkanSeedGeneratorImpl(Frontier frontier) {
         super(frontier);

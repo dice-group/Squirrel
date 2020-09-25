@@ -25,7 +25,7 @@ public class JsonAnalyzer extends AbstractAnalyzer {
 	@Override
 	public Iterator<byte[]> analyze(CrawleableUri curi, File data, Sink sink) {
 		try {
-			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector);
+			StreamRDF filtered = new FilterSinkRDF(curi, sink, collector,tripleEncoder);
 			RDFDataMgr.parse(filtered, data.getAbsolutePath(), Lang.JSONLD);
 			return collector.getUris(curi);
 		} catch (Exception e) {
@@ -36,10 +36,7 @@ public class JsonAnalyzer extends AbstractAnalyzer {
 
 	@Override
 	public boolean isElegible(CrawleableUri curi, File data) {
-		if (curi.getData("type").equals("json")) {
-			return true;
-		}
-		return false;
+		return curi.getData("type").equals("json");
 	}
 
 }

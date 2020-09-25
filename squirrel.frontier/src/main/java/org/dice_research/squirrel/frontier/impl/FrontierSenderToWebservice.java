@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
@@ -41,11 +42,10 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     private final long startRunTime = System.currentTimeMillis();
     private WorkerGuard workerGuard;
     private UriQueue queue;
-    private KnownUriFilter knownUriFilter;
+    private KnownUriFilter knowUriFilter;
     private URIReferences uriReferences;
     private final static String WEB_QUEUE_GENERAL_NAME = "squirrel.web.in";
     private RabbitQueueFactory factory;
-    private Channel webQueue = null;
     private DataSender sender;
     private boolean run;
 
@@ -62,11 +62,11 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
      * @param knownUriFilter has information about the crawled URIs
      * @param uriReferences  has information for the crawled graph. if it is {@code null}, the feature of creating a crawled graph is disabled
      */
-    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, UriQueue queue, KnownUriFilter knownUriFilter, URIReferences uriReferences) {
+    public FrontierSenderToWebservice(RabbitQueueFactory factory, WorkerGuard workerGuard, UriQueue queue, KnownUriFilter knowUriFilter, URIReferences uriReferences) {
         this.factory = factory;
         this.workerGuard = workerGuard;
         this.queue = queue;
-        this.knownUriFilter = knownUriFilter;
+        this.knowUriFilter = knowUriFilter;
         this.uriReferences = uriReferences;
     }
 
@@ -91,7 +91,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
     @SuppressWarnings("unused")
     private boolean establishChannel(int triesLeft) {
         try {
-            webQueue = factory.createChannel();
+            Channel webQueue = factory.createChannel();
             return true;
         } catch (IOException e) {
             LOGGER.warn("Connection to rabbit is stable, but there was an error while creating a channel/ queue: " + e.getMessage() + ". There are " + triesLeft + " tries left, try it again in 3s!");
@@ -191,7 +191,7 @@ public class FrontierSenderToWebservice implements Runnable, Closeable {
 
         //Michael remarks, that's not a good idea to pass all crawled URIs, because that takes to much time...
         //newObject.setCrawledURIs(Collections.EMPTY_LIST);
-        newObject.setCountOfCrawledURIs((int) knownUriFilter.count());
+        newObject.setCountOfCrawledURIs((int) knowUriFilter.count());
 
         return newObject;
     }

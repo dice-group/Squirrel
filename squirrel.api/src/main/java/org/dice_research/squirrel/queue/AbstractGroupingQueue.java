@@ -30,6 +30,11 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
      * Set of blocked key values.
      */
     private Set<T> blockedKeys = new HashSet<T>();
+    
+    /**
+     * if the queue will store the depth or not
+     */
+    protected boolean includeDepth = false;
 
     /**
      * Constructor.
@@ -134,5 +139,13 @@ public abstract class AbstractGroupingQueue<T> implements BlockingQueue<T> {
      *            set of URIs which should be removed
      */
     protected abstract void deleteUris(T groupKey, List<CrawleableUri> uris);
+    
+    /**
+     * Returns if the queue is storing the crawled depth
+     * 
+     */
+    public boolean isDepthIncluded() {
+    	return this.includeDepth;
+    }
 
 }

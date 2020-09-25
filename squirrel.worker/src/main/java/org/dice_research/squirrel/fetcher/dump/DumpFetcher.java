@@ -95,7 +95,7 @@ public class DumpFetcher implements Fetcher {
 //        LOGGER.debug("Opening sink for {}", filePath);
 //        sink.openSinkForUri(uri);
         while (iterator.hasNext()) {
-            Triple next = iterator.next();
+            iterator.next();
 //            sink.addTriple(uri, next);
             ++tripleCount;
         }

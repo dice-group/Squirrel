@@ -38,7 +38,6 @@ import org.junit.Test;
 public class DecompressionTest {
 
     private FileManager fm = new FileManager();
-    private List<File> rdfFiles;
     private Model model;
     private CrawleableUri testUri;
 
@@ -57,8 +56,7 @@ public class DecompressionTest {
      */
     @Before
     public void initiateEnvironmentTest() throws IOException, URISyntaxException {
-        rdfFiles = createRdfFiles();
-        tarFile = generateTar(rdfFiles);
+        tarFile = generateTar(createRdfFiles());
         bzipFile = generateBzip(tarFile);
         gzFile = generateGZ(tarFile);
         testUri = new CrawleableUri(new URI("http://dice-research.org/squirrel/test"));

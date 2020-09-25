@@ -73,7 +73,7 @@ public class MicroformatMF2JAnalyzer extends AbstractAnalyzer {
 				StringWriter out = new StringWriter();
 				model.write(out, syntax);
 				result = out.toString();
-				StreamRDF filtered = new FilterSinkRDF(curi, sink, collector); 
+				StreamRDF filtered = new FilterSinkRDF(curi, sink, collector,tripleEncoder); 
 				RDFDataMgr.parse(filtered, new ByteArrayInputStream(result.getBytes()), Lang.NTRIPLES);	
 		} catch (Exception e) {
 			LOGGER.warn("Could not analyze file for URI: " + curi.getUri().toString() + " :: Analyzer: " + this.getClass().getName());
@@ -84,11 +84,11 @@ public class MicroformatMF2JAnalyzer extends AbstractAnalyzer {
 	}
 	
 	public static String addContextToJSON(String data) {
-		data = data.trim();
-		data = data.substring(1);
-		data = "{\r\n" + 
-				"\"@context\": {\"@vocab\": \"http://www.dummy.org/#\"},\n"+data;
-		return data;
+		String dt = data.trim();
+		dt = dt.substring(1);
+		dt = "{\r\n" + 
+				"\"@context\": {\"@vocab\": \"http://www.dummy.org/#\"},\n"+dt;
+		return dt;
 	}
 	
 	public static String replaceVocab(String data) {

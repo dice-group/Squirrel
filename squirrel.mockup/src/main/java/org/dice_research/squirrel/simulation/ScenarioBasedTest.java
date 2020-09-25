@@ -29,13 +29,15 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dice_research.squirrel.simulation.AbstractServerMockUsingTest;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class ScenarioBasedTest extends AbstractServerMockUsingTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioBasedTest.class);
+    private CrawleableUri[] seeds;
+    private CrawleableResource[] resources;
 
     @Parameters
     public static Collection<Object[]> data() throws Exception {
@@ -45,7 +47,9 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         String server2Url = "http://127.0.0.2:" + SERVER_PORT;
         String server3Url = "http://127.0.0.3:" + SERVER_PORT;
 
-        Model model1, model2, model3;
+        Model model1;
+        Model model2;
+        Model model3;
         /*
          * Simple scenario in which resource1 is the seed and points to resource2 which
          * points to resource3.
@@ -105,8 +109,7 @@ public class ScenarioBasedTest extends AbstractServerMockUsingTest {
         return scenarios;
     }
 
-    private CrawleableUri[] seeds;
-    private CrawleableResource[] resources;
+
 
     public ScenarioBasedTest(CrawleableUri[] seeds, CrawleableResource[] resources) {
         super(new CrawleableResourceContainer(resources));

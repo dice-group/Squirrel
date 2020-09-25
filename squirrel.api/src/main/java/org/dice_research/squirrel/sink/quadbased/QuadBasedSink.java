@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.sink.quadBased;
+package org.dice_research.squirrel.sink.quadbased;
 
 import org.apache.jena.sparql.core.Quad;
 import org.dice_research.squirrel.data.uri.CrawleableUri;

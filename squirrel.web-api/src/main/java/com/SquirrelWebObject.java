@@ -55,7 +55,7 @@ public class SquirrelWebObject implements Serializable {
         SquirrelWebObject.IDCOUNTER++;
     }
 
-    private String ListToString(List<String> list) {
+    private String listToString(List<String> list) {
         final StringBuilder ret = new StringBuilder("<b>");
         if (list != null)
             list.forEach(e -> ret.append("<e>").append(e).append("</e>"));
@@ -63,10 +63,10 @@ public class SquirrelWebObject implements Serializable {
         return ret.toString();
     }
 
-    private String MapToString(Map<String, List<String>> map) {
+    private String mapToString(Map<String, List<String>> map) {
         StringBuilder ret = new StringBuilder("<m>");
         if (map != null) {
-            map.forEach((k, v) -> ret.append("<c><h>").append(k).append("</h>").append(ListToString(v)).append("</c>"));
+            map.forEach((k, v) -> ret.append("<c><h>").append(k).append("</h>").append(listToString(v)).append("</c>"));
         }
         ret.append("</m>");
 
@@ -74,7 +74,7 @@ public class SquirrelWebObject implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> StringToList(String string) {
+    private List<String> stringToList(String string) {
         if (string == null)
             return Collections.EMPTY_LIST;
 
@@ -106,7 +106,7 @@ public class SquirrelWebObject implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, List<String>> StringToMap(String string) {
+    private Map<String, List<String>> stringToMap(String string) {
         if (string == null)
             return Collections.EMPTY_MAP;
 
@@ -119,13 +119,14 @@ public class SquirrelWebObject implements Serializable {
             return ret;
         }
 
-        StringBuilder bufferKey = new StringBuilder(), bufferValue = new StringBuilder();
+        StringBuilder bufferKey = new StringBuilder();
+        StringBuilder  bufferValue = new StringBuilder();
         boolean readKey = false;
         boolean readValue = false;
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '>' && i > 3) {
                 if (string.startsWith("</c", i-3)) {
-                    ret.put(bufferKey.substring(1, bufferKey.length()-3), StringToList(bufferValue.substring(1, bufferValue.length()-3)));
+                    ret.put(bufferKey.substring(1, bufferKey.length()-3), stringToList(bufferValue.substring(1, bufferValue.length()-3)));
                     bufferKey = new StringBuilder();
                     bufferValue = new StringBuilder();
                     readKey = false;
@@ -229,7 +230,7 @@ public class SquirrelWebObject implements Serializable {
     }
 
     public List<String> getPendingURIs() {
-        List<String> ret = StringToList(pendingURIs);
+        List<String> ret = stringToList(pendingURIs);
         List<String> error = isReadable(ret);
         if (error == null) {
             return ret;
@@ -239,7 +240,7 @@ public class SquirrelWebObject implements Serializable {
     }
 
     public int getCountOfPendingURIs() {
-        List<String> ret = StringToList(pendingURIs);
+        List<String> ret = stringToList(pendingURIs);
         List<String> error = isReadable(ret);
         if (error == null) {
             return ret.size();
@@ -249,7 +250,7 @@ public class SquirrelWebObject implements Serializable {
     }
 
     public List<String> getNextCrawledURIs() {
-        List<String> ret = StringToList(nextCrawledURIs);
+        List<String> ret = stringToList(nextCrawledURIs);
         List<String> error = isReadable(ret);
         if (error == null) {
             return ret;
@@ -269,7 +270,7 @@ public class SquirrelWebObject implements Serializable {
 //    }
 
     public Map<String, List<String>> getIpStringListMap() {
-        Map<String, List<String>> ret = StringToMap(IPMapPendingURis);
+        Map<String, List<String>> ret = stringToMap(IPMapPendingURis);
         Map<String, List<String>> error = isReadable(ret);
 
         if (error == null) {
@@ -339,12 +340,12 @@ public class SquirrelWebObject implements Serializable {
 
     public void setPendingURIs(List<String> pendingURIs) throws IllegalAccessException {
         isWritable();
-        this.pendingURIs = ListToString(pendingURIs);
+        this.pendingURIs = listToString(pendingURIs);
     }
 
     public void setIPMapPendingURis(Map<String, List<String>> IPMapPendingURis) throws IllegalAccessException {
         isWritable();
-        this.IPMapPendingURis = MapToString(IPMapPendingURis);
+        this.IPMapPendingURis = mapToString(IPMapPendingURis);
     }
 
 //    public void setCrawledURIs(List<String> crawledURIs) throws IllegalAccessException {
@@ -369,7 +370,7 @@ public class SquirrelWebObject implements Serializable {
 
     public void setNextCrawledURIs(List<String> nextCrawledURIs) throws IllegalAccessException {
         isWritable();
-        this.nextCrawledURIs = ListToString(nextCrawledURIs);
+        this.nextCrawledURIs = listToString(nextCrawledURIs);
     }
 
     public void setRuntimeInSeconds(long runtimeInSeconds) throws IllegalAccessException {

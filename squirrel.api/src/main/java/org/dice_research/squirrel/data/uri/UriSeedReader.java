@@ -1,10 +1,12 @@
 package org.dice_research.squirrel.data.uri;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +33,15 @@ public class UriSeedReader {
     private static final String URI = "uri";
     private boolean isCsv = true;
     private Reader in;
+    private String filePath = "";
+    
     
     private static final Logger LOGGER = LoggerFactory.getLogger(UriSeedReader.class);
 
 
 
     public UriSeedReader(String seedFile) {
+    	this.filePath = seedFile;
         Tika tika = new Tika();
         String mimetype = tika.detect(seedFile);
         isCsv = "text/csv".equals(mimetype);
@@ -76,7 +82,7 @@ public class UriSeedReader {
                 
             }
         }else {
-            LOGGER.error("Seed file is not a CSV file");
+        	listUris = UriUtils.createCrawleableUriList(FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8));
         }
 
         return listUris;

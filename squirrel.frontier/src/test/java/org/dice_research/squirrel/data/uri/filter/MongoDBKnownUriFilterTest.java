@@ -1,31 +1,21 @@
 package org.dice_research.squirrel.data.uri.filter;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Indexes;
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.net.Cursor;
-
-import org.dice_research.squirrel.MongoDBBasedTest;
-import org.dice_research.squirrel.MongoDBMockTest;
-import org.dice_research.squirrel.RethinkDBBasedTest;
-import org.dice_research.squirrel.RethinkDBMockTest;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.filter.RDBKnownUriFilter;
-import org.dice_research.squirrel.frontier.impl.FrontierImpl;
-import org.dice_research.squirrel.model.RDBConnector;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import org.dice_research.squirrel.MongoDBBasedTest;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 
 
 /**
@@ -43,7 +33,6 @@ public class MongoDBKnownUriFilterTest {
     /**
      * For functionality regarding the starting of rethinkdb container.
      */
-    private MongoDBBasedTest mongoDBBasedTest;
     private MongoClient client;
 
     @Before

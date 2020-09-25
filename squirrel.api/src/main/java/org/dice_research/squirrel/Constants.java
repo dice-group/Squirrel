@@ -37,6 +37,7 @@ public class Constants {
     public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
     public static final String URI_CRAWLING_ACTIVITY = "activity";
 
+    public static final String URI_DEPTH = "depth";
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
 

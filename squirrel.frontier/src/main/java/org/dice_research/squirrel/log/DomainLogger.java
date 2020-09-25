@@ -17,6 +17,11 @@ import org.slf4j.LoggerFactory;
 public class DomainLogger implements Iterator<String>, Closeable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainLogger.class);
+    
+    protected String domain;
+    protected FileWriter writer;
+    protected Set<String> domainCache = new HashSet<String>();
+    protected Iterator<String> iterator;
 
     public static Iterator<String> createIfPossible(CrawleableUri uri, String logFile, Iterator<String> iterator) {
         if(logFile == null) {
@@ -39,10 +44,7 @@ public class DomainLogger implements Iterator<String>, Closeable {
         return null;
     }
 
-    protected String domain;
-    protected FileWriter writer;
-    protected Set<String> domainCache = new HashSet<String>();
-    protected Iterator<String> iterator;
+
 
     public DomainLogger(CrawleableUri uri, FileWriter writer, Iterator<String> iterator) {
         this.domain = uri.getUri().getAuthority();
