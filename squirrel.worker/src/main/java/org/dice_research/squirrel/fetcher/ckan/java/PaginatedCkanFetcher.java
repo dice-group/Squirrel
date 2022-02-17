@@ -33,8 +33,23 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
 public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginatedCkanFetcher.class);
-
+    
+    private final int DEFAULT_TIMEOUT = 10000;
+    private int timeout;
     private final int PAGESIZE = 100;
+    
+  /**
+   * Time out for the Ckan Client  
+   * @param timeout
+   */
+    public PaginatedCkanFetcher(int timeout) {
+    	this.timeout = timeout;
+	}
+    
+    public PaginatedCkanFetcher() {
+		this.timeout = DEFAULT_TIMEOUT;
+	}
+    
 
     @Override
     public File fetch(CrawleableUri uri, Delayer delayer) {
@@ -45,7 +60,11 @@ public class PaginatedCkanFetcher extends SimpleCkanFetcher implements Fetcher {
 
             try {
 
-                client = new CkanClient(uri.getUri().toString());
+                client = CkanClient.builder()
+                        .setCatalogUrl(uri.getUri().toString())
+                        .setTimeout(timeout)
+                        .build();
+                
 
                 List<String> datasets = client.getDatasetList();
                 LOGGER.info("Found: " + datasets.size() + " datasets");

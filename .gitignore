@@ -2,6 +2,7 @@ target
 *.log
 *.class
 .classpath
+.factorypath
 .project
 .settings
 .idea

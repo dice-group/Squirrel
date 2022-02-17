@@ -7,12 +7,9 @@ public class QueueBasedTerminationCheck implements TerminationCheck {
     
     @Override
     public boolean shouldFrontierTerminate(UriQueue queue) {
+    	
+    	return (queue.isEmpty());
 
-        if(queue.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

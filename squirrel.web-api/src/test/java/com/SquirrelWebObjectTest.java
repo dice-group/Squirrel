@@ -10,9 +10,9 @@ import static org.junit.Assert.*;
 
 public class SquirrelWebObjectTest {
 
-    SquirrelWebObject o;
-    List<String> pendingURIlist;
-    Map<String, List<String>> IPMapList;
+    private SquirrelWebObject o;
+    private List<String> pendingURIlist;
+    private Map<String, List<String>> IPMapList;
 
     @Before
     public void setUp() throws Exception {

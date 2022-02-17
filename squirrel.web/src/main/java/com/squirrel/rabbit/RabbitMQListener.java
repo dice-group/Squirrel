@@ -162,7 +162,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
      * @param index All received {@link SquirrelWebObject} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link SquirrelWebObject}
      */
-    SquirrelWebObject getSquirrel(int index) {
+    public SquirrelWebObject getSquirrel(int index) {
         SquirrelWebObject ret = getObject(dataQueue, index);
         return (ret == null) ? new SquirrelWebObject() : ret;
     }
@@ -171,7 +171,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
      * Gets the fected crawled graph from Frontier.
      * @return the latest {@link VisualisationGraph}
      */
-    VisualisationGraph getCrawledGraph() {
+    public VisualisationGraph getCrawledGraph() {
         return getCrawledGraph(dataQueue.size() - 1);
     }
 
@@ -180,7 +180,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
      * @param index All received {@link VisualisationGraph} are stored in a list. Index {@code 0} is the oldest entry, Index {@code size-1} is the latest one
      * @return the {@link VisualisationGraph}
      */
-    VisualisationGraph getCrawledGraph(int index) {
+    public VisualisationGraph getCrawledGraph(int index) {
         SquirrelWebObject preRet = getObject(dataQueue, index);
         VisualisationGraph ret;
         if (preRet == null || preRet.getGraph() == null) {
@@ -210,7 +210,7 @@ public class RabbitMQListener implements Runnable, DataHandler {
      *
      * @return the number of {@link SquirrelWebObject}-objects, that were received from the WebService
      */
-    int countSquirrelWebObjects() {
+    public int countSquirrelWebObjects() {
         return dataQueue.size();
     }
 

@@ -113,8 +113,6 @@ public class SparqlBasedFetcher implements Fetcher {
         }
     }
 
-
-
     @Override
     public void close() throws IOException {
         // nothing to do

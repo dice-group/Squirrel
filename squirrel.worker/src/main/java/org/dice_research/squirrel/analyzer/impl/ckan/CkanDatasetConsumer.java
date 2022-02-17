@@ -1,7 +1,6 @@
 package org.dice_research.squirrel.analyzer.impl.ckan;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.xerces.util.URI;
 import org.dice_research.squirrel.collect.UriCollector;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.encoder.TripleEncoder;
 import org.dice_research.squirrel.sink.Sink;
 import org.dice_research.squirrel.vocab.DCAT;
 import org.dice_research.squirrel.vocab.VCard;
@@ -50,13 +50,15 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
     protected UriCollector collector;
     protected CrawleableUri curi;
     protected String curiString;
+    protected TripleEncoder tripleEncoder;
 
-    public CkanDatasetConsumer(Sink sink, UriCollector collector, CrawleableUri curi) {
+    public CkanDatasetConsumer(Sink sink, UriCollector collector, CrawleableUri curi,TripleEncoder tripleEncoder) {
         super();
         this.sink = sink;
         this.collector = collector;
         this.curi = curi;
         this.curiString = curi.getUri().toString();
+        this.tripleEncoder = tripleEncoder;
     }
 
     /**
@@ -286,6 +288,9 @@ public class CkanDatasetConsumer implements Consumer<CkanDataset> {
         if (url != null) {
             t = new Triple(s.asNode(), p.asNode(), NodeFactory.createURI(url.toString()));
         }
+        
+        t = tripleEncoder.encodeTriple(t);
+        
         sink.addTriple(curi, t);
         // We already know most of the Resources, so make sure that they are not part of
         // our current dataset

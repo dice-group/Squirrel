@@ -1,31 +1,24 @@
 package org.dice_research.squirrel.model;
 
-import com.rethinkdb.RethinkDB;
-import com.rethinkdb.gen.ast.Map;
-import com.rethinkdb.gen.exc.ReqlDriverError;
-import com.rethinkdb.model.MapObject;
-import com.rethinkdb.net.Connection;
-import com.rethinkdb.net.Cursor;
-
-import org.dice_research.squirrel.RethinkDBBasedTest;
-import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
-import org.dice_research.squirrel.data.uri.UriType;
-import org.dice_research.squirrel.data.uri.UriUtils;
-import org.dice_research.squirrel.model.RDBConnector;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.dice_research.squirrel.RethinkDBBasedTest;
+import org.dice_research.squirrel.data.uri.CrawleableUri;
+import org.dice_research.squirrel.data.uri.CrawleableUriFactory4Tests;
+import org.dice_research.squirrel.data.uri.UriType;
+import org.dice_research.squirrel.data.uri.UriUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Cursor;
 
 /**
  * Created by ivan on 8/18/16.

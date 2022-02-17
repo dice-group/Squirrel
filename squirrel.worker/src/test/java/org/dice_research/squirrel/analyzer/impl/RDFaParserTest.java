@@ -25,7 +25,6 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.sink.impl.mem.InMemorySink;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,8 +39,6 @@ import org.junit.runners.Parameterized.Parameters;
 public class RDFaParserTest extends RDFParserTest {
 	
 	private static String context = "http://rdfa.info/test-suite/test-cases/rdfa1.1/";
-	private static String pathextension = "html_scraper_analyzer\\RDFaParserTestResources\\";
-	private static String pathextensiontestsuit = "html_scraper_analyzer\\RDFaParserTestResources\\TestSuit\\";
 	private static String pathextensionsuit = "html_scraper_analyzer/RDFaParserTestResources/rdfa1.1/";
 	private static String pathextensionhtml4 = "html4/";
 	private static String pathextensionhtml5 = "html5/";
@@ -53,27 +50,22 @@ public class RDFaParserTest extends RDFParserTest {
 	private static String pathextensionxml = "xml/";
 	
 	private static Analyzer analyzer1;
-	private static Analyzer analyzer2;
 	private UriCollector collector = new SimpleUriCollector(new GzipJavaUriSerializer());
 	private CrawleableUri curi;
 	private static InMemorySink sink;
 	ClassLoader classLoader = getClass().getClassLoader();
 	public static Map<String, List<Double>> testresults = new HashMap<String,List<Double>>();
 	
-//	static double[] truepositiv = new double[data().size()];
-//	static double[] falsenegativ = new double[data().size()];
-//	static double[] falsepositiv = new double[data().size()];
-	
-	@BeforeClass
-	public static void initialization () throws URISyntaxException {
-	}
-	
 	@Parameter(0)
     public String testData;
     @Parameter(1)
     public String resultData;
     @Rule public TestName test = new TestName();
-    
+	
+//	static double[] truepositiv = new double[data().size()];
+//	static double[] falsenegativ = new double[data().size()];
+//	static double[] falsepositiv = new double[data().size()];
+	
 	
     @Parameters(name = "{index},{0},{1}")
     public static Collection<Object[]> data() {

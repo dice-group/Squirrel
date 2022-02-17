@@ -1,83 +1,87 @@
-# Squirrel - Crawler of linked data.
-
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e98f6dbb54c548ab868f3656c7e6f674)](https://app.codacy.com/app/MichaelRoeder/Squirrel?utm_source=github.com&utm_medium=referral&utm_content=dice-group/Squirrel&utm_campaign=Badge_Grade_Dashboard)
+
+# Squirrel - Crawler of linked data
 
 ## Introduction
 Squirrel is a crawler for the linked web. It provides several tools to search and collect data
 from the heterogeneous content of the linked web.
 
-You can find the crawler documentation, tutorials and more here:
-<https://dice-group.github.io/squirrel.github.io/>
+Documentation, tutorials and more: <https://dice-group.github.io/squirrel.github.io/>
 
 <img src="https://hobbitdata.informatik.uni-leipzig.de/squirrel/squirrel-logo.png" align="center" height="248" width="244" > 
 
+## Requirements
 
-## Build notes
-You can build the project with a simple ***mvn clean install***
-and then you can use the *makefile*
+### Building
+- Java 1.8
+- Apache Maven 3.6.0
+- Docker 19.03.12
 
+### Running
+- Docker 19.03.12
+
+or
+
+- ORCA benchmark on the HOBBIT platform
+
+## How to run
+
+Clone the repository in a directory of your choice with:
+
+```sh
+git clone https://github.com/dice-group/Squirrel
 ```
-  $ make build dockerize
-  $ docker-compose build
-  $ docker-compose up
+
+
+Enter into the Squirrel directory and start RabbitMQ and MongoDB containers:
+
+```sh
+docker-compose up -d mongodb rabbit
 ```
 
-## Run
-You can run by using the docker-compose file.
+Set up your seeds in the file `seed/seeds.txt` and start the frontier and one worker instance with:
 
+```sh
+docker-compose up frontier worker1
 ```
-  $ docker-compose -f docker-compose-sparql.yml up
-```
 
-Squirrel uses spring context configuration to define the implementation of its components in Runtime.
-you can check the default implementation file in spring-config/sparqlStoreBased.xml and define your own
-beans on it.
+## Publications
 
-You can also define a different context for each one of the workers. Check the docker-compose file and change
-an implementation file in each worker's env variable.
+### Squirrel – Crawling RDF Knowledge Graphs on the Web
 
-These are the components of Squirrel that can be customized:
+https://www.bibsonomy.org/bibtex/29fe2ef0c2e1908276d424c1ca3e06cbf/dice-research
 
-#### Fetcher
+#### Reproducing results
 
-* *HTTPFetcher* - Fetches data from html sources.
-* *FTPFetcher* - Fetches data from html sources.
-* *SparqlBasedFetcher* - Fetches data from Sparql endpoints.
+1. Go to https://master.project-hobbit.eu/
+2. Register an account or log in into an existing one
+3. Go to "Benchmarks"
+4. Select "ORCA" in the Benchmark list
+5. Select the system and set all parameters (also can be found by following links in the paper):
 
-* *Note*: The fetchers are not managed as spring beans yet, since only three are available.
+Parameter                                    | Effectiveness | Efficiency
+-------------------------------------------- | ------------- | ----------
+Average crawl delay                          | 0             | 0
+Average node degree                          | 20            | 20
+Average ratio of disallowed resources        | 0             | 0
+Average resource degree                      | 9             | 9
+Disallowed resources                         | 0             | 0
+Dump file compression ratio                  | **0.3**       | **0**
+Node size definition                         | Static        | Static
+Number of nodes                              | **100**       | **200**
+RDF dataset size                             | 1000          | 1000
+Seed                                         | 20200318      | 20200318
+Use N3 dumps                                 | true          | true
+Use NT dumps                                 | true          | true
+Use RDF/XML dumps                            | true          | true
+Use TTL dumps                                | true          | true
+Weight of CKAN node occurrence               | **5**         | **0**
+Weight of dereferencing HTTP node occurrence | **21**        | **100**
+Weight of HTTP dump file node occurrence     | **40**        | **0**
+Weight of RDFa node occurrence               | **4**         | **0**
+Weight of SPARQL node occurrence             | **30**        | **0**
 
-#### Analyzer
-Analyses the fetched data and extract triples from it. Note: the analyzer implementations are managed by the `SimpleAnalyzerManager`. Any implementations should be passed in the constructor of this class, like the example below:
-```xml
-<bean id="analyzerBean" class="org.aksw.simba.squirrel.analyzer.manager.SimpleAnalyzerManager">
-        <constructor-arg index="0" ref="uriCollectorBean" />
-        <constructor-arg index="1" >
-        	<array value-type="java.lang.String">
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HDTAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.RDFAnalyzer</value>
-			  <value>org.aksw.simba.squirrel.analyzer.impl.HTMLScraperAnalyzer</value>
-		</array>
-       	</constructor-arg>
-</bean>
-```
-Also, if you want to implement your own analyzer, it is necessary to implement the method `isEligible()`, that checks if that analyzer matches the condition to call the `analyze` method.
+6. Use "Submit" to queue the experiment
+7. Watch the received link for experiment results. You can use "Experiments → Experiment Status" page to check if it's still running.
 
-* *RDFAnalyzer* - Analyses RDF formats.
-* *HTMLScraperAnalyzer* - Analyses and scrapes HTML data base on Jsoup selector-synthax (see: https://github.com/dice-group/Squirrel/wiki/HtmlScraper_how_to)
-* *HDTAnalyzer* - Analyses HDT binary RDF format.
-
-#### Collectors
-Collects new URIs found during the analysis process and serialize it before they are sent to the Frontier.
-
-* *SimpleUriCollector* - Serialize uri's and stores it in memory (mainly used for testing purposes).
-* *SqlBasedUriCollector* - Serialize uri's and stores it in a hsqldb database.
-
-#### Sink
-Responsible for persisting the collected RDF data.
-
-* *FileBasedSink* - persists the triples in NT files,
-* *InMemorySink* - persists the triples only in memory, not in disk (mainly used for testing purposes).
-* *HdtBasedSink* - persists the triples in a HDT file (compressed RDF format - http://www.rdfhdt.org/).
-* *SparqlBasedSink* - persists the triples in a SparqlEndPoint.
-
-
+It is also possible to deploy your own HOBBIT platform. Refer to the HOBBIT platform manual: <https://hobbit-project.github.io/>. In this case you may need system adapters for ORCA as well: <https://github.com/topics/orca-system-adapter>.

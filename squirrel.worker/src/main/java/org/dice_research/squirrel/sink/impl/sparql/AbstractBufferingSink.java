@@ -10,8 +10,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.metadata.CrawlingActivity;
-import org.dice_research.squirrel.sink.quadBased.QuadBasedSink;
-import org.dice_research.squirrel.sink.tripleBased.TripleBasedSink;
+import org.dice_research.squirrel.sink.quadbased.QuadBasedSink;
+import org.dice_research.squirrel.sink.triplebased.TripleBasedSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

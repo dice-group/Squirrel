@@ -7,9 +7,6 @@ import java.util.Map;
  */
 public class YamlFile implements Cloneable {
 
-    protected YamlFile() {
-
-    }
 
     private Map<String, Map<String, Object>> file_descriptor;
 

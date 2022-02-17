@@ -37,6 +37,7 @@ public class Constants {
     public static final String URI_CRAWLING_ACTIVITY_URI = "activity-uri";
     public static final String URI_CRAWLING_ACTIVITY = "activity";
 
+    public static final String URI_DEPTH = "depth";
     public static final String URI_HASH_KEY = "HashValue";
     public static final String UUID_KEY = "UUID";
 
@@ -51,7 +52,7 @@ public class Constants {
     // URIs
     //////////////////////////////////////////////////
 
-    public static final String SQUIRREL_URI_PREFIX = "http://w3id.org/squirrel";
+    public static final String SQUIRREL_URI_PREFIX = "http://w3id.org/dice-research/squirrel";
     public static final URI DEFAULT_META_DATA_GRAPH_URI = URI.create(SQUIRREL_URI_PREFIX + "/metadata");
     public static final URI DEFAULT_ACTIVITY_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/activity#");
     public static final URI DEFAULT_RESULT_GRAPH_URI_PREFIX = URI.create(SQUIRREL_URI_PREFIX + "/graph#");

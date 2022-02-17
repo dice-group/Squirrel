@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections15.map.HashedMap;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.junit.Assert;
@@ -29,7 +30,21 @@ public class NormalizerImplTest {
 
     @Test
     public void test() {
-        NormalizerImpl normalizer = new NormalizerImpl();
+        List<String> sessionIDs = new ArrayList<String>();
+        sessionIDs.add("sessionid");
+        sessionIDs.add("jsessionids");
+        sessionIDs.add("phpsessid");
+        sessionIDs.add("sid");
+        
+        Map<String, Integer> mapDefaultPort = new HashedMap<String, Integer>();
+        mapDefaultPort.put("http", 80);
+        mapDefaultPort.put("https", 443);
+        mapDefaultPort.put("ftp", 21);
+        mapDefaultPort.put("ftps", 90);
+        mapDefaultPort.put("sftp", 22);
+
+
+        NormalizerImpl normalizer = new NormalizerImpl(sessionIDs, mapDefaultPort);
         CrawleableUri normUri = normalizer.normalize(originalUri);
         Assert.assertEquals(expectedUri, normUri);
 

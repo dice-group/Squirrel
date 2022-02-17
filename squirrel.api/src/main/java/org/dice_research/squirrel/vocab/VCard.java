@@ -10,6 +10,10 @@ public class VCard {
      * The namespace of the vocabulary as a string
      */
     public static final String uri = "https://www.w3.org/2006/vcard/ns#";
+    
+    public static final Resource Kind = resource("Kind");
+    public static final Property fn = property("fn");
+    public static final Property hasEmail = property("hasEmail");
 
     /**
      * returns the URI for this schema
@@ -28,8 +32,5 @@ public class VCard {
         return ResourceFactory.createProperty(uri, local);
     }
     
-    public static final Resource Kind = resource("Kind");
 
-    public static final Property fn = property("fn");
-    public static final Property hasEmail = property("hasEmail");
 }

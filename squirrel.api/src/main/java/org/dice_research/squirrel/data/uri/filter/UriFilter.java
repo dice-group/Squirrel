@@ -21,4 +21,13 @@ public interface UriFilter {
      *         requirements imposed by this filter. Otherwise false is returned.
      */
     public boolean isUriGood(CrawleableUri uri);
+    
+    
+    /**
+     * Adds the given URI to the list of already known URIs. Works like calling {@link #add(CrawleableUri, long)} with the current system time.
+     *
+     * @param uri the URI that should be added to the list.
+     * 
+     */    
+    public void add(CrawleableUri uri);
 }

@@ -34,12 +34,13 @@
 
     <!-- MODULES -->
     <modules>
-        <module>squirrel.web-api</module>
-        <module>squirrel.web</module>
         <module>squirrel.api</module>
         <module>squirrel.deduplication</module>
         <module>squirrel.frontier</module>
         <module>squirrel.mockup</module>
+        <module>squirrel.reports</module>
+        <module>squirrel.web</module>
+        <module>squirrel.web-api</module>
         <module>squirrel.worker</module>
     </modules>
 
@@ -59,12 +60,12 @@
         <repository>
             <id>maven.aksw.internal</id>
             <name>AKSW Internal Release Repository</name>
-            <url>http://maven.aksw.org/repository/internal/</url>
+            <url>https://maven.aksw.org/repository/internal/</url>
         </repository>
         <repository>
             <id>maven.aksw.snapshots</id>
             <name>University Leipzig, AKSW Maven2 Repository</name>
-            <url>http://maven.aksw.org/repository/snapshots</url>
+            <url>https://maven.aksw.org/repository/snapshots</url>
         </repository>
         <repository>
             <id>spring-releases</id>
@@ -88,12 +89,32 @@
             </dependency>
             <dependency>
                 <groupId>org.dice-research</groupId>
-                <artifactId>squirrel.web-api</artifactId>
+                <artifactId>squirrel.deduplication</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.frontier</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dice-research</groupId>
                 <artifactId>squirrel.mockup</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.web-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dice-research</groupId>
+                <artifactId>squirrel.worker</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -119,7 +140,11 @@
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>2.9.9</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.9.9.3</version>
+            </dependency>
 
             <!-- Content detect utility tool -->
             <dependency>
@@ -298,7 +323,7 @@
                 <version>2.3.2</version>
             </dependency>
 
-            <!-- We use the simpleframework to use local HTTP servers for
+            <!-- We use the simpleframework to use local HTTP servers for 
                 our JUnit tests and test scenarios -->
             <dependency>
                 <groupId>org.simpleframework</groupId>
@@ -320,11 +345,17 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
-            <!-- System rules for setting environment variables -->
+            <!-- System rules for setting environment variables 
             <dependency>
               <groupId>com.github.stefanbirkner</groupId>
               <artifactId>system-rules</artifactId>
-              <scope>test</scope>
+              <scope>test</scope> -->
+            <!-- System Lambda for setting environment variables -->
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-lambda</artifactId>
+                <version>1.0.0</version>
+                <scope>test</scope>
             </dependency>
             <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
@@ -424,7 +455,15 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!--<plugin> <groupId>com.gavinmogan</groupId> <artifactId>codacy-maven-plugin</artifactId> 
+                <version>1.2.0</version> <configuration> <apiToken>${env.CODACY_API_TOKEN}</apiToken> 
+                <projectToken>${env.CODACY_PROJECT_TOKEN}</projectToken> <coverageReportFile>squirrel.reports/target/site/jacoco-aggregate/jacoco.xml</coverageReportFile> 
+                <commit>${env.TRAVIS_COMMIT}</commit> <codacyApiBaseUrl>https://api.codacy.com</codacyApiBaseUrl> 
+                <failOnMissingReportFile>false</failOnMissingReportFile> </configuration> 
+                <executions> <execution> <id>post-test</id> <phase>post-integration-test</phase> 
+                <goals> <goal>coverage</goal> </goals> </execution> </executions> </plugin> -->
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -453,6 +492,17 @@
                             </transformer>
                             <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>META-INF/spring.handlers</resource>
+                            </transformer>
+                            <!-- Important for Spring to be able to map XML 
+                                Schema files to local files. Otherwise, Spring may abort the processing of 
+                                XML files because of unavailable XML Schema files -->
+                            <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>META-INF/spring.schemas</resource>
+                            </transformer>
                         </transformers>
                     </configuration>
                     <executions>
@@ -460,6 +510,38 @@
                             <phase>package</phase>
                             <goals>
                                 <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Surefire plugin for JUnit tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                    <configuration>
+                        <!-- connect with JaCoCo -->
+                        <systemPropertyVariables>
+                            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <!-- JaCoCo plugin for test coverage reports -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.5</version>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report</id>
+                            <goals>
+                                <goal>report</goal>
                             </goals>
                         </execution>
                     </executions>

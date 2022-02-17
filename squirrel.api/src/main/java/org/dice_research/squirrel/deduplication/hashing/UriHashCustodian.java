@@ -9,7 +9,7 @@ import org.dice_research.squirrel.data.uri.CrawleableUri;
  * This component maintains {@link HashValue}s for uris. It provides methods for getting uris with some desired hash values,
  * and also for adding hash values for given uris.
  * The idea is that hash values could be stored in the {@link org.dice_research.squirrel.data.uri.filter.KnownUriFilter},
- * as well as in the {@link org.dice_research.squirrel.sink.tripleBased.TripleBasedSink}.
+ * as well as in the {@link org.dice_research.squirrel.sink.triplebased.TripleBasedSink}.
  */
 public interface UriHashCustodian {
 

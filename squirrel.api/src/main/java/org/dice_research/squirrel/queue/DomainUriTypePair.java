@@ -42,9 +42,8 @@ public class DomainUriTypePair implements Comparable<DomainUriTypePair> {
                 return false;
         } else if (!domain.equals(other.domain))
             return false;
-        if (type != other.type)
-            return false;
-        return true;
+       
+        return (type != other.type);
     }
     
     @Override

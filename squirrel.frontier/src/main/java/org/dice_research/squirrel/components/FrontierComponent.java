@@ -3,7 +3,6 @@ package org.dice_research.squirrel.components;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.Constants;
 import org.dice_research.squirrel.configurator.MongoConfiguration;
 import org.dice_research.squirrel.configurator.SeedConfiguration;
@@ -19,13 +17,12 @@ import org.dice_research.squirrel.configurator.WebConfiguration;
 import org.dice_research.squirrel.configurator.WhiteListConfiguration;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.UriSeedReader;
-import org.dice_research.squirrel.data.uri.UriUtils;
 import org.dice_research.squirrel.data.uri.filter.InMemoryKnownUriFilter;
-import org.dice_research.squirrel.data.uri.filter.KnownUriFilter;
 import org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter;
+import org.dice_research.squirrel.data.uri.filter.UriFilterComposer;
 import org.dice_research.squirrel.data.uri.info.URIReferences;
-import org.dice_research.squirrel.data.uri.norm.NormalizerImpl;
 import org.dice_research.squirrel.data.uri.norm.UriGenerator;
+import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
@@ -36,6 +33,7 @@ import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
 import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
+import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.queue.InMemoryQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
@@ -64,9 +62,10 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Qualifier("queueBean")
     @Autowired
     protected UriQueue queue;
-    @Qualifier("knowUriFilterBean")
+    @Qualifier("UriFilterBean")
     @Autowired
-    private KnownUriFilter knownUriFilter;
+    private UriFilterComposer uriFilter;
+    
     private URIReferences uriReferences = null;
     private Frontier frontier;
     private RabbitQueue rabbitQueue;
@@ -75,14 +74,27 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     @Autowired
     private Serializer serializer;
     
+    @Qualifier("normalizerBean")
+    @Autowired
+    private UriNormalizer normalizer;
+    
+    /**
+     * {@link OutDatedUriRetriever} used to collect all the outdated URIs (URIs crawled a week ago) to recrawl.
+     */
+	@Qualifier("uriRetrieverBean")
+	@Autowired
+    protected OutDatedUriRetriever outDatedUriRetriever;
+    
     @Qualifier("listUriGenerator")
     private List<UriGenerator> uriGenerator;
+    
+
     private final Semaphore terminationMutex = new Semaphore(0);
     private final WorkerGuard workerGuard = new WorkerGuard(this);
     private final boolean doRecrawling = true;
     private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
     private Timer timerTerminator;
-
+    
     public static final boolean RECRAWLING_ACTIVE = true;
 
     @Override
@@ -91,15 +103,19 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         serializer = new GzipJavaUriSerializer();
         MongoConfiguration mongoConfiguration = MongoConfiguration.getMDBConfiguration();
         WebConfiguration webConfiguration = WebConfiguration.getWebConfiguration();
+                
         if (mongoConfiguration != null) {
 
             queue.open();
-            knownUriFilter.open();
+            
+            uriFilter.getKnownUriFilter().open();
+            
+           
 
             WhiteListConfiguration whiteListConfiguration = WhiteListConfiguration.getWhiteListConfiguration();
             if (whiteListConfiguration != null) {
                 File whitelistFile = new File(whiteListConfiguration.getWhiteListURI());
-                knownUriFilter = RegexBasedWhiteListFilter.create(knownUriFilter, whitelistFile);
+                uriFilter.setKnownUriFilter(RegexBasedWhiteListFilter.create(uriFilter.getKnownUriFilter(), whitelistFile));
             }
 
             // TODO Reactivate me but with a different configuration
@@ -110,13 +126,16 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         } else {
             LOGGER.warn("Couldn't get MDBConfiguration. An in-memory queue will be used.");
             queue = new InMemoryQueue();
-            knownUriFilter = new InMemoryKnownUriFilter(doRecrawling, recrawlingTime);
+            uriFilter.setKnownUriFilter(new InMemoryKnownUriFilter(doRecrawling, recrawlingTime));
         }
+        
+        
 
         // Build frontier
-        frontier = new ExtendedFrontierImpl(new NormalizerImpl(), knownUriFilter, uriReferences, queue,uriGenerator, doRecrawling);
+        frontier = new ExtendedFrontierImpl(normalizer, uriFilter, uriReferences, queue,uriGenerator, doRecrawling,outDatedUriRetriever);
 
         rabbitQueue = this.incomingDataQueueFactory.createDefaultRabbitQueue(Constants.FRONTIER_QUEUE_NAME);
+        
         receiver = (new RPCServer.Builder()).responseQueueFactory(outgoingDataQueuefactory).dataHandler(this)
                 .maxParallelProcessedMsgs(100).queue(rabbitQueue).build();
 
@@ -129,7 +148,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
 
         if (webConfiguration.isCommunicationWithWebserviceEnabled()) {
             final FrontierSenderToWebservice sender = new FrontierSenderToWebservice(outgoingDataQueuefactory,
-                    workerGuard, queue, knownUriFilter, uriReferences);
+                    workerGuard, queue, uriFilter.getKnownUriFilter(), uriReferences);
             LOGGER.trace("FrontierSenderToWebservice -> sendCrawledGraph is set to "
                     + webConfiguration.isVisualizationOfCrawledGraphEnabled());
             Thread senderThread = new Thread(sender);
@@ -164,8 +183,8 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             queue.close();
         if (uriReferences != null)
             uriReferences.close();
-        if (knownUriFilter instanceof Closeable) {
-            ((Closeable) knownUriFilter).close();
+        if (uriFilter instanceof Closeable) {
+            ((Closeable) uriFilter).close();
         }
         workerGuard.shutdown();
         if (frontier != null)
@@ -249,15 +268,18 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             LOGGER.warn("Got a UriSetRequest object without a ResponseHandler. No response will be sent.");
         }
     }
+    
+    private List<CrawleableUri> initializeDepth(List<CrawleableUri> listUris){  
+    	listUris.forEach(uri -> uri.addData(Constants.URI_DEPTH, 1));
+    	return listUris;
+    }
 
     protected void processSeedFile(String seedFile) {
         try {
-            List<CrawleableUri> listSeeds = new UriSeedReader(seedFile).getUris();
+            List<CrawleableUri> listSeeds = initializeDepth(new UriSeedReader(seedFile).getUris()); 
             if (!listSeeds.isEmpty())
                 frontier.addNewUris(listSeeds);
 
-            List<String> lines = FileUtils.readLines(new File(seedFile), StandardCharsets.UTF_8);
-            frontier.addNewUris(UriUtils.createCrawleableUriList(lines));
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }

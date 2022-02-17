@@ -34,6 +34,7 @@ public abstract class AbstractIpAddressBasedQueue extends AbstractGroupingQueue<
     }
     
     @Override
+    @Deprecated
     public void markIpAddressAsAccessible(InetAddress ip) {
         throw new IllegalAccessError("This method is not supported, anymore.");
     }
