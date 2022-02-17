@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public class AbertosXunta extends AbstractDataPortalTest {
+public class AbertosXuntaTest extends AbstractDataPortalTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
@@ -86,7 +86,7 @@ public class AbertosXunta extends AbstractDataPortalTest {
         return testConfigs;
     }
 
-    public AbertosXunta(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
+    public AbertosXuntaTest(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
         super(uri, fileToScrape, expectedModel);
     }
 }

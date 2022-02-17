@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public class CatalogDataGov extends AbstractDataPortalTest {
+public class CatalogDataGovTest extends AbstractDataPortalTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
@@ -182,7 +182,7 @@ public class CatalogDataGov extends AbstractDataPortalTest {
         return testConfigs;
     }
 
-    public CatalogDataGov(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
+    public CatalogDataGovTest(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
         super(uri, fileToScrape, expectedModel);
     }
 }

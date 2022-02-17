@@ -18,69 +18,38 @@ import java.util.Collection;
 import java.util.List;
 
 @RunWith(Parameterized.class)
-public class DataNaerArcgis extends AbstractDataPortalTest {
+public class DataBrooklineArcgisTest extends AbstractDataPortalTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws URISyntaxException {
         List<Object[]> testConfigs = new ArrayList<Object[]>();
-        String uriDetailsPage = "http://data-naer.opendata.arcgis.com/datasets/e7e6b3e7c5704d48bbb221d95e0802be_0";
-        String uriSearchPage = "http://data-naer.opendata.arcgis.com/datasets?";
-        testConfigs.add(new Object[]{
-            new CrawleableUri(new URI(uriSearchPage)),
-            new File("src/test/resources/html_scraper_analyzer/data_naer_arcgis/search_result_page.html"),
-            ModelFactory.createDefaultModel().add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("http://data-naer.opendata.arcgis.com/datasets/e7e6b3e7c5704d48bbb221d95e0802be_0")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    new PropertyImpl("http://projekt-opal.de/dataset#link"),
-                    new ResourceImpl("http://data-naer.opendata.arcgis.com/datasets/9f66cc9c7d6246d8857bfbef18edc3ff_0")
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("1-2 of 2 results"), null)
-                )
-            ).add(
-                new StatementImpl(
-                    new ResourceImpl(uriSearchPage),
-                    DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("tinkas"), null)
-                )
-            )
-        });
-
+        String uriDetailsPage = "http://data-brookline.opendata.arcgis.com/datasets/094e5eda61db4e8b855e736343a37b3a_14";
         testConfigs.add(new Object[]{
             new CrawleableUri(new URI(uriDetailsPage)),
-            new File("src/test/resources/html_scraper_analyzer/data_naer_arcgis/details_page.html"),
+            new File("src/test/resources/html_scraper_analyzer/data_brookline_arcgis/details_page.html"),
             ModelFactory.createDefaultModel().add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
                     DCTerms.title,
-                    new LiteralImpl(NodeFactory.createLiteral("CHRsogn0015"), null)
+                    new LiteralImpl(NodeFactory.createLiteral("Building Permits"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
                     DCTerms.publisher,
-                    new LiteralImpl(NodeFactory.createLiteral("tinkas"), null)
+                    new LiteralImpl(NodeFactory.createLiteral("Town-of-Brookline.MA"), null)
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
                     new PropertyImpl("http://purl.org/dsnotify/vocab/eventset/sourceDataset"),
-                    new ResourceImpl("https://services2.arcgis.com/DqYc4VbfKJbiqFCu/arcgis/rest/services/CHRsogn0015/FeatureServer/0")
+                    new ResourceImpl("http://gisweb.brooklinema.gov/arcgis/rest/services/OpenDataPortal/MapServer/14")
                 )
             ).add(
                 new StatementImpl(
                     new ResourceImpl(uriDetailsPage),
                     DCAT.accessURL,
-                    new ResourceImpl("https://www.arcgis.com/sharing/rest/content/items/e7e6b3e7c5704d48bbb221d95e0802be/info/metadata/metadata.xml?format=default&output=html")
+                    new ResourceImpl("https://www.arcgis.com/home/item.html?id=094e5eda61db4e8b855e736343a37b3a")
                 )
             ).add(
                 new StatementImpl(
@@ -99,7 +68,7 @@ public class DataNaerArcgis extends AbstractDataPortalTest {
         return testConfigs;
     }
 
-    public DataNaerArcgis(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
+    public DataBrooklineArcgisTest(CrawleableUri uri, File fileToScrape, ModelCom expectedModel) {
         super(uri, fileToScrape, expectedModel);
     }
 }
