@@ -9,6 +9,10 @@ public class YamlFileAtributes {
     protected static final String JAVASCRIPT = "javascript";
     protected static final String ID = "id";
     protected static final String PAGINATION_DETAILS = "pagination-details";
+    
+
+    protected static final String FUNCTION_APPEND_PATH = "append";
+    protected static final String FUNCTION_ATTRIBUTE_VALUE = "attr";
 
     private YamlFileAtributes() {
 
