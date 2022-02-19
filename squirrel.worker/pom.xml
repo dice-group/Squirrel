@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.dice-research</groupId>
             <artifactId>squirrel.api</artifactId>
-            <!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId> 
+            <!-- <exclusions> <exclusion> <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId> </exclusion> </exclusions> -->
         </dependency>
       
@@ -65,7 +65,7 @@
             <artifactId>semargl-clerezza</artifactId>
             <version>0.7</version>
         </dependency>
-        
+
                 <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library -->
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -96,6 +96,18 @@
             <groupId>net.sourceforge.htmlcleaner</groupId>
             <artifactId>htmlcleaner</artifactId>
             <version>2.22</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>2.58.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
         </dependency>
 
         <dependency>
@@ -153,7 +165,6 @@
             <scope>test</scope>
         </dependency>
         <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
-
         <!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- slf4j: Logging API -->
         <dependency>

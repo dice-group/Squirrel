@@ -26,6 +26,7 @@ import org.dice_research.squirrel.fetcher.delay.Delayer;
 import org.dice_research.squirrel.metadata.ActivityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * A simple {@link Fetcher} for SPARQL that tries to get triples from a SPARQL
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
  */
-
+@Component
 public class SparqlBasedFetcher implements Fetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparqlBasedFetcher.class);
@@ -111,8 +112,6 @@ public class SparqlBasedFetcher implements Fetcher {
             return qef;
         }
     }
-    
-
 
     @Override
     public void close() throws IOException {

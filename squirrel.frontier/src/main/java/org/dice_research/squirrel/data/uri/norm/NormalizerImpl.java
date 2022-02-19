@@ -86,6 +86,7 @@ public class NormalizerImpl implements UriNormalizer {
 		// Copy Normalization from
 		// https://github.com/crawler-commons/crawler-commons/blob/master/src/main/java/crawlercommons/filters/basic/BasicURLNormalizer.java
 		// OR use URI.normalize()
+		
 
 		// Check whether the query part of a URI has to be sorted
 		String query = uriObject.getQuery();

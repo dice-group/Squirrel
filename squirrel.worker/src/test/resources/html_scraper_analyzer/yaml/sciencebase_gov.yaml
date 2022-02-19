@@ -1,0 +1,27 @@
+file_descriptor:
+    check:
+        domain: sciencebase.gov
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": .splash-list-nowrap li:contains(Data):eq(1) a
+
+    search-result-page:
+        regex: catalog/items
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .sb-container-clearfix div:eq(1) a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    detail-page:
+        regex: catalog/item/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": header h1
+                "http://purl.org/dc/terms/description": .sb-expander-content span[itemprop="articleBody"]
+                "http://purl.org/dc/terms/modified": dd[itemprop="datePublished"]
+                "http://purl.org/dc/terms/issued": dd[itemprop="datePublished"]
+                "http://www.w3.org/ns/dcat#downloadURL": .sb-download-link

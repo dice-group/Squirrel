@@ -1,0 +1,22 @@
+file_descriptor:
+    check:
+        domain: palaugov.pw
+        ignore-request: true
+    search-result-page:
+        regex: /?s=
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  ul.search-results-page__list li a
+                "http://projekt-opal.de/dataset#pagination": .nav-links a
+
+    download_page:
+        regex: /
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": h1.post__title.is-main-headline
+                "http://purl.org/dc/terms/description": .post__content
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/name": .post__meta-author
+                    "http://xmlns.com/foaf/0.1/homepage": .post__meta-author a

@@ -1,0 +1,23 @@
+file_descriptor:
+    check:
+        domain: data.cambridgeshireinsight.org.uk
+        ignore-request: true
+
+    search-result-page:
+        regex: search/field_topics
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  div.view-content h2 a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": div.panel-pane.pane-entity-view.pane-node h2
+                "http://purl.org/dc/terms/description": div.field.field-name-body.field-type-text-with-summary.field-label-hidden
+                "http://purl.org/dc/terms/publisher": l(http://projekt-opal.de/agent/$label)
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/homepage": .table-responsive table tr:contains(Publisher) a
+                    "http://xmlns.com/foaf/0.1/name": .table-responsive table tr:contains(Publisher) td

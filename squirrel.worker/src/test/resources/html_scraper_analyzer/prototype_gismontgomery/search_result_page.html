@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" class="js history csstransforms csstransforms3d cors dj_gecko dj_ff60 dj_contentbox" style="">
+<head>
+  <meta charset="UTF-8"/>
+  <title>
+    Search for * | Prototype
+  </title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Discover, explore, and download open data from Prototype"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="shortcut icon" href="http://gisMontgomery.opendata.arcgis.com/favicon.ico"/>
+  <link rel="search" type="application/opensearchdescription+xml" title="Prototype" href="/opensearch.xml"/>
+  <link type="text/css" rel="stylesheet" href="//fast.fonts.com/cssapi/4a60d16b-c9e4-404d-89d3-809adb97d65c.css"/>
+  <link rel="stylesheet" href="//d2m2btq5ww7pv1.cloudfront.net/1.9/styles/application.css" media="all"/>
+  <link rel="canonical" href="http://prototype-gismontgomery.opendata.arcgis.com/datasets"/>
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="//d2m2btq5ww7pv1.cloudfront.net/1.9/styles/application-ie.css" media="all" />
+  <![endif]-->    <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/nls/jsapi_en-us.js">
+</script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/tasks/QueryTask.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/tasks/RelationshipQuery.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/tasks/StatisticDefinition.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dojox/gfx/svg.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/tasks/Task.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/tasks/FeatureSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/layers/FeatureLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/esri/arcgis/utils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/WidgetSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/focus.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/scroll.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/sniff.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/typematic.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/wai.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/_base/window.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/selection.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/Viewport.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/BackgroundIframe.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.11compact/dijit/typematic.js">
+  </script>
+  <script async="" src="//www.google-analytics.com/analytics.js">
+  </script>
+  <script src="//d2m2btq5ww7pv1.cloudfront.net/1.9/scripts/vendorhead.js">
+  </script>
+  <script>
+    //<![CDATA[
+
+    //normalize/shim window.performance.now
+    //NOTE: this needs to be here because we make use of it immediately below
+    window.performance = window.performance || {};
+    window.performance.now =
+      performance.now           ||
+      performance.webkitNow     ||
+      performance.msNow         ||
+      performance.oNow          ||
+      performance.mozNow        ||
+      function() { return new Date().getTime(); };
+
+    window.composerTelemetryStart = window.performance.now();
+
+    //]]>
+  </script>
+  <meta name="csrf-param" content="authenticity_token"/>
+  <meta name="csrf-token" content="XxefbWNC3WJjlVDEx112F8FMNrG60K8qnQLoxj/98t2tys3grQWKdLfZgGBDbXM7GV0rObgoKNbflZ4AT5jlvg=="/>
+  <script src="//js.arcgis.com/3.11compact">
+  </script>
+</head>
+<body class="search dj_a11y dijit_a11y" dir="ltr">
+<header id="header">
+  <div class="container">
+    <div class="row">
+      <div id="home-link-region" class="column-16 mobile-column-24">
+        <div class="inner-header">
+          <a id="home-link" href="http://prototype-gismontgomery.opendata.arcgis.com/">
+            <img class="header-image" src="http://gismontgomery.maps.arcgis.com/sharing/rest/content/items/8808a09aaca0433b917d0023e0ea00c7/data" alt="Montgomery County Open Data logo"/>
+            <div class="site-brand">
+                  <span class="site-logo">
+
+    Montgomery County Open Data
+
+                  </span>
+            </div>
+            <style type="text/css">
+              #header {
+                background: #96E2FF;
+                box-shadow: none
+              }
+
+              #title-bar-region #title-wrap {
+                background: #96E2FF;
+                height: 54px;
+              }
+
+              .site-logo {
+                color: white;
+                font-size: 40px;
+
+              }
+
+              .site-logo:hover {
+                color: lightyellow;
+              }
+
+              .header-image {
+                height: 65px;
+                padding-top: 12px;
+              }
+
+
+              #featuredMaps {
+                margin: 0 0 18px 0;
+                padding: 0;
+                background: #f5f5f1;
+                background: -moz-linear-gradient(top, #f5f5f1 0%, #e8e8e5 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f1), color-stop(100%,#e8e8e5));
+                background: -webkit-linear-gradient(top, #f5f5f1 0%,#e8e8e5 100%);
+                background: -o-linear-gradient(top, #f5f5f1 0%,#e8e8e5 100%);
+                background: -ms-linear-gradient(top, #f5f5f1 0%,#e8e8e5 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f1', endColorstr='#e8e8e5',GradientType=0 );
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                -o-border-radius: 10px;
+                border-radius: 10px;
+                -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                _border: 1px solid #B3B3B3;
+                border-bottom: 1px solid #B3B3B3;
+              }
+
+              #title-bar-region {
+                background-color: #96E2FF;
+              }
+
+              .custom-layout div.sizex-10 {
+                width: 1236px;
+                background: grey;
+                color: white;
+              }
+
+              .custom layout, p {
+                text-align: center;}
+
+              img.moco {
+                height: 100px;}
+            </style>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div id="login-modal-overlay" class="modal-overlay">
+    </div>
+    <div id="login-modal" class="modal">
+      <a href="#" id="close-login" class="icon-close">
+      </a>
+      <div id="ago-form">
+        <h4>
+          Sign In
+        </h4>
+        <label>
+
+          Username
+
+          <input tabindex="1" id="user-username" type="text" name="username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+        </label>
+        <label>
+
+          Password
+
+          <input tabindex="2" id="user-password" type="password" name="password"/>
+        </label>
+        <div class="signin-error">
+
+          Error signing in. Please try again.
+
+        </div>
+        <button name="button" type="submit" class="btn primary" id="signin-button">
+          Sign In
+        </button>
+        <div class="signin-loading">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="title-bar-region" class="row">
+  <div id="copier">
+  </div>
+  <div class="container" id="title-wrap">
+    <div id="global-nav-region">
+          <span id="nav-search" class="link">
+            <span id="nav-search-inner">
+
+            Search
+
+            </span>
+            <div id="search-arrow" class="link-arrow">
+            </div>
+          </span>
+      <span id="nav-share" class="link">
+            <span id="nav-share-inner">
+
+            Share
+
+            </span>
+            <div id="share-arrow" class="link-arrow">
+            </div>
+          </span>
+      <!--span id="nav-home" class="link">
+      <span id="nav-home-inner" class="home-link">
+        Home
+      </span>
+      <div id="home-arrow" class="arrow-up link-arrow"></div>
+    </span-->          <div id="nav-share-popover-container">
+      <div id="nav-share-popover">
+      </div>
+    </div>
+    </div>
+    <div id="title-bar-inner" class="">
+      <div id="search-region">
+        <a href="/datasets?q=*" data-pjax="true" id="search-all" class="btn light small">
+          BROWSE ALL
+        </a>
+        <div id="search-input-wrapper">
+          <!-- <input type="text" id="gsearch" name="query" /> -->              <form action="/datasets" accept-charset="UTF-8" method="get">
+          <input name="utf8" type="hidden" value="✓"/>
+          <span class="twitter-typeahead" style="position: relative; display: inline-block; direction: ltr;">
+                  <input type="search" name="q" id="gsearch" value="*" size="75" autocomplete="off" placeholder="Search for open data" class="tt-input" spellcheck="false" style="position: relative;" dir="auto"/>
+                  <pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: &quot;lucida grande&quot;, &quot;segoe ui&quot;, &quot;arial&quot;, sans-serif; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"/>
+                  <span class="tt-dropdown-menu" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
+                    <div class="tt-dataset-datasets">
+                    </div>
+                  </span>
+                </span>
+          <div id="click-to-search">
+            search icon
+          </div>
+        </form>
+        </div>
+        <div id="search-results-extent-button-region" class="search-nav-item">
+          <div class="icon-unchecked">
+              Search Within Map
+          </div>
+        </div>
+      </div>
+      <div id="refine-region">
+        <div class="container">
+          <div id="tag-region">
+          </div>
+        </div>
+      </div>
+      <div id="activities-region">
+      </div>
+    </div>
+  </div>
+</div>
+<div id="map-bar-region" class="row">
+  <div id="overlay-region">
+  </div>
+  <div id="controls-region">
+    <div class="mapbar-controls">
+      <div class="container">
+        <div id="controls">
+          <div id="map-type">
+                <span id="basemap-acetate" class="type selected-type" title="Change the map to see streets and place names.">
+                  MAP
+                </span>
+            |
+            <span id="basemap-satellite" class="type" title="Change the map to see satellite imagery.">
+                  SATELLITE
+                </span>
+          </div>
+          <div id="map-change-size" unselectable="on">
+            <div unselectable="on" class="map-resize" id="map-minimize" title="Hide the map">
+              Hide the map
+            </div>
+            <div unselectable="on" class="map-resize selected-size" id="map-normal" title="View the normal map size">
+              View the normal map size
+            </div>
+            <div unselectable="on" class="map-resize" id="map-maximize" title="View the map larger">
+              View the map larger
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="legend-region">
+    <div class="mapbar-legend">
+      <div class="container">
+        <div id="legend">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="map-region">
+    <div id="info-window-container">
+    </div>
+    <div id="map-div" class="map" data-basemap="gray" data-zoom="8" data-scale="2311162.217155" data-loaded="">
+      <div id="map-div_root" style="width: 1256px; height: 300px; direction: ltr;" class="container">
+        <div id="map-div_container" style="position: absolute; cursor: default; -moz-user-select: none; clip: auto;" class="container">
+          <div id="map-div_layers" class="layersDiv" style="left: 0px; top: 0px;">
+            <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transform: translate3d(0px,0px,0px); display: block;" id="map-div_layer0">
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: -moz-transform 500ms ease;">
+                <img id="map-div_layer0_tile_8_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-150px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/70"/>
+                <img id="map-div_layer0_tile_8_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-150px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/70"/>
+                <img id="map-div_layer0_tile_8_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(106px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/71"/>
+                <img id="map-div_layer0_tile_8_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(106px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/71"/>
+                <img id="map-div_layer0_tile_8_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(362px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/72"/>
+                <img id="map-div_layer0_tile_8_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(362px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/72"/>
+                <img id="map-div_layer0_tile_8_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(618px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/73"/>
+                <img id="map-div_layer0_tile_8_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(618px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/73"/>
+                <img id="map-div_layer0_tile_8_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(874px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/74"/>
+                <img id="map-div_layer0_tile_8_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(874px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/74"/>
+                <img id="map-div_layer0_tile_8_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1130px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/97/75"/>
+                <img id="map-div_layer0_tile_8_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1130px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/8/98/75"/>
+              </div>
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: opacity 0.65s; -moz-transform: matrix3d(0.2500000000001064,0,0,0,0,0.2500000000001064,0,0,0,0,1,0,24.7500000000px,-63.7500000000px,0,1); opacity: 0.0;">
+                <img id="map-div_layer0_tile_10_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-27px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/290"/>
+                <img id="map-div_layer0_tile_10_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-27px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/290"/>
+                <img id="map-div_layer0_tile_10_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(229px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/291"/>
+                <img id="map-div_layer0_tile_10_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(229px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/291"/>
+                <img id="map-div_layer0_tile_10_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(485px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/292"/>
+                <img id="map-div_layer0_tile_10_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(485px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/292"/>
+                <img id="map-div_layer0_tile_10_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(741px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/293"/>
+                <img id="map-div_layer0_tile_10_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(741px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/293"/>
+                <img id="map-div_layer0_tile_10_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(997px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/294"/>
+                <img id="map-div_layer0_tile_10_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(997px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/294"/>
+                <img id="map-div_layer0_tile_10_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1253px,-86px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/390/295"/>
+                <img id="map-div_layer0_tile_10_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1253px,170px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/10/391/295"/>
+              </div>
+            </div>
+            <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transform: translate3d(0px,0px,0px); display: block;" id="map-div_layer1">
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: -moz-transform 500ms ease;">
+                <img id="map-div_layer1_tile_8_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-150px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/70"/>
+                <img id="map-div_layer1_tile_8_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-150px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/70"/>
+                <img id="map-div_layer1_tile_8_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(106px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/71"/>
+                <img id="map-div_layer1_tile_8_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(106px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/71"/>
+                <img id="map-div_layer1_tile_8_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(362px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/72"/>
+                <img id="map-div_layer1_tile_8_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(362px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/72"/>
+                <img id="map-div_layer1_tile_8_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(618px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/73"/>
+                <img id="map-div_layer1_tile_8_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(618px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/73"/>
+                <img id="map-div_layer1_tile_8_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(874px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/74"/>
+                <img id="map-div_layer1_tile_8_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(874px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/74"/>
+                <img id="map-div_layer1_tile_8_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1130px,-100px,0px);" src="http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/97/75"/>
+                <img id="map-div_layer1_tile_8_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1130px,156px,0px);" src="http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/8/98/75"/>
+              </div>
+            </div>
+            <svg overflow="hidden" width="1256" height="300" style="overflow: visible; position: absolute;" id="map-div_gc">
+              <g id="SearchExtentLayer_layer" style="display: block;" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000)">
+                <g/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="224" y="-58" width="808" height="416" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="583" y="31" width="117" height="98" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="583" y="31" width="117" height="98" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="584" y="31" width="116" height="98" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="584" y="32" width="116" height="97" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="637" y="86" width="23" height="23" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="637" y="86" width="23" height="23" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="637" y="86" width="23" height="23" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="637" y="86" width="23" height="23" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="643" y="86" width="17" height="15" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+              </g>
+              <defs/>
+              <g id="map-div_graphics_layer" style="display: block;" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000)">
+                <g/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="esriControlsBR">
+          <div class="logo-med">
+          </div>
+        </div>
+        <div class="esriPopup" style="visibility: hidden; z-index: 40;">
+          <div class="esriPopupWrapper" style="position: absolute;">
+            <div class="sizer">
+              <div class="titlePane" style="webkit-user-select: none;">
+                <div class="spinner hidden" title="Searching...">
+                </div>
+                <div class="title">
+                </div>
+                <div class="titleButton prev hidden" title="Previous feature">
+                </div>
+                <div class="titleButton next hidden" title="Next feature">
+                </div>
+                <div class="titleButton maximize" title="Maximize">
+                </div>
+                <div class="titleButton close" title="Close">
+                </div>
+              </div>
+            </div>
+            <div class="sizer content">
+              <div class="contentPane">
+              </div>
+            </div>
+            <div class="sizer">
+              <div class="actionsPane">
+                <div class="actionList hidden">
+                  <a title="Zoom" to="" class="action zoomTo" href="javascript:void(0);">
+                        <span>
+                          Zoom to
+                        </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="pointer hidden">
+            </div>
+          </div>
+          <div class="outerPointer hidden">
+          </div>
+        </div>
+        <div id="map-div_zoom_slider" class="esriSimpleSlider esriSimpleSliderHorizontal esriSimpleSliderTR" style="z-index: 30;">
+          <div class="esriSimpleSliderIncrementButton">
+            +
+          </div>
+          <div class="esriSimpleSliderDecrementButton">
+            –
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="locator-region">
+    <div>
+      <div class="container">
+        <div id="locator">
+          <div class="query-container">
+            <input id="locator-query" type="text" placeholder="Search for a location"/>
+            <div class="icon-search">
+            </div>
+          </div>
+          <ul class="results">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="title-region">
+  </div>
+  <div id="progress-region" style="display: none;">
+    <div class="mapbar-progress-wrapper">
+      <div id="mapbar-progress">
+        <div id="progress-bar" style="width: 10%;">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="navigation-region">
+    <div class="mapbar-navigation">
+      <div id="result-name">
+        <a href="/datasets/" data-pjax="true">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="slide-region">
+  <div id="slide-me" class="layout">
+    <div itemscope="" itemtype="http://schema.org/Dataset" id="page-content" class="container row">
+      <div class="container">
+        <div class="row" id="banner-container">
+          <div class="column-24 phone-column-24">
+            <div id="show-banner-region">
+              <div class="banner-main">
+                <div class="map-bar-banner">
+                  <div class="map-bar-title">
+                        <span id="nav-back">
+                          <i class="icon-left-arrow hide">
+                          </i>
+                        </span>
+                    <div itemprop="name" id="main-message">
+                      1-10 of 212 results
+                    </div>
+                    <div id="dataset-download-container">
+                          <span id="nav-download" class="btn btn-primary">
+
+        Download Dataset
+
+                          </span>
+                      <span id="nav-subscribe" class="icon-rss icon-gray">
+
+        Subscribe
+
+                          </span>
+                      <div class="rss-popover" style="display: none;">
+                      </div>
+                      <div class="download-popover-container">
+                        <div class="download-popover" style="display: none;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class=" content-sidebar-right ">
+        <main id="main" role="main">
+          <div class="container">
+            <div class="row" id="dataset-header-row">
+              <div id="search-results-nav">
+                <div id="search-results-sort-region" class="search-nav-item">
+                  <div class="dropdown-navigation dropdown-wrapper">
+                        <span class="dropdown" id="sort-by">
+                           Most Recent
+                        </span>
+                    <div class="dropdown-content">
+                      <div class="dropdown-menu">
+                        <ul>
+                          <li class="sort-option">
+                            <a data-sort-by="relevance" href="#">
+                              Relevance
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="name" href="#">
+                              Name
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="created_at" href="#">
+                              Upload Date
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="updated_at" href="#">
+                              Most Recent
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="search-results-filter-region">
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row padded">
+              <section id="search-results-region" class="item-list">
+                <div id="search-results">
+                  <ul>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="1959435a5a81409992b45cc976ac6d1b_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/1959435a5a81409992b45cc976ac6d1b_0" title="Parcels">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/1959435a5a81409992b45cc976ac6d1b/info/thumbnail/thumbnail.png"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="1959435a5a81409992b45cc976ac6d1b_0" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                281010 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                120 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/1959435a5a81409992b45cc976ac6d1b_0">
+                            Parcels
+                          </a>
+                          <em>
+                            (from Planning Department)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  melissa.noakes
+                                </span>
+                                <span itemprop="datePublished" datetime="2018-05-07T10:47:00.000Z">
+                                  on May 07, 2018
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-04-05T11:27:20.162Z">
+                                  Updated 14 days ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/1959435a5a81409992b45cc976ac6d1b_0" style="height: 68px;">
+
+                              Parcel boundaries for Montgomery County, MD. Attribute data is fed from monthly updates from the State Department of Taxation (SDAT) and joined against the parcel polygons. Parcels and other countywide GIS datasets can be found on our download page.  For the latest parcels, go to “00_Shapefiles”, then download “Property.zip”.If you see a problem, contact: christopher.mcgovern@montgomeryplanning.org
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="7adbc831d27b49578c1638f043bda7aa_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/7adbc831d27b49578c1638f043bda7aa_0" title="Rockville Forest Conservation Easements">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/7adbc831d27b49578c1638f043bda7aa/info/thumbnail/ForestConservationEasements.jpg"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="7adbc831d27b49578c1638f043bda7aa_0" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                273 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                15 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/7adbc831d27b49578c1638f043bda7aa_0">
+                            Rockville Forest Conservation Easements
+                          </a>
+                          <em>
+                            (from Rockville)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  RockvilleMD
+                                </span>
+                                <span itemprop="datePublished" datetime="2013-09-13T18:16:42.000Z">
+                                  on September 13, 2013
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:09:41.611Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/7adbc831d27b49578c1638f043bda7aa_0" style="height: 68px;">
+
+                              This service contains the forest conservation easements within the City of Rockville and provides supplemental data such as the approved Forest Conservation Plan number, Montgomery County Land Records reference number (if available), size and type of easement, and notes on forest conservation credits. There are two types of forest conservation easements: one that protects forests and one that protects individual trees. Easements protecting forests are placed over the forested areas only within the property boundary and are designated as “partial”. Easements protecting individual trees are usually placed over the entire property and refer back to the approved Forest Conservation Plan to show which trees are covered by the easement. These easements are designated as “entire.” Street trees are protected under the Maryland Roadside Tree Law and therefore, not subject to forest conservation easements.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="dfe2681e23de458080cc8adf4a4be899_3">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/dfe2681e23de458080cc8adf4a4be899_3" title="Watersheds">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="dfe2681e23de458080cc8adf4a4be899_3" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                4 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                3 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/dfe2681e23de458080cc8adf4a4be899_3">
+                            Watersheds
+                          </a>
+                          <em>
+                            (from Rockville)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  RockvilleMD
+                                </span>
+                                <span itemprop="datePublished" datetime="2013-09-13T18:13:34.000Z">
+                                  on September 13, 2013
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:09:07.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/dfe2681e23de458080cc8adf4a4be899_3" style="height: 68px;">
+
+                              This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="dfe2681e23de458080cc8adf4a4be899_5">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/dfe2681e23de458080cc8adf4a4be899_5" title="Curb inlet marking">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="dfe2681e23de458080cc8adf4a4be899_5" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                3595 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                3 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/dfe2681e23de458080cc8adf4a4be899_5">
+                            Curb inlet marking
+                          </a>
+                          <em>
+                            (from Rockville)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  RockvilleMD
+                                </span>
+                                <span itemprop="datePublished" datetime="2013-09-13T18:13:34.000Z">
+                                  on September 13, 2013
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:09:07.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/dfe2681e23de458080cc8adf4a4be899_5" style="height: 68px;">
+
+                              This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="dfe2681e23de458080cc8adf4a4be899_4">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/dfe2681e23de458080cc8adf4a4be899_4" title="Public Private Stormwater Facilities">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="dfe2681e23de458080cc8adf4a4be899_4" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                1084 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                12 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/dfe2681e23de458080cc8adf4a4be899_4">
+                            Public Private Stormwater Facilities
+                          </a>
+                          <em>
+                            (from Rockville)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  RockvilleMD
+                                </span>
+                                <span itemprop="datePublished" datetime="2013-09-13T18:13:34.000Z">
+                                  on September 13, 2013
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:09:07.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/dfe2681e23de458080cc8adf4a4be899_4" style="height: 68px;">
+
+                              This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="dfe2681e23de458080cc8adf4a4be899_2">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/dfe2681e23de458080cc8adf4a4be899_2" title="Adopt A Stream">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="dfe2681e23de458080cc8adf4a4be899_2" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                47 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                8 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/dfe2681e23de458080cc8adf4a4be899_2">
+                            Adopt A Stream
+                          </a>
+                          <em>
+                            (from Rockville)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  RockvilleMD
+                                </span>
+                                <span itemprop="datePublished" datetime="2013-09-13T18:13:34.000Z">
+                                  on September 13, 2013
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:09:07.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/dfe2681e23de458080cc8adf4a4be899_2" style="height: 68px;">
+
+                              This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="8db37551165b425cb1f14ae4518e54db_1">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/8db37551165b425cb1f14ae4518e54db_1" title="Floodplains (DNR, source FEMA)">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/8db37551165b425cb1f14ae4518e54db/info/thumbnail/ago_downloaded.png"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="8db37551165b425cb1f14ae4518e54db_1" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                1488 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                17 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/8db37551165b425cb1f14ae4518e54db_1">
+                            Floodplains (DNR, source FEMA)
+                          </a>
+                          <em>
+                            (from Planning Department)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  jay.mukherjee
+                                </span>
+                                <span itemprop="datePublished" datetime="2014-04-09T20:30:37.000Z">
+                                  on April 09, 2014
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:06:04.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/8db37551165b425cb1f14ae4518e54db_1" style="height: 68px;">
+
+                              Floodplains within Montgomery County
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="69acca3a6bd54eab9972adcb8713448e_2">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/69acca3a6bd54eab9972adcb8713448e_2" title="Wetlands of Special State Concern">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/69acca3a6bd54eab9972adcb8713448e/info/thumbnail/ago_downloaded.png"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="69acca3a6bd54eab9972adcb8713448e_2" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                911 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                2 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/69acca3a6bd54eab9972adcb8713448e_2">
+                            Wetlands of Special State Concern
+                          </a>
+                          <em>
+                            (from Planning Department)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  jay.mukherjee
+                                </span>
+                                <span itemprop="datePublished" datetime="2014-04-09T20:23:27.000Z">
+                                  on April 09, 2014
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:06:04.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/69acca3a6bd54eab9972adcb8713448e_2" style="height: 68px;">
+
+                              Wetland locations used for site and regulatory application reviews, management plans and other uses
+
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="8db37551165b425cb1f14ae4518e54db_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/8db37551165b425cb1f14ae4518e54db_0" title="Floodplains (MNCPPC, Mylars)">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/8db37551165b425cb1f14ae4518e54db/info/thumbnail/ago_downloaded.png"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="8db37551165b425cb1f14ae4518e54db_0" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                475 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                10 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/8db37551165b425cb1f14ae4518e54db_0">
+                            Floodplains (MNCPPC, Mylars)
+                          </a>
+                          <em>
+                            (from Planning Department)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  jay.mukherjee
+                                </span>
+                                <span itemprop="datePublished" datetime="2014-04-09T20:30:37.000Z">
+                                  on April 09, 2014
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:06:04.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/8db37551165b425cb1f14ae4518e54db_0" style="height: 68px;">
+
+                              Floodplains within Montgomery County
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="83061a1dc74c4f419d48de65ab227bdc_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/83061a1dc74c4f419d48de65ab227bdc_0" title="Forests">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/83061a1dc74c4f419d48de65ab227bdc/info/thumbnail/ago_downloaded.png"/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" data-pjax="true" href="#" title="Add to your favorites">
+                                    <div class="opendata-star-hollow control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                                  <span id="83061a1dc74c4f419d48de65ab227bdc_0" class="download" data-pjax="true" href="#">
+                                    <div class="icon-download control-text">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                7825 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text">
+                                2 attributes
+                              </div>
+                            </div>
+                          </div>
+                          <div class="download-popover">
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name">
+                          <a class="dataset-link" data-pjax="true" itemprop="url" href="/datasets/83061a1dc74c4f419d48de65ab227bdc_0">
+                            Forests
+                          </a>
+                          <em>
+                            (from Planning Department)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  jay.mukherjee
+                                </span>
+                                <span itemprop="datePublished" datetime="2014-04-09T20:32:13.000Z">
+                                  on April 09, 2014
+                                </span>
+                                .
+                                <span itemprop="dateModified" datetime="2019-03-21T14:06:04.000Z">
+                                  Updated a month ago
+                                </span>
+                              </span>
+                          .
+
+
+                          <div class="snippet">
+                            <a itemprop="description" class="dataset-link link-desc" data-pjax="true" href="/datasets/83061a1dc74c4f419d48de65ab227bdc_0" style="height: 68px;">
+
+                              Forest cover within Montgomery County
+
+                            </a>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+              <div id="results-pagination-region">
+                <div>
+                  <div id="pagination">
+                    <div id="page-prev" class="visible disabled">
+                      &lt; Previous
+                    </div>
+                    <ul class="pagination-results">
+                      <li class="page">
+                        1
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=2" class="page-number ">
+                          2
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=3" class="page-number ">
+                          3
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=4" class="page-number ">
+                          4
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=5" class="page-number ">
+                          5
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=6" class="page-number ">
+                          6
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=7" class="page-number ">
+                          7
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=8" class="page-number ">
+                          8
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=9" class="page-number ">
+                          9
+                        </a>
+                      </li>
+                      <li class="page">
+                        <a href="/datasets?q=*&amp;sort_by=updated_at&amp;page=10" class="page-number ">
+                          10
+                        </a>
+                      </li>
+                    </ul>
+                    <div id="page-next" class="visible active">
+                      Next &gt;
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <aside id="sidebar-right" class="sidebar-navigation">
+          <div id="search-results-favorites-region">
+            <div id="favorites" class="favorites-view">
+              <div class="container">
+                <div class="row padded">
+                  <section>
+                    <div id="saved-layers" class="dropzone">
+                      <div id="my-layers">
+                        <h4>
+                          My Favorites
+                        </h4>
+                        <div id="fav-region" class="dropzone">
+                          <ul>
+                            <div>
+                              <div id="fav-help">
+                                <div id="fav-drag-help">
+
+                                  click
+                                  <span class="opendata-star-hollow">
+                                      </span>
+                                  on any dataset to add to your favorites
+
+                                </div>
+                              </div>
+                            </div>
+                          </ul>
+                          <div id="too-many-alert">
+                            The number of favorites is limited to 10.  To add other favorites, please remove one or more existing favorites.
+                          </div>
+                          <div id="fav-footer" style="display: none;">
+                            <div id="fav-controls">
+                                  <span id="fav-mapit" class="btn small icon-globe">
+                                     map it
+                                  </span>
+                              <span id="fav-delete" class="icon-delete">
+                                  </span>
+                            </div>
+                            <div id="fav-drag-help">
+
+                              click
+                              <span class="opendata-star-hollow">
+                                  </span>
+                              on any dataset to add to your favorites
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div id="slide-me2" class="layout" style="display: none;">
+  </div>
+</div>
+<footer id="footer" class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="column-8 last">
+      </div>
+    </div>
+    <style type="text/css">
+    </style>
+  </div>
+</footer>
+<!--
+<footer id="sub-footer" >
+<div class="container">
+<div class="row" >
+  <div class="column-12">
+    <a href="">Powered by ArcGIS for Open Data</a>
+    | f5cddae
+    | deploy
+    | 2018-12-11 09:03:58 -0500
+  </div>
+</div>
+</div>
+</footer>
+-->    <!-- loading this down here to improve page load
+  this isn't used until the js below is loaded -->    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css"/>
+<!--[if lte IE 8]>
+<script src="//d2m2btq5ww7pv1.cloudfront.net/1.9/scripts/vendor-ie.min.js"></script>
+<![endif]-->    <!--[if gte IE 9]>-->    <script src="//d2m2btq5ww7pv1.cloudfront.net/1.9/scripts/vendor.min.js">
+</script>
+<!--<![endif]-->    <script src="//d2m2btq5ww7pv1.cloudfront.net/1.9/scripts/composer-ui.min.js">
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  I18n.defaultLocale = "en";
+  I18n.fallbacks = true;
+
+  //]]>
+</script>
+<script id="site-configuration-json" type="text/json">
+//<![CDATA[
+
+  {"site_info":{"title":"Prototype","default_extent":{"type":"extent","xmin":-8624588.86869952,"ymin":4714368.8907962,"xmax":-8551229.32426675,"ymax":4762577.98735325,"spatialReference":{"wkid":102100}},"mapbar_enabled":true,"flags":{"charts":true,"autocomplete":true,"large_dataset_extent":false,"geohash":false,"one_click_styling":true,"heatmap":false,"projection":true,"signin":false,"comments_enabled":false,"api_explorer":false,"activities":true,"pages":false,"my_data":false,"social_logins":false,"metadata_tab":false,"dataset_identity":false},"map":{"basemaps":{"type":"default","primary":{"label":"Map","title":"Light Gray Canvas","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer"},{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer","isReference":true}]},"secondary":{"enabled":true,"label":"Satellite","title":"National Geographic","baseMapLayers":[{"url":"http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"}]}}},"default_license":{"title":"none","description":"no default license specified"}}}
+
+//]]>
+    </script>
+<script id="site-serialized-datasets-json" type="text/json">
+//<![CDATA[
+
+  {"data":[{"display_field":"AZCODE_NAME","max_record_count":10000,"record_count":281010,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true,"supports_disjoint_spatial_rel":true},"supports_advanced_queries":true,"id":"1959435a5a81409992b45cc976ac6d1b_0","landing_page":"https://www.arcgis.com/home/item.html?id=1959435a5a81409992b45cc976ac6d1b","description":"Parcel boundaries for Montgomery County, MD. Attribute data is fed from monthly updates from the State Department of Taxation (SDAT) and joined against the parcel polygons. <div><br /></div><div>Parcels and other countywide GIS datasets can be found on our <a href=\"http://www.montgomeryplanning.org/gis/data_downloads.shtm\" target=\"_blank\">download page</a>.  For the latest parcels, go to “00_Shapefiles”, then download “Property.zip”.</div><div><br />If you see a problem, contact: <a href=\"mailto:christopher.mcgovern@montgomeryplanning.org\" target=\"_blank\">christopher.mcgovern@montgomeryplanning.org</a></div>","extent":{"coordinates":[[-77.5252303821572,38.9345240461965],[-76.8872341936886,39.3544004756182]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.312Z"},{"name":"ACCT","type":"esriFieldTypeString","alias":"ACCT","domain":null,"updated_at":"2019-04-08T14:56:29.636Z","statistics":{"values":[{"value":"00106948","count":2},{"value":"00117007","count":1},{"value":"00116993","count":1},{"value":"00116982","count":1},{"value":"00116971","count":1},{"value":"00116960","count":1},{"value":"00116958","count":1},{"value":"00116947","count":1},{"value":"00116936","count":1},{"value":"00116925","count":1}],"duration":323.557100000791,"count":9999}},{"name":"STATUS","type":"esriFieldTypeString","alias":"STATUS","domain":null,"updated_at":"2019-04-08T14:56:29.606Z","statistics":{"values":[{"value":"M","count":272999}],"duration":292.946702999994,"count":1}},{"name":"TOWN_CODE","type":"esriFieldTypeSmallInteger","alias":"TOWN_CODE","domain":null,"updated_at":"2019-04-08T14:56:29.607Z","statistics":{"duration":293.849289000034,"sum":571286,"avg":13.5755429875006,"count":42082,"min":1,"max":23,"stddev":4.13799866272845,"var":17.1230329327425}},{"name":"DISTRICT","type":"esriFieldTypeString","alias":"DISTRICT","domain":null,"updated_at":"2019-04-08T14:56:29.692Z","statistics":{"values":[{"value":"13","count":60077},{"value":"09","count":40341},{"value":"04","count":31540},{"value":"07","count":28854},{"value":"05","count":26595},{"value":"08","count":17689},{"value":"06","count":17200},{"value":"02","count":17015},{"value":"10","count":13023},{"value":"01","count":8738}],"duration":378.45119499974,"count":13}},{"name":"SUBDIVISION","type":"esriFieldTypeString","alias":"SUBDIVISION","domain":null,"updated_at":"2019-04-08T14:56:29.486Z","statistics":{"values":[{"value":"0001","count":18616},{"value":"0025","count":5425},{"value":"0058","count":5003},{"value":"0007","count":4348},{"value":"0006","count":4154},{"value":"0010","count":3857},{"value":"0004","count":3679},{"value":"0044","count":3541},{"value":"0502","count":3510},{"value":"0005","count":3409}],"duration":172.255859999917,"count":306}},{"name":"SORT_KEY","type":"esriFieldTypeString","alias":"SORT_KEY","domain":null,"updated_at":"2019-04-08T14:56:29.537Z","statistics":{"values":[{"value":"MONTGOMERY","count":1956},{"value":"CLARKSBURG","count":363},{"value":"UNITED STA","count":244},{"value":"ALEXANDER ","count":143},{"value":"LAKELANDS ","count":119},{"value":"MV AFFORDA","count":98},{"value":"BERNSTEIN ","count":95},{"value":"MARTINEZ J","count":85},{"value":"CUNNINGHAM","count":76},{"value":"AVENEL COM","count":67}],"duration":222.607075999491,"count":10000}},{"name":"SDAT_AREA","type":"esriFieldTypeDouble","alias":"SDAT_AREA","domain":null,"updated_at":"2019-04-08T14:56:29.509Z","statistics":{"duration":194.743331999518,"sum":3303791133.74801,"avg":12050.9466782953,"count":274152,"min":0,"max":4752831,"stddev":28919.4033503748,"var":836331890.141667}},{"name":"ACRE_OR_SQFT","type":"esriFieldTypeString","alias":"ACRE_OR_SQFT","domain":null,"updated_at":"2019-04-08T14:56:29.502Z","statistics":{"values":[{"value":"S","count":255507},{"value":"A","count":18371}],"duration":187.529249999672,"count":2}},{"name":"LIBER","type":"esriFieldTypeString","alias":"LIBER","domain":null,"updated_at":"2019-04-08T14:56:29.673Z","statistics":{"values":[{"value":"05254","count":106},{"value":"04778","count":72},{"value":"33134","count":54},{"value":"53983","count":52},{"value":"48348","count":49},{"value":"06408","count":47},{"value":"17641","count":46},{"value":"43765","count":43},{"value":"55211","count":41},{"value":"43509","count":39}],"duration":358.524895999581,"count":10000}},{"name":"FOLIO","type":"esriFieldTypeString","alias":"FOLIO","domain":null,"updated_at":"2019-04-08T14:56:29.604Z","statistics":{"values":[{"value":"0001","count":4290},{"value":"0000","count":4076},{"value":"0151","count":629},{"value":"0168","count":569},{"value":"0269","count":566},{"value":"0414","count":525},{"value":"0146","count":520},{"value":"0424","count":498},{"value":"0500","count":496},{"value":"0197","count":492}],"duration":289.44512899965,"count":1002}},{"name":"LOT","type":"esriFieldTypeString","alias":"LOT","domain":null,"updated_at":"2019-04-08T14:56:29.615Z","statistics":{"values":[{"value":"    1","count":8333},{"value":"    2","count":8181},{"value":"    3","count":8104},{"value":"    4","count":7924},{"value":"    5","count":7719},{"value":"    6","count":7520},{"value":"    7","count":7272},{"value":"    8","count":7014},{"value":"    9","count":6677},{"value":"   10","count":6438}],"duration":299.376951000653,"count":1340}},{"name":"BLOCK","type":"esriFieldTypeString","alias":"BLOCK","domain":null,"updated_at":"2019-04-08T14:56:29.611Z","statistics":{"values":[{"value":"    A","count":27514},{"value":"    B","count":19553},{"value":"    C","count":15283},{"value":"    D","count":13660},{"value":"    E","count":10563},{"value":"    F","count":8750},{"value":"    G","count":7401},{"value":"    1","count":6793},{"value":"    2","count":6182},{"value":"    3","count":5847}],"duration":295.696742000058,"count":345}},{"name":"TAX_CLASS","type":"esriFieldTypeString","alias":"TAX_CLASS","domain":null,"updated_at":"2019-04-08T14:56:29.610Z","statistics":{"values":[{"value":"42","count":121189},{"value":"38","count":80699},{"value":"53","count":23939},{"value":"50","count":16172},{"value":"49","count":8210},{"value":"16","count":4985},{"value":"74","count":4088},{"value":"25","count":2450},{"value":"57","count":2173},{"value":"64","count":1407}],"duration":294.364107999951,"count":47}},{"name":"ASSMT_DATE","type":"esriFieldTypeSmallInteger","alias":"ASSMT_DATE","domain":null,"updated_at":"2019-04-08T14:56:29.692Z","statistics":{"duration":375.844343000092,"sum":550936895,"avg":2018.09125674453,"count":272999,"min":2017,"max":2019,"stddev":0.784723073182161,"var":0.615790301584455}},{"name":"LAND_ASSMT","type":"esriFieldTypeInteger","alias":"LAND_ASSMT","domain":null,"updated_at":"2019-04-08T14:56:29.777Z","statistics":{"duration":461.46837899927,"sum":91642310600,"avg":335687.349037909,"count":272999,"min":0,"max":568500600,"stddev":1543819.14047228,"var":2383377538488.56}},{"name":"PREF_ASSMT","type":"esriFieldTypeInteger","alias":"PREF_ASSMT","domain":null,"updated_at":"2019-04-08T14:56:29.783Z","statistics":{"duration":466.354619000107,"sum":22574400,"avg":82.6904127853948,"count":272999,"min":0,"max":458100,"stddev":2299.90198281658,"var":5289549.13056366}},{"name":"IMPROV_ASSMT","type":"esriFieldTypeInteger","alias":"IMPROV_ASSMT","domain":null,"updated_at":"2019-04-08T14:56:29.745Z","statistics":{"duration":428.867403999902,"sum":107169911800,"avg":392565.217455009,"count":272999,"min":0,"max":591129600,"stddev":3205964.26718647,"var":10278206882476.5}},{"name":"EXEMPT_CODE","type":"esriFieldTypeString","alias":"EXEMPT_CODE","domain":null,"updated_at":"2019-04-08T14:56:29.846Z","statistics":{"values":[{"value":"420","count":2868},{"value":"510","count":1119},{"value":"700","count":873},{"value":"020","count":590},{"value":"440","count":476},{"value":"580","count":357},{"value":"530","count":301},{"value":"500","count":301},{"value":"610","count":282},{"value":"840","count":267}],"duration":529.638178999536,"count":88}},{"name":"GRID","type":"esriFieldTypeString","alias":"GRID","domain":null,"updated_at":"2019-04-08T14:56:29.771Z","statistics":{"values":[{"value":"HQ43","count":2516},{"value":"HQ31","count":2017},{"value":"ET43","count":1595},{"value":"GR62","count":1537},{"value":"JP13","count":1456},{"value":"JP33","count":1454},{"value":"JP51","count":1424},{"value":"HQ61","count":1375},{"value":"GP61","count":1303},{"value":"HP53","count":1287}],"duration":453.913874000311,"count":1218}},{"name":"PARCEL_NO","type":"esriFieldTypeString","alias":"PARCEL_NO","domain":null,"updated_at":"2019-04-08T14:56:29.901Z","statistics":{"values":[{"value":"400","count":88},{"value":"800","count":81},{"value":"600","count":79},{"value":"777","count":66},{"value":"303","count":59},{"value":"333","count":58},{"value":"500","count":58},{"value":"200","count":56},{"value":"850","count":53},{"value":"700","count":53}],"duration":584.406746000051,"count":1001}},{"name":"SUBPARCEL","type":"esriFieldTypeString","alias":"SUBPARCEL","domain":null,"updated_at":"2019-04-08T14:56:29.904Z","statistics":{"values":[{"value":"P","count":12809},{"value":"N","count":5598}],"duration":586.537988999858,"count":2}},{"name":"PROPERTY_CODE","type":"esriFieldTypeString","alias":"PROPERTY_CODE","domain":null,"updated_at":"2019-04-08T14:56:29.785Z","statistics":{"values":[{"value":"R","count":254751},{"value":"E","count":7852},{"value":"C","count":4174},{"value":"A","count":1825},{"value":"EC","count":1812},{"value":"I","count":1386},{"value":"M","count":895},{"value":"CR","count":171},{"value":"CA","count":44},{"value":"RC","count":32}],"duration":467.928267999552,"count":13}},{"name":"LANDUSE_CODE","type":"esriFieldTypeString","alias":"LANDUSE_CODE","domain":null,"updated_at":"2019-04-08T14:56:29.787Z","statistics":{"values":[{"value":"111","count":184146},{"value":"116","count":56566},{"value":"910","count":12750},{"value":"740","count":6525},{"value":"990","count":2053},{"value":"113","count":842},{"value":"599","count":759},{"value":"761","count":692},{"value":"600","count":684},{"value":"812","count":655}],"duration":469.370043000206,"count":96}},{"name":"LU_CATEGORY","type":"esriFieldTypeString","alias":"LU_CATEGORY","domain":null,"updated_at":"2019-04-08T14:56:29.790Z","statistics":{"values":[{"value":"Single Family Detached","count":184149},{"value":"Single Family Attached","count":57140},{"value":"Vacant","count":14812},{"value":"Open Space/Recreation","count":6833},{"value":"Agriculture","count":1867},{"value":"Retail","count":1848},{"value":"Institutional/Community Facility","count":1534},{"value":"Multi-Family","count":1528},{"value":"Office","count":1274},{"value":"Parks","count":692}],"duration":471.817912999541,"count":18}},{"name":"AZ_CODE","type":"esriFieldTypeString","alias":"AZ_CODE","domain":null,"updated_at":"2019-04-08T14:56:29.782Z","statistics":{"values":[{"value":"R","count":254751},{"value":"E","count":7852},{"value":"C","count":4174},{"value":"A","count":1825},{"value":"EC","count":1812},{"value":"I","count":1386},{"value":"M","count":895},{"value":"CR","count":171},{"value":"CA","count":44},{"value":"RC","count":32}],"duration":464.10618800018,"count":13}},{"name":"AZCODE_NAME","type":"esriFieldTypeString","alias":"AZCODE_NAME","domain":null,"updated_at":"2019-04-08T14:56:29.726Z","statistics":{"values":[{"value":"Residential","count":254751},{"value":"Exempt","count":7852},{"value":"Commercial","count":4174},{"value":"Agricultural","count":1825},{"value":"Exempt Commercial","count":1812},{"value":"Industrial","count":1386},{"value":"Apartments","count":895},{"value":"Commercial/Residential","count":171},{"value":"Country Club","count":44},{"value":"Residential/Commercial","count":32}],"duration":408.125404999591,"count":13}},{"name":"DWELLINGCONSTRCODE_NAME","type":"esriFieldTypeString","alias":"DWELLINGCONSTRCODE_NAME","domain":null,"updated_at":"2019-04-08T14:56:29.786Z","statistics":{"values":[{"value":"Frame","count":99685},{"value":"Siding","count":58998},{"value":"Brick","count":57276},{"value":"1/2 Brick Frame","count":19678},{"value":"1/2 Brick Siding","count":1860},{"value":"Stucco","count":1778},{"value":"Asbestos Shingle","count":731},{"value":"Face Brick","count":522},{"value":"Stone","count":449},{"value":"Com Brick","count":413}],"duration":467.934626000002,"count":22}},{"name":"DWELLSTORYNAME","type":"esriFieldTypeString","alias":"DWELLSTORYNAME","domain":null,"updated_at":"2019-04-08T14:56:29.788Z","statistics":{"values":[{"value":"Office Building","count":550},{"value":"Storage Warehouse","count":170},{"value":"Retail Store","count":135},{"value":"Distribution Warehosue","count":96},{"value":"Church","count":77},{"value":"Apartment","count":71},{"value":"Industrial - Engineering & Research","count":52},{"value":"Elementary School","count":52},{"value":"Restaurant","count":45},{"value":"Service Garage","count":45}],"duration":469.582737999968,"count":75}},{"name":"PUBLICUSE_TYPE","type":"esriFieldTypeString","alias":"PUBLICUSE_TYPE","domain":null,"updated_at":"2019-04-08T14:56:29.789Z","statistics":{"values":[{"value":"COMMON USE FACILITIES RECEIVING NO ASSESSMENT OR \"ZERO VALUE\"","count":8453},{"value":"OFFICE BUILDING","count":752},{"value":"STORE-RETAIL","count":623},{"value":"CHURCH","count":512},{"value":"APARTMENTS","count":387},{"value":"WAREHOUSE","count":357},{"value":"POTOMAC ELECTRIC - Operating Property","count":355},{"value":"APARTMENTS, GARDEN","count":354},{"value":"SCHOOL","count":280},{"value":"SHOPPING CENTER","count":216}],"duration":470.395004000515,"count":117}},{"name":"TRANSFER_DATE","type":"esriFieldTypeDate","alias":"TRANSFER_DATE","domain":null,"updated_at":"2019-04-08T14:56:29.898Z","statistics":{"duration":579.460149000399,"count":242794,"min":-1778025600000,"max":1746576000000}},{"name":"SALES_PRICE","type":"esriFieldTypeInteger","alias":"SALES_PRICE","domain":null,"updated_at":"2019-04-08T14:56:29.845Z","statistics":{"duration":526.878120000474,"sum":125920162590,"avg":461247.706365225,"count":272999,"min":0,"max":337499900,"stddev":3010310.84578616,"var":9061971388257.76}},{"name":"LEGAL_DESC","type":"esriFieldTypeString","alias":"LEGAL_DESC","domain":null,"updated_at":"2019-04-08T14:56:29.873Z","statistics":{"values":[{"value":"CLARKSBURG VILLAGE  ","count":1941},{"value":"LONGMEAD  ","count":1333},{"value":"HALLOWELL  ","count":1045},{"value":"VIERS MILL VILLAGE  ","count":877},{"value":"BEL PRE WOODS  ","count":877},{"value":"WHEATON HILLS  ","count":869},{"value":"MANOR WOODS  ","count":841},{"value":"POPLAR RUN  ","count":729},{"value":"DUMONT OAKS  ","count":614},{"value":"MILL CREEK TOWNE  ","count":583}],"duration":554.176028000191,"count":10000}},{"name":"PREMISE_ADDR_HOUSENO","type":"esriFieldTypeString","alias":"PREMISE_ADDR_HOUSENO","domain":null,"updated_at":"2019-04-08T14:56:29.814Z","statistics":{"values":[{"value":"6","count":879},{"value":"4","count":688},{"value":"3","count":662},{"value":"10","count":646},{"value":"13","count":450},{"value":"11","count":423},{"value":"15","count":307},{"value":"16","count":266},{"value":"21","count":261},{"value":"19","count":215}],"duration":495.295773999766,"count":9999}},{"name":"PREMISE_ADDR_DIRECTION","type":"esriFieldTypeString","alias":"PREMISE_ADDR_DIRECTION","domain":null,"updated_at":"2019-04-08T14:56:29.898Z","statistics":{"values":[{"value":"E","count":1316},{"value":"W","count":1188},{"value":"N","count":880},{"value":"S","count":712},{"value":"E.","count":7}],"duration":579.443079000339,"count":5}},{"name":"PREMISE_ADDR_STREET","type":"esriFieldTypeString","alias":"PREMISE_ADDR_STREET","domain":null,"updated_at":"2019-04-08T14:56:29.926Z","statistics":{"values":[{"value":"RIDGE","count":859},{"value":"NEW HAMPSHIRE","count":845},{"value":"GEORGIA","count":833},{"value":"FREDERICK","count":723},{"value":"BRADLEY","count":569},{"value":"RIVER","count":566},{"value":"WOODFIELD","count":479},{"value":"UNIVERSITY","count":464},{"value":"RANDOLPH","count":454},{"value":"MAPLE","count":414}],"duration":607.234726000577,"count":7920}},{"name":"PREMISE_ADDR_STREET_TYPE","type":"esriFieldTypeString","alias":"PREMISE_ADDR_STREET_TYPE","domain":null,"updated_at":"2019-04-08T14:56:29.944Z","statistics":{"values":[{"value":"DR","count":63925},{"value":"RD","count":56165},{"value":"CT","count":29197},{"value":"LN","count":27182},{"value":"AVE","count":25366},{"value":"ST","count":18877},{"value":"WAY","count":15697},{"value":"TER","count":14450},{"value":"PL","count":9605},{"value":"CIR","count":5906}],"duration":624.398382000625,"count":55}},{"name":"PREMISE_ADDR_CITY","type":"esriFieldTypeString","alias":"PREMISE_ADDR_CITY","domain":null,"updated_at":"2019-04-08T14:56:29.959Z","statistics":{"values":[{"value":"SILVER SPRING","count":60949},{"value":"ROCKVILLE","count":41923},{"value":"GAITHERSBURG","count":35654},{"value":"BETHESDA","count":23725},{"value":"GERMANTOWN","count":18448},{"value":"POTOMAC","count":9705},{"value":"OLNEY","count":8232},{"value":"CHEVY CHASE","count":7135},{"value":"KENSINGTON","count":6917},{"value":"CLARKSBURG","count":6865}],"duration":639.746278000064,"count":214}},{"name":"PREMISE_ADDR_ZIP","type":"esriFieldTypeInteger","alias":"PREMISE_ADDR_ZIP","domain":null,"updated_at":"2019-04-08T14:56:29.981Z","statistics":{"duration":661.653988999315,"sum":5323278990,"avg":19835.5224297707,"count":268371,"min":0,"max":77690,"stddev":4531.31307261087,"var":20532798.1620141}},{"name":"PREMISE_ADDR_ZIP_PLUS4","type":"esriFieldTypeSmallInteger","alias":"PREMISE_ADDR_ZIP_PLUS4","domain":null,"updated_at":"2019-04-08T14:56:29.983Z","statistics":{"duration":663.189747000113,"sum":460561868,"avg":1745.22020924672,"count":263899,"min":0,"max":9796,"stddev":2107.79399361305,"var":4442795.51951125}},{"name":"CONDO_UNIT_NO","type":"esriFieldTypeString","alias":"CONDO_UNIT_NO","domain":null,"updated_at":"2019-04-08T14:56:29.979Z","statistics":{"values":[{"value":"1","count":17},{"value":"0","count":13},{"value":"5","count":4},{"value":"00","count":4},{"value":"4","count":4},{"value":"2","count":4},{"value":"3","count":3},{"value":"9","count":2},{"value":"0000","count":2},{"value":"LU 1","count":2}],"duration":658.50617999956,"count":93}},{"name":"OWNERS_OCCUPANCY","type":"esriFieldTypeString","alias":"OWNERS_OCCUPANCY","domain":null,"updated_at":"2019-04-08T14:56:29.973Z","statistics":{"values":[{"value":"H","count":212486},{"value":"N","count":59440},{"value":"D","count":1073}],"duration":652.398787999526,"count":3}},{"name":"OWNERS_NAME","type":"esriFieldTypeString","alias":"OWNERS_NAME","domain":null,"updated_at":"2019-04-08T14:56:30.242Z","statistics":{"values":[{"value":"PRESERVE AT TOWER OAKS INVESTMENT","count":218},{"value":"KING FARM CITIZENS ASSEMBLY INC","count":192},{"value":"VII CROWN FARM OWNER LLC","count":130},{"value":"HALLE WARREN E & M D","count":67},{"value":"CALATLANTIC GROUP INC","count":41},{"value":"MATENY HILL LC","count":37},{"value":"CLARKSBURG HOMEOWNERS ASSOC INC","count":20},{"value":"CAPITAL ONE NATIONAL ASSOCIATION","count":18},{"value":"KINGSVIEW RIDGE COMMUNITY ASSN INC","count":16},{"value":"FLINTS GROVE HOMEOWNERS","count":15}],"duration":921.78211400006,"count":10000}},{"name":"OWNERS_NAME2","type":"esriFieldTypeString","alias":"OWNERS_NAME2","domain":null,"updated_at":"2019-04-08T14:56:30.327Z","statistics":{"values":[{"value":"OF MONTGOMERY COUNTY","count":48},{"value":"COMMUNITY ASSOCIATION INC","count":31},{"value":"SEVENTH-DAY ADVENTISTS","count":10},{"value":"JOINT REVOCABLE TRUST","count":9},{"value":"REVOCABLE TRUST","count":9},{"value":"COMMISSION","count":9},{"value":"DING JIAN","count":7},{"value":"PARK AND PLANNING","count":7},{"value":"LI KUN","count":7},{"value":"AFF UK GR BRITIAN & N IRELAND","count":6}],"duration":1006.67664600071,"count":10000}},{"name":"OWNERS_ADDR1","type":"esriFieldTypeString","alias":"OWNERS_ADDR1","domain":null,"updated_at":"2019-04-08T14:56:30.059Z","statistics":{"values":[{"value":"101 MONROE ST","count":424},{"value":"707 N CALVERT ST","count":238},{"value":"C/O NNP-II CLARKSBURG LLC","count":46},{"value":"PO BOX 158","count":43},{"value":"6931 ARLINGTON RD #480","count":26},{"value":"317 BROWN ST","count":21},{"value":"PO BOX 152206","count":18},{"value":"C/O SUMMIT MGNT DEPT 376","count":18},{"value":"C/O THE MNGMNT GROUP ASSOC","count":16},{"value":"8004 LIONS CREST WAY","count":16}],"duration":738.345318000764,"count":10000}},{"name":"OWNERS_ADDR2","type":"esriFieldTypeString","alias":"OWNERS_ADDR2","domain":null,"updated_at":"2019-04-08T14:56:30.120Z","statistics":{"values":[{"value":"20440 CENTURY BLVD STE 100","count":744},{"value":"10120 APPLE RIDGE RD","count":454},{"value":"PO BOX 39","count":406},{"value":"701 9TH ST NW","count":357},{"value":"3414 MORNINGWOOD DR","count":291},{"value":"4800 HAMPDEN LN STE 300","count":188},{"value":"485 TSCHIFFELY SQUARE RD","count":171},{"value":"20440 CENTURY BLVD #100","count":149},{"value":"7811 MONTROSE RD STE 110","count":146},{"value":"15742 CRABBS BRANCH WAY","count":133}],"duration":798.909265999682,"count":5231}},{"name":"OWNERS_ADDR3","type":"esriFieldTypeString","alias":"OWNERS_ADDR3","domain":null,"updated_at":"2019-04-08T14:56:30.177Z","statistics":{"values":[{"value":"line3","count":272999}],"duration":855.542018000036,"count":1}},{"name":"OWNERS_CITY","type":"esriFieldTypeString","alias":"OWNERS_CITY","domain":null,"updated_at":"2019-04-08T14:56:30.152Z","statistics":{"values":[{"value":"SILVER SPRING","count":58765},{"value":"ROCKVILLE","count":36089},{"value":"GAITHERSBURG","count":30086},{"value":"BETHESDA","count":24888},{"value":"GERMANTOWN","count":18709},{"value":"POTOMAC","count":17130},{"value":"OLNEY","count":8261},{"value":"KENSINGTON","count":7877},{"value":"CHEVY CHASE","count":7118},{"value":"CLARKSBURG","count":6670}],"duration":830.865725999698,"count":2184}},{"name":"OWNERS_STATE","type":"esriFieldTypeString","alias":"OWNERS_STATE","domain":null,"updated_at":"2019-04-08T14:56:30.144Z","statistics":{"values":[{"value":"MD","count":262945},{"value":"VA","count":3445},{"value":"DC","count":1845},{"value":"FL","count":868},{"value":"CA","count":583},{"value":"TX","count":539},{"value":"PA","count":323},{"value":"NY","count":315},{"value":"NC","count":188},{"value":"NJ","count":168}],"duration":822.765548999421,"count":67}},{"name":"OWNERS_ZIP","type":"esriFieldTypeInteger","alias":"OWNERS_ZIP","domain":null,"updated_at":"2019-04-08T14:56:30.018Z","statistics":{"duration":696.396026000381,"sum":5821546495,"avg":21324.8929276575,"count":272993,"min":0,"max":99362,"stddev":5282.50690798081,"var":27904879.232865}},{"name":"OWNERS_ZIP_PLUS4","type":"esriFieldTypeSmallInteger","alias":"OWNERS_ZIP_PLUS4","domain":null,"updated_at":"2019-04-08T14:56:30.003Z","statistics":{"duration":681.400511999615,"sum":559102767,"avg":2398.25490179257,"count":233129,"min":0,"max":9998,"stddev":2176.36936257462,"var":4736583.60235348}},{"name":"ZONE_","type":"esriFieldTypeString","alias":"ZONE_","domain":null,"updated_at":"2019-04-08T14:56:30.020Z","statistics":{"values":[{"value":"See Layer","count":272999}],"duration":698.077642999589,"count":1}},{"name":"GR_FLR_AREA","type":"esriFieldTypeInteger","alias":"GR_FLR_AREA","domain":null,"updated_at":"2019-04-08T14:56:30.024Z","statistics":{"duration":701.391482000239,"sum":725780238,"avg":2658.54540859124,"count":272999,"min":0,"max":4400000,"stddev":15942.3501551521,"var":254158528.469479}},{"name":"NO_STORIES","type":"esriFieldTypeSmallInteger","alias":"NO_STORIES","domain":null,"updated_at":"2019-04-08T14:56:30.007Z","statistics":{"duration":684.670667000115,"sum":9646,"avg":0.0353334627599369,"count":272999,"min":0,"max":20,"stddev":0.365346142127057,"var":0.133477803567124}},{"name":"NO_DWELLINGS","type":"esriFieldTypeSmallInteger","alias":"NO_DWELLINGS","domain":null,"updated_at":"2019-04-08T14:56:30.182Z","statistics":{"duration":859.380278999917,"sum":422285,"avg":1.54033164084158,"count":274152,"min":0,"max":1460,"stddev":13.8053318520944,"var":190.587187546451}},{"name":"DWELLING_TYPE","type":"esriFieldTypeString","alias":"DWELLING_TYPE","domain":null,"updated_at":"2019-04-08T14:56:30.367Z","statistics":{"values":[{"value":"A001","count":59678},{"value":"C001","count":47096},{"value":"B001","count":45988},{"value":"0000","count":26954},{"value":"C003","count":21980},{"value":"C002","count":11557},{"value":"A003","count":10249},{"value":"B005","count":8823},{"value":"C005","count":7566},{"value":"A005","count":7119}],"duration":1044.33154499996,"count":244}},{"name":"DWELLINGTYPE_NAME","type":"esriFieldTypeString","alias":"DWELLINGTYPE_NAME","domain":null,"updated_at":"2019-04-08T14:56:30.181Z","statistics":{"values":[{"value":"NoData1","count":26954},{"value":"Office Building","count":550},{"value":"Storage Warehouse","count":170},{"value":"Retail Store","count":135},{"value":"Distribution Warehosue","count":96},{"value":"Church","count":77},{"value":"Apartment","count":71},{"value":"Industrial - Engineering & Research","count":52},{"value":"Elementary School","count":52},{"value":"Restaurant","count":45}],"duration":857.444325000048,"count":76}},{"name":"YEAR_BUILT","type":"esriFieldTypeSmallInteger","alias":"YEAR_BUILT","domain":null,"updated_at":"2019-04-08T14:56:30.142Z","statistics":{"duration":818.528568999842,"sum":486659294,"avg":1775.14405877032,"count":274152,"min":0,"max":2019,"stddev":594.237769736692,"var":353118.526981638}},{"name":"LOT_WIDTH","type":"esriFieldTypeDouble","alias":"LOT_WIDTH","domain":null,"updated_at":"2019-04-08T14:56:30.181Z","statistics":{"duration":857.655360000208,"sum":0,"avg":0,"count":272999,"min":0,"max":0,"stddev":0,"var":0}},{"name":"LOT_DEPTH","type":"esriFieldTypeDouble","alias":"LOT_DEPTH","domain":null,"updated_at":"2019-04-08T14:56:30.179Z","statistics":{"duration":855.532492999919,"sum":0,"avg":0,"count":272999,"min":0,"max":0,"stddev":0,"var":0}},{"name":"DWELLING_GRADE","type":"esriFieldTypeString","alias":"DWELLING_GRADE","domain":null,"updated_at":"2019-04-08T14:56:30.371Z","statistics":{"values":[{"value":"4","count":131714},{"value":"5","count":76702},{"value":"6","count":19108},{"value":"3","count":8598},{"value":"7","count":6334},{"value":"8","count":1971},{"value":"9","count":1005},{"value":"2","count":523},{"value":"1","count":60},{"value":"0","count":22}],"duration":1046.92804299947,"count":10}},{"name":"DWELLING_CONSTRUCT_CODE","type":"esriFieldTypeString","alias":"DWELLING_CONSTRUCT_CODE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"DWELLING_STORY_CODE","type":"esriFieldTypeString","alias":"DWELLING_STORY_CODE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"DWELLING_CONDITION","type":"esriFieldTypeString","alias":"DWELLING_CONDITION","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"UTILITIES_WATER","type":"esriFieldTypeString","alias":"UTILITIES_WATER","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"UTILITIES_SEWER","type":"esriFieldTypeString","alias":"UTILITIES_SEWER","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"LOCATION_WATERFRONT","type":"esriFieldTypeString","alias":"LOCATION_WATERFRONT","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"STREET_PAVED","type":"esriFieldTypeString","alias":"STREET_PAVED","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"STREET_UNPAVED","type":"esriFieldTypeString","alias":"STREET_UNPAVED","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"COMMER_INDUS","type":"esriFieldTypeString","alias":"COMMER_INDUS","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"HISTORICAL","type":"esriFieldTypeString","alias":"HISTORICAL","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"PUBLIC_USE_CODE","type":"esriFieldTypeInteger","alias":"PUBLIC_USE_CODE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"ACTIVITY_DATE","type":"esriFieldTypeDate","alias":"ACTIVITY_DATE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"CREATION_DATE","type":"esriFieldTypeString","alias":"CREATION_DATE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"DELETION_DATE","type":"esriFieldTypeString","alias":"DELETION_DATE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"RAZED","type":"esriFieldTypeString","alias":"RAZED","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"PARENT_TAX_NO","type":"esriFieldTypeString","alias":"PARENT_TAX_NO","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"MULTIPARENT_IND","type":"esriFieldTypeString","alias":"MULTIPARENT_IND","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"RAZED_DATE","type":"esriFieldTypeDate","alias":"RAZED_DATE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"OUTLOT","type":"esriFieldTypeString","alias":"OUTLOT","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"ASSESSCYL","type":"esriFieldTypeString","alias":"ASSESSCYL","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"CONDOFLR","type":"esriFieldTypeSmallInteger","alias":"CONDOFLR","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"TAX_ZONE","type":"esriFieldTypeString","alias":"TAX_ZONE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"LOAD_DATE","type":"esriFieldTypeDate","alias":"LOAD_DATE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"XSTATECO","type":"esriFieldTypeInteger","alias":"XSTATECO","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"YSTATECO","type":"esriFieldTypeInteger","alias":"YSTATECO","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"GEOMETHD","type":"esriFieldTypeString","alias":"GEOMETHD","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"TAZ_1999","type":"esriFieldTypeString","alias":"TAZ_1999","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"TAZ_2009","type":"esriFieldTypeString","alias":"TAZ_2009","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"CDISTRICT","type":"esriFieldTypeString","alias":"CDISTRICT","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"PLANNING","type":"esriFieldTypeString","alias":"PLANNING","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"POLICY","type":"esriFieldTypeString","alias":"POLICY","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.324Z"},{"name":"MASTER_PLAN","type":"esriFieldTypeString","alias":"MASTER_PLAN","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"BASEMAP","type":"esriFieldTypeString","alias":"BASEMAP","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"TAXMAP","type":"esriFieldTypeString","alias":"TAXMAP","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"TAZ_1970","type":"esriFieldTypeString","alias":"TAZ_1970","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"POLICY_AGP","type":"esriFieldTypeString","alias":"POLICY_AGP","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"CBPTEAM","type":"esriFieldTypeString","alias":"CBPTEAM","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"WATRSHED","type":"esriFieldTypeString","alias":"WATRSHED","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"MUNICIP","type":"esriFieldTypeString","alias":"MUNICIP","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"CLERK_PLAT","type":"esriFieldTypeString","alias":"CLERK_PLAT","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"RECORD_PLAT","type":"esriFieldTypeString","alias":"RECORD_PLAT","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"PLAT_LINK","type":"esriFieldTypeString","alias":"PLAT_LINK","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"BING3D","type":"esriFieldTypeString","alias":"BING3D","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"STREETVIEW","type":"esriFieldTypeString","alias":"STREETVIEW","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"RES_DWELLU","type":"esriFieldTypeSmallInteger","alias":"RES_DWELLU","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"NONRES_DWELLU","type":"esriFieldTypeSmallInteger","alias":"NONRES_DWELLU","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"PARKING_UNITS","type":"esriFieldTypeSmallInteger","alias":"PARKING_UNITS","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_RESIDENTIAL","type":"esriFieldTypeInteger","alias":"SQFT_RESIDENTIAL","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_OFFICE","type":"esriFieldTypeInteger","alias":"SQFT_OFFICE","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_RETAIL","type":"esriFieldTypeInteger","alias":"SQFT_RETAIL","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_INDUSTRIAL","type":"esriFieldTypeInteger","alias":"SQFT_INDUSTRIAL","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_OTHER","type":"esriFieldTypeInteger","alias":"SQFT_OTHER","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"LAND_ASSMT_RES","type":"esriFieldTypeInteger","alias":"LAND_ASSMT_RES","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"IMPROV_ASSMT_RES","type":"esriFieldTypeInteger","alias":"IMPROV_ASSMT_RES","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"LAND_ASSMT_NONRES","type":"esriFieldTypeInteger","alias":"LAND_ASSMT_NONRES","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"IMPROV_ASSMT_NONRES","type":"esriFieldTypeInteger","alias":"IMPROV_ASSMT_NONRES","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"SQFT_PKG","type":"esriFieldTypeInteger","alias":"SQFT_PKG","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"Shape__Area","type":"esriFieldTypeDouble","alias":"Shape__Area","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"},{"name":"Shape__Length","type":"esriFieldTypeDouble","alias":"Shape__Length","domain":null,"statistics":{"duration":0},"updated_at":"2019-04-08T14:56:29.325Z"}],"item_name":"Parcels","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Features published by the planning department are shown here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/0e2ea1a584674c55b16d302c8c1a0b84/info/Shovel_logo.png","main_group_title":"Planning Department","max_record_count":10000,"name":"Parcels","owner":"melissa.noakes","record_count":281010,"tags":["property"," parcels"," mncppc"," Montgomery County"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/1959435a5a81409992b45cc976ac6d1b/info/thumbnail/thumbnail.png","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"}],"public":true,"created_at":"2018-05-07T10:47:00.000Z","updated_at":"2019-04-05T11:27:20.162Z","url":"https://services1.arcgis.com/HbzrdBZjOwNHp70P/arcgis/rest/services/Parcels/FeatureServer/0","views":null,"quality":80,"coverage":"local","current_version":10.61,"comments_enabled":true,"service_spatial_reference":{"wkid":102685,"latestWkid":2248},"metadata_url":null,"org_id":"HbzrdBZjOwNHp70P","metadata":{"published":null,"present":false,"url":null,"online_resources":[{"url":"https://www.arcgis.com/sharing/rest/content/items/92c4931fa4cf4e539e4eef6a73d7192f/data","name":"File Geodatabase","itemId":"92c4931fa4cf4e539e4eef6a73d7192f"}]},"structured_license":{"type":"none"},"use_standardized_queries":true,"advanced_query_capabilities":{"supports_pagination":true,"supports_pagination_on_aggregated_queries":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_count_distinct":true,"supports_lod":true,"supports_returning_geometry_centroid":true,"supports_returning_geometry_properties":true,"supports_query_with_datum_transformation":true,"supports_having_clause":true,"supports_out_field_sql_expression":true,"supports_max_record_count_factor":true,"supports_top_features_query":true,"supports_disjoint_spatial_rel":true},"supported_extensions":""},{"display_field":"PROJ_NAME","max_record_count":1000,"record_count":273,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"KmlServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supports_advanced_queries":true,"id":"7adbc831d27b49578c1638f043bda7aa_0","landing_page":"https://www.arcgis.com/home/item.html?id=7adbc831d27b49578c1638f043bda7aa","description":"This service contains the forest conservation easements within the City of Rockville and provides supplemental data such as the approved Forest Conservation Plan number, Montgomery County Land Records reference number (if available), size and type of easement, and notes on forest conservation credits. There are two types of forest conservation easements: one that protects forests and one that protects individual trees. Easements protecting forests are placed over the forested areas only within the property boundary and are designated as “partial”. Easements protecting individual trees are usually placed over the entire property and refer back to the approved Forest Conservation Plan to show which trees are covered by the easement. These easements are designated as “entire.” Street trees are protected under the Maryland Roadside Tree Law and therefore, not subject to forest conservation easements.","extent":{"coordinates":[[-77.1998,39.0536],[-77.109,39.1192]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:38.019Z"},{"name":"PLAT_NUM","type":"esriFieldTypeString","alias":"Plat number (if available)","domain":null,"updated_at":"2019-03-21T14:09:38.898Z","statistics":{"values":[{"value":" ","count":151},{"value":"21334","count":7},{"value":"24156","count":4},{"value":"22635","count":4},{"value":"21266","count":4},{"value":"21018","count":4},{"value":"23431","count":3},{"value":"22569","count":3},{"value":"21716","count":3},{"value":"21023","count":3}],"duration":878.22879099939,"count":73}},{"name":"PROJ_NAME","type":"esriFieldTypeString","alias":"Project name","domain":null,"updated_at":"2019-03-21T14:09:38.815Z","statistics":{"values":[{"value":"LAKEWOOD COUNTRY CLUB","count":22},{"value":"ROSE HILL","count":15},{"value":"FALLSGROVE","count":15},{"value":"DPW MAINTENANCE FACILITY RENOVATION","count":9},{"value":"TOWER OAKS FLAGSHIP BUILDING","count":7},{"value":"CURTIS PLACE (OFFSITE)","count":7},{"value":"TOWER OAKS- MICHAEL HARRIS","count":6},{"value":"BOSTON PROPERTIES","count":6},{"value":"RICHARD MONTGOMERY HIGH SCHOOL(OFFSITE)","count":5},{"value":"WESTAT CAFETERIA","count":4}],"duration":794.90480799973,"count":130}},{"name":"FILE_NUM","type":"esriFieldTypeString","alias":"File number","domain":null,"updated_at":"2019-03-21T14:09:38.476Z","statistics":{"values":[{"value":"FTP2003-00002","count":22},{"value":"FTP97-00009","count":15},{"value":"FTP1999-00002","count":15},{"value":"FTP96-00006","count":10},{"value":"FTP2001-00021","count":9},{"value":"FTP2000-00036","count":8},{"value":"FTP98-00039","count":7},{"value":"FTP98-30","count":6},{"value":"FTP98-17A","count":6},{"value":"FTP95-00017","count":6}],"duration":456.17688200064,"count":126}},{"name":"E_TYPE","type":"esriFieldTypeString","alias":"Easement type","domain":null,"updated_at":"2019-03-21T14:09:38.937Z","statistics":{"values":[{"value":"INDIVIDUAL TREE","count":95},{"value":"FOREST RETAINED","count":79},{"value":"FOREST PLANTED","count":66},{"value":"FOREST RETAINED/FOREST PLANTED","count":28},{"value":"N/A","count":1},{"value":"FOREST RETAINED/INDIVIDUAL TREE","count":1},{"value":"FOREST RETAINED/FOREST PLANTED/ INDIVIDUAL TREE","count":1},{"value":"FOREST PLANTED/INDIVIDUAL TREE","count":1},{"value":"FOREST PLANTED/FOREST RETAINED","count":1}],"duration":916.403954999521,"count":9}},{"name":"AREA_TYPE","type":"esriFieldTypeString","alias":"Area type","domain":null,"updated_at":"2019-03-21T14:09:39.008Z","statistics":{"values":[{"value":"PARTIAL PARCEL","count":178},{"value":"ENTIRE PARCEL","count":93},{"value":"ENTIRE","count":1},{"value":"CONSERVATION EASEMENT","count":1}],"duration":987.808925000019,"count":4}},{"name":"LIBER_NUM","type":"esriFieldTypeString","alias":"Liber","domain":null,"updated_at":"2019-03-21T14:09:38.571Z","statistics":{"values":[{"value":"32731","count":22},{"value":" ","count":19},{"value":"17400","count":15},{"value":"32374","count":8},{"value":"13933","count":8},{"value":"35981","count":7},{"value":"18046","count":7},{"value":"17878","count":7},{"value":"21217","count":6},{"value":"35125","count":5}],"duration":550.369137999602,"count":124}},{"name":"FOLIO_NUM","type":"esriFieldTypeString","alias":"Folio","domain":null,"updated_at":"2019-03-21T14:09:38.794Z","statistics":{"values":[{"value":"666","count":22},{"value":" ","count":19},{"value":"444","count":15},{"value":"154","count":8},{"value":"314","count":7},{"value":"251","count":7},{"value":"222","count":7},{"value":"158","count":7},{"value":"403","count":6},{"value":"161","count":5}],"duration":773.106295000762,"count":120}},{"name":"CRED_SQFT","type":"esriFieldTypeString","alias":"Credit area (sq. ft.)","domain":null,"updated_at":"2019-03-21T14:09:38.678Z","statistics":{"values":[{"value":"FR CREDIT- 12196.8 SQFT","count":4},{"value":"N/A","count":3},{"value":"IT CREDIT- 3200 SQFT","count":3},{"value":"FR CREDIT- 8712 SQFT","count":3},{"value":"IT CREDIT- 7200 SQFT","count":2},{"value":"IT CREDIT- 7000 SQFT","count":2},{"value":"IT CREDIT- 600 SQFT","count":2},{"value":"IT CREDIT- 5600 SQFT","count":2},{"value":"IT CREDIT- 4800 SQFT","count":2},{"value":"IT CREDIT- 4400 SQFT","count":2}],"duration":656.575308999978,"count":238}},{"name":"AREA_SQFT","type":"esriFieldTypeDouble","alias":"AREA_SQFT","domain":null,"updated_at":"2019-03-21T14:09:38.833Z","statistics":{"duration":811.885729999281,"sum":12898696.8175959,"avg":47247.97369082,"count":273,"min":0,"max":725274,"stddev":83571.7346770493,"var":6984234836.93113}},{"name":"DATE_APP_TXT","type":"esriFieldTypeString","alias":"Application date","domain":null,"updated_at":"2019-03-21T14:09:38.897Z","statistics":{"values":[{"value":"10/3/2008","count":22},{"value":"8/18/2000","count":15},{"value":"4/21/2006","count":13},{"value":"6/28/2000","count":10},{"value":"9/7/2005","count":9},{"value":"9/9/2005","count":8},{"value":"8/1/2002","count":7},{"value":"11/4/1999","count":7},{"value":"8/5/1996","count":6},{"value":"8/25/1999","count":6}],"duration":875.320328999311,"count":128}},{"name":"DATE_REC_TXT","type":"esriFieldTypeString","alias":"Recordation date","domain":null,"updated_at":"2019-03-21T14:09:39.093Z","statistics":{"values":[{"value":"7/26/2006","count":22},{"value":"8/12/1999","count":15},{"value":"N/A","count":14},{"value":"5/23/2006","count":8},{"value":"2/20/1996","count":8},{"value":"12/6/2007","count":8},{"value":"5/1/2000","count":7},{"value":"2/15/2000","count":7},{"value":"12/20/2007","count":7},{"value":"6/5/2002","count":6}],"duration":1071.71104099974,"count":122}},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:38.022Z"},{"name":"Shape.STArea()","type":"esriFieldTypeDouble","alias":"Shape.STArea()","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:38.022Z"},{"name":"Shape.STLength()","type":"esriFieldTypeDouble","alias":"Shape.STLength()","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:38.022Z"}],"item_name":"Rockville Forest Conservation Easements","type":"ItemLayer","item_type":"Feature Layer","license":"<div>The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”</div><div><br /></div><div>This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.</div><div><br /></div><div>DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. </div><div><br /></div><div>The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate.</div><div><br /></div><div><br /></div>","main_group_description":"Items published by the city of Rockville appear here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/ca03f755f5af401a88243a698ec402f8/info/rockvillelogo.png","main_group_title":"Rockville","max_record_count":1000,"name":"Rockville Forest Conservation Easements","owner":"RockvilleMD","record_count":273,"tags":["Rockville","Forest Conservation","Easements"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/7adbc831d27b49578c1638f043bda7aa/info/thumbnail/ForestConservationEasements.jpg","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-09-13T18:16:42.000Z","updated_at":"2019-03-21T14:09:41.611Z","url":"https://maps.rockvillemd.gov/arcgis/rest/services/Rockville_ForestConservationEasements_WebMerc/MapServer/0","views":null,"quality":85,"coverage":"local","current_version":10.51,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"J65Mns15CRcll4iw","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate."},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supported_extensions":"KmlServer"},{"display_field":"WSNAME","max_record_count":1000,"record_count":4,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"KmlServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supports_advanced_queries":true,"id":"dfe2681e23de458080cc8adf4a4be899_3","landing_page":"https://www.arcgis.com/home/item.html?id=dfe2681e23de458080cc8adf4a4be899","description":"This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.","extent":{"coordinates":[[-77.2329,39.0214],[-77.1078,39.1206]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:10:40.282Z"},{"name":"WSNAME","type":"esriFieldTypeString","alias":"Watershed","domain":null,"updated_at":"2019-03-21T14:10:40.360Z","statistics":{"values":[{"value":"Watts Branch","count":1},{"value":"Rock Creek","count":1},{"value":"Muddy Branch","count":1},{"value":"Cabin John","count":1}],"duration":78.7290010005236,"count":4}},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:10:40.282Z"}],"item_name":"Rockville Environmental Management","type":"ItemLayer","item_type":"Feature Layer","license":"<div>The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”</div><div><br /></div><div>This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.</div><div><br /></div><div>DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. </div><div><br /></div><div>The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate.</div><div><br /></div><div><br /></div>","main_group_description":"Items published by the city of Rockville appear here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/ca03f755f5af401a88243a698ec402f8/info/rockvillelogo.png","main_group_title":"Rockville","max_record_count":1000,"name":"Watersheds","owner":"RockvilleMD","record_count":4,"tags":["Rockville","environment","environmental management","watersheds","stream","inlets"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-09-13T18:13:34.000Z","updated_at":"2019-03-21T14:09:07.000Z","url":"https://maps.rockvillemd.gov/arcgis/rest/services/Rockville_EnvMgt_WebMerc/MapServer/3","views":null,"quality":69,"coverage":"local","current_version":10.51,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"J65Mns15CRcll4iw","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate."},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supported_extensions":"KmlServer"},{"display_field":"MARKERS","max_record_count":1000,"record_count":3595,"geometry_type":"esriGeometryPoint","object_id_field":"OBJECTID","supported_extensions":"KmlServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supports_advanced_queries":true,"id":"dfe2681e23de458080cc8adf4a4be899_5","landing_page":"https://www.arcgis.com/home/item.html?id=dfe2681e23de458080cc8adf4a4be899","description":"This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.","extent":{"coordinates":[[-77.2329,39.0214],[-77.1078,39.1206]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:45.868Z"},{"name":"MARKERS","type":"esriFieldTypeString","alias":"Marking status","domain":null,"updated_at":"2019-03-21T14:09:46.274Z","statistics":{"values":[{"value":"Unmarked","count":1789},{"value":"Sticker","count":1774},{"value":"Stencil","count":32}],"duration":405.852793999948,"count":3}},{"name":"SHAPE","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:09:45.869Z"}],"item_name":"Rockville Environmental Management","type":"ItemLayer","item_type":"Feature Layer","license":"<div>The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”</div><div><br /></div><div>This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.</div><div><br /></div><div>DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. </div><div><br /></div><div>The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate.</div><div><br /></div><div><br /></div>","main_group_description":"Items published by the city of Rockville appear here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/ca03f755f5af401a88243a698ec402f8/info/rockvillelogo.png","main_group_title":"Rockville","max_record_count":1000,"name":"Curb inlet marking","owner":"RockvilleMD","record_count":3595,"tags":["Rockville","environment","environmental management","watersheds","stream","inlets"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-09-13T18:13:34.000Z","updated_at":"2019-03-21T14:09:07.000Z","url":"https://maps.rockvillemd.gov/arcgis/rest/services/Rockville_EnvMgt_WebMerc/MapServer/5","views":null,"quality":74,"coverage":"local","current_version":10.51,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"J65Mns15CRcll4iw","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate."},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supported_extensions":"KmlServer"},{"display_field":"FAC_NUMBER","max_record_count":1000,"record_count":1084,"geometry_type":"esriGeometryPoint","object_id_field":"OBJECTID","supported_extensions":"KmlServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supports_advanced_queries":true,"id":"dfe2681e23de458080cc8adf4a4be899_4","landing_page":"https://www.arcgis.com/home/item.html?id=dfe2681e23de458080cc8adf4a4be899","description":"This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.","extent":{"coordinates":[[-77.2329,39.0214],[-77.1078,39.1206]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:11:12.223Z"},{"name":"DESIGN_GROUP","type":"esriFieldTypeString","alias":"Design Sheet Group","domain":null,"updated_at":"2019-03-21T14:11:12.313Z","statistics":{"values":[{"value":"P090","count":45},{"value":"P036","count":26},{"value":"K190","count":19},{"value":"C174","count":18},{"value":"P140","count":15},{"value":"P119","count":14},{"value":"P101","count":14},{"value":"D311","count":14},{"value":"A226","count":14},{"value":"P208","count":13}],"duration":89.6980560000011,"count":347}},{"name":"PROPERTY_NAME","type":"esriFieldTypeString","alias":"Location - Property Name","domain":null,"updated_at":"2019-03-21T14:11:12.285Z","statistics":{"values":[{"value":"Apartment Complex","count":76},{"value":"Victory Court Seniors Housing","count":19},{"value":"Ritchie Parkway","count":18},{"value":"Twinbrook West","count":14},{"value":"King Farm Centergate Residential","count":14},{"value":"King Farm BMPs - Phase IA ","count":14},{"value":"JULIUS WEST","count":14},{"value":"Upper Rock Phase 2, Bldgs G & H","count":13},{"value":"National Lutheran Home","count":13},{"value":"I-270 Industrial Park","count":13}],"duration":60.9081450000012,"count":368}},{"name":"FAC_ADDRESS","type":"esriFieldTypeString","alias":"Location - Address","domain":null,"updated_at":"2019-03-21T14:11:12.309Z","statistics":{"values":[{"value":"355 ELMCROFT BLVD","count":25},{"value":"209 Monroe St","count":19},{"value":"651 GREAT FALLS ROAD","count":15},{"value":"1800 Rockville Pike","count":14},{"value":"TOWER OAKS BLVD","count":13},{"value":"77 UPPER ROCK CIR","count":13},{"value":"1150 CARNATION DR","count":12},{"value":"521 FALLSGROVE DR","count":11},{"value":"440 ELMCROFT BLVD","count":11},{"value":"100 KING FARM BLVD","count":11}],"duration":84.5673370000004,"count":415}},{"name":"BMP_TYPE_DESCRIPTION","type":"esriFieldTypeString","alias":"Structure Type","domain":null,"updated_at":"2019-03-21T14:11:12.291Z","statistics":{"values":[{"value":"Underground Filter","count":156},{"value":"Flow Splitter","count":147},{"value":"Other","count":142},{"value":"Dry Wells","count":111},{"value":"Quantity - Underground Pipe","count":67},{"value":"Bioretention","count":62},{"value":"Infiltration Trench or Recharge Trench","count":54},{"value":"Micro-Bioretention","count":48},{"value":"Detention Structure (Dry Pond)","count":47},{"value":"Surface Sand Filter","count":35}],"duration":66.4701619999978,"count":34}},{"name":"OWNERSHIP_TYPE","type":"esriFieldTypeString","alias":"Ownership Type","domain":null,"updated_at":"2019-03-21T14:11:12.315Z","statistics":{"values":[{"value":"Private","count":829},{"value":"Public","count":252}],"duration":89.4271420000005,"count":2}},{"name":"WATERSHED","type":"esriFieldTypeString","alias":"Watershed","domain":null,"updated_at":"2019-03-21T14:11:12.319Z","statistics":{"values":[{"value":"WBR","count":588},{"value":"CJC","count":246},{"value":"LRC","count":238},{"value":"WB","count":2},{"value":"ROCK","count":2},{"value":"LR","count":1}],"duration":93.2105200000005,"count":6}},{"name":"FAC_NUMBER","type":"esriFieldTypeString","alias":"Facility ID","domain":null,"updated_at":"2019-03-21T14:11:12.335Z","statistics":{"values":[{"value":"80-1057","count":1},{"value":"80-02028","count":1},{"value":"80-01019B","count":1},{"value":"80-01019A","count":1},{"value":"79-2024","count":1},{"value":"78-01205","count":1},{"value":"77-3005","count":1},{"value":"77-2037","count":1},{"value":"77-03004","count":1},{"value":"77-02023","count":1}],"duration":109.6927,"count":998}},{"name":"ACCTID","type":"esriFieldTypeString","alias":"Property Tax Account ID","domain":null,"updated_at":"2019-03-21T14:11:12.342Z","statistics":{"values":[{"value":"ROAD ROW ","count":36},{"value":"160403179781","count":26},{"value":"160403573854","count":18},{"value":"160403322108","count":15},{"value":"160403263841","count":15},{"value":"160400143096","count":15},{"value":"C00000015","count":14},{"value":"160403795195","count":13},{"value":"160403179917","count":12},{"value":"C000101","count":11}],"duration":116.243874,"count":389}},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:11:12.226Z"},{"name":"POINT_X","type":"esriFieldTypeDouble","alias":"POINT_X","domain":null,"updated_at":"2019-03-21T14:11:12.338Z","statistics":{"duration":112.316724999997,"sum":1315035348.06442,"avg":1266893.39890599,"count":1084,"min":1256274.45006564,"max":1281225.67509747,"stddev":6029.00489501443,"var":36348900.024108}},{"name":"POINT_Y","type":"esriFieldTypeDouble","alias":"POINT_Y","domain":null,"updated_at":"2019-03-21T14:11:12.348Z","statistics":{"duration":121.681379999995,"sum":538411384.860862,"avg":518700.75612799,"count":1084,"min":505733.36312898,"max":528816.67424573,"stddev":6540.0802101062,"var":42772649.1546227}}],"item_name":"Rockville Environmental Management","type":"ItemLayer","item_type":"Feature Layer","license":"<div>The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”</div><div><br /></div><div>This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.</div><div><br /></div><div>DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. </div><div><br /></div><div>The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate.</div><div><br /></div><div><br /></div>","main_group_description":"Items published by the city of Rockville appear here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/ca03f755f5af401a88243a698ec402f8/info/rockvillelogo.png","main_group_title":"Rockville","max_record_count":1000,"name":"Public Private Stormwater Facilities","owner":"RockvilleMD","record_count":1084,"tags":["Rockville","environment","environmental management","watersheds","stream","inlets"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-09-13T18:13:34.000Z","updated_at":"2019-03-21T14:09:07.000Z","url":"https://maps.rockvillemd.gov/arcgis/rest/services/Rockville_EnvMgt_WebMerc/MapServer/4","views":null,"quality":74,"coverage":"local","current_version":10.51,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"J65Mns15CRcll4iw","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate."},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supported_extensions":"KmlServer"},{"display_field":"NAME","max_record_count":1000,"record_count":47,"geometry_type":"esriGeometryPolyline","object_id_field":"OBJECTID_1","supported_extensions":"KmlServer","advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supports_advanced_queries":true,"id":"dfe2681e23de458080cc8adf4a4be899_2","landing_page":"https://www.arcgis.com/home/item.html?id=dfe2681e23de458080cc8adf4a4be899","description":"This dynamic map service provides a number of data layers for the City of Rockville, MD, Environmental Management.  The data visibility scale range is from 150,000 to 0.  Data layers will vary as they may be added over time but currently include curb inlets with markings, adopt-a-stream, and watersheds.","extent":{"coordinates":[[-77.2329,39.0214],[-77.1078,39.1206]]},"fields":[{"name":"OBJECTID_1","type":"esriFieldTypeOID","alias":"Stream Length (feet)","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:10:12.431Z"},{"name":"NAME","type":"esriFieldTypeString","alias":"Stream Name","domain":null,"updated_at":"2019-03-21T14:10:12.507Z","statistics":{"values":[{"value":"Wootton HS/ Frost MS Tributary","count":1},{"value":"Winding Rose Tributary","count":1},{"value":"Welsh Park Tributary","count":1},{"value":"Watts Branch Park Mainstem","count":1},{"value":"Upper Woottons Mill Tributary","count":1},{"value":"Upper Woodley Gardens Tributary","count":1},{"value":"Upper WB Mainstem to Nelson Trib","count":1},{"value":"Upper WB College Gardens Trib","count":1},{"value":"Upper Watts Branch Trib S of Gude","count":1},{"value":"Upper Watts Branch Pkwy Tributary","count":1}],"duration":75.6311750002205,"count":47}},{"name":"Code","type":"esriFieldTypeString","alias":"Stream Code","domain":null,"updated_at":"2019-03-21T14:10:12.505Z","statistics":{"values":[{"value":"WB-9","count":1},{"value":"WB-8","count":1},{"value":"WB-7","count":1},{"value":"WB-6","count":1},{"value":"WB-5","count":1},{"value":"WB-4","count":1},{"value":"WB-3","count":1},{"value":"WB-25","count":1},{"value":"WB-24","count":1},{"value":"WB-23","count":1}],"duration":72.8092799996957,"count":47}},{"name":"ADOPTED","type":"esriFieldTypeString","alias":"Adopted?","domain":null,"updated_at":"2019-03-21T14:10:12.521Z","statistics":{"values":[{"value":"YES","count":35},{"value":"NO","count":12}],"duration":88.7584289992228,"count":2}},{"name":"GROUP_","type":"esriFieldTypeString","alias":"Adopting Group","domain":null,"updated_at":"2019-03-21T14:10:12.529Z","statistics":{"values":[{"value":"Available","count":10},{"value":"Rockshire Pride","count":2},{"value":"Rockshire Association","count":2},{"value":"Hungerford Civic Association","count":2},{"value":"Croydon Creek Nature Center","count":2},{"value":"Wootton HS Environmental Club","count":1},{"value":"Two People Who Want To Help A Stream","count":1},{"value":"Thrive Yoga LLC","count":1},{"value":"Thomas Farm Community Center - Totally Teens","count":1},{"value":"The Stream Whisperers","count":1}],"duration":96.5526339998469,"count":31}},{"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:10:12.436Z"},{"name":"Shape.len","type":"esriFieldTypeDouble","alias":"Shape.len","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:10:12.436Z"},{"name":"LENGTH_MILES","type":"esriFieldTypeDouble","alias":"Stream Length (miles)","domain":null,"updated_at":"2019-03-21T14:10:12.542Z","statistics":{"duration":106.232234999537,"sum":18.38919037,"avg":0.399765,"count":47,"min":0.15126142,"max":0.827304,"stddev":0.148615341074691,"var":0.0220865196027467}}],"item_name":"Rockville Environmental Management","type":"ItemLayer","item_type":"Feature Layer","license":"<div>The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”</div><div><br /></div><div>This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.</div><div><br /></div><div>DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. </div><div><br /></div><div>The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate.</div><div><br /></div><div><br /></div>","main_group_description":"Items published by the city of Rockville appear here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/ca03f755f5af401a88243a698ec402f8/info/rockvillelogo.png","main_group_title":"Rockville","max_record_count":1000,"name":"Adopt A Stream","owner":"RockvilleMD","record_count":47,"tags":["Rockville","environment","environmental management","watersheds","stream","inlets"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/dfe2681e23de458080cc8adf4a4be899/info/thumbnail/AdoptAStream.jpg","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-09-13T18:13:34.000Z","updated_at":"2019-03-21T14:09:07.000Z","url":"https://maps.rockvillemd.gov/arcgis/rest/services/Rockville_EnvMgt_WebMerc/MapServer/2","views":null,"quality":74,"coverage":"local","current_version":10.51,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"J65Mns15CRcll4iw","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"custom","text":"The City of Rockville provides this dataset or map to be available and accessible for public use and sharing, “as is.”This dataset or map may be derived from a variety of sources of varying quality and accuracy. Accuracy, completeness, correctness, and currency are not guaranteed. Maps are provided for informational purposes only and have not been prepared for and are not suitable for legal, engineering, or surveying purposes or any other site-specific purpose. Maps provided do not represent an on-the-ground survey and represent only the approximate relative location of property boundaries and other features.DATASETS AND MAPS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. The City of Rockville assumes no responsibility or liability for any errors, omissions, or inaccuracies in the datasets or maps provided, regardless of the cause of such, or for any decision made, action taken, or action not taken by the user in reliance upon any maps or data provided herein. The user assumes the risk that the information may not be accurate."},"use_standardized_queries":true,"advanced_query_capabilities":{"use_standardized_queries":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_pagination":true,"supports_true_curve":true,"supports_returning_query_extent":true,"supports_query_with_distance":true,"supports_sql_expression":true},"supported_extensions":"KmlServer"},{"display_field":"FIPS","max_record_count":2000,"record_count":1488,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":null,"supports_advanced_queries":true,"id":"8db37551165b425cb1f14ae4518e54db_1","landing_page":"https://www.arcgis.com/home/item.html?id=8db37551165b425cb1f14ae4518e54db","description":"Floodplains within Montgomery County","extent":{"coordinates":[[-77.5288,38.9332],[-76.8876,39.3549]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:06:41.407Z"},{"name":"GIS1.floodplains_dnr.AREA","type":"esriFieldTypeDouble","alias":"AREA","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:06:41.407Z"},{"name":"PERIMETER","type":"esriFieldTypeDouble","alias":"PERIMETER","domain":null,"updated_at":"2019-03-21T14:06:41.917Z","statistics":{"duration":510.5502559999,"sum":4816745.03514,"avg":3256.75796831643,"count":1479,"min":6.55776,"max":205436.68779,"stddev":10208.8377066963,"var":104220367.321665}},{"name":"MTG_83M_","type":"esriFieldTypeDouble","alias":"MTG_83M_","domain":null,"updated_at":"2019-03-21T14:06:41.556Z","statistics":{"duration":145.558884000406,"sum":1095939,"avg":741,"count":1479,"min":2,"max":1480,"stddev":427.094837243439,"var":182410}},{"name":"MTG_83M_ID","type":"esriFieldTypeDouble","alias":"MTG_83M_ID","domain":null,"updated_at":"2019-03-21T14:06:41.917Z","statistics":{"duration":504.786518000066,"sum":1094460,"avg":740,"count":1479,"min":1,"max":1479,"stddev":427.094837243439,"var":182410}},{"name":"FIPS","type":"esriFieldTypeString","alias":"FIPS","domain":null,"updated_at":"2019-03-21T14:06:41.872Z","statistics":{"values":[{"value":"24031","count":1479}],"duration":458.668354999274,"count":1}},{"name":"COMMUNITY","type":"esriFieldTypeString","alias":"COMMUNITY","domain":null,"updated_at":"2019-03-21T14:06:41.886Z","statistics":{"values":[{"value":"0049","count":1123},{"value":"0050","count":229},{"value":"0051","count":64},{"value":"0118","count":38},{"value":"0126","count":9},{"value":"0000","count":8},{"value":"0094","count":6},{"value":"0166","count":2}],"duration":472.561397000216,"count":8}},{"name":"FIRM_PANEL","type":"esriFieldTypeString","alias":"FIRM_PANEL","domain":null,"updated_at":"2019-03-21T14:06:41.600Z","statistics":{"values":[{"value":"2400490150B","count":312},{"value":"2400490125C","count":277},{"value":"2400490175C","count":217},{"value":"2400490200C","count":126},{"value":"2400490050B","count":98},{"value":"2400500004B","count":96},{"value":"2400490075B","count":68},{"value":"2400500007B","count":48},{"value":"2400500002B","count":38},{"value":"2401180003B","count":34}],"duration":186.04650099948,"count":27}},{"name":"PANEL_DATE","type":"esriFieldTypeString","alias":"PANEL_DATE","domain":null,"updated_at":"2019-03-21T14:06:41.636Z","statistics":{"values":[{"value":"02-Jul-1979","count":503},{"value":"16-Jun-1992","count":277},{"value":"01-Dec-1982","count":223},{"value":"01-Aug-1984","count":217},{"value":"05-Aug-1991","count":126},{"value":"05-Jan-1978","count":64},{"value":"15-Oct-1982","count":34},{"value":"See note","count":27},{"value":"10-Aug-1979","count":6},{"value":"19-Jun-1989","count":2}],"duration":221.126294999383,"count":10}},{"name":"QUAD","type":"esriFieldTypeString","alias":"QUAD","domain":null,"updated_at":"2019-03-21T14:06:41.677Z","statistics":{"values":[{"value":"39077-A2","count":363},{"value":"39077-B2","count":278},{"value":"39077-A1","count":249},{"value":"39077-B1","count":153},{"value":"38077-H2","count":73},{"value":"39077-B4","count":69},{"value":"39077-A3","count":67},{"value":"38077-H1","count":53},{"value":"39077-B3","count":50},{"value":"39077-C3","count":28}],"duration":261.105844999664,"count":20}},{"name":"ZONE","type":"esriFieldTypeString","alias":"ZONE","domain":null,"updated_at":"2019-03-21T14:06:41.743Z","statistics":{"values":[{"value":"AE","count":731},{"value":"X500","count":398},{"value":"X","count":240},{"value":"A","count":100},{"value":"ANI","count":10}],"duration":327.010702,"count":5}},{"name":"FLOODWAY","type":"esriFieldTypeString","alias":"FLOODWAY","domain":null,"updated_at":"2019-03-21T14:06:41.761Z","statistics":{"values":[{"value":" ","count":1344},{"value":"FW","count":135}],"duration":344.23109500017,"count":2}},{"name":"COBRA","type":"esriFieldTypeString","alias":"COBRA","domain":null,"updated_at":"2019-03-21T14:06:41.754Z","statistics":{"values":[{"value":"COBRA_OUT","count":1479}],"duration":335.576590999961,"count":1}},{"name":"SFHA","type":"esriFieldTypeString","alias":"SFHA","domain":null,"updated_at":"2019-03-21T14:06:41.849Z","statistics":{"values":[{"value":"IN","count":831},{"value":"OUT","count":648}],"duration":429.71035700012,"count":2}},{"name":"SYMBOL","type":"esriFieldTypeDouble","alias":"SYMBOL","domain":null,"updated_at":"2019-03-21T14:06:41.797Z","statistics":{"duration":377.315049999394,"sum":12372,"avg":8.36511156186613,"count":1479,"min":0,"max":18,"stddev":4.75380623489634,"var":22.5986737189393}},{"name":"PANEL_TYP","type":"esriFieldTypeString","alias":"PANEL_TYP","domain":null,"updated_at":"2019-03-21T14:06:41.852Z","statistics":{"values":[{"value":"CBPP","count":1450},{"value":"CBNP","count":19},{"value":"UNMC","count":10}],"duration":428.933419000357,"count":3}},{"name":"NOTES","type":"esriFieldTypeString","alias":"NOTES","domain":null,"updated_at":"2019-03-21T14:06:41.858Z","statistics":{"values":[{"value":" ","count":1452},{"value":"Panel not printed - Area in zone C","count":10},{"value":" Panel not printed - Area not included","count":9},{"value":"Panel not printed - Area not included","count":8}],"duration":434.358075000346,"count":4}}],"item_name":"Floodplains","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Features published by the planning department are shown here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/0e2ea1a584674c55b16d302c8c1a0b84/info/Shovel_logo.png","main_group_title":"Planning Department","max_record_count":2000,"name":"Floodplains (DNR, source FEMA)","owner":"jay.mukherjee","record_count":1488,"tags":["Floodplains","DNR","FEMA","MNCPPC","Montgomery County Planning","Montgomery County","Maryland"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/8db37551165b425cb1f14ae4518e54db/info/thumbnail/ago_downloaded.png","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"}],"public":true,"created_at":"2014-04-09T20:30:37.000Z","updated_at":"2019-03-21T14:06:04.000Z","url":"https://mcatlas.org/arcgis3/rest/services/overlays/Floodplains/FeatureServer/1","views":null,"quality":69,"coverage":"local","current_version":10.21,"comments_enabled":true,"service_spatial_reference":{"wkid":102685,"latestWkid":2248},"metadata_url":null,"org_id":"HbzrdBZjOwNHp70P","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"none"},"use_standardized_queries":true,"advanced_query_capabilities":null,"supported_extensions":""},{"display_field":"CLASS1","max_record_count":12000,"record_count":911,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":null,"supports_advanced_queries":true,"id":"69acca3a6bd54eab9972adcb8713448e_2","landing_page":"https://www.arcgis.com/home/item.html?id=69acca3a6bd54eab9972adcb8713448e","description":"Wetland locations used for site and regulatory application reviews, management plans and other uses\n","extent":{"coordinates":[[-79.5018,37.948],[-75.0669,39.7319]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:07:10.265Z"},{"name":"CLASS1","type":"esriFieldTypeString","alias":"CLASS","domain":null,"updated_at":"2019-03-21T14:07:10.385Z","statistics":{"values":[{"value":"WSSC","count":854},{"value":"U","count":21},{"value":" ","count":1},{"value":"&","count":1},{"value":"4","count":1},{"value":"2","count":1},{"value":"©\u0003","count":1},{"value":"¿","count":1},{"value":"\u0012","count":1},{"value":"9","count":1}],"duration":120.120115000755,"count":38}}],"item_name":"Wetlands","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Features published by the planning department are shown here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/0e2ea1a584674c55b16d302c8c1a0b84/info/Shovel_logo.png","main_group_title":"Planning Department","max_record_count":12000,"name":"Wetlands of Special State Concern","owner":"jay.mukherjee","record_count":911,"tags":["Wetlands","DNR","NWI","US Fish and Wildlife","MNCPPC","Montgomery County Planning Department","Montgomery County","Maryland"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/69acca3a6bd54eab9972adcb8713448e/info/thumbnail/ago_downloaded.png","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"}],"public":true,"created_at":"2014-04-09T20:23:27.000Z","updated_at":"2019-03-21T14:06:04.000Z","url":"https://mcatlas.org/arcgis3/rest/services/overlays/Wetlands/FeatureServer/2","views":null,"quality":69,"coverage":"regional","current_version":10.21,"comments_enabled":true,"service_spatial_reference":{"wkid":102685,"latestWkid":2248},"metadata_url":null,"org_id":"HbzrdBZjOwNHp70P","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"none"},"use_standardized_queries":true,"advanced_query_capabilities":null,"supported_extensions":""},{"display_field":"MYLAR_SHEET","max_record_count":2000,"record_count":475,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":null,"supports_advanced_queries":true,"id":"8db37551165b425cb1f14ae4518e54db_0","landing_page":"https://www.arcgis.com/home/item.html?id=8db37551165b425cb1f14ae4518e54db","description":"Floodplains within Montgomery County","extent":{"coordinates":[[-77.5288,38.9332],[-76.8876,39.3549]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:06:17.906Z"},{"name":"MYLAR_SHEET","type":"esriFieldTypeString","alias":"MYLAR_SHEET","domain":null,"updated_at":"2019-03-21T14:06:18.083Z","statistics":{"values":[{"value":"01","count":25},{"value":"03","count":23},{"value":"02","count":22},{"value":"04","count":21},{"value":"05","count":19},{"value":"06","count":17},{"value":"07","count":13},{"value":"08","count":12},{"value":"09","count":10},{"value":"12","count":9}],"duration":177.068115999922,"count":228}},{"name":"WATER_TYPE","type":"esriFieldTypeString","alias":"WATER_TYPE","domain":null,"updated_at":"2019-03-21T14:06:18.038Z","statistics":{"values":[{"value":"Hawlings River","count":28},{"value":"Great Seneca Creek","count":27},{"value":"Rock Creek","count":24},{"value":"Little Seneca Creek","count":20},{"value":"Northwest Branch","count":14},{"value":"Cabin Branch","count":14},{"value":"Watts Branch","count":12},{"value":"Paint Branch","count":12},{"value":"Muddy Branch","count":12},{"value":"James Creek","count":11}],"duration":131.29552299995,"count":133}},{"name":"EXISTING_SOURCE","type":"esriFieldTypeString","alias":"EXISTING_SOURCE","domain":null,"updated_at":"2019-03-21T14:06:18.055Z","statistics":{"values":[{"value":"MNCPP_Mylars_Ex","count":359},{"value":"<Null>","count":51}],"duration":148.438690000214,"count":2}},{"name":"ULTIMATE_SOURCE","type":"esriFieldTypeString","alias":"ULTIMATE_SOURCE","domain":null,"updated_at":"2019-03-21T14:06:18.086Z","statistics":{"values":[{"value":"MNCPP_Mylars_Ult","count":458}],"duration":178.85310800001,"count":1}},{"name":"COMMENTS","type":"esriFieldTypeString","alias":"COMMENTS","domain":null,"updated_at":"2019-03-21T14:06:18.090Z","statistics":{"values":[{"value":"hand drawn","count":37},{"value":"FEMA","count":6},{"value":"file missing","count":1}],"duration":183.083937000483,"count":3}},{"name":"FLOOD_PLAIN","type":"esriFieldTypeString","alias":"FLOOD_PLAIN","domain":null,"updated_at":"2019-03-21T14:06:18.130Z","statistics":{"values":[{"value":"Seneca Creek","count":168},{"value":"Rock Creek","count":85},{"value":"Anacostia","count":56},{"value":"Patuxent","count":51},{"value":"Cabin John","count":41},{"value":"Watts Branch","count":40},{"value":"Muddy Branch","count":12},{"value":"Rock Run","count":9},{"value":"Little Falls","count":8},{"value":"Clarksburg Study","count":3}],"duration":222.471590000205,"count":12}},{"name":"WATERSHED","type":"esriFieldTypeString","alias":"WATERSHED","domain":null,"updated_at":"2019-03-21T14:06:18.130Z","statistics":{"values":[{"value":"Rock Creek","count":85},{"value":"Hawlings River","count":51},{"value":"Cabin John Creek","count":41},{"value":"Watts Branch","count":40},{"value":"Little Seneca Creek","count":40},{"value":"Paint Branch","count":20},{"value":"Northwest Branch","count":20},{"value":"Great Seneca Creek","count":19},{"value":"Gunners Branch","count":15},{"value":"Cabin Branch","count":15}],"duration":222.869807000272,"count":29}},{"name":"FILE_","type":"esriFieldTypeString","alias":"File_","domain":null,"updated_at":"2019-03-21T14:06:18.184Z","statistics":{"values":[{"value":"no file","count":3},{"value":"SenecaCreek_GS_12.pdf","count":2},{"value":"RockCreek_RC_05.pdf","count":2},{"value":"Patuxent_HR-11.pdf","count":2},{"value":"SenecaCreek_WR_01.pdf","count":2},{"value":"RockCreek_RC_15B.pdf","count":2},{"value":"RockCreek_RC_09D.pdf","count":1},{"value":"RockCreek_RC_27B.pdf","count":1},{"value":"RockCreek_RC_27.pdf","count":1},{"value":"RockCreek_RC_21.pdf","count":1}],"duration":261.099206999876,"count":467}},{"name":"URL","type":"esriFieldTypeString","alias":"URL","domain":null,"updated_at":"2019-03-21T14:06:18.229Z","statistics":{"values":[{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/RockCreek_RC_05.pdf","count":2},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/Patuxent_HR-11.pdf","count":2},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/SenecaCreek_WR_01.pdf","count":2},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/SenecaCreek_GS_12.pdf","count":2},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/RockCreek_RC_15B.pdf","count":2},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/SenecaCreek_G_GBT-2.pdf","count":1},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/RockRun_RR_04.pdf","count":1},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/RockCreek_RC_09D.pdf","count":1},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/RockCreek_RC_07C.pdf","count":1},{"value":"http://mcatlas.org/floodplainmylars/MNCPP_Mylars_Ult/Patuxent_J6-1.pdf","count":1}],"duration":305.365413000807,"count":465}}],"item_name":"Floodplains","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Features published by the planning department are shown here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/0e2ea1a584674c55b16d302c8c1a0b84/info/Shovel_logo.png","main_group_title":"Planning Department","max_record_count":2000,"name":"Floodplains (MNCPPC, Mylars)","owner":"jay.mukherjee","record_count":475,"tags":["Floodplains","DNR","FEMA","MNCPPC","Montgomery County Planning","Montgomery County","Maryland"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/8db37551165b425cb1f14ae4518e54db/info/thumbnail/ago_downloaded.png","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"}],"public":true,"created_at":"2014-04-09T20:30:37.000Z","updated_at":"2019-03-21T14:06:04.000Z","url":"https://mcatlas.org/arcgis3/rest/services/overlays/Floodplains/FeatureServer/0","views":null,"quality":69,"coverage":"local","current_version":10.21,"comments_enabled":true,"service_spatial_reference":{"wkid":102685,"latestWkid":2248},"metadata_url":null,"org_id":"HbzrdBZjOwNHp70P","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"none"},"use_standardized_queries":true,"advanced_query_capabilities":null,"supported_extensions":""},{"display_field":"OBJECTID","max_record_count":7000,"record_count":7825,"geometry_type":"esriGeometryPolygon","object_id_field":"OBJECTID","supported_extensions":"","advanced_query_capabilities":null,"supports_advanced_queries":true,"id":"83061a1dc74c4f419d48de65ab227bdc_0","landing_page":"https://www.arcgis.com/home/item.html?id=83061a1dc74c4f419d48de65ab227bdc","description":"Forest cover within Montgomery County","extent":{"coordinates":[[-77.5282,38.9348],[-76.8883,39.3476]]},"fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null,"statistics":{"duration":0},"updated_at":"2019-03-21T14:06:21.817Z"},{"name":"ACRES","type":"esriFieldTypeSmallInteger","alias":"ACRES","domain":null,"updated_at":"2019-03-21T14:06:21.941Z","statistics":{"duration":124.323652999476,"sum":94987,"avg":12.1482286737434,"count":7819,"min":0,"max":2012,"stddev":57.7044001816877,"var":3329.79780032836}}],"item_name":"Forests","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"Features published by the planning department are shown here.","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/0e2ea1a584674c55b16d302c8c1a0b84/info/Shovel_logo.png","main_group_title":"Planning Department","max_record_count":7000,"name":"Forests","owner":"jay.mukherjee","record_count":7825,"tags":["Forests","Environment","MNCPPC","Montgomery County Planning Department","Montgomery County","Maryland"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/83061a1dc74c4f419d48de65ab227bdc/info/thumbnail/ago_downloaded.png","sites":[{"title":"gisMontgomery Open Data","url":"http://portal-gismontgomery.opendata.arcgis.com","logo":null},{"title":"Prototype","url":"http://prototype-gismontgomery.opendata.arcgis.com","logo":"http://gisMontgomery.opendata.arcgis.com/favicon.ico"},{"title":"Open Data Institute Queensland","url":"http://opendata.odiqueensland.org.au","logo":"http://odiqueensland.org.au/images/favicon.ico"}],"public":true,"created_at":"2014-04-09T20:32:13.000Z","updated_at":"2019-03-21T14:06:04.000Z","url":"https://mcatlas.org/arcgis3/rest/services/overlays/Forests/FeatureServer/0","views":null,"quality":64,"coverage":"local","current_version":10.21,"comments_enabled":true,"service_spatial_reference":{"wkid":102685,"latestWkid":2248},"metadata_url":null,"org_id":"HbzrdBZjOwNHp70P","metadata":{"published":null,"present":false,"url":null,"online_resources":[]},"structured_license":{"type":"none"},"use_standardized_queries":true,"advanced_query_capabilities":null,"supported_extensions":""}],"metadata":{"query_parameters":{"bbox":null,"page":1,"per_page":10,"q":"*","required_keywords":[],"sort_by":"updated_at","sort_order":"desc"},"stats":{"count":10,"total_count":212,"top_tags":[{"name":"open data","count":8815},{"name":"transportation","count":7921},{"name":"boundaries","count":6696},{"name":"planning","count":4578},{"name":"water","count":4537},{"name":"environment","count":4156},{"name":"arcgis","count":3585},{"name":"service definition","count":3382},{"name":".sd","count":3328},{"name":"government","count":2903},{"name":"infrastructure","count":2844},{"name":"cartografia, região metropolitana, cartas","count":2669},{"name":"census","count":2536},{"name":"demographics","count":2409},{"name":"2017","count":2338},{"name":"education","count":2314},{"name":"canada","count":2299},{"name":"moncton","count":2141},{"name":"zoning","count":2114},{"name":"british columbia","count":2046},{"name":"development","count":1996},{"name":"boundary","count":1980},{"name":"noaa","count":1950},{"name":"pdf","count":1941},{"name":"recreation","count":1911},{"name":"health","count":1898},{"name":"parks","count":1863},{"name":"map","count":1780},{"name":"elevation","count":1754},{"name":"county","count":1732},{"name":"florida","count":1717},{"name":"bc","count":1688},{"name":"government of british columbua","count":1674},{"name":"government of bc","count":1674},{"name":"population","count":1666},{"name":"gis","count":1662},{"name":"imagery","count":1658},{"name":"maryland","count":1636},{"name":"esri","count":1625},{"name":"data","count":1585},{"name":"roads","count":1530},{"name":"crd","count":1521},{"name":"wms","count":1503},{"name":"property","count":1481},{"name":"wfs","count":1475},{"name":"michigan","count":1473},{"name":"land use","count":1463},{"name":"parcels","count":1458},{"name":"wildlife","count":1419},{"name":"facilities","count":1419},{"name":"lake county illinois","count":1401},{"name":"opendata","count":1380},{"name":"utilities","count":1332},{"name":"geology","count":1324},{"name":"community","count":1311},{"name":"washington","count":1292},{"name":"story map","count":1292},{"name":"bc geographic warehouse public layers","count":1285},{"name":"economic development","count":1239},{"name":"basemap","count":1238},{"name":"university of michigan","count":1233},{"name":"eda","count":1230},{"name":"habitat","count":1229},{"name":"university of michigan flint","count":1226},{"name":"um-flint outreach","count":1226},{"name":"um-flint gisc","count":1226},{"name":"um-flint gis trc","count":1226},{"name":"um-flint gis training and research center","count":1226},{"name":"um-flint gis center","count":1226},{"name":"um-flint","count":1226},{"name":"um flint outreach","count":1226},{"name":"um flint","count":1226},{"name":"ucced","count":1226},{"name":"plf3","count":1226},{"name":"michigan usa","count":1226},{"name":"mi usa","count":1226},{"name":"medc region vi","count":1226},{"name":"medc region 6","count":1226},{"name":"medc","count":1226},{"name":"mapflint","count":1226},{"name":"map flint","count":1226},{"name":"i-69 thumb region","count":1226},{"name":"https://mapflint.org","count":1226},{"name":"gistrc","count":1226},{"name":"gisc","count":1226},{"name":"gis trc","count":1226},{"name":"eda university center for community and economic development","count":1226},{"name":"local government","count":1204},{"name":"housing","count":1195},{"name":"environmental","count":1182},{"name":"2016","count":1178},{"name":"fire","count":1174},{"name":"police","count":1167},{"name":"ontario","count":1161},{"name":"public safety","count":1119},{"name":"md imap","count":1118},{"name":"printed maps","count":1105},{"name":"hydrology","count":1101},{"name":"md","count":1100},{"name":"national park service","count":1096},{"name":"test","count":1083},{"name":"trails","count":1067},{"name":"ohio","count":1063},{"name":"2010","count":1063},{"name":"public","count":1043},{"name":"streets","count":1042},{"name":"auth_cdfw","count":1038},{"name":"colorado","count":1035},{"name":"safety","count":1032},{"name":"enc","count":1022},{"name":"district","count":1022},{"name":"resources","count":1014},{"name":"traffic","count":1013},{"name":"s-57","count":1006},{"name":"district of columbia","count":1001},{"name":"dc","count":1001},{"name":"dnr","count":995},{"name":"capital regional district (crd)","count":982},{"name":"capital regional district","count":982},{"name":"government of canada","count":953},{"name":"topography","count":947},{"name":"species","count":938},{"name":"flood","count":933},{"name":"land","count":931},{"name":"washington dc","count":930},{"name":"maps","count":926},{"name":"gouvernement","count":926},{"name":"schools","count":923},{"name":"yukon","count":921},{"name":"avr","count":916},{"name":"stormwater","count":915},{"name":"natural","count":898},{"name":"people","count":885},{"name":"parking","count":865},{"name":"lidar","count":863},{"name":"california","count":855},{"name":"biota","count":853},{"name":"2018","count":853},{"name":"public works","count":847},{"name":"transport","count":842},{"name":"2015","count":835},{"name":"fema","count":829},{"name":"usa","count":823},{"name":"sn:","count":816},{"name":"council","count":815},{"name":"cn:","count":814},{"name":"2012","count":806},{"name":"administrative boundaries","count":678},{"name":"conservation","count":663},{"name":"districts","count":652},{"name":"transit","count":645},{"name":"agriculture","count":631},{"name":"historical","count":630},{"name":"virginia","count":628},{"name":"road","count":498},{"name":"natural resources","count":489},{"name":"imr","count":478},{"name":"places","count":477},{"name":"north carolina","count":472},{"name":"2014","count":334}]}}}
+
+//]]>
+    </script>
+<script>
+  //<![CDATA[
+
+  $(function() {
+    var rawJSONElt = $('#site-configuration-json');
+    var rawJSON = rawJSONElt.text();
+    var siteConfiguration = JSON.parse(rawJSON.replace('<\\/script>', '</'+'script>'));
+
+    var rawDatasetsJSONElt = $('#site-serialized-datasets-json');
+    var rawDatasetsJSON = rawDatasetsJSONElt.text();
+    siteConfiguration.inlinedData = JSON.parse(rawDatasetsJSON.replace('<\\/script>', '</'+'script>'));
+
+    //currently the siteInfo serializer returns a top-level object of "site_info", but
+    //we want that passed into the app as site, so minor juggling here
+    if(siteConfiguration.site_info){
+      siteConfiguration = siteConfiguration.site_info;
+    }
+
+    //extent the site over ComposerConfig
+    var options = $.extend(ComposerConfig, {site: siteConfiguration });
+
+    var localizr = new util.Localizr(_);
+    localizr.localize()
+      .always(function () {
+        Composer.create(options);
+      });
+  });
+
+  //]]>
+</script>
+<script>
+  //<![CDATA[
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', "UA-47337822-2", 'auto');
+  ga('send', 'pageview');
+
+  //]]>
+</script>
+</body>
+</html>

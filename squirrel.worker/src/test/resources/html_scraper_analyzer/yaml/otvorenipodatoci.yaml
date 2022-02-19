@@ -1,0 +1,25 @@
+file_descriptor:
+    check:
+        domain: otvorenipodatoci.gov.mk
+        ignore-request: true
+
+    search-result-page:
+        regex: en/dataset
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .dataset-heading a
+                "http://projekt-opal.de/dataset#pagination": .pagination a
+
+    download_page:
+        regex: dataset/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": .dataset-header h1
+                "http://purl.org/dc/terms/description": .additional-info table tr:contains(Description) td
+                "http://purl.org/dc/terms/issued": .additional-info table tr:contains(Issued Date) td
+                "http://purl.org/dc/terms/creator": l(http://projekt-opal.de/agent/$label)
+                "http://www.w3.org/ns/dcat#downloadURL": div.btn-group.resource-download > a
+
+                "http://projekt-opal.de/agent/$label":
+                    "http://xmlns.com/foaf/0.1/name": .additional-info table tr:eq(3) td
+                    "http://xmlns.com/foaf/0.1/mbox": .additional-info table tr:eq(4) td
