@@ -41,21 +41,9 @@ public class DepthFilter implements UriFilter {
 					LOGGER.debug("URI {} is good", uri.toString());
 					return true;
 				}
-				
 			} else {
 				LOGGER.debug("Depth depth is not being stored for Uri :{} . Please check the queue parameters.", uri.toString());
 				return false;
 			}
-				
-
 	}
-
-
-	@Override
-	public void add(CrawleableUri uri) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 }

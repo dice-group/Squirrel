@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
-import org.dice_research.squirrel.data.uri.filter.UriFilter;
 
 /**
  * This {@link UriFilter} checks whether the given URI has a known scheme.
@@ -55,11 +54,4 @@ public class SchemeBasedUriFilter implements UriFilter {
     public void setSchemes(Set<String> schemes) {
         this.schemes = schemes;
     }
-
-	@Override
-	public void add(CrawleableUri uri) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
