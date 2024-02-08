@@ -1,5 +1,8 @@
 package org.dice_research.squirrel.data.uri.filter;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.io.FileUtils;
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +52,15 @@ public abstract class AbstractRegexBasedFilter implements UriFilter {
             }
         }
         return !foundMatchReturnValue;
+    }
+
+    public static Set<Pattern> parsePatterns(File patternFile) {
+        try {
+            return parsePatterns(FileUtils.readLines(patternFile, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            LOGGER.error("A problem was found when loading patterns. Returning empty set.", e);
+        }
+        return Collections.emptySet();
     }
 
     public static Set<Pattern> parsePatterns(List<String> patternList) {

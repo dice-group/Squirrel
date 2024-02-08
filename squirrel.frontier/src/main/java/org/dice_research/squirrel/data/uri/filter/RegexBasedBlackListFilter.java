@@ -1,15 +1,8 @@
 package org.dice_research.squirrel.data.uri.filter;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A black list implementation that is based on the
@@ -23,20 +16,12 @@ import org.slf4j.LoggerFactory;
  */
 public class RegexBasedBlackListFilter extends AbstractRegexBasedFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
-
-    public RegexBasedBlackListFilter(Set<Pattern> patterns) {
-        super(patterns, true);
+    public RegexBasedBlackListFilter(File blacklistfile) {
+        this(parsePatterns(blacklistfile));
     }
 
-    public static RegexBasedWhiteListFilter create(File whitelistfile) {
-        try {
-            List<String> whiteList = FileUtils.readLines(whitelistfile, StandardCharsets.UTF_8);
-            return new RegexBasedWhiteListFilter(parsePatterns(whiteList));
-        } catch (IOException e) {
-            LOGGER.error("A problem was found when loading the WhiteList");
-        }
-        return null;
+    public RegexBasedBlackListFilter(Set<Pattern> patterns) {
+        super(patterns, false);
     }
 
 }
