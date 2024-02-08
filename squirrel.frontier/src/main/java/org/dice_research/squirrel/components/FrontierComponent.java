@@ -28,6 +28,7 @@ import org.dice_research.squirrel.frontier.impl.FrontierSenderToWebservice;
 import org.dice_research.squirrel.frontier.impl.QueueBasedTerminationCheck;
 import org.dice_research.squirrel.frontier.impl.TerminationCheck;
 import org.dice_research.squirrel.frontier.impl.WorkerGuard;
+import org.dice_research.squirrel.frontier.impl.status.FrontierStatusTask;
 import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
 import org.dice_research.squirrel.queue.UriQueue;
 import org.dice_research.squirrel.rabbit.RPCServer;
@@ -88,6 +89,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     private final boolean doRecrawling = true;
 //    private long recrawlingTime = 1000L * 60L * 60L * 24L * 30;
     private Timer timerTerminator;
+    private Timer statusTimer;
 
     public static final boolean RECRAWLING_ACTIVE = true;
 
@@ -137,6 +139,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
         if (seedConfiguration != null) {
             processSeedFile(seedConfiguration.getSeedFile());
         }
+        // Log status
+        FrontierStatusTask statusTask = new FrontierStatusTask();
+        statusTask.addWorkerUriCount(workerGuard);
+        statusTask.addQueueEmptiness(queue);
+        statusTimer = new Timer();
+        statusTimer.schedule(statusTask, 2500, 5000);
+        // Define termination
+        LOGGER.info("Initializing Terminator task...");
+        TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
+        timerTerminator = new Timer();
+        timerTerminator.schedule(terminatorTask, 5000, 5000);
 
         LOGGER.info("Frontier initialized.");
 
@@ -168,6 +181,7 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
     public void close() throws IOException {
         LOGGER.info("Closing Frontier Component.");
         timerTerminator.cancel();
+        statusTimer.cancel();
         if (receiver != null)
             // Force the receiver to close
             receiver.close();
@@ -217,24 +231,17 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             if (deserializedData instanceof UriSetRequest) {
                 responseToUriSetRequest(handler, responseQueueName, correlId, (UriSetRequest) deserializedData);
             } else if (deserializedData instanceof UriSet) {
-
-                if (timerTerminator == null) {
-                    LOGGER.info("Initializing Terminator task...");
-                    TimerTask terminatorTask = new TerminatorTask(queue, terminationMutex, this.workerGuard);
-                    timerTerminator = new Timer();
-                    timerTerminator.schedule(terminatorTask, 5000, 5000);
-                }
 //                LOGGER.warn("Received a set of URIs (size={}).", ((UriSet) deserializedData).uris.size());
                 frontier.addNewUris(((UriSet) deserializedData).uris);
             } else if (deserializedData instanceof CrawlingResult) {
                 CrawlingResult crawlingResult = (CrawlingResult) deserializedData;
-                LOGGER.warn("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
+                LOGGER.info("Received the message that the crawling for {} URIs is done.", crawlingResult.uris.size());
                 frontier.crawlingDone(crawlingResult.uris);
                 workerGuard.removeUrisForWorker(crawlingResult.idOfWorker, crawlingResult.uris);
             } else if (deserializedData instanceof AliveMessage) {
                 AliveMessage message = (AliveMessage) deserializedData;
                 String idReceived = message.getWorkerId();
-                LOGGER.warn("Received alive message from worker with id " + idReceived);
+                LOGGER.info("Received alive message from worker with id " + idReceived);
                 workerGuard.putNewTimestamp(idReceived);
             } else {
                 LOGGER.warn("Received an unknown object {}. It will be ignored.", deserializedData.toString());
