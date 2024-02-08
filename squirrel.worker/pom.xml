@@ -7,13 +7,11 @@
     <parent>
         <groupId>org.dice-research</groupId>
         <artifactId>squirrel</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </parent>
     <artifactId>squirrel.worker</artifactId>
     <packaging>jar</packaging>
     <name>Squirrel Worker</name>
-
-
 
     <dependencies>
         <dependency>
