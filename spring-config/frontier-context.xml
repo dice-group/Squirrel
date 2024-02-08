@@ -69,7 +69,8 @@
 
 	<bean id="UriFilterBean"
 		class="org.dice_research.squirrel.data.uri.filter.UriFilterConfigurator">
-		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
+		<!--<constructor-arg index="0" ref="mongoDBKnowUriFilter" />-->
+        <constructor-arg index="0" ref="whiteFilter" />
 		<constructor-arg index="1">
 			<list>
 				<!-- <ref bean="depthFilter" /> -->
@@ -98,19 +99,25 @@
 
 
 	<bean id="mongoDBKnowUriFilter"
-		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter">
+		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter"
+        init-method="open">
 		<constructor-arg index="0"
 			value="#{systemEnvironment['MDB_HOST_NAME']}" />
 		<constructor-arg index="1"
 			value="#{systemEnvironment['MDB_PORT']}" />
-
 	</bean>
 
+    <bean id="whiteFilter"
+        class="org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter">
+        <constructor-arg index="0" ref="mongoDBKnowUriFilter" />
+        <constructor-arg index="1" value="#{systemEnvironment['URI_WHITELIST_FILE']}" />
+    </bean>
 
-	<bean id="depthFilter"
+
+	<!-- <bean id="depthFilter"
 		class="org.dice_research.squirrel.data.uri.filter.DepthFilter">
 		<constructor-arg index="0" value="3" />
-	</bean>
+	</bean>-->
 
 
 
