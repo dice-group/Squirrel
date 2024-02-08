@@ -74,6 +74,10 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
+	    if(uri == null) {
+            LOGGER.debug("URI is null and, hence, not good.");
+	        return false;
+	    }
 		MongoCursor<Document> cursor = mongoDB.getCollection(COLLECTION_NAME)
 				.find(new Document("uri", uri.getUri().toString())).iterator();
 
@@ -102,19 +106,14 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 	}
 
 	public Document crawleableUriToMongoDocument(CrawleableUri uri) {
-
 		UriType uriType = uri.getType();
-
-
 		return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
-
 	}
 
 	@Override
 	public void close() throws IOException {
 		if (!PERSIST) {
 			mongoDB.getCollection(COLLECTION_NAME).drop();
-
 		}
 		client.close();
 	}

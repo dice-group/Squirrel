@@ -267,10 +267,18 @@ public class FrontierImpl implements Frontier {
 
 	@Override
 	public void addNewUri(CrawleableUri uri) {
-		// After knownUriFilter uri should be classified according to
-		// UriProcessor
-		uri = normalizer.normalize(uri);
-		addNormalizedUri(uri);
+	    if(uri == null) {
+	        return;
+	    }
+        try {
+    		// After knownUriFilter uri should be classified according to
+    		// UriProcessor
+    		uri = normalizer.normalize(uri);
+    		addNormalizedUri(uri);
+        } catch (Exception e) {
+            LOGGER.info(
+                    "Exception while adding URI: " + uri.getUri().toString(), e);
+        }
 
 		try {
 			for (UriGenerator u : uriGenerator) {
@@ -279,11 +287,15 @@ public class FrontierImpl implements Frontier {
 			}
 		} catch (Exception e) {
 			LOGGER.info(
-					"Exception happened while generating additional URI variant for URI: " + uri.getUri().toString());
+					"Exception while generating additional URI variant for URI: " + uri.getUri().toString(), e);
 		}
 	}
 
 	protected void addNormalizedUri(CrawleableUri uri) {
+	    if(uri == null) {
+	        // Nothing to do
+	        return;
+	    }
 		CrawleableUri curi = uri;
 		if (uriFilter.isUriGood(curi)) {
 			LOGGER.debug("addNewUri(" + curi + "): URI is good [" + uriFilter + "]");
