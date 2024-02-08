@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * A white list implementation that is based on the
  * {@link AbstractRegexBasedFilter} class. Its
@@ -16,12 +18,13 @@ import java.util.regex.Pattern;
  */
 public class RegexBasedWhiteListFilter extends AbstractRegexBasedFilter {
 
-    public RegexBasedWhiteListFilter(File whitelistfile) {
-        this(parsePatterns(whitelistfile));
+    public RegexBasedWhiteListFilter(File whitelistfile, boolean lowerCaseComparison) {
+        this(parsePatterns(whitelistfile), lowerCaseComparison);
     }
 
-    public RegexBasedWhiteListFilter(Set<Pattern> patterns) {
-        super(patterns, true);
+    public RegexBasedWhiteListFilter(Set<Pattern> patterns, boolean lowerCaseComparison) {
+        super(patterns, true, lowerCaseComparison);
+        setDecisionLogger(LoggerFactory.getLogger(RegexBasedWhiteListFilter.class));
     }
 
 }

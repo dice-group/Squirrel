@@ -72,6 +72,7 @@
 		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
 		<constructor-arg index="1">
 			<list>
+                <ref bean="schemeFilter" />
 				<ref bean="whiteFilter" />
                 <ref bean="blackFilter" />
 			</list>
@@ -107,13 +108,18 @@
 			value="#{systemEnvironment['MDB_PORT']}" />
 	</bean>
 
+    <bean id="schemeFilter"
+        class="org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter">
+    </bean>
     <bean id="whiteFilter"
         class="org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter">
         <constructor-arg index="0" value="#{systemEnvironment['URI_WHITELIST_FILE']}" />
+        <constructor-arg index="1" value="false" />
     </bean>
     <bean id="blackFilter"
         class="org.dice_research.squirrel.data.uri.filter.RegexBasedBlackListFilter">
         <constructor-arg index="0" value="#{systemEnvironment['URI_BLACKLIST_FILE']}" />
+        <constructor-arg index="1" value="false" />
     </bean>
 
 

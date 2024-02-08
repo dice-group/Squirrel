@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * A black list implementation that is based on the
  * {@link AbstractRegexBasedFilter} class. Its
@@ -16,12 +18,13 @@ import java.util.regex.Pattern;
  */
 public class RegexBasedBlackListFilter extends AbstractRegexBasedFilter {
 
-    public RegexBasedBlackListFilter(File blacklistfile) {
-        this(parsePatterns(blacklistfile));
+    public RegexBasedBlackListFilter(File whitelistfile, boolean lowerCaseComparison) {
+        this(parsePatterns(whitelistfile), lowerCaseComparison);
     }
 
-    public RegexBasedBlackListFilter(Set<Pattern> patterns) {
-        super(patterns, false);
+    public RegexBasedBlackListFilter(Set<Pattern> patterns, boolean lowerCaseComparison) {
+        super(patterns, false, lowerCaseComparison);
+        setDecisionLogger(LoggerFactory.getLogger(RegexBasedBlackListFilter.class));
     }
 
 }

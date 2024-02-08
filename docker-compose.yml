@@ -15,6 +15,7 @@ services:
     environment:
       - HOBBIT_RABBIT_HOST=rabbit
       - URI_WHITELIST_FILE=/var/squirrel/whitelist.txt
+      - URI_BLACKLIST_FILE=/var/squirrel/blacklist.txt
       - FRONTIER_CONTEXT_CONFIG_FILE=/var/squirrel/spring-config/frontier-context.xml
       - SEED_FILE=/var/squirrel/seeds.txt
       - MDB_HOST_NAME=mongodb
@@ -31,6 +32,7 @@ services:
       - ./seed/seeds.csv:/var/squirrel/seeds.csv:ro
       - ./seed/seeds.txt:/var/squirrel/seeds.txt:ro
       - ./whitelist/whitelist.txt:/var/squirrel/whitelist.txt:ro
+      - ./whitelist/blacklist.txt:/var/squirrel/blacklist.txt:ro
       - ./spring-config:/var/squirrel/spring-config
     command: java -cp squirrel.jar org.dice_research.squirrel.components.FrontierComponentStarter
 

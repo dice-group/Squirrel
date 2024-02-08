@@ -65,11 +65,8 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 	private static final String DUMMY_HASH_VALUE = "dummyValue";
 
 	public MongoDBKnowUriFilter(String hostName, Integer port) {
-
 		LOGGER.info("Filter Persistance: " + PERSIST);
-
         this.client = MongodbConnectionFactory.getConnection(hostName, port);
-
 	}
 
 	@Override
@@ -92,7 +89,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 				return true;
 			}
 		} else {
-
 			LOGGER.debug("URI {} is good", uri.toString());
 			cursor.close();
 			return true;

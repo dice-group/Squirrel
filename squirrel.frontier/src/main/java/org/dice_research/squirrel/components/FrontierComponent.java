@@ -280,7 +280,6 @@ public class FrontierComponent extends AbstractComponent implements RespondingDa
             List<CrawleableUri> listSeeds = initializeDepth(new UriSeedReader(seedFile).getUris());
             if (!listSeeds.isEmpty())
                 frontier.addNewUris(listSeeds);
-
         } catch (Exception e) {
             LOGGER.error("Couldn't process seed file. It will be ignored.", e);
         }

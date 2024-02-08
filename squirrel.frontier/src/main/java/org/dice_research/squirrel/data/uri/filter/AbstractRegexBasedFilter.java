@@ -29,29 +29,55 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractRegexBasedFilter implements UriFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RegexBasedWhiteListFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRegexBasedFilter.class);
 
     private Set<Pattern> patterns;
     private boolean foundMatchReturnValue;
+    private boolean lowerCaseComparison;
+    private String foundMatchLogMsg;
+    private String notFoundMatchLogMsg;
+    protected Logger decisionLogger = LOGGER;
 
-    public AbstractRegexBasedFilter(Set<Pattern> patterns, boolean foundMatchReturnValue) {
+    public AbstractRegexBasedFilter(Set<Pattern> patterns, boolean foundMatchReturnValue, boolean lowerCaseComparison) {
         this.patterns = patterns;
         this.foundMatchReturnValue = foundMatchReturnValue;
+        this.lowerCaseComparison = lowerCaseComparison;
+        if (foundMatchReturnValue) {
+            foundMatchLogMsg = "URI {} is good";
+            notFoundMatchLogMsg = "URI {} is not good";
+        } else {
+            foundMatchLogMsg = "URI {} is not good";
+            notFoundMatchLogMsg = "URI {} is good";
+        }
     }
 
     @Override
     public boolean isUriGood(CrawleableUri uri) {
         if (patterns == null || patterns.isEmpty()) {
+            decisionLogger.debug("Not correctly configured so all URIs are good.");
             return true;
         } else {
+            String uriString = uri.getUri().toString();
+            if (lowerCaseComparison) {
+                uriString = uriString.toLowerCase();
+            }
             for (Pattern p : patterns) {
-                Matcher m = p.matcher(uri.getUri().toString().toLowerCase());
+                Matcher m = p.matcher(uriString);
                 if (m.find()) {
+                    decisionLogger.debug(foundMatchLogMsg, uri.toString());
                     return foundMatchReturnValue;
                 }
             }
         }
+        decisionLogger.debug(notFoundMatchLogMsg, uri.toString());
         return !foundMatchReturnValue;
+    }
+
+    /**
+     * @param decisionLogger the decisionLogger to set
+     */
+    public void setDecisionLogger(Logger decisionLogger) {
+        this.decisionLogger = decisionLogger;
     }
 
     public static Set<Pattern> parsePatterns(File patternFile) {

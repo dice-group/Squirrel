@@ -4,6 +4,7 @@ import org.dice_research.squirrel.configurator.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class WhiteListConfiguration extends Configuration {
     private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListConfiguration.class);
 
