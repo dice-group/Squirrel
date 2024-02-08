@@ -5,14 +5,14 @@ package org.dice_research.squirrel.data.uri.filter;
  * This class represents a composition of two or more filters,
  * requiring at least one @link {org.dice_research.squirrel.data.uri.filter.KnownUriFilter}
  * 
- *  * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
+ * @author Geraldo de Souza Junior (gsjunior@mail.uni-paderborn.de)
  * 
  */
 
 public interface UriFilterComposer extends UriFilter {
 	
 	/**
-	 * Returnsthe KnowUriFilter from this {@link UriFilterComposer}
+	 * Returns the KnowUriFilter from this {@link UriFilterComposer}
 	 * 
 	 * @return KnownUriFilter
 	 */
@@ -25,5 +25,7 @@ public interface UriFilterComposer extends UriFilter {
 	 * @param knownUriFilter
 	 */
 	public void setKnownUriFilter(KnownUriFilter knownUriFilter);
+	
+	
 
 }

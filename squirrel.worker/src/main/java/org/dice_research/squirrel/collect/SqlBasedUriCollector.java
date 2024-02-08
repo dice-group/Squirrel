@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An implementation of the {@link UriCollector} interface that is backed by a
  * SQL database.
- * 
+ *
  * @author Geralod Souza Junior (gsjunior@mail.uni-paderborn.de)
  * @author Michael R&ouml;der (michael.roeder@uni-paderborn.de)
  *
@@ -63,44 +63,44 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
     protected Serializer serializer;
     protected int bufferSize = DEFAULT_BUFFER_SIZE;
     protected Map<String, UriTableStatus> knownUris = new HashMap<>();
-    
+
 
 
 
     public void create(String dbPath) {
-    	
-	        try {
-	            Class.forName("org.hsqldb.jdbc.JDBCDriver");
-	        } catch (ClassNotFoundException e) {
-	            e.printStackTrace(System.out);
-	        }
-	        Statement s = null;
-	        try {
-	        	
-	        		this.dbConnection = DriverManager.getConnection("jdbc:hsqldb:file:foundUris/" + dbPath + "-"+Math.floor(Math.random() * 100000), "SA", "");
-	        	
-	        } catch (Exception e) {
-	            LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
-	        } finally {
-	            try {
-	                if (s != null) {
-	                    s.close();
-	                }
-	            } catch (SQLException e) {
-	            	 LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
-	            }
-	        }
-    	
+
+        try {
+            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace(System.out);
+        }
+        Statement s = null;
+        try {
+
+            this.dbConnection = DriverManager.getConnection("jdbc:hsqldb:file:foundUris/" + dbPath + "-"+Math.floor(Math.random() * 100000), "SA", "");
+
+        } catch (Exception e) {
+            LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
+        } finally {
+            try {
+                if (s != null) {
+                    s.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Error while creating a local database for storing the extracted URIs. Returning null.", e);
+            }
+        }
+
     }
 
-    
+
 
     public SqlBasedUriCollector(Serializer serializer,String dbPath) throws SQLException {
         create(dbPath);
         this.serializer = serializer;
     }
 
-    
+
 
     @Override
     public void openSinkForUri(CrawleableUri uri) {
@@ -128,7 +128,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
                     table.commitPendingChanges();
 
                     PreparedStatement ps = dbConnection
-                            .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
+                        .prepareStatement(SELECT_TABLE_QUERY.replaceFirst("\\?", tableName));
                     return new SqlBasedIterator(ps);
 
                 } catch (SQLException e) {
@@ -158,7 +158,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
             }
         }
     }
-    
+
 
     @Override
     public void addNewUri(CrawleableUri uri, CrawleableUri newUri) {
@@ -215,27 +215,27 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
             UriTableStatus table = knownUris.get(uriString);
             synchronized (table) {
                 try {
-		                    String tableName = table.getTableName();
-		                    // Make sure everything has been committed
-		                    table.commitPendingChanges();
-		    	PreparedStatement ps = dbConnection
-		                .prepareStatement(COUNT_URIS_QUERY.replaceFirst("\\?", tableName));
-		    	
+                    String tableName = table.getTableName();
+                    // Make sure everything has been committed
+                    table.commitPendingChanges();
+                    PreparedStatement ps = dbConnection
+                        .prepareStatement(COUNT_URIS_QUERY.replaceFirst("\\?", tableName));
+
 //		    	ps.setString(1, uri.getUri().toString());
-		    	ResultSet rs = ps.executeQuery();
-		    	while(rs.next()) {
-		    		totalUris = rs.getLong(1);	
-		    	}
-		    	
-		    	ps.close();
-		    	rs.close();
+                    ResultSet rs = ps.executeQuery();
+                    while(rs.next()) {
+                        totalUris = rs.getLong(1);
+                    }
+
+                    ps.close();
+                    rs.close();
                 }catch(Exception e) {
-                	LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
+                    LOGGER.error("Could not compute size for uri:. ", uri.getUri().toString());
                 }
             }
         }
-    	
-    	return totalUris;
+
+        return totalUris;
     }
 
     @Override
@@ -251,7 +251,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
     /**
      * Retrieves the URIs table name from its properties or generates a new table
      * name and adds it to the URI (using the {@value #TABLE_NAME_KEY} property).
-     * 
+     *
      * @param uri
      *            the URI for which a table name is needed.
      * @return the table name of the URI
@@ -272,7 +272,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
      * {@link #MAX_ALPHANUM_PART_OF_TABLE_NAME}={@value #MAX_ALPHANUM_PART_OF_TABLE_NAME}
      * the exceeding part is cut off. After that the hash value of the original URI
      * is appended.
-     * 
+     *
      * @param uri
      *            the URI for which a table name has to be generated
      * @return the table name of the URI
@@ -315,7 +315,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
         private final int bufferSize;
 
         public static UriTableStatus create(String tableName, Connection dbConnection, int bufferSize)
-                throws SQLException {
+            throws SQLException {
             StringBuilder builder = new StringBuilder();
             builder.append(INSERT_URI_QUERY_PART_1);
             builder.append(tableName);
@@ -334,7 +334,7 @@ public class SqlBasedUriCollector implements UriCollector,Closeable {
         }
 
         public void addUri(String uri, byte[] serializedUri) {
-        	 
+
             synchronized (buffer) {
                 buffer.put(uri, serializedUri);
                 if (buffer.size() >= bufferSize) {

@@ -1,0 +1,706 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="fr" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="fr" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="fr" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="fr"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2017-10-11T14:01:04.60/red.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="generator" content="ckan 2.6.2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspection des aliments – contrevenants - Ensembles de données - Portail données ouvertes</title>
+
+
+
+  <link rel="shortcut icon" href="/images/icons/ckan.ico" />
+
+
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-25478931-8', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/css/commun.css" type="text/css"><link rel="stylesheet" href="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/css/ckan.css" type="text/css"><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-includes/js/jquery/jquery.js"></script><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/js/doubletaptogo.js"></script><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/js/scripts.js"></script>
+
+
+  <meta property="og:title" content="Inspection des aliments – contrevenants - CKAN">
+  <meta property="og:description" content="Liste des établissements alimentaires situés sur le territoire de l’agglomération montréalaise et sous la responsabilité de la Division de l’inspection des aliments de la Ville de Montréal ayant...">
+
+
+</head>
+
+
+<body class="ckan" data-site-root="http://donnees.ville.montreal.qc.ca/" data-locale-root="http://donnees.ville.montreal.qc.ca/" data-api-root="">
+
+
+<div class="hide"><a href="#content">Passer directement au contenu</a></div>
+
+
+
+
+<div class="container"­>
+  <div class="hidden-phone" id="preheader"><a href="http://ville.montreal.qc.ca" title="Accédez au portail officiel de la Ville de Montréal" id="logoville">Ville de Montréal</a>
+    <div id="icosrsxsocio">
+      <ul class="rsxicons">
+        <li>Suivez-nous</li>
+        <li id="icotwitter"><a href="http://twitter.com/mtl_do" title="Suivez-nous sur Twitter">Twitter</a></li>
+        <li id="icolinkedin"><a href="http://www.linkedin.com/groups?gid=3863497" title="Rejoignez notre groupe LinkedIn">Rejoignez notre groupe LinkedIn</a></li>
+        <li id="icorss"><a href="/portail/fils-rss" title="Fils RSS disponibles">RSS</a></li>
+        <li id="icoinfolettre"><a href="/portail/infolettre" title="Abonnez-vous à l'infolettre">Abonnez-vous à l'infolettre</a></li>
+      </ul>
+    </div>
+    <div class="menu-nav-top-right-container">
+      <ul id="contactmenu" class="menu">
+        <li class="menu-item"><a class="last" title="Joindre les répondants du portail" href="/portail/aide-et-entraide/nous-joindre/">Nous joindre</a></li>
+      </ul>
+    </div>
+  </div>
+  <header role="banner" class="site-header" id="masthead">
+    <hgroup>
+      <h1 id="titre-site"><a rel="home" title="Portail données ouvertes" href="/"> Portail données ouvertes</a></h1>
+      <div id="mainicons" class="hidden-phone"> <a href="/portail/licence" title="En savoir plus sur les licences">
+        <ul>
+          <li id="ico01"><img alt="" src="/portail/wp-content/themes/donneesouvertes4/images/symboles-header.png"></li>
+        </ul>
+      </a> </div>
+    </hgroup>
+    <nav role="navigation" class="main-navigation" id="site-navigation"> <a title="Aller au contenu principal" href="#content" class="assistive-text">Aller au contenu principal</a>
+      <button id="menu-toggle"> <i class="icon-reorder"></i> <span>Menu</span> </button>
+      <button id="afficher-options-de-recherche"> <i class="icon-search"></i> <span>Options de recherche</span> </button>
+      <div class="menu-nav-top-container">
+        <!-- début menu collé de Wordpress -->
+        <ul class="nav-menu" id="menu-nav-top">
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5119" id="menu-item-5119"><a>Données</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5181" id="menu-item-5181"><a href="/dataset">Toutes les données</a></li>
+              <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5183" id="menu-item-5183"><a href="/group">Les données par thématiques</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4198" id="menu-item-4198"><a href="/portail/ddo/">Demande de données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4199" id="menu-item-4199"><a href="/portail/ddo/suivi-ddo/">Suivi des demandes de données ouvertes</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5122" id="menu-item-5122"><a>Démarche</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6664" id="menu-item-6664"><a href="/portail/politique-de-donnees-ouvertes/">Politique de données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5794" id="menu-item-5794"><a href="/portail/licence/" title="Sommaire de la licence">Licence</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6663" id="menu-item-6663"><a href="/portail/directive-sur-la-gouvernance-des-donnees/">Gouvernance des données</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5121" id="menu-item-5121"><a>Applications</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3623" id="menu-item-3623"><a href="/portail/applications/applications-recentes/">Applications récentes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-375" id="menu-item-375"><a href="/portail/applications/">Toutes les applications</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-350" id="menu-item-350"><a href="/portail/applications/suggestions-dapplications/">Suggestions d’applications</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5124" id="menu-item-5124"><a>Aide et entraide</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362" id="menu-item-362"><a href="/portail/aide-et-entraide/formats-de-donnees/">Formats de fichiers</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2764" id="menu-item-2764"><a href="/portail/forums-et-groupes-de-discussions/">Forums et groupes de discussions</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3598" id="menu-item-3598"><a href="/portail/aide-et-entraide/gestion-des-commentaires/">Gestion des commentaires et des échanges sur les médias sociaux</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5125" id="menu-item-5125"><a>Actualites</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1872" id="menu-item-1872"><a href="/portail/actualites/">Articles</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4535" id="menu-item-4535"><a href="/portail/archive-des-infolettres-du-portail-des-donnees-ouvertes/">Archive des infolettres du Portail des données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4501" id="menu-item-4501"><a href="/portail/actualites/abonnement/">Abonnement à l’infolettre</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4559" id="menu-item-4559"><a href="/portail/english-version-of-the-portail-des-donnees-ouvertes-de-la-ville-de-montreal/" title="English version of the Portail des données ouvertes de la Ville de Montréal">English</a></li>
+        </ul>
+
+        <!-- fin menu collé de Wordpress -->
+      </div>
+    </nav>
+    <div style="display:none;" id="bloc-recherche-permament">
+      <form action="/dataset" method="get" class="search-form" id="formulaire-de-recherche">
+        <div class="search-input control-group search-giant">
+          <input type="text" placeholder="Rechercher un ensemble de données" autocomplete="off" value="" name="q" class="search" id="expression-de-recherche">
+          <button type="submit"> <i class="icon-search"></i> <span>Rechercher</span> </button>
+        </div>
+      </form>
+      <div id="commutateur-recherche">
+        <div class="option">
+          <label for="recherche-ckan">Ensembles de données</label>
+          <input type="radio" checked="" value="q" id="recherche-ckan" name="type-de-recherche">
+        </div>
+        <div class="option">
+          <label for="recherche-wordpress">Actualités, applications et pages d'aide</label>
+          <input type="radio" value="s" id="recherche-wordpress" name="type-de-recherche">
+        </div>
+      </div>
+    </div>
+    <!-- #site-navigation -->
+  </header>
+</div>
+
+<div role="main">
+  <div id="content" class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+
+    </div>
+
+
+    <div class="row wrapper">
+
+
+
+
+
+
+      <div class="primary span9">
+
+
+        <article class="module">
+
+          <header class="module-content page-header">
+
+            <ul class="nav nav-tabs">
+
+              <li class="active"><a href="/dataset/inspection-aliments-contrevenants">Ensemble de données</a></li>
+              <li><a href="/dataset/groups/inspection-aliments-contrevenants"><i class="icon-group"></i> Thématiques</a></li>
+              <li><a href="/dataset/activity/inspection-aliments-contrevenants"><i class="icon-time"></i> Flux d&#39;Activité</a></li>
+
+            </ul>
+          </header>
+
+          <div class="module-content">
+
+
+
+
+
+
+
+
+
+
+            <h1>
+
+              Inspection des aliments – contrevenants
+
+
+
+            </h1>
+
+            <div class="notes embedded-content">
+              <p>Liste des établissements alimentaires situés sur le territoire de l’agglomération montréalaise et sous la responsabilité de la Division de l’inspection des aliments de la Ville de Montréal ayant fait l’objet d’une condamnation pour une infraction à la Loi sur les produits alimentaires (L.R.Q., c. P-29) et ses règlements.</p>
+              <p>La localisation des contrevenants sur une carte est disponible sur le <a href="http://www.mapaq.gouv.qc.ca/fr/md/servicesenligne/Pages/Geolocalisation.aspx">portail du MAPAQ</a>.</p>
+            </div>
+
+
+
+            <span class="insert-comment-thread"></span>
+
+
+
+
+            <section id="dataset-resources" class="resources">
+              <h3>Données et ressources</h3>
+
+
+              <ul class="resource-list">
+
+
+
+
+
+
+
+
+                <li class="resource-item" data-id="54d7ffa0-04bf-442c-bacd-a84c6aab888d">
+
+                  <a class="heading" href="/dataset/inspection-aliments-contrevenants/resource/54d7ffa0-04bf-442c-bacd-a84c6aab888d" title="Inspection des aliments – contrevenants">
+                    Inspection des aliments – contrevenants<span class="format-label" property="dc:format" data-format="csv">CSV</span>
+
+
+                    <span class="popular ckan-icon ckan-icon-flame" title="289 vues" xmlns="http://www.w3.org/1999/xhtml">Populaire</span>
+
+                  </a>
+
+
+                  <p class="description">
+
+                    Les données sont au format CSV.
+                    Liste des établissements alimentaires situés...
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Explorer
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/inspection-aliments-contrevenants/resource/54d7ffa0-04bf-442c-bacd-a84c6aab888d">
+
+                          <i class="icon-bar-chart"></i>
+                          Aperçu
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://donnees.ville.montreal.qc.ca/dataset/a5c1f0b9-261f-4247-99d8-f28da5000688/resource/54d7ffa0-04bf-442c-bacd-a84c6aab888d/download/inspection-aliments-contrevenants.csv" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-download"></i>
+                          Télécharger
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+
+
+
+
+
+
+
+                <li class="resource-item" data-id="92719d9b-8bf2-4dfd-b8e0-1021ffcaee2f">
+
+                  <a class="heading" href="/dataset/inspection-aliments-contrevenants/resource/92719d9b-8bf2-4dfd-b8e0-1021ffcaee2f" title="Inspection des aliments – contrevenants">
+                    Inspection des aliments – contrevenants<span class="format-label" property="dc:format" data-format="xml">XML</span>
+
+
+                    <span class="popular ckan-icon ckan-icon-flame" title="118 vues" xmlns="http://www.w3.org/1999/xhtml">Populaire</span>
+
+                  </a>
+
+
+                  <p class="description">
+
+                    Flux de données au format XML.
+                    /@xsi:noNamespaceSchemaLocation : aux fins...
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Explorer
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/inspection-aliments-contrevenants/resource/92719d9b-8bf2-4dfd-b8e0-1021ffcaee2f">
+
+                          <i class="icon-bar-chart"></i>
+                          Aperçu
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://donnees.ville.montreal.qc.ca/dataset/a5c1f0b9-261f-4247-99d8-f28da5000688/resource/92719d9b-8bf2-4dfd-b8e0-1021ffcaee2f/download/inspection-aliments-contrevenants.xml" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-download"></i>
+                          Télécharger
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+
+
+
+
+
+
+
+                <li class="resource-item" data-id="51026016-7d82-49dc-93e0-2176df8790c6">
+
+                  <a class="heading" href="/dataset/inspection-aliments-contrevenants/resource/51026016-7d82-49dc-93e0-2176df8790c6" title="Inspection des aliments – contrevenants">
+                    Inspection des aliments – contrevenants<span class="format-label" property="dc:format" data-format="xlsx">XLSX</span>
+
+
+                    <span class="popular ckan-icon ckan-icon-flame" title="128 vues" xmlns="http://www.w3.org/1999/xhtml">Populaire</span>
+
+                  </a>
+
+
+                  <p class="description">
+
+                    Fichier au format xlsx
+                    Liste des établissements alimentaires situés sur le...
+
+                  </p>
+
+
+
+                  <div class="dropdown btn-group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-share-alt"></i>
+                      Explorer
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/dataset/inspection-aliments-contrevenants/resource/51026016-7d82-49dc-93e0-2176df8790c6">
+
+                          <i class="icon-bar-chart"></i>
+                          Aperçu
+
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="http://donnees.ville.montreal.qc.ca/dataset/a5c1f0b9-261f-4247-99d8-f28da5000688/resource/51026016-7d82-49dc-93e0-2176df8790c6/download/inspection-aliments-contrevenants.xlsx" class="resource-url-analytics" target="_blank">
+
+                          <i class="icon-download"></i>
+                          Télécharger
+
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </div>
+
+
+                </li>
+
+
+              </ul>
+
+
+            </section>
+
+
+
+
+            <section id="methodologie">
+              <h3>Méthodologie</h3>
+              <p>Lors de l’inspection d’un établissement alimentaire, si l’inspecteur constate une infraction à la réglementation, il dresse un avis d’infraction précisant les correctifs à apporter. Devant le refus d’obtempérer, une poursuite judiciaire est intentée contre l’exploitant de l’établissement qui est passible d’une amende s’il est reconnu coupable. Lorsqu’une condamnation est prononcée contre un exploitant, elle est divulguée pour une période de 3 ans sur la Liste des contrevenants condamnés publiée sur le site Internet de la Ville de Montréal et mise à jour mensuellement.</p>
+            </section>
+
+            <section id="territoires">
+              <h3>Territoires</h3><ul><li>Ahuntsic-Cartierville</li><li>Agglomération</li><li>Anjou</li><li>Côte-des-Neiges–Notre-Dame-de-Grâce</li><li>Lachine</li><li>LaSalle</li><li>Le Plateau-Mont-Royal</li><li>Le Sud-Ouest</li><li>L’Île-Bizard–Sainte-Geneviève</li><li>Mercier–Hochelaga-Maisonneuve</li><li>Montréal</li><li>Montréal-Nord</li><li>Outremont</li><li>Pierrefonds-Roxboro</li><li>Rivière-des-Prairies–Pointe-aux-Trembles</li><li>Rosemont–La Petite-Patrie</li><li>Saint-Laurent</li><li>Saint-Léonard</li><li>Verdun</li><li>Ville-Marie</li><li>Villeray–Saint-Michel–Parc-Extension</li></ul></section>
+
+
+
+
+            <section class="tags">
+              <h3>Mots-clés</h3>
+
+
+
+              <ul class="tag-list well">
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Aliment">Aliment</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Amende">Amende</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Condamnation">Condamnation</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Hygi%C3%A8ne">Hygiène</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Inspection">Inspection</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Malpropret%C3%A9">Malpropreté</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Restaurant">Restaurant</a>
+                </li>
+
+                <li>
+                  <a class="tag" href="/dataset?tags=Salubrit%C3%A9">Salubrité</a>
+                </li>
+
+              </ul>
+            </section>
+
+
+
+
+
+            <section class="additional-info">
+              <h3>Info additionnelle</h3>
+              <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                  <th scope="col">Champ</th>
+                  <th scope="col">Valeur</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                  <th scope="row" class="dataset-label">Publieur</th>
+                  <td class="dataset-details" property="dc:creator">
+                    Service de l&#39;environnement - Division de l&#39;inspection des aliments
+
+                  </td>
+                </tr>
+
+                <tr>
+                  <th scope="row" class="dataset-label">Fréquence de mise à jour</th>
+                  <td class="dataset-details">Irrégulier</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" class="dataset-label">Langue</th>
+                  <td class="dataset-details">Français</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" class="dataset-label">Couverture géographique</th>
+                  <td class="dataset-details">Territoire de la ville de Montréal</td>
+                </tr>
+
+                <tr>
+                  <th scope="row" class="dataset-label">Dernière modification</th>
+                  <td class="dataset-details">2019-02-27 17:07</td>
+                </tr>
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Créé le</th>
+                  <td class="dataset-details">2013-10-08 12:19</td>
+                </tr>
+
+
+                <tr>
+                  <th scope="row" class="dataset-label">Licence</th>
+                  <td class="dataset-details">
+
+
+
+                    <a href="http://creativecommons.org/licenses/by/4.0/" rel="dc:rights">Creative Commons Attribution 4.0 International</a>
+
+
+
+                  </td>
+                </tr>
+
+                </tbody>
+              </table>
+            </section>
+
+
+
+
+            <div id="module-commentaires" style="margin-bottom:-20px; margin-left:-20px; margin-right:-20px;">
+              <div class="avertissement-disqus">
+                <h3>Commentaires</h3>
+                <p>Ce site utilise un service de gestion des commentaires externe et privé, <a href="http://help.disqus.com/customer/portal/articles/466259-privacy-policy">Disqus</a> [en anglais].</p>
+                <p>Lire également notre page : <a href="http://donnees.ville.montreal.qc.ca/portail/gestion-des-commentaires/">Gestion des commentaires et des échanges sur les médias sociaux</a></p>
+                <p>Si vous souhaitez laisser un commentaire privé, vous pouvez utiliser le formulaire <a href="http://donnees.ville.montreal.qc.ca/portail/nous-joindre/">Nous joindre</a>.</p>
+              </div>
+              <div class="module-content disqus-comments">
+
+                <script type="text/javascript">
+                  //Check to see if user is logged in.  If so send the info.
+                  var disqus_config = function() {
+                    this.language = "fr";
+
+
+
+                  }
+                </script>
+
+                <div id="disqus_thread"></div>
+
+                <script type="text/javascript">
+                  var disqus_shortname =  'ckanmtldata';
+                  var disqus_identifier = 'dataset::a5c1f0b9-261f-4247-99d8-f28da5000688';
+
+                  /* * * DON'T EDIT BELOW THIS LINE * * */
+                  (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                  })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+              </div>
+
+
+            </div>
+        </article>
+
+      </div>
+
+
+
+      <aside class="secondary span3">
+
+
+
+
+
+
+
+
+
+
+
+        <div class="module module-narrow">
+          <h2 class="module-heading">Thématiques</h2>
+          <ul class="nav nav-simple">
+
+            <li class="nav-item">
+              <a href="/group/agriculture-alimentation">
+                Agriculture et alimentation
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/group/loi-justice-securite-publique">
+                Loi, justice et sécurité publique
+              </a>
+            </li>
+
+          </ul>
+        </div>
+
+
+
+
+
+
+
+        <section class="module module-narrow social">
+          <h2 class="module-heading">Partager</h2>
+          <ul class="nav nav-simple">
+            <li class="nav-item"><a href="https://www.facebook.com/sharer.php?u=http://donnees.ville.montreal.qc.ca/dataset/inspection-aliments-contrevenants" target="_blank"><i class="icon-facebook-sign"></i> Facebook</a></li>
+            <li class="nav-item"><a href="https://plus.google.com/share?url=http://donnees.ville.montreal.qc.ca/dataset/inspection-aliments-contrevenants" target="_blank"><i class="icon-google-plus-sign"></i> Google+</a></li>
+            <li class="nav-item"><a href="http://www.linkedin.com/shareArticle?mini=true&url={ current_url }&source=Portail%20donn%C3%A9es%20ouvertes%20de%20la%20Ville%20de%20Montr%C3%A9al" target="_blank"><i class="icon-linkedin-sign"></i> LinkedIn</a></li>
+            <li class="nav-item"><a href="https://twitter.com/share?url=http://donnees.ville.montreal.qc.ca/dataset/inspection-aliments-contrevenants" target="_blank"><i class="icon-twitter-sign"></i> Twitter</a></li>
+          </ul>
+        </section>
+
+
+
+
+
+
+
+
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+<footer role="contentinfo" id="colophon" class="container">
+  <div id="menu-footer" class="row">
+    <ul class="cat_col span2" id="cat-col-1">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/actualites">Actualités</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/infolettre">Abonnez-vous</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/nous-joindre">Nous joindre</a></li>
+    </ul>
+    <ul class="cat_col span2" id="cat-col-2">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/accessibilite">Accessibilité</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/plan-du-site">Plan du site</a></li>
+    </ul>
+    <ul class="cat_col span8" id="cat-col-3">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/licence/">Licence</a></li>
+      <li><a href="http://ville.montreal.qc.ca/portal/page?_pageid=5798,42719714&amp;_dad=portal&amp;_schema=PORTAL">&copy; Tous droits réservés Ville de Montréal</a></li>
+    </ul>
+  </div>
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-10-11T14:01:04.73/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-10-11T14:01:04.73/tracking.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-googleanalytics/:version:2017-09-22T15:50:05.45/googleanalytics_event_tracking.js"></script></body>
+</html>

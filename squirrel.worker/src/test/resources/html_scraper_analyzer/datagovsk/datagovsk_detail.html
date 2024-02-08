@@ -1,0 +1,1396 @@
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/js/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/css/dataset_map.css" />
+
+  <meta name="generator" content="ckan 2.2.3" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Adries - Register budov (súpisných čísiel) - Datasets -data.gov.sk</title>
+
+
+
+
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.sk/en/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6.rdf"/>
+
+  <link rel="alternate" type="text/n3" href="https://data.gov.sk/en/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6.n3"/>
+  <link rel="alternate" type="text/ttl" href="https://data.gov.sk/en/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6.ttl"/>
+  <link rel="alternate" type="application/rdf+xml" href="https://data.gov.sk/en/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6.xml"/>
+
+
+
+  <style type="text/css">
+    @media (min-width: 1200px){
+      #content > div.row.row1 > div.span3.col1{
+        margin-top: -195px;
+      }
+    }
+  </style>
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/box.css" />
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/box.css" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script type="text/javascript">
+
+    var rows = document.getElementsByTagName('td')
+    var x = "<h3>Slovensko</h3><a onclick='hide()' alt='hide content' class='btn btn-primary' id='show_sp_button' style='float: right; margin-top:-20px;'>Hide</a><br />"
+    var ii = 0
+    for(var i=0; i < rows.length; i++){
+      var text = rows[i].innerHTML
+      if(text.substring(0,34)=='{"type": "Polygon", "coordinates":'){
+
+        x += text
+        ii = i
+        console.log("found")
+      }
+    }
+
+    function start(){
+
+
+      for(var i=0; i < rows.length; i++){
+        var text = rows[i].innerHTML
+        if(text.substring(0,34)=='{"type": "Polygon", "coordinates":'){
+          x += text
+          ii = i
+          rows[ii].innerHTML = "<h3>Slovensko</h3> <a onclick='show_spatial()' alt='show text' class='btn btn-primary' id='show_sp_button' style='float: right; margin-top:-20px;'>Show</a>"
+
+        }
+
+      }
+
+    }
+    function show_spatial(){
+      rows[ii].innerHTML = x
+    }
+    function hide(){
+      rows[ii].innerHTML = "<h3>Slovensko</h3>  <a onclick='show_spatial()' alt='show text' class='btn btn-primary' id='show_sp_button' style='float: right; margin-top:-20px;'>Show</a>"
+    }
+    window.onload = start
+
+  </script>
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/main.css?version=1.0" />
+  <link rel="stylesheet" type="text/css" href="/font-awesome/css/font-awesome.min.css"/>
+  <!--link rel="stylesheet" type="text/css" href="/en/v2/base/css/main.css"/!-->
+  <!--
+  css : <link rel="stylesheet" type="text/css" href="/base/css/main.css" />
+  -->
+  <style>
+    #content > div.row.wrapper > div > section > div > form > ol > li{
+      width:33.33%;
+    }
+  </style>
+
+
+
+
+
+  <link href="/images/favicon.png" type="image/png" rel="shortcut  icon" media="screen" />
+
+  <script type="text/javascript">
+    var appended = false, bookmark = document.createElement("div");
+    bookmark.id = "arrowUp";
+    bookmark.innerHTML = "<a href=\"#\" title=\"Top of the page.\" class='back-to-top' data-scroll data-options=\"{ &quot;easing&quot;: &quot;easeOutCubic&quot; }\"><img src='/backtotop.png' alt='back to top' width='50' heigth='50' onmouseover=\"this.src='/up_hover.png'\" onmouseout=\"this.src='/backtotop.png'\" /><\/a>";
+
+
+    onscroll = function() {
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollTop > 300) {
+        if (!appended) {
+          document.body.appendChild(bookmark);
+          appended = true;
+        }
+      } else {
+        if (appended) {
+          document.body.removeChild(bookmark);
+          appended = false;
+        }
+      }
+    };
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:title" content="Register Adries - Register budov (súpisných čísiel) - CKAN">
+  <meta property="og:description" content="Obsahuje informácie o budovách (súpisných číslach) v SR.
+">
+
+
+</head>
+
+
+<body data-site-root="https://data.gov.sk/" data-locale-root="https://data.gov.sk/en/" >
+
+
+
+
+<div style="position: absolute; top:-200; left:-200;"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<!--link rel="stylesheet" type="text/css"  href="/screen.css?version=1.0" property='stylesheet'!-->
+<link rel="stylesheet" type="text/css" id="contrast" href="/normal_contrast.css" property='stylesheet'>
+<!--link rel="stylesheet" type="text/css" href="/screen2.css?version=1.0" property='stylesheet'!-->
+
+
+
+
+<style type="text/css">
+  @media(max-width: 771px){
+    #long_boxes, #big_box{display: none !important;}}
+</style>
+
+
+<script type="text/javascript">
+  function createCookie(name,value,mins) {
+    if (mins) {
+      var date = new Date();
+      date.setTime(date.getTime()+(mins*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+  }
+
+  function eraseCookie(name) {
+    createCookie(name,"",-1);
+  }
+
+
+  function getContrast(){
+    var actualContrast = "";
+    var cookies = document.cookie.split("; ");
+    for(var i =0; i < cookies.length; i++){
+      if(cookies[i].split('=')[0] === 'contrast'){
+        actualContrast = cookies[i].split('=')[1]
+      }
+    }
+    var result = "";
+    if(actualContrast === "high"){
+      result= "/high_contrast.css"
+    }else{
+      result= "/normal_contrast.css"
+
+    }
+    var style = document.getElementById("contrast");
+    style.href = result;
+  }
+
+  getContrast();
+
+</script>
+
+
+
+<header class="navbar navbar-static-top masthead">
+
+
+
+  <div class="container">
+
+    <!-- hgroup class="header-image pull-left" !-->
+
+
+
+
+
+    <script type="text/javascript">
+      function change_style(){
+        var style = document.getElementById("contrast");
+        var cookies = document.cookie;
+        var contrast = "";
+        var cc = cookies.split('; ');
+        for(var i=0; i < cc.length; i++){
+          if(cc[i].split('=')[0] == 'contrast'){
+            contrast = cc[i].split('=')[1];
+          }
+        }
+        if(contrast === "high"){
+          style.href = "/main.css";
+          var d = new Date();
+          d.setTime(d.getTime() + (24*60*60*1000));
+          var expires = "expires="+d.toUTCString()+"; path=/;";
+          document.cookie = "contrast=normal;"+ expires;
+        }else {
+          style.href = "/high_contrast.css";
+          var d = new Date();
+          d.setTime(d.getTime() + (24*60*60*1000));
+          var expires = "expires="+d.toUTCString()+"; path=/;";
+          document.cookie = "contrast=high;"+ expires;
+        }
+
+      }
+
+    </script>
+
+    <div>
+
+
+      <div id="helpNavigation">
+        <div class="inner clr">
+          <ul>
+            <li class="hidden-phone contrastVersion"><a href="#" onclick="change_style()" title="Change the contrast"  class="contrast_icon" > Change the contrast</a></li>
+            <li class="hidden-phone"><a href="/en/" title="Home" >Home</a></li>
+            <li class="hidden-phone"><a href="/en/about" title="About us" >About us</a></li>
+            <li class="hidden-phone"><a href="https://www.slovensko.sk/sk/pomoc" title="Help -in new window" >Help</a></li>
+            <li class="mobileVersion"><a href="/en/contact-us" title="Contact" >Contact</a></li>
+            <li class="hidden-phone lang">
+
+
+
+
+
+
+              <a class="lang_sk" style="" href="/en/util/redirect?url=/sk/dataset/register-adries-register-budov" >
+
+                Slovensky
+
+              </a>
+
+
+
+
+
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <div class="hero" style="">
+    <div id="content2" class="container" >
+      <div class="row row1" id="top_user_box">
+        <div class="span11 col1">
+          <a href="/en/" class="full_size" title="Open data portal- Home page"> <img id="header_logo" src="/logo.png" alt="Open data portal logo"> </a>
+        </div>
+
+        <div class="span3 col1 mini_boxes" style="z-index: 999; position: relative">
+          <div class="account_box" style="margin-bottom: 20px;">
+
+
+            <nav class="account not-authed">
+              <ul class="unstyled">
+
+                <li id="acc_info_not_logged"><span> Account info </span></li>
+                <li id="login_link_not_logged"><a href="/en/user/login">Log in</a></li>
+
+
+              </ul>
+            </nav>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</header>
+
+
+
+
+
+
+<div role="main">
+
+
+  <div id="content" class="container">
+
+
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+      <ol class="breadcrumb">
+
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->
+
+        <li class="home"><a href="/en/"><i class="icon-home"></i><span> Home</span></a></li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+
+
+
+
+        <li><a href="/en/organization">Organizations</a></li>
+        <li><a href="/en/organization/2df13d50-0b6f-48ba-884e-be66dc0a2934">Ministerstvo vnútra SR</a></li>
+
+        <li class="active"><a class=" active" href="/en/dataset/register-adries-register-budov">Register Adries - Register ...</a></li>
+
+
+      </ol>
+
+
+    </div>
+
+
+    <div class="row row1">
+
+
+
+
+
+
+      <div class="span3 col1" id="upper_menu">
+
+
+        <!-- Snippet home/snippets/right_menu.html start -->
+
+
+
+        <div id="right_boxes" class="box2 box_padding" style="">
+          <ul>
+            <li class="menubox green_menubox" >
+              <a href="/en/dataset" title="Datasets" ><div class="datasets_right_menu_item"></div>Datasets</a>
+            </li>
+            <li class="menubox purple_menubox">
+              <a  href="/en/organization" title="Organizations"><div class="organizations_right_menu_item"></div>Organizations</a>
+            </li>
+            <li class="menubox red_menubox">
+              <a  href="/en/apps" title="Applications"><div class="applications_right_menu_item"></div>Applications</a>
+            </li>
+            <li class="menubox blue_menubox" title="Tools ">
+              <a  href="/en/tools"><div class="tools_right_menu_item"></div>Tools</a>
+            </li>
+          </ul>
+        </div>
+        <div id="long_boxes" class="box3" style="margin-bottom: 1em;">
+          <ul>
+            <li class="brown_menubox" >
+              <a href="https://www.slovensko.sk/sk/najst-sluzbu" title="Services -in new window" ><span></span>Services </a>
+              <ul>
+
+
+                <li class="services_menu">
+                  <a href="https://schranka1.slovensko.sk/FormConstructor/Default.aspx?IdService=214550" title="Návrh na zverejnenie údajov na Portáli otvorených dát" class="menuitem_services">
+                    Návrh na zverejnenie údajov na Portáli otvorených dát
+                  </a>
+                </li>
+
+                <li class="services_menu">
+                  <a href="https://schranka1.slovensko.sk/FormConstructor/Default.aspx?IdService=214575" title="Podnet na úpravu údajov zverejnených na Portáli otvorených dát" class="menuitem_services">
+                    Podnet na úpravu údajov zverejnených na Portáli otvorených dát
+                  </a>
+                </li>
+
+                <li class="services_menu">
+                  <a href="https://data.gov.sk/apps/new" title="Žiadosť o registráciu aplikácie na Portáli otvorených dát" class="menuitem_services">
+                    Žiadosť o registráciu aplikácie na Portáli otvorených dát
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div id="big_box" class="box4" style="margin-bottom: 1em; margin-left: 10px; margin-right: 10px;">
+          <h2> Useful links</h2>
+          <ul>
+            <li >
+              <a class="right_menu_icon_nases" href="http://www.nases.gov.sk/" title="NASES -in new window"  target="_blank" >NASES </a>
+            </li>
+            <li >
+              <a class="right_menu_icon_opendata"  href="http://www.opendefinition.org/okd/" title="open data -in new window" target="_blank"></a>
+            </li>
+            <li  >
+              <a class="right_menu_icon_fb" href="https://www.facebook.com/slovensko.sk/" title="facebook slovensko.sk -in new window" target="_blank">Facebook slovensko.sk</a>
+            </li>
+            <li >
+              <a class="right_menu_icon_fb"  href="https://www.facebook.com/nasessk/" title="facebook nases.sk -in new window" target="_blank">Facebook nases.sk</a>
+            </li>
+            <li >
+              <a class="right_menu_icon_eu"  href="http://europa.eu/youreurope/citizens/index_sk.htm" title="Portal Your Europe -in new window" target="_blank">Portal Your Europe </a>
+            </li>
+            <li >
+              <a   class="right_menu_icon_eu"href="https://open.slovensko.sk/" title="open.slovensko.sk -in new window" target="_blank">open.slovensko.sk</a>
+            </li>
+            <li >
+              <a  class="right_menu_icon_eu"href="https://www.slovensko.sk/" title="www.slovensko.sk -in new window" target="_blank" >www.slovensko.sk</a>
+            </li>
+          </ul>
+        </div>
+        <!-- Snippet home/snippets/right_menu.html end -->
+
+      </div>
+      <div class="wrapper">
+        <div class="primary span9" style="">
+
+
+
+          <article class="module">
+
+            <header class="module-content page-header">
+
+              <ul class="nav nav-tabs">
+
+
+                <li class="active"><a href="/en/dataset/register-adries-register-budov"><i class="icon-sitemap"></i> Dataset</a></li>
+
+                <li><a href="/en/dataset/activity/register-adries-register-budov"><i class="icon-time"></i> Activity Stream</a></li>
+
+
+
+                <li ><a onclick="showURL()" href="#"> Permanent URL</a></li>
+                <noscript>
+                  Permanent URL:<input type="text" name="permanentURL" value="https://data.gov.sk/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6" ></input>
+                </noscript>
+
+                <li> <a href='/en/dataset/history/14fae22e-96ff-4d26-82af-435f8d7a4fb6'> <i class="fa fa-history"> </i> History</a></li>
+
+
+
+
+              </ul>
+            </header>
+
+            <div class="module-content">
+
+
+
+
+
+
+
+              <script type="text/javascript">
+                $(document).ready(function(){
+                  $('[data-toggle="tooltip"]').tooltip();
+                });
+              </script>
+
+
+
+
+              <h1>
+
+                Register Adries - Register budov (súpisných čísiel)
+
+
+              </h1>
+
+
+              <div class="notes embedded-content">
+                <p>Obsahuje informácie o budovách (súpisných číslach) v SR.
+                </p>
+              </div>
+
+
+
+              <span class="insert-comment-thread"></span>
+
+
+
+
+
+
+
+              <!-- Snippet package/snippets/resources_list.html start -->
+
+              <section id="dataset-resources" class="resources">
+                <h3>Data and Resources</h3>
+
+
+                <ul class="resource-list">
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                  <li class="resource-item" data-id="c8a57d08-5604-4829-b139-81448f3ac7f0">
+
+                    <a class="heading" href="/en/dataset/register-adries-register-budov/resource/c8a57d08-5604-4829-b139-81448f3ac7f0" title="Budovy (súpisné čísla) - zmenové dáta">
+                      Budovy (súpisné čísla) - zmenové dáta<span class="format-label" property="dc:format" data-format="api, csv">api, csv</span>
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+                    </a>
+
+                    <p class="description">
+
+                      Jeden riadok v tejto tabuľke reprezentuje jeden zmenový záznam...
+
+                    </p>
+
+
+
+
+                    <div class="dropdown btn-group">
+                      <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-share-alt"></i>
+                        Explore
+                        <span class="caret"></span>
+                      </a>
+                      <ul class="dropdown-menu">
+
+
+                        <li>
+                          <a href="/en/dataset/register-adries-register-budov/resource/c8a57d08-5604-4829-b139-81448f3ac7f0">
+
+                            <i class="icon-bar-chart"></i>
+                            Preview
+
+                          </a>
+                        </li>
+
+
+
+
+
+                      </ul>
+                    </div>
+
+
+
+                  </li>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                  <li class="resource-item" data-id="2ba406d0-5ce5-472d-ba75-5e04f05be1c1">
+
+                    <a class="heading" href="/en/dataset/register-adries-register-budov/resource/2ba406d0-5ce5-472d-ba75-5e04f05be1c1" title="Budovy (súpisné čísla) - konsolidované dáta">
+                      Budovy (súpisné čísla) - konsolidované dáta<span class="format-label" property="dc:format" data-format="api, csv">api, csv</span>
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <!-- Snippet snippets/popular.html end -->
+
+                    </a>
+
+                    <p class="description">
+
+                      Jeden riadok v tejto tabuľke reprezentuje konsolidovaný stav konkrétnej...
+
+                    </p>
+
+
+
+
+                    <div class="dropdown btn-group">
+                      <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-share-alt"></i>
+                        Explore
+                        <span class="caret"></span>
+                      </a>
+                      <ul class="dropdown-menu">
+
+
+                        <li>
+                          <a href="/en/dataset/register-adries-register-budov/resource/2ba406d0-5ce5-472d-ba75-5e04f05be1c1">
+
+                            <i class="icon-bar-chart"></i>
+                            Preview
+
+                          </a>
+                        </li>
+
+
+
+
+
+                      </ul>
+                    </div>
+
+
+
+                  </li>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                  <li class="resource-item" data-id="0ec5e14d-808c-4ebd-9717-45706059fac3">
+
+                    <a class="heading" href="/en/dataset/register-adries-register-budov/resource/0ec5e14d-808c-4ebd-9717-45706059fac3" title="Dokumentácia datasetu">
+                      Dokumentácia datasetu<span class="format-label" property="dc:format" data-format="html">HTML</span>
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="18 views" xmlns="http://www.w3.org/1999/xhtml">Popular</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+                    </a>
+
+                    <p class="description">
+
+                      Popis: Obsahuje popis dátových zdrojov (tabuliek) v tomto datasete
+
+
+                    </p>
+
+
+
+
+                    <div class="dropdown btn-group">
+                      <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-share-alt"></i>
+                        Explore
+                        <span class="caret"></span>
+                      </a>
+                      <ul class="dropdown-menu">
+
+
+                        <li>
+                          <a href="/en/dataset/register-adries-register-budov/resource/0ec5e14d-808c-4ebd-9717-45706059fac3">
+
+                            <i class="icon-bar-chart"></i>
+                            Preview
+
+                          </a>
+                        </li>
+
+                        <li>
+                          <a href="https://data.gov.sk/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6/resource/0ec5e14d-808c-4ebd-9717-45706059fac3/download/package7doc1.htm" class="resource-url-analytics" target="_blank">
+
+                            <i class="icon-download"></i>
+                            Download
+
+                          </a>
+                        </li>
+
+
+
+
+
+                      </ul>
+                    </div>
+
+
+
+                  </li>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                  <!-- Snippet package/snippets/resource_item.html start -->
+
+
+
+
+                  <li class="resource-item" data-id="64b2adaa-3e42-48f7-9601-52ea346c60fd">
+
+                    <a class="heading" href="/en/dataset/register-adries-register-budov/resource/64b2adaa-3e42-48f7-9601-52ea346c60fd" title="06-Register adries-Budovy- Init dávka, 62 MB">
+                      06-Register adries-Budovy- Init dávka, 62 MB<span class="format-label" property="dc:format" data-format="zip">ZIP</span>
+
+                      <!-- Snippet snippets/popular.html start -->
+
+
+                      <span class="popular ckan-icon ckan-icon-flame" title="26 views" xmlns="http://www.w3.org/1999/xhtml">Popular</span>
+
+                      <!-- Snippet snippets/popular.html end -->
+
+                    </a>
+
+                    <p class="description">
+
+                      ZIP obsahuje xml súbor - konsolidované dáta Registra adries do 6.4.2018
+
+
+                    </p>
+
+
+
+
+                    <div class="dropdown btn-group">
+                      <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-share-alt"></i>
+                        Explore
+                        <span class="caret"></span>
+                      </a>
+                      <ul class="dropdown-menu">
+
+
+                        <li>
+                          <a href="/en/dataset/register-adries-register-budov/resource/64b2adaa-3e42-48f7-9601-52ea346c60fd">
+
+                            <i class="icon-info-sign"></i>
+                            More information
+
+                          </a>
+                        </li>
+
+                        <li>
+                          <a href="https://data.gov.sk/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6/resource/64b2adaa-3e42-48f7-9601-52ea346c60fd/download/ra.budovy.06.davkainit20180406.zip" class="resource-url-analytics" target="_blank">
+
+                            <i class="icon-external-link"></i>
+                            Go to resource
+
+                          </a>
+                        </li>
+
+
+
+
+
+                      </ul>
+                    </div>
+
+
+
+                  </li>
+                  <!-- Snippet package/snippets/resource_item.html end -->
+
+
+
+                </ul>
+
+
+              </section>
+              <!-- Snippet package/snippets/resources_list.html end -->
+
+
+
+
+
+
+
+              <!-- Snippet package/snippets/tags.html start -->
+
+              <section class="tags">
+
+                <!-- Snippet snippets/tag_list.html start -->
+
+
+                <ul class="tag-list well">
+
+                  <li>
+                    <a class="tag" href="/en/dataset?tags=adresa">adresa</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/en/dataset?tags=dom">dom</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/en/dataset?tags=register+adries">register adries</a>
+                  </li>
+
+                  <li>
+                    <a class="tag" href="/en/dataset?tags=s%C3%BApisn%C3%A9+%C4%8D%C3%ADslo">súpisné číslo</a>
+                  </li>
+
+                </ul>
+                <!-- Snippet snippets/tag_list.html end -->
+
+              </section>
+
+              <!-- Snippet package/snippets/tags.html end -->
+
+
+
+
+
+
+
+              <!-- Snippet package/snippets/additional_info.html start -->
+              <section class="additional-info">
+                <h3>Additional Info</h3>
+                <table class="table table-striped table-bordered table-condensed">
+                  <thead>
+                  <tr>
+                    <th scope="col">Field</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+
+
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Author</th>
+
+                    <td class="dataset-details" property="dc:creator"><a href="/en/user/2DF13D50-0B6F-48BA-884E-BE66DC0A2934" target="_blank" title="Ministerstvo vnútra Slovenskej republiky-in new window" >Ministerstvo vnútra Slovenskej republiky
+                  </tr>
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Dataset provider</th>
+
+                    <td class="dataset-details"><a href="/en/organization/2DF13D50-0B6F-48BA-884E-BE66DC0A2934" target="_blank" title="Ministerstvo vnútra SR-in new window" >Ministerstvo vnútra SR</a></td>
+                  </tr>
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Unique identifier of dataset&#39;s provider</th>
+                    <td class="dataset-details">2DF13D50-0B6F-48BA-884E-BE66DC0A2934</td>
+                  </tr>
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Date of the first publication</th>
+                    <td class="dataset-details">February 2, 2016</td>
+                  </tr>
+
+
+
+                  <tr>
+                    <th scope="row" class="dataset-label">Spatial</th>
+                    <td class="dataset-details">{&#34;type&#34;: &#34;Polygon&#34;, &#34;coordinates&#34;: [[[16.841311, 48.360932], [16.83342, 48.381541], [16.850472, 48.383162], [16.855954, 48.396243], [16.850572, 48.410028], [16.86375, 48.419343], [16.850008, 48.449159], [16.863119, 48.453035], [16.859476, 48.459367], [16.880601, 48.477399], [16.889987, 48.47636], [16.895645, 48.496473], [16.916857, 48.495347], [16.913914, 48.511954], [16.92215, 48.51343], [16.921267, 48.520117], [16.943554, 48.521706], [16.940435, 48.527232], [16.953612, 48.54228], [16.935799, 48.570849], [16.933648, 48.601119], [16.969175, 48.644944], [16.967876, 48.668566], [16.997321, 48.691747], [16.997792, 48.708834], [17.012429, 48.718231], [17.043736, 48.764703], [17.08911, 48.786001], [17.105537, 48.806874], [17.111268, 48.831481], [17.154114, 48.844807], [17.201998, 48.878149], [17.277958, 48.860306], [17.306008, 48.843589], [17.321665, 48.845298], [17.32475, 48.836248], [17.361321, 48.813516], [17.378461, 48.819187], [17.396854, 48.813324], [17.453191, 48.846744], [17.477487, 48.841325], [17.509805, 48.8196], [17.519061, 48.829299], [17.515962, 48.817816], [17.528483, 48.81216], [17.553021, 48.81976], [17.548251, 48.827435], [17.554571, 48.831557], [17.588887, 48.825187], [17.601852, 48.840898], [17.620949, 48.842023], [17.632981, 48.85489], [17.703336, 48.860022], [17.782665, 48.91669], [17.781318, 48.925275], [17.885311, 48.927677], [17.903038, 48.964181], [17.903066, 48.98262], [17.914474, 48.996422], [17.913837, 49.010906], [17.9243, 49.019966], [17.9909, 49.028494], [18.024472, 49.02123], [18.057123, 49.028505], [18.095471, 49.059243], [18.09165, 49.067435], [18.115548, 49.090081], [18.11027, 49.113551], [18.122208, 49.118005], [18.106749, 49.134187], [18.118772, 49.15276], [18.136714, 49.16102], [18.129921, 49.168448], [18.130844, 49.188791], [18.154911, 49.216151], [18.156272, 49.22954], [18.144406, 49.229235], [18.146972, 49.24793], [18.184264, 49.269833], [18.184026, 49.286996], [18.298379, 49.304665], [18.378918, 49.330546], [18.415567, 49.367549], [18.403661, 49.396691], [18.449956, 49.393502], [18.475691, 49.408546], [18.481947, 49.423907], [18.494108, 49.428183], [18.489964, 49.433178], [18.547951, 49.467862], [18.534666, 49.490188], [18.572363, 49.508286], [18.597253, 49.510236], [18.602816, 49.497085], [18.617747, 49.495062], [18.677825, 49.507628], [18.754482, 49.488383], [18.812371, 49.516377], [18.941662, 49.5189], [18.972772, 49.502608], [18.960451, 49.48275], [18.970198, 49.476808], [18.960783, 49.454705], [18.973874, 49.451654], [18.988972, 49.431299], [18.968705, 49.413315], [18.979857, 49.395213], [19.035026, 49.395714], [19.053913, 49.415153], [19.070191, 49.412386], [19.072734, 49.417972], [19.091472, 49.415973], [19.107287, 49.403682], [19.137516, 49.409956], [19.153381, 49.403772], [19.197168, 49.413714], [19.185737, 49.43472], [19.198581, 49.448161], [19.225311, 49.454314], [19.228263, 49.463736], [19.220465, 49.473491], [19.235511, 49.495656], [19.233425, 49.510794], [19.260689, 49.531204], [19.3623, 49.536088], [19.371361, 49.567441], [19.399964, 49.574099], [19.409983, 49.592167], [19.442018, 49.598501], [19.446232, 49.613301], [19.467363, 49.613725], [19.474699, 49.603377], [19.468434, 49.59651], [19.478469, 49.588031], [19.529303, 49.572978], [19.530429, 49.535804], [19.581463, 49.455407], [19.5974, 49.458614], [19.611446, 49.446873], [19.641115, 49.45756], [19.637791, 49.440544], [19.648596, 49.435365], [19.631728, 49.408797], [19.685373, 49.403584], [19.717643, 49.386422], [19.746277, 49.407934], [19.790591, 49.410685], [19.79113, 49.38351], [19.803816, 49.364814], [19.79472, 49.344528], [19.804964, 49.322768], [19.792474, 49.29974], [19.809879, 49.295397], [19.822802, 49.276794], [19.792472, 49.267969], [19.785023, 49.246663], [19.76677, 49.236595], [19.766943, 49.222612], [19.758411, 49.215993], [19.763105, 49.207581], [19.784254, 49.199287], [19.807521, 49.205652], [19.829461, 49.201691], [19.841, 49.192616], [19.869438, 49.195797], [19.902332, 49.213313], [19.903635, 49.230762], [19.932244, 49.236449], [19.981552, 49.231785], [20.008629, 49.22005], [20.00647, 49.213158], [20.020529, 49.201505], [20.079021, 49.178476], [20.088154, 49.179659], [20.087177, 49.207608], [20.101624, 49.222659], [20.100887, 49.25034], [20.125144, 49.270926], [20.134205, 49.305921], [20.145504, 49.317513], [20.151863, 49.318446], [20.157718, 49.302815], [20.175803, 49.314082], [20.170584, 49.327734], [20.184156, 49.327807], [20.193215, 49.340977], [20.220823, 49.35179], [20.268657, 49.345693], [20.292815, 49.351555], [20.316487, 49.344529], [20.326216, 49.365861], [20.321378, 49.378384], [20.331276, 49.391429], [20.31751, 49.388727], [20.325081, 49.403028], [20.362271, 49.398262], [20.375681, 49.40786], [20.38243, 49.391026], [20.393036, 49.390576], [20.412285, 49.395203], [20.416875, 49.40579], [20.43327, 49.396615], [20.432295, 49.417581], [20.47196, 49.415436], [20.504894, 49.403284], [20.509936, 49.393446], [20.575525, 49.376106], [20.613598, 49.401824], [20.614934, 49.417845], [20.646988, 49.40067], [20.691722, 49.419777], [20.72292, 49.419656], [20.743119, 49.415142], [20.742269, 49.403833], [20.758027, 49.400395], [20.747534, 49.391002], [20.761363, 49.384246], [20.76143, 49.371605], [20.785406, 49.3744], [20.782476, 49.361031], [20.798112, 49.363262], [20.809318, 49.359372], [20.80688, 49.353151], [20.797871, 49.358704], [20.79738, 49.343172], [20.811836, 49.347687], [20.825903, 49.334404], [20.83733, 49.33402], [20.865549, 49.347484], [20.882386, 49.333097], [20.872738, 49.319789], [20.903575, 49.323535], [20.924084, 49.295969], [20.969607, 49.309888], [20.986545, 49.306621], [20.994138, 49.31268], [20.989065, 49.328446], [21.008091, 49.334852], [21.011312, 49.347564], [21.042547, 49.364881], [21.075331, 49.359316], [21.094111, 49.365056], [21.104106, 49.376401], [21.054315, 49.404219], [21.047543, 49.418339], [21.096388, 49.429488], [21.11373, 49.42394], [21.124024, 49.43658], [21.192127, 49.400992], [21.208195, 49.402482], [21.227256, 49.416952], [21.223459, 49.425518], [21.232749, 49.436545], [21.265921, 49.446984], [21.267344, 49.457186], [21.277525, 49.46094], [21.307181, 49.447995], [21.344682, 49.450424], [21.37275, 49.432644], [21.402017, 49.433418], [21.434082, 49.412283], [21.473695, 49.413584], [21.49267, 49.429493], [21.517046, 49.417802], [21.530272, 49.435083], [21.55208, 49.433114], [21.563984, 49.441261], [21.590556, 49.433815], [21.630943, 49.447307], [21.658904, 49.4168], [21.721735, 49.41226], [21.726893, 49.398105], [21.763385, 49.383467], [21.766244, 49.367195], [21.777994, 49.356048], [21.789214, 49.355488], [21.787839, 49.367715], [21.802993, 49.382176], [21.838317, 49.391672], [21.858997, 49.368555], [21.887327, 49.368977], [21.903766, 49.349964], [21.961952, 49.348548], [21.983179, 49.310366], [22.03402, 49.278546], [22.030318, 49.262671], [22.041885, 49.257161], [22.030419, 49.22517], [22.061963, 49.211585], [22.143804, 49.200514], [22.143102, 49.192744], [22.189902, 49.174017], [22.22246, 49.184459], [22.235799, 49.170076], [22.225713, 49.152541], [22.31765, 49.135551], [22.334605, 49.146472], [22.367261, 49.146594], [22.391817, 49.118052], [22.422654, 49.09949], [22.456065, 49.103764], [22.49702, 49.085889], [22.539422, 49.094692], [22.565705, 49.087994], [22.553237, 49.079483], [22.551079, 49.030161], [22.53799, 49.021321], [22.545495, 49.006765], [22.477309, 48.991182], [22.475609, 48.976279], [22.424921, 48.929329], [22.431548, 48.919252], [22.42074, 48.903483], [22.421124, 48.884602], [22.394663, 48.877087], [22.383536, 48.86504], [22.375913, 48.834026], [22.387648, 48.80004], [22.345697, 48.766147], [22.342667, 48.750679], [22.362227, 48.74], [22.361795, 48.7302], [22.350692, 48.72032], [22.339611, 48.683893], [22.302546, 48.676376], [22.250294, 48.647399], [22.240504, 48.627708], [22.188822, 48.609754], [22.171379, 48.587537], [22.160979, 48.567329], [22.137691, 48.432685], [22.142326, 48.405255], [22.155294, 48.399341], [22.131056, 48.391233], [22.135909, 48.380519], [22.093243, 48.378552], [22.086743, 48.371564], [22.076486, 48.387241], [22.054605, 48.377528], [22.021326, 48.392749], [21.994463, 48.377323], [21.949198, 48.378728], [21.926806, 48.370899], [21.928186, 48.361597], [21.899796, 48.370223], [21.897883, 48.36256], [21.884843, 48.367539], [21.884298, 48.356047], [21.881419, 48.362586], [21.862968, 48.355208], [21.855087, 48.366068], [21.837213, 48.363253], [21.83533, 48.334853], [21.822332, 48.332582], [21.798397, 48.342488], [21.764221, 48.338993], [21.724435, 48.349682], [21.711871, 48.357617], [21.714266, 48.366307], [21.705367, 48.366054], [21.701741, 48.380695], [21.664561, 48.392164], [21.663549, 48.417961], [21.620188, 48.469826], [21.613933, 48.509416], [21.54202, 48.508395], [21.52523, 48.522631], [21.514091, 48.551065], [21.440068, 48.585237], [21.422665, 48.578821], [21.41545, 48.558951], [21.319384, 48.561201], [21.316078, 48.555294], [21.326875, 48.554129], [21.313377, 48.550841], [21.321444, 48.547671], [21.317739, 48.53926], [21.309829, 48.540179], [21.316035, 48.533156], [21.302762, 48.526893], [21.305488, 48.522249], [21.269192, 48.52533], [21.239041, 48.539723], [21.221061, 48.537497], [21.179634, 48.518232], [21.160875, 48.521499], [21.133938, 48.495422], [21.117448, 48.491055], [21.094978, 48.499713], [21.098018, 48.510465], [21.090169, 48.517478], [21.066321, 48.525894], [21.053353, 48.52214], [21.015114, 48.532313], [20.981585, 48.517767], [20.976103, 48.524498], [20.956198, 48.521666], [20.955882, 48.533963], [20.940982, 48.534535], [20.941726, 48.542892], [20.934635, 48.538341], [20.922323, 48.559453], [20.868155, 48.551818], [20.855241, 48.566815], [20.84533, 48.566505], [20.850436, 48.581633], [20.8378, 48.57421], [20.836359, 48.58284], [20.728106, 48.56448], [20.713132, 48.570391], [20.679502, 48.559516], [20.653874, 48.561413], [20.644056, 48.551977], [20.586595, 48.535759], [20.546494, 48.544292], [20.537471, 48.527878], [20.5191, 48.537519], [20.504226, 48.531934], [20.507929, 48.489363], [20.463948, 48.463966], [20.469911, 48.45244], [20.446125, 48.444974], [20.416228, 48.418536], [20.420535, 48.403858], [20.402532, 48.382565], [20.409835, 48.365857], [20.384077, 48.351181], [20.367629, 48.332187], [20.374279, 48.326989], [20.365658, 48.316606], [20.337465, 48.301667], [20.325711, 48.272794], [20.307711, 48.273067], [20.310963, 48.265591], [20.286858, 48.26164], [20.234947, 48.279933], [20.22798, 48.277232], [20.235381, 48.2713], [20.228466, 48.262779], [20.20383, 48.261906], [20.206162, 48.250979], [20.133188, 48.253982], [20.139631, 48.242869], [20.134091, 48.225182], [20.070037, 48.191702], [20.078844, 48.183739], [20.072986, 48.179606], [20.049449, 48.1672], [20.029038, 48.177685], [19.988706, 48.162168], [19.974394, 48.166005], [19.963565, 48.152021], [19.951557, 48.151548], [19.937383, 48.131118], [19.898298, 48.124902], [19.914536, 48.146863], [19.898745, 48.166312], [19.860131, 48.169409], [19.855173, 48.178431], [19.845282, 48.162742], [19.821331, 48.169081], [19.806584, 48.162061], [19.806471, 48.154145], [19.794812, 48.153529], [19.782415, 48.165039], [19.805283, 48.183733], [19.798733, 48.19482], [19.787163, 48.19253], [19.74618, 48.216512], [19.721125, 48.201473], [19.691219, 48.203894], [19.674662, 48.219739], [19.669857, 48.239212], [19.644524, 48.239172], [19.630826, 48.250073], [19.577502, 48.216015], [19.526044, 48.20313], [19.528967, 48.190358], [19.504518, 48.173443], [19.512822, 48.154663], [19.492377, 48.139664], [19.49442, 48.109906], [19.468313, 48.092037], [19.467354, 48.083933], [19.451796, 48.09173], [19.454053, 48.101436], [19.400018, 48.082304], [19.386597, 48.091914], [19.369607, 48.085913], [19.303112, 48.088711], [19.255782, 48.071556], [19.241368, 48.053653], [19.212823, 48.064362], [19.181172, 48.06127], [19.135289, 48.074146], [19.107402, 48.065596], [19.084362, 48.072781], [19.058525, 48.057353], [19.014864, 48.078179], [18.98161, 48.053601], [18.943904, 48.058865], [18.908982, 48.051139], [18.886674, 48.058682], [18.874937, 48.047071], [18.833268, 48.048239], [18.819998, 48.039676], [18.82662, 48.032019], [18.815567, 48.021423], [18.821275, 48.006299], [18.815743, 47.993442], [18.75525, 47.976347], [18.776746, 47.955092], [18.774048, 47.932347], [18.75776, 47.919722], [18.762917, 47.903926], [18.756858, 47.896838], [18.76353, 47.871605], [18.813575, 47.85555], [18.828014, 47.834291], [18.855876, 47.826077], [18.848542, 47.816722], [18.792001, 47.823087], [18.741179, 47.813825], [18.726069, 47.789041], [18.646087, 47.759092], [18.559076, 47.765996], [18.493155, 47.752755], [18.454068, 47.765123], [18.290799, 47.731429], [18.087196, 47.756574], [18.034115, 47.757269], [18.002711, 47.746325], [17.970871, 47.757839], [17.946867, 47.744668], [17.89449, 47.739207], [17.866096, 47.74575], [17.781238, 47.739289], [17.762956, 47.749363], [17.711332, 47.75558], [17.608402, 47.821886], [17.566709, 47.815636], [17.525172, 47.866445], [17.497512, 47.867603], [17.45392, 47.885258], [17.432506, 47.920862], [17.402993, 47.947849], [17.376398, 47.958646], [17.334651, 47.993125], [17.257955, 47.998655], [17.241769, 48.022465], [17.226627, 48.016229], [17.200051, 48.019806], [17.160776, 48.006657], [17.11006, 48.031224], [17.089866, 48.019783], [17.067423, 48.031428], [17.08779, 48.045676], [17.06825, 48.055395], [17.086791, 48.065356], [17.072234, 48.070447], [17.078914, 48.078236], [17.071626, 48.081055], [17.093145, 48.091424], [17.087769, 48.096557], [17.092707, 48.099638], [17.062786, 48.12148], [17.068816, 48.124208], [17.057195, 48.143724], [17.026909, 48.14087], [16.976233, 48.172165], [16.976529, 48.18881], [16.96178, 48.220827], [16.946121, 48.235881], [16.957066, 48.263818], [16.922511, 48.272205], [16.907216, 48.288897], [16.894541, 48.311242], [16.908545, 48.32619], [16.871656, 48.337952], [16.872974, 48.348845], [16.844908, 48.349946], [16.841311, 48.360932]]]}</td>
+                  </tr>
+
+
+
+
+
+
+
+
+
+                  </tbody>
+                </table>
+              </section>
+              <!-- Snippet package/snippets/additional_info.html end -->
+
+
+
+              <style type="text/css">
+                hr.show { display: block; height: 1px;
+                  border: 0; border-top: 1px solid #A94043;
+                  margin: 0em 0; padding: 0; }
+
+              </style>
+
+
+              <link href='/comments.css' type="text/css" rel='stylesheet'>
+
+
+              <!-- Snippet package/snippets/comments.html start -->
+
+
+
+
+
+
+
+
+
+              <!-- Snippet package/snippets/comments.html end -->
+
+              <!-- form -->
+
+
+
+              <!-- end form -->
+
+
+
+
+
+
+              <h2>Related items</h2>
+
+
+              <p class="empty">No related items
+
+              </p>
+
+
+
+
+
+
+
+
+
+            </div>
+          </article>
+
+          <script>
+            function showURL() {
+              var person = prompt("Permanent URL:", "https://data.gov.sk/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6");
+            }
+          </script>
+
+        </div>
+
+
+
+        <aside class="secondary span3">
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Snippet package/snippets/info.html start -->
+
+
+          <section class="module module-narrow">
+            <div class="module context-info">
+              <div class="module-content">
+                <h1 class="heading">Register Adries - Register budov (súpisných čísiel)</h1>
+                <div class="nums">
+                  <dl>
+                    <dt>Followers</dt>
+                    <dd><span>1</span></dd>
+                  </dl>
+                </div>
+
+                <div class="follow_button">
+
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          <!-- Snippet package/snippets/info.html end -->
+
+
+
+          <link href="/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+          <script src="/js/star-rating.js" type="text/javascript"></script>
+          <script type="text/javascript">
+            // initialize with defaults
+            $("#input-1").rating();
+
+
+
+            $('#input-1').on('rating.change', function(event, value, caption) {
+              console.log(value);
+              console.log(caption);
+            });
+            function set_val(){
+
+              var inp = document.getElementById('value')
+              inp.innerHTML = $("#input-1").val()
+              inp.value = $("#input-1").val()
+            }
+          </script>
+          <style type="text/css">
+            #content > div.row.wrapper > aside > form > div > div{
+              line-height: 2em;
+            }
+            #content > div.row.wrapper > aside > form{
+              text-align: center;
+            }
+
+
+            #content > div.row.wrapper > aside > form >div.star-rating.rating-md.rating-active{
+              font-size: 2.5em;
+              line-height: 0.5em;
+              margin-left: auto;
+              margin-right: auto;
+              width: 100%;
+            }
+            @media (min-width: 980px){
+              #content > div.row.wrapper > aside > form >div.star-rating.rating-md.rating-active{
+                font-size: 2.5em;
+              }
+              #content > div.row.wrapper > aside > form >div.star-rating.rating-md.rating-disabled{
+                font-size: 2.5em;
+              }
+            }
+            @media (max-width: 979px){
+              #content > div.row.wrapper > aside > form >div.star-rating.rating-md.rating-active{
+                font-size: 1.85em;
+              }
+              #content > div.row.wrapper > aside > form >div.star-rating.rating-md.rating-disabled{
+                font-size: 1.85em;
+              }
+            }
+          </style>
+          <form action="/dataset/rate/" method='post' onclick="set_val()" style="heigth: 2em;">
+            <label for="input-1" style="display: none;">Rating</label>
+            <input id="input-1"  class="rating" data-min="0" data-max="5" data-step="1"   readonly   value="0">
+            <label for="value" style="display: none;">Rating</label>
+            <input id='value' name="value" type="text" style="display: none;" >
+            <label for="dataset_id" style="display: none;">Rating</label>
+            <input id='dataset_id' name="dataset_id" type="text" style="display: none;" value="14fae22e-96ff-4d26-82af-435f8d7a4fb6">
+
+          </form>
+
+          <hr>
+          <p style="font-size: 1.2em; padding-left: 0.3em">
+
+            <b style="color:#bd0a26;">0</b>
+
+            <b> User(s) liked this.</b> </p>
+          <!-- Modal -->
+
+          <!-- Snippet snippets/modal_snippet.html start -->
+          <div class="modal fade" id="myList" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+
+                <div class="modal-body">
+                  <ul style="list-style: none;">
+
+                  </ul>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Snippet snippets/modal_snippet.html end -->
+
+
+
+
+
+
+
+
+
+          <!-- Snippet snippets/organization.html start -->
+
+
+
+
+
+
+          <div class="module module-narrow module-shallow context-info">
+
+            <h2 class="module-heading"><i class="icon-building"></i> Organization</h2>
+
+            <section class="module-content">
+
+              <div class="image">
+                <a href="/en/organization/2df13d50-0b6f-48ba-884e-be66dc0a2934">
+                  <img src="https://data.gov.sk/images/LogoMINV.png" width="200" alt="Ministerstvo vnútra SR" />
+                </a>
+              </div>
+
+              <h1 class="heading">Ministerstvo vnútra SR</h1>
+
+              <p>
+                Ministerstvo vnútra Slovenskej republiky,
+                Pribinova 2,
+                812 72 Bratislava,
+                http://www.minv.sk/
+
+                <a href="/en/organization/about/2df13d50-0b6f-48ba-884e-be66dc0a2934">read more</a>
+              </p>
+
+
+            </section>
+          </div>
+
+          <!-- Snippet snippets/organization.html end -->
+
+
+
+
+
+
+          <!-- Snippet snippets/social.html start -->
+
+          <script type="text/javascript">
+
+            function sendit2(){
+              var emailAddr=prompt("Enter the mail addressof the recipient","");
+              var subject= 'Link from data.gov.sk';
+
+              var bodyText= escape("");
+
+              var bodyUrl="https://data.gov.sk/dataset/14fae22e-96ff-4d26-82af-435f8d7a4fb6";
+              window.open("mailto:"+emailAddr+"?Subject="+subject+"&body="+bodyText+bodyUrl,"_self");
+            }
+            function Sendit(){
+              if (navigator.appName == 'Netscape'){
+                sendit2();
+              } else {
+                if (navigator.appName == 'Opera'){
+                  sendit2();
+                } else {
+                  alert('We are sorry, but your browser doesn&#39;t support this feature. Please use File » Send » Link by Email...');
+                }
+              }
+            }
+
+          </script>
+          <section class="module module-narrow social">
+            <h2 class="module-heading"><i class="icon-medium icon-share"></i> Social</h2>
+
+            <ul class="nav nav-simple" style="font-size: 1.2em;">
+              <li class="nav-item"><a href="https://plus.google.com/share?url=https://data.gov.sk/en/dataset/register-adries-register-budov" target="_blank" title="Share on Google+. Warning! This hyperlink will open in a new window or tab (depending on which web browser they are using and how they configured that browser)."><i class="icon-google-plus-sign"></i> Google+</a></li>
+              <li class="nav-item"><a href="https://twitter.com/share?url=https://data.gov.sk/en/dataset/register-adries-register-budov" target="_blank" title="Share on Twitter. -in new window"><i class="icon-twitter-sign"></i> Twitter</a></li>
+              <li class="nav-item"><a href="https://www.facebook.com/sharer.php?u=https://data.gov.sk/en/dataset/register-adries-register-budov" target="_blank"  title="Share on Facebook. -in new window"><i class="icon-facebook-sign"></i> Facebook</a></li>
+              <li class="nav-item"><a href="javascript:Sendit()" title="Send link via e-mail"><i class="fa fa-at"></i> E-mail</a></li>
+              <!-- odoslať odkaz na článok emailom -->
+
+
+
+
+
+
+
+            </ul>
+
+          </section>
+
+
+
+
+          <!-- Snippet snippets/social.html end -->
+
+
+
+
+
+          <!-- Snippet snippets/license_secure.html start -->
+
+
+          <section class="module module-narrow module-shallow license">
+            <h2 class="module-heading"><i class="icon-medium icon-lock"></i> License</h2>
+            <p class="module-content">
+
+
+              <a href="http://www.opendefinition.org/licenses/cc-zero" rel="dc:rights">Creative Commons CCZero</a>
+
+
+
+              <a href="http://opendefinition.org/okd/" title="This dataset satisfies the Open Definition.">
+                <img class="open-data" src="https://assets.okfn.org/images/ok_buttons/od_80x15_blue.png" alt="[Open Data]" />
+              </a>
+
+            </p>
+          </section>
+
+
+          <!-- Snippet snippets/license_secure.html end -->
+
+
+
+
+
+          <!--    -->
+
+
+
+          <!-- Snippet spatial/snippets/dataset_map_sidebar.html start -->
+
+
+          <section class="module module-narrow dataset-map">
+            <h2 class="module-heading"><i class="icon-medium icon-globe"></i> Dataset extent</h2>
+
+            <!-- Snippet spatial/snippets/dataset_map_base.html start -->
+
+
+
+            <div class="dataset-map" data-module="dataset-map" data-extent="{&#34;type&#34;: &#34;Polygon&#34;, &#34;coordinates&#34;: [[[16.841311, 48.360932], [16.83342, 48.381541], [16.850472, 48.383162], [16.855954, 48.396243], [16.850572, 48.410028], [16.86375, 48.419343], [16.850008, 48.449159], [16.863119, 48.453035], [16.859476, 48.459367], [16.880601, 48.477399], [16.889987, 48.47636], [16.895645, 48.496473], [16.916857, 48.495347], [16.913914, 48.511954], [16.92215, 48.51343], [16.921267, 48.520117], [16.943554, 48.521706], [16.940435, 48.527232], [16.953612, 48.54228], [16.935799, 48.570849], [16.933648, 48.601119], [16.969175, 48.644944], [16.967876, 48.668566], [16.997321, 48.691747], [16.997792, 48.708834], [17.012429, 48.718231], [17.043736, 48.764703], [17.08911, 48.786001], [17.105537, 48.806874], [17.111268, 48.831481], [17.154114, 48.844807], [17.201998, 48.878149], [17.277958, 48.860306], [17.306008, 48.843589], [17.321665, 48.845298], [17.32475, 48.836248], [17.361321, 48.813516], [17.378461, 48.819187], [17.396854, 48.813324], [17.453191, 48.846744], [17.477487, 48.841325], [17.509805, 48.8196], [17.519061, 48.829299], [17.515962, 48.817816], [17.528483, 48.81216], [17.553021, 48.81976], [17.548251, 48.827435], [17.554571, 48.831557], [17.588887, 48.825187], [17.601852, 48.840898], [17.620949, 48.842023], [17.632981, 48.85489], [17.703336, 48.860022], [17.782665, 48.91669], [17.781318, 48.925275], [17.885311, 48.927677], [17.903038, 48.964181], [17.903066, 48.98262], [17.914474, 48.996422], [17.913837, 49.010906], [17.9243, 49.019966], [17.9909, 49.028494], [18.024472, 49.02123], [18.057123, 49.028505], [18.095471, 49.059243], [18.09165, 49.067435], [18.115548, 49.090081], [18.11027, 49.113551], [18.122208, 49.118005], [18.106749, 49.134187], [18.118772, 49.15276], [18.136714, 49.16102], [18.129921, 49.168448], [18.130844, 49.188791], [18.154911, 49.216151], [18.156272, 49.22954], [18.144406, 49.229235], [18.146972, 49.24793], [18.184264, 49.269833], [18.184026, 49.286996], [18.298379, 49.304665], [18.378918, 49.330546], [18.415567, 49.367549], [18.403661, 49.396691], [18.449956, 49.393502], [18.475691, 49.408546], [18.481947, 49.423907], [18.494108, 49.428183], [18.489964, 49.433178], [18.547951, 49.467862], [18.534666, 49.490188], [18.572363, 49.508286], [18.597253, 49.510236], [18.602816, 49.497085], [18.617747, 49.495062], [18.677825, 49.507628], [18.754482, 49.488383], [18.812371, 49.516377], [18.941662, 49.5189], [18.972772, 49.502608], [18.960451, 49.48275], [18.970198, 49.476808], [18.960783, 49.454705], [18.973874, 49.451654], [18.988972, 49.431299], [18.968705, 49.413315], [18.979857, 49.395213], [19.035026, 49.395714], [19.053913, 49.415153], [19.070191, 49.412386], [19.072734, 49.417972], [19.091472, 49.415973], [19.107287, 49.403682], [19.137516, 49.409956], [19.153381, 49.403772], [19.197168, 49.413714], [19.185737, 49.43472], [19.198581, 49.448161], [19.225311, 49.454314], [19.228263, 49.463736], [19.220465, 49.473491], [19.235511, 49.495656], [19.233425, 49.510794], [19.260689, 49.531204], [19.3623, 49.536088], [19.371361, 49.567441], [19.399964, 49.574099], [19.409983, 49.592167], [19.442018, 49.598501], [19.446232, 49.613301], [19.467363, 49.613725], [19.474699, 49.603377], [19.468434, 49.59651], [19.478469, 49.588031], [19.529303, 49.572978], [19.530429, 49.535804], [19.581463, 49.455407], [19.5974, 49.458614], [19.611446, 49.446873], [19.641115, 49.45756], [19.637791, 49.440544], [19.648596, 49.435365], [19.631728, 49.408797], [19.685373, 49.403584], [19.717643, 49.386422], [19.746277, 49.407934], [19.790591, 49.410685], [19.79113, 49.38351], [19.803816, 49.364814], [19.79472, 49.344528], [19.804964, 49.322768], [19.792474, 49.29974], [19.809879, 49.295397], [19.822802, 49.276794], [19.792472, 49.267969], [19.785023, 49.246663], [19.76677, 49.236595], [19.766943, 49.222612], [19.758411, 49.215993], [19.763105, 49.207581], [19.784254, 49.199287], [19.807521, 49.205652], [19.829461, 49.201691], [19.841, 49.192616], [19.869438, 49.195797], [19.902332, 49.213313], [19.903635, 49.230762], [19.932244, 49.236449], [19.981552, 49.231785], [20.008629, 49.22005], [20.00647, 49.213158], [20.020529, 49.201505], [20.079021, 49.178476], [20.088154, 49.179659], [20.087177, 49.207608], [20.101624, 49.222659], [20.100887, 49.25034], [20.125144, 49.270926], [20.134205, 49.305921], [20.145504, 49.317513], [20.151863, 49.318446], [20.157718, 49.302815], [20.175803, 49.314082], [20.170584, 49.327734], [20.184156, 49.327807], [20.193215, 49.340977], [20.220823, 49.35179], [20.268657, 49.345693], [20.292815, 49.351555], [20.316487, 49.344529], [20.326216, 49.365861], [20.321378, 49.378384], [20.331276, 49.391429], [20.31751, 49.388727], [20.325081, 49.403028], [20.362271, 49.398262], [20.375681, 49.40786], [20.38243, 49.391026], [20.393036, 49.390576], [20.412285, 49.395203], [20.416875, 49.40579], [20.43327, 49.396615], [20.432295, 49.417581], [20.47196, 49.415436], [20.504894, 49.403284], [20.509936, 49.393446], [20.575525, 49.376106], [20.613598, 49.401824], [20.614934, 49.417845], [20.646988, 49.40067], [20.691722, 49.419777], [20.72292, 49.419656], [20.743119, 49.415142], [20.742269, 49.403833], [20.758027, 49.400395], [20.747534, 49.391002], [20.761363, 49.384246], [20.76143, 49.371605], [20.785406, 49.3744], [20.782476, 49.361031], [20.798112, 49.363262], [20.809318, 49.359372], [20.80688, 49.353151], [20.797871, 49.358704], [20.79738, 49.343172], [20.811836, 49.347687], [20.825903, 49.334404], [20.83733, 49.33402], [20.865549, 49.347484], [20.882386, 49.333097], [20.872738, 49.319789], [20.903575, 49.323535], [20.924084, 49.295969], [20.969607, 49.309888], [20.986545, 49.306621], [20.994138, 49.31268], [20.989065, 49.328446], [21.008091, 49.334852], [21.011312, 49.347564], [21.042547, 49.364881], [21.075331, 49.359316], [21.094111, 49.365056], [21.104106, 49.376401], [21.054315, 49.404219], [21.047543, 49.418339], [21.096388, 49.429488], [21.11373, 49.42394], [21.124024, 49.43658], [21.192127, 49.400992], [21.208195, 49.402482], [21.227256, 49.416952], [21.223459, 49.425518], [21.232749, 49.436545], [21.265921, 49.446984], [21.267344, 49.457186], [21.277525, 49.46094], [21.307181, 49.447995], [21.344682, 49.450424], [21.37275, 49.432644], [21.402017, 49.433418], [21.434082, 49.412283], [21.473695, 49.413584], [21.49267, 49.429493], [21.517046, 49.417802], [21.530272, 49.435083], [21.55208, 49.433114], [21.563984, 49.441261], [21.590556, 49.433815], [21.630943, 49.447307], [21.658904, 49.4168], [21.721735, 49.41226], [21.726893, 49.398105], [21.763385, 49.383467], [21.766244, 49.367195], [21.777994, 49.356048], [21.789214, 49.355488], [21.787839, 49.367715], [21.802993, 49.382176], [21.838317, 49.391672], [21.858997, 49.368555], [21.887327, 49.368977], [21.903766, 49.349964], [21.961952, 49.348548], [21.983179, 49.310366], [22.03402, 49.278546], [22.030318, 49.262671], [22.041885, 49.257161], [22.030419, 49.22517], [22.061963, 49.211585], [22.143804, 49.200514], [22.143102, 49.192744], [22.189902, 49.174017], [22.22246, 49.184459], [22.235799, 49.170076], [22.225713, 49.152541], [22.31765, 49.135551], [22.334605, 49.146472], [22.367261, 49.146594], [22.391817, 49.118052], [22.422654, 49.09949], [22.456065, 49.103764], [22.49702, 49.085889], [22.539422, 49.094692], [22.565705, 49.087994], [22.553237, 49.079483], [22.551079, 49.030161], [22.53799, 49.021321], [22.545495, 49.006765], [22.477309, 48.991182], [22.475609, 48.976279], [22.424921, 48.929329], [22.431548, 48.919252], [22.42074, 48.903483], [22.421124, 48.884602], [22.394663, 48.877087], [22.383536, 48.86504], [22.375913, 48.834026], [22.387648, 48.80004], [22.345697, 48.766147], [22.342667, 48.750679], [22.362227, 48.74], [22.361795, 48.7302], [22.350692, 48.72032], [22.339611, 48.683893], [22.302546, 48.676376], [22.250294, 48.647399], [22.240504, 48.627708], [22.188822, 48.609754], [22.171379, 48.587537], [22.160979, 48.567329], [22.137691, 48.432685], [22.142326, 48.405255], [22.155294, 48.399341], [22.131056, 48.391233], [22.135909, 48.380519], [22.093243, 48.378552], [22.086743, 48.371564], [22.076486, 48.387241], [22.054605, 48.377528], [22.021326, 48.392749], [21.994463, 48.377323], [21.949198, 48.378728], [21.926806, 48.370899], [21.928186, 48.361597], [21.899796, 48.370223], [21.897883, 48.36256], [21.884843, 48.367539], [21.884298, 48.356047], [21.881419, 48.362586], [21.862968, 48.355208], [21.855087, 48.366068], [21.837213, 48.363253], [21.83533, 48.334853], [21.822332, 48.332582], [21.798397, 48.342488], [21.764221, 48.338993], [21.724435, 48.349682], [21.711871, 48.357617], [21.714266, 48.366307], [21.705367, 48.366054], [21.701741, 48.380695], [21.664561, 48.392164], [21.663549, 48.417961], [21.620188, 48.469826], [21.613933, 48.509416], [21.54202, 48.508395], [21.52523, 48.522631], [21.514091, 48.551065], [21.440068, 48.585237], [21.422665, 48.578821], [21.41545, 48.558951], [21.319384, 48.561201], [21.316078, 48.555294], [21.326875, 48.554129], [21.313377, 48.550841], [21.321444, 48.547671], [21.317739, 48.53926], [21.309829, 48.540179], [21.316035, 48.533156], [21.302762, 48.526893], [21.305488, 48.522249], [21.269192, 48.52533], [21.239041, 48.539723], [21.221061, 48.537497], [21.179634, 48.518232], [21.160875, 48.521499], [21.133938, 48.495422], [21.117448, 48.491055], [21.094978, 48.499713], [21.098018, 48.510465], [21.090169, 48.517478], [21.066321, 48.525894], [21.053353, 48.52214], [21.015114, 48.532313], [20.981585, 48.517767], [20.976103, 48.524498], [20.956198, 48.521666], [20.955882, 48.533963], [20.940982, 48.534535], [20.941726, 48.542892], [20.934635, 48.538341], [20.922323, 48.559453], [20.868155, 48.551818], [20.855241, 48.566815], [20.84533, 48.566505], [20.850436, 48.581633], [20.8378, 48.57421], [20.836359, 48.58284], [20.728106, 48.56448], [20.713132, 48.570391], [20.679502, 48.559516], [20.653874, 48.561413], [20.644056, 48.551977], [20.586595, 48.535759], [20.546494, 48.544292], [20.537471, 48.527878], [20.5191, 48.537519], [20.504226, 48.531934], [20.507929, 48.489363], [20.463948, 48.463966], [20.469911, 48.45244], [20.446125, 48.444974], [20.416228, 48.418536], [20.420535, 48.403858], [20.402532, 48.382565], [20.409835, 48.365857], [20.384077, 48.351181], [20.367629, 48.332187], [20.374279, 48.326989], [20.365658, 48.316606], [20.337465, 48.301667], [20.325711, 48.272794], [20.307711, 48.273067], [20.310963, 48.265591], [20.286858, 48.26164], [20.234947, 48.279933], [20.22798, 48.277232], [20.235381, 48.2713], [20.228466, 48.262779], [20.20383, 48.261906], [20.206162, 48.250979], [20.133188, 48.253982], [20.139631, 48.242869], [20.134091, 48.225182], [20.070037, 48.191702], [20.078844, 48.183739], [20.072986, 48.179606], [20.049449, 48.1672], [20.029038, 48.177685], [19.988706, 48.162168], [19.974394, 48.166005], [19.963565, 48.152021], [19.951557, 48.151548], [19.937383, 48.131118], [19.898298, 48.124902], [19.914536, 48.146863], [19.898745, 48.166312], [19.860131, 48.169409], [19.855173, 48.178431], [19.845282, 48.162742], [19.821331, 48.169081], [19.806584, 48.162061], [19.806471, 48.154145], [19.794812, 48.153529], [19.782415, 48.165039], [19.805283, 48.183733], [19.798733, 48.19482], [19.787163, 48.19253], [19.74618, 48.216512], [19.721125, 48.201473], [19.691219, 48.203894], [19.674662, 48.219739], [19.669857, 48.239212], [19.644524, 48.239172], [19.630826, 48.250073], [19.577502, 48.216015], [19.526044, 48.20313], [19.528967, 48.190358], [19.504518, 48.173443], [19.512822, 48.154663], [19.492377, 48.139664], [19.49442, 48.109906], [19.468313, 48.092037], [19.467354, 48.083933], [19.451796, 48.09173], [19.454053, 48.101436], [19.400018, 48.082304], [19.386597, 48.091914], [19.369607, 48.085913], [19.303112, 48.088711], [19.255782, 48.071556], [19.241368, 48.053653], [19.212823, 48.064362], [19.181172, 48.06127], [19.135289, 48.074146], [19.107402, 48.065596], [19.084362, 48.072781], [19.058525, 48.057353], [19.014864, 48.078179], [18.98161, 48.053601], [18.943904, 48.058865], [18.908982, 48.051139], [18.886674, 48.058682], [18.874937, 48.047071], [18.833268, 48.048239], [18.819998, 48.039676], [18.82662, 48.032019], [18.815567, 48.021423], [18.821275, 48.006299], [18.815743, 47.993442], [18.75525, 47.976347], [18.776746, 47.955092], [18.774048, 47.932347], [18.75776, 47.919722], [18.762917, 47.903926], [18.756858, 47.896838], [18.76353, 47.871605], [18.813575, 47.85555], [18.828014, 47.834291], [18.855876, 47.826077], [18.848542, 47.816722], [18.792001, 47.823087], [18.741179, 47.813825], [18.726069, 47.789041], [18.646087, 47.759092], [18.559076, 47.765996], [18.493155, 47.752755], [18.454068, 47.765123], [18.290799, 47.731429], [18.087196, 47.756574], [18.034115, 47.757269], [18.002711, 47.746325], [17.970871, 47.757839], [17.946867, 47.744668], [17.89449, 47.739207], [17.866096, 47.74575], [17.781238, 47.739289], [17.762956, 47.749363], [17.711332, 47.75558], [17.608402, 47.821886], [17.566709, 47.815636], [17.525172, 47.866445], [17.497512, 47.867603], [17.45392, 47.885258], [17.432506, 47.920862], [17.402993, 47.947849], [17.376398, 47.958646], [17.334651, 47.993125], [17.257955, 47.998655], [17.241769, 48.022465], [17.226627, 48.016229], [17.200051, 48.019806], [17.160776, 48.006657], [17.11006, 48.031224], [17.089866, 48.019783], [17.067423, 48.031428], [17.08779, 48.045676], [17.06825, 48.055395], [17.086791, 48.065356], [17.072234, 48.070447], [17.078914, 48.078236], [17.071626, 48.081055], [17.093145, 48.091424], [17.087769, 48.096557], [17.092707, 48.099638], [17.062786, 48.12148], [17.068816, 48.124208], [17.057195, 48.143724], [17.026909, 48.14087], [16.976233, 48.172165], [16.976529, 48.18881], [16.96178, 48.220827], [16.946121, 48.235881], [16.957066, 48.263818], [16.922511, 48.272205], [16.907216, 48.288897], [16.894541, 48.311242], [16.908545, 48.32619], [16.871656, 48.337952], [16.872974, 48.348845], [16.844908, 48.349946], [16.841311, 48.360932]]]}" data-module-site_url="&#34;https://data.gov.sk/&#34;" data-module-map_config="{&#34;custom.url&#34;: &#34;https://a.tile.openstreetmap.org/{z}/{x}/{y}.png&#34;, &#34;type&#34;: &#34;custom&#34;, &#34;subdomains&#34;: &#34;1234&#34;}">
+              <div id="dataset-map-container"></div>
+              <div id="dataset-map-attribution">
+
+                <!-- Snippet spatial/snippets/map_attribution.html start -->
+                <div>&copy;Contributors <a
+                  href="http://openstreetmap.org/copyright">OpenStreetMap</a> </div>
+
+
+                <!-- Snippet spatial/snippets/map_attribution.html end -->
+
+              </div>
+            </div>
+
+
+            <!-- Snippet spatial/snippets/dataset_map_base.html end -->
+
+          </section>
+          <!-- Snippet spatial/snippets/dataset_map_sidebar.html end -->
+
+
+
+
+
+
+        </aside>
+
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+
+<footer class="site-footer">
+  <div class="container">
+
+    <div class="inner clr">
+      <div class="footerLinksWrap">
+        <ul>
+          <li><a href="/en/about">About this site</a></li>
+          <li><a href="https://www.slovensko.sk/sk/navody">Manuals</a></li>
+          <li><a href="https://www.slovensko.sk/sk/institucie">Institutions</a></li>
+          <li><a href="https://www.slovensko.sk/sk/slovnik">Dictionary</a></li>
+        </ul>
+      </div>
+      <div class="footerLinksWrap">
+        <ul>
+          <li><a href="/en/sitemap">Site map</a></li>
+          <li><a href="/en/published-services">List of published services</a></li>
+          <li><a href="/en/feeds/dataset.atom">RSS</a></li>
+          <li><a href="https://www.slovensko.sk/en/accessibility-statement">Accessibility statement</a></li>
+        </ul>
+      </div>
+      <div class="legalWrap">
+        <div class="copyright">&copy; 2015, <a href="https://data.gov.sk" title="Portál otvorených dát">Data.gov.sk</a>, v1.7.1 <br />Information published at www.slovensko.sk are not legally binding.<br />
+          Created: 30.11.2015 &nbsp;&nbsp;&nbsp;Last update: 18.04.2018   </div>
+        <div class="legal">Provider and webmaster of the portal is<br> <a href="https://www.nases.gov.sk/kontakt/index.html">Národná agentúra pre sieťové a elektronické služby</a>.</div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-72982617-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <script type="text/javascript" src="/js/smooth-scroll.js"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 1000,
+        easing: 'easeInOutCubic',
+        offset: 0,
+        updateURL: true,
+        callbackBefore: function ( toggle, anchor ) {},
+        callbackAfter: function ( toggle, anchor ) {}
+      });
+    </script>
+
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2016-05-04T15:52:51.09/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2016-05-04T15:52:51.07/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2016-05-04T15:52:51.07/tracking.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-spatial/:version:2016-10-13T22:52:54.90/:bundle:js/vendor/leaflet/leaflet.js;js/common_map.js;js/dataset_map.js"></script></body>
+</html>

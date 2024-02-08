@@ -13,6 +13,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 
+ * @deprecated Use a {@link RegexBasedWhiteListFilter} instead as a decorator.
+ */
+@Deprecated
 public class RDBRegexBasedWhiteListFilter extends RDBKnownUriFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RDBRegexBasedWhiteListFilter.class);

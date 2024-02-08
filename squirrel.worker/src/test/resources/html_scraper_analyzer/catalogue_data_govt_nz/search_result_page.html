@@ -1,0 +1,2489 @@
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en-NZ" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en-NZ" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en-NZ" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="secondary-three" lang="en-NZ"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2019-03-11T20:57:07/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2019-03-11T20:57:07/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2019-03-11T20:57:07/main.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2019-03-11T20:57:07/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-geoview/:version:2019-03-11T20:57:08/css/geo-resource-styles.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-harvest/:version:2019-03-11T20:57:15/styles/harvest.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2019-03-11T20:57:16/js/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2019-03-11T20:57:16/js/vendor/leaflet.draw/leaflet.draw.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/ckanext-spatial/:version:2019-03-11T20:57:16/css/spatial_query.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/dia_theme/:version:2019-03-11T20:57:08/dia_custom.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/dia_theme/:version:2019-03-11T20:57:08/:bundle:rua/css/rua-font.min.css;rua/css/rua.min.css" />
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.7.5" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datasets - data.govt.nz - discover and use data</title>
+
+
+
+
+
+  <link rel="shortcut icon" href="/images/icons/ckan.ico" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body data-site-root="https://catalogue.data.govt.nz/" data-locale-root="https://catalogue.data.govt.nz/" >
+
+
+<a href="#content" class="visuallyhidden focusable skip-to-content">Skip to content</a>
+
+
+
+
+
+<header class="site-header" role="banner">
+
+
+
+
+  <div class="container site-header__nav-container">
+
+
+    <nav class="account not-authed" role="navigation" aria-label="Login/Register">
+      <ul class="unstyled">
+
+
+      </ul>
+    </nav>
+
+
+  </div>
+
+  <div class="container site-header__nav-container">
+    <div class="site-header__inner">
+
+
+      <a class="site-header__logo" href="https://www.data.govt.nz">
+        <img src="https://data.govt.nz/themes/datagovt/images/header-logo-govt.png" alt="data.govt.nz - discover and use data" title="data.govt.nz - discover and use data" width="164" />
+      </a>
+
+
+
+
+
+      <nav aria-label="Main Menu" class="site-header__navigation">
+        <ul class="menu">
+
+          <li><a href="/dataset/" class="site-header__menu-item menu-item current" title="Search for datasets">Get datasets</a></li>
+          <li><a href="https://www.data.govt.nz/manage-data/" class="site-header__menu-item menu-item" title="Go to the manage data page">Manage data</a></li>
+          <li><a href="https://www.data.govt.nz/use-data/" class="site-header__menu-item menu-item" title="Go to the use data page">Use data</a></li>
+          <li><a href="https://www.data.govt.nz/open-data/" class="site-header__menu-item menu-item" title="Go to the open data page">Open data</a></li>
+          <li><a href="https://www.data.govt.nz/events/" class="site-header__menu-item menu-item" title="Go to the events page">Events</a></li>
+          <li><a href="https://www.data.govt.nz/blog/" class="site-header__menu-item menu-item" title="Go to the blog page">Blog</a></li>
+          <li><a href="https://www.data.govt.nz/about/" class="site-header__menu-item menu-item" title="Go to the about page">About</a></li>
+
+        </ul>
+      </nav>
+
+
+      <div class="navigation-toggle navicon" data-rua-toggle-state="false" data-rua-click="trigger: #site-navigation; class: in-active, is-active">
+                    <span class="navicon-box">
+                        <span class="navicon-inner"></span>
+                    </span>
+      </div>
+      <div id="site-search-wrap" class="search-toggle" data-rua-toggle-state="false" data-rua-click="trigger: #site-search; class: in-active, active">
+        <div class="search-toggle__search">
+          <span class="ri ri-search"></span>
+        </div>
+        <div class="button search-toggle__in-active">
+          <span class="ri ri-chevron-down"></span>
+          <span>
+                            Search
+                        </span>
+        </div>
+        <div class="button-icon search-toggle__active">
+          <span class="ri ri-chevron-up"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-search">
+    <div class="site-search__visibility hidden" id="site-search" data-rua-toggle="slide" style="display: none;" aria-expanded="false">
+      <div class="container">
+        <div class="site-search__inner">
+          <form class="search-form" id="dataset-search" action="/dataset" method="get" data-module="select-switch">
+            <label for="{$LabelPrefix}-field-sitewide-search">
+              Search for:
+            </label>
+            <div class="context-switch">
+              <div class="field field--inline-label">
+                <input id="{$LabelPrefix}-search-for-website-content" type="radio" class="search-form-context" name="header-search-context" value="content" />
+                <label for="{$LabelPrefix}-search-for-website-content">
+                  Website content
+                </label>
+              </div>
+              <div class="field field--inline-label">
+                <input id="{$LabelPrefix}-search-for-datasets" type="radio" class="search-form-context" name="header-search-context" value="datasets" checked="checked" />
+                <label for="{$LabelPrefix}-search-for-datasets">
+                  Datasets
+                </label>
+              </div>
+            </div>
+            <div class="field search-input">
+              <input class="ss-search-url" value="https://www.data.govt.nz/search/SearchForm" type="hidden">
+              <input class="ckan-search-url" value="/dataset" type="hidden">
+              <input id="{$LabelPrefix}-field-sitewide-search" name="q" placeholder="E.g. environment" type="text" aria-label="Search term">
+            </div>
+            <button id="{$LabelPrefix}-search" class="button">
+              <span class="ri ri-search"></span>
+              <span>Search</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="site-navigation">
+    <div class="site-search__visibility hidden" id="site-navigation" data-rua-toggle="slide" style="display: none;" aria-expanded="false">
+      <div class="container">
+        <div class="site-search__inner">
+          <ul class="menu vertical">
+
+            <li><a href="/dataset/" class="site-header__menu-item menu-item current" title="Search for datasets">Get datasets</a></li>
+            <li><a href="https://www.data.govt.nz/manage-data/" class="site-header__menu-item menu-item" title="Go to the manage data page">Manage data</a></li>
+            <li><a href="https://www.data.govt.nz/use-data/" class="site-header__menu-item menu-item" title="Go to the use data page">Use data</a></li>
+            <li><a href="https://www.data.govt.nz/open-data/" class="site-header__menu-item menu-item" title="Go to the open data page">Open data</a></li>
+            <li><a href="https://www.data.govt.nz/events/" class="site-header__menu-item menu-item" title="Go to the events page">Events</a></li>
+            <li><a href="https://www.data.govt.nz/blog/" class="site-header__menu-item menu-item" title="Go to the blog page">Blog</a></li>
+            <li><a href="https://www.data.govt.nz/about/" class="site-header__menu-item menu-item" title="Go to the about page">About</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+
+<div role="main">
+  <div id="content" class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+
+
+    <nav aria-label="You are here:" role="navigation">
+      <ul class="breadcrumbs site-banner__breadcrumbs">
+
+        <li><a class="ri ri-home" aria-label="Home" href="https://www.data.govt.nz"></a></li>
+
+        <li class="active"><a href="/dataset">Datasets</a></li>
+
+      </ul>
+    </nav>
+
+
+
+
+    <div class="row wrapper">
+
+
+
+      <section class="search-result-heading">
+
+
+
+
+        <h1>Search datasets</h1>
+
+
+
+
+
+
+
+
+
+
+
+        <div class="search-form-wrap">
+          <form id="dataset-search-form" class="clearfix search-form" method="get" data-module="select-switch">
+
+            <div class="search-input control-group search-giant">
+              <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="Search datasets...">
+
+              <button type="submit" value="search">
+                <i class="fa fa-search icon-search" aria-hidden="true"></i>
+                <span>Submit</span>
+              </button>
+
+            </div>
+
+
+
+
+
+
+
+
+            <div class="form-select control-group control-order-by">
+              <label for="field-order-by">Order by</label>
+              <select id="field-order-by" name="sort">
+
+
+                <option value="score desc, metadata_modified desc" selected="selected">Relevance</option>
+
+
+
+                <option value="title_string asc">Name Ascending</option>
+
+
+
+                <option value="title_string desc">Name Descending</option>
+
+
+
+                <option value="metadata_modified desc">Last Modified</option>
+
+
+
+
+              </select>
+
+              <button class="button js-hide" type="submit">Go</button>
+
+            </div>
+
+
+
+
+
+
+            <p class="filter-list">
+
+            </p>
+            <a class="show-filters button">Filter Results</a>
+
+
+
+
+
+          </form>
+
+        </div>
+      </section>
+
+
+
+      <div class="primary col-md-9">
+
+
+        <section class="module">
+          <div class="module-content">
+
+
+
+
+
+
+
+            <h2>
+
+
+
+
+
+
+              6,536 datasets found</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+            <ul class="dataset-list unstyled">
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/directory-of-educational-institutions">Directory of Educational Institutions</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Ministry of Education</span>
+
+
+
+
+
+
+                  <div>Includes Early Childhood Directory, School Directory, and Tertiary Directory in CSV.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/directory-of-educational-institutions#dataset-resources" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/directory-of-educational-institutions#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/directory-of-educational-institutions#dataset-resources" class="label" data-format="xls">XLS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/emergency-management-basemap">Emergency Management Basemap</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Land Information New Zealand</span>
+
+
+
+
+
+
+                  <div>The NationalMap Emergency Management Basemap includes standardised and regularly maintained reference data specifically collated for New Zealand’s emergency responders and...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/emergency-management-basemap#dataset-resources" class="label" data-format="ogc wms">OGC WMS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-davalliaceae">NZFlora Brownsey &amp; Perrie 2018 Davalliaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Brownsey, P.J. &amp; Perrie, L.R. 2018: Davalliaceae. In: Breitwieser, I.; Wilton, A.D. Flora of New Zealand - Ferns and Lycophytes. Fascicle 22. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-davalliaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-fife-2018-ptychomitriaceae">NZFlora Fife 2018 Ptychomitriaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Fife, A.J. 2018: Ptychomitriaceae. In: Smissen, R.; Wilton, A.D. Flora of New Zealand – Mosses. Fascicle 39. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-fife-2018-ptychomitriaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-brownsey-perrie-2015-ophioglossaceae">NZFlora Brownsey &amp; Perrie 2015 Ophioglossaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Brownsey, P.J. &amp; Perrie, L.R. 2015: Ophioglossaceae. In: Breitwieser, I.; Heenan, P.B.; Wilton, A.D. Flora of New Zealand - Ferns and Lycophytes. Fascicle 14. Manaaki Whenua...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-brownsey-perrie-2015-ophioglossaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/phylogeny-of-new-zealand-ascomycetes">Phylogeny of New Zealand ascomycetes</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Miscellaneous notes based on DNA sequence data from ascomycete specimens in the New Zealand Fungarium (PDD) and the International Collection of Microorganisms from Plants (ICMP)</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/phylogeny-of-new-zealand-ascomycetes#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-fife-2018-rhabdoweisiaceae">NZFlora Fife 2018 Rhabdoweisiaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Fife, A.J. 2018: Rhabdoweisiaceae . In: Smissen, R.; Wilton, A.D. Flora of New Zealand - Mosses. Fascicle 37. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-fife-2018-rhabdoweisiaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-fife-2015-meesiaceae">NZFlora Fife 2015 Meesiaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Fife, A.J. 2015: Meesiaceae. In: Heenan, P.B.; Breitwieser, I.; Wilton, A.D. Flora of New Zealand - Mosses. Fascicle 16. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-fife-2015-meesiaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-selaginellaceae">NZFlora Brownsey &amp; Perrie 2018 Selaginellaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Brownsey, P.J. &amp; Perrie, L.R. 2018: Selaginellaceae. In: Breitwieser, I.; Wilton, A.D. Flora of New Zealand - Ferns and Lycophytes. Fascicle 21. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-selaginellaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-tectariaceae">NZFlora Brownsey &amp; Perrie 2018 Tectariaceae</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Manaaki Whenua – Landcare Research</span>
+
+
+
+
+
+
+                  <div>Brownsey, P.J. &amp; Perrie, L.R. 2018: Tectariaceae. In: Breitwieser, I.; Wilton, A.D. Flora of New Zealand - Ferns and Lycophytes. Fascicle 20. Manaaki Whenua Press, Lincoln.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/nzflora-brownsey-perrie-2018-tectariaceae#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/regional-gross-domestic-product">Regional Gross Domestic Product</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Stats NZ</span>
+
+
+
+
+
+
+                  <div>Regional gross domestic product (GDP) is a geographic breakdown of national GDP. Regional GDP provides an indication of the size and structure of regional economies and provides...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/regional-gross-domestic-product#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/regional-gross-domestic-product#dataset-resources" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/regional-gross-domestic-product#dataset-resources" class="label" data-format="zip/csv">Zip/CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/regional-gross-domestic-product#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/regional-gross-domestic-product#dataset-resources" class="label" data-format="xls">XLS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/family-services-directory">Family Services Directory</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Ministry of Social Development</span>
+
+
+
+
+
+
+                  <div>The Family Services Directory is an online database that holds information on several thousand organisations (providers) that deliver services to support individuals and...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/family-services-directory#dataset-resources" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/family-services-directory#dataset-resources" class="label" data-format="db">DB</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/family-services-directory#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/pharmaceutical-schedule-database">Pharmaceutical Schedule Database</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Pharmaceutical Management Agency</span>
+
+
+
+
+
+
+                  <div>Archive of Pharmac pharmaceutical schedule database from September 2006 to current. Database is updated and republished monthy.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/pharmac-chief-executive-expenses">PHARMAC Chief Executive expenses</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Pharmaceutical Management Agency</span>
+
+
+
+
+
+
+                  <div>PHARMAC Chief Executive expenses. Data back to 2010 are available from the source url (see below).</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/pharmac-chief-executive-expenses#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/pharmac-chief-executive-expenses#dataset-resources" class="label" data-format=".xlsx">.xlsx</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/pharmac-chief-executive-expenses#dataset-resources" class="label" data-format="xls">XLS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/international-migration">International migration</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Stats NZ</span>
+
+
+
+
+
+
+                  <div>International migration statistics give the latest outcomes-based measure of migration, which includes estimates of migrants entering or leaving New Zealand.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/international-migration#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/international-migration#dataset-resources" class="label" data-format="csv">CSV</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/international-travel">International travel</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Stats NZ</span>
+
+
+
+
+
+
+                  <div>International travel covers the number and characteristics of overseas visitors and New Zealand resident travellers (short-term movements) entering or leaving New Zealand.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/international-travel#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/accommodation-survey">Accommodation Survey</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Stats NZ</span>
+
+
+
+
+
+
+                  <div>The Accommodation Survey records guests staying in hotels, motels, backpacker accommodation, and holiday parks in New Zealand each month. It includes: Establishments, capacity,...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/accommodation-survey#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/accommodation-survey#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/gambling-expenditure-statistics">Gambling Expenditure Statistics</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Department of Internal Affairs</span>
+
+
+
+
+
+
+                  <div>The dataset shows the amount spent on the four main types of gambling activity - TAB racing and sports betting, NZ Lotteries games, gaming machines (outside casinos) and casinos...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/gambling-expenditure-statistics#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/gaming-machine-statistics">Gaming machine statistics</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Department of Internal Affairs</span>
+
+
+
+
+
+
+                  <div>This dataset shows the numbers and types of societies licensed to operate approved gaming machines at approved venues on that day. It does not include any gaming machines,...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/gaming-machine-statistics#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/gaming-machine-statistics#dataset-resources" class="label" data-format="xls">XLS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/food-price-index">Food Price Index</a>
+
+
+
+
+
+                  </h3>
+
+                  <span class="dataset-subheading">Stats NZ</span>
+
+
+
+
+
+
+                  <div>These releases provide information on the rate of price change of food and food services purchased by households. Data for months back to June 2008 are available from the source...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/food-price-index#dataset-resources" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/food-price-index#dataset-resources" class="label" data-format="zip">ZIP</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/food-price-index#dataset-resources" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/food-price-index#dataset-resources" class="label" data-format="xls">XLS</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+            </ul>
+
+
+
+          </div>
+
+
+          <div class='pagination pagination-centered'><ul> <li class="active"><a href="/dataset?page=1">1</a></li> <li><a href="/dataset?page=2">2</a></li> <li><a href="/dataset?page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a href="/dataset?page=327">327</a></li> <li><a href="/dataset?page=2">»</a></li></ul></div>
+
+        </section>
+
+
+        <section class="module">
+          <div class="module-content">
+
+            <div class="search-result-api-message message">
+              <span class="fa fa-lightbulb-o"></span>
+
+              <small>
+
+
+
+                You can also access this registry using the <a href="/user/edit/?ver=%2F3">API</a> (see <a href="http://docs.ckan.org/en/2.7/api/">API Docs</a>).
+              </small>
+
+            </div>
+            <div class="search-result-bottom-link">
+              Can't find it?
+              <a href="https://www.data.govt.nz/request-data/" title="Search for requested datasets or create a new request" class="button">Request a dataset</a>
+            </div>
+
+          </div>
+        </section>
+
+
+      </div>
+
+
+
+      <aside class="secondary col-md-3">
+
+
+
+        <a href="#filters" class="visuallyhidden focusable skip-to-content">Skip map</a>
+
+
+        <section id="dataset-map" class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-globe"></i>
+            Filter by location
+            <a href="/dataset" class="action">Clear</a>
+          </h2>
+
+          <div class="dataset-map" data-module="spatial-query" data-default_extent="[[-35, 167], [-47, 180]]" data-module-map_config="{&#34;type&#34;: &#34;custom&#34;, &#34;custom.url&#34;: &#34;https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png&#34;, &#34;attribution&#34;: &#34;&amp;copy;&lt;a href=\&#34;http://www.openstreetmap.org/copyright\&#34;&gt;OpenStreetMap&lt;/a&gt;, &amp;copy;&lt;a href=\&#34;https://carto.com/attribution\&#34;&gt;CARTO&lt;/a&gt;&#34;}">
+            <div id="dataset-map-container"></div>
+          </div>
+          <div id="dataset-map-attribution">
+
+            <div>&copy;<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a></div>
+
+
+          </div>
+        </section>
+
+
+
+
+
+        <div id="filters" class="filters">
+          <div>
+
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="fa fa-medium fa-filter"></i>
+
+                Organisations
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=land-information-new-zealand" title="Land Information New Zealand">
+                      <span>Land Information Ne... (2111)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=ministry-for-the-environment" title="Ministry for the Environment">
+                      <span>Ministry for the En... (869)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=environment-canterbury" title="">
+                      <span>Environment Canterbury (426)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=landcare-research-new-zealand-limited" title="Manaaki Whenua – Landcare Research">
+                      <span>Manaaki Whenua – La... (404)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=wellington-regional-council" title="Greater Wellington Regional Council">
+                      <span>Greater Wellington ... (311)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=stats-nz" title="">
+                      <span>Stats NZ (284)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=ministry-of-health" title="">
+                      <span>Ministry of Health (169)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=ministry-of-transport" title="">
+                      <span>Ministry of Transport (144)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=new-zealand-defence-force" title="New Zealand Defence Force">
+                      <span>New Zealand Defence... (134)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?organization=hawkes-bay-regional-council" title="Hawke&#39;s Bay Regional Council">
+                      <span>Hawke&#39;s Bay Regiona... (125)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_organization_limit=0" class="read-more">Show More Organisations</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="fa fa-medium fa-filter"></i>
+
+                Groups
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=land" title="">
+                      <span>Land (5014)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=local-and-regional-government" title="Local and regional government">
+                      <span>Local and regional ... (1567)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=environment-and-conservation" title="Environment and conservation">
+                      <span>Environment and con... (1422)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=population-and-society" title="">
+                      <span>Population and society (316)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=transport" title="">
+                      <span>Transport (229)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=health" title="">
+                      <span>Health (222)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=state-sector-performance" title="State sector performance">
+                      <span>State sector perfor... (156)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=science-and-research" title="">
+                      <span>Science and research (147)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=infrastructure" title="">
+                      <span>Infrastructure (117)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?groups=chief-executive-expenses" title="Chief Executive Expenses">
+                      <span>Chief Executive Exp... (115)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_groups_limit=0" class="read-more">Show More Groups</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="fa fa-medium fa-filter"></i>
+
+                Tags
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Open+Data" title="">
+                      <span>Open Data (555)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Christchurch" title="">
+                      <span>Christchurch (284)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Selwyn" title="">
+                      <span>Selwyn (247)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Waimakariri" title="">
+                      <span>Waimakariri (238)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Timaru" title="">
+                      <span>Timaru (233)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Plans++Consents" title="">
+                      <span>Plans  Consents (225)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Waimate" title="">
+                      <span>Waimate (223)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Hurunui" title="">
+                      <span>Hurunui (219)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Environment" title="">
+                      <span>Environment (214)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?tags=Property++Land" title="">
+                      <span>Property  Land (214)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_tags_limit=0" class="read-more">Show More Tags</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="fa fa-medium fa-filter"></i>
+
+                Formats
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=CSV" title="">
+                      <span>CSV (4308)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=KML" title="">
+                      <span>KML (4254)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=PDF" title="">
+                      <span>PDF (3646)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=DWG" title="">
+                      <span>DWG (2680)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=SHP" title="">
+                      <span>SHP (2455)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=FileGDB" title="">
+                      <span>FileGDB (2428)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=GPKG" title="">
+                      <span>GPKG (2428)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=MapInfo+File" title="">
+                      <span>MapInfo File (2428)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=HTML" title="">
+                      <span>HTML (1963)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?res_format=ZIP" title="">
+                      <span>ZIP (1595)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_res_format_limit=0" class="read-more">Show More Formats</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+            <section class="module module-narrow module-shallow">
+
+              <h2 class="module-heading">
+                <i class="fa fa-medium fa-filter"></i>
+
+                Licenses
+              </h2>
+
+
+
+
+              <nav>
+                <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-4.0" title="Creative Commons Attribution 4.0 International">
+                      <span>Creative Commons At... (3545)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-NZ-3.0" title="Creative Commons Attribution 3.0 New Zealand">
+                      <span>Creative Commons At... (1929)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=other" title="Other licensing (check with source agency)">
+                      <span>Other licensing (ch... (793)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-ND-4.0" title="Creative Commons Attribution-NoDerivatives 4.0 International">
+                      <span>Creative Commons At... (79)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-NC-4.0" title="Creative Commons Attribution-NonCommercial 4.0 International">
+                      <span>Creative Commons At... (61)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-3.0-NZ" title="">
+                      <span>CC-BY-3.0-NZ (16)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-NC-NZ-3.0" title="Creative Commons Attribution-Noncommercial 3.0 New Zealand">
+                      <span>Creative Commons At... (9)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-NC-ND-4.0" title="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International">
+                      <span>Creative Commons At... (8)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=Other" title="">
+                      <span>Other (8)</span>
+                    </a>
+                  </li>
+
+
+
+
+
+                  <li class="nav-item">
+                    <a href="/dataset?license_id=CC-BY-NC-ND-NZ-3.0" title="Creative Commons Attribution-Noncommercial-NoDerivative Works 3.0 New Zealand">
+                      <span>Creative Commons At... (7)</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+              <p class="module-footer">
+
+
+                <a href="/dataset?_license_id_limit=0" class="read-more">Show More Licenses</a>
+
+
+              </p>
+
+
+
+            </section>
+
+
+
+
+
+          </div>
+          <a class="close no-text hide-filters"><i class="fa fa-remove-sign"></i><span class="text">close</span></a>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__style-1"></div>
+  <div class="site-footer__navigation">
+    <div class="site-footer__inner">
+      <div class="site-footer__col-1">
+        <h2>
+          What are you looking for?
+        </h2>
+        <hr class="margin-t-sm margin-b-sm">
+        <ul class="menu vertical md-2-column site-footer__menu">
+
+          <li>
+            <a href="https://www.data.govt.nz/" class="link">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="/dataset" class="link">
+              Get datasets
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/manage-data/" class="link">
+              Manage data
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/use-data/" class="link">
+              Use data
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/open-data/" class="link">
+              Open data
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/events/" class="link">
+              Events
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/blog/" class="current">
+              Blog
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/about/" class="link">
+              About
+            </a>
+          </li>
+
+        </ul>
+      </div>
+      <div class="site-footer__col-2">
+        <h2>
+          Using this website
+        </h2>
+        <hr class="margin-t-sm margin-b-sm">
+        <ul class="menu vertical site-footer__menu">
+
+          <li>
+            <a href="https://www.data.govt.nz/terms-of-use/" class="link">
+              Terms of use
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/privacy-policy/" class="link">
+              Privacy policy
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/copyright/" class="link">
+              Copyright
+            </a>
+          </li>
+
+          <li>
+            <a href="/user/login" class="link">
+              Publisher login
+            </a>
+          </li>
+
+        </ul>
+      </div>
+      <div class="site-footer__col-3">
+        <h2>
+          Get in touch
+        </h2>
+        <hr class="margin-t-sm margin-b-sm">
+        <ul class="menu vertical site-footer__menu">
+
+          <li>
+            <a href="https://www.data.govt.nz/contact-us/" class="link">
+              Contact us
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/feedback/" class="link">
+              Give us feedback
+            </a>
+          </li>
+
+          <li>
+            <a href="https://github.com/data-govt-nz" class="link">
+              Github
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.data.govt.nz/request-data/" class="link">
+              Request a dataset
+            </a>
+          </li>
+
+        </ul>
+        <ul class="social-menu">
+          <li>
+            <a href="https://twitter.com/data_govt_nz" aria-label="See data.govt.nz on Twitter" class="ri ri-twitter"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="site-footer__bottom">
+    <div class="site-footer__inner">
+      <div class="site-footer__col-copyright">
+        <div class="row">
+          <div class="col-md-3">
+            <img src="/dia/images/cc_icons.png" alt="CC BY 4.0" width="83">
+          </div>
+          <div class="col-md-9">
+            <small>Unless indicated otherwise, all content on data.govt.nz is licensed for re-use under a <a class="external" href="https://creativecommons.org/licenses/by/4.0/" rel="external license">Creative Commons 4.0 International Licence&nbsp;<span class="ri  ri-external-link" aria-label="(external site link)"></span></a></small><br>
+            <small>Crown copyright 2018</small>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__col-logo">
+        <a href="https://www.govt.nz" aria-label="New Zealand Government">
+          <img src="/dia/images/footer-logo-govt.png" alt="New Zealand Government" width="179">
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NPBN5NN"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NPBN5NN');</script>
+<!-- End Google Tag Manager -->
+
+
+<script type="text/javascript"> !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){(a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({e:g})}}(window,document,"script","//cdn.raygun.io/raygun4js/raygun.min.js","rg4js");</script>
+<script type="text/javascript">
+  rg4js('apiKey', "rfFUr9RL6XDTMXPKUre4ew==");
+  rg4js('enableCrashReporting', true);
+</script>
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2019-03-11T20:57:07/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2019-03-11T20:57:07/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2019-03-11T20:57:07/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-spatial/:version:2019-03-11T20:57:16/:bundle:js/vendor/leaflet/leaflet.js;js/common_map.js;js/vendor/leaflet.draw/leaflet.draw.js;js/spatial_query.js"></script>
+<script type="text/javascript" src="/fanstatic/dia_theme/:version:2019-03-11T20:57:08/:bundle:dia_custom.js;rua/js/rua.js"></script><script type="text/javascript">
+  //<![CDATA[
+  (function() {
+    var _analytics_scr = document.createElement('script');
+    _analytics_scr.type = 'text/javascript'; _analytics_scr.async = true; _analytics_scr.src = '/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=1&cb=333479771';
+    var _analytics_elem = document.getElementsByTagName('script')[0]; _analytics_elem.parentNode.insertBefore(_analytics_scr, _analytics_elem);
+  })();
+  // ]]>
+</script></body>
+</html>

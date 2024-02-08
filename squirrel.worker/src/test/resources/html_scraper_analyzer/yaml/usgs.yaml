@@ -1,0 +1,33 @@
+file_descriptor:
+    check:
+        domain: usgs.gov
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": .pane-content .entity .content:contains(Data and Tools) a
+
+    redirection-two:
+        regex: data-and-tools/overview
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": .pane-content .fieldable-panels-pane a:contains(Science Datasets)
+
+    search-result-page:
+        regex: data-and-tools/science-datasets
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .list-title a
+                "http://projekt-opal.de/dataset#pagination": .pagination li a
+
+    detail-page:
+        regex: catalog/item
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": header h1
+                "http://purl.org/dc/terms/description": .sb-expander-content span[itemprop="articleBody"]
+                "http://purl.org/dc/terms/modified": dd[itemprop="datePublished"]
+                "http://purl.org/dc/terms/issued": dd[itemprop="datePublished"]
+                "http://www.w3.org/ns/dcat#downloadURL": .sb-download-link

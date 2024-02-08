@@ -1,0 +1,842 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="fr" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="fr" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="fr" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="fr"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2017-10-11T14:01:04.60/red.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="generator" content="ckan 2.6.2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agriculture et alimentation - Portail données ouvertes</title>
+
+
+
+
+  <link rel="shortcut icon" href="/images/icons/ckan.ico" />
+
+
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-25478931-8', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+
+
+  <link rel="alternate" type="application/atom+xml" title="CKAN - Ensembles de données  du groupe : Agriculture et alimentation" href="/feeds/group/agriculture-alimentation.atom" />
+  <link rel="alternate" type="application/atom+xml" title="CKAN - Historique récent des révisions" href="/revision/list?days=1&amp;format=atom" />
+
+
+
+
+
+
+  <link rel="stylesheet" href="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/css/commun.css" type="text/css"><link rel="stylesheet" href="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/css/ckan.css" type="text/css"><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-includes/js/jquery/jquery.js"></script><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/js/doubletaptogo.js"></script><script type="text/javascript" src="http://donnees.ville.montreal.qc.ca/portail/wp-content/themes/donneesouvertes4/js/scripts.js"></script>
+
+
+</head>
+
+
+<body class="ckan" data-site-root="http://donnees.ville.montreal.qc.ca/" data-locale-root="http://donnees.ville.montreal.qc.ca/" data-api-root="">
+
+
+<div class="hide"><a href="#content">Passer directement au contenu</a></div>
+
+
+
+
+<div class="container"­>
+  <div class="hidden-phone" id="preheader"><a href="http://ville.montreal.qc.ca" title="Accédez au portail officiel de la Ville de Montréal" id="logoville">Ville de Montréal</a>
+    <div id="icosrsxsocio">
+      <ul class="rsxicons">
+        <li>Suivez-nous</li>
+        <li id="icotwitter"><a href="http://twitter.com/mtl_do" title="Suivez-nous sur Twitter">Twitter</a></li>
+        <li id="icolinkedin"><a href="http://www.linkedin.com/groups?gid=3863497" title="Rejoignez notre groupe LinkedIn">Rejoignez notre groupe LinkedIn</a></li>
+        <li id="icorss"><a href="/portail/fils-rss" title="Fils RSS disponibles">RSS</a></li>
+        <li id="icoinfolettre"><a href="/portail/infolettre" title="Abonnez-vous à l'infolettre">Abonnez-vous à l'infolettre</a></li>
+      </ul>
+    </div>
+    <div class="menu-nav-top-right-container">
+      <ul id="contactmenu" class="menu">
+        <li class="menu-item"><a class="last" title="Joindre les répondants du portail" href="/portail/aide-et-entraide/nous-joindre/">Nous joindre</a></li>
+      </ul>
+    </div>
+  </div>
+  <header role="banner" class="site-header" id="masthead">
+    <hgroup>
+      <h1 id="titre-site"><a rel="home" title="Portail données ouvertes" href="/"> Portail données ouvertes</a></h1>
+      <div id="mainicons" class="hidden-phone"> <a href="/portail/licence" title="En savoir plus sur les licences">
+        <ul>
+          <li id="ico01"><img alt="" src="/portail/wp-content/themes/donneesouvertes4/images/symboles-header.png"></li>
+        </ul>
+      </a> </div>
+    </hgroup>
+    <nav role="navigation" class="main-navigation" id="site-navigation"> <a title="Aller au contenu principal" href="#content" class="assistive-text">Aller au contenu principal</a>
+      <button id="menu-toggle"> <i class="icon-reorder"></i> <span>Menu</span> </button>
+      <button id="afficher-options-de-recherche"> <i class="icon-search"></i> <span>Options de recherche</span> </button>
+      <div class="menu-nav-top-container">
+        <!-- début menu collé de Wordpress -->
+        <ul class="nav-menu" id="menu-nav-top">
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5119" id="menu-item-5119"><a>Données</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5181" id="menu-item-5181"><a href="/dataset">Toutes les données</a></li>
+              <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5183" id="menu-item-5183"><a href="/group">Les données par thématiques</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4198" id="menu-item-4198"><a href="/portail/ddo/">Demande de données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4199" id="menu-item-4199"><a href="/portail/ddo/suivi-ddo/">Suivi des demandes de données ouvertes</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5122" id="menu-item-5122"><a>Démarche</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6664" id="menu-item-6664"><a href="/portail/politique-de-donnees-ouvertes/">Politique de données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5794" id="menu-item-5794"><a href="/portail/licence/" title="Sommaire de la licence">Licence</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6663" id="menu-item-6663"><a href="/portail/directive-sur-la-gouvernance-des-donnees/">Gouvernance des données</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5121" id="menu-item-5121"><a>Applications</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3623" id="menu-item-3623"><a href="/portail/applications/applications-recentes/">Applications récentes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-375" id="menu-item-375"><a href="/portail/applications/">Toutes les applications</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-350" id="menu-item-350"><a href="/portail/applications/suggestions-dapplications/">Suggestions d’applications</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5124" id="menu-item-5124"><a>Aide et entraide</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362" id="menu-item-362"><a href="/portail/aide-et-entraide/formats-de-donnees/">Formats de fichiers</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2764" id="menu-item-2764"><a href="/portail/forums-et-groupes-de-discussions/">Forums et groupes de discussions</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3598" id="menu-item-3598"><a href="/portail/aide-et-entraide/gestion-des-commentaires/">Gestion des commentaires et des échanges sur les médias sociaux</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5125" id="menu-item-5125"><a>Actualites</a>
+            <ul class="sub-menu">
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1872" id="menu-item-1872"><a href="/portail/actualites/">Articles</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4535" id="menu-item-4535"><a href="/portail/archive-des-infolettres-du-portail-des-donnees-ouvertes/">Archive des infolettres du Portail des données ouvertes</a></li>
+              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4501" id="menu-item-4501"><a href="/portail/actualites/abonnement/">Abonnement à l’infolettre</a></li>
+            </ul>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4559" id="menu-item-4559"><a href="/portail/english-version-of-the-portail-des-donnees-ouvertes-de-la-ville-de-montreal/" title="English version of the Portail des données ouvertes de la Ville de Montréal">English</a></li>
+        </ul>
+
+        <!-- fin menu collé de Wordpress -->
+      </div>
+    </nav>
+    <div style="display:none;" id="bloc-recherche-permament">
+      <form action="/dataset" method="get" class="search-form" id="formulaire-de-recherche">
+        <div class="search-input control-group search-giant">
+          <input type="text" placeholder="Rechercher un ensemble de données" autocomplete="off" value="" name="q" class="search" id="expression-de-recherche">
+          <button type="submit"> <i class="icon-search"></i> <span>Rechercher</span> </button>
+        </div>
+      </form>
+      <div id="commutateur-recherche">
+        <div class="option">
+          <label for="recherche-ckan">Ensembles de données</label>
+          <input type="radio" checked="" value="q" id="recherche-ckan" name="type-de-recherche">
+        </div>
+        <div class="option">
+          <label for="recherche-wordpress">Actualités, applications et pages d'aide</label>
+          <input type="radio" value="s" id="recherche-wordpress" name="type-de-recherche">
+        </div>
+      </div>
+    </div>
+    <!-- #site-navigation -->
+  </header>
+</div>
+
+<div role="main">
+  <div id="content" class="container">
+
+
+    <div class="flash-messages">
+
+
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+
+    </div>
+
+
+    <div class="row wrapper">
+
+
+
+
+
+
+      <div class="primary span9">
+
+
+        <article class="module">
+
+          <header class="module-content page-header">
+
+            <ul class="nav nav-tabs">
+
+              <li class="active"><a href="/group/agriculture-alimentation"><i class="icon-sitemap"></i> Ensembles de données</a></li>
+              <li><a href="/group/activity/agriculture-alimentation/0"><i class="icon-time"></i> Flux d&#39;Activité</a></li>
+              <li><a href="/group/about/agriculture-alimentation"><i class="icon-info-sign"></i> À propos</a></li>
+
+            </ul>
+          </header>
+
+          <div class="module-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <form id="group-datasets-search-form" class="search-form" method="get" data-module="select-switch">
+
+
+              <div class="search-input control-group search-giant">
+                <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="Rechercher les jeux des données...">
+
+                <button type="submit" value="search">
+                  <i class="icon-search"></i>
+                  <span>Envoyer</span>
+                </button>
+
+              </div>
+
+
+
+
+
+
+
+
+              <div class="form-select control-group control-order-by">
+                <label for="field-order-by">Par Ordre</label>
+                <select id="field-order-by" name="sort">
+
+
+                  <option value="score desc, metadata_modified desc">Pertinence</option>
+
+
+
+                  <option value="title_string asc">Nom Croissant</option>
+
+
+
+                  <option value="title_string desc">Nom Décroissant</option>
+
+
+
+                  <option value="metadata_modified desc">Modifié le</option>
+
+
+
+                  <option value="views_recent desc">Populaire</option>
+
+
+                </select>
+
+                <button class="btn js-hide" type="submit">Go</button>
+
+              </div>
+
+
+
+
+
+              <h2>
+
+
+
+
+
+
+                3 ensembles trouvés</h2>
+
+
+
+
+
+              <div class="filter-list">
+
+              </div>
+
+
+
+            </form>
+
+
+
+
+
+
+
+
+
+
+            <ul class="dataset-list unstyled">
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/inspection-aliments-contrevenants">Inspection des aliments – contrevenants</a>
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Liste des établissements alimentaires situés sur le territoire de l’agglomération montréalaise et sous la responsabilité de la Division de l’inspection des aliments de la Ville...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/inspection-aliments-contrevenants" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/inspection-aliments-contrevenants" class="label" data-format="xml">XML</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/inspection-aliments-contrevenants" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/agriculture-urbaine-sondage">Agriculture urbaine : sondage auprès de la population de l’île de Montréal</a>
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>La Division du développement durable de la Ville de Montréal a confié à la firme Bureau d’Intervieweurs Professionnels (BIP) la réalisation d’un sondage auprès de la population...</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/agriculture-urbaine-sondage" class="label" data-format="csv">CSV</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/agriculture-urbaine-sondage" class="label" data-format="docx">DOCX</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/agriculture-urbaine-sondage" class="label" data-format="odt">ODT</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/agriculture-urbaine-sondage" class="label" data-format="zip">ZIP</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+
+                  <h3 class="dataset-heading">
+
+
+
+
+                    <a href="/dataset/cuisine-de-rue">Calendrier de la cuisine de rue</a>
+
+
+
+
+
+                  </h3>
+
+
+
+
+
+
+                  <div>Le calendrier de cuisine de rue présente la rotation quotidienne des camions de cuisine de rue en fonction des sites.</div>
+
+
+                </div>
+
+
+
+                <ul class="dataset-resources unstyled">
+
+
+                  <li>
+                    <a href="/dataset/cuisine-de-rue" class="label" data-format="json">JSON</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/cuisine-de-rue" class="label" data-format="xlsx">XLSX</a>
+                  </li>
+
+
+                </ul>
+
+
+
+
+              </li>
+
+
+
+            </ul>
+
+
+
+
+
+
+
+
+          </div>
+        </article>
+
+      </div>
+
+
+
+      <aside class="secondary span3">
+
+
+
+
+
+
+
+
+
+        <section class="module module-narrow module-shallow groups">
+          <h2 class="module-heading">
+
+            Thématiques
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?groups=agriculture-alimentation" title="">
+                  <span>Agriculture et alimentation (3)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?groups=gouvernement-finances" title="">
+                  <span>Gouvernement et finances (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?groups=loi-justice-securite-publique" title="">
+                  <span>Loi, justice et sécurité publique (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?_groups_limit=0" class="read-more">Afficher plus de thématiques</a>
+
+          </p>
+
+        </section>
+
+
+
+
+
+
+
+
+
+        <section class="module module-narrow module-shallow res_format">
+          <h2 class="module-heading">
+
+            Formats
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=CSV" title="">
+                  <span>CSV (2)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=XLSX" title="">
+                  <span>XLSX (2)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=DOCX" title="">
+                  <span>DOCX (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=JSON" title="">
+                  <span>JSON (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=ODT" title="">
+                  <span>ODT (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=XML" title="">
+                  <span>XML (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?res_format=ZIP" title="">
+                  <span>ZIP (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?_res_format_limit=0" class="read-more">Afficher plus de formats</a>
+
+          </p>
+
+        </section>
+
+
+
+
+
+
+
+
+        <section class="module module-narrow module-shallow tags">
+          <h2 class="module-heading">
+
+            Mots-clés
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Alimentation" title="">
+                  <span>Alimentation (2)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Agriculture" title="">
+                  <span>Agriculture (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Agriculture+urbaine" title="">
+                  <span>Agriculture urbaine (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Aliment" title="">
+                  <span>Aliment (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Amende" title="">
+                  <span>Amende (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Baldon" title="">
+                  <span>Baldon (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Camion+de+rue" title="">
+                  <span>Camion de rue (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Condamnation" title="">
+                  <span>Condamnation (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Cour+arri%C3%A8re" title="">
+                  <span>Cour arrière (1)</span>
+                </a>
+              </li>
+
+
+
+
+
+              <li class="nav-item">
+                <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?tags=Cuisine+de+rue" title="">
+                  <span>Cuisine de rue (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/group/6150acd9-9fe4-4c34-b611-65758e2ebc62?_tags_limit=0" class="read-more">Afficher plus de mots-clés</a>
+
+          </p>
+
+        </section>
+
+
+
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+<footer role="contentinfo" id="colophon" class="container">
+  <div id="menu-footer" class="row">
+    <ul class="cat_col span2" id="cat-col-1">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/actualites">Actualités</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/infolettre">Abonnez-vous</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/nous-joindre">Nous joindre</a></li>
+    </ul>
+    <ul class="cat_col span2" id="cat-col-2">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/accessibilite">Accessibilité</a></li>
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/plan-du-site">Plan du site</a></li>
+    </ul>
+    <ul class="cat_col span8" id="cat-col-3">
+      <li><a href="http://donnees.ville.montreal.qc.ca/portail/licence/">Licence</a></li>
+      <li><a href="http://ville.montreal.qc.ca/portal/page?_pageid=5798,42719714&amp;_dad=portal&amp;_schema=PORTAL">&copy; Tous droits réservés Ville de Montréal</a></li>
+    </ul>
+  </div>
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2017-10-11T14:01:04.56/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-10-11T14:01:04.73/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2017-10-11T14:01:04.73/tracking.min.js"></script>
+<script type="text/javascript" src="/fanstatic/ckanext-googleanalytics/:version:2017-09-22T15:50:05.45/googleanalytics_event_tracking.js"></script></body>
+</html>

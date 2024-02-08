@@ -65,15 +65,16 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 	private static final String DUMMY_HASH_VALUE = "dummyValue";
 
 	public MongoDBKnowUriFilter(String hostName, Integer port) {
-
 		LOGGER.info("Filter Persistance: " + PERSIST);
-
         this.client = MongodbConnectionFactory.getConnection(hostName, port);
-
 	}
 
 	@Override
 	public boolean isUriGood(CrawleableUri uri) {
+	    if(uri == null) {
+            LOGGER.debug("URI is null and, hence, not good.");
+	        return false;
+	    }
 		MongoCursor<Document> cursor = mongoDB.getCollection(COLLECTION_NAME)
 				.find(new Document("uri", uri.getUri().toString())).iterator();
 
@@ -88,7 +89,6 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 				return true;
 			}
 		} else {
-
 			LOGGER.debug("URI {} is good", uri.toString());
 			cursor.close();
 			return true;
@@ -102,19 +102,14 @@ public class MongoDBKnowUriFilter implements KnownUriFilter, Cloneable, Closeabl
 	}
 
 	public Document crawleableUriToMongoDocument(CrawleableUri uri) {
-
 		UriType uriType = uri.getType();
-
-
 		return new Document("uri", uri.getUri().toString()).append("type", uriType.toString());
-
 	}
 
 	@Override
 	public void close() throws IOException {
 		if (!PERSIST) {
 			mongoDB.getCollection(COLLECTION_NAME).drop();
-
 		}
 		client.close();
 	}

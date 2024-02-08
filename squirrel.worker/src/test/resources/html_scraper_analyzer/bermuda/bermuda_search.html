@@ -1,0 +1,1484 @@
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/fanstatic/vendor/:version:2013-06-11T01:43:17/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2013-06-11T01:43:17/select2/select2.min.css" />
+  <link rel="stylesheet" type="text/css" href="/fanstatic/css/:version:2013-06-11T01:43:17/main.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/fanstatic/vendor/:version:2013-06-11T01:43:17/font-awesome/css/font-awesome-ie7.css" /><![endif]-->
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.0" />
+  <title>Search for a Dataset - Bermuda.io</title>
+
+
+  <link rel="shortcut icon" href="/images/icons/ckan.ico" />
+
+
+
+
+
+
+
+
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-42913780-1', 'bermuda.io');
+    ga('send', 'pageview');
+  </script>
+</head>
+
+
+<body data-site-root="http://bermuda.io/" data-locale-root="http://bermuda.io/" data-api-root="">
+
+
+
+
+<header class="account-masthead">
+  <div class="container">
+
+    <nav class="account not-authed">
+      <ul class="unstyled">
+
+        <li><a href="/user/login">Log in</a></li>
+        <li><a class="sub" href="/user/register">Register</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<header class="masthead">
+
+
+
+  <div class="container">
+
+    <hgroup class="header-image">
+
+
+
+      <a class="logo" href="/"><img src="/base/images/bermuda-io-ckan.png" alt="Bermuda.io Logo" title="Bermuda.io Logo" width="15%" style="padding-top:6px;" /></a>
+
+
+
+    </hgroup>
+
+    <div class="content">
+
+
+      <nav class="section navigation">
+        <ul class="nav nav-pills">
+
+          <li class="active"><a href="/dataset">Datasets</a></li><li><a href="/organization">Organizations</a></li><li><a href="/group">Groups</a></li><li><a href="/about">About</a></li>
+
+          <li><a href="http://blog.bermuda.io">Blog</a></li>
+        </ul>
+      </nav>
+
+
+
+      <form class="section site-search simple-input" action="/dataset" method="get">
+        <div class="field">
+          <label for="field-sitewide-search">Search Datasets</label>
+          <input id="field-sitewide-search" type="text" name="q" placeholder="Search" />
+          <button class="btn-search" type="submit">Search</button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</header>
+
+
+<div role="main">
+  <div id="content" class="container">
+
+
+
+    <div class="flash-messages">
+
+    </div>
+
+
+
+    <div class="toolbar">
+
+
+
+
+
+      <ol class="breadcrumb">
+
+        <!-- Snippet snippets/home_breadcrumb_item.html start -->
+
+        <li class="home"><a href="/"><i class="icon-home"></i><span> Home</span></a></li>
+        <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+        <li class="active"><a href="/dataset">Datasets</a></li>
+
+      </ol>
+
+
+    </div>
+
+
+    <div class="wrapper">
+
+
+      <div class="btn-group actions">
+
+      </div>
+
+
+
+
+
+
+
+      <div class="primary">
+
+
+        <section class="module">
+          <div class="module-content">
+            <form id="dataset-search" class="dataset-search clearfix" method="get" data-module="select-switch">
+        <span class="control-group search-giant">
+          <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="Search..." />
+          <button type="submit" value="search">Submit</button>
+        </span>
+
+
+              <!-- Snippet snippets/sort_by.html start -->
+
+              <span class="form-select control-group control-order-by">
+  <label for="field-order-by">Order by</label>
+  <select id="field-order-by" name="sort">
+    <option value="score desc, metadata_modified desc" selected="selected">Relevance</option>
+    <option value="title_string asc">Name Ascending</option>
+    <option value="title_string desc">Name Descending</option>
+    <option value="metadata_modified desc">Last Modified</option>
+
+  </select>
+  <button class="btn js-hide" type="submit">Go</button>
+</span>
+              <!-- Snippet snippets/sort_by.html end -->
+
+
+
+
+              <div id="dataset-search-ext"></div>
+            </form>
+            <div class="results">
+              <strong>
+
+                <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+                22 datasets found
+                <!-- Snippet snippets/search_result_text.html end -->
+
+              </strong>
+              <div class="filter-list">
+
+              </div>
+
+            </div>
+
+
+
+            <!-- Snippet snippets/package_list.html start -->
+
+
+            <ul class="dataset-list unstyled">
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/budget-book-estimates-of-revenue-and-expenditure-for-the-year">Budget Book (Estimates of Revenue and Expenditure for the Year)</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>Estimates of Revenue and Expenditure for the Year
+                  </div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/budget-book-estimates-of-revenue-and-expenditure-for-the-year" class="label" data-format="html">HTML</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/budget-book-estimates-of-revenue-and-expenditure-for-the-year" class="label" data-format="zip">ZIP</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/financial-instructions">Financial Instructions</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>Financial Instructions have been established in order to improve and clarify the standards of financial control within Government consistent with international best practice and...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/financial-instructions" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/pati-information-statements">PATI Information Statements</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <p class="empty">This dataset has no description</p>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/pati-information-statements" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/corporation-of-hamilton-audited-financials">Corporation of Hamilton audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <p class="empty">This dataset has no description</p>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/corporation-of-hamilton-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/bermuda-college-audited-financials">Bermuda College audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>Bermuda College (the College) provides full and part-time education and training for persons over the compulsory school age.
+                  </div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/bermuda-college-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/consolidated-fund-audited-financials">Consolidated Fund audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Consolidated Fund is the general operating fund of the Bermuda Government through which Government conducts the majority of its financial transactions.
+
+                    The Consolidated...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/consolidated-fund-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/historical-forward-planning-documents">Historical Forward Planning Documents</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <p class="empty">This dataset has no description</p>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/historical-forward-planning-documents" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/board-of-trustees-of-the-golf-courses-audited-financials">Board of Trustees of the Golf Courses audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The functions of the Board of Trustees of the Golf Courses (the Board) are to have general control, management and administration over the Port Royal, Ocean View and St....</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/board-of-trustees-of-the-golf-courses-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/government-employees-health-insurance-gehi-fund-audited-financials">Government Employees Health Insurance (GEHI) Fund audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Government Employees Health Insurance Fund (the Fund) provides health insurance benefits for Government employees, Ministers and Members of the Legislature, and their...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/government-employees-health-insurance-gehi-fund-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/reports-on-education">Reports on Education</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <p class="empty">This dataset has no description</p>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/reports-on-education" class="label" data-format="pdf">PDF</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/berkeley-institute-capitation-grant-account-audited-financials">Berkeley Institute Capitation Grant Account audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Berkeley Institute is governed by the Berkeley Institute Act 1933 ("the Act") and its subsequent amendments. The Act provides for the management of the school by "The Board...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/berkeley-institute-capitation-grant-account-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/cedarbridge-academy-audited-financials">CedarBridge Academy audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>CedarBridge Academy (the Academy) is a public senior school, which provides education in accordance with the provisions of the Education Act 1996 and subsequent amendments.
+                  </div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/cedarbridge-academy-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/national-drug-commission-ndc-audited-financials">National Drug Commission (NDC) audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The National Drug Commission ("the Commission") was established by The National Drug Commission Act 1993 to formulate policies and develop programmes intended to prevent or...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/national-drug-commission-ndc-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/bermuda-housing-corporation-bhc-audited-financials">Bermuda Housing Corporation (BHC) audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The primary functions of the Bermuda Housing Corporation (the Corporation) are to provide housing in Bermuda, to promote home ownership, to undertake and carry out housing...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/bermuda-housing-corporation-bhc-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/public-service-superannuation-fund-pssf-audited-financials">Public Service Superannuation Fund (PSSF) audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The purpose of the Public Service Superannuation Fund (the Fund) is to provide retirement pensions for retired employees of the Government of Bermuda and the employees of...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/public-service-superannuation-fund-pssf-audited-financials" class="label" data-format="placeholder">placeholder</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/public-service-superannuation-fund-pssf-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/ministers-and-members-of-the-legislature-pensions-fund-mmlpf-audited-financials">Ministers and Members of the Legislature Pensions Fund (MMLPF) audited financ...</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The purpose of the Ministers and Members of the Legislature Pensions Fund (the Fund) is to provide retirement pensions for the ministers, members and officers of the Legislature...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/ministers-and-members-of-the-legislature-pensions-fund-mmlpf-audited-financials" class="label" data-format="placeholder">placeholder</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/ministers-and-members-of-the-legislature-pensions-fund-mmlpf-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/contributory-pension-fund-audited-financials">Contributory Pension Fund audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Contributory Pension Fund (the Pension Fund) receives pension contributions from persons employed in Bermuda, the self-employed and employers, and pays retirement benefits.
+                  </div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/contributory-pension-fund-audited-financials" class="label" data-format="placeholder">placeholder</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/contributory-pension-fund-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/bermuda-hospitals-board-bhb-audited-financials">Bermuda Hospitals Board (BHB) audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Bermuda Hospitals Board (the Board) is responsible for operating the King Edward VII Memorial Hospital (KEMH), Mid-Atlantic Wellness Institute (MWI) and Healthcare Partners...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/bermuda-hospitals-board-bhb-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/bermuda-land-development-corporation-bldc-audited-financials">Bermuda Land Development Corporation (BLDC) audited financials</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The general purpose of the Bermuda Land Development Company Limited (the Company) is to manage and develop the land entrusted to it in a manner that will integrate the land into...</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/bermuda-land-development-corporation-bldc-audited-financials" class="label" data-format="html">HTML</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+
+              <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+              <li class="dataset-item">
+
+                <div class="dataset-content">
+                  <h3 class="dataset-heading">
+
+                    <a href="/dataset/bermuda-digest-of-statistics">Bermuda Digest of Statistics</a>
+
+
+                    <!-- Snippet snippets/popular.html start -->
+
+
+                    <!-- Snippet snippets/popular.html end -->
+
+                  </h3>
+
+
+                  <div>The Bermuda Digest of Statistics was first produced in 1973. The publication provides an annual summary of various socioeconomic statistics designed for convenient reference....</div>
+
+                </div>
+
+                <ul class="dataset-resources unstyled">
+
+                  <li>
+                    <a href="/dataset/bermuda-digest-of-statistics" class="label" data-format="html">HTML</a>
+                  </li>
+
+                  <li>
+                    <a href="/dataset/bermuda-digest-of-statistics" class="label" data-format=".xlsx">.xlsx</a>
+                  </li>
+
+                </ul>
+
+
+              </li>
+              <!-- Snippet snippets/package_item.html end -->
+
+
+            </ul>
+
+            <!-- Snippet snippets/package_list.html end -->
+
+          </div>
+
+          <div class='pagination pagination-centered'><ul> <li class="active"><a href="/dataset?page=1">1</a></li> <li><a href="/dataset?page=2">2</a></li> <li><a href="/dataset?page=2">»</a></li></ul></div>
+        </section>
+
+        <section class="module">
+          <div class="module-content">
+            <small>
+
+
+
+              You can also access this registry using the <a href="/api/3">API</a> (see <a href="http://docs.ckan.org/en/ckan-2.0/api.html">API Docs</a>).
+            </small>
+          </div>
+        </section>
+
+      </div>
+
+
+
+      <aside class="secondary">
+
+
+
+
+        <!-- Snippet snippets/facet_list.html start -->
+
+
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-filter"></i>
+            Organizations
+            <a href="/dataset" class="action">Clear All</a>
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?organization=bermuda-io">
+                  <span>Bermuda.io (22)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/dataset?_organization_limit=0" class="read-more">Show More Organizations</a>
+
+          </p>
+
+        </section>
+
+        <!-- Snippet snippets/facet_list.html end -->
+
+
+
+        <!-- Snippet snippets/facet_list.html start -->
+
+
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-filter"></i>
+            Groups
+            <a href="/dataset" class="action">Clear All</a>
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=government-controlled-organizations">
+                  <span>Government-controll... (7)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=public-funds">
+                  <span>Public Funds (5)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=education">
+                  <span>Education (3)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=government-finances">
+                  <span>Government Finances (2)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?groups=health">
+                  <span>Health (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/dataset?_groups_limit=0" class="read-more">Show More Groups</a>
+
+          </p>
+
+        </section>
+
+        <!-- Snippet snippets/facet_list.html end -->
+
+
+
+        <!-- Snippet snippets/facet_list.html start -->
+
+
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-filter"></i>
+            Tags
+            <a href="/dataset" class="action">Clear All</a>
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=audited+financials">
+                  <span>audited financials (13)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=Bermuda">
+                  <span>Bermuda (5)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=education">
+                  <span>education (3)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=bermuda">
+                  <span>bermuda (3)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=quango">
+                  <span>quango (2)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=government">
+                  <span>government (2)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=finance">
+                  <span>finance (2)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=budget">
+                  <span>budget (2)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=summary">
+                  <span>summary (1)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?tags=statistics">
+                  <span>statistics (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/dataset?_tags_limit=0" class="read-more">Show More Tags</a>
+
+          </p>
+
+        </section>
+
+        <!-- Snippet snippets/facet_list.html end -->
+
+
+
+        <!-- Snippet snippets/facet_list.html start -->
+
+
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-filter"></i>
+            Formats
+            <a href="/dataset" class="action">Clear All</a>
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=HTML">
+                  <span>HTML (21)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=placeholder">
+                  <span>placeholder (3)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=ZIP">
+                  <span>ZIP (1)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=PDF">
+                  <span>PDF (1)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?res_format=.xlsx">
+                  <span>.xlsx (1)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/dataset?_res_format_limit=0" class="read-more">Show More Formats</a>
+
+          </p>
+
+        </section>
+
+        <!-- Snippet snippets/facet_list.html end -->
+
+
+
+        <!-- Snippet snippets/facet_list.html start -->
+
+
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="icon-medium icon-filter"></i>
+            Licence
+            <a href="/dataset" class="action">Clear All</a>
+          </h2>
+
+          <nav>
+            <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?license_id=cc-zero">
+                  <span>Creative Commons CC... (16)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?license_id=notspecified">
+                  <span>License Not Specified (4)</span>
+                </a>
+              </li>
+
+
+
+
+              <li class="nav-item">
+                <a href="/dataset?license_id=other-pd">
+                  <span>Other (Public Domain) (2)</span>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+          <p class="module-footer">
+
+            <a href="/dataset?_license_id_limit=0" class="read-more">Show More Licence</a>
+
+          </p>
+
+        </section>
+
+        <!-- Snippet snippets/facet_list.html end -->
+
+
+
+      </aside>
+
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+
+    <nav class="footer-links row-fluid">
+
+      <ul class="unstyled row-fluid">
+
+
+        <li><a href="/about">About Bermuda.io</a></li>
+        <li><a href="http://docs.ckan.org/en/ckan-2.0/api.html">CKAN API</a></li>
+        <li><a href="http://www.opendefinition.org/okd/"><img src="http://assets.okfn.org/images/ok_buttons/od_80x15_blue.png"></a></li>
+        <li><a href="http://www.okfn.org/">Open Knowledge Foundation</a></li>
+
+      </ul>
+
+    </nav>
+    <div class="attribution">
+
+      <p><strong>Powered by</strong> <a class="hide-text ckan-footer-logo" href="http://ckan.org">CKAN</a></p>
+
+    </div>
+
+  </div>
+
+
+
+
+</footer>
+
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-06-11T01:43:17/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-06-11T01:43:17/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-06-11T01:43:17/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/table-toggle-more.min.js"></script></body>
+</html>

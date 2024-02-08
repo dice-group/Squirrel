@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" class="js geolocation history csstransforms csstransforms3d cors dj_gecko dj_ff60 dj_contentbox" style="">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta charset="UTF-8"/>
+  <title>
+    Search for * | Reitroutenplaner
+  </title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Discover, explore, and download open data from Reitroutenplaner"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="shortcut icon" href="http://Reitroutenplaner.opendata.arcgis.com/favicon.ico"/>
+  <link rel="search" type="application/opensearchdescription+xml" title="Reitroutenplaner" href="/opensearch.xml"/>
+  <link type="text/css" rel="stylesheet" href="//fast.fonts.com/cssapi/4a60d16b-c9e4-404d-89d3-809adb97d65c.css"/>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css"/>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application.css"/>
+  <link rel="canonical" href="http://data-reitroutenplaner.opendata.arcgis.com/datasets"/>
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/styles/application-ie.css" />
+  <![endif]-->    <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/nls/jsapi_en-us.js">
+</script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/QueryTask.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/RelationshipQuery.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/StatisticDefinition.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dojox/gfx/svg.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/Task.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/tasks/FeatureSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/renderers/smartMapping.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/FeatureLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/ArcGISImageServiceLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/layers/WebTiledLayer.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/arcgis/utils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/dijit/Attribution.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/numberUtils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/type.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/size.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/choropleth.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/heatmap.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/renderers/utils.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/esri/styles/colors.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/WidgetSet.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/focus.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/scroll.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/sniff.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/typematic.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/wai.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/_base/window.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/selection.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/place.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/Viewport.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/popup.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/BackgroundIframe.js">
+  </script>
+  <script type="text/javascript" src="http://js.arcgis.com/3.13compact/dijit/typematic.js">
+  </script>
+  <script async="" src="//www.google-analytics.com/analytics.js">
+  </script>
+  <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendorhead.js">
+  </script>
+  <script>
+    //<![CDATA[
+
+    //normalize/shim window.performance.now
+    //NOTE: this needs to be here because we make use of it immediately below
+    window.performance = window.performance || {};
+    window.performance.now =
+      performance.now           ||
+      performance.webkitNow     ||
+      performance.msNow         ||
+      performance.oNow          ||
+      performance.mozNow        ||
+      function() { return new Date().getTime(); };
+
+    window.composerTelemetryStart = window.performance.now();
+
+    //]]>
+  </script>
+  <meta name="csrf-param" content="authenticity_token"/>
+  <meta name="csrf-token" content="qNUo/vfSa+IMeH7RYba2OI64M8MbRGAn80vwUoVXYOzDDH1dsuwKHaplXHBNle3b6fjWZ71AsqDo1/JkWQdZlA=="/>
+  <script src="//js.arcgis.com/3.13compact/init.js">
+  </script>
+</head>
+<body class="search dj_a11y dijit_a11y" dir="ltr">
+<!-- customer site -->    <header id="header" role="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div id="home-link-region">
+          <div class="inner-header header-nav-items">
+            <a id="home-link" href="http://data-reitroutenplaner.opendata.arcgis.com/">
+              <img class="header-image" src="http://placehold.it/100x100&amp;text=logo" alt="Example Open Data logo"/>
+              <div class="site-brand">
+                    <span class="site-logo">
+                      Example Open Data
+                    </span>
+              </div>
+              <style type="text/css">
+              </style>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div id="title-bar-region">
+  <div id="copier">
+  </div>
+  <div class="container" id="title-wrap">
+    <div id="title-bar-inner">
+      <div id="search-region" role="search">
+        <a href="/datasets?q=*" data-pjax="true" id="search-all" class="btn light small">
+          BROWSE ALL
+        </a>
+        <div id="search-input-wrapper">
+          <label for="gsearch" class="sr-only">
+            Search
+          </label>
+          <div class="input-group">
+            <form action="/datasets" accept-charset="UTF-8" method="get">
+              <input name="utf8" type="hidden" value="✓"/>
+              <span class="twitter-typeahead" style="position: relative; display: inline-block; direction: ltr;">
+                    <input type="search" name="q" id="gsearch" value="*" size="75" autocomplete="off" class="form-control tt-input" placeholder="Search for open data" spellcheck="false" style="position: relative;" dir="auto"/>
+                    <pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: inherit; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 100; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"/>
+                    <span class="tt-dropdown-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none; right: auto;">
+                      <div class="tt-dataset-datasets">
+                      </div>
+                    </span>
+                  </span>
+              <div id="click-to-search">
+                search icon
+              </div>
+              <!--<span class="input-group-btn">
+              <button class="btn btn-default" type="submit">GO</button>
+          </span>-->                </form>
+          </div>
+        </div>
+        <div id="search-results-extent-button-region" class="search-nav-item">
+          <div class="icon-unchecked">
+              Search Within Map
+          </div>
+        </div>
+      </div>
+      <div id="activities-region">
+        <div id="activities-inner-region">
+          <div class="opendata-bell" id="activity-button-alert">
+          </div>
+          <span id="activities-button" class="btn btn-default" tabindex="0" role="button" data-toggle="popover" data-content="&lt;ul class='activities-items'>&lt;/ul>" data-placement="bottom" data-html="true" data-original-title="" title="">
+                My Activity
+              </span>
+          <div id="activities-growl">
+            This download has been added to your activity panel.
+            <span id="growl-open-panel">
+                  Open panel
+                </span>
+          </div>
+        </div>
+      </div>
+      <div id="user-region">
+      </div>
+    </div>
+  </div>
+</div>
+<div id="flyout-right-region">
+  <div id="flyout-right-controls-region">
+    <div class="flyout-right-controls">
+      <div class="flyout-controls">
+        <div id="close-flyout-right">
+              <span class="glyphicon glyphicon-remove-circle">
+              </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="flyout-content-region">
+  </div>
+</div>
+<div id="map-bar-region" class="">
+  <div id="overlay-region">
+  </div>
+  <div id="controls-region">
+    <div class="mapbar-controls">
+      <div class="container">
+        <div id="controls">
+          <div id="viz-selector" class="disabled " data-toggle="tooltip" data-placement="top" title="Zoom in to visualize" style="display: none;">
+            <img src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/images/color-picker-smaps3.png"/>
+            <span id="viz-sep">
+                  |
+                </span>
+          </div>
+          <div id="map-change-size" unselectable="on">
+            <div unselectable="on" class="map-resize" id="map-minimize" title="Hide the map">
+              Hide the map
+            </div>
+            <div unselectable="on" class="map-resize selected-size" id="map-normal" title="View the normal map size">
+              View the normal map size
+            </div>
+            <div unselectable="on" class="map-resize" id="map-maximize" title="View the map larger">
+              View the map larger
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="legend-region">
+    <div class="mapbar-legend">
+      <div class="container">
+        <div id="legend">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="map-region">
+    <div id="info-window-container">
+    </div>
+    <div id="map-div" class="map" data-zoom="11" data-scale="288895.277144" data-loaded="">
+      <div id="map-div_root" style="width: 1256px; height: 300px; direction: ltr;" class="container">
+        <div id="map-div_container" style="position: absolute; cursor: default; -moz-user-select: none; clip: auto;" class="container">
+          <div id="map-div_layers" class="layersDiv" style="left: 0px; top: 0px;">
+            <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transform: translate3d(0px,0px,0px); display: block;" id="map-div_bm0">
+              <div style="position: absolute; width: 1256px; height: 300px; overflow: visible; -moz-transition: -moz-transform 500ms ease;">
+                <img id="map-div_bm0_tile_11_0_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-141px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1070"/>
+                <img id="map-div_bm0_tile_11_1_0" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(-141px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1070"/>
+                <img id="map-div_bm0_tile_11_0_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(115px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1071"/>
+                <img id="map-div_bm0_tile_11_1_1" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(115px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1071"/>
+                <img id="map-div_bm0_tile_11_0_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(371px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1072"/>
+                <img id="map-div_bm0_tile_11_1_2" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(371px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1072"/>
+                <img id="map-div_bm0_tile_11_0_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(627px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1073"/>
+                <img id="map-div_bm0_tile_11_1_3" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(627px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1073"/>
+                <img id="map-div_bm0_tile_11_0_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(883px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1074"/>
+                <img id="map-div_bm0_tile_11_1_4" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(883px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1074"/>
+                <img id="map-div_bm0_tile_11_0_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1139px,-175px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/716/1075"/>
+                <img id="map-div_bm0_tile_11_1_5" class="layerTile" style="width: 256px; height: 256px; visibility: visible; -moz-transform: translate3d(1139px,81px,0px);" src="//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/11/717/1075"/>
+              </div>
+            </div>
+            <svg overflow="hidden" width="1256" height="300" style="overflow: visible; position: absolute;" id="map-div_gc">
+              <g id="SearchExtentLayer_layer" style="display: block;" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000)">
+                <g/>
+                <rect fill="rgb(93, 173, 221)" fill-opacity="0.1" stroke="rgb(255, 255, 255)" stroke-opacity="1" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" x="461" y="25" width="334" height="250" ry="0" rx="0" stroke-dasharray="none" dojoGfxStrokeStyle="solid" fill-rule="evenodd"/>
+              </g>
+              <defs/>
+              <g id="map-div_graphics_layer" transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,0.00000000,0.00000000)" style="display: block;">
+                <g/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="esriControlsBR">
+              <span class="esriAttribution" style="max-width: 565px; cursor: default;">
+                <span class="esriAttributionList">
+                  <span class="esriAttributionLastItem" style="display: inline;">
+                    Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), swisstopo, © OpenStreetMap contributors, and the GIS User Community
+                    <span class="esriAttributionDelim">
+                       |
+                    </span>
+                  </span>
+                </span>
+              </span>
+          <div class="logo-med">
+          </div>
+        </div>
+        <div class="esriPopup" style="visibility: hidden; z-index: 40;">
+          <div class="esriPopupWrapper" style="position: absolute;">
+            <div class="sizer">
+              <div class="titlePane" style="webkit-user-select: none;">
+                <div class="spinner hidden" title="Searching...">
+                </div>
+                <div class="title">
+                </div>
+                <div class="titleButton prev hidden" title="Previous feature">
+                </div>
+                <div class="titleButton next hidden" title="Next feature">
+                </div>
+                <div class="titleButton maximize" title="Maximize">
+                </div>
+                <div class="titleButton close" title="Close">
+                </div>
+              </div>
+            </div>
+            <div class="sizer content">
+              <div class="contentPane">
+              </div>
+            </div>
+            <div class="sizer">
+              <div class="actionsPane">
+                <div class="actionList hidden">
+                  <a title="Zoom" to="" class="action zoomTo" href="javascript:void(0);">
+                        <span>
+                          Zoom to
+                        </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="pointer hidden">
+            </div>
+          </div>
+          <div class="outerPointer hidden">
+          </div>
+        </div>
+        <div id="map-div_zoom_slider" class="esriSimpleSlider esriSimpleSliderHorizontal esriSimpleSliderTR" style="z-index: 30;">
+          <div class="esriSimpleSliderIncrementButton">
+                <span>
+                  +
+                </span>
+          </div>
+          <div class="esriSimpleSliderDecrementButton">
+                <span>
+                  –
+                </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="locator-region">
+    <div>
+      <div class="container">
+        <div id="locator">
+          <div class="query-container">
+            <input id="locator-query" type="text" placeholder="Search for a location"/>
+            <div class="icon-search">
+            </div>
+          </div>
+          <ul class="results">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="title-region">
+  </div>
+  <div id="progress-region" style="display: none;">
+    <div class="mapbar-progress-wrapper">
+      <div id="mapbar-progress">
+        <div class="loading open-data-loader">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="navigation-region">
+    <div class="mapbar-navigation">
+      <div id="result-name">
+        <a href="/datasets/" data-pjax="true">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="slide-region" role="main">
+  <div id="slide-me" class="layout">
+    <div id="page-content">
+      <div class="container">
+        <div class="row" id="banner-container">
+          <div class="col-xs-12">
+            <div id="show-banner-region">
+              <div class="banner-main">
+                <div class="map-bar-banner">
+                  <div class="map-bar-title">
+                        <span id="nav-back">
+                          <i class="icon-left-arrow hide">
+                          </i>
+                        </span>
+                    <div itemprop="name" id="main-message">
+                      1-1 of 1 results
+                    </div>
+                    <div id="dataset-download-container">
+                      <!-- APIs button -->                          <div class="btn-group" id="apis-download">
+                      <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        APIs
+                        <span class="caret">
+                              </span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right api-menu">
+                        <input class="form-control" type="text"/>
+                      </div>
+                    </div>
+                      <!-- /.btn-group -->                          <!-- Downloads button -->                          <div class="btn-group" id="nav-download">
+                      <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                        Download Dataset
+                        <span class="caret">
+                              </span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-right download-menu">
+                      </ul>
+                    </div>
+                      <!-- /.btn-group -->                          <!-- <span id="nav-subscribe" class="icon-rss icon-gray" tabindex="0" role="button" data-toggle="popover" data-placement="bottom" data-content="<div class='rss-popover-container'><div class='rss-popover'></div></div>" data-html="true"><span class="banner-link">Subscribe</span></span> -->                          <span id="nav-share-inner" class="icon-share icon-gray" tabindex="0" role="button" data-toggle="popover" data-placement="bottom" data-content="&lt;div class='nav-share-popover'>&lt;/div>" data-html="true" data-original-title="" title="">
+                            <span class="banner-link">
+                              Share
+                            </span>
+                          </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="content-sidebar-right">
+            <main id="main" class="col-xs-12 col-md-9">
+              <div id="dataset-header-row">
+                <div id="search-results-sort-region" class="search-nav-item">
+                  <div class="dropdown-navigation dropdown-wrapper">
+                    <div class="dropdown-content">
+                      <div class="btn-group">
+                        <button type="button" data-toggle="dropdown" id="sort-by" class="btn btn-default dropdown-toggle">
+                          Most Recent
+                          <span class="caret">
+                              </span>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li class="sort-option">
+                            <a data-sort-by="relevance" href="#">
+                              Relevance
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="name" href="#">
+                              Name
+                            </a>
+                          </li>
+                          <li class="sort-option">
+                            <a data-sort-by="updated_at" href="#">
+                              Most Recent
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix">
+                </div>
+              </div>
+              <section id="search-results-region" class="item-list">
+                <div id="search-results">
+                  <ul>
+                    <li class="card card-summary item item-type-feature_service">
+                      <div itemscope="" itemtype="http://schema.org/Dataset" data-itemid="56941fd831b34abc9da66f405670036a_0">
+                        <div class="dataset-thumb">
+                          <a href="/datasets/56941fd831b34abc9da66f405670036a_0" class="dataset-link" title="Altersheim Restis">
+                            <img itemprop="thumbnailUrl" src="https://www.arcgis.com/sharing/rest/content/items/56941fd831b34abc9da66f405670036a/info/thumbnail/ago_downloaded.png" alt=""/>
+                          </a>
+                        </div>
+                        <div class="invisible-container">
+                          <div class="card-info-container">
+                            <div class="action-icons">
+                                  <span class="pin" href="#">
+                                    <div class="opendata-star-hollow control-text" tabindex="0" role="button" aria-label="Add to your favorites">
+                                    </div>
+                                  </span>
+                            </div>
+                            <div class="action-icons">
+                              <!-- Downloads button -->                                  <div class="btn-group download" id="56941fd831b34abc9da66f405670036a_0">
+                              <div class="icon-download control-text dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-original-title="" title="">
+                              </div>
+                              <ul class="dropdown-menu dropdown-menu-right download-menu">
+                              </ul>
+                            </div>
+                              <!-- /.btn-group -->                                </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                13 locations
+                              </div>
+                            </div>
+                            <div class="attributes">
+                              <div class="info-text" tabindex="0">
+                                11 attributes
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-title" itemprop="name" tabindex="0">
+                          <a class="dataset-link" itemprop="url" href="/datasets/56941fd831b34abc9da66f405670036a_0">
+                            Altersheim Restis
+                          </a>
+                          <em>
+                            (from OPEN DATA GROUP Swiss Schools)
+                          </em>
+                        </div>
+                        <div class="result-main">
+                              <span class="result-credit">
+                                Shared by
+                                <span itemprop="author" class="card-author">
+                                  schoolgis_chr.sailer
+                                </span>
+                              </span>
+                          <div class="snippet">
+                            <div class="no-desc">
+                              The organization that shared this dataset did not provide a description.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="people-popover">
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+              <div id="results-pagination-region">
+                <div>
+                  <nav id="pagination">
+                    <ul class="pagination pagination-sm">
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </main>
+          </div>
+          <aside id="sidebar-right" class="sidebar-navigation">
+            <div id="search-results-favorites-region" class="col-xs-12 col-md-3">
+              <div id="favorites" class="favorites-view">
+                <section>
+                  <div id="saved-layers" class="dropzone">
+                    <div id="my-layers">
+                      <h4>
+                        My Favorites
+                      </h4>
+                      <div id="fav-region" class="dropzone">
+                        <ul>
+                          <div>
+                            <div id="fav-help">
+                              <div id="fav-drag-help">
+
+                                click
+                                <span class="opendata-star-hollow">
+                                    </span>
+                                on any dataset to add to your favorites
+
+                              </div>
+                            </div>
+                          </div>
+                        </ul>
+                        <div id="too-many-alert">
+                          The number of favorites is limited to 10.  To add other favorites, please remove one or more existing favorites.
+                        </div>
+                        <div id="fav-footer" style="display: none;">
+                          <div id="fav-controls">
+                                <span id="fav-mapit" class="btn small icon-globe">
+                                   map it
+                                </span>
+                            <span id="fav-delete" class="icon-delete">
+                                </span>
+                          </div>
+                          <div id="fav-drag-help">
+
+                            click
+                            <span class="opendata-star-hollow">
+                                </span>
+                            on any dataset to add to your favorites
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <!-- /row -->      </div>
+  <!-- /container -->      <div id="slide-me2" class="layout" style="display: none;">
+</div>
+</div>
+<footer id="footer" class="footer" role="footer">
+  <div class="container">
+    <div class="row">
+      <div class="row">
+        <div class="column-8">
+          <h3 id="about">
+            About
+          </h3>
+          <ul>
+            <li>
+              <a href="http://example.org/about">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="http://example.org/tos">
+                Terms of Use
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="column-8 last pre-8">
+          <p>
+            © 2014 Your Organization
+          </p>
+          <p>
+            <a href="http://example.org/contact">
+              Contact Us
+            </a>
+            |
+            <a href="http://example.org/faq">
+              FAQ
+            </a>
+            |
+            <a href="http://example.org/privacy">
+              Privacy
+            </a>
+            |
+            <a href="http://example.org/tos">
+              Terms of Use
+            </a>
+          </p>
+        </div>
+      </div>
+      <style type="text/css">
+      </style>
+    </div>
+  </div>
+</footer>
+<!--
+<footer id="sub-footer" >
+<div class="container">
+<div class="row" >
+  <div class="column-12">
+    <a href="">Powered by ArcGIS for Open Data</a>
+    | f5cddae
+    | deploy
+    | 2018-12-11 09:03:58 -0500
+  </div>
+</div>
+</div>
+</footer>
+-->    <!-- loading this down here to improve page load
+  this isn't used until the js below is loaded -->    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css"/>
+<!--[if lte IE 8]>
+<script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor-ie.min.js"></script>
+<![endif]-->    <!--[if gte IE 9]><!-->    <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/vendor.min.js">
+</script>
+<!--<![endif]-->    <script src="//d1iq7pbacwn5rb.cloudfront.net/composer-ui/assets/scripts/composer-ui.min.js">
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+
+  I18n.defaultLocale = "en";
+  I18n.fallbacks = true;
+
+  //]]>
+</script>
+<script id="site-configuration-json" type="text/json">
+//<![CDATA[
+
+  {"site_info":{"title":"Reitroutenplaner","default_extent":{"xmin":662641,"ymin":5751610,"xmax":1167934,"ymax":6075320,"spatialReference":{"wkid":102100}},"mapbar_enabled":null,"flags":{"charts":true,"autocomplete":true,"large_dataset_extent":false,"geohash":false,"one_click_styling":true,"heatmap":false,"projection":true,"signin":false,"comments_enabled":false,"api_explorer":false,"activities":true,"pages":false,"my_data":false,"social_logins":false,"metadata_tab":false,"dataset_identity":false},"map":{"basemaps":{"type":"custom","primary":{"baseMapLayers":[{"id":"defaultBasemap_0","layerType":"ArcGISTiledMapServiceLayer","opacity":1,"visibility":true,"url":"http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer","type":"ArcGISTiledMapServiceLayer"}],"title":"Reitroutenplaner","spatialReference":{"wkid":102100,"latestWkid":3857},"extent":{"xmin":-20037507.0671618,"ymin":-19971868.8804086,"xmax":20037507.0671618,"ymax":19971868.8804086,"spatialReference":{"wkid":102100,"latestWkid":3857}},"isWebMercator":true}}},"default_license":{"title":"none","description":"no default license specified"}}}
+
+//]]>
+    </script>
+<script id="site-serialized-datasets-json" type="text/json">
+//<![CDATA[
+
+  {"data":[{"display_field":"Restaurant","max_record_count":1000,"record_count":13,"geometry_type":"esriGeometryPoint","object_id_field":"FID","supported_extensions":"","advanced_query_capabilities":{"supports_pagination":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_returning_geometry_centroid":false},"supports_advanced_queries":true,"id":"56941fd831b34abc9da66f405670036a_0","landing_page":"https://www.arcgis.com/home/item.html?id=56941fd831b34abc9da66f405670036a","description":"","extent":{"coordinates":[[8.49954527300042,47.3078380180005],[8.72908131800046,47.4240735330005]]},"fields":[{"name":"Restaurant","type":"esriFieldTypeString","alias":"Restaurant","domain":null,"statistics":{"duration":0},"updated_at":"2017-01-03T08:47:06.160Z"},{"name":"Adresse","type":"esriFieldTypeString","alias":"Adresse","domain":null,"statistics":{"duration":0},"updated_at":"2017-01-03T08:47:06.160Z"},{"name":"F2011_Total_Population_4559_","type":"esriFieldTypeDouble","alias":"2011 Total Population 45-59 ","domain":null,"updated_at":"2017-01-03T08:47:06.389Z","statistics":{"duration":228.482131004333,"sum":419312,"avg":38119.2727272727,"count":11,"min":10014,"max":55756,"stddev":14407.8178992581,"var":207585216.618182}},{"name":"Link","type":"esriFieldTypeString","alias":"Link","domain":null,"statistics":{"duration":0},"updated_at":"2017-01-03T08:47:06.389Z"},{"name":"EXCEL_POINT_Y","type":"esriFieldTypeDouble","alias":"EXCEL_POINT_Y","domain":null,"updated_at":"2017-01-03T08:47:06.490Z","statistics":{"duration":100.230400085449,"sum":66042848.0744549,"avg":6003895.2794959,"count":11,"min":5992466.62584539,"max":6011570.46920472,"stddev":5080.2206497356,"var":25808641.85}},{"name":"EXCEL_POINT_X","type":"esriFieldTypeDouble","alias":"EXCEL_POINT_X","domain":null,"updated_at":"2017-01-03T08:47:06.600Z","statistics":{"duration":110.425695896149,"sum":10477156.2363268,"avg":952468.748756978,"count":11,"min":946165.051764782,"max":971716.887412888,"stddev":7159.54472872795,"var":51259080.7226563}},{"name":"FID","type":"esriFieldTypeInteger","alias":"FID","domain":null,"statistics":{"duration":0},"updated_at":"2017-01-03T08:47:06.600Z"},{"name":"CreationDate","type":"esriFieldTypeDate","alias":"CreationDate","domain":null,"updated_at":"2017-01-03T08:47:06.878Z","statistics":{"duration":277.110559940338,"count":13,"min":1383557797176,"max":1390298215929}},{"name":"Creator","type":"esriFieldTypeString","alias":"Creator","domain":null,"updated_at":"2017-01-03T08:47:07.231Z","statistics":{"values":[{"value":"schoolgis_chr.sailer","count":12}],"duration":352.897811889648,"count":1}},{"name":"EditDate","type":"esriFieldTypeDate","alias":"EditDate","domain":null,"updated_at":"2017-01-03T08:47:07.338Z","statistics":{"duration":106.35858798027,"count":13,"min":1383557797176,"max":1390298215929}},{"name":"Editor","type":"esriFieldTypeString","alias":"Editor","domain":null,"updated_at":"2017-01-03T08:47:07.625Z","statistics":{"values":[{"value":"schoolgis_chr.sailer","count":12}],"duration":287.239475011826,"count":1}}],"item_name":"Altersheim Restis","type":"ItemLayer","item_type":"Feature Layer","license":"","main_group_description":"","main_group_thumbnail_url":"https://www.arcgis.com/sharing/rest/community/groups/643aa06c3c2347679581c0cd1c69c751/info/gis_web_globe_blue_noBorder.png","main_group_title":"OPEN DATA GROUP Swiss Schools","max_record_count":1000,"name":"Altersheim Restis","owner":"schoolgis_chr.sailer","record_count":13,"tags":["demo"],"thumbnail_url":"https://www.arcgis.com/sharing/rest/content/items/56941fd831b34abc9da66f405670036a/info/thumbnail/ago_downloaded.png","sites":[{"title":"Open Data Group - GIS for Swiss Schools ","url":"http://groups-schoolgis.opendata.arcgis.com","logo":null},{"title":"Reitroutenplaner","url":"http://data-reitroutenplaner.opendata.arcgis.com","logo":"http://Reitroutenplaner.opendata.arcgis.com/favicon.ico"},{"title":"GIS for Schools in Switzerland","url":"http://data-schoolgis.opendata.arcgis.com","logo":"//schoolgis.opendata.arcgis.com/favicon.ico"}],"public":true,"created_at":"2013-11-04T09:31:12.000Z","updated_at":"2014-01-21T09:56:55.929Z","url":"https://services1.arcgis.com/6RDtDcHz3yZdtEVu/arcgis/rest/services/Altersheim_Restis/FeatureServer/0","views":null,"quality":56,"coverage":"local","current_version":10.41,"comments_enabled":true,"service_spatial_reference":{"wkid":102100,"latestWkid":3857},"metadata_url":null,"org_id":"6RDtDcHz3yZdtEVu","metadata":{"published":null,"present":false,"url":null,"online_resources":[{"url":"https://www.arcgis.com/sharing/rest/content/items/d649ff4ae6134a5ca6892917fd0a288e/data","name":"File Geodatabase","itemId":"d649ff4ae6134a5ca6892917fd0a288e"}]},"structured_license":{"type":"none"},"use_standardized_queries":null,"advanced_query_capabilities":{"supports_pagination":true,"supports_query_related_pagination":true,"supports_query_with_distance":true,"supports_returning_query_extent":true,"supports_statistics":true,"supports_order_by":true,"supports_distinct":true,"supports_query_with_result_type":true,"supports_sql_expression":true,"supports_advanced_query_related":true,"supports_returning_geometry_centroid":false},"supported_extensions":""}],"metadata":{"query_parameters":{"bbox":null,"page":1,"per_page":10,"q":"*","required_keywords":[],"sort_by":"updated_at","sort_order":"desc"},"stats":{"count":1,"total_count":1,"top_tags":[{"name":"open data","count":8231},{"name":"transportation","count":7533},{"name":"boundaries","count":6484},{"name":"planning","count":4234},{"name":"water","count":4209},{"name":"environment","count":4092},{"name":"arcgis","count":3530},{"name":"service definition","count":3333},{"name":".sd","count":3278},{"name":"government","count":2918},{"name":"cartografia, região metropolitana, cartas","count":2669},{"name":"infrastructure","count":2610},{"name":"census","count":2480},{"name":"demographics","count":2328},{"name":"education","count":2313},{"name":"2017","count":2299},{"name":"moncton","count":2090},{"name":"zoning","count":2045},{"name":"noaa","count":1959},{"name":"development","count":1943},{"name":"pdf","count":1939},{"name":"recreation","count":1898},{"name":"boundary","count":1898},{"name":"health","count":1890},{"name":"parks","count":1821},{"name":"map","count":1727},{"name":"county","count":1713},{"name":"florida","count":1697},{"name":"maryland","count":1609},{"name":"data","count":1580},{"name":"population","count":1573},{"name":"esri","count":1565},{"name":"gis","count":1536},{"name":"imagery","count":1513},{"name":"michigan","count":1470},{"name":"wms","count":1455},{"name":"roads","count":1454},{"name":"wfs","count":1432},{"name":"land use","count":1424},{"name":"elevation","count":1424},{"name":"wildlife","count":1409},{"name":"lake county illinois","count":1400},{"name":"facilities","count":1385},{"name":"opendata","count":1380},{"name":"property","count":1359},{"name":"geology","count":1311},{"name":"parcels","count":1292},{"name":"washington","count":1278},{"name":"story map","count":1234},{"name":"utilities","count":1233},{"name":"university of michigan","count":1233},{"name":"economic development","count":1231},{"name":"eda","count":1230},{"name":"university of michigan flint","count":1226},{"name":"um-flint outreach","count":1226},{"name":"um-flint gisc","count":1226},{"name":"um-flint gis trc","count":1226},{"name":"um-flint gis training and research center","count":1226},{"name":"um-flint gis center","count":1226},{"name":"um-flint","count":1226},{"name":"um flint outreach","count":1226},{"name":"um flint","count":1226},{"name":"ucced","count":1226},{"name":"plf3","count":1226},{"name":"michigan usa","count":1226},{"name":"mi usa","count":1226},{"name":"medc region vi","count":1226},{"name":"medc region 6","count":1226},{"name":"medc","count":1226},{"name":"mapflint","count":1226},{"name":"map flint","count":1226},{"name":"i-69 thumb region","count":1226},{"name":"https://mapflint.org","count":1226},{"name":"gistrc","count":1226},{"name":"gisc","count":1226},{"name":"gis trc","count":1226},{"name":"eda university center for community and economic development","count":1226},{"name":"habitat","count":1208},{"name":"community","count":1206},{"name":"housing","count":1188},{"name":"local government","count":1176},{"name":"police","count":1170},{"name":"environmental","count":1170},{"name":"basemap","count":1149},{"name":"ontario","count":1143},{"name":"fire","count":1136},{"name":"2016","count":1120},{"name":"printed maps","count":1105},{"name":"md imap","count":1099},{"name":"md","count":1080},{"name":"ohio","count":1063},{"name":"2010","count":1049},{"name":"national park service","count":1047},{"name":"trails","count":1046},{"name":"hydrology","count":1043},{"name":"safety","count":1042},{"name":"public safety","count":1037},{"name":"auth_cdfw","count":1035},{"name":"enc","count":1020},{"name":"resources","count":1010},{"name":"test","count":1008},{"name":"s-57","count":1004},{"name":"dc","count":996},{"name":"streets","count":995},{"name":"district of columbia","count":990},{"name":"district","count":989},{"name":"dnr","count":987},{"name":"traffic","count":982},{"name":"canada","count":963},{"name":"public","count":937},{"name":"species","count":931},{"name":"gouvernement","count":923},{"name":"washington dc","count":919},{"name":"avr","count":916},{"name":"schools","count":911},{"name":"environnement","count":901},{"name":"maps","count":897},{"name":"natural","count":896},{"name":"people","count":895},{"name":"agriculture","count":868},{"name":"land","count":861},{"name":"flood","count":860},{"name":"parking","count":851},{"name":"biota","count":844},{"name":"transport","count":842},{"name":"california","count":840},{"name":"2018","count":836},{"name":"lidar","count":834},{"name":"public works","count":822},{"name":"natural resources","count":818},{"name":"sn:","count":816},{"name":"cn:","count":814},{"name":"fema","count":813},{"name":"usa","count":811},{"name":"districts","count":805},{"name":"conservation","count":802},{"name":"2012","count":799},{"name":"historical","count":794},{"name":"colorado","count":786},{"name":"council","count":782},{"name":"2015","count":781},{"name":"transit","count":779},{"name":"stormwater","count":776},{"name":"virginia","count":775},{"name":"los angeles","count":767},{"name":"topography","count":757},{"name":"business","count":748},{"name":"administrative boundaries","count":657},{"name":"2014","count":631},{"name":"north carolina","count":630},{"name":"landscape","count":612},{"name":"sip4d","count":595},{"name":"udc2014","count":576},{"name":"road","count":463},{"name":"open","count":462},{"name":"election","count":456},{"name":"la","count":454},{"name":"kml","count":452},{"name":"hydrography","count":448},{"name":"imr","count":437}]}}}
+
+//]]>
+    </script>
+<script>
+  //<![CDATA[
+
+  $(function() {
+    var rawJSONElt = $('#site-configuration-json');
+    var rawJSON = rawJSONElt.text();
+    var siteConfiguration = JSON.parse(rawJSON.replace('<\\/script>', '</'+'script>'));
+
+    var rawDatasetsJSONElt = $('#site-serialized-datasets-json');
+    var rawDatasetsJSON = rawDatasetsJSONElt.text();
+    siteConfiguration.inlinedData = JSON.parse(rawDatasetsJSON.replace('<\\/script>', '</'+'script>'));
+
+    //currently the siteInfo serializer returns a top-level object of "site_info", but
+    //we want that passed into the app as site, so minor juggling here
+    if(siteConfiguration.site_info){
+      siteConfiguration = siteConfiguration.site_info;
+    }
+
+    //extent the site over ComposerConfig
+    var options = $.extend(ComposerConfig, {site: siteConfiguration });
+
+    var localizr = new util.Localizr(_);
+    localizr.localize()
+      .always(function () {
+        Composer.create(options);
+      });
+  });
+
+  //]]>
+</script>
+<script>
+  //<![CDATA[
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', "UA-47337822-2", 'auto');
+  ga('send', 'pageview');
+
+  //]]>
+</script>
+</body>
+</html>

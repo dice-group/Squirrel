@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dice-research</groupId>
     <artifactId>squirrel</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2017</inceptionYear>
     <name>Squirrel</name>
@@ -345,11 +345,17 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+            <!-- System rules for setting environment variables 
+            <dependency>
+              <groupId>com.github.stefanbirkner</groupId>
+              <artifactId>system-rules</artifactId>
+              <scope>test</scope> -->
             <!-- System Lambda for setting environment variables -->
             <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-lambda</artifactId>
                 <version>1.0.0</version>
+                <scope>test</scope>
             </dependency>
             <!-- ~~~~~~~~~~~~~~~~~~~ End Testing ~~~~~~~~~~~~~~~~~~~~~~ -->
 
@@ -486,6 +492,17 @@
                             </transformer>
                             <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>META-INF/spring.handlers</resource>
+                            </transformer>
+                            <!-- Important for Spring to be able to map XML 
+                                Schema files to local files. Otherwise, Spring may abort the processing of 
+                                XML files because of unavailable XML Schema files -->
+                            <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>META-INF/spring.schemas</resource>
+                            </transformer>
                         </transformers>
                     </configuration>
                     <executions>

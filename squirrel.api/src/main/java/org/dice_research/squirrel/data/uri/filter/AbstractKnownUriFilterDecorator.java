@@ -55,4 +55,9 @@ public abstract class AbstractKnownUriFilterDecorator implements KnownUriFilterD
         }
     }
 
+    @Override
+    public void open() {
+        decorated.open();
+    }
+
 }

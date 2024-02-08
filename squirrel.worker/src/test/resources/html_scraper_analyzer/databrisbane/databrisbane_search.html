@@ -1,0 +1,2568 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en" class="ie ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <!--[if lte ie 8]><script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/html5.min.js"></script><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/select2/select2.css" />
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/font-awesome/css/font-awesome.min.css" />
+  <!--[if ie 7]><link rel="stylesheet" type="text/css" href="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/font-awesome/css/font-awesome-ie7.min.css" /><![endif]-->
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:fontawesome.css;select2.css" />
+  <link rel="stylesheet" type="text/css" href="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:styles/jquery.fancybox.css;styles/main.css" />
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="ckan 2.5.9" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Datasets | Brisbane City Council Data Directory</title>
+
+
+
+  <link rel="shortcut icon" href="/sites/default/files/favicon.ico" type="image/vnd.microsoft.icon" />
+
+
+
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html start -->
+  <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-26442705-1', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+  </script>
+  <!-- Snippet googleanalytics/snippets/googleanalytics_header.html end -->
+
+
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+
+
+
+
+  <link rel="stylesheet" href="/data/styles/jquery-ui.css" />
+  <link rel="stylesheet" href="/data/styles/new.css" />
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,300' rel='stylesheet' type='text/css'>
+
+
+
+
+
+
+  <style>
+    .select-area{z-index:0;!important}
+    .nav-tabs { margin-top: 27px; }
+    body header.navbar { padding-bottom: 20px; }
+
+  </style>
+
+</head>
+
+
+<body data-site-root="https://www.data.brisbane.qld.gov.au/data/" data-locale-root="https://www.data.brisbane.qld.gov.au/data/" >
+
+
+<div id="skip-link">
+  <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+</div>
+<div id="data-wrapper">
+
+  <div class="hide"><a href="#content">Skip to content</a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <header class="navbar navbar-static-top masthead">
+
+
+
+
+
+    <div class="container header-area">
+      <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar collapsed" type="button">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <div class="logo-holder">
+
+
+        <a href="/home" class="mobile-logo">
+          <img src="/sites/all/themes/ckan/html/images/Mobile_Logo.png" alt="data.brisbane.qld.gov.au">
+        </a>
+        <a href="/home">
+          <img src="https://www.data.brisbane.qld.gov.au/data/images/logo-new-hq.png" alt="data.brisbane.qld.gov.au" height="54">
+        </a>
+
+
+
+
+
+
+      </div>
+      <div class="nav-collapse collapse">
+
+
+        <nav class="section navigation">
+          <ul class="nav nav-pills">
+
+
+
+
+            <li id=""  class=""><a href="/">Home</a></li>
+
+
+
+            <li id=""  class="active"><a href="/data/dataset">Data</a></li>
+
+
+
+            <li id=""  class=""><a href="/blog">Blog</a></li>
+
+
+
+            <li id=""  class=""><a href="/contact">Contact</a></li>
+
+
+
+            <li id="stats-nav"  class=""><a href="/data/stats#total-datasets">Stats</a></li>
+
+
+
+            <li id=""  class=""><a href="/about">About</a></li>
+
+
+
+          </ul>
+        </nav>
+
+
+
+      </div>
+    </div>
+
+
+
+    <form class="section site-search simple-input" name='search-form' action="/data/dataset" method="get">
+      <div class="field">
+        <label for="field-sitewide-search">
+          Search Datasets
+        </label>
+        <input id="field-sitewide-search" type="text" name="q" value="" placeholder="Search for data..." title="Enter the terms you wish to search for." onkeydown='goSearchKey(event)'>
+        <button class="btn-search" id='go-search' type="submit" title='Search button'>
+          <i class="icon-search" ></i>
+        </button>
+      </div>
+    </form>
+
+  </header>
+
+
+  <div role="main" id='main-content'>
+    <div id="content" class="container">
+
+
+      <div class="flash-messages">
+
+
+
+      </div>
+
+
+
+      <div class="toolbar">
+
+
+        <ol class="breadcrumb">
+
+          <!-- Snippet snippets/home_breadcrumb_item.html start -->
+          <li class="home"><a href="/" title="Home" ><i class="icon-home"></i><span> Home</span></a></li>
+          <!-- Snippet snippets/home_breadcrumb_item.html end -->
+
+
+          <li class="active"><a href="/data/dataset">Datasets</a></li>
+
+        </ol>
+
+
+        <div id='sr-home' style="
+                                      position: absolute;
+                                      width: 20px;
+                                      height: 20px;
+                                      opacity: 0;
+                                      overflow: hidden;
+                                      cursor: pointer;
+                                      " onclick=" window.location = '/' ">
+          Home
+        </div>
+      </div>
+
+
+      <div class="row wrapper">
+
+
+
+
+
+
+        <div class="primary span9">
+
+
+
+
+
+
+          <section class="module">
+            <div class="module-content">
+
+              <div class="aside-image">
+                <img src="https://www.data.brisbane.qld.gov.au/data/images/img22.png" alt="" width="102" height="102">
+              </div>
+
+
+
+
+
+
+
+
+
+              <!-- Snippet snippets/search_form.html start -->
+
+
+
+
+
+
+
+              <form class="search-form" method="get" action="" data-module="select-switch">
+
+
+
+
+
+
+
+
+
+
+
+                <div class="form-select control-group control-order-by">
+                  <select id="field-order-by" name="sort">
+
+
+                    <option value="metadata_modified desc" selected="selected">Newest</option>
+
+
+
+                    <option value="metadata_modified asc">Oldest</option>
+
+
+
+                    <option value="score desc, metadata_modified desc">Most Relevant</option>
+
+
+
+                    <option value="title_string asc">Alphabetical</option>
+
+
+
+
+                  </select>
+                  <div id='fake-filter'>
+
+                  </div>
+
+                  <!--
+                  organization=department-of-transport-planning-and-local-infrastructure
+                  &tags=DTPLI
+                  &res_format=XLS
+                  &groups=community
+                  &groups=planning
+                  &license_id=cc-by
+                  &tags=Towns+in+Time
+                  &sort=metadata_modified+asc
+                -->
+
+                  <button class="btn js-hide" type="submit">Go</button>
+
+                </div>
+
+
+
+
+
+                <strong class='heading-title' id='result-title'>
+                  <!-- Snippet snippets/search_result_text.html start -->
+
+
+
+
+
+
+
+                  176 datasets found
+                  <!-- Snippet snippets/search_result_text.html end -->
+                </strong>
+
+                <a id='show-filters-mobile' class="show-filters btn" data-module="filters_mobile">Filter Results</a>
+
+
+
+
+
+                <p class="filter-list">
+
+                </p>
+
+
+
+              </form>
+              <!-- Snippet snippets/search_form.html end -->
+
+
+
+
+
+              <!-- Snippet snippets/package_list.html start -->
+
+
+
+              <ul class="dataset-list unstyled">
+
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/brisbane-parking-stations">Parking — Stations</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>Number of vacant spaces at Brisbane City Council&#39;s 2 parking stations</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="txt">TXT <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/traffic-data-at-intersection-api">Traffic Management — Intersection volume</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>Real time data of traffic volume and occupancy of lanes at Brisbane City Council signalised intersections and approaches</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="json">JSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="docx">DOCX <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/planned-temporary-road-occupancies">Planned temporary road occupancies</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>The Brisbane City Council planned temporary road occupancies. This dataset includes information on construction zones, lane occupancies and planned events</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/traffic-signal-location-reference">Traffic Management — Intersection locations — reference</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>Information about Brisbane City Council Traffic Intersections, including location, lanes and detectors (in JSON)</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="json">JSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/cemetery-locations">Cemetery locations</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>List and details of the operating Brisbane City Council Cemeteries</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/brisbane-city-plan-2014-qpp-codes">City Plan 2014 — QPP Codes — reference</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>QPP Codes reference file for Brisbane City Plan 2014</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/golf-course-locations">Golf Course locations</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This dataset contains information, opening times and locations related to Brisbane City Council golf courses</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-zoning-overlay">City Plan 2014 — Zoning overlay</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is the Zoning layer from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-dwelling-house-character-overlay">City Plan 2014 — Dwelling house character overlay</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Dwelling house character overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/wild-fire-history">Wildfire History</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>Approximate geographic extent of wildfire history within the Brisbane City Council local government area</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kmz">KMZ <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/planned-burns-history">Planned Burns History</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>Approximate geographic extent of planned burns carried out in the Brisbane City Council local government area</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kmz">KMZ <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-biodiversity-areas-overlay-koala-habitat-areas">City Plan 2014 — Biodiversity areas overlay — Koala habitat areas</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Biodiversity areas overlay from Brisbane City Plan 2014.
+                    </div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-active-frontages-in-residential-zones-overlay">City Plan 2014 — Active frontages in residential zones overlay</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Active frontages in residential zones overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-streetscape-hierarchy-overlay-corner-land-dedication">City Plan 2014 — Streetscape hierarchy overlay — Corner land dedication</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Streetscape hierarchy overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-transport-air-quality-corridor-overlay-tunnel-ventilation-stack">City Plan 2014 — Transport air quality corridor overlay — Tunnel ventilation stack</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Transport air quality corridor overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-road-hierarchy-overlay-primary-freight-route">City Plan 2014 — Road hierarchy overlay — Primary freight route</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Road hierarchy overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-wetlands-overlay">City Plan 2014 — Wetlands overlay</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Wetlands overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-neighbourhood-plan-boundaries">City Plan 2014 — Neighbourhood Plan boundaries</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class provides the Neighbourhood Plan boundaries from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-road-hierarchy-overlay-road-hierarchy">City Plan 2014 — Road hierarchy overlay — Road hierarchy</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Road hierarchy overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+
+                <!-- Snippet snippets/package_item.html start -->
+
+
+
+
+
+
+                <li class="dataset-item">
+
+                  <div class="dataset-content">
+                    <h3 class="dataset-heading">
+
+
+                      <a href="/data/dataset/city-plan-2014-water-resource-catchments-overlay">City Plan 2014 — Water resource catchments overlay</a>
+
+
+
+                    </h3>
+
+
+                    <div class='notes-truncate-at-mobile'>This feature class is associated with the Water resource catchments overlay from Brisbane City Plan 2014.</div>
+
+                  </div>
+
+                  <ul class="dataset-resources unstyled">
+
+                    <li>
+                      <a class="label" data-format="html">HTML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="esri rest">Esri REST <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="geojson">GeoJSON <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="csv">CSV <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="kml">KML <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                    <li>
+                      <a class="label" data-format="shp">SHP <span class='only-for-screen'> format</span></a>
+                    </li>
+
+                  </ul>
+
+
+                </li>
+                <!-- Snippet snippets/package_item.html end -->
+
+
+
+
+              </ul>
+
+
+              <!-- Snippet snippets/package_list.html end -->
+
+
+
+            </div>
+
+
+            <div data-module="bcc-paginator">
+
+              <div class='pagination pagination-centered'><ul> <li class="active"><a href="/data/dataset?q=&amp;page=1">1</a></li> <li><a href="/data/dataset?q=&amp;page=2">2</a></li> <li><a href="/data/dataset?q=&amp;page=3">3</a></li> <li class="disabled"><a href="#">...</a></li> <li><a href="/data/dataset?q=&amp;page=9">9</a></li> <li><a href="/data/dataset?q=&amp;page=2">»</a></li></ul></div>
+
+            </div>
+
+          </section>
+
+
+
+
+        </div>
+
+
+
+        <aside class="secondary span3">
+
+
+
+
+
+          <div>
+            <div class="aside-image">
+              <img src="https://www.data.brisbane.qld.gov.au/data/images/img22.png" alt='' width="102" height="102">
+            </div>
+            <div class="filters">
+
+
+              <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+
+              <section class="module module-narrow module-shallow">
+
+                <h2 class="module-heading">
+                  <i class="icon-medium icon-filter"></i>
+
+                  Categories
+                </h2>
+
+
+
+
+
+
+
+
+
+
+                <nav>
+                  <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?groups=spatial-data&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Spatial Data (108)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=property-and-planning" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Property and Planning (51)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=environment" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Environment (42)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?groups=recreation&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Recreation (41)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=events" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Events (35)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=council-facilities" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Council Facilities (30)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=parks" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Parks (18)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=assets" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Assets (18)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;groups=arts-and-culture" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Arts and Culture (18)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?groups=roads-traffic-and-parking&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Roads Traffic and Parking (15)</p>
+
+
+                      </a>
+                    </li>
+
+                  </ul>
+                </nav>
+
+                <p class="module-footer">
+
+
+                  <a href="/data/dataset?q=&amp;_groups_limit=0" class="read-more">Show More Categories</a>
+
+
+                </p>
+
+
+
+              </section>
+
+
+
+
+              <!-- Snippet snippets/facet_list.html end -->
+
+
+
+              <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+
+              <section class="module module-narrow module-shallow">
+
+                <h2 class="module-heading">
+                  <i class="icon-medium icon-filter"></i>
+
+                  Licenses
+                </h2>
+
+
+
+
+
+
+
+
+
+
+                <nav>
+                  <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?license_id=cc-by&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Creative Commons Attribution 4.0 (174)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?license_id=other-at&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Other (Attribution) (2)</p>
+
+
+                      </a>
+                    </li>
+
+                  </ul>
+                </nav>
+
+                <p class="module-footer">
+
+
+
+                </p>
+
+
+
+              </section>
+
+
+
+
+              <!-- Snippet snippets/facet_list.html end -->
+
+
+
+              <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+
+              <section class="module module-narrow module-shallow">
+
+                <h2 class="module-heading">
+                  <i class="icon-medium icon-filter"></i>
+
+                  Formats
+                </h2>
+
+
+
+
+
+
+
+
+
+
+                <nav>
+                  <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?res_format=CSV&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">CSV (129)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?res_format=KML&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">KML (64)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=SHP" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">SHP (63)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?res_format=HTML&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">HTML (57)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=GeoJSON" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">GeoJSON (53)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=Esri+REST" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Esri REST (53)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=RSS" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">RSS (34)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=ASC" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">ASC (20)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;res_format=KMZ" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">KMZ (8)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?res_format=JSON&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">JSON (6)</p>
+
+
+                      </a>
+                    </li>
+
+                  </ul>
+                </nav>
+
+                <p class="module-footer">
+
+
+                  <a href="/data/dataset?q=&amp;_res_format_limit=0" class="read-more">Show More Formats</a>
+
+
+                </p>
+
+
+
+              </section>
+
+
+
+
+              <!-- Snippet snippets/facet_list.html end -->
+
+
+
+              <!-- Snippet snippets/facet_list.html start -->
+
+
+
+
+
+
+
+
+              <section class="module module-narrow module-shallow">
+
+                <h2 class="module-heading">
+                  <i class="icon-medium icon-filter"></i>
+
+                  Tags
+                </h2>
+
+
+
+
+
+
+
+
+
+
+                <nav>
+                  <ul class="unstyled nav nav-simple nav-facet">
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=event" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">event (36)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?tags=Planning&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Planning (28)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=Property+and+Planning" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Property and Planning (27)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=Brisbane+City+Council" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">Brisbane City Council (25)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=creek" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">creek (22)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?tags=transport&amp;q=" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">transport (20)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=flood+study" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">flood study (20)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=flood+map" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">flood map (20)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=flood" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">flood (20)</p>
+
+
+                      </a>
+                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+                    <li class="nav-item">
+                      <a href="/data/dataset?q=&amp;tags=catchment" title="">
+
+
+
+
+                        <p style="max-width: 150px;margin: 0px;">catchment (20)</p>
+
+
+                      </a>
+                    </li>
+
+                  </ul>
+                </nav>
+
+                <p class="module-footer">
+
+
+                  <a href="/data/dataset?q=&amp;_tags_limit=0" class="read-more">Show More Tags</a>
+
+
+                </p>
+
+
+
+              </section>
+
+
+
+
+              <!-- Snippet snippets/facet_list.html end -->
+
+
+            </div>
+          </div>
+
+
+
+        </aside>
+
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+
+      <nav class="footer-links">
+
+
+        <div class="row">
+          <div class="span12">
+
+
+            <ul class="list">
+
+              <li><a href="/accessibility">Accessibility</a></li>
+
+              <li><a href="/contact">Contact</a></li>
+
+              <li><a href="/suggest_a_dataset_form">Suggest a Dataset</a></li>
+
+              <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+
+              <li><a href="/data/user/login">Member login</a></li>
+
+              <li><a href="/data/user/register">Register as user</a></li>
+
+            </ul>
+
+            <div id="items-left">
+              <div class="item-list">
+                <ul class="footer-mobile">
+                  <!-- <li class="first"><a href="/about-us">About Us</a></li> -->
+                  <!--        <li><a href="/terms-of-use">Terms of Use</a>
+                         </li> -->
+                  <!-- <li><a href="/privacy">Privacy</a> -->
+                  <!-- </li>
+                  <li class="last"><a href="/copyright-and-attribution">Copyright and Attribution</a>
+                </li> -->
+
+                  <li><a href="/accessibility">Accessibility</a></li>
+
+                  <li><a href="/contact">Contact</a></li>
+
+                  <li><a href="/suggest_a_dataset_form">Suggest a Dataset</a></li>
+
+
+
+                </ul>
+              </div>
+            </div>
+            <div class="item-list">
+              <ul class="footer-mobile">
+
+                <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+
+                <li><a href="/data/user/login">Member login</a></li>
+
+                <li><a href="/data/user/register">Register as user</a></li>
+
+              </ul>
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+
+
+        <div class="row footer-logos-section">
+          <div class="span12">
+            <div class="powered">
+              <span>Powered by</span>
+              <a href="http://ckan.org/">
+                <img class="footer-ckan-logo" src="https://www.data.brisbane.qld.gov.au/data/images/ckan-logo-footer.png" alt="CKAN" width="68" height="20">
+                <img class="mobile-footer-ckan-logo" src="https://www.data.brisbane.qld.gov.au/data/images/ckan-logo-footer.png" alt="CKAN" width="68" height="20">
+              </a>
+            </div>
+            <div class="footer-logo">
+              <a href="/">
+                <img alt="Brisbane City. Dedicated to a better Brisbane." src="https://www.data.brisbane.qld.gov.au/data/images/logo-new-hq-foot.png">
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    </nav>
+
+</div>
+
+
+
+
+</footer>
+
+</div>
+
+<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="js-hide" data-module="google-analytics"
+     data-module-googleanalytics_resource_prefix="">
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>document.getElementsByTagName('html')[0].className += ' js';</script>
+<script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/jquery.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/vendor/:version:2017-08-02T14:14:15.61/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;moment-with-locales.js;select2/select2.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/base/:version:2018-07-03T14:08:04.24/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.masonry.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/table-selectable-rows.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/resource-reorder.min.js;modules/resource-view-reorder.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/resource-view-embed.min.js;view-filters.min.js;modules/resource-view-filters-form.min.js;modules/resource-view-filters.min.js;modules/table-toggle-more.min.js;modules/dataset-visibility.min.js;modules/media-grid.min.js;modules/image-upload.min.js"></script>
+<script type="text/javascript" src="/data/fanstatic/ckanext-bcc/:version:2017-12-13T19:07:32.25/:bundle:styles/selectt.js;styles/analytics-include.js;styles/select.js;styles/jquery-ui.js;js/change_group_icons.js;js/filters_mobile.js;js/stats_mobile.js;js/bcc_mobile_stats.js;js/bcc_form_enchantments.js;js/change_dataset_info.js;js/bcc_paginator.js;js/bcc_datepicker.js;js/custom-checkbox-click.js"></script>
+<script type="text/javascript" src="/data/fanstatic/ckanext-googleanalytics/:version:2017-08-02T20:14:31.68/googleanalytics_event_tracking.js"></script></body>
+</html>

@@ -1,9 +1,6 @@
 package org.dice_research.squirrel.frontier.impl;
 
-import java.net.InetAddress;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.dice_research.squirrel.data.uri.CrawleableUri;
 import org.dice_research.squirrel.data.uri.filter.UriFilter;
@@ -14,6 +11,7 @@ import org.dice_research.squirrel.data.uri.norm.UriNormalizer;
 import org.dice_research.squirrel.deduplication.hashing.UriHashCustodian;
 import org.dice_research.squirrel.frontier.ExtendedFrontier;
 import org.dice_research.squirrel.frontier.recrawling.OutDatedUriRetriever;
+import org.dice_research.squirrel.queue.AbstractGroupingQueue;
 import org.dice_research.squirrel.queue.IpAddressBasedQueue;
 import org.dice_research.squirrel.queue.UriQueue;
 
@@ -33,8 +31,6 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
      * @param timerPeriod        used to select if URIs should be recrawled.
      * @param uriHashCustodian   used to access and write hash values for uris.
      */
-    @SuppressWarnings("unused")
-
     public ExtendedFrontierImpl(UriNormalizer normalizer, UriFilterComposer relationalUriFilter, UriQueue queue,List<UriGenerator> uriGenerators, boolean doesRecrawling,
                                 long generalRecrawlTime, long timerPeriod, UriHashCustodian uriHashCustodian) {
         super(normalizer, relationalUriFilter, queue, uriGenerators,doesRecrawling, generalRecrawlTime, timerPeriod);
@@ -73,15 +69,9 @@ public class ExtendedFrontierImpl extends FrontierImpl implements ExtendedFronti
 
     @Override
     public void informAboutDeadWorker(String idOfWorker, List<CrawleableUri> lstUrisToReassign) {
-        if (queue instanceof IpAddressBasedQueue) {
-            IpAddressBasedQueue ipQueue = (IpAddressBasedQueue) queue;
-
-            Set<InetAddress> setIps = new HashSet<>();
-            for (CrawleableUri uri : lstUrisToReassign) {
-                InetAddress ip = uri.getIpAddress();
-                setIps.add(ip);
-            }
-            setIps.forEach(ip -> ipQueue.markIpAddressAsAccessible(ip));
+        if (queue instanceof AbstractGroupingQueue) {
+            AbstractGroupingQueue<?> ipQueue = (AbstractGroupingQueue<?>) queue;
+            ipQueue.markUrisAsAccessible(lstUrisToReassign);
         }
     }
 }

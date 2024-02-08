@@ -26,11 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * Analyzer to parse HDTAnalyzer types
- * 
- * 
- * 
+ *
+ *
+ *
  * @author gsjunior gsjunior@mail.uni-paderborn.de
  */
 

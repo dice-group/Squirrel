@@ -1,0 +1,30 @@
+file_descriptor:
+    check:
+        domain: osni-spatial-ni.opendata.arcgis.com
+        ignore-request: true
+
+    redirection-one:
+        regex: /
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#pagination": h3 a:contains(All Data)
+
+    search-result-page:
+        regex: datasets
+        resources:
+            "$uri":
+                "http://projekt-opal.de/dataset#link":  .card-title a
+                "http://projekt-opal.de/dataset#pagination": .pagination li a
+
+    detail-page:
+        regex: datasets/
+        resources:
+            "$uri":
+                "http://purl.org/dc/terms/title": div#main-message
+                "http://purl.org/dc/terms/description": span#dataset-description
+                "http://purl.org/dc/terms/publisher": span[itemprop="author"]
+                "http://purl.org/dc/terms/issued": span[itemprop="datePublished"]
+                "http://purl.org/dsnotify/vocab/eventset/sourceDataset": ul#dataset-meta-list li:eq(0) a
+                "http://www.w3.org/ns/dcat#accessURL": ul#dataset-meta-list li:eq(1) a
+                "http://purl.org/dc/terms/license": ul#dataset-meta-list li:eq(2)
+                "http://purl.org/dc/terms/modified": li[itemprop="dateModified"]

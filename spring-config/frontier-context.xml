@@ -72,10 +72,12 @@
 		<constructor-arg index="0" ref="mongoDBKnowUriFilter" />
 		<constructor-arg index="1">
 			<list>
-				<!-- <ref bean="depthFilter" /> -->
+                <ref bean="schemeFilter" />
+				<ref bean="whiteFilter" />
+                <ref bean="blackFilter" />
 			</list>
 		</constructor-arg>
-		<constructor-arg index="2" value="OR" />
+		<constructor-arg index="2" value="AND" />
 	</bean>
 
 	<!-- Triple Store sparql implementation -->
@@ -98,19 +100,33 @@
 
 
 	<bean id="mongoDBKnowUriFilter"
-		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter">
+		class="org.dice_research.squirrel.data.uri.filter.MongoDBKnowUriFilter"
+        init-method="open">
 		<constructor-arg index="0"
 			value="#{systemEnvironment['MDB_HOST_NAME']}" />
 		<constructor-arg index="1"
 			value="#{systemEnvironment['MDB_PORT']}" />
-
 	</bean>
 
+    <bean id="schemeFilter"
+        class="org.dice_research.squirrel.data.uri.filter.SchemeBasedUriFilter">
+    </bean>
+    <bean id="whiteFilter"
+        class="org.dice_research.squirrel.data.uri.filter.RegexBasedWhiteListFilter">
+        <constructor-arg index="0" value="#{systemEnvironment['URI_WHITELIST_FILE']}" />
+        <constructor-arg index="1" value="false" />
+    </bean>
+    <bean id="blackFilter"
+        class="org.dice_research.squirrel.data.uri.filter.RegexBasedBlackListFilter">
+        <constructor-arg index="0" value="#{systemEnvironment['URI_BLACKLIST_FILE']}" />
+        <constructor-arg index="1" value="false" />
+    </bean>
 
-	<bean id="depthFilter"
+
+	<!-- <bean id="depthFilter"
 		class="org.dice_research.squirrel.data.uri.filter.DepthFilter">
 		<constructor-arg index="0" value="3" />
-	</bean>
+	</bean>-->
 
 
 
